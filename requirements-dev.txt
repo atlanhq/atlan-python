@@ -1,0 +1,6 @@
+flake8
+mypy
+black
+types-requests
+pytest
+pre-commit
