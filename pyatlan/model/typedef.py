@@ -1,245 +1,382 @@
-#!/usr/bin/env/python
-# Copyright 2022 Atlan Pte, Ltd
-# Copyright [2015-2021] The Apache Software Foundation
-#
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-import logging
+from __future__ import annotations
 
-from pyatlan.model.enums import TypeCategory
-from pyatlan.model.misc import AtlanBase
-from pyatlan.utils import non_null, type_coerce, type_coerce_dict_list, type_coerce_list
+from typing import Any, Dict, List, Optional
 
-LOG = logging.getLogger("pyatlan")
+from pydantic import Field
+
+from pyatlan.model.core import AtlanObject
+from pyatlan.model.enums import AtlanTypeCategory, IndexType, Cardinality
 
 
-class AtlanBaseTypeDef(AtlanBase):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBase.__init__(self, attrs)
-
-        self.category = attrs.get("category")
-        self.guid = attrs.get("guid")
-        self.createdBy = attrs.get("createdBy")
-        self.updatedBy = attrs.get("updatedBy")
-        self.createTime = attrs.get("createTime")
-        self.updateTime = attrs.get("updateTime")
-        self.version = attrs.get("version")
-        self.name = attrs.get("name")
-        self.description = attrs.get("description")
-        self.typeVersion = attrs.get("typeVersion")
-        self.serviceType = attrs.get("serviceType")
-        self.options = attrs.get("options")
-
-
-class AtlanEnumDef(AtlanBaseTypeDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBaseTypeDef.__init__(self, attrs)
-
-        self.elementDefs = attrs.get("elementDefs")
-        self.defaultValue = attrs.get("defaultValue")
-
-    def type_coerce_attrs(self):
-        super(AtlanEnumDef, self).type_coerce_attrs()
-
-        self.elementDefs = type_coerce_list(self.elementDefs, AtlanEnumElementDef)
-
-
-class AtlanStructDef(AtlanBaseTypeDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBaseTypeDef.__init__(self, attrs)
-
-        self.category = non_null(attrs.get("category"), TypeCategory.STRUCT.name)
-        self.attributeDefs = attrs.get("attributeDefs")
-
-    def type_coerce_attrs(self):
-        super(AtlanStructDef, self).type_coerce_attrs()
-
-        self.attributeDefs = type_coerce_list(self.attributeDefs, AtlanAttributeDef)
+class TypeDef(AtlanObject):
+    category: Optional[AtlanTypeCategory] = Field(
+        None, description="Type of the type definition.\n"
+    )
+    create_time: Optional[int] = Field(
+        None,
+        description="Time (epoch) at which this object was created, in milliseconds.\n",
+        example=1648852296555,
+    )
+    created_by: Optional[str] = Field(
+        None,
+        description="Username of the user who created the object.\n",
+        example="jsmith",
+    )
+    description: Optional[str] = Field(
+        None, description="Description of the type definition."
+    )
+    guid: Optional[str] = Field(
+        None,
+        description="Unique identifier that represents the type definition.",
+        example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
+    )
+    name: Optional[str] = Field(
+        None, description="Unique name of this type definition.\n"
+    )
+    type_version: Optional[str] = Field(
+        None, description="Internal use only.\n", example="1.0"
+    )
+    update_time: Optional[int] = Field(
+        None,
+        description="Time (epoch) at which this object was last updated, in milliseconds.\n",
+        example=1649172284333,
+    )
+    updated_by: Optional[str] = Field(
+        None,
+        description="Username of the user who last updated the object.\n",
+        example="jsmith",
+    )
+    version: Optional[int] = Field(
+        None, description="Version of this object.\n", example=2
+    )
 
 
-class AtlanClassificationDef(AtlanStructDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
+class EnumDef(TypeDef):
+    class ElementDef(AtlanObject):
+        value: str = Field(None, description="Unused.")
+        description: Optional[str] = Field(None, description="Unused.")
+        ordinal: Optional[int] = Field(None, description="Unused.")
 
-        AtlanStructDef.__init__(self, attrs)
+    category: AtlanTypeCategory = AtlanTypeCategory.ENUM
+    element_defs: List["EnumDef.ElementDef"] = Field(None, description="Unused.")
+    options: Optional[Dict[str, Any]] = Field(
+        None, description="Optional properties of the type definition."
+    )
+    service_type: Optional[str] = Field(
+        None, description="Internal use only.", example="atlan"
+    )
 
-        self.category = TypeCategory.CLASSIFICATION.name
-        self.superTypes = attrs.get("superTypes")
-        self.entityTypes = attrs.get("entityTypes")
-        self.subTypes = attrs.get("subTypes")
 
-
-class AtlanEntityDef(AtlanStructDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanStructDef.__init__(self, attrs)
-
-        self.category = TypeCategory.ENTITY.name
-        self.superTypes = attrs.get("superTypes")
-        self.subTypes = attrs.get("subTypes")
-        self.relationshipAttributeDefs = attrs.get("relationshipAttributeDefs")
-        self.businessAttributeDefs = attrs.get("businessAttributeDefs")
-
-    def type_coerce_attrs(self):
-        super(AtlanEntityDef, self).type_coerce_attrs()
-
-        self.relationshipAttributeDefs = type_coerce_list(
-            self.relationshipAttributeDefs, AtlanRelationshipAttributeDef
+class StructDef(TypeDef):
+    class AttributeDef(AtlanObject):
+        cardinality: Optional[Cardinality] = Field(
+            "SINGLE",
+            description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
+            "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
+            "they are unique and unordered.\n",
+            example="SINGLE",
         )
-        self.businessAttributeDefs = type_coerce_dict_list(
-            self.businessAttributeDefs, AtlanAttributeDef
+        constraints: Optional[List[Dict[str, Any]]] = Field(
+            None, description="Internal use only."
+        )
+        description: Optional[str] = Field(
+            None,
+            description="Description of the attribute definition.\n",
+            example="Our first custom metadata field.",
+        )
+        default_value: Optional[str] = Field(
+            None,
+            description="Default value for this attribute (if any).\n",
+            example="abc123",
+        )
+        display_name: Optional[str] = Field(
+            None,
+            description="Name to use within all user interactions through the user interface. Note that this may not "
+            "be the same name used to update or interact with the attribute through API operations, for "
+            "that see the `name` property. (This property can be used instead of `name` for the creation "
+            "of an attribute definition as well.)\n",
+            example="Custom Field 1",
+        )
+        name: Optional[str] = Field(
+            None,
+            description="Unique name of this attribute definition. When provided during creation, this should be the "
+            "human-readable name for the attribute. When returned (or provided for an update) this will be "
+            "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
+            "by the user without impacting existing instances of the attribute.)\n",
+        )
+        include_in_notification: Optional[bool] = Field(
+            None, description="", example=False
+        )
+        index_type: Optional[IndexType] = Field(None, description="", example="DEFAULT")
+        is_indexable: Optional[bool] = Field(
+            None,
+            description="When true, values for this attribute will be indexed for searching.\n",
+            example=True,
+        )
+        is_optional: Optional[bool] = Field(
+            True,
+            description="When true, a value will not be required for this attribute.\n",
+            example=True,
+        )
+        is_unique: Optional[bool] = Field(
+            False,
+            description="When true, this attribute must be unique across all assets.\n",
+            example=False,
+        )
+        options: Optional[Dict[str, Any]] = Field(
+            None, description="Extensible options for the attribute."
+        )
+        search_weight: Optional[float] = Field(None, description="")
+        skip_scrubbing: Optional[bool] = Field(
+            False,
+            description="When true, scrubbing of data will be skipped.\n",
+            example=False,
+        )
+        type_name: Optional[str] = Field(
+            "string", description="Type of this attribute.\n", example="string"
+        )
+        values_min_count: Optional[float] = Field(
+            0,
+            description="Minimum number of values for this attribute. If greater than 0, this attribute "
+            "becomes required.\n",
+            example=0,
+        )
+        values_max_count: Optional[float] = Field(
+            1,
+            description="Maximum number of values for this attribute. If greater than 1, this attribute allows "
+            "multiple values.\n",
+            example=1,
+        )
+        index_type_es_fields: Optional[Dict[str, dict[str, str]]] = Field(
+            None, description="", alias="indexTypeESFields"
         )
 
-
-class AtlanRelationshipDef(AtlanStructDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanStructDef.__init__(self, attrs)
-
-        self.category = TypeCategory.RELATIONSHIP.name
-        self.relationshipCategory = attrs.get("relationshipCategory")
-        self.relationshipLabel = attrs.get("relationshipLabel")
-        self.propagateTags = attrs.get("propagateTags")
-        self.endDef1 = attrs.get("endDef1")
-        self.endDef2 = attrs.get("endDef2")
-
-    def type_coerce_attrs(self):
-        super(AtlanRelationshipDef, self).type_coerce_attrs()
-
-        self.endDef1 = type_coerce(self.endDef1, AtlanRelationshipEndDef)
-        self.endDef2 = type_coerce(self.endDef2, AtlanRelationshipEndDef)
+    category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
+    attribute_defs: Optional[List[StructDef.AttributeDef]] = Field(
+        None,
+        description="List of attributes that should be available in the type definition.",
+    )
+    service_type: Optional[str] = Field(
+        None, description="Internal use only.", example="atlan"
+    )
 
 
-class AtlanBusinessMetadataDef(AtlanStructDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanStructDef.__init__(self, attrs)
-
-        self.category = TypeCategory.BUSINESS_METADATA.name
-        self.displayName = attrs.get("displayName")
-
-
-class AtlanAttributeDef(AtlanBase):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBase.__init__(self, attrs)
-
-        self.name = attrs.get("name")
-        self.typeName = attrs.get("typeName")
-        self.isOptional = attrs.get("isOptional")
-        self.cardinality = attrs.get("cardinality")
-        self.valuesMinCount = attrs.get("valuesMinCount")
-        self.valuesMaxCount = attrs.get("valuesMaxCount")
-        self.isUnique = attrs.get("isUnique")
-        self.isIndexable = attrs.get("isIndexable")
-        self.includeInNotification = attrs.get("includeInNotification")
-        self.defaultValue = attrs.get("defaultValue")
-        self.description = attrs.get("description")
-        self.searchWeight = non_null(attrs.get("searchWeight"), -1)
-        self.indexType = attrs.get("indexType")
-        self.constraints = attrs.get("constraints")
-        self.options = attrs.get("options")
-        self.displayName = attrs.get("displayName")
-
-    def type_coerce_attrs(self):
-        super(AtlanAttributeDef, self).type_coerce_attrs()
-
-        self.constraints = type_coerce_list(self.constraints, AtlanConstraintDef)
+class ClassificationDef(TypeDef):
+    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+        [], description="Unused.", example=[]
+    )
+    category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
+    display_name: Optional[str] = Field(
+        None, description="Name used for display purposes (in user interfaces).\n"
+    )
+    entity_types: Optional[List[str]] = Field(
+        None,
+        description="A list of the entity types that this classification can be used against."
+        " (This should be `Asset` to allow classification of any asset in Atlan.)",
+        example=["Asset"],
+    )
+    options: Optional[Dict[str, Any]] = Field(
+        None, description="Optional properties of the type definition."
+    )
+    sub_types: Optional[List[str]] = Field(
+        [],
+        description="List of the sub-types that extend from this type definition. Generally this is not specified "
+        "in any request, but is only supplied in responses. (This is intended for internal use only, and "
+        "should not be used without specific guidance.)",
+        example=[],
+    )
+    super_types: Optional[List[str]] = Field(
+        [],
+        description="List of the super-types that this type definition should extend. (This is intended for internal "
+        "use only, and should not be used without specific guidance.)",
+        example=[],
+    )
 
 
-class AtlanConstraintDef(AtlanBase):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBase.__init__(self, attrs)
-
-        self.type = attrs.get("type")
-        self.params = attrs.get("params")
-
-
-class AtlanEnumElementDef(AtlanBase):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBase.__init__(self, attrs)
-
-        self.value = attrs.get("value")
-        self.description = attrs.get("description")
-        self.ordinal = attrs.get("ordinal")
-
-
-class AtlanRelationshipAttributeDef(AtlanAttributeDef):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanAttributeDef.__init__(self, attrs)
-
-        self.relationshipTypeName = attrs.get("relationshipTypeName")
-        self.isLegacyAttribute = attrs.get("isLegacyAttribute")
+class EntityDef(TypeDef):
+    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+        [], description="Unused.", example=[]
+    )
+    business_attribute_defs: Optional[Dict[str, List[Dict[str, Any]]]] = Field(
+        [], description="Unused.", example=[]
+    )
+    category: AtlanTypeCategory = AtlanTypeCategory.ENTITY
+    relationship_attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+        [], description="Unused.", example=[]
+    )
+    service_type: Optional[str] = Field(
+        None, description="Internal use only.", example="atlan"
+    )
+    sub_types: Optional[List[str]] = Field(
+        [],
+        description="List of the sub-types that extend from this type definition. Generally this is not specified in "
+        "any request, but is only supplied in responses. (This is intended for internal use only, and "
+        "should not be used without specific guidance.)",
+        example=[],
+    )
+    super_types: Optional[List[str]] = Field(
+        [],
+        description="List of the super-types that this type definition should extend. (This is intended for internal "
+        "use only, and should not be used without specific guidance.)",
+        example=[],
+    )
 
 
-class AtlanRelationshipEndDef(AtlanBase):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
+class RelationshipDef(TypeDef):
+    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+        [], description="Unused.", example=[]
+    )
+    category: AtlanTypeCategory = AtlanTypeCategory.RELATIONSHIP
+    end_def1: Optional[Dict[str, Any]] = Field({}, description="Unused.", example={})
+    end_def2: Optional[Dict[str, Any]] = Field({}, description="Unused.", example={})
+    propagate_tags: str = Field(
+        "ONE_TO_TWO", description="Unused", example="ONE_TO_TWO"
+    )
+    relationship_category: str = Field(
+        "AGGREGATION", description="Unused", example="AGGREGATION"
+    )
+    relationship_label: str = Field(
+        "__SalesforceOrganization.reports",
+        description="Unused",
+        example="__SalesforceOrganization.reports",
+    )
+    service_type: Optional[str] = Field(
+        None, description="Internal use only.", example="atlan"
+    )
 
-        AtlanBase.__init__(self, attrs)
 
-        self.type = attrs.get("type")
-        self.name = attrs.get("name")
-        self.isContainer = attrs.get("isContainer")
-        self.cardinality = attrs.get("cardinality")
-        self.isLegacyAttribute = attrs.get("isLegacyAttribute")
-        self.description = attrs.get("description")
-
-
-class AtlanTypesDef(AtlanBase):
-    def __init__(self, attrs=None):
-        attrs = attrs or {}
-
-        AtlanBase.__init__(self, attrs)
-
-        self.enumDefs = attrs.get("enumDefs")
-        self.structDefs = attrs.get("structDefs")
-        self.classificationDefs = attrs.get("classificationDefs")
-        self.entityDefs = attrs.get("entityDefs")
-        self.relationshipDefs = attrs.get("relationshipDefs")
-        self.businessMetadataDefs = attrs.get("businessMetadataDefs")
-
-    def type_coerce_attrs(self):
-        super(AtlanTypesDef, self).type_coerce_attrs()
-
-        self.enumDefs = type_coerce_list(self.enumDefs, AtlanEnumDef)
-        self.structDefs = type_coerce_list(self.structDefs, AtlanStructDef)
-        self.classificationDefs = type_coerce_list(
-            self.classificationDefs, AtlanClassificationDef
+class CustomMetadataDef(TypeDef):
+    class AttributeDef(AtlanObject):
+        cardinality: Optional[Cardinality] = Field(
+            "SINGLE",
+            description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
+            "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates they are "
+            "unique and unordered.\n",
+            example="SINGLE",
         )
-        self.entityDefs = type_coerce_list(self.entityDefs, AtlanEntityDef)
-        self.relationshipDefs = type_coerce_list(
-            self.relationshipDefs, AtlanRelationshipDef
+        constraints: Optional[List[Dict[str, Any]]] = Field(
+            None, description="Internal use only."
         )
-        self.businessMetadataDefs = type_coerce_list(
-            self.businessMetadataDefs, AtlanBusinessMetadataDef
+        description: Optional[str] = Field(
+            None,
+            description="Description of the attribute definition.\n",
+            example="Our first custom metadata field.",
         )
+        display_name: Optional[str] = Field(
+            None,
+            description="Name to use within all user interactions through the user interface. Note that this may not "
+            "be the same name used to update or interact with the attribute through API operations, for "
+            "that see the `name` property. (This property can be used instead of `name` for the creation "
+            "of an attribute definition as well.)\n",
+            example="Custom Field 1",
+        )
+        include_in_notification: Optional[bool] = Field(
+            None, description="", example=False
+        )
+        index_type: Optional[IndexType] = Field(None, description="", example="DEFAULT")
+        index_type_es_config: Optional[Dict[str, str]] = Field(
+            None, description="", alias="indexTypeESConfig"
+        )
+        index_type_es_fields: Optional[Dict[str, Dict[str, str]]] = Field(
+            None, description="", alias="indexTypeESFields"
+        )
+        is_indexable: Optional[bool] = Field(
+            None,
+            description="When true, values for this attribute will be indexed for searching.\n",
+            example=True,
+        )
+        is_optional: Optional[bool] = Field(
+            True,
+            description="When true, a value will not be required for this attribute.\n",
+            example=True,
+        )
+        is_unique: Optional[bool] = Field(
+            False,
+            description="When true, this attribute must be unique across all assets.\n",
+            example=False,
+        )
+        name: Optional[str] = Field(
+            None,
+            description="Unique name of this attribute definition. When provided during creation, this should be the "
+            "human-readable name for the attribute. When returned (or provided for an update) this will be "
+            "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
+            "by the user without impacting existing instances of the attribute.)\n",
+        )
+        options: Optional[Dict[str, Any]] = Field(
+            None, description="Extensible options for the attribute."
+        )
+        search_weight: Optional[float] = Field(None, description="")
+        skip_scrubbing: Optional[bool] = Field(
+            False,
+            description="When true, scrubbing of data will be skipped.\n",
+            example=False,
+        )
+        type_name: Optional[str] = Field(
+            "string", description="Type of this attribute.\n", example="string"
+        )
+        values_min_count: Optional[float] = Field(
+            0,
+            description="Minimum number of values for this attribute. If greater than 0, this attribute becomes "
+            "required.\n",
+            example=0,
+        )
+        values_max_count: Optional[float] = Field(
+            1,
+            description="Maximum number of values for this attribute. If greater than 1, this attribute allows "
+            "multiple values.\n",
+            example=1,
+        )
+
+    class Options(AtlanObject):
+        emoji: Optional[str] = Field(
+            None,
+            description="If the logoType is emoji, this should hold the emoji character.\n",
+        )
+        image_id: Optional[str] = Field(
+            None, description="The id of the image used for the logo.\n"
+        )
+        is_locked: Optional[str] = Field(
+            None,
+            description="Indicates whether the custom metadata can be managed in the UI (false) or not (true).\n",
+        )
+        logo_type: Optional[str] = Field(
+            None, description="Type of logo used for the custom metadata.\n"
+        )
+        logo_Url: Optional[str] = Field(
+            None,
+            description="If the logoType is image, this should hold a URL to the image.\n",
+        )
+
+    attribute_defs: Optional[List[CustomMetadataDef.AttributeDef]] = Field(
+        [], description="Unused.", example=[]
+    )
+    category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
+    display_name: Optional[str] = Field(
+        None, description="Name used for display purposes (in user interfaces).\n"
+    )
+    options: Optional[CustomMetadataDef.Options] = Field(
+        None, description="Optional properties of the type definition."
+    )
+
+
+class TypeDefResponse(AtlanObject):
+    enum_defs: Optional[List[EnumDef]] = Field(
+        None, description="List of enumeration type definitions."
+    )
+    struct_defs: Optional[List[StructDef]] = Field(
+        None, description="List of struct type definitions."
+    )
+    classification_defs: Optional[List[ClassificationDef]] = Field(
+        None, description="List of classification type definitions."
+    )
+    entity_defs: Optional[List[EntityDef]] = Field(
+        None, description="List of entity type definitions."
+    )
+    relationship_defs: Optional[List[RelationshipDef]] = Field(
+        None, description="List of relationship type definitions."
+    )
+    custom_metadata_defs: Optional[List[CustomMetadataDef]] = Field(
+        None,
+        description="List of custom metadata type definitions.",
+        alias="businessMetadataDefs",
+    )

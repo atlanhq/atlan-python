@@ -22,24 +22,31 @@ import json
 import logging
 import os
 
+
 import requests
 
-from pyatlan.client.index import IndexClient
+from pydantic import BaseSettings, HttpUrl, PrivateAttr, Field
 from pyatlan.exceptions import AtlanServiceException
-from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger, type_coerce
+from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger
 
 LOGGER = get_logger()
 
 
-class AtlanClient:
-    def __init__(self, host, api_key):
-        self.session = requests.Session()
-        self.host = host
-        self.request_params = {"headers": {"authorization": f"Bearer {api_key}"}}
-        self.index_client = IndexClient(self)
+class AtlanClient(BaseSettings):
+    host: HttpUrl
+    api_key: str
+    session: requests.Session = Field(default_factory=requests.Session)
+    _request_params: dict = PrivateAttr()
+
+    class Config:
+        env_prefix = "atlan_"
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
     def call_api(self, api, response_type=None, query_params=None, request_obj=None):
-        params = copy.deepcopy(self.request_params)
+        params = copy.deepcopy(self._request_params)
         path = os.path.join(self.host, api.path)
 
         params["headers"]["Accept"] = api.consumes
@@ -92,8 +99,12 @@ class AtlanClient:
                     LOGGER.debug(response.json())
                 if response_type == str:
                     return json.dumps(response.json())
-
-                return type_coerce(response.json(), response_type)
+                with open(
+                    "/Users/ernesthill/PycharmProjects/TypeDefAnalyzer/typedefs.json",
+                    "w",
+                ) as outfile:
+                    json.dump(response.json(), outfile)
+                return response_type(**response.json())
             except Exception as e:
                 print(e)
                 LOGGER.exception(
@@ -109,3 +120,8 @@ class AtlanClient:
             return None
         else:
             raise AtlanServiceException(api, response)
+
+
+if __name__ == "__main__":
+    client = AtlanClient()
+    print(client.dict())
