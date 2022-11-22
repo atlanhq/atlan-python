@@ -18,7 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyatlan.model.type_def import TypeDefResponse
+from pyatlan.model.typedef import TypeDefResponse
 from pyatlan.utils import API, BASE_URI, HTTPMethod, HTTPStatus
 from pyatlan.client.atlan import AtlanClient
 

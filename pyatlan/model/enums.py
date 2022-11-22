@@ -41,3 +41,18 @@ class TypeName(Enum):
 class IndexType(Enum):
     DEFAULT = "DEFAULT"
     STRING = "STRING"
+
+
+class google_datastudio_asset_type(Enum):
+    DATA_SOURCE = "DATA_SOURCE"
+    REPORT = "REPORT"
+
+
+class powerbi_endorsement(Enum):
+    PROMOTED = "Promoted"
+    CERTIFIED = "Certified"
+
+
+class icon_type(Enum):
+    IMAGE = "Image"
+    EMOJI = "Emoji"

@@ -1,2 +1,3 @@
 requests>=2.24
 pydantic
+jinja2

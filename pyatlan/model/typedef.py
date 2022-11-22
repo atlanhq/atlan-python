@@ -10,7 +10,7 @@ from pyatlan.model.enums import AtlanTypeCategory, IndexType, Cardinality
 
 class TypeDef(AtlanObject):
     category: Optional[AtlanTypeCategory] = Field(
-        None, description="Type of the type definition.\n"
+        None, description="Type of the type_ definition.\n"
     )
     create_time: Optional[int] = Field(
         None,
@@ -23,15 +23,15 @@ class TypeDef(AtlanObject):
         example="jsmith",
     )
     description: Optional[str] = Field(
-        None, description="Description of the type definition."
+        None, description="Description of the type_ definition."
     )
     guid: Optional[str] = Field(
         None,
-        description="Unique identifier that represents the type definition.",
+        description="Unique identifier that represents the type_ definition.",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
     name: Optional[str] = Field(
-        None, description="Unique name of this type definition.\n"
+        None, description="Unique name of this type_ definition.\n"
     )
     type_version: Optional[str] = Field(
         None, description="Internal use only.\n", example="1.0"
@@ -60,7 +60,7 @@ class EnumDef(TypeDef):
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
     element_defs: List["EnumDef.ElementDef"] = Field(None, description="Unused.")
     options: Optional[Dict[str, Any]] = Field(
-        None, description="Optional properties of the type definition."
+        None, description="Optional properties of the type_ definition."
     )
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
@@ -154,7 +154,7 @@ class StructDef(TypeDef):
     category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
     attribute_defs: Optional[List[StructDef.AttributeDef]] = Field(
         None,
-        description="List of attributes that should be available in the type definition.",
+        description="List of attributes that should be available in the type_ definition.",
     )
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
@@ -176,20 +176,23 @@ class ClassificationDef(TypeDef):
         example=["Asset"],
     )
     options: Optional[Dict[str, Any]] = Field(
-        None, description="Optional properties of the type definition."
+        None, description="Optional properties of the type_ definition."
     )
     sub_types: Optional[List[str]] = Field(
         [],
-        description="List of the sub-types that extend from this type definition. Generally this is not specified "
+        description="List of the sub-types that extend from this type_ definition. Generally this is not specified "
         "in any request, but is only supplied in responses. (This is intended for internal use only, and "
         "should not be used without specific guidance.)",
         example=[],
     )
     super_types: Optional[List[str]] = Field(
         [],
-        description="List of the super-types that this type definition should extend. (This is intended for internal "
+        description="List of the super-types that this type_ definition should extend. (This is intended for internal "
         "use only, and should not be used without specific guidance.)",
         example=[],
+    )
+    service_type: Optional[str] = Field(
+        None, description="Name used for display purposes (in user interfaces).\n"
     )
 
 
@@ -209,14 +212,14 @@ class EntityDef(TypeDef):
     )
     sub_types: Optional[List[str]] = Field(
         [],
-        description="List of the sub-types that extend from this type definition. Generally this is not specified in "
+        description="List of the sub-types that extend from this type_ definition. Generally this is not specified in "
         "any request, but is only supplied in responses. (This is intended for internal use only, and "
         "should not be used without specific guidance.)",
         example=[],
     )
     super_types: Optional[List[str]] = Field(
         [],
-        description="List of the super-types that this type definition should extend. (This is intended for internal "
+        description="List of the super-types that this type_ definition should extend. (This is intended for internal "
         "use only, and should not be used without specific guidance.)",
         example=[],
     )
@@ -355,28 +358,28 @@ class CustomMetadataDef(TypeDef):
         None, description="Name used for display purposes (in user interfaces).\n"
     )
     options: Optional[CustomMetadataDef.Options] = Field(
-        None, description="Optional properties of the type definition."
+        None, description="Optional properties of the type_ definition."
     )
 
 
 class TypeDefResponse(AtlanObject):
-    enum_defs: Optional[List[EnumDef]] = Field(
-        None, description="List of enumeration type definitions."
+    enum_defs: List[EnumDef] = Field(
+        None, description="List of enumeration type_ definitions."
     )
-    struct_defs: Optional[List[StructDef]] = Field(
-        None, description="List of struct type definitions."
+    struct_defs: List[StructDef] = Field(
+        None, description="List of struct type_ definitions."
     )
-    classification_defs: Optional[List[ClassificationDef]] = Field(
-        None, description="List of classification type definitions."
+    classification_defs: List[ClassificationDef] = Field(
+        None, description="List of classification type_ definitions."
     )
-    entity_defs: Optional[List[EntityDef]] = Field(
-        None, description="List of entity type definitions."
+    entity_defs: List[EntityDef] = Field(
+        None, description="List of entity type_ definitions."
     )
-    relationship_defs: Optional[List[RelationshipDef]] = Field(
-        None, description="List of relationship type definitions."
+    relationship_defs: List[RelationshipDef] = Field(
+        None, description="List of relationship type_ definitions."
     )
-    custom_metadata_defs: Optional[List[CustomMetadataDef]] = Field(
+    custom_metadata_defs: List[CustomMetadataDef] = Field(
         None,
-        description="List of custom metadata type definitions.",
+        description="List of custom metadata type_ definitions.",
         alias="businessMetadataDefs",
     )

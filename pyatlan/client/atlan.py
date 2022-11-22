@@ -50,7 +50,7 @@ class AtlanClient(BaseSettings):
         path = os.path.join(self.host, api.path)
 
         params["headers"]["Accept"] = api.consumes
-        params["headers"]["Content-type"] = api.produces
+        params["headers"]["Content-type_"] = api.produces
 
         if query_params is not None:
             params["params"] = query_params
@@ -61,7 +61,7 @@ class AtlanClient(BaseSettings):
         if LOGGER.isEnabledFor(logging.DEBUG):
             LOGGER.debug("------------------------------------------------------")
             LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type : %s", api.consumes)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
 
         response = None
