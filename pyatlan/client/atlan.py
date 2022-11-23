@@ -45,7 +45,7 @@ class AtlanClient(BaseSettings):
         super().__init__(**data)
         self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
-    def call_api(self, api, response_type=None, query_params=None, request_obj=None):
+    def call_api(self, api, query_params=None, request_obj=None):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.host, api.path)
 
@@ -81,9 +81,6 @@ class AtlanClient(BaseSettings):
         if response is None:
             return None
         elif response.status_code == api.expected_status:
-            if response_type is None:
-                return None
-
             try:
                 if response.content is None:
                     return None
@@ -95,16 +92,8 @@ class AtlanClient(BaseSettings):
                         request_obj,
                         response,
                     )
-
                     LOGGER.debug(response.json())
-                if response_type == str:
-                    return json.dumps(response.json())
-                with open(
-                    "/Users/ernesthill/PycharmProjects/TypeDefAnalyzer/typedefs.json",
-                    "w",
-                ) as outfile:
-                    json.dump(response.json(), outfile)
-                return response_type(**response.json())
+                return response.json()
             except Exception as e:
                 print(e)
                 LOGGER.exception(

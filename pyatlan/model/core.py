@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Extra, Field
-from typing import Optional
+from pydantic.generics import GenericModel
+from typing import Optional, TypeVar, Generic, Any
 from pyatlan.model.enums import EntityStatus
 
 CAMEL_CASE_OVERRIDES = {
@@ -64,4 +65,16 @@ class Classification(AtlanObject):
     )
     restrict_propagation_through_lineage: Optional[bool] = Field(
         None, description="", alias="restrictPropagationThroughLineage"
+    )
+
+
+T = TypeVar("T")
+
+
+class AssetResponse(AtlanObject, GenericModel, Generic[T]):
+    entity: Optional[T] = None
+    referredEntities: Optional[dict[str, Any]] = Field(
+        None,
+        description="Map of related entities keyed by the GUID of the related entity. The values will be the detailed "
+        "entity object of the related entity.\n",
     )

@@ -48,9 +48,11 @@ class TypeDefClient:
         self.client = client
 
     def get_all_typedefs(self) -> TypeDefResponse:
-        return self.client.call_api(TypeDefClient.GET_ALL_TYPE_DEFS, TypeDefResponse)
+        raw_json = self.client.call_api(TypeDefClient.GET_ALL_TYPE_DEFS)
+        return TypeDefResponse(**raw_json)
 
 
 if __name__ == "__main__":
     client = TypeDefClient(AtlanClient())
     type_def_response = client.get_all_typedefs()
+    pass
