@@ -33,24 +33,28 @@ def glossary_category_json():
     return load_json(GLOSSARY_CATEGORY_JSON)
 
 
-def test_glossary(glossary_json):
-    AtlasGlossary(**glossary_json)
-
-
 def test_wrong_json(glossary_json):
     with pytest.raises(ValidationError):
         AtlasGlossaryTerm(**glossary_json)
-
-
-def test_glossary_term(glossary_term_json):
-    AtlasGlossaryTerm(**glossary_term_json)
-
-
-def test_glossary_category(glossary_category_json):
-    AtlasGlossaryCategory(**glossary_category_json)
 
 
 def test_asset_response(glossary_category_json):
     asset_response_json = {"referredEntities": {}, "entity": glossary_category_json}
     glossary_category = AssetResponse[AtlasGlossaryCategory](**asset_response_json).entity
     assert glossary_category == AtlasGlossaryCategory(**glossary_category_json)
+
+
+@pytest.fixture(scope="function")
+def the_json(request):
+    return load_json(request.param)
+
+
+@pytest.mark.parametrize("the_json, a_type",
+                         [('glossary.json', AtlasGlossary),
+                          ("glossary_category.json", AtlasGlossaryCategory),
+                          ("glossary_term.json", AtlasGlossaryTerm),
+                          ("glossary_term2.json", AtlasGlossaryTerm)],
+                         indirect=["the_json"])
+def test_indirect(the_json, a_type):
+    asset = a_type(**the_json)
+    assert isinstance(asset, a_type)

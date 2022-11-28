@@ -211,5 +211,9 @@ class EntityClient:
             EntityClient.GET_ENTITY_BY_GUID.format_path_with_params(guid),
             query_params,
         )
+        raw_json["entity"]["attributes"].update(
+            raw_json["entity"]["relationshipAttributes"]
+        )
+        raw_json["entity"]["relationshipAttributes"] = {}
         response = AssetResponse[asset_type](**raw_json)
         return response.entity

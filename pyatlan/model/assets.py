@@ -162,6 +162,26 @@ class Referenceable(AtlanObject):
     classifications: Optional[list[Classification]] = Field(
         None, description="classifications"
     )
+    display_text: Optional[str] = Field(
+        None,
+        description="Human-readable name of the entity..\n",
+    )
+    entity_status: Optional[str] = Field(
+        None,
+        description="Status of the entity (if this is a related entity).\n",
+    )
+    relationship_guid: Optional[str] = Field(
+        None,
+        description="Unique identifier of the relationship (when this is a related entity).\n",
+    )
+    relationship_status: Optional[str] = Field(
+        None,
+        description="Status of the relationship (when this is a related entity).\n",
+    )
+    relationship_type: Optional[str] = Field(
+        None,
+        description="Status of the relationship (when this is a related entity).\n",
+    )
 
 
 class Asset(Referenceable):
