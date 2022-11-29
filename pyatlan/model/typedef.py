@@ -30,9 +30,7 @@ class TypeDef(AtlanObject):
         description="Unique identifier that represents the type_ definition.",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
-    name: Optional[str] = Field(
-        None, description="Unique name of this type_ definition.\n"
-    )
+    name: str = Field(..., description="Unique name of this type_ definition.\n")
     type_version: Optional[str] = Field(
         None, description="Internal use only.\n", example="1.0"
     )

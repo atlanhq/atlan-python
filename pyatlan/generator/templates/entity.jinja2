@@ -25,10 +25,12 @@ class {{ entity_def.name }}({{super_classes|join(', ')}}):
 {%- if entity_def.name == "Referenceable"  %}
     class Attributes(AtlanObject):
         {%- for attribute_def in entity_def.attribute_defs %}
-        {{attribute_def.name | to_snake_case}}: {% if attribute_def.isOptional %}Optional[{% endif %}str{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='', alias='{{attribute_def.name}}')
+        {%- set type = attribute_def.typeName | get_type %}
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}str{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='', alias='{{attribute_def.name}}')
+        {%- set type = attribute_def.typeName | get_type %}
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
     attributes: Optional['{{entity_def.name}}.Attributes'] = Field(
         None,

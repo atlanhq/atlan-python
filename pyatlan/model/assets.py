@@ -103,11 +103,15 @@ class Referenceable(AtlanObject):
 
     class Attributes(AtlanObject):
         qualified_name: str = Field(None, description="", alias="qualifiedName")
-        replicated_from: Optional[str] = Field(
+        replicated_from: Optional[list[AtlasServer]] = Field(
             None, description="", alias="replicatedFrom"
         )
-        replicated_to: Optional[str] = Field(None, description="", alias="replicatedTo")
-        meanings: Optional[str] = Field(None, description="", alias="meanings")
+        replicated_to: Optional[list[AtlasServer]] = Field(
+            None, description="", alias="replicatedTo"
+        )
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
 
     attributes: Optional["Referenceable.Attributes"] = Field(
         None,

@@ -66,7 +66,7 @@ class Generator:
         )
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
-        self.template = self.environment.get_template("entity.jinja")
+        self.template = self.environment.get_template("entity.jinja2")
         self.processed: set[str] = set()
 
     def render(self, name: str) -> None:
