@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Literal
 from pydantic import Field
 from datetime import date
 from pyatlan.model.core import AtlanObject, Classification
@@ -122,7 +122,7 @@ class Referenceable(AtlanObject):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",
     )
-    businessAttributes: Optional[Dict[str, Any]] = Field(
+    business_attributes: Optional[Dict[str, Any]] = Field(
         None,
         description="Map of custom metadata attributes and values defined on the entity.\n",
     )
@@ -151,7 +151,7 @@ class Referenceable(AtlanObject):
     status: Optional[EntityStatus] = Field(
         None, description="Status of the entity", example=EntityStatus.ACTIVE
     )
-    typeName: Optional[str] = Field(
+    type_name: str = Field(
         None, description="Name of the type definition that defines this instance.\n"
     )
     updated_by: Optional[str] = Field(
@@ -458,6 +458,8 @@ class Asset(Referenceable):
 class AtlasGlossary(Asset):
     """Description"""
 
+    type_name: Literal["AtlasGlossary"]
+
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
             None, description="", alias="shortDescription"
@@ -506,6 +508,8 @@ class ProcessExecution(Asset):
 
 class AtlasGlossaryTerm(Asset):
     """Description"""
+
+    type_name: Literal["AtlasGlossaryTerm"]
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -598,6 +602,8 @@ class Infrastructure(Asset):
 
 class Connection(Asset):
     """Description"""
+
+    type_name: Literal["Connection"]
 
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
@@ -699,6 +705,8 @@ class Process(Asset):
 class AtlasGlossaryCategory(Asset):
     """Description"""
 
+    type_name: Literal["AtlasGlossaryCategory"]
+
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
             None, description="", alias="shortDescription"
@@ -743,6 +751,8 @@ class AtlasGlossaryCategory(Asset):
 
 class Badge(Asset):
     """Description"""
+
+    type_name: Literal["Badge"]
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
@@ -877,6 +887,8 @@ class ColumnProcess(Process):
 class Collection(Namespace):
     """Description"""
 
+    type_name: Literal["Collection"]
+
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[icon_type] = Field(None, description="", alias="iconType")
@@ -908,6 +920,8 @@ class Collection(Namespace):
 
 class Folder(Namespace):
     """Description"""
+
+    type_name: Literal["Folder"]
 
     class Attributes(Namespace.Attributes):
         parent_qualified_name: str = Field(
@@ -1232,6 +1246,8 @@ class GCS(Google, ObjectStore):
 class DataStudioAsset(DataStudio, Google):
     """Description"""
 
+    type_name: Literal["DataStudioAsset"]
+
     class Attributes(DataStudio, Google.Attributes):
         data_studio_asset_type: Optional[google_datastudio_asset_type] = Field(
             None, description="", alias="dataStudioAssetType"
@@ -1305,6 +1321,8 @@ class S3(ObjectStore, AWS):
 
 class DbtColumnProcess(Dbt, ColumnProcess):
     """Description"""
+
+    type_name: Literal["DbtColumnProcess"]
 
     class Attributes(Dbt, ColumnProcess.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
@@ -1613,6 +1631,8 @@ class Salesforce(SaaS):
 class DbtModelColumn(Dbt):
     """Description"""
 
+    type_name: Literal["DbtModelColumn"]
+
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
             None, description="", alias="dbtModelQualifiedName"
@@ -1657,6 +1677,8 @@ class DbtModelColumn(Dbt):
 
 class DbtModel(Dbt):
     """Description"""
+
+    type_name: Literal["DbtModel"]
 
     class Attributes(Dbt.Attributes):
         dbt_status: Optional[str] = Field(None, description="", alias="dbtStatus")
@@ -1728,6 +1750,8 @@ class DbtModel(Dbt):
 class DbtMetric(Dbt, Metric):
     """Description"""
 
+    type_name: Literal["DbtMetric"]
+
     class Attributes(Dbt, Metric.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
             None, description="", alias="dbtMetricFilters"
@@ -1776,6 +1800,8 @@ class DbtMetric(Dbt, Metric):
 class DbtSource(Dbt):
     """Description"""
 
+    type_name: Literal["DbtSource"]
+
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(None, description="", alias="dbtState")
         dbt_freshness_criteria: Optional[str] = Field(
@@ -1812,6 +1838,8 @@ class DbtSource(Dbt):
 
 class DbtProcess(Dbt, Process):
     """Description"""
+
+    type_name: Literal["DbtProcess"]
 
     class Attributes(Dbt, Process.Attributes):
         dbt_process_job_status: Optional[str] = Field(
@@ -1855,6 +1883,8 @@ class DbtProcess(Dbt, Process):
 class ReadmeTemplate(Resource):
     """Description"""
 
+    type_name: Literal["ReadmeTemplate"]
+
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[icon_type] = Field(None, description="", alias="iconType")
@@ -1890,6 +1920,8 @@ class Readme(Resource):
 
 class Link(Resource):
     """Description"""
+
+    type_name: Literal["Link"]
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -1928,6 +1960,8 @@ class Link(Resource):
 
 class APISpec(API):
     """Description"""
+
+    type_name: Literal["APISpec"]
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
@@ -1986,6 +2020,8 @@ class APISpec(API):
 class APIPath(API):
     """Description"""
 
+    type_name: Literal["APIPath"]
+
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
             None, description="", alias="apiPathSummary"
@@ -2036,6 +2072,8 @@ class APIPath(API):
 
 class TablePartition(SQL):
     """Description"""
+
+    type_name: Literal["TablePartition"]
 
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(None, description="", alias="constraint")
@@ -2111,6 +2149,8 @@ class TablePartition(SQL):
 
 class Table(SQL):
     """Description"""
+
+    type_name: Literal["Table"]
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -2192,6 +2232,8 @@ class Table(SQL):
 class Query(SQL):
     """Description"""
 
+    type_name: Literal["Query"]
+
     class Attributes(SQL.Attributes):
         raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
         default_schema_qualified_name: Optional[str] = Field(
@@ -2263,6 +2305,8 @@ class Query(SQL):
 
 class Column(SQL):
     """Description"""
+
+    type_name: Literal["Column"]
 
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -2351,6 +2395,8 @@ class Column(SQL):
 class Schema(SQL):
     """Description"""
 
+    type_name: Literal["Schema"]
+
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
         views_count: Optional[int] = Field(None, description="", alias="viewsCount")
@@ -2404,6 +2450,8 @@ class Schema(SQL):
 class Database(SQL):
     """Description"""
 
+    type_name: Literal["Database"]
+
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
         input_to_processes: Optional[list[Process]] = Field(
@@ -2444,6 +2492,8 @@ class Database(SQL):
 class Procedure(SQL):
     """Description"""
 
+    type_name: Literal["Procedure"]
+
     class Attributes(SQL.Attributes):
         definition: str = Field(None, description="", alias="definition")
         input_to_processes: Optional[list[Process]] = Field(
@@ -2483,6 +2533,8 @@ class Procedure(SQL):
 
 class View(SQL):
     """Description"""
+
+    type_name: Literal["View"]
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -2540,6 +2592,8 @@ class View(SQL):
 
 class MaterialisedView(SQL):
     """Description"""
+
+    type_name: Literal["MaterialisedView"]
 
     class Attributes(SQL.Attributes):
         refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
@@ -2602,6 +2656,8 @@ class MaterialisedView(SQL):
 
 class GCSObject(GCS):
     """Description"""
+
+    type_name: Literal["GCSObject"]
 
     class Attributes(GCS.Attributes):
         gcs_bucket_name: Optional[str] = Field(
@@ -2681,6 +2737,8 @@ class GCSObject(GCS):
 class GCSBucket(GCS):
     """Description"""
 
+    type_name: Literal["GCSBucket"]
+
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(
             None, description="", alias="gcsObjectCount"
@@ -2735,6 +2793,8 @@ class GCSBucket(GCS):
 class S3Bucket(S3):
     """Description"""
 
+    type_name: Literal["S3Bucket"]
+
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(
             None, description="", alias="s3ObjectCount"
@@ -2773,6 +2833,8 @@ class S3Bucket(S3):
 
 class S3Object(S3):
     """Description"""
+
+    type_name: Literal["S3Object"]
 
     class Attributes(S3.Attributes):
         s3_object_last_modified_time: Optional[date] = Field(
@@ -2832,6 +2894,8 @@ class S3Object(S3):
 class MetabaseQuestion(Metabase):
     """Description"""
 
+    type_name: Literal["MetabaseQuestion"]
+
     class Attributes(Metabase.Attributes):
         metabase_dashboard_count: Optional[int] = Field(
             None, description="", alias="metabaseDashboardCount"
@@ -2876,6 +2940,8 @@ class MetabaseQuestion(Metabase):
 
 class MetabaseCollection(Metabase):
     """Description"""
+
+    type_name: Literal["MetabaseCollection"]
 
     class Attributes(Metabase.Attributes):
         metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
@@ -2923,6 +2989,8 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
+    type_name: Literal["MetabaseDashboard"]
+
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(
             None, description="", alias="metabaseQuestionCount"
@@ -2961,6 +3029,8 @@ class MetabaseDashboard(Metabase):
 
 class PowerBIReport(PowerBI):
     """Description"""
+
+    type_name: Literal["PowerBIReport"]
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3012,6 +3082,8 @@ class PowerBIReport(PowerBI):
 class PowerBIMeasure(PowerBI):
     """Description"""
 
+    type_name: Literal["PowerBIMeasure"]
+
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -3056,6 +3128,8 @@ class PowerBIMeasure(PowerBI):
 
 class PowerBIColumn(PowerBI):
     """Description"""
+
+    type_name: Literal["PowerBIColumn"]
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3108,6 +3182,8 @@ class PowerBIColumn(PowerBI):
 class PowerBITile(PowerBI):
     """Description"""
 
+    type_name: Literal["PowerBITile"]
+
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -3152,6 +3228,8 @@ class PowerBITile(PowerBI):
 
 class PowerBITable(PowerBI):
     """Description"""
+
+    type_name: Literal["PowerBITable"]
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3207,6 +3285,8 @@ class PowerBITable(PowerBI):
 class PowerBIDatasource(PowerBI):
     """Description"""
 
+    type_name: Literal["PowerBIDatasource"]
+
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
             None, description="", alias="connectionDetails"
@@ -3242,6 +3322,8 @@ class PowerBIDatasource(PowerBI):
 
 class PowerBIWorkspace(PowerBI):
     """Description"""
+
+    type_name: Literal["PowerBIWorkspace"]
 
     class Attributes(PowerBI.Attributes):
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
@@ -3293,6 +3375,8 @@ class PowerBIWorkspace(PowerBI):
 
 class PowerBIDataset(PowerBI):
     """Description"""
+
+    type_name: Literal["PowerBIDataset"]
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3346,6 +3430,8 @@ class PowerBIDataset(PowerBI):
 class PowerBIDashboard(PowerBI):
     """Description"""
 
+    type_name: Literal["PowerBIDashboard"]
+
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -3387,6 +3473,8 @@ class PowerBIDashboard(PowerBI):
 class PowerBIPage(PowerBI):
     """Description"""
 
+    type_name: Literal["PowerBIPage"]
+
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -3425,6 +3513,8 @@ class PowerBIPage(PowerBI):
 
 class PowerBIDataflow(PowerBI):
     """Description"""
+
+    type_name: Literal["PowerBIDataflow"]
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3466,6 +3556,8 @@ class PowerBIDataflow(PowerBI):
 class PresetChart(Preset):
     """Description"""
 
+    type_name: Literal["PresetChart"]
+
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
             None, description="", alias="presetChartDescriptionMarkdown"
@@ -3504,6 +3596,8 @@ class PresetChart(Preset):
 
 class PresetDataset(Preset):
     """Description"""
+
+    type_name: Literal["PresetDataset"]
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
@@ -3546,6 +3640,8 @@ class PresetDataset(Preset):
 
 class PresetDashboard(Preset):
     """Description"""
+
+    type_name: Literal["PresetDashboard"]
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
@@ -3603,6 +3699,8 @@ class PresetDashboard(Preset):
 
 class PresetWorkspace(Preset):
     """Description"""
+
+    type_name: Literal["PresetWorkspace"]
 
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
@@ -3664,6 +3762,8 @@ class PresetWorkspace(Preset):
 class ModeReport(Mode):
     """Description"""
 
+    type_name: Literal["ModeReport"]
+
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
             None, description="", alias="modeCollectionToken"
@@ -3721,6 +3821,8 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
+    type_name: Literal["ModeQuery"]
+
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
             None, description="", alias="modeRawQuery"
@@ -3763,6 +3865,8 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
+    type_name: Literal["ModeChart"]
+
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
             None, description="", alias="modeChartType"
@@ -3799,6 +3903,8 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
+    type_name: Literal["ModeWorkspace"]
+
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(
             None, description="", alias="modeCollectionCount"
@@ -3834,6 +3940,8 @@ class ModeWorkspace(Mode):
 
 class ModeCollection(Mode):
     """Description"""
+
+    type_name: Literal["ModeCollection"]
 
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
@@ -3876,6 +3984,8 @@ class ModeCollection(Mode):
 
 class TableauWorkbook(Tableau):
     """Description"""
+
+    type_name: Literal["TableauWorkbook"]
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -3933,6 +4043,8 @@ class TableauWorkbook(Tableau):
 
 class TableauDatasourceField(Tableau):
     """Description"""
+
+    type_name: Literal["TableauDatasourceField"]
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4018,6 +4130,8 @@ class TableauDatasourceField(Tableau):
 class TableauCalculatedField(Tableau):
     """Description"""
 
+    type_name: Literal["TableauCalculatedField"]
+
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -4080,6 +4194,8 @@ class TableauCalculatedField(Tableau):
 
 class TableauProject(Tableau):
     """Description"""
+
+    type_name: Literal["TableauProject"]
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4144,6 +4260,8 @@ class TableauProject(Tableau):
 class TableauMetric(Tableau):
     """Description"""
 
+    type_name: Literal["TableauMetric"]
+
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -4188,6 +4306,8 @@ class TableauMetric(Tableau):
 
 class TableauDatasource(Tableau):
     """Description"""
+
+    type_name: Literal["TableauDatasource"]
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4268,6 +4388,8 @@ class TableauSite(Tableau):
 class TableauDashboard(Tableau):
     """Description"""
 
+    type_name: Literal["TableauDashboard"]
+
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -4318,6 +4440,8 @@ class TableauDashboard(Tableau):
 
 class TableauFlow(Tableau):
     """Description"""
+
+    type_name: Literal["TableauFlow"]
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4372,6 +4496,8 @@ class TableauFlow(Tableau):
 
 class TableauWorksheet(Tableau):
     """Description"""
+
+    type_name: Literal["TableauWorksheet"]
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4429,6 +4555,8 @@ class TableauWorksheet(Tableau):
 
 class LookerLook(Looker):
     """Description"""
+
+    type_name: Literal["LookerLook"]
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -4498,6 +4626,8 @@ class LookerLook(Looker):
 class LookerDashboard(Looker):
     """Description"""
 
+    type_name: Literal["LookerDashboard"]
+
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
         source_user_id: Optional[int] = Field(
@@ -4556,6 +4686,8 @@ class LookerDashboard(Looker):
 class LookerFolder(Looker):
     """Description"""
 
+    type_name: Literal["LookerFolder"]
+
     class Attributes(Looker.Attributes):
         source_content_metadata_id: Optional[int] = Field(
             None, description="", alias="sourceContentMetadataId"
@@ -4603,6 +4735,8 @@ class LookerFolder(Looker):
 
 class LookerTile(Looker):
     """Description"""
+
+    type_name: Literal["LookerTile"]
 
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(
@@ -4656,6 +4790,8 @@ class LookerTile(Looker):
 class LookerModel(Looker):
     """Description"""
 
+    type_name: Literal["LookerModel"]
+
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
         input_to_processes: Optional[list[Process]] = Field(
@@ -4701,6 +4837,8 @@ class LookerModel(Looker):
 
 class LookerExplore(Looker):
     """Description"""
+
+    type_name: Literal["LookerExplore"]
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -4754,6 +4892,8 @@ class LookerProject(Looker):
 class LookerQuery(Looker):
     """Description"""
 
+    type_name: Literal["LookerQuery"]
+
     class Attributes(Looker.Attributes):
         source_definition: Optional[str] = Field(
             None, description="", alias="sourceDefinition"
@@ -4802,6 +4942,8 @@ class LookerQuery(Looker):
 
 class LookerField(Looker):
     """Description"""
+
+    type_name: Literal["LookerField"]
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -4862,6 +5004,8 @@ class LookerField(Looker):
 class LookerView(Looker):
     """Description"""
 
+    type_name: Literal["LookerView"]
+
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
         input_to_processes: Optional[list[Process]] = Field(
@@ -4898,6 +5042,8 @@ class LookerView(Looker):
 
 class SalesforceObject(Salesforce):
     """Description"""
+
+    type_name: Literal["SalesforceObject"]
 
     class Attributes(Salesforce.Attributes):
         is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
@@ -4941,6 +5087,8 @@ class SalesforceObject(Salesforce):
 
 class SalesforceField(Salesforce):
     """Description"""
+
+    type_name: Literal["SalesforceField"]
 
     class Attributes(Salesforce.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -5010,6 +5158,8 @@ class SalesforceField(Salesforce):
 class SalesforceOrganization(Salesforce):
     """Description"""
 
+    type_name: Literal["SalesforceOrganization"]
+
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
         input_to_processes: Optional[list[Process]] = Field(
@@ -5049,6 +5199,8 @@ class SalesforceOrganization(Salesforce):
 
 class SalesforceDashboard(Salesforce):
     """Description"""
+
+    type_name: Literal["SalesforceDashboard"]
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -5090,6 +5242,8 @@ class SalesforceDashboard(Salesforce):
 
 class SalesforceReport(Salesforce):
     """Description"""
+
+    type_name: Literal["SalesforceReport"]
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")

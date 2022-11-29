@@ -72,7 +72,7 @@ T = TypeVar("T")
 
 
 class AssetResponse(AtlanObject, GenericModel, Generic[T]):
-    entity: Optional[T] = None
+    entity: T
     referredEntities: Optional[dict[str, Any]] = Field(
         None,
         description="Map of related entities keyed by the GUID of the related entity. The values will be the detailed "
