@@ -9,6 +9,9 @@ from pyatlan.model.enums import CertificateStatus, EntityStatus, google_datastud
 class Internal(AtlanObject):
     """For internal usage"""
 
+class AtlasServer(AtlanObject):
+    """For internal usage"""
+
 {% for struct in struct_defs %}
 class {{struct.name}}(AtlanObject):
     """Description"""
