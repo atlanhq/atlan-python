@@ -673,12 +673,6 @@ class Process(Asset):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
-        outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
-        )  # relationship
-        inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
-        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -1193,14 +1187,14 @@ class SQL(Catalog):
     )
 
 
-class DataStudio(Google, BI):
+class DataStudio(Google):
     """Description"""
 
 
-class GCS(Google, ObjectStore):
+class GCS(Google):
     """Description"""
 
-    class Attributes(Google, ObjectStore.Attributes):
+    class Attributes(Google.Attributes):
         gcs_storage_class: Optional[str] = Field(
             None, description="", alias="gcsStorageClass"
         )
@@ -1243,12 +1237,12 @@ class GCS(Google, ObjectStore):
     )
 
 
-class DataStudioAsset(DataStudio, Google):
+class DataStudioAsset(DataStudio):
     """Description"""
 
     type_name: Literal["DataStudioAsset"]
 
-    class Attributes(DataStudio, Google.Attributes):
+    class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[google_datastudio_asset_type] = Field(
             None, description="", alias="dataStudioAssetType"
         )
@@ -1287,10 +1281,10 @@ class DataStudioAsset(DataStudio, Google):
     )
 
 
-class S3(ObjectStore, AWS):
+class S3(ObjectStore):
     """Description"""
 
-    class Attributes(ObjectStore, AWS.Attributes):
+    class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
         s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
         input_to_processes: Optional[list[Process]] = Field(
@@ -1319,12 +1313,12 @@ class S3(ObjectStore, AWS):
     )
 
 
-class DbtColumnProcess(Dbt, ColumnProcess):
+class DbtColumnProcess(Dbt):
     """Description"""
 
     type_name: Literal["DbtColumnProcess"]
 
-    class Attributes(Dbt, ColumnProcess.Attributes):
+    class Attributes(Dbt.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
             None, description="", alias="dbtColumnProcessJobStatus"
         )
@@ -1747,12 +1741,12 @@ class DbtModel(Dbt):
     )
 
 
-class DbtMetric(Dbt, Metric):
+class DbtMetric(Dbt):
     """Description"""
 
     type_name: Literal["DbtMetric"]
 
-    class Attributes(Dbt, Metric.Attributes):
+    class Attributes(Dbt.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
             None, description="", alias="dbtMetricFilters"
         )
@@ -1836,12 +1830,12 @@ class DbtSource(Dbt):
     )
 
 
-class DbtProcess(Dbt, Process):
+class DbtProcess(Dbt):
     """Description"""
 
     type_name: Literal["DbtProcess"]
 
-    class Attributes(Dbt, Process.Attributes):
+    class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(
             None, description="", alias="dbtProcessJobStatus"
         )

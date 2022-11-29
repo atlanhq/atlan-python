@@ -23,7 +23,7 @@ class {{struct.name}}(AtlanObject):
 {% endfor %}
 {% for entity_def in entity_defs %}
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
-class {{ entity_def.name }}({{super_classes|join(', ')}}):
+class {{ entity_def.name }}({{super_classes[0]}}):
     """Description"""
 {%- if entity_def.name == "Referenceable"  %}
     class Attributes(AtlanObject):
@@ -117,7 +117,7 @@ class {{ entity_def.name }}({{super_classes|join(', ')}}):
     type_name: Literal['{{ entity_def.name }}']
 
         {%- endif %}
-    class Attributes({{super_classes|join(',')}}.Attributes):
+    class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')

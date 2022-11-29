@@ -55,4 +55,3 @@ class TypeDefClient:
 if __name__ == "__main__":
     client = TypeDefClient(AtlanClient())
     type_def_response = client.get_all_typedefs()
-    pass
