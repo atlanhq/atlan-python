@@ -134,7 +134,7 @@ def check_type_def_properties(type_def: TypeDef, source: dict):
         if key in source:
             assert value == source[key]
         else:
-            assert value == None
+            assert value is None
 
     check_property("create_time")
     check_property("created_by")
@@ -169,7 +169,7 @@ def check_attribute(model: object, attribute_name: str, source: dict):
         value = type(attribute)(value)
         assert attribute == value
     else:
-        assert getattr(model, attribute_name) == None
+        assert getattr(model, attribute_name) is None
 
 
 def test_struct_defs(type_defs):
@@ -203,7 +203,7 @@ def test_classification_def(type_defs):
 
 
 def check_has_attributes(type_def: TypeDef, type_def_json: dict):
-    for key in type_def_json.keys():
+    for key in type_def_json:
         attribute_name = to_snake_case(key)
         assert hasattr(type_def, attribute_name)
 
@@ -231,5 +231,7 @@ def test_business_metadata_def(type_defs):
         check_type_def_properties(business_metadata_def, business_metadata_def_json)
         check_has_attributes(business_metadata_def, business_metadata_def_json)
 
+
 def test_type_def_response(type_defs):
     type_def_response = TypeDefResponse(**type_defs)
+    assert isinstance(type_def_response, TypeDefResponse)
