@@ -7,14 +7,14 @@ from pydantic.error_wrappers import ValidationError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, AtlasGlossaryCategory
 from pyatlan.model.core import AssetResponse, AssetMutationResponse
 
-PARENT_DIR = Path(__file__).parent
+DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = 'glossary.json'
 GLOSSARY_TERM_JSON = "glossary_term.json"
 GLOSSARY_CATEGORY_JSON = "glossary_category.json"
 
 
 def load_json(filename):
-    with (PARENT_DIR / filename).open() as input_file:
+    with (DATA_DIR / filename).open() as input_file:
         return json.load(input_file)
 
 

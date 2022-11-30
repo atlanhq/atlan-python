@@ -7,7 +7,7 @@ import pytest
 import json
 
 PARENT_DIR = Path(__file__).parent
-TYPEDEFS_JSON = PARENT_DIR / 'typedefs.json'
+TYPEDEFS_JSON = PARENT_DIR / 'data' / 'typedefs.json'
 
 ENUM_DEF = {
     "category": "ENUM",

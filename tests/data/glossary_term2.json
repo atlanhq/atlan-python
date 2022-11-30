@@ -1,0 +1,12 @@
+{
+  "guid": "9c9a7a04-d738-48e8-b1d3-a491eb2bccf5",
+  "typeName": "AtlasGlossaryTerm",
+  "entityStatus": "ACTIVE",
+  "displayText": "Active Subscriptions",
+  "relationshipType": "AtlasGlossaryTermAnchor",
+  "relationshipGuid": "8f425700-dc81-4638-a703-348b6010e949",
+  "relationshipStatus": "ACTIVE",
+  "relationshipAttributes": {
+    "typeName": "AtlasGlossaryTermAnchor"
+  }
+}
