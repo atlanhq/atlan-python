@@ -5,7 +5,7 @@ import pytest
 from pydantic.error_wrappers import ValidationError
 
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, AtlasGlossaryCategory
-from pyatlan.model.core import AssetResponse
+from pyatlan.model.core import AssetResponse, AssetMutationResponse
 
 PARENT_DIR = Path(__file__).parent
 GLOSSARY_JSON = 'glossary.json'
@@ -53,7 +53,9 @@ def the_json(request):
                          [('glossary.json', AtlasGlossary),
                           ("glossary_category.json", AtlasGlossaryCategory),
                           ("glossary_term.json", AtlasGlossaryTerm),
-                          ("glossary_term2.json", AtlasGlossaryTerm)],
+                          ("glossary_term2.json", AtlasGlossaryTerm),
+                          ("asset_mutated_response_empty.json", AssetMutationResponse[AtlasGlossary]),
+                          ("asset_mutated_response_update.json", AssetMutationResponse[AtlasGlossary])],
                          indirect=["the_json"])
 def test_indirect(the_json, a_type):
     asset = a_type(**the_json)

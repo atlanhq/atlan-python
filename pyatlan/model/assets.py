@@ -170,6 +170,9 @@ class Referenceable(AtlanObject):
     classifications: Optional[list[Classification]] = Field(
         None, description="classifications"
     )
+    classification_names: Optional[list[str]] = Field(
+        None, description="The names of the classifications that exist on the asset."
+    )
     display_text: Optional[str] = Field(
         None,
         description="Human-readable name of the entity..\n",
@@ -189,6 +192,12 @@ class Referenceable(AtlanObject):
     relationship_type: Optional[str] = Field(
         None,
         description="Status of the relationship (when this is a related entity).\n",
+    )
+    meaning_names: Optional[list[str]] = Field(
+        None, description="Names of terms that have been linked to this asset."
+    )
+    meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+        None, description="", alias="meanings"
     )
 
 
@@ -5278,6 +5287,9 @@ class SalesforceReport(Salesforce):
         "type, so are described in the sub-types of this schema.\n",
     )
 
+
+Referenceable.update_forward_refs()
+AtlasGlossary.update_forward_refs()
 
 Referenceable.Attributes.update_forward_refs()
 
