@@ -2,9 +2,9 @@ from enum import Enum
 
 
 class AnnouncementType(Enum):
-    information = "information"
-    warning = "warning"
-    issue = "issue"
+    INFORMATION = "information"
+    WARNING = "warning"
+    ISSUE = "issue"
 
 
 class Cardinality(Enum):

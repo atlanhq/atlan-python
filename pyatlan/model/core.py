@@ -1,7 +1,13 @@
 from pydantic import BaseModel, Extra, Field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from dataclasses import dataclass
+else:
+    from pydantic.dataclasses import dataclass
 from pydantic.generics import GenericModel
 from typing import Optional, TypeVar, Generic, Any
-from pyatlan.model.enums import EntityStatus
+from pyatlan.model.enums import EntityStatus, AnnouncementType
 
 CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
@@ -39,6 +45,13 @@ class AtlanObject(BaseModel):
         allow_population_by_field_name = True
         alias_generator = to_camel_case
         extra = Extra.forbid
+
+
+@dataclass
+class Announcement:
+    announcement_title: str
+    announcement_message: Optional[str]
+    announcement_type: AnnouncementType
 
 
 class Classification(AtlanObject):

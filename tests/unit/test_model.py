@@ -5,7 +5,8 @@ import pytest
 from pydantic.error_wrappers import ValidationError
 
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, AtlasGlossaryCategory
-from pyatlan.model.core import AssetResponse, AssetMutationResponse
+from pyatlan.model.core import AssetResponse, AssetMutationResponse, Announcement
+from pyatlan.model.enums import AnnouncementType
 
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = 'glossary.json'
@@ -21,6 +22,17 @@ def load_json(filename):
 @pytest.fixture()
 def glossary_json():
     return load_json(GLOSSARY_JSON)
+
+
+@pytest.fixture()
+def glossary(glossary_json):
+    return AtlasGlossary(**glossary_json)
+
+
+@pytest.fixture()
+def announcement():
+    return Announcement(announcement_title="Important Announcement", announcement_message="Very important info",
+                        announcement_type=AnnouncementType.ISSUE)
 
 
 @pytest.fixture()
@@ -57,6 +69,25 @@ def the_json(request):
                           ("asset_mutated_response_empty.json", AssetMutationResponse[AtlasGlossary]),
                           ("asset_mutated_response_update.json", AssetMutationResponse[AtlasGlossary])],
                          indirect=["the_json"])
-def test_indirect(the_json, a_type):
-    asset = a_type(**the_json)
-    assert isinstance(asset, a_type)
+def test_constructor(the_json, a_type):
+    a_type(**the_json)
+
+
+def test_has_announcement(glossary):
+    assert glossary.has_announcement() == (
+            bool(glossary.attributes.announcement_type) or bool(glossary.attributes.announcement_title))
+
+
+def test_set_announcement(glossary, announcement):
+    glossary.set_announcement(announcement)
+    assert glossary.has_announcement() is True
+    assert announcement == glossary.get_announcment()
+
+
+def test_clear_announcement(glossary, announcement):
+    glossary.set_announcement(announcement)
+    glossary.clear_announcment()
+    assert not glossary.has_announcement()
+    assert glossary.attributes.announcement_title is None
+    assert glossary.attributes.announcement_type is None
+    assert glossary.attributes.announcement_message is None

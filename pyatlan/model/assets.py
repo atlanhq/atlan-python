@@ -2,13 +2,14 @@ from __future__ import annotations
 from typing import Optional, Dict, Any, List, Literal
 from pydantic import Field
 from datetime import date
-from pyatlan.model.core import AtlanObject, Classification
+from pyatlan.model.core import AtlanObject, Classification, Announcement
 from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
     google_datastudio_asset_type,
     powerbi_endorsement,
     icon_type,
+    AnnouncementType,
 )
 
 
@@ -40,6 +41,14 @@ class AwsCloudWatchMetric(AtlanObject):
         )
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    class Attributes(AtlanObject):
+        boundaries: list[float] = Field(None, description="", alias="boundaries")
+        frequencies: list[float] = Field(None, description="", alias="frequencies")
+
+
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
@@ -64,6 +73,16 @@ class GoogleTag(AtlanObject):
     class Attributes(AtlanObject):
         google_tag_key: str = Field(None, description="", alias="googleTagKey")
         google_tag_value: str = Field(None, description="", alias="googleTagValue")
+
+
+class ColumnValueFrequencyMap(AtlanObject):
+    """Description"""
+
+    class Attributes(AtlanObject):
+        column_value: Optional[str] = Field(None, description="", alias="columnValue")
+        column_value_frequency: Optional[int] = Field(
+            None, description="", alias="columnValueFrequency"
+        )
 
 
 class BadgeCondition(AtlanObject):
@@ -117,7 +136,7 @@ class Referenceable(AtlanObject):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Referenceable.Attributes"] = Field(
+    attributes: "Referenceable.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",
@@ -457,11 +476,40 @@ class Asset(Referenceable):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Asset.Attributes"] = Field(
+    attributes: "Asset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    def has_announcement(self) -> bool:
+        if self.attributes and (
+            self.attributes.announcement_title or self.attributes.announcement_type
+        ):
+            return True
+        else:
+            return False
+
+    def set_announcement(self, announcement: Announcement) -> None:
+        self.attributes.announcement_type = announcement.announcement_type.value
+        self.attributes.announcement_title = announcement.announcement_title
+        self.attributes.announcement_message = announcement.announcement_message
+
+    def get_announcment(self) -> Optional[Announcement]:
+        if self.attributes.announcement_type and self.attributes.announcement_title:
+            return Announcement(
+                announcement_type=AnnouncementType[
+                    self.attributes.announcement_type.upper()
+                ],
+                announcement_title=self.attributes.announcement_title,
+                announcement_message=self.attributes.announcement_message,
+            )
+        return None
+
+    def clear_announcment(self):
+        self.attributes.announcement_message = None
+        self.attributes.announcement_title = None
+        self.attributes.announcement_type = None
 
 
 class AtlasGlossary(Asset):
@@ -500,7 +548,7 @@ class AtlasGlossary(Asset):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["AtlasGlossary.Attributes"] = Field(
+    attributes: "AtlasGlossary.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -594,7 +642,7 @@ class AtlasGlossaryTerm(Asset):
             None, description="", alias="preferredTerms"
         )  # relationship
 
-    attributes: Optional["AtlasGlossaryTerm.Attributes"] = Field(
+    attributes: "AtlasGlossaryTerm.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -666,7 +714,7 @@ class Connection(Asset):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Connection.Attributes"] = Field(
+    attributes: "Connection.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -698,7 +746,7 @@ class Process(Asset):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Process.Attributes"] = Field(
+    attributes: "Process.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -745,7 +793,7 @@ class AtlasGlossaryCategory(Asset):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["AtlasGlossaryCategory.Attributes"] = Field(
+    attributes: "AtlasGlossaryCategory.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -777,7 +825,7 @@ class Badge(Asset):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Badge.Attributes"] = Field(
+    attributes: "Badge.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -833,7 +881,7 @@ class Google(Cloud):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Google.Attributes"] = Field(
+    attributes: "Google.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -872,7 +920,7 @@ class AWS(Cloud):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["AWS.Attributes"] = Field(
+    attributes: "AWS.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -914,7 +962,7 @@ class Collection(Namespace):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Collection.Attributes"] = Field(
+    attributes: "Collection.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -953,7 +1001,7 @@ class Folder(Namespace):
             None, description="", alias="meanings"
         )  # relationship
 
-    attributes: Optional["Folder.Attributes"] = Field(
+    attributes: "Folder.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1043,7 +1091,7 @@ class Dbt(Catalog):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Dbt.Attributes"] = Field(
+    attributes: "Dbt.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1079,7 +1127,7 @@ class Resource(Catalog):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Resource.Attributes"] = Field(
+    attributes: "Resource.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1127,7 +1175,7 @@ class API(Catalog):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["API.Attributes"] = Field(
+    attributes: "API.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1164,6 +1212,10 @@ class SQL(Catalog):
         view_qualified_name: Optional[str] = Field(
             None, description="", alias="viewQualifiedName"
         )
+        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+        last_profiled_at: Optional[date] = Field(
+            None, description="", alias="lastProfiledAt"
+        )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -1189,7 +1241,7 @@ class SQL(Catalog):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["SQL.Attributes"] = Field(
+    attributes: "SQL.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1239,7 +1291,7 @@ class GCS(Google):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["GCS.Attributes"] = Field(
+    attributes: "GCS.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1283,7 +1335,7 @@ class DataStudioAsset(DataStudio):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DataStudioAsset.Attributes"] = Field(
+    attributes: "DataStudioAsset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1315,7 +1367,7 @@ class S3(ObjectStore):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["S3.Attributes"] = Field(
+    attributes: "S3.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1362,7 +1414,7 @@ class DbtColumnProcess(Dbt):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DbtColumnProcess.Attributes"] = Field(
+    attributes: "DbtColumnProcess.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1409,7 +1461,7 @@ class Metric(DataQuality):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Metric.Attributes"] = Field(
+    attributes: "Metric.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1445,7 +1497,7 @@ class Metabase(BI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Metabase.Attributes"] = Field(
+    attributes: "Metabase.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1487,7 +1539,7 @@ class PowerBI(BI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBI.Attributes"] = Field(
+    attributes: "PowerBI.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1529,7 +1581,7 @@ class Preset(BI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Preset.Attributes"] = Field(
+    attributes: "Preset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1582,7 +1634,7 @@ class Mode(BI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Mode.Attributes"] = Field(
+    attributes: "Mode.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1624,7 +1676,7 @@ class Salesforce(SaaS):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Salesforce.Attributes"] = Field(
+    attributes: "Salesforce.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1671,7 +1723,7 @@ class DbtModelColumn(Dbt):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DbtModelColumn.Attributes"] = Field(
+    attributes: "DbtModelColumn.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1743,7 +1795,7 @@ class DbtModel(Dbt):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DbtModel.Attributes"] = Field(
+    attributes: "DbtModel.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1793,7 +1845,7 @@ class DbtMetric(Dbt):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DbtMetric.Attributes"] = Field(
+    attributes: "DbtMetric.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1832,7 +1884,7 @@ class DbtSource(Dbt):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DbtSource.Attributes"] = Field(
+    attributes: "DbtSource.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1876,7 +1928,7 @@ class DbtProcess(Dbt):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["DbtProcess.Attributes"] = Field(
+    attributes: "DbtProcess.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1910,7 +1962,7 @@ class ReadmeTemplate(Resource):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["ReadmeTemplate.Attributes"] = Field(
+    attributes: "ReadmeTemplate.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1954,7 +2006,7 @@ class Link(Resource):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Link.Attributes"] = Field(
+    attributes: "Link.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2013,7 +2065,7 @@ class APISpec(API):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["APISpec.Attributes"] = Field(
+    attributes: "APISpec.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2066,7 +2118,7 @@ class APIPath(API):
             None, description="", alias="apiSpec"
         )  # relationship
 
-    attributes: Optional["APIPath.Attributes"] = Field(
+    attributes: "APIPath.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2143,7 +2195,7 @@ class TablePartition(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TablePartition.Attributes"] = Field(
+    attributes: "TablePartition.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2225,7 +2277,7 @@ class Table(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Table.Attributes"] = Field(
+    attributes: "Table.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2299,7 +2351,7 @@ class Query(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Query.Attributes"] = Field(
+    attributes: "Query.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2337,6 +2389,61 @@ class Column(SQL):
         max_length: Optional[int] = Field(None, description="", alias="maxLength")
         validations: Optional[dict[str, str]] = Field(
             None, description="", alias="validations"
+        )
+        column_distinct_values_count: Optional[int] = Field(
+            None, description="", alias="columnDistinctValuesCount"
+        )
+        column_histogram: Optional[Histogram] = Field(
+            None, description="", alias="columnHistogram"
+        )
+        column_max: Optional[float] = Field(None, description="", alias="columnMax")
+        column_min: Optional[float] = Field(None, description="", alias="columnMin")
+        column_mean: Optional[float] = Field(None, description="", alias="columnMean")
+        column_sum: Optional[float] = Field(None, description="", alias="columnSum")
+        column_median: Optional[float] = Field(
+            None, description="", alias="columnMedian"
+        )
+        column_standard_deviation: Optional[float] = Field(
+            None, description="", alias="columnStandardDeviation"
+        )
+        column_unique_values_count: Optional[int] = Field(
+            None, description="", alias="columnUniqueValuesCount"
+        )
+        column_average: Optional[float] = Field(
+            None, description="", alias="columnAverage"
+        )
+        column_average_length: Optional[float] = Field(
+            None, description="", alias="columnAverageLength"
+        )
+        column_duplicate_values_count: Optional[int] = Field(
+            None, description="", alias="columnDuplicateValuesCount"
+        )
+        column_maximum_string_length: Optional[int] = Field(
+            None, description="", alias="columnMaximumStringLength"
+        )
+        column_maxs: Optional[list[str]] = Field(
+            None, description="", alias="columnMaxs"
+        )
+        column_minimum_string_length: Optional[int] = Field(
+            None, description="", alias="columnMinimumStringLength"
+        )
+        column_mins: Optional[list[str]] = Field(
+            None, description="", alias="columnMins"
+        )
+        column_missing_values_count: Optional[int] = Field(
+            None, description="", alias="columnMissingValuesCount"
+        )
+        column_missing_values_percentage: Optional[float] = Field(
+            None, description="", alias="columnMissingValuesPercentage"
+        )
+        column_uniqueness_percentage: Optional[float] = Field(
+            None, description="", alias="columnUniquenessPercentage"
+        )
+        column_variance: Optional[float] = Field(
+            None, description="", alias="columnVariance"
+        )
+        column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
+            None, description="", alias="columnTopValues"
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
@@ -2388,7 +2495,7 @@ class Column(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Column.Attributes"] = Field(
+    attributes: "Column.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2427,6 +2534,12 @@ class Schema(SQL):
         database: Optional[Database] = Field(
             None, description="", alias="database"
         )  # relationship
+        snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
+            None, description="", alias="snowflakePipes"
+        )  # relationship
+        snowflake_streams: Optional[list[SnowflakeStream]] = Field(
+            None, description="", alias="snowflakeStreams"
+        )  # relationship
         procedures: Optional[list[Procedure]] = Field(
             None, description="", alias="procedures"
         )  # relationship
@@ -2443,7 +2556,7 @@ class Schema(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Schema.Attributes"] = Field(
+    attributes: "Schema.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2485,7 +2598,111 @@ class Database(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Database.Attributes"] = Field(
+    attributes: "Database.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakeStream(SQL):
+    """Description"""
+
+    type_name: Literal["SnowflakeStream"]
+
+    class Attributes(SQL.Attributes):
+        snowflake_stream_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamType"
+        )
+        snowflake_stream_source_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamSourceType"
+        )
+        snowflake_stream_mode: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamMode"
+        )
+        snowflake_stream_is_stale: Optional[bool] = Field(
+            None, description="", alias="snowflakeStreamIsStale"
+        )
+        snowflake_stream_stale_after: Optional[date] = Field(
+            None, description="", alias="snowflakeStreamStaleAfter"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SnowflakeStream.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakePipe(SQL):
+    """Description"""
+
+    type_name: Literal["SnowflakePipe"]
+
+    class Attributes(SQL.Attributes):
+        definition: Optional[str] = Field(None, description="", alias="definition")
+        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
+            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
+        )
+        snowflake_pipe_notification_channel_name: Optional[str] = Field(
+            None, description="", alias="snowflakePipeNotificationChannelName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SnowflakePipe.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2527,7 +2744,7 @@ class Procedure(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["Procedure.Attributes"] = Field(
+    attributes: "Procedure.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2586,7 +2803,7 @@ class View(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["View.Attributes"] = Field(
+    attributes: "View.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2650,7 +2867,7 @@ class MaterialisedView(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["MaterialisedView.Attributes"] = Field(
+    attributes: "MaterialisedView.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2730,7 +2947,7 @@ class GCSObject(GCS):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["GCSObject.Attributes"] = Field(
+    attributes: "GCSObject.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2786,7 +3003,7 @@ class GCSBucket(GCS):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["GCSBucket.Attributes"] = Field(
+    attributes: "GCSBucket.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2827,7 +3044,7 @@ class S3Bucket(S3):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["S3Bucket.Attributes"] = Field(
+    attributes: "S3Bucket.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2887,7 +3104,7 @@ class S3Object(S3):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["S3Object.Attributes"] = Field(
+    attributes: "S3Object.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2934,7 +3151,7 @@ class MetabaseQuestion(Metabase):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["MetabaseQuestion.Attributes"] = Field(
+    attributes: "MetabaseQuestion.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2982,7 +3199,7 @@ class MetabaseCollection(Metabase):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["MetabaseCollection.Attributes"] = Field(
+    attributes: "MetabaseCollection.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3023,7 +3240,7 @@ class MetabaseDashboard(Metabase):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["MetabaseDashboard.Attributes"] = Field(
+    attributes: "MetabaseDashboard.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3075,7 +3292,7 @@ class PowerBIReport(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIReport.Attributes"] = Field(
+    attributes: "PowerBIReport.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3122,7 +3339,7 @@ class PowerBIMeasure(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIMeasure.Attributes"] = Field(
+    attributes: "PowerBIMeasure.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3175,7 +3392,7 @@ class PowerBIColumn(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIColumn.Attributes"] = Field(
+    attributes: "PowerBIColumn.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3222,7 +3439,7 @@ class PowerBITile(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBITile.Attributes"] = Field(
+    attributes: "PowerBITile.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3278,7 +3495,7 @@ class PowerBITable(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBITable.Attributes"] = Field(
+    attributes: "PowerBITable.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3316,7 +3533,7 @@ class PowerBIDatasource(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIDatasource.Attributes"] = Field(
+    attributes: "PowerBIDatasource.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3369,7 +3586,7 @@ class PowerBIWorkspace(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIWorkspace.Attributes"] = Field(
+    attributes: "PowerBIWorkspace.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3423,7 +3640,7 @@ class PowerBIDataset(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIDataset.Attributes"] = Field(
+    attributes: "PowerBIDataset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3466,7 +3683,7 @@ class PowerBIDashboard(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIDashboard.Attributes"] = Field(
+    attributes: "PowerBIDashboard.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3507,7 +3724,7 @@ class PowerBIPage(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIPage.Attributes"] = Field(
+    attributes: "PowerBIPage.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3549,7 +3766,7 @@ class PowerBIDataflow(PowerBI):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PowerBIDataflow.Attributes"] = Field(
+    attributes: "PowerBIDataflow.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3590,7 +3807,7 @@ class PresetChart(Preset):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PresetChart.Attributes"] = Field(
+    attributes: "PresetChart.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3634,7 +3851,7 @@ class PresetDataset(Preset):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PresetDataset.Attributes"] = Field(
+    attributes: "PresetDataset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3693,7 +3910,7 @@ class PresetDashboard(Preset):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PresetDashboard.Attributes"] = Field(
+    attributes: "PresetDashboard.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3755,7 +3972,7 @@ class PresetWorkspace(Preset):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["PresetWorkspace.Attributes"] = Field(
+    attributes: "PresetWorkspace.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3814,7 +4031,7 @@ class ModeReport(Mode):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["ModeReport.Attributes"] = Field(
+    attributes: "ModeReport.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3858,7 +4075,7 @@ class ModeQuery(Mode):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["ModeQuery.Attributes"] = Field(
+    attributes: "ModeQuery.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3896,7 +4113,7 @@ class ModeChart(Mode):
             None, description="", alias="modeQuery"
         )  # relationship
 
-    attributes: Optional["ModeChart.Attributes"] = Field(
+    attributes: "ModeChart.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3934,7 +4151,7 @@ class ModeWorkspace(Mode):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["ModeWorkspace.Attributes"] = Field(
+    attributes: "ModeWorkspace.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3978,7 +4195,7 @@ class ModeCollection(Mode):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["ModeCollection.Attributes"] = Field(
+    attributes: "ModeCollection.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4037,7 +4254,7 @@ class TableauWorkbook(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauWorkbook.Attributes"] = Field(
+    attributes: "TableauWorkbook.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4123,7 +4340,7 @@ class TableauDatasourceField(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauDatasourceField.Attributes"] = Field(
+    attributes: "TableauDatasourceField.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4188,7 +4405,7 @@ class TableauCalculatedField(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauCalculatedField.Attributes"] = Field(
+    attributes: "TableauCalculatedField.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4253,7 +4470,7 @@ class TableauProject(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauProject.Attributes"] = Field(
+    attributes: "TableauProject.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4300,7 +4517,7 @@ class TableauMetric(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauMetric.Attributes"] = Field(
+    attributes: "TableauMetric.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4377,7 +4594,7 @@ class TableauDatasource(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauDatasource.Attributes"] = Field(
+    attributes: "TableauDatasource.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4434,7 +4651,7 @@ class TableauDashboard(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauDashboard.Attributes"] = Field(
+    attributes: "TableauDashboard.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4490,7 +4707,7 @@ class TableauFlow(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauFlow.Attributes"] = Field(
+    attributes: "TableauFlow.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4549,7 +4766,7 @@ class TableauWorksheet(Tableau):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["TableauWorksheet.Attributes"] = Field(
+    attributes: "TableauWorksheet.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4619,7 +4836,7 @@ class LookerLook(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerLook.Attributes"] = Field(
+    attributes: "LookerLook.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4679,7 +4896,7 @@ class LookerDashboard(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerDashboard.Attributes"] = Field(
+    attributes: "LookerDashboard.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4729,7 +4946,7 @@ class LookerFolder(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerFolder.Attributes"] = Field(
+    attributes: "LookerFolder.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4783,7 +5000,7 @@ class LookerTile(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerTile.Attributes"] = Field(
+    attributes: "LookerTile.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4831,7 +5048,7 @@ class LookerModel(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerModel.Attributes"] = Field(
+    attributes: "LookerModel.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4881,7 +5098,7 @@ class LookerExplore(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerExplore.Attributes"] = Field(
+    attributes: "LookerExplore.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4936,7 +5153,7 @@ class LookerQuery(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerQuery.Attributes"] = Field(
+    attributes: "LookerQuery.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4997,7 +5214,7 @@ class LookerField(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerField.Attributes"] = Field(
+    attributes: "LookerField.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5036,7 +5253,7 @@ class LookerView(Looker):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["LookerView.Attributes"] = Field(
+    attributes: "LookerView.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5081,7 +5298,7 @@ class SalesforceObject(Salesforce):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["SalesforceObject.Attributes"] = Field(
+    attributes: "SalesforceObject.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5151,7 +5368,7 @@ class SalesforceField(Salesforce):
             None, description="", alias="object"
         )  # relationship
 
-    attributes: Optional["SalesforceField.Attributes"] = Field(
+    attributes: "SalesforceField.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5193,7 +5410,7 @@ class SalesforceOrganization(Salesforce):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["SalesforceOrganization.Attributes"] = Field(
+    attributes: "SalesforceOrganization.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5236,7 +5453,7 @@ class SalesforceDashboard(Salesforce):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["SalesforceDashboard.Attributes"] = Field(
+    attributes: "SalesforceDashboard.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5281,7 +5498,7 @@ class SalesforceReport(Salesforce):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: Optional["SalesforceReport.Attributes"] = Field(
+    attributes: "SalesforceReport.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5406,6 +5623,10 @@ Column.Attributes.update_forward_refs()
 Schema.Attributes.update_forward_refs()
 
 Database.Attributes.update_forward_refs()
+
+SnowflakeStream.Attributes.update_forward_refs()
+
+SnowflakePipe.Attributes.update_forward_refs()
 
 Procedure.Attributes.update_forward_refs()
 
