@@ -4,3 +4,4 @@ black
 types-requests
 pytest
 pre-commit
+deepdiff

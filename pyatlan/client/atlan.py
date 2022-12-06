@@ -28,6 +28,7 @@ import requests
 from pydantic import BaseSettings, HttpUrl, PrivateAttr, Field
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger
+from pyatlan.model.core import AtlanObject
 
 LOGGER = get_logger()
 
@@ -48,15 +49,17 @@ class AtlanClient(BaseSettings):
     def call_api(self, api, query_params=None, request_obj=None):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.host, api.path)
-
         params["headers"]["Accept"] = api.consumes
-        params["headers"]["Content-type_"] = api.produces
+        params["headers"]["content-type"] = api.produces
 
         if query_params is not None:
             params["params"] = query_params
 
         if request_obj is not None:
-            params["data"] = json.dumps(request_obj)
+            if isinstance(request_obj, AtlanObject):
+                params["data"] = request_obj.json(by_alias=True, exclude_unset=True)
+            else:
+                params["data"] = json.dumps(request_obj)
 
         if LOGGER.isEnabledFor(logging.DEBUG):
             LOGGER.debug("------------------------------------------------------")

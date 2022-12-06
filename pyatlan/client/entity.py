@@ -20,7 +20,11 @@
 from typing import Type, TypeVar
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.core import AssetResponse
+from pyatlan.model.core import (
+    AssetResponse,
+    AssetMutationResponse,
+    BulkRequest,
+)
 from pyatlan.utils import (
     API,
     APPLICATION_JSON,
@@ -44,6 +48,7 @@ class EntityClient:
     BULK_SET_CLASSIFICATIONS = "bulk/setClassifications"
     BULK_HEADERS = "bulk/headers"
 
+    BULK_UPDATE = API(ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK)
     # Entity APIs
     GET_ENTITY_BY_GUID = API(ENTITY_API + "guid", HTTPMethod.GET, HTTPStatus.OK)
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE = API(
@@ -217,3 +222,9 @@ class EntityClient:
         raw_json["entity"]["relationshipAttributes"] = {}
         response = AssetResponse[asset_type](**raw_json)
         return response.entity
+
+    def update_entity(self, entity: T) -> AssetMutationResponse[T]:
+        request = BulkRequest[T](entities=[entity])
+        raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
+        response = AssetMutationResponse(**raw_json)
+        return response

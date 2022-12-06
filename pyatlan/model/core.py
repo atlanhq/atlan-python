@@ -8,6 +8,7 @@ else:
 from pydantic.generics import GenericModel
 from typing import Optional, TypeVar, Generic, Any
 from pyatlan.model.enums import EntityStatus, AnnouncementType
+from datetime import datetime
 
 CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
@@ -45,6 +46,7 @@ class AtlanObject(BaseModel):
         allow_population_by_field_name = True
         alias_generator = to_camel_case
         extra = Extra.forbid
+        json_encoders = {datetime: lambda v: int(v.timestamp() * 1000)}
 
 
 @dataclass
@@ -91,6 +93,14 @@ class AssetResponse(AtlanObject, GenericModel, Generic[T]):
         description="Map of related entities keyed by the GUID of the related entity. The values will be the detailed "
         "entity object of the related entity.\n",
     )
+
+
+class AssetRequest(AtlanObject, GenericModel, Generic[T]):
+    entity: T
+
+
+class BulkRequest(AtlanObject, GenericModel, Generic[T]):
+    entities: list[T]
 
 
 class MutatedEntities(AtlanObject, GenericModel, Generic[T]):

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Dict, Any, List, Literal
 from pydantic import Field
-from datetime import date
+from datetime import date, datetime
 from pyatlan.model.core import AtlanObject, Classification, Announcement
 from pyatlan.model.enums import (
     CertificateStatus,
@@ -144,6 +144,7 @@ class Referenceable(AtlanObject):
     business_attributes: Optional[Dict[str, Any]] = Field(
         None,
         description="Map of custom metadata attributes and values defined on the entity.\n",
+        alias="businessAttributes",
     )
     created_by: Optional[str] = Field(
         None,
@@ -240,7 +241,7 @@ class Asset(Referenceable):
         certificate_updated_by: Optional[str] = Field(
             None, description="", alias="certificateUpdatedBy"
         )
-        certificate_updated_at: Optional[date] = Field(
+        certificate_updated_at: Optional[datetime] = Field(
             None, description="", alias="certificateUpdatedAt"
         )
         announcement_title: Optional[str] = Field(
@@ -252,7 +253,7 @@ class Asset(Referenceable):
         announcement_type: Optional[str] = Field(
             None, description="", alias="announcementType"
         )
-        announcement_updated_at: Optional[date] = Field(
+        announcement_updated_at: Optional[datetime] = Field(
             None, description="", alias="announcementUpdatedAt"
         )
         announcement_updated_by: Optional[str] = Field(
@@ -299,10 +300,10 @@ class Asset(Referenceable):
         source_created_by: Optional[str] = Field(
             None, description="", alias="sourceCreatedBy"
         )
-        source_created_at: Optional[date] = Field(
+        source_created_at: Optional[datetime] = Field(
             None, description="", alias="sourceCreatedAt"
         )
-        source_updated_at: Optional[date] = Field(
+        source_updated_at: Optional[datetime] = Field(
             None, description="", alias="sourceUpdatedAt"
         )
         source_updated_by: Optional[str] = Field(
@@ -315,7 +316,7 @@ class Asset(Referenceable):
         last_sync_workflow_name: Optional[str] = Field(
             None, description="", alias="lastSyncWorkflowName"
         )
-        last_sync_run_at: Optional[date] = Field(
+        last_sync_run_at: Optional[datetime] = Field(
             None, description="", alias="lastSyncRunAt"
         )
         last_sync_run: Optional[str] = Field(None, description="", alias="lastSyncRun")

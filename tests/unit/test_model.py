@@ -7,6 +7,7 @@ from pydantic.error_wrappers import ValidationError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, AtlasGlossaryCategory
 from pyatlan.model.core import AssetResponse, AssetMutationResponse, Announcement
 from pyatlan.model.enums import AnnouncementType
+from deepdiff import DeepDiff
 
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = 'glossary.json'
@@ -70,7 +71,8 @@ def the_json(request):
                           ("asset_mutated_response_update.json", AssetMutationResponse[AtlasGlossary])],
                          indirect=["the_json"])
 def test_constructor(the_json, a_type):
-    a_type(**the_json)
+    asset = a_type(**the_json)
+    assert not DeepDiff(the_json, json.loads(asset.json(by_alias=True, exclude_unset=True)), ignore_order=True)
 
 
 def test_has_announcement(glossary):

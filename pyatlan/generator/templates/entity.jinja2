@@ -43,6 +43,7 @@ class {{ entity_def.name }}({{super_classes[0]}}):
     business_attributes: Optional[Dict[str, Any]] = Field(
         None,
         description='Map of custom metadata attributes and values defined on the entity.\n',
+        alias='businessAttributes'
     )
     created_by: Optional[str] = Field(
         None,
