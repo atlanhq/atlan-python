@@ -1,15 +1,16 @@
 from __future__ import annotations
 from typing import Optional, Dict, Any, List, Literal
 from pydantic import Field
-from datetime import date, datetime
+from datetime import datetime
 from pyatlan.model.core import AtlanObject, Classification, Announcement
 from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
     google_datastudio_asset_type,
     powerbi_endorsement,
-    icon_type,
+    IconType,
     AnnouncementType,
+    SourceCostUnitType,
 )
 
 
@@ -113,11 +114,30 @@ class PopularityInsights(AtlanObject):
 
     class Attributes(AtlanObject):
         record_user: Optional[str] = Field(None, description="", alias="recordUser")
+        record_query: Optional[str] = Field(None, description="", alias="recordQuery")
+        record_query_duration: Optional[int] = Field(
+            None, description="", alias="recordQueryDuration"
+        )
         record_query_count: Optional[int] = Field(
             None, description="", alias="recordQueryCount"
         )
-        record_last_timestamp: Optional[date] = Field(
+        record_total_user_count: Optional[int] = Field(
+            None, description="", alias="recordTotalUserCount"
+        )
+        record_compute_cost: Optional[float] = Field(
+            None, description="", alias="recordComputeCost"
+        )
+        record_max_compute_cost: Optional[float] = Field(
+            None, description="", alias="recordMaxComputeCost"
+        )
+        record_compute_cost_unit: Optional[SourceCostUnitType] = Field(
+            None, description="", alias="recordComputeCostUnit"
+        )
+        record_last_timestamp: Optional[datetime] = Field(
             None, description="", alias="recordLastTimestamp"
+        )
+        record_warehouse: Optional[str] = Field(
+            None, description="", alias="recordWarehouse"
         )
 
 
@@ -329,11 +349,17 @@ class Asset(Referenceable):
         source_read_user_count: Optional[int] = Field(
             None, description="", alias="sourceReadUserCount"
         )
-        source_last_read_at: Optional[date] = Field(
+        source_last_read_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastReadAt"
         )
-        last_row_changed_at: Optional[date] = Field(
+        last_row_changed_at: Optional[datetime] = Field(
             None, description="", alias="lastRowChangedAt"
+        )
+        source_total_cost: Optional[float] = Field(
+            None, description="", alias="sourceTotalCost"
+        )
+        source_cost_unit: Optional[SourceCostUnitType] = Field(
+            None, description="", alias="sourceCostUnit"
         )
         source_read_recent_user_list: Optional[list[str]] = Field(
             None, description="", alias="sourceReadRecentUserList"
@@ -347,6 +373,21 @@ class Asset(Referenceable):
         source_read_top_user_record_list: Optional[list[PopularityInsights]] = Field(
             None, description="", alias="sourceReadTopUserRecordList"
         )
+        source_read_popular_query_record_list: Optional[
+            list[PopularityInsights]
+        ] = Field(None, description="", alias="sourceReadPopularQueryRecordList")
+        source_read_expensive_query_record_list: Optional[
+            list[PopularityInsights]
+        ] = Field(None, description="", alias="sourceReadExpensiveQueryRecordList")
+        source_read_slow_query_record_list: Optional[list[PopularityInsights]] = Field(
+            None, description="", alias="sourceReadSlowQueryRecordList"
+        )
+        source_query_compute_cost_list: Optional[list[str]] = Field(
+            None, description="", alias="sourceQueryComputeCostList"
+        )
+        source_query_compute_cost_record_list: Optional[
+            list[PopularityInsights]
+        ] = Field(None, description="", alias="sourceQueryComputeCostRecordList")
         dbt_qualified_name: Optional[str] = Field(
             None, description="", alias="dbtQualifiedName"
         )
@@ -380,22 +421,22 @@ class Asset(Referenceable):
         asset_dbt_job_schedule_cron_humanized: Optional[str] = Field(
             None, description="", alias="assetDbtJobScheduleCronHumanized"
         )
-        asset_dbt_job_last_run: Optional[date] = Field(
+        asset_dbt_job_last_run: Optional[datetime] = Field(
             None, description="", alias="assetDbtJobLastRun"
         )
         asset_dbt_job_last_run_url: Optional[str] = Field(
             None, description="", alias="assetDbtJobLastRunUrl"
         )
-        asset_dbt_job_last_run_created_at: Optional[date] = Field(
+        asset_dbt_job_last_run_created_at: Optional[datetime] = Field(
             None, description="", alias="assetDbtJobLastRunCreatedAt"
         )
-        asset_dbt_job_last_run_updated_at: Optional[date] = Field(
+        asset_dbt_job_last_run_updated_at: Optional[datetime] = Field(
             None, description="", alias="assetDbtJobLastRunUpdatedAt"
         )
-        asset_dbt_job_last_run_dequed_at: Optional[date] = Field(
+        asset_dbt_job_last_run_dequed_at: Optional[datetime] = Field(
             None, description="", alias="assetDbtJobLastRunDequedAt"
         )
-        asset_dbt_job_last_run_started_at: Optional[date] = Field(
+        asset_dbt_job_last_run_started_at: Optional[datetime] = Field(
             None, description="", alias="assetDbtJobLastRunStartedAt"
         )
         asset_dbt_job_last_run_total_duration: Optional[str] = Field(
@@ -446,7 +487,7 @@ class Asset(Referenceable):
         asset_dbt_job_last_run_notifications_sent: Optional[bool] = Field(
             None, description="", alias="assetDbtJobLastRunNotificationsSent"
         )
-        asset_dbt_job_next_run: Optional[date] = Field(
+        asset_dbt_job_next_run: Optional[datetime] = Field(
             None, description="", alias="assetDbtJobNextRun"
         )
         asset_dbt_job_next_run_humanized: Optional[str] = Field(
@@ -463,6 +504,9 @@ class Asset(Referenceable):
         )
         asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
             None, description="", alias="assetDbtSemanticLayerProxyUrl"
+        )
+        sample_data_url: Optional[str] = Field(
+            None, description="", alias="sampleDataUrl"
         )
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -693,6 +737,9 @@ class Connection(Asset):
             None, description="", alias="connectorImage"
         )
         source_logo: Optional[str] = Field(None, description="", alias="sourceLogo")
+        is_sample_data_preview_enabled: Optional[bool] = Field(
+            None, description="", alias="isSampleDataPreviewEnabled"
+        )
         popularity_insights_timeframe: Optional[int] = Field(
             None, description="", alias="popularityInsightsTimeframe"
         )
@@ -943,7 +990,7 @@ class Collection(Namespace):
 
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[icon_type] = Field(None, description="", alias="iconType")
+        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
         )  # relationship
@@ -1051,10 +1098,10 @@ class Dbt(Catalog):
         dbt_job_schedule_cron_humanized: Optional[str] = Field(
             None, description="", alias="dbtJobScheduleCronHumanized"
         )
-        dbt_job_last_run: Optional[date] = Field(
+        dbt_job_last_run: Optional[datetime] = Field(
             None, description="", alias="dbtJobLastRun"
         )
-        dbt_job_next_run: Optional[date] = Field(
+        dbt_job_next_run: Optional[datetime] = Field(
             None, description="", alias="dbtJobNextRun"
         )
         dbt_job_next_run_humanized: Optional[str] = Field(
@@ -1194,7 +1241,7 @@ class SQL(Catalog):
         query_user_map: Optional[dict[str, int]] = Field(
             None, description="", alias="queryUserMap"
         )
-        query_count_updated_at: Optional[date] = Field(
+        query_count_updated_at: Optional[datetime] = Field(
             None, description="", alias="queryCountUpdatedAt"
         )
         database_name: Optional[str] = Field(None, description="", alias="databaseName")
@@ -1214,7 +1261,7 @@ class SQL(Catalog):
             None, description="", alias="viewQualifiedName"
         )
         is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[date] = Field(
+        last_profiled_at: Optional[datetime] = Field(
             None, description="", alias="lastProfiledAt"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -1747,22 +1794,22 @@ class DbtModel(Dbt):
         dbt_materialization_type: Optional[str] = Field(
             None, description="", alias="dbtMaterializationType"
         )
-        dbt_model_compile_started_at: Optional[date] = Field(
+        dbt_model_compile_started_at: Optional[datetime] = Field(
             None, description="", alias="dbtModelCompileStartedAt"
         )
-        dbt_model_compile_completed_at: Optional[date] = Field(
+        dbt_model_compile_completed_at: Optional[datetime] = Field(
             None, description="", alias="dbtModelCompileCompletedAt"
         )
-        dbt_model_execute_started_at: Optional[date] = Field(
+        dbt_model_execute_started_at: Optional[datetime] = Field(
             None, description="", alias="dbtModelExecuteStartedAt"
         )
-        dbt_model_execute_completed_at: Optional[date] = Field(
+        dbt_model_execute_completed_at: Optional[datetime] = Field(
             None, description="", alias="dbtModelExecuteCompletedAt"
         )
         dbt_model_execution_time: Optional[float] = Field(
             None, description="", alias="dbtModelExecutionTime"
         )
-        dbt_model_run_generated_at: Optional[date] = Field(
+        dbt_model_run_generated_at: Optional[datetime] = Field(
             None, description="", alias="dbtModelRunGeneratedAt"
         )
         dbt_model_run_elapsed_time: Optional[float] = Field(
@@ -1943,7 +1990,7 @@ class ReadmeTemplate(Resource):
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[icon_type] = Field(None, description="", alias="iconType")
+        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -1981,7 +2028,7 @@ class Link(Resource):
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[icon_type] = Field(None, description="", alias="iconType")
+        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -2380,7 +2427,7 @@ class Column(SQL):
         is_dist: Optional[bool] = Field(None, description="", alias="isDist")
         is_pinned: Optional[bool] = Field(None, description="", alias="isPinned")
         pinned_by: Optional[str] = Field(None, description="", alias="pinnedBy")
-        pinned_at: Optional[date] = Field(None, description="", alias="pinnedAt")
+        pinned_at: Optional[datetime] = Field(None, description="", alias="pinnedAt")
         precision: Optional[int] = Field(None, description="", alias="precision")
         default_value: Optional[str] = Field(None, description="", alias="defaultValue")
         is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
@@ -2393,6 +2440,9 @@ class Column(SQL):
         )
         column_distinct_values_count: Optional[int] = Field(
             None, description="", alias="columnDistinctValuesCount"
+        )
+        column_distinct_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnDistinctValuesCountLong"
         )
         column_histogram: Optional[Histogram] = Field(
             None, description="", alias="columnHistogram"
@@ -2410,6 +2460,9 @@ class Column(SQL):
         column_unique_values_count: Optional[int] = Field(
             None, description="", alias="columnUniqueValuesCount"
         )
+        column_unique_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnUniqueValuesCountLong"
+        )
         column_average: Optional[float] = Field(
             None, description="", alias="columnAverage"
         )
@@ -2418,6 +2471,9 @@ class Column(SQL):
         )
         column_duplicate_values_count: Optional[int] = Field(
             None, description="", alias="columnDuplicateValuesCount"
+        )
+        column_duplicate_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnDuplicateValuesCountLong"
         )
         column_maximum_string_length: Optional[int] = Field(
             None, description="", alias="columnMaximumStringLength"
@@ -2433,6 +2489,9 @@ class Column(SQL):
         )
         column_missing_values_count: Optional[int] = Field(
             None, description="", alias="columnMissingValuesCount"
+        )
+        column_missing_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnMissingValuesCountLong"
         )
         column_missing_values_percentage: Optional[float] = Field(
             None, description="", alias="columnMissingValuesPercentage"
@@ -2624,7 +2683,7 @@ class SnowflakeStream(SQL):
         snowflake_stream_is_stale: Optional[bool] = Field(
             None, description="", alias="snowflakeStreamIsStale"
         )
-        snowflake_stream_stale_after: Optional[date] = Field(
+        snowflake_stream_stale_after: Optional[datetime] = Field(
             None, description="", alias="snowflakeStreamStaleAfter"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -2822,7 +2881,7 @@ class MaterialisedView(SQL):
             None, description="", alias="refreshMethod"
         )
         staleness: Optional[str] = Field(None, description="", alias="staleness")
-        stale_since_date: Optional[date] = Field(
+        stale_since_date: Optional[datetime] = Field(
             None, description="", alias="staleSinceDate"
         )
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -2908,7 +2967,7 @@ class GCSObject(GCS):
         gcs_object_m_d5_hash: Optional[str] = Field(
             None, description="", alias="gcsObjectMD5Hash"
         )
-        gcs_object_data_last_modified_time: Optional[date] = Field(
+        gcs_object_data_last_modified_time: Optional[datetime] = Field(
             None, description="", alias="gcsObjectDataLastModifiedTime"
         )
         gcs_object_content_type: Optional[str] = Field(
@@ -2923,7 +2982,7 @@ class GCSObject(GCS):
         gcs_object_content_language: Optional[str] = Field(
             None, description="", alias="gcsObjectContentLanguage"
         )
-        gcs_object_retention_expiration_date: Optional[date] = Field(
+        gcs_object_retention_expiration_date: Optional[datetime] = Field(
             None, description="", alias="gcsObjectRetentionExpirationDate"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -2973,7 +3032,7 @@ class GCSBucket(GCS):
         gcs_bucket_retention_period: Optional[int] = Field(
             None, description="", alias="gcsBucketRetentionPeriod"
         )
-        gcs_bucket_retention_effective_time: Optional[date] = Field(
+        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
             None, description="", alias="gcsBucketRetentionEffectiveTime"
         )
         gcs_bucket_lifecycle_rules: Optional[str] = Field(
@@ -3058,7 +3117,7 @@ class S3Object(S3):
     type_name: Literal["S3Object"]
 
     class Attributes(S3.Attributes):
-        s3_object_last_modified_time: Optional[date] = Field(
+        s3_object_last_modified_time: Optional[datetime] = Field(
             None, description="", alias="s3ObjectLastModifiedTime"
         )
         s3_bucket_name: Optional[str] = Field(
@@ -3989,7 +4048,7 @@ class ModeReport(Mode):
         mode_collection_token: Optional[str] = Field(
             None, description="", alias="modeCollectionToken"
         )
-        mode_report_published_at: Optional[date] = Field(
+        mode_report_published_at: Optional[datetime] = Field(
             None, description="", alias="modeReportPublishedAt"
         )
         mode_query_count: Optional[int] = Field(
@@ -4790,10 +4849,10 @@ class LookerLook(Looker):
         sourcelast_updater_id: Optional[int] = Field(
             None, description="", alias="sourcelastUpdaterId"
         )
-        source_last_accessed_at: Optional[date] = Field(
+        source_last_accessed_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastAccessedAt"
         )
-        source_last_viewed_at: Optional[date] = Field(
+        source_last_viewed_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastViewedAt"
         )
         source_content_metadata_id: Optional[int] = Field(
@@ -4863,10 +4922,10 @@ class LookerDashboard(Looker):
         sourcelast_updater_id: Optional[int] = Field(
             None, description="", alias="sourcelastUpdaterId"
         )
-        source_last_accessed_at: Optional[date] = Field(
+        source_last_accessed_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastAccessedAt"
         )
-        source_last_viewed_at: Optional[date] = Field(
+        source_last_viewed_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastViewedAt"
         )
         input_to_processes: Optional[list[Process]] = Field(

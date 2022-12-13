@@ -226,5 +226,5 @@ class EntityClient:
     def update_entity(self, entity: T) -> AssetMutationResponse[T]:
         request = BulkRequest[T](entities=[entity])
         raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
-        response = AssetMutationResponse(**raw_json)
+        response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
         return response

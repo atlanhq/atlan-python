@@ -53,6 +53,10 @@ class powerbi_endorsement(Enum):
     CERTIFIED = "Certified"
 
 
-class icon_type(Enum):
+class IconType(Enum):
     IMAGE = "Image"
     EMOJI = "Emoji"
+
+
+class SourceCostUnitType(Enum):
+    CREDITS = "Credits"

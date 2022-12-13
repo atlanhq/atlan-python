@@ -16,8 +16,9 @@ LIST_DICT_BY_STRING = list[DICT_BY_STRING]
 TEMPLATES_DIR = PARENT.parent / "templates"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
 TYPE_REPLACEMENTS = [
+    ("icon_type", "IconType"),
     ("string", "str"),
-    ("date", "date"),
+    ("date", "datetime"),
     ("array", "list"),
     ("boolean", "bool"),
     ("float", "float"),
