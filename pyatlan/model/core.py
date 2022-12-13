@@ -116,6 +116,12 @@ class MutatedEntities(AtlanObject, GenericModel, Generic[T]):
         "type of asset, but listed in the example are the common set of properties across assets.",
         alias="UPDATE",
     )
+    DELETE: Optional[list[T]] = Field(
+        None,
+        description="Assets that were deleted. The detailed properties of the returned asset will vary based on the "
+        "type of asset, but listed in the example are the common set of properties across assets.",
+        alias="DELETE",
+    )
 
 
 class AssetMutationResponse(AtlanObject, GenericModel, Generic[T]):

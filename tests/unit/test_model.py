@@ -85,6 +85,12 @@ def test_set_announcement(glossary, announcement):
     assert glossary.has_announcement() is True
     assert announcement == glossary.get_announcment()
 
+def test_create_glossary():
+    glossary = AtlasGlossary(attributes=AtlasGlossary.Attributes(name="Integration Test Glossary", user_description="This a test glossary"))
+    stuff = glossary.json(by_alias=True, exclude_unset=True)
+    pass
+
+
 
 def test_clear_announcement(glossary, announcement):
     glossary.set_announcement(announcement)

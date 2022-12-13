@@ -57,7 +57,7 @@ class AtlanClient(BaseSettings):
 
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                params["data"] = request_obj.json(by_alias=True, exclude_unset=True)
+                params["data"] = request_obj.json(by_alias=True)
             else:
                 params["data"] = json.dumps(request_obj)
 

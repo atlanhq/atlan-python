@@ -25,6 +25,8 @@ from pyatlan.model.core import (
     AssetMutationResponse,
     BulkRequest,
 )
+
+from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.utils import (
     API,
     APPLICATION_JSON,
@@ -168,6 +170,10 @@ class EntityClient:
         MULTIPART_FORM_DATA,
         APPLICATION_JSON,
     )
+    # Glossary APIS
+    GLOSSARY_URI = BASE_URI + "glossary"
+
+    GET_ALL_GLOSSARIES = API(GLOSSARY_URI, HTTPMethod.GET, HTTPStatus.OK)
 
     # Labels APIs
     ADD_LABELS = API(
@@ -196,6 +202,11 @@ class EntityClient:
         HTTPMethod.DELETE,
         HTTPStatus.NO_CONTENT,
     )
+    DEFAULT_LIMIT = -1
+    DEFAULT_OFFSET = 0
+    DEFAULT_SORT = "ASC"
+    LIMIT = "limit"
+    OFFSET = "offset"
 
     def __init__(self, client: AtlanClient):
         self.client = client
@@ -226,5 +237,19 @@ class EntityClient:
     def update_entity(self, entity: T) -> AssetMutationResponse[T]:
         request = BulkRequest[T](entities=[entity])
         raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
+        response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
+        return response
+
+    def create_entity(self, entity: T) -> AssetMutationResponse[T]:
+        request = BulkRequest[T](entities=[entity])
+        raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
+        response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
+        return response
+
+    def purge_entity_by_guid(self, guid) -> AssetMutationResponse[T]:
+        raw_json = self.client.call_api(
+            EntityClient.DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
+            {"deleteType": AtlanDeleteType.HARD.value},
+        )
         response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
         return response

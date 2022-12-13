@@ -12,6 +12,7 @@ from pyatlan.model.enums import (
     AnnouncementType,
     SourceCostUnitType,
 )
+from pyatlan.utils import next_id
 
 
 class Internal(AtlanObject):
@@ -145,7 +146,7 @@ class Referenceable(AtlanObject):
     """Description"""
 
     class Attributes(AtlanObject):
-        qualified_name: str = Field(None, description="", alias="qualifiedName")
+        qualified_name: str = Field("", description="", alias="qualifiedName")
         replicated_from: Optional[list[AtlasServer]] = Field(
             None, description="", alias="replicatedFrom"
         )
@@ -177,9 +178,9 @@ class Referenceable(AtlanObject):
         example=1648852296555,
     )
     guid: Optional[str] = Field(
-        None,
         description="Unique identifier of the entity instance.\n",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
+        default_factory=next_id,
     )
     is_incomplete: Optional[bool] = Field(False, description="", example=False)
     labels: Optional[List[str]] = Field(None, description="Internal use only.")
@@ -560,7 +561,7 @@ class Asset(Referenceable):
 class AtlasGlossary(Asset):
     """Description"""
 
-    type_name: Literal["AtlasGlossary"]
+    type_name: Literal["AtlasGlossary"] = Field("AtlasGlossary")
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -611,7 +612,7 @@ class ProcessExecution(Asset):
 class AtlasGlossaryTerm(Asset):
     """Description"""
 
-    type_name: Literal["AtlasGlossaryTerm"]
+    type_name: Literal["AtlasGlossaryTerm"] = Field("AtlasGlossaryTerm")
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -705,7 +706,7 @@ class Infrastructure(Asset):
 class Connection(Asset):
     """Description"""
 
-    type_name: Literal["Connection"]
+    type_name: Literal["Connection"] = Field("Connection")
 
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
@@ -804,7 +805,7 @@ class Process(Asset):
 class AtlasGlossaryCategory(Asset):
     """Description"""
 
-    type_name: Literal["AtlasGlossaryCategory"]
+    type_name: Literal["AtlasGlossaryCategory"] = Field("AtlasGlossaryCategory")
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -851,7 +852,7 @@ class AtlasGlossaryCategory(Asset):
 class Badge(Asset):
     """Description"""
 
-    type_name: Literal["Badge"]
+    type_name: Literal["Badge"] = Field("Badge")
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
@@ -986,7 +987,7 @@ class ColumnProcess(Process):
 class Collection(Namespace):
     """Description"""
 
-    type_name: Literal["Collection"]
+    type_name: Literal["Collection"] = Field("Collection")
 
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -1020,7 +1021,7 @@ class Collection(Namespace):
 class Folder(Namespace):
     """Description"""
 
-    type_name: Literal["Folder"]
+    type_name: Literal["Folder"] = Field("Folder")
 
     class Attributes(Namespace.Attributes):
         parent_qualified_name: str = Field(
@@ -1349,7 +1350,7 @@ class GCS(Google):
 class DataStudioAsset(DataStudio):
     """Description"""
 
-    type_name: Literal["DataStudioAsset"]
+    type_name: Literal["DataStudioAsset"] = Field("DataStudioAsset")
 
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[google_datastudio_asset_type] = Field(
@@ -1425,7 +1426,7 @@ class S3(ObjectStore):
 class DbtColumnProcess(Dbt):
     """Description"""
 
-    type_name: Literal["DbtColumnProcess"]
+    type_name: Literal["DbtColumnProcess"] = Field("DbtColumnProcess")
 
     class Attributes(Dbt.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
@@ -1734,7 +1735,7 @@ class Salesforce(SaaS):
 class DbtModelColumn(Dbt):
     """Description"""
 
-    type_name: Literal["DbtModelColumn"]
+    type_name: Literal["DbtModelColumn"] = Field("DbtModelColumn")
 
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
@@ -1781,7 +1782,7 @@ class DbtModelColumn(Dbt):
 class DbtModel(Dbt):
     """Description"""
 
-    type_name: Literal["DbtModel"]
+    type_name: Literal["DbtModel"] = Field("DbtModel")
 
     class Attributes(Dbt.Attributes):
         dbt_status: Optional[str] = Field(None, description="", alias="dbtStatus")
@@ -1853,7 +1854,7 @@ class DbtModel(Dbt):
 class DbtMetric(Dbt):
     """Description"""
 
-    type_name: Literal["DbtMetric"]
+    type_name: Literal["DbtMetric"] = Field("DbtMetric")
 
     class Attributes(Dbt.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
@@ -1903,7 +1904,7 @@ class DbtMetric(Dbt):
 class DbtSource(Dbt):
     """Description"""
 
-    type_name: Literal["DbtSource"]
+    type_name: Literal["DbtSource"] = Field("DbtSource")
 
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(None, description="", alias="dbtState")
@@ -1942,7 +1943,7 @@ class DbtSource(Dbt):
 class DbtProcess(Dbt):
     """Description"""
 
-    type_name: Literal["DbtProcess"]
+    type_name: Literal["DbtProcess"] = Field("DbtProcess")
 
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(
@@ -1986,7 +1987,7 @@ class DbtProcess(Dbt):
 class ReadmeTemplate(Resource):
     """Description"""
 
-    type_name: Literal["ReadmeTemplate"]
+    type_name: Literal["ReadmeTemplate"] = Field("ReadmeTemplate")
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -2024,7 +2025,7 @@ class Readme(Resource):
 class Link(Resource):
     """Description"""
 
-    type_name: Literal["Link"]
+    type_name: Literal["Link"] = Field("Link")
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -2064,7 +2065,7 @@ class Link(Resource):
 class APISpec(API):
     """Description"""
 
-    type_name: Literal["APISpec"]
+    type_name: Literal["APISpec"] = Field("APISpec")
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
@@ -2123,7 +2124,7 @@ class APISpec(API):
 class APIPath(API):
     """Description"""
 
-    type_name: Literal["APIPath"]
+    type_name: Literal["APIPath"] = Field("APIPath")
 
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
@@ -2176,7 +2177,7 @@ class APIPath(API):
 class TablePartition(SQL):
     """Description"""
 
-    type_name: Literal["TablePartition"]
+    type_name: Literal["TablePartition"] = Field("TablePartition")
 
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(None, description="", alias="constraint")
@@ -2253,7 +2254,7 @@ class TablePartition(SQL):
 class Table(SQL):
     """Description"""
 
-    type_name: Literal["Table"]
+    type_name: Literal["Table"] = Field("Table")
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -2335,7 +2336,7 @@ class Table(SQL):
 class Query(SQL):
     """Description"""
 
-    type_name: Literal["Query"]
+    type_name: Literal["Query"] = Field("Query")
 
     class Attributes(SQL.Attributes):
         raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
@@ -2409,7 +2410,7 @@ class Query(SQL):
 class Column(SQL):
     """Description"""
 
-    type_name: Literal["Column"]
+    type_name: Literal["Column"] = Field("Column")
 
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -2565,7 +2566,7 @@ class Column(SQL):
 class Schema(SQL):
     """Description"""
 
-    type_name: Literal["Schema"]
+    type_name: Literal["Schema"] = Field("Schema")
 
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
@@ -2626,7 +2627,7 @@ class Schema(SQL):
 class Database(SQL):
     """Description"""
 
-    type_name: Literal["Database"]
+    type_name: Literal["Database"] = Field("Database")
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
@@ -2668,7 +2669,7 @@ class Database(SQL):
 class SnowflakeStream(SQL):
     """Description"""
 
-    type_name: Literal["SnowflakeStream"]
+    type_name: Literal["SnowflakeStream"] = Field("SnowflakeStream")
 
     class Attributes(SQL.Attributes):
         snowflake_stream_type: Optional[str] = Field(
@@ -2724,7 +2725,7 @@ class SnowflakeStream(SQL):
 class SnowflakePipe(SQL):
     """Description"""
 
-    type_name: Literal["SnowflakePipe"]
+    type_name: Literal["SnowflakePipe"] = Field("SnowflakePipe")
 
     class Attributes(SQL.Attributes):
         definition: Optional[str] = Field(None, description="", alias="definition")
@@ -2772,7 +2773,7 @@ class SnowflakePipe(SQL):
 class Procedure(SQL):
     """Description"""
 
-    type_name: Literal["Procedure"]
+    type_name: Literal["Procedure"] = Field("Procedure")
 
     class Attributes(SQL.Attributes):
         definition: str = Field(None, description="", alias="definition")
@@ -2814,7 +2815,7 @@ class Procedure(SQL):
 class View(SQL):
     """Description"""
 
-    type_name: Literal["View"]
+    type_name: Literal["View"] = Field("View")
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -2873,7 +2874,7 @@ class View(SQL):
 class MaterialisedView(SQL):
     """Description"""
 
-    type_name: Literal["MaterialisedView"]
+    type_name: Literal["MaterialisedView"] = Field("MaterialisedView")
 
     class Attributes(SQL.Attributes):
         refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
@@ -2937,7 +2938,7 @@ class MaterialisedView(SQL):
 class GCSObject(GCS):
     """Description"""
 
-    type_name: Literal["GCSObject"]
+    type_name: Literal["GCSObject"] = Field("GCSObject")
 
     class Attributes(GCS.Attributes):
         gcs_bucket_name: Optional[str] = Field(
@@ -3017,7 +3018,7 @@ class GCSObject(GCS):
 class GCSBucket(GCS):
     """Description"""
 
-    type_name: Literal["GCSBucket"]
+    type_name: Literal["GCSBucket"] = Field("GCSBucket")
 
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(
@@ -3073,7 +3074,7 @@ class GCSBucket(GCS):
 class S3Bucket(S3):
     """Description"""
 
-    type_name: Literal["S3Bucket"]
+    type_name: Literal["S3Bucket"] = Field("S3Bucket")
 
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(
@@ -3114,7 +3115,7 @@ class S3Bucket(S3):
 class S3Object(S3):
     """Description"""
 
-    type_name: Literal["S3Object"]
+    type_name: Literal["S3Object"] = Field("S3Object")
 
     class Attributes(S3.Attributes):
         s3_object_last_modified_time: Optional[datetime] = Field(
@@ -3174,7 +3175,7 @@ class S3Object(S3):
 class MetabaseQuestion(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseQuestion"]
+    type_name: Literal["MetabaseQuestion"] = Field("MetabaseQuestion")
 
     class Attributes(Metabase.Attributes):
         metabase_dashboard_count: Optional[int] = Field(
@@ -3221,7 +3222,7 @@ class MetabaseQuestion(Metabase):
 class MetabaseCollection(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseCollection"]
+    type_name: Literal["MetabaseCollection"] = Field("MetabaseCollection")
 
     class Attributes(Metabase.Attributes):
         metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
@@ -3269,7 +3270,7 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseDashboard"]
+    type_name: Literal["MetabaseDashboard"] = Field("MetabaseDashboard")
 
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(
@@ -3310,7 +3311,7 @@ class MetabaseDashboard(Metabase):
 class PowerBIReport(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIReport"]
+    type_name: Literal["PowerBIReport"] = Field("PowerBIReport")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3362,7 +3363,7 @@ class PowerBIReport(PowerBI):
 class PowerBIMeasure(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIMeasure"]
+    type_name: Literal["PowerBIMeasure"] = Field("PowerBIMeasure")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3409,7 +3410,7 @@ class PowerBIMeasure(PowerBI):
 class PowerBIColumn(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIColumn"]
+    type_name: Literal["PowerBIColumn"] = Field("PowerBIColumn")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3462,7 +3463,7 @@ class PowerBIColumn(PowerBI):
 class PowerBITile(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBITile"]
+    type_name: Literal["PowerBITile"] = Field("PowerBITile")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3509,7 +3510,7 @@ class PowerBITile(PowerBI):
 class PowerBITable(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBITable"]
+    type_name: Literal["PowerBITable"] = Field("PowerBITable")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3565,7 +3566,7 @@ class PowerBITable(PowerBI):
 class PowerBIDatasource(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDatasource"]
+    type_name: Literal["PowerBIDatasource"] = Field("PowerBIDatasource")
 
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
@@ -3603,7 +3604,7 @@ class PowerBIDatasource(PowerBI):
 class PowerBIWorkspace(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIWorkspace"]
+    type_name: Literal["PowerBIWorkspace"] = Field("PowerBIWorkspace")
 
     class Attributes(PowerBI.Attributes):
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
@@ -3656,7 +3657,7 @@ class PowerBIWorkspace(PowerBI):
 class PowerBIDataset(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDataset"]
+    type_name: Literal["PowerBIDataset"] = Field("PowerBIDataset")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3710,7 +3711,7 @@ class PowerBIDataset(PowerBI):
 class PowerBIDashboard(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDashboard"]
+    type_name: Literal["PowerBIDashboard"] = Field("PowerBIDashboard")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3753,7 +3754,7 @@ class PowerBIDashboard(PowerBI):
 class PowerBIPage(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIPage"]
+    type_name: Literal["PowerBIPage"] = Field("PowerBIPage")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3794,7 +3795,7 @@ class PowerBIPage(PowerBI):
 class PowerBIDataflow(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDataflow"]
+    type_name: Literal["PowerBIDataflow"] = Field("PowerBIDataflow")
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -3836,7 +3837,7 @@ class PowerBIDataflow(PowerBI):
 class PresetChart(Preset):
     """Description"""
 
-    type_name: Literal["PresetChart"]
+    type_name: Literal["PresetChart"] = Field("PresetChart")
 
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
@@ -3877,7 +3878,7 @@ class PresetChart(Preset):
 class PresetDataset(Preset):
     """Description"""
 
-    type_name: Literal["PresetDataset"]
+    type_name: Literal["PresetDataset"] = Field("PresetDataset")
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
@@ -3921,7 +3922,7 @@ class PresetDataset(Preset):
 class PresetDashboard(Preset):
     """Description"""
 
-    type_name: Literal["PresetDashboard"]
+    type_name: Literal["PresetDashboard"] = Field("PresetDashboard")
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
@@ -3980,7 +3981,7 @@ class PresetDashboard(Preset):
 class PresetWorkspace(Preset):
     """Description"""
 
-    type_name: Literal["PresetWorkspace"]
+    type_name: Literal["PresetWorkspace"] = Field("PresetWorkspace")
 
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
@@ -4042,7 +4043,7 @@ class PresetWorkspace(Preset):
 class ModeReport(Mode):
     """Description"""
 
-    type_name: Literal["ModeReport"]
+    type_name: Literal["ModeReport"] = Field("ModeReport")
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
@@ -4101,7 +4102,7 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
-    type_name: Literal["ModeQuery"]
+    type_name: Literal["ModeQuery"] = Field("ModeQuery")
 
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
@@ -4145,7 +4146,7 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
-    type_name: Literal["ModeChart"]
+    type_name: Literal["ModeChart"] = Field("ModeChart")
 
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
@@ -4183,7 +4184,7 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
-    type_name: Literal["ModeWorkspace"]
+    type_name: Literal["ModeWorkspace"] = Field("ModeWorkspace")
 
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(
@@ -4221,7 +4222,7 @@ class ModeWorkspace(Mode):
 class ModeCollection(Mode):
     """Description"""
 
-    type_name: Literal["ModeCollection"]
+    type_name: Literal["ModeCollection"] = Field("ModeCollection")
 
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
@@ -4265,7 +4266,7 @@ class ModeCollection(Mode):
 class TableauWorkbook(Tableau):
     """Description"""
 
-    type_name: Literal["TableauWorkbook"]
+    type_name: Literal["TableauWorkbook"] = Field("TableauWorkbook")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4324,7 +4325,7 @@ class TableauWorkbook(Tableau):
 class TableauDatasourceField(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDatasourceField"]
+    type_name: Literal["TableauDatasourceField"] = Field("TableauDatasourceField")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4410,7 +4411,7 @@ class TableauDatasourceField(Tableau):
 class TableauCalculatedField(Tableau):
     """Description"""
 
-    type_name: Literal["TableauCalculatedField"]
+    type_name: Literal["TableauCalculatedField"] = Field("TableauCalculatedField")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4475,7 +4476,7 @@ class TableauCalculatedField(Tableau):
 class TableauProject(Tableau):
     """Description"""
 
-    type_name: Literal["TableauProject"]
+    type_name: Literal["TableauProject"] = Field("TableauProject")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4540,7 +4541,7 @@ class TableauProject(Tableau):
 class TableauMetric(Tableau):
     """Description"""
 
-    type_name: Literal["TableauMetric"]
+    type_name: Literal["TableauMetric"] = Field("TableauMetric")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4587,7 +4588,7 @@ class TableauMetric(Tableau):
 class TableauDatasource(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDatasource"]
+    type_name: Literal["TableauDatasource"] = Field("TableauDatasource")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4668,7 +4669,7 @@ class TableauSite(Tableau):
 class TableauDashboard(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDashboard"]
+    type_name: Literal["TableauDashboard"] = Field("TableauDashboard")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4721,7 +4722,7 @@ class TableauDashboard(Tableau):
 class TableauFlow(Tableau):
     """Description"""
 
-    type_name: Literal["TableauFlow"]
+    type_name: Literal["TableauFlow"] = Field("TableauFlow")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4777,7 +4778,7 @@ class TableauFlow(Tableau):
 class TableauWorksheet(Tableau):
     """Description"""
 
-    type_name: Literal["TableauWorksheet"]
+    type_name: Literal["TableauWorksheet"] = Field("TableauWorksheet")
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -4836,7 +4837,7 @@ class TableauWorksheet(Tableau):
 class LookerLook(Looker):
     """Description"""
 
-    type_name: Literal["LookerLook"]
+    type_name: Literal["LookerLook"] = Field("LookerLook")
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -4906,7 +4907,7 @@ class LookerLook(Looker):
 class LookerDashboard(Looker):
     """Description"""
 
-    type_name: Literal["LookerDashboard"]
+    type_name: Literal["LookerDashboard"] = Field("LookerDashboard")
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -4966,7 +4967,7 @@ class LookerDashboard(Looker):
 class LookerFolder(Looker):
     """Description"""
 
-    type_name: Literal["LookerFolder"]
+    type_name: Literal["LookerFolder"] = Field("LookerFolder")
 
     class Attributes(Looker.Attributes):
         source_content_metadata_id: Optional[int] = Field(
@@ -5016,7 +5017,7 @@ class LookerFolder(Looker):
 class LookerTile(Looker):
     """Description"""
 
-    type_name: Literal["LookerTile"]
+    type_name: Literal["LookerTile"] = Field("LookerTile")
 
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(
@@ -5070,7 +5071,7 @@ class LookerTile(Looker):
 class LookerModel(Looker):
     """Description"""
 
-    type_name: Literal["LookerModel"]
+    type_name: Literal["LookerModel"] = Field("LookerModel")
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -5118,7 +5119,7 @@ class LookerModel(Looker):
 class LookerExplore(Looker):
     """Description"""
 
-    type_name: Literal["LookerExplore"]
+    type_name: Literal["LookerExplore"] = Field("LookerExplore")
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -5172,7 +5173,7 @@ class LookerProject(Looker):
 class LookerQuery(Looker):
     """Description"""
 
-    type_name: Literal["LookerQuery"]
+    type_name: Literal["LookerQuery"] = Field("LookerQuery")
 
     class Attributes(Looker.Attributes):
         source_definition: Optional[str] = Field(
@@ -5223,7 +5224,7 @@ class LookerQuery(Looker):
 class LookerField(Looker):
     """Description"""
 
-    type_name: Literal["LookerField"]
+    type_name: Literal["LookerField"] = Field("LookerField")
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -5284,7 +5285,7 @@ class LookerField(Looker):
 class LookerView(Looker):
     """Description"""
 
-    type_name: Literal["LookerView"]
+    type_name: Literal["LookerView"] = Field("LookerView")
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -5323,7 +5324,7 @@ class LookerView(Looker):
 class SalesforceObject(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceObject"]
+    type_name: Literal["SalesforceObject"] = Field("SalesforceObject")
 
     class Attributes(Salesforce.Attributes):
         is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
@@ -5368,7 +5369,7 @@ class SalesforceObject(Salesforce):
 class SalesforceField(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceField"]
+    type_name: Literal["SalesforceField"] = Field("SalesforceField")
 
     class Attributes(Salesforce.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -5438,7 +5439,7 @@ class SalesforceField(Salesforce):
 class SalesforceOrganization(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceOrganization"]
+    type_name: Literal["SalesforceOrganization"] = Field("SalesforceOrganization")
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -5480,7 +5481,7 @@ class SalesforceOrganization(Salesforce):
 class SalesforceDashboard(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceDashboard"]
+    type_name: Literal["SalesforceDashboard"] = Field("SalesforceDashboard")
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -5523,7 +5524,7 @@ class SalesforceDashboard(Salesforce):
 class SalesforceReport(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceReport"]
+    type_name: Literal["SalesforceReport"] = Field("SalesforceReport")
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")

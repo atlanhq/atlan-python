@@ -60,3 +60,8 @@ class IconType(Enum):
 
 class SourceCostUnitType(Enum):
     CREDITS = "Credits"
+
+
+class AtlanDeleteType(Enum):
+    HARD = "HARD"
+    SOFT = "SOFT"
