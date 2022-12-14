@@ -17,6 +17,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from typing import Optional
+
 class AtlanServiceException(Exception):
     """Exception raised for errors in API calls.
     Attributes:
@@ -47,3 +50,13 @@ class AtlanServiceException(Exception):
             )
 
         Exception.__init__(self, msg)
+
+
+class InvalidRequestException(AtlanServiceException):
+    """
+    Error that occurs if the request being attempted is not valid for some reason, such as containing insufficient
+    parameters of incorrect values for those parameters.
+    """
+
+    def __init__(self, message: str, param: Optional[str]=None, cause: Optional[Exception]=None):
+        self.param = param

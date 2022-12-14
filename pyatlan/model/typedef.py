@@ -9,7 +9,7 @@ from pyatlan.model.enums import AtlanTypeCategory, IndexType, Cardinality
 
 
 class TypeDef(AtlanObject):
-    category: Optional[AtlanTypeCategory] = Field(
+    category: AtlanTypeCategory = Field(
         None, description="Type of the type_ definition.\n"
     )
     create_time: Optional[int] = Field(
@@ -164,7 +164,7 @@ class ClassificationDef(TypeDef):
         [], description="Unused.", example=[]
     )
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
-    display_name: Optional[str] = Field(
+    display_name: str = Field(
         None, description="Name used for display purposes (in user interfaces).\n"
     )
     entity_types: Optional[List[str]] = Field(
