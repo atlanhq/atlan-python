@@ -13,7 +13,6 @@ class RoleCache():
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        print("Refreshing role cache...")
         response = RoleClient(AtlanClient()).get_all_roles()
         if response is not None:
             cls.cache_by_id = dict()
