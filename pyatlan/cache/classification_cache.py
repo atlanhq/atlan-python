@@ -6,7 +6,7 @@ from pyatlan.model.enums import AtlanTypeCategory
 
 from typing import Optional
 
-class ClassificationCache():
+class ClassificationCache:
 
     cache_by_id: dict[str, ClassificationDef] = dict()
     map_id_to_name: dict[str, str] = dict()
@@ -34,11 +34,11 @@ class ClassificationCache():
         Translate the provided human-readable classification name to its Atlan-internal ID string.
         """
         cls_id = cls.map_name_to_id.get(name)
-        if (not cls_id and not name in cls.deleted_names):
+        if not cls_id and not name in cls.deleted_names:
             # If not found, refresh the cache and look again (could be stale)
             cls._refresh_cache()
             cls_id = cls.map_name_to_id.get(name)
-            if (not cls_id):
+            if not cls_id:
                 # If still not found after refresh, mark it as deleted (could be
                 # an entry in an audit log that refers to a classification that
                 # no longer exists)
@@ -46,18 +46,18 @@ class ClassificationCache():
         return cls_id
 
     @classmethod
-    def get_name_for_id(cls, id: str) -> Optional[str]:
+    def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided Atlan-internal classification ID string to the human-readable classification name.
         """
-        cls_name = cls.map_id_to_name.get(id)
-        if (not cls_name and not id in cls.deleted_ids):
+        cls_name = cls.map_id_to_name.get(idstr)
+        if not cls_name and not idstr in cls.deleted_ids:
             # If not found, refresh the cache and look again (could be stale)
             cls._refresh_cache()
-            cls_name = cls.map_id_to_name.get(id)
-            if (not cls_name):
+            cls_name = cls.map_id_to_name.get(idstr)
+            if not cls_name:
                 # If still not found after refresh, mark it as deleted (could be
                 # an entry in an audit log that refers to a classification that
                 # no longer exists)
-                cls.deleted_ids.add(id)
+                cls.deleted_ids.add(idstr)
         return cls_name

@@ -3,11 +3,11 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.model.typedef import CustomMetadataDef, AttributeDef
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.exceptions import LogicException
+from pyatlan.error import LogicError
 
 from typing import Optional
 
-class CustomMetadataCache():
+class CustomMetadataCache:
 
     cache_by_id: dict[str, CustomMetadataDef] = dict()
     map_id_to_name: dict[str, str] = dict()
@@ -18,7 +18,6 @@ class CustomMetadataCache():
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        print("Refreshing cache of custom metadata...")
         response = TypeDefClient(AtlanClient()).get_typedefs(type=AtlanTypeCategory.CUSTOM_METADATA)
         if response is not None:
             cls.cache_by_id = dict()
@@ -44,7 +43,7 @@ class CustomMetadataCache():
                             cls.archived_attr_ids[attr_id] = attr_name
                         else:
                             if attr_name in cls.map_attr_name_to_id[type_id]:
-                                raise LogicException(
+                                raise LogicError(
                                     "Multiple custom attributes with exactly the same name (" + attr_name + ") found for: " + type_name,
                                     code="ATLAN-PYTHON-500-100"
                                 )
@@ -65,17 +64,17 @@ class CustomMetadataCache():
             return cls.map_name_to_id.get(name)
 
     @classmethod
-    def get_name_for_id(cls, id: str) -> Optional[str]:
+    def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.
         """
-        cm_name = cls.map_id_to_name.get(id)
+        cm_name = cls.map_id_to_name.get(idstr)
         if cm_name:
             return cm_name
         else:
             # If not found, refresh the cache and look again (could be stale)
             cls._refresh_cache()
-            return cls.map_id_to_name.get(id)
+            return cls.map_id_to_name.get(idstr)
 
     @classmethod
     def get_all_custom_attributes(cls, include_deleted: bool=False, force_refresh: bool=False) -> dict[str, list[AttributeDef]]:
@@ -86,11 +85,10 @@ class CustomMetadataCache():
         """
         if len(cls.cache_by_id) == 0 or force_refresh:
             cls._refresh_cache()
-        map = {}
+        m = {}
         for type_id, cm in cls.cache_by_id.items():
             type_name = cls.get_name_for_id(type_id)
             attribute_defs = cm.attribute_defs
-            to_include = None
             if include_deleted:
                 to_include = attribute_defs
             else:
@@ -99,8 +97,8 @@ class CustomMetadataCache():
                     for attr in attribute_defs:
                         if not attr.options or not attr.options.is_archived:
                             to_include.append(attr)
-            map[type_name] = to_include
-        return map
+            m[type_name] = to_include
+        return m
 
     @classmethod
     def get_attr_id_for_name(cls, set_name: str, attr_name: str) -> Optional[str]:
@@ -131,8 +129,8 @@ class CustomMetadataCache():
         if sub_map:
             attr_ids = sub_map.values()
             dot_names = []
-            for id in attr_ids:
-                dot_names.append(set_id + "." + id)
+            for idstr in attr_ids:
+                dot_names.append(set_id + "." + idstr)
             return dot_names
         return None
 

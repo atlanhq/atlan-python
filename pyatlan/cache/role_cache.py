@@ -5,7 +5,7 @@ from pyatlan.model.role import AtlanRole
 
 from typing import Optional
 
-class RoleCache():
+class RoleCache:
 
     cache_by_id: dict[str, AtlanRole] = dict()
     map_id_to_name: dict[str, str] = dict()
@@ -38,13 +38,13 @@ class RoleCache():
             return cls.map_name_to_id.get(name)
 
     @classmethod
-    def get_name_for_id(cls, id: str) -> Optional[str]:
+    def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided role GUID to the human-readable role name.
         """
-        role_name = cls.map_id_to_name.get(id)
+        role_name = cls.map_id_to_name.get(idstr)
         if role_name:
             return role_name
         else:
             cls._refresh_cache()
-            return cls.map_id_to_name.get(id)
+            return cls.map_id_to_name.get(idstr)
