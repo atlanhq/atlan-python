@@ -7,11 +7,14 @@ from pyatlan.client.typedef import TypeDefClient
 
 CLS_NAME = "psdk-ClassificationTest"
 
+# NOTE: Tests are intended to run in the order specified in this file,
+# to complete creation prior to testing prior to deletion.
+
 @pytest.fixture
 def client() -> TypeDefClient:
     return TypeDefClient(AtlanClient())
 
-def test_classifications(client: TypeDefClient):
+def test_001_create_classification(client: TypeDefClient):
     cls = ClassificationDef(
         name=CLS_NAME,
         display_name=CLS_NAME,
@@ -25,7 +28,7 @@ def test_classifications(client: TypeDefClient):
     assert response.classification_defs
     assert len(response.classification_defs) == 1
 
-    # Now test retrieval from the cache
+def test_002_classification_cache():
     cls_id = ClassificationCache.get_id_for_name(CLS_NAME)
     print("Found ID: ", cls_id)
     assert cls_id
@@ -34,5 +37,7 @@ def test_classifications(client: TypeDefClient):
     assert cls_name
     assert cls_name == CLS_NAME
 
-    # And finally delete what we created
+def test_003_purge_classification(client: TypeDefClient):
+    cls_id = ClassificationCache.get_id_for_name(CLS_NAME)
+    assert cls_id
     client.purge_typedef(cls_id)
