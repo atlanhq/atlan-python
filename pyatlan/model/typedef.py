@@ -9,7 +9,7 @@ from pyatlan.model.enums import AtlanTypeCategory, IndexType, Cardinality
 
 
 class TypeDef(AtlanObject):
-    category: Optional[AtlanTypeCategory] = Field(
+    category: AtlanTypeCategory = Field(
         None, description="Type of the type_ definition.\n"
     )
     create_time: Optional[int] = Field(
@@ -65,92 +65,166 @@ class EnumDef(TypeDef):
     )
 
 
-class StructDef(TypeDef):
-    class AttributeDef(AtlanObject):
-        cardinality: Optional[Cardinality] = Field(
-            "SINGLE",
-            description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
-            "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
-            "they are unique and unordered.\n",
-            example="SINGLE",
-        )
-        constraints: Optional[List[Dict[str, Any]]] = Field(
-            None, description="Internal use only."
-        )
+class AttributeDef(AtlanObject):
+    class Options(AtlanObject):
         description: Optional[str] = Field(
             None,
-            description="Description of the attribute definition.\n",
-            example="Our first custom metadata field.",
+            description="Optional description of the attribute.\n",
         )
-        default_value: Optional[str] = Field(
-            None,
-            description="Default value for this attribute (if any).\n",
-            example="abc123",
+        applicable_entity_types: Optional[str] = Field(
+            "[\"Asset\"]",
+            description="Set of entities on which this attribute can be applied.\n",
         )
-        display_name: Optional[str] = Field(
+        custom_applicable_entity_types: Optional[str] = Field(
+            "[\"AtlasGlossary\",\"LookerFolder\",\"AtlasGlossaryCategory\",\"SnowflakePipe\",\"Process\",\"LookerDashboard\",\"View\",\"PowerBIWorkspace\",\"PowerBIDatasource\",\"ModeChart\",\"GCSBucket\",\"LookerField\",\"LookerQuery\",\"PowerBITile\",\"PresetChart\",\"PowerBIDashboard\",\"SalesforceReport\",\"SalesforceObject\",\"TableauDatasource\",\"Folder\",\"S3Object\",\"MetabaseCollection\",\"SalesforceOrganization\",\"PowerBIDataset\",\"TableauDashboard\",\"S3Bucket\",\"PowerBIMeasure\",\"TablePartition\",\"TableauWorkbook\",\"TableauSite\",\"Table\",\"TableauCalculatedField\",\"TableauFlow\",\"ModeQuery\",\"PresetDataset\",\"SalesforceDashboard\",\"Collection\",\"LookerModel\",\"PresetWorkspace\",\"DbtModelColumn\",\"PowerBIDataflow\",\"LookerView\",\"MetabaseDashboard\",\"DbtModel\",\"SalesforceField\",\"Query\",\"TableauWorksheet\",\"DataStudioAsset\",\"PowerBITable\",\"TableauProject\",\"DbtProcess\",\"TableauDatasourceField\",\"APIPath\",\"DbtMetric\",\"LookerLook\",\"ColumnProcess\",\"PowerBIReport\",\"MaterialisedView\",\"Schema\",\"SnowflakeStream\",\"Database\",\"LookerProject\",\"DbtColumnProcess\",\"Column\",\"LookerTile\",\"BIProcess\",\"TableauMetric\",\"PowerBIColumn\",\"PresetDashboard\",\"LookerExplore\",\"ModeReport\",\"ModeCollection\",\"GCSObject\",\"MetabaseQuestion\",\"APISpec\",\"PowerBIPage\",\"AtlasGlossaryTerm\",\"ModeWorkspace\"]",
+            description="Set of entities on which this attribute should appear.\n"
+        )
+        allow_search: bool = Field(
+            False,
+            description="Whether the attribute should be searchable (true) or not (false).\n"
+        )
+        max_str_length: str = Field(
+            "100000000",
+            description="Maximum length allowed for a string value.\n"
+        )
+        allow_filtering: bool = Field(
+            True,
+            description="Whether this attribute should appear in the filterable facets of discovery (true) or not (false).\n"
+        )
+        multi_value_select: bool = Field(
+            False,
+            description="Whether this attribute can have multiple values (true) or only a single value (false).\n"
+        )
+        show_in_overview: bool = Field(
+            False,
+            description="Whether users will see this attribute in the overview tab of the sidebar (true) or not (false).\n"
+        )
+        is_deprecated: Optional[str] = Field(
             None,
-            description="Name to use within all user interactions through the user interface. Note that this may not "
+            description="Whether the attribute is deprecated ('true') or not (None or 'false').\n"
+        )
+        is_enum: Optional[bool] = Field(
+            None,
+            description="Whether the attribute is an enumeration (true) or not (None or false).\n"
+        )
+        enum_type: Optional[str] = Field(
+            None,
+            description="Name of the enumeration (options), when the attribute is an enumeration.\n"
+        )
+        custom_type: Optional[str] = Field(
+            None,
+            description="Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.\n"
+        )
+        is_archived: bool = Field(
+            False,
+            description="Whether the attribute has been deleted (true) or is still active (false).\n"
+        )
+        archived_at: Optional[int] = Field(
+            None,
+            description="When the attribute was deleted.\n"
+        )
+        archived_by: Optional[str] = Field(
+            None,
+            description="User who deleted the attribute.\n"
+        )
+        is_soft_reference: Optional[str] = Field(
+            None,
+            description="TBC"
+        )
+        is_append_on_partial_update: Optional[str] = Field(
+            None,
+            description="TBC"
+        )
+            
+    cardinality: Optional[Cardinality] = Field(
+        "SINGLE",
+        description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
+            "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
+            "they are unique and unordered.\n",
+        example="SINGLE",
+    )
+    constraints: Optional[List[Dict[str, Any]]] = Field(
+        None, description="Internal use only."
+    )
+    description: Optional[str] = Field(
+        None,
+        description="Description of the attribute definition.\n",
+        example="Our first custom metadata field.",
+    )
+    default_value: Optional[str] = Field(
+        None,
+        description="Default value for this attribute (if any).\n",
+        example="abc123",
+    )
+    display_name: str = Field(
+        None,
+        description="Name to use within all user interactions through the user interface. Note that this may not "
             "be the same name used to update or interact with the attribute through API operations, for "
             "that see the `name` property. (This property can be used instead of `name` for the creation "
             "of an attribute definition as well.)\n",
-            example="Custom Field 1",
-        )
-        name: Optional[str] = Field(
-            None,
-            description="Unique name of this attribute definition. When provided during creation, this should be the "
+        example="Custom Field 1",
+    )
+    name: str = Field(
+        None,
+        description="Unique name of this attribute definition. When provided during creation, this should be the "
             "human-readable name for the attribute. When returned (or provided for an update) this will be "
             "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
             "by the user without impacting existing instances of the attribute.)\n",
-        )
-        include_in_notification: Optional[bool] = Field(
-            None, description="", example=False
-        )
-        index_type: Optional[IndexType] = Field(None, description="", example="DEFAULT")
-        is_indexable: Optional[bool] = Field(
-            None,
-            description="When true, values for this attribute will be indexed for searching.\n",
-            example=True,
-        )
-        is_optional: Optional[bool] = Field(
-            True,
-            description="When true, a value will not be required for this attribute.\n",
-            example=True,
-        )
-        is_unique: Optional[bool] = Field(
-            False,
-            description="When true, this attribute must be unique across all assets.\n",
-            example=False,
-        )
-        options: Optional[Dict[str, Any]] = Field(
-            None, description="Extensible options for the attribute."
-        )
-        search_weight: Optional[float] = Field(None, description="")
-        skip_scrubbing: Optional[bool] = Field(
-            False,
-            description="When true, scrubbing of data will be skipped.\n",
-            example=False,
-        )
-        type_name: Optional[str] = Field(
-            "string", description="Type of this attribute.\n", example="string"
-        )
-        values_min_count: Optional[float] = Field(
-            0,
-            description="Minimum number of values for this attribute. If greater than 0, this attribute "
+    )
+    include_in_notification: Optional[bool] = Field(
+        False, description="", example=False
+    )
+    index_type: Optional[IndexType] = Field(None, description="", example="DEFAULT")
+    is_indexable: Optional[bool] = Field(
+        True,
+        description="When true, values for this attribute will be indexed for searching.\n",
+        example=True,
+    )
+    is_optional: Optional[bool] = Field(
+        True,
+        description="When true, a value will not be required for this attribute.\n",
+        example=True,
+    )
+    is_unique: Optional[bool] = Field(
+        False,
+        description="When true, this attribute must be unique across all assets.\n",
+        example=False,
+    )
+    options: AttributeDef.Options = Field(
+        None, description="Extensible options for the attribute."
+    )
+    search_weight: Optional[float] = Field(None, description="")
+    skip_scrubbing: Optional[bool] = Field(
+        False,
+        description="When true, scrubbing of data will be skipped.\n",
+        example=False,
+    )
+    type_name: Optional[str] = Field(
+        "string", description="Type of this attribute.\n", example="string"
+    )
+    values_min_count: Optional[float] = Field(
+        0,
+        description="Minimum number of values for this attribute. If greater than 0, this attribute "
             "becomes required.\n",
-            example=0,
-        )
-        values_max_count: Optional[float] = Field(
-            1,
-            description="Maximum number of values for this attribute. If greater than 1, this attribute allows "
-            "multiple values.\n",
-            example=1,
-        )
-        index_type_es_fields: Optional[Dict[str, dict[str, str]]] = Field(
-            None, description="", alias="indexTypeESFields"
-        )
+        example=0,
+    )
+    values_max_count: Optional[float] = Field(
+        1,
+        description="Maximum number of values for this attribute. If greater than 1, this attribute allows "
+        "multiple values.\n",
+        example=1,
+    )
+    index_type_es_config: Optional[Dict[str, str]] = Field(
+        None, description="", alias="indexTypeESConfig"
+    )
+    index_type_es_fields: Optional[Dict[str, dict[str, str]]] = Field(
+        None, description="", alias="indexTypeESFields"
+    )
 
+
+class StructDef(TypeDef):
     category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
-    attribute_defs: Optional[List[StructDef.AttributeDef]] = Field(
+    attribute_defs: Optional[List[AttributeDef]] = Field(
         None,
         description="List of attributes that should be available in the type_ definition.",
     )
@@ -164,7 +238,7 @@ class ClassificationDef(TypeDef):
         [], description="Unused.", example=[]
     )
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
-    display_name: Optional[str] = Field(
+    display_name: str = Field(
         None, description="Name used for display purposes (in user interfaces).\n"
     )
     entity_types: Optional[List[str]] = Field(
@@ -247,87 +321,6 @@ class RelationshipDef(TypeDef):
 
 
 class CustomMetadataDef(TypeDef):
-    class AttributeDef(AtlanObject):
-        cardinality: Optional[Cardinality] = Field(
-            "SINGLE",
-            description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
-            "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates they are "
-            "unique and unordered.\n",
-            example="SINGLE",
-        )
-        constraints: Optional[List[Dict[str, Any]]] = Field(
-            None, description="Internal use only."
-        )
-        description: Optional[str] = Field(
-            None,
-            description="Description of the attribute definition.\n",
-            example="Our first custom metadata field.",
-        )
-        display_name: Optional[str] = Field(
-            None,
-            description="Name to use within all user interactions through the user interface. Note that this may not "
-            "be the same name used to update or interact with the attribute through API operations, for "
-            "that see the `name` property. (This property can be used instead of `name` for the creation "
-            "of an attribute definition as well.)\n",
-            example="Custom Field 1",
-        )
-        include_in_notification: Optional[bool] = Field(
-            None, description="", example=False
-        )
-        index_type: Optional[IndexType] = Field(None, description="", example="DEFAULT")
-        index_type_es_config: Optional[Dict[str, str]] = Field(
-            None, description="", alias="indexTypeESConfig"
-        )
-        index_type_es_fields: Optional[Dict[str, Dict[str, str]]] = Field(
-            None, description="", alias="indexTypeESFields"
-        )
-        is_indexable: Optional[bool] = Field(
-            None,
-            description="When true, values for this attribute will be indexed for searching.\n",
-            example=True,
-        )
-        is_optional: Optional[bool] = Field(
-            True,
-            description="When true, a value will not be required for this attribute.\n",
-            example=True,
-        )
-        is_unique: Optional[bool] = Field(
-            False,
-            description="When true, this attribute must be unique across all assets.\n",
-            example=False,
-        )
-        name: Optional[str] = Field(
-            None,
-            description="Unique name of this attribute definition. When provided during creation, this should be the "
-            "human-readable name for the attribute. When returned (or provided for an update) this will be "
-            "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
-            "by the user without impacting existing instances of the attribute.)\n",
-        )
-        options: Optional[Dict[str, Any]] = Field(
-            None, description="Extensible options for the attribute."
-        )
-        search_weight: Optional[float] = Field(None, description="")
-        skip_scrubbing: Optional[bool] = Field(
-            False,
-            description="When true, scrubbing of data will be skipped.\n",
-            example=False,
-        )
-        type_name: Optional[str] = Field(
-            "string", description="Type of this attribute.\n", example="string"
-        )
-        values_min_count: Optional[float] = Field(
-            0,
-            description="Minimum number of values for this attribute. If greater than 0, this attribute becomes "
-            "required.\n",
-            example=0,
-        )
-        values_max_count: Optional[float] = Field(
-            1,
-            description="Maximum number of values for this attribute. If greater than 1, this attribute allows "
-            "multiple values.\n",
-            example=1,
-        )
-
     class Options(AtlanObject):
         emoji: Optional[str] = Field(
             None,
@@ -348,11 +341,11 @@ class CustomMetadataDef(TypeDef):
             description="If the logoType is image, this should hold a URL to the image.\n",
         )
 
-    attribute_defs: Optional[List[CustomMetadataDef.AttributeDef]] = Field(
-        [], description="Unused.", example=[]
+    attribute_defs: Optional[List[AttributeDef]] = Field(
+        [], description="List of custom attributes defined within the custom metadata.\n", example=[]
     )
     category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
-    display_name: Optional[str] = Field(
+    display_name: str = Field(
         None, description="Name used for display purposes (in user interfaces).\n"
     )
     options: Optional[CustomMetadataDef.Options] = Field(

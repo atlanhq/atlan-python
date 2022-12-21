@@ -17,6 +17,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+from typing import Optional
+
 class AtlanServiceException(Exception):
     """Exception raised for errors in API calls.
     Attributes:
@@ -47,3 +50,37 @@ class AtlanServiceException(Exception):
             )
 
         Exception.__init__(self, msg)
+
+
+class AtlanException(Exception):
+    """
+    Base class for any error raised by interactions with Atlan's APIs.
+    """
+
+    def __init__(self, message: str, code: str, status_code: int, cause: Optional[Exception]=None):
+        self.message = message
+        self.code = code
+        self.status_code = status_code
+        self.cause = cause
+
+
+
+class InvalidRequestException(AtlanException):
+    """
+    Error that occurs if the request being attempted is not valid for some reason, such as containing insufficient
+    parameters of incorrect values for those parameters.
+    """
+
+    def __init__(self, message: str, code: str, param: Optional[str]=None, cause: Optional[Exception]=None):
+        super().__init__(message, code, 400, cause)
+        self.param = param
+
+
+class LogicException(AtlanException):
+    """
+    Error that occurs when an unexpected logic problem arises. If these are ever experienced, they should be
+    immediately reported against the SDK as bugs.
+    """
+
+    def __init__(self, message: str, code: str, cause: Optional[Exception]=None):
+        super().__init__(message, code, 500, cause)

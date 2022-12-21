@@ -85,7 +85,7 @@ class AtlanClient(BaseSettings):
             return None
         elif response.status_code == api.expected_status:
             try:
-                if response.content is None:
+                if response.content is None or response.status_code == HTTPStatus.NO_CONTENT:
                     return None
                 if LOGGER.isEnabledFor(logging.DEBUG):
                     LOGGER.debug(

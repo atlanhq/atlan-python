@@ -21,13 +21,16 @@
 from pyatlan.model.typedef import TypeDefResponse
 from pyatlan.utils import API, BASE_URI, HTTPMethod, HTTPStatus
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.model.typedef import TypeDef, ClassificationDef, CustomMetadataDef
+from pyatlan.exceptions import InvalidRequestException
 
 
 class TypeDefClient:
     TYPES_API = BASE_URI + "types/"
     TYPEDEFS_API = TYPES_API + "typedefs/"
-    TYPEDEF_BY_NAME = TYPES_API + "typedef.py/name"
-    TYPEDEF_BY_GUID = TYPES_API + "typedef.py/guid"
+    TYPEDEF_BY_NAME = TYPES_API + "typedef/name/"
+    TYPEDEF_BY_GUID = TYPES_API + "typedef/guid/"
     GET_BY_NAME_TEMPLATE = TYPES_API + "{path_type}/name/{name}"
     GET_BY_GUID_TEMPLATE = TYPES_API + "{path_type}/guid/{guid}"
 
@@ -51,6 +54,52 @@ class TypeDefClient:
         raw_json = self.client.call_api(TypeDefClient.GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
+    def get_typedefs(self, type: AtlanTypeCategory) -> TypeDefResponse:
+        query_params = {
+            "type": type.value
+        }
+        raw_json = self.client.call_api(
+            TypeDefClient.GET_ALL_TYPE_DEFS.format_path_with_params(),
+            query_params,
+        )
+        return TypeDefResponse(**raw_json)
+
+    def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        payload = None
+        if isinstance(typedef, ClassificationDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[typedef],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                businessMetadataDefs=[]
+            )
+        elif isinstance(typedef, CustomMetadataDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                businessMetadataDefs=[typedef]
+            )
+        else:
+            raise InvalidRequestException(
+                "Unable to create new type definitions of category: " + typedef.category.value,
+                param="category"
+            )
+            # Throw an invalid request exception
+        raw_json = self.client.call_api(
+            TypeDefClient.CREATE_TYPE_DEFS,
+            request_obj=payload
+        )
+        return TypeDefResponse(**raw_json)
+
+    def purge_typedef(self, internal_name: str) -> None:
+        self.client.call_api(TypeDefClient.DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
 
 if __name__ == "__main__":
     client = TypeDefClient(AtlanClient())
