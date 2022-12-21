@@ -17,15 +17,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Union
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.core import (
-    AssetResponse,
+from pyatlan.model.assets import (
+    Asset,
+    Referenceable,
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
     AssetMutationResponse,
-    BulkRequest,
 )
-
+from pyatlan.model.core import AssetResponse, BulkRequest
 from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.utils import (
     API,
@@ -37,7 +40,7 @@ from pyatlan.utils import (
     HTTPStatus,
 )
 
-T = TypeVar("T")
+T = TypeVar("T", bound=Referenceable)
 
 
 class EntityClient:
@@ -211,13 +214,18 @@ class EntityClient:
     def __init__(self, client: AtlanClient):
         self.client = client
 
+    Assets = Union[AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm]
+    Asset_Types = Union[
+        Type[AtlasGlossary], Type[AtlasGlossaryCategory], Type[AtlasGlossaryTerm]
+    ]
+
     def get_entity_by_guid(
         self,
         guid,
-        asset_type: Type[T],
+        asset_type: Asset_Types,
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
-    ) -> T:
+    ) -> Assets:
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
@@ -231,25 +239,21 @@ class EntityClient:
             raw_json["entity"]["relationshipAttributes"]
         )
         raw_json["entity"]["relationshipAttributes"] = {}
-        response = AssetResponse[asset_type](**raw_json)
-        return response.entity
+        if issubclass(asset_type, AtlasGlossary):
+            return AssetResponse[AtlasGlossary](**raw_json).entity
+        if issubclass(asset_type, AtlasGlossaryCategory):
+            return AssetResponse[AtlasGlossaryCategory](**raw_json).entity
+        if issubclass(asset_type, AtlasGlossaryTerm):
+            return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
 
-    def update_entity(self, entity: T) -> AssetMutationResponse[T]:
+    def upsert(self, entity: Asset) -> AssetMutationResponse:
         request = BulkRequest[T](entities=[entity])
         raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
-        response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
-        return response
+        return AssetMutationResponse(**raw_json)
 
-    def create_entity(self, entity: T) -> AssetMutationResponse[T]:
-        request = BulkRequest[T](entities=[entity])
-        raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
-        response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
-        return response
-
-    def purge_entity_by_guid(self, guid) -> AssetMutationResponse[T]:
+    def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
         raw_json = self.client.call_api(
             EntityClient.DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
             {"deleteType": AtlanDeleteType.HARD.value},
         )
-        response: AssetMutationResponse[T] = AssetMutationResponse(**raw_json)
-        return response
+        return AssetMutationResponse(**raw_json)

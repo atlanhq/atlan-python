@@ -101,33 +101,3 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
-
-
-class MutatedEntities(AtlanObject, GenericModel, Generic[T]):
-    CREATE: Optional[list[T]] = Field(
-        None,
-        description="Assets that were created. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
-        alias="CREATE",
-    )
-    UPDATE: Optional[list[T]] = Field(
-        None,
-        description="Assets that were updated. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
-        alias="UPDATE",
-    )
-    DELETE: Optional[list[T]] = Field(
-        None,
-        description="Assets that were deleted. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
-        alias="DELETE",
-    )
-
-
-class AssetMutationResponse(AtlanObject, GenericModel, Generic[T]):
-    guid_assignments: dict[str, Any] = Field(
-        None, description="Map of assigned unique identifiers for the changed assets."
-    )
-    mutated_entities: Optional[MutatedEntities] = Field(
-        None, description="Assets that were changed."
-    )

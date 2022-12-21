@@ -177,6 +177,11 @@ class Referenceable(AtlanObject):
         description="Time (epoch) at which this object was created, in milliseconds.\n",
         example=1648852296555,
     )
+    delete_handler: Optional[str] = Field(
+        None,
+        description="Details on the handler used for deletion of the asset.",
+        example="Hard",
+    )
     guid: Optional[str] = Field(
         description="Unique identifier of the entity instance.\n",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
@@ -244,6 +249,35 @@ class Referenceable(AtlanObject):
 
 class Asset(Referenceable):
     """Description"""
+
+    _subtypes_: dict[str, type] = dict()
+
+    def __init_subclass__(cls, type_name=None):
+        cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._convert_to_real_type_
+
+    @classmethod
+    def _convert_to_real_type_(cls, data):
+
+        if isinstance(data, Asset):
+            return data
+
+        data_type = (
+            data.get("type_name") if "type_name" in data else data.get("typeName")
+        )
+
+        if data_type is None:
+            raise ValueError("Missing 'type' in Asset")
+
+        sub = cls._subtypes_.get(data_type)
+
+        if sub is None:
+            raise TypeError(f"Unsupport sub-type: {data_type}")
+
+        return sub(**data)
 
     class Attributes(Referenceable.Attributes):
         name: str = Field(None, description="", alias="name")
@@ -558,7 +592,7 @@ class Asset(Referenceable):
         self.attributes.announcement_type = None
 
 
-class AtlasGlossary(Asset):
+class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
     type_name: Literal["AtlasGlossary"] = Field("AtlasGlossary")
@@ -601,15 +635,15 @@ class AtlasGlossary(Asset):
     )
 
 
-class DataSet(Asset):
+class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
 
-class ProcessExecution(Asset):
+class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
 
-class AtlasGlossaryTerm(Asset):
+class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
 
     type_name: Literal["AtlasGlossaryTerm"] = Field("AtlasGlossaryTerm")
@@ -695,15 +729,15 @@ class AtlasGlossaryTerm(Asset):
     )
 
 
-class Cloud(Asset):
+class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
 
-class Infrastructure(Asset):
+class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
 
 
-class Connection(Asset):
+class Connection(Asset, type_name="Connection"):
     """Description"""
 
     type_name: Literal["Connection"] = Field("Connection")
@@ -770,7 +804,7 @@ class Connection(Asset):
     )
 
 
-class Process(Asset):
+class Process(Asset, type_name="Process"):
     """Description"""
 
     class Attributes(Asset.Attributes):
@@ -802,7 +836,7 @@ class Process(Asset):
     )
 
 
-class AtlasGlossaryCategory(Asset):
+class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
 
     type_name: Literal["AtlasGlossaryCategory"] = Field("AtlasGlossaryCategory")
@@ -849,7 +883,7 @@ class AtlasGlossaryCategory(Asset):
     )
 
 
-class Badge(Asset):
+class Badge(Asset, type_name="Badge"):
     """Description"""
 
     type_name: Literal["Badge"] = Field("Badge")
@@ -881,11 +915,11 @@ class Badge(Asset):
     )
 
 
-class Namespace(Asset):
+class Namespace(Asset, type_name="Namespace"):
     """Description"""
 
 
-class Catalog(Asset):
+class Catalog(Asset, type_name="Catalog"):
     """Description"""
 
 
@@ -5563,6 +5597,36 @@ class SalesforceReport(Salesforce):
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MutatedEntities(AtlanObject):
+    CREATE: Optional[list[Asset]] = Field(
+        None,
+        description="Assets that were created. The detailed properties of the returned asset will vary based on the "
+        "type of asset, but listed in the example are the common set of properties across assets.",
+        alias="CREATE",
+    )
+    UPDATE: Optional[list[Asset]] = Field(
+        None,
+        description="Assets that were updated. The detailed properties of the returned asset will vary based on the "
+        "type of asset, but listed in the example are the common set of properties across assets.",
+        alias="UPDATE",
+    )
+    DELETE: Optional[list[Asset]] = Field(
+        None,
+        description="Assets that were deleted. The detailed properties of the returned asset will vary based on the "
+        "type of asset, but listed in the example are the common set of properties across assets.",
+        alias="DELETE",
+    )
+
+
+class AssetMutationResponse(AtlanObject):
+    guid_assignments: dict[str, Any] = Field(
+        None, description="Map of assigned unique identifiers for the changed assets."
+    )
+    mutated_entities: Optional[MutatedEntities] = Field(
+        None, description="Assets that were changed."
     )
 
 

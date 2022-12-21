@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 from pydantic.error_wrappers import ValidationError
 
-from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, AtlasGlossaryCategory
-from pyatlan.model.core import AssetResponse, AssetMutationResponse, Announcement
+from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, AtlasGlossaryCategory, AssetMutationResponse
+from pyatlan.model.core import AssetResponse, Announcement
 from pyatlan.model.enums import AnnouncementType
 from deepdiff import DeepDiff
 
@@ -67,8 +67,8 @@ def the_json(request):
                           ("glossary_category.json", AtlasGlossaryCategory),
                           ("glossary_term.json", AtlasGlossaryTerm),
                           ("glossary_term2.json", AtlasGlossaryTerm),
-                          ("asset_mutated_response_empty.json", AssetMutationResponse[AtlasGlossary]),
-                          ("asset_mutated_response_update.json", AssetMutationResponse[AtlasGlossary])],
+                          ("asset_mutated_response_empty.json", AssetMutationResponse),
+                          ("asset_mutated_response_update.json", AssetMutationResponse)],
                          indirect=["the_json"])
 def test_constructor(the_json, a_type):
     asset = a_type(**the_json)
