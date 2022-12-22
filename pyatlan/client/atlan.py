@@ -22,13 +22,12 @@ import json
 import logging
 import os
 
-
 import requests
+from pydantic import BaseSettings, Field, HttpUrl, PrivateAttr
 
-from pydantic import BaseSettings, HttpUrl, PrivateAttr, Field
 from pyatlan.exceptions import AtlanServiceException
-from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger
 from pyatlan.model.core import AtlanObject
+from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger
 
 LOGGER = get_logger()
 
@@ -85,7 +84,10 @@ class AtlanClient(BaseSettings):
             return None
         elif response.status_code == api.expected_status:
             try:
-                if response.content is None or response.status_code == HTTPStatus.NO_CONTENT:
+                if (
+                    response.content is None
+                    or response.status_code == HTTPStatus.NO_CONTENT
+                ):
                     return None
                 if LOGGER.isEnabledFor(logging.DEBUG):
                     LOGGER.debug(

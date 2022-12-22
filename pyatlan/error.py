@@ -1,14 +1,16 @@
 from __future__ import absolute_import, division, print_function
 
+from typing import Optional
+
 from pyatlan.model.core import AtlanObject
 
 
 class AtlanErrorObject(AtlanObject):
     def __init__(
         self,
-        error_code: str = None,
-        error_message: str = None,
-        entity_guid: str = None
+        error_code: Optional[str] = None,
+        error_message: Optional[str] = None,
+        entity_guid: Optional[str] = None,
     ):
         super(AtlanObject, self).__init__()
         self.error_code = error_code
@@ -20,12 +22,8 @@ class AtlanError(Exception):
     """
     Base class for any error raised by interactions with Atlan's APIs.
     """
-    def __init__(
-        self,
-        message: str,
-        code: str,
-        status_code: int
-    ):
+
+    def __init__(self, message: str, code: str, status_code: Optional[int]):
         super(AtlanError, self).__init__(message)
         self._message = message
         self.code = code
@@ -55,6 +53,7 @@ class APIError(AtlanError):
     Error that occurs when the SDK receives a response that indicates a problem, but that the SDK currently has no
     other way of interpreting. Basically, this is a catch-all for errors that do not fit any more specific exception.
     """
+
     pass
 
 
@@ -63,26 +62,22 @@ class APIConnectionError(AtlanError):
         self,
         message: str,
         code: str,
-        status_code: int = None,
+        status_code: Optional[int] = None,
         should_retry: bool = False,
     ):
-        super(APIConnectionError, self).__init__(
-            message, code, status_code
-        )
+
+        super(APIConnectionError, self).__init__(message, code, status_code)
         self.should_retry = should_retry
 
 
 class AtlanErrorWithParamCode(AtlanError):
     def __repr__(self):
-        return (
-            "%s(message=%r, param=%r, code=%r, status_code=%r)"
-            % (
-                self.__class__.__name__,
-                self._message,
-                self.param,
-                self.code,
-                self.status_code
-            )
+        return "%s(message=%r, param=%r, code=%r, status_code=%r)" % (
+            self.__class__.__name__,
+            self._message,
+            self.param,
+            self.code,
+            self.status_code,
         )
 
 
@@ -91,16 +86,9 @@ class InvalidRequestError(AtlanErrorWithParamCode):
     Error that occurs if the request being attempted is not valid for some reason, such as containing insufficient
     parameters or incorrect values for those parameters.
     """
-    def __init__(
-        self,
-        message: str,
-        param: str,
-        code: str,
-        status_code: int = 400
-    ):
-        super(InvalidRequestError, self).__init__(
-            message, code, status_code
-        )
+
+    def __init__(self, message: str, param: str, code: str, status_code: int = 400):
+        super(InvalidRequestError, self).__init__(message, code, status_code)
         self.param = param
 
 
@@ -108,12 +96,13 @@ class AuthenticationError(AtlanError):
     """
     Error that occurs when there is a problem with the API token configured in the SDK.
     """
+
     def __init__(
-            self,
-            message: str,
-            code: str,
-            status_code: int = 403,
-            should_retry: bool = False
+        self,
+        message: str,
+        code: str,
+        status_code: int = 403,
+        should_retry: bool = False,
     ):
         super(AtlanError, self).__init__(message, code, status_code)
         self.should_retry = should_retry
@@ -125,12 +114,9 @@ class AtlanPermissionError(AuthenticationError):
     requested operation on a given object. These can be temporary in nature, as there is some asynchronous processing
     that occurs when permissions are granted.
     """
+
     def __init__(
-            self,
-            message: str,
-            code: str,
-            status_code: int = 403,
-            should_retry: bool = True
+        self, message: str, code: str, status_code: int = 403, should_retry: bool = True
     ):
         super(AuthenticationError, self).__init__(message, code, status_code)
         self.should_retry = should_retry
@@ -142,25 +128,18 @@ class RateLimitError(AtlanError):
     By default, Atlan allows 1800 requests per minute. If your use of the SDK exceed this, you will begin to see
     these exceptions.
     """
-    def __init__(
-            self,
-            message: str,
-            code: str,
-            status_code: int = 429
-    ):
+
+    def __init__(self, message: str, code: str, status_code: int = 429):
         super(AtlanError, self).__init__(message, code, status_code)
 
 
 class NotFoundError(AtlanError):
     """
-    Error that occurs if a requested object does not exist. For example, trying to retrieve an asset that does not exist.
+    Error that occurs if a requested object does not exist. For example, trying to retrieve an asset that does not
+    exist.
     """
-    def __init__(
-            self,
-            message: str,
-            code: str,
-            status_code: int = 404
-    ):
+
+    def __init__(self, message: str, code: str, status_code: int = 404):
         super(AtlanError, self).__init__(message, code, status_code)
 
 
@@ -169,12 +148,8 @@ class ConflictError(AtlanError):
     Error that occurs if the operation being attempted hits a conflict within Atlan. For example, trying to create
     an object that already exists.
     """
-    def __init__(
-            self,
-            message: str,
-            code: str,
-            status_code: int = 409
-    ):
+
+    def __init__(self, message: str, code: str, status_code: int = 409):
         super(AtlanError, self).__init__(message, code, status_code)
 
 
@@ -183,10 +158,6 @@ class LogicError(AtlanError):
     Error that occurs when an unexpected logic problem arises. If these are ever experienced, they should be
     immediately reported against the SDK as bugs.
     """
-    def __init__(
-            self,
-            message: str,
-            code: str,
-            status_code: int = 500
-    ):
+
+    def __init__(self, message: str, code: str, status_code: int = 500):
         super(AtlanError, self).__init__(message, code, status_code)

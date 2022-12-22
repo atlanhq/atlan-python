@@ -1,9 +1,9 @@
+from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.role import RoleClient
 from pyatlan.model.role import AtlanRole
 
-from typing import Optional
 
 class RoleCache:
 

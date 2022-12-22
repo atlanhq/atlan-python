@@ -1,16 +1,19 @@
 from __future__ import annotations
-from typing import Optional, Dict, Any, List, Literal
-from pydantic import Field
+
 from datetime import datetime
-from pyatlan.model.core import AtlanObject, Classification, Announcement
+from typing import Any, Dict, List, Literal, Optional
+
+from pydantic import Field
+
+from pyatlan.model.core import Announcement, AtlanObject, Classification
 from pyatlan.model.enums import (
+    AnnouncementType,
     CertificateStatus,
     EntityStatus,
+    IconType,
+    SourceCostUnitType,
     google_datastudio_asset_type,
     powerbi_endorsement,
-    IconType,
-    AnnouncementType,
-    SourceCostUnitType,
 )
 from pyatlan.utils import next_id
 
@@ -4549,9 +4552,6 @@ class TableauProject(Tableau):
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
-        metrics: Optional[list[TableauMetric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
         )  # relationship
@@ -4677,9 +4677,6 @@ class TableauDatasource(Tableau):
             None, description="", alias="readme"
         )  # relationship
         fields: Optional[list[TableauCalculatedField]] = Field(
-            None, description="", alias="fields"
-        )  # relationship
-        fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="fields"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(

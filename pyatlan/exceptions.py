@@ -20,6 +20,7 @@
 
 from typing import Optional
 
+
 class AtlanServiceException(Exception):
     """Exception raised for errors in API calls.
     Attributes:
@@ -57,12 +58,17 @@ class AtlanException(Exception):
     Base class for any error raised by interactions with Atlan's APIs.
     """
 
-    def __init__(self, message: str, code: str, status_code: int, cause: Optional[Exception]=None):
+    def __init__(
+        self,
+        message: str,
+        status_code: int,
+        code: Optional[str],
+        cause: Optional[Exception] = None,
+    ):
         self.message = message
         self.code = code
         self.status_code = status_code
         self.cause = cause
-
 
 
 class InvalidRequestException(AtlanException):
@@ -71,8 +77,14 @@ class InvalidRequestException(AtlanException):
     parameters of incorrect values for those parameters.
     """
 
-    def __init__(self, message: str, code: str, param: Optional[str]=None, cause: Optional[Exception]=None):
-        super().__init__(message, code, 400, cause)
+    def __init__(
+        self,
+        message: str,
+        code: Optional[str] = None,
+        param: Optional[str] = None,
+        cause: Optional[Exception] = None,
+    ):
+        super().__init__(message, 400, code, cause)
         self.param = param
 
 
@@ -82,5 +94,5 @@ class LogicException(AtlanException):
     immediately reported against the SDK as bugs.
     """
 
-    def __init__(self, message: str, code: str, cause: Optional[Exception]=None):
-        super().__init__(message, code, 500, cause)
+    def __init__(self, message: str, code: str, cause: Optional[Exception] = None):
+        super().__init__(message, 500, code, cause)

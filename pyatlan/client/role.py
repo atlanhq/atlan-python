@@ -17,30 +17,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyatlan.client.atlan import AtlanClient
 from typing import Optional
-from pyatlan.model.role import (
-    RoleResponse
-)
-from pyatlan.utils import (
-    API,
-    ADMIN_URI,
-    HTTPMethod,
-    HTTPStatus,
-)
+
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.role import RoleResponse
+from pyatlan.utils import ADMIN_URI, API, HTTPMethod, HTTPStatus
 
 
 class RoleClient:
     ROLE_API = ADMIN_URI + "roles"
-    
+
     # Role APIs
     GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK)
 
     def __init__(self, client: AtlanClient):
         self.client = client
 
-
-    def get_roles(self, limit: int, filter: Optional[str]=None, sort: Optional[str]=None, count: bool=True, offset: int=0) -> RoleResponse:
+    def get_roles(
+        self,
+        limit: int,
+        filter: Optional[str] = None,
+        sort: Optional[str] = None,
+        count: bool = True,
+        offset: int = 0,
+    ) -> RoleResponse:
         if filter is None:
             filter = ""
         if sort is None:
@@ -50,12 +50,13 @@ class RoleClient:
             "sort": sort,
             "count": count,
             "offset": offset,
-            "limit": limit
+            "limit": limit,
         }
-        raw_json = self.client.call_api(RoleClient.GET_ROLES.format_path_with_params(), query_params)
+        raw_json = self.client.call_api(
+            RoleClient.GET_ROLES.format_path_with_params(), query_params
+        )
         response = RoleResponse(**raw_json)
         return response
-
 
     def get_all_roles(self) -> RoleResponse:
         """

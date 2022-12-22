@@ -1,4 +1,4 @@
-from pyatlan.cache import RoleCache
+from pyatlan.cache.role_cache import RoleCache
 
 
 def test_retrieve_admin():

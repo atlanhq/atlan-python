@@ -1,10 +1,10 @@
+from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.typedef import TypeDefClient
-from pyatlan.model.typedef import ClassificationDef
 from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.model.typedef import ClassificationDef
 
-from typing import Optional
 
 class ClassificationCache:
 
@@ -16,7 +16,9 @@ class ClassificationCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = TypeDefClient(AtlanClient()).get_typedefs(type=AtlanTypeCategory.CLASSIFICATION)
+        response = TypeDefClient(AtlanClient()).get_typedefs(
+            type=AtlanTypeCategory.CLASSIFICATION
+        )
         if response is not None:
             cls.cache_by_id = dict()
             cls.map_id_to_name = dict()
@@ -34,7 +36,7 @@ class ClassificationCache:
         Translate the provided human-readable classification name to its Atlan-internal ID string.
         """
         cls_id = cls.map_name_to_id.get(name)
-        if not cls_id and not name in cls.deleted_names:
+        if not cls_id and name not in cls.deleted_names:
             # If not found, refresh the cache and look again (could be stale)
             cls._refresh_cache()
             cls_id = cls.map_name_to_id.get(name)
@@ -51,7 +53,7 @@ class ClassificationCache:
         Translate the provided Atlan-internal classification ID string to the human-readable classification name.
         """
         cls_name = cls.map_id_to_name.get(idstr)
-        if not cls_name and not idstr in cls.deleted_ids:
+        if not cls_name and idstr not in cls.deleted_ids:
             # If not found, refresh the cache and look again (could be stale)
             cls._refresh_cache()
             cls_name = cls.map_id_to_name.get(idstr)

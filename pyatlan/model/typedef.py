@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import Field
 
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import AtlanTypeCategory, IndexType, Cardinality
+from pyatlan.model.enums import AtlanTypeCategory, Cardinality, IndexType
 
 
 class TypeDef(AtlanObject):
@@ -72,75 +72,83 @@ class AttributeDef(AtlanObject):
             description="Optional description of the attribute.\n",
         )
         applicable_entity_types: Optional[str] = Field(
-            "[\"Asset\"]",
+            '["Asset"]',
             description="Set of entities on which this attribute can be applied.\n",
         )
         custom_applicable_entity_types: Optional[str] = Field(
-            "[\"AtlasGlossary\",\"LookerFolder\",\"AtlasGlossaryCategory\",\"SnowflakePipe\",\"Process\",\"LookerDashboard\",\"View\",\"PowerBIWorkspace\",\"PowerBIDatasource\",\"ModeChart\",\"GCSBucket\",\"LookerField\",\"LookerQuery\",\"PowerBITile\",\"PresetChart\",\"PowerBIDashboard\",\"SalesforceReport\",\"SalesforceObject\",\"TableauDatasource\",\"Folder\",\"S3Object\",\"MetabaseCollection\",\"SalesforceOrganization\",\"PowerBIDataset\",\"TableauDashboard\",\"S3Bucket\",\"PowerBIMeasure\",\"TablePartition\",\"TableauWorkbook\",\"TableauSite\",\"Table\",\"TableauCalculatedField\",\"TableauFlow\",\"ModeQuery\",\"PresetDataset\",\"SalesforceDashboard\",\"Collection\",\"LookerModel\",\"PresetWorkspace\",\"DbtModelColumn\",\"PowerBIDataflow\",\"LookerView\",\"MetabaseDashboard\",\"DbtModel\",\"SalesforceField\",\"Query\",\"TableauWorksheet\",\"DataStudioAsset\",\"PowerBITable\",\"TableauProject\",\"DbtProcess\",\"TableauDatasourceField\",\"APIPath\",\"DbtMetric\",\"LookerLook\",\"ColumnProcess\",\"PowerBIReport\",\"MaterialisedView\",\"Schema\",\"SnowflakeStream\",\"Database\",\"LookerProject\",\"DbtColumnProcess\",\"Column\",\"LookerTile\",\"BIProcess\",\"TableauMetric\",\"PowerBIColumn\",\"PresetDashboard\",\"LookerExplore\",\"ModeReport\",\"ModeCollection\",\"GCSObject\",\"MetabaseQuestion\",\"APISpec\",\"PowerBIPage\",\"AtlasGlossaryTerm\",\"ModeWorkspace\"]",
-            description="Set of entities on which this attribute should appear.\n"
+            '["AtlasGlossary","LookerFolder","AtlasGlossaryCategory","SnowflakePipe","Process","LookerDashboard",'
+            '"View","PowerBIWorkspace","PowerBIDatasource","ModeChart","GCSBucket","LookerField","LookerQuery",'
+            '"PowerBITile","PresetChart","PowerBIDashboard","SalesforceReport","SalesforceObject","TableauDatasource",'
+            '"Folder","S3Object","MetabaseCollection","SalesforceOrganization","PowerBIDataset","TableauDashboard",'
+            '"S3Bucket","PowerBIMeasure","TablePartition","TableauWorkbook","TableauSite","Table",'
+            '"TableauCalculatedField","TableauFlow","ModeQuery","PresetDataset","SalesforceDashboard",'
+            '"Collection","LookerModel","PresetWorkspace","DbtModelColumn","PowerBIDataflow","LookerView",'
+            '"MetabaseDashboard","DbtModel","SalesforceField","Query","TableauWorksheet","DataStudioAsset",'
+            '"PowerBITable","TableauProject","DbtProcess","TableauDatasourceField","APIPath","DbtMetric","LookerLook",'
+            '"ColumnProcess","PowerBIReport","MaterialisedView","Schema","SnowflakeStream","Database","LookerProject",'
+            '"DbtColumnProcess","Column","LookerTile","BIProcess","TableauMetric","PowerBIColumn","PresetDashboard",'
+            '"LookerExplore","ModeReport","ModeCollection","GCSObject","MetabaseQuestion","APISpec","PowerBIPage",'
+            '"AtlasGlossaryTerm","ModeWorkspace"]',
+            description="Set of entities on which this attribute should appear.\n",
         )
         allow_search: bool = Field(
             False,
-            description="Whether the attribute should be searchable (true) or not (false).\n"
+            description="Whether the attribute should be searchable (true) or not (false).\n",
         )
         max_str_length: str = Field(
-            "100000000",
-            description="Maximum length allowed for a string value.\n"
+            "100000000", description="Maximum length allowed for a string value.\n"
         )
         allow_filtering: bool = Field(
             True,
-            description="Whether this attribute should appear in the filterable facets of discovery (true) or not (false).\n"
+            description="Whether this attribute should appear in the filterable facets of discovery (true) or not "
+            "(false).\n",
         )
         multi_value_select: bool = Field(
             False,
-            description="Whether this attribute can have multiple values (true) or only a single value (false).\n"
+            description="Whether this attribute can have multiple values (true) or only a single value (false).\n",
         )
         show_in_overview: bool = Field(
             False,
-            description="Whether users will see this attribute in the overview tab of the sidebar (true) or not (false).\n"
+            description="Whether users will see this attribute in the overview tab of the sidebar (true) or not "
+            "(false).\n",
         )
         is_deprecated: Optional[str] = Field(
             None,
-            description="Whether the attribute is deprecated ('true') or not (None or 'false').\n"
+            description="Whether the attribute is deprecated ('true') or not (None or 'false').\n",
         )
         is_enum: Optional[bool] = Field(
             None,
-            description="Whether the attribute is an enumeration (true) or not (None or false).\n"
+            description="Whether the attribute is an enumeration (true) or not (None or false).\n",
         )
         enum_type: Optional[str] = Field(
             None,
-            description="Name of the enumeration (options), when the attribute is an enumeration.\n"
+            description="Name of the enumeration (options), when the attribute is an enumeration.\n",
         )
         custom_type: Optional[str] = Field(
             None,
-            description="Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.\n"
+            description="Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.\n",
         )
         is_archived: bool = Field(
             False,
-            description="Whether the attribute has been deleted (true) or is still active (false).\n"
+            description="Whether the attribute has been deleted (true) or is still active (false).\n",
         )
         archived_at: Optional[int] = Field(
-            None,
-            description="When the attribute was deleted.\n"
+            None, description="When the attribute was deleted.\n"
         )
         archived_by: Optional[str] = Field(
-            None,
-            description="User who deleted the attribute.\n"
+            None, description="User who deleted the attribute.\n"
         )
-        is_soft_reference: Optional[str] = Field(
-            None,
-            description="TBC"
+        is_soft_reference: Optional[str] = Field(None, description="TBC")
+        is_append_on_partial_update: Optional[str] = Field(None, description="TBC")
+        primitive_type: Optional[str] = Field(
+            None, description="The type of the option"
         )
-        is_append_on_partial_update: Optional[str] = Field(
-            None,
-            description="TBC"
-        )
-            
+
     cardinality: Optional[Cardinality] = Field(
         "SINGLE",
         description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
-            "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
-            "they are unique and unordered.\n",
+        "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
+        "they are unique and unordered.\n",
         example="SINGLE",
     )
     constraints: Optional[List[Dict[str, Any]]] = Field(
@@ -159,17 +167,17 @@ class AttributeDef(AtlanObject):
     display_name: str = Field(
         None,
         description="Name to use within all user interactions through the user interface. Note that this may not "
-            "be the same name used to update or interact with the attribute through API operations, for "
-            "that see the `name` property. (This property can be used instead of `name` for the creation "
-            "of an attribute definition as well.)\n",
+        "be the same name used to update or interact with the attribute through API operations, for "
+        "that see the `name` property. (This property can be used instead of `name` for the creation "
+        "of an attribute definition as well.)\n",
         example="Custom Field 1",
     )
     name: str = Field(
         None,
         description="Unique name of this attribute definition. When provided during creation, this should be the "
-            "human-readable name for the attribute. When returned (or provided for an update) this will be "
-            "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
-            "by the user without impacting existing instances of the attribute.)\n",
+        "human-readable name for the attribute. When returned (or provided for an update) this will be "
+        "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
+        "by the user without impacting existing instances of the attribute.)\n",
     )
     include_in_notification: Optional[bool] = Field(
         False, description="", example=False
@@ -193,6 +201,7 @@ class AttributeDef(AtlanObject):
     options: AttributeDef.Options = Field(
         None, description="Extensible options for the attribute."
     )
+
     search_weight: Optional[float] = Field(None, description="")
     skip_scrubbing: Optional[bool] = Field(
         False,
@@ -205,7 +214,7 @@ class AttributeDef(AtlanObject):
     values_min_count: Optional[float] = Field(
         0,
         description="Minimum number of values for this attribute. If greater than 0, this attribute "
-            "becomes required.\n",
+        "becomes required.\n",
         example=0,
     )
     values_max_count: Optional[float] = Field(
@@ -340,9 +349,14 @@ class CustomMetadataDef(TypeDef):
             None,
             description="If the logoType is image, this should hold a URL to the image.\n",
         )
+        primitive_type: Optional[str] = Field(
+            None, description="The type of the option", alias="primitiveType"
+        )
 
-    attribute_defs: Optional[List[AttributeDef]] = Field(
-        [], description="List of custom attributes defined within the custom metadata.\n", example=[]
+    attribute_defs: List[AttributeDef] = Field(
+        [],
+        description="List of custom attributes defined within the custom metadata.\n",
+        example=[],
     )
     category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
     display_name: str = Field(

@@ -1,11 +1,11 @@
+from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.typedef import TypeDefClient
-from pyatlan.model.typedef import CustomMetadataDef, AttributeDef
+from pyatlan.error import LogicError, NotFoundError
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.error import LogicError
+from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
-from typing import Optional
 
 class CustomMetadataCache:
 
@@ -18,7 +18,9 @@ class CustomMetadataCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = TypeDefClient(AtlanClient()).get_typedefs(type=AtlanTypeCategory.CUSTOM_METADATA)
+        response = TypeDefClient(AtlanClient()).get_typedefs(
+            type=AtlanTypeCategory.CUSTOM_METADATA
+        )
         if response is not None:
             cls.cache_by_id = dict()
             cls.map_id_to_name = dict()
@@ -44,11 +46,13 @@ class CustomMetadataCache:
                         else:
                             if attr_name in cls.map_attr_name_to_id[type_id]:
                                 raise LogicError(
-                                    "Multiple custom attributes with exactly the same name (" + attr_name + ") found for: " + type_name,
-                                    code="ATLAN-PYTHON-500-100"
+                                    "Multiple custom attributes with exactly the same name ("
+                                    + attr_name
+                                    + ") found for: "
+                                    + type_name,
+                                    code="ATLAN-PYTHON-500-100",
                                 )
                             cls.map_attr_name_to_id[type_id][attr_name] = attr_id
-
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
@@ -77,7 +81,9 @@ class CustomMetadataCache:
             return cls.map_id_to_name.get(idstr)
 
     @classmethod
-    def get_all_custom_attributes(cls, include_deleted: bool=False, force_refresh: bool=False) -> dict[str, list[AttributeDef]]:
+    def get_all_custom_attributes(
+        cls, include_deleted: bool = False, force_refresh: bool = False
+    ) -> dict[str, list[AttributeDef]]:
         """
         Retrieve all the custom metadata attributes. The map will be keyed by custom metadata set
         name, and the value will be a listing of all the attributes within that set (with all the details
@@ -88,6 +94,10 @@ class CustomMetadataCache:
         m = {}
         for type_id, cm in cls.cache_by_id.items():
             type_name = cls.get_name_for_id(type_id)
+            if not type_name:
+                raise NotFoundError(
+                    f"The type_name for {type_id} could not be found.", code="fixme"
+                )
             attribute_defs = cm.attribute_defs
             if include_deleted:
                 to_include = attribute_defs
