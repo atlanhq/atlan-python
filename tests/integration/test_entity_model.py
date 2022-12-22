@@ -1,7 +1,6 @@
 import os
 import random
 import string
-import random
 
 import pytest
 import requests
@@ -14,34 +13,40 @@ from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def client() -> EntityClient:
     return EntityClient(AtlanClient())
 
 
 @pytest.fixture()
 def announcement() -> Announcement:
-    return Announcement(announcement_title="Important Announcement",
-                        announcement_message='A message'.join(random.choices(string.ascii_lowercase, k=20)),
-                        announcement_type=AnnouncementType.ISSUE)
+    return Announcement(
+        announcement_title="Important Announcement",
+        announcement_message="A message".join(
+            random.choices(string.ascii_lowercase, k=20)  # nosec
+        ),
+        announcement_type=AnnouncementType.ISSUE,
+    )
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def atlan_host() -> str:
-    return get_environment_variable('ATLAN_HOST')
+    return get_environment_variable("ATLAN_HOST")
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def atlan_api_key() -> str:
-    return get_environment_variable('ATLAN_API_KEY')
+    return get_environment_variable("ATLAN_API_KEY")
 
-@pytest.fixture(scope='session')
+
+@pytest.fixture(scope="session")
 def headers(atlan_api_key):
-    return  {
-        'accept': 'application/json, text/plain, */*',
-        'content-type': 'application/json',
-        'authorization': f'Bearer {atlan_api_key}',
+    return {
+        "accept": "application/json, text/plain, */*",
+        "content-type": "application/json",
+        "authorization": f"Bearer {atlan_api_key}",
     }
+
 
 def get_environment_variable(name) -> str:
     ret_value = os.environ[name]
@@ -51,11 +56,13 @@ def get_environment_variable(name) -> str:
 
 @pytest.fixture()
 def increment_counter():
-    i = random.randint(0,1000)
+    i = random.randint(0, 1000)
+
     def increment():
         nonlocal i
         i += 1
         return i
+
     return increment
 
 
@@ -63,9 +70,9 @@ def increment_counter():
 def glossary_guids(atlan_host, headers):
     return get_guids(atlan_host, headers, "AtlasGlossary")
 
+
 @pytest.fixture()
 def create_glossary(atlan_host, headers, increment_counter):
-
     def create_it():
         suffix = increment_counter()
         url = f"{atlan_host}/api/meta/entity/bulk"
@@ -78,19 +85,20 @@ def create_glossary(atlan_host, headers, increment_counter):
                         "qualifiedName": "",
                         "certificateStatus": "DRAFT",
                         "ownersUsers": [],
-                        "ownerGroups": []
+                        "ownerGroups": [],
                     },
-                    "typeName": "AtlasGlossary"
+                    "typeName": "AtlasGlossary",
                 }
             ]
         }
         response = requests.request("POST", url, headers=headers, json=payload)
         response.raise_for_status()
         data = response.json()
-        guid = list(data['guidAssignments'].values())[0]
+        guid = list(data["guidAssignments"].values())[0]
         return guid
 
     return create_it
+
 
 def get_guids(atlan_host, headers, type_name):
     url = f"{atlan_host}/api/meta/search/indexsearch"
@@ -102,34 +110,16 @@ def get_guids(atlan_host, headers, type_name):
             "query": {
                 "bool": {
                     "must": [
-                        {
-                            "term": {
-                                "__state": "ACTIVE"
-                            }
-                        },
-                        {
-                            "prefix": {
-                                "name.keyword": {
-                                    "value": "Integration"
-                                }
-                            }
-                        }
+                        {"term": {"__state": "ACTIVE"}},
+                        {"prefix": {"name.keyword": {"value": "Integration"}}},
                     ]
                 }
             },
             "post_filter": {
-                "bool": {
-                    "filter": {
-                        "term": {
-                            "__typeName.keyword": type_name
-                        }
-                    }
-                }
-            }
+                "bool": {"filter": {"term": {"__typeName.keyword": type_name}}}
+            },
         },
-        "attributes": [
-            "connectorName"
-        ]
+        "attributes": ["connectorName"],
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
@@ -146,21 +136,24 @@ def delete_asset(atlan_host, headers, guid):
     response = requests.delete(url, headers=headers)
     response.raise_for_status()
 
+
 def delete_assets(atlan_host, headers, type_name):
     for guid in get_guids(atlan_host, headers, type_name):
         delete_asset(atlan_host, headers, guid)
+
+
 @pytest.fixture(autouse=True, scope="module")
 def cleanup_categories(atlan_host, headers, atlan_api_key):
     delete_assets(atlan_host, headers, "AtlasGlossaryCategory")
     yield
     delete_assets(atlan_host, headers, "AtlasGlossaryCategory")
 
+
 @pytest.fixture(autouse=True, scope="module")
 def cleanup_glossaries(atlan_host, headers, atlan_api_key):
     delete_assets(atlan_host, headers, "AtlasGlossary")
     yield
     delete_assets(atlan_host, headers, "AtlasGlossary")
-
 
 
 def test_get_glossary_by_guid_good_guid(create_glossary, client: EntityClient):
@@ -171,7 +164,10 @@ def test_get_glossary_by_guid_good_guid(create_glossary, client: EntityClient):
 def test_get_glossary_by_guid_bad_guid(client: EntityClient):
     with pytest.raises(AtlanServiceException) as ex_info:
         client.get_entity_by_guid("76d54dd6-925b-499b-a455-6", AtlasGlossary)
-    assert 'Given instance guid 76d54dd6-925b-499b-a455-6 is invalid/not found' in ex_info.value.args[0]
+    assert (
+        "Given instance guid 76d54dd6-925b-499b-a455-6 is invalid/not found"
+        in ex_info.value.args[0]
+    )
 
 
 def test_update_glossary_when_no_changes(create_glossary, client: EntityClient):
@@ -181,7 +177,9 @@ def test_update_glossary_when_no_changes(create_glossary, client: EntityClient):
     assert not response.mutated_entities
 
 
-def test_update_glossary_with_changes(create_glossary, client: EntityClient, announcement):
+def test_update_glossary_with_changes(
+    create_glossary, client: EntityClient, announcement
+):
     glossary = client.get_entity_by_guid(create_glossary(), AtlasGlossary)
     glossary.set_announcement(announcement)
     response = client.upsert(glossary)
@@ -194,7 +192,6 @@ def test_update_glossary_with_changes(create_glossary, client: EntityClient, ann
     assert glossary.attributes.announcement_title == announcement.announcement_title
 
 
-
 def test_purge_glossary(create_glossary, client: EntityClient):
     response = client.purge_entity_by_guid(create_glossary())
     assert len(response.mutated_entities.DELETE) == 1
@@ -202,10 +199,13 @@ def test_purge_glossary(create_glossary, client: EntityClient):
     assert not response.mutated_entities.CREATE
 
 
-
 def test_create_glossary(client: EntityClient, increment_counter):
     glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(name=f"Integration Test Glossary {increment_counter()}", user_description="This a test glossary"))
+        attributes=AtlasGlossary.Attributes(
+            name=f"Integration Test Glossary {increment_counter()}",
+            user_description="This a test glossary",
+        )
+    )
     response = client.upsert(glossary)
     assert not response.mutated_entities.UPDATE
     assert len(response.mutated_entities.CREATE) == 1
@@ -217,18 +217,24 @@ def test_create_glossary(client: EntityClient, increment_counter):
 def test_create_glossary_category(client: EntityClient, increment_counter):
     suffix = increment_counter()
     glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(name=f"Integration Test Glossary {suffix}", user_description="This a test glossary"))
+        attributes=AtlasGlossary.Attributes(
+            name=f"Integration Test Glossary {suffix}",
+            user_description="This a test glossary",
+        )
+    )
     response = client.upsert(glossary)
     glossary = response.mutated_entities.CREATE[0]
     category = AtlasGlossaryCategory(
-        attributes=AtlasGlossaryCategory.Attributes(name=f"Integration Test Glossary Category {suffix}",
-                                                    user_description="This is a test glossary category",
-                                                    anchor=glossary)
+        attributes=AtlasGlossaryCategory.Attributes(
+            name=f"Integration Test Glossary Category {suffix}",
+            user_description="This is a test glossary category",
+            anchor=glossary,
+        )
     )
     response = client.upsert(category)
     assert response.mutated_entities.UPDATE
     assert len(response.mutated_entities.UPDATE) == 1
-    assert isinstance( response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryCategory)

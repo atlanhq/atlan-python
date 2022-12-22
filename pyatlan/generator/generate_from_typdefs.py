@@ -1,14 +1,15 @@
-import json
-from typing import Any
-from jinja2 import Environment, PackageLoader
-from pathlib import Path
-import os
 import datetime
-from pyatlan.model.typedef import TypeDefResponse, EntityDef
+import json
+import os
+from pathlib import Path
+from typing import Any
+
+from jinja2 import Environment, PackageLoader
+
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.model.core import to_snake_case
-
+from pyatlan.model.typedef import EntityDef, TypeDefResponse
 
 PARENT = Path(__file__).parent
 DICT_BY_STRING = dict[str, Any]

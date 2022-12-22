@@ -1,13 +1,23 @@
-from pyatlan.model.typedef import EnumDef, TypeDef, StructDef, ClassificationDef, EntityDef, \
-    RelationshipDef, CustomMetadataDef, TypeDefResponse
-from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.model.core import to_camel_case, to_snake_case
-from pathlib import Path
-import pytest
 import json
+from pathlib import Path
+
+import pytest
+
+from pyatlan.model.core import to_camel_case, to_snake_case
+from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.model.typedef import (
+    ClassificationDef,
+    CustomMetadataDef,
+    EntityDef,
+    EnumDef,
+    RelationshipDef,
+    StructDef,
+    TypeDef,
+    TypeDefResponse,
+)
 
 PARENT_DIR = Path(__file__).parent
-TYPEDEFS_JSON = PARENT_DIR / 'data' / 'typedefs.json'
+TYPEDEFS_JSON = PARENT_DIR / "data" / "typedefs.json"
 
 ENUM_DEF = {
     "category": "ENUM",
@@ -25,29 +35,29 @@ ENUM_DEF = {
         {
             "value": "DRAFT",
             "description": "DRAFT means the relationship is under development.",
-            "ordinal": 0
+            "ordinal": 0,
         },
         {
             "value": "ACTIVE",
             "description": "ACTIVE means the relationship is validated and in use.",
-            "ordinal": 1
+            "ordinal": 1,
         },
         {
             "value": "DEPRECATED",
             "description": "DEPRECATED means the the relationship is being phased out.",
-            "ordinal": 2
+            "ordinal": 2,
         },
         {
             "value": "OBSOLETE",
             "description": "OBSOLETE means that the relationship should not be used anymore.",
-            "ordinal": 3
+            "ordinal": 3,
         },
         {
             "value": "OTHER",
             "description": "OTHER means that there is another status.",
-            "ordinal": 99
-        }
-    ]
+            "ordinal": 99,
+        },
+    ],
 }
 STRUCT_DEF = {
     "category": "STRUCT",
@@ -74,7 +84,7 @@ STRUCT_DEF = {
             "includeInNotification": False,
             "skipScrubbing": False,
             "searchWeight": -1,
-            "indexType": "STRING"
+            "indexType": "STRING",
         },
         {
             "name": "awsTagValue",
@@ -88,9 +98,9 @@ STRUCT_DEF = {
             "includeInNotification": False,
             "skipScrubbing": False,
             "searchWeight": -1,
-            "indexType": "STRING"
-        }
-    ]
+            "indexType": "STRING",
+        },
+    ],
 }
 CLASSIFICATION_DEF = {
     "category": "CLASSIFICATION",
@@ -103,14 +113,12 @@ CLASSIFICATION_DEF = {
     "name": "wqDf0vVAF3uL8FXjIyk6St",
     "description": "",
     "typeVersion": "1.0",
-    "options": {
-        "color": "Red"
-    },
+    "options": {"color": "Red"},
     "attributeDefs": [],
     "superTypes": [],
     "entityTypes": [],
     "displayName": "Name",
-    "subTypes": []
+    "subTypes": [],
 }
 
 
@@ -179,7 +187,7 @@ def test_struct_defs(type_defs):
         check_type_def_properties(struct_def, struct_def_json)
         for index, attribute_def in enumerate(struct_def.attribute_defs):
             attribute_defs = struct_def_json["attributeDefs"][index]
-            for key, value in attribute_def.__dict__.items():
+            for key in attribute_def.__dict__.keys():
                 check_attribute(attribute_def, key, attribute_defs)
         check_has_attributes(struct_def, struct_def_json)
 
@@ -190,7 +198,7 @@ def test_create_struct_def():
     check_type_def_properties(struct_def, STRUCT_DEF)
     for index, attribute_def in enumerate(struct_def.attribute_defs):
         attribute_defs = STRUCT_DEF["attributeDefs"][index]
-        for key, value in attribute_def.__dict__.items():
+        for key in attribute_def.__dict__.keys():
             check_attribute(attribute_def, key, attribute_defs)
 
 

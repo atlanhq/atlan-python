@@ -1,14 +1,18 @@
-from pydantic import BaseModel, Extra, Field
 from typing import TYPE_CHECKING
+
+from pydantic import BaseModel, Extra, Field
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
     from pydantic.dataclasses import dataclass
-from pydantic.generics import GenericModel
-from typing import Optional, TypeVar, Generic, Any
-from pyatlan.model.enums import EntityStatus, AnnouncementType
+
 from datetime import datetime
+from typing import Any, Generic, Optional, TypeVar
+
+from pydantic.generics import GenericModel
+
+from pyatlan.model.enums import AnnouncementType, EntityStatus
 
 CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",

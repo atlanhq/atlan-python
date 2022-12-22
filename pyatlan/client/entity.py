@@ -22,11 +22,11 @@ from typing import Type, TypeVar, Union
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
-    Referenceable,
+    AssetMutationResponse,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
-    AssetMutationResponse,
+    Referenceable,
 )
 from pyatlan.model.core import AssetResponse, BulkRequest
 from pyatlan.model.enums import AtlanDeleteType
