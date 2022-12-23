@@ -29,7 +29,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         env: # Or as an environment variable
-          ATLAN_API_KEY: ${{ secrets.MARK_API_KEY }}
+          ATLAN_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           ATLAN_HOST: https://mark.atlan.com
         run: |
           pytest
