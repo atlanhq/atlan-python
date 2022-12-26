@@ -27,7 +27,7 @@ from pydantic import BaseSettings, Field, HttpUrl, PrivateAttr
 
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.model.core import AtlanObject
-from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger
+from pyatlan.utils import HTTPStatus, get_logger
 
 LOGGER = get_logger()
 
@@ -46,43 +46,13 @@ class AtlanClient(BaseSettings):
         self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
     def call_api(self, api, query_params=None, request_obj=None):
-        params = copy.deepcopy(self._request_params)
-        path = os.path.join(self.host, api.path)
-        params["headers"]["Accept"] = api.consumes
-        params["headers"]["content-type"] = api.produces
-
-        if query_params is not None:
-            params["params"] = query_params
-
-        if request_obj is not None:
-            if isinstance(request_obj, AtlanObject):
-                params["data"] = request_obj.json(by_alias=True)
-            else:
-                params["data"] = json.dumps(request_obj)
-
-        if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug("------------------------------------------------------")
-            LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type_ : %s", api.consumes)
-            LOGGER.debug("Accept       : %s", api.produces)
-
-        response = None
-
-        if api.method == HTTPMethod.GET:
-            response = self.session.get(path, **params)
-        elif api.method == HTTPMethod.POST:
-            response = self.session.post(path, **params)
-        elif api.method == HTTPMethod.PUT:
-            response = self.session.put(path, **params)
-        elif api.method == HTTPMethod.DELETE:
-            response = self.session.delete(path, **params)
-
+        params, path = self.create_params(api, query_params, request_obj)
+        response = self.session.request(api.method.value, path, **params)
         if response is not None:
             LOGGER.debug("HTTP Status: %s", response.status_code)
-
         if response is None:
             return None
-        elif response.status_code == api.expected_status:
+        if response.status_code == api.expected_status:
             try:
                 if (
                     response.content is None
@@ -115,7 +85,21 @@ class AtlanClient(BaseSettings):
         else:
             raise AtlanServiceException(api, response)
 
-
-if __name__ == "__main__":
-    client = AtlanClient()
-    print(client.dict())
+    def create_params(self, api, query_params, request_obj):
+        params = copy.deepcopy(self._request_params)
+        path = os.path.join(self.host, api.path)
+        params["headers"]["Accept"] = api.consumes
+        params["headers"]["content-type"] = api.produces
+        if query_params is not None:
+            params["params"] = query_params
+        if request_obj is not None:
+            if isinstance(request_obj, AtlanObject):
+                params["data"] = request_obj.json(by_alias=True)
+            else:
+                params["data"] = json.dumps(request_obj)
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug("------------------------------------------------------")
+            LOGGER.debug("Call         : %s %s", api.method, path)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
+            LOGGER.debug("Accept       : %s", api.produces)
+        return params, path
