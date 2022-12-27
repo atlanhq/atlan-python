@@ -369,8 +369,11 @@ def test_create_hierarchy(client: EntityClient, increment_counter):
     response = client.upsert(category_2)
     assert response.mutated_entities.UPDATE
     assert len(response.mutated_entities.UPDATE) == 2
-    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossaryCategory)
-    assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossary)
+    if isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary):
+        assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossaryCategory)
+    else:
+        assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossaryCategory)
+        assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossary)
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
     guid = response.guid_assignments[category_2.guid]
