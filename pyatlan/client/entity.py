@@ -246,8 +246,13 @@ class EntityClient:
         if issubclass(asset_type, AtlasGlossaryTerm):
             return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
 
-    def upsert(self, entity: Asset) -> AssetMutationResponse:
-        request = BulkRequest[T](entities=[entity])
+    def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
+        entities: list[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+        request = BulkRequest[Asset](entities=entities)
         raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
         return AssetMutationResponse(**raw_json)
 

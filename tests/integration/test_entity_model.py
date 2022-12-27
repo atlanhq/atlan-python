@@ -8,7 +8,7 @@ import requests
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.entity import EntityClient
 from pyatlan.exceptions import AtlanServiceException
-from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory
+from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType
 
@@ -106,7 +106,7 @@ def get_guids(atlan_host, headers, type_name):
     payload = {
         "dsl": {
             "from": 0,
-            "size": 4,
+            "size": 100,
             "query": {
                 "bool": {
                     "must": [
@@ -140,6 +140,13 @@ def delete_asset(atlan_host, headers, guid):
 def delete_assets(atlan_host, headers, type_name):
     for guid in get_guids(atlan_host, headers, type_name):
         delete_asset(atlan_host, headers, guid)
+
+
+@pytest.fixture(autouse=True, scope="module")
+def cleanup_terms(atlan_host, headers, atlan_api_key):
+    delete_assets(atlan_host, headers, "AtlasGlossaryTerm")
+    yield
+    delete_assets(atlan_host, headers, "AtlasGlossaryTerm")
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -214,6 +221,57 @@ def test_create_glossary(client: EntityClient, increment_counter):
     assert glossary.guid == guid
 
 
+def test_create_multiple_glossaries_one_at_time(
+    client: EntityClient, increment_counter
+):
+    glossary = AtlasGlossary(
+        attributes=AtlasGlossary.Attributes(
+            name=f"Integration Test Glossary {increment_counter()}",
+            user_description="This a test glossary",
+        )
+    )
+    response = client.upsert(glossary)
+    assert not response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = response.guid_assignments[glossary.guid]
+    glossary = response.mutated_entities.CREATE[0]
+    assert glossary.guid == guid
+    glossary = AtlasGlossary(
+        attributes=AtlasGlossary.Attributes(
+            name=f"Integration Test Glossary {increment_counter()}",
+            user_description="This a test glossary",
+        )
+    )
+    response = client.upsert(glossary)
+    assert not response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = response.guid_assignments[glossary.guid]
+    glossary = response.mutated_entities.CREATE[0]
+    assert glossary.guid == guid
+
+
+@pytest.mark.skip
+def test_create_multiple_glossaries(client: EntityClient, increment_counter):
+    entities = []
+    count = 2
+    for i in range(count):
+        entities.append(
+            AtlasGlossary(
+                attributes=AtlasGlossary.Attributes(
+                    name=f"Integration Test Glossary {increment_counter() + i}",
+                    user_description="This a test glossary",
+                )
+            )
+        )
+    response = client.upsert(entities)
+    assert not response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.CREATE) == count
+    for i in range(count):
+        guid = response.guid_assignments[entities[i].guid]
+        glossary = response.mutated_entities.CREATE[i]
+        assert glossary.guid == guid
+
+
 def test_create_glossary_category(client: EntityClient, increment_counter):
     suffix = increment_counter()
     glossary = AtlasGlossary(
@@ -237,4 +295,104 @@ def test_create_glossary_category(client: EntityClient, increment_counter):
     assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
-    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryCategory)
+    guid = response.guid_assignments[category.guid]
+    category = response.mutated_entities.CREATE[0]
+    assert isinstance(category, AtlasGlossaryCategory)
+    assert guid == category.guid
+
+
+def test_create_glossary_term(client: EntityClient, increment_counter):
+    suffix = increment_counter()
+    glossary = AtlasGlossary(
+        attributes=AtlasGlossary.Attributes(
+            name=f"Integration Test Glossary {suffix}",
+            user_description="This a test glossary",
+        )
+    )
+    response = client.upsert(glossary)
+    glossary = response.mutated_entities.CREATE[0]
+    term = AtlasGlossaryTerm(
+        attributes=AtlasGlossaryTerm.Attributes(
+            name=f"Integration Test Glossary Term {suffix}",
+            user_description="This is a test glossary term",
+            anchor=glossary,
+        )
+    )
+    response = client.upsert(term)
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = response.guid_assignments[term.guid]
+    term = response.mutated_entities.CREATE[0]
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert guid == term.guid
+
+
+def test_create_hierarchy(client: EntityClient, increment_counter):
+    suffix = increment_counter()
+    glossary = AtlasGlossary(
+        attributes=AtlasGlossary.Attributes(
+            name=f"Integration Test Glossary {suffix}",
+            user_description="This a test glossary",
+        )
+    )
+    response = client.upsert(glossary)
+    glossary = response.mutated_entities.CREATE[0]
+    category_1 = AtlasGlossaryCategory(
+        attributes=AtlasGlossaryCategory.Attributes(
+            name=f"Integration Test Glossary Category {suffix}",
+            user_description="This is a test glossary category",
+            anchor=glossary,
+        )
+    )
+    response = client.upsert(category_1)
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = response.guid_assignments[category_1.guid]
+    category_1 = response.mutated_entities.CREATE[0]
+    assert isinstance(category_1, AtlasGlossaryCategory)
+    assert guid == category_1.guid
+
+    category_2 = AtlasGlossaryCategory(
+        attributes=AtlasGlossaryCategory.Attributes(
+            name=f"Integration Test Glossary Category {suffix}",
+            user_description="This is a test glossary category",
+            anchor=glossary,
+            parent_category=category_1,
+        )
+    )
+    response = client.upsert(category_2)
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 2
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossaryCategory)
+    assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = response.guid_assignments[category_2.guid]
+    category_2 = response.mutated_entities.CREATE[0]
+    assert isinstance(category_2, AtlasGlossaryCategory)
+    assert guid == category_2.guid
+
+    term = AtlasGlossaryTerm(
+        attributes=AtlasGlossaryTerm.Attributes(
+            name=f"Integration Test term {suffix}",
+            anchor=glossary,
+            categories=[category_2],
+        )
+    )
+    response = client.upsert(term)
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 2
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossaryCategory)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = response.guid_assignments[term.guid]
+    term = response.mutated_entities.CREATE[0]
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert guid == term.guid
