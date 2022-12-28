@@ -17,14 +17,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyatlan.model.instance import (
-    AtlanClassifications,
-    AtlanEntitiesWithExtInfo,
-    AtlanEntityHeader,
-    AtlanEntityHeaders,
-    AtlanEntityWithExtInfo,
-    EntityMutationResponse,
+from typing import Type, TypeVar, Union
+
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.assets import (
+    Asset,
+    AssetMutationResponse,
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+    Referenceable,
 )
+from pyatlan.model.core import AssetResponse, BulkRequest
+from pyatlan.model.enums import AtlanDeleteType
 from pyatlan.utils import (
     API,
     APPLICATION_JSON,
@@ -33,9 +38,9 @@ from pyatlan.utils import (
     MULTIPART_FORM_DATA,
     HTTPMethod,
     HTTPStatus,
-    attributes_to_params,
-    list_attributes_to_params,
 )
+
+T = TypeVar("T", bound=Referenceable)
 
 
 class EntityClient:
@@ -48,6 +53,7 @@ class EntityClient:
     BULK_SET_CLASSIFICATIONS = "bulk/setClassifications"
     BULK_HEADERS = "bulk/headers"
 
+    BULK_UPDATE = API(ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK)
     # Entity APIs
     GET_ENTITY_BY_GUID = API(ENTITY_API + "guid", HTTPMethod.GET, HTTPStatus.OK)
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE = API(
@@ -167,6 +173,10 @@ class EntityClient:
         MULTIPART_FORM_DATA,
         APPLICATION_JSON,
     )
+    # Glossary APIS
+    GLOSSARY_URI = BASE_URI + "glossary"
+
+    GET_ALL_GLOSSARIES = API(GLOSSARY_URI, HTTPMethod.GET, HTTPStatus.OK)
 
     # Labels APIs
     ADD_LABELS = API(
@@ -195,377 +205,60 @@ class EntityClient:
         HTTPMethod.DELETE,
         HTTPStatus.NO_CONTENT,
     )
+    DEFAULT_LIMIT = -1
+    DEFAULT_OFFSET = 0
+    DEFAULT_SORT = "ASC"
+    LIMIT = "limit"
+    OFFSET = "offset"
 
-    def __init__(self, client):
+    def __init__(self, client: AtlanClient):
         self.client = client
 
-    def get_entity_by_guid(self, guid, min_ext_info=False, ignore_relationships=False):
-        query_params = {
-            "minExtInfo": min_ext_info,
-            "ignoreRelationships": ignore_relationships,
-        }
+    Assets = Union[AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm]
+    Asset_Types = Union[
+        Type[AtlasGlossary], Type[AtlasGlossaryCategory], Type[AtlasGlossaryTerm]
+    ]
 
-        return self.client.call_api(
-            EntityClient.GET_ENTITY_BY_GUID.format_path_with_params(guid),
-            AtlanEntityWithExtInfo,
-            query_params,
-        )
-
-    def get_entity_by_attribute(
-        self, type_name, uniq_attributes, min_ext_info=False, ignore_relationships=False
-    ):
-        query_params = attributes_to_params(uniq_attributes)
-        query_params["minExtInfo"] = min_ext_info
-        query_params["ignoreRelationships"] = ignore_relationships
-
-        return self.client.call_api(
-            EntityClient.GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
-                type_name
-            ),
-            AtlanEntityWithExtInfo,
-            query_params,
-        )
-
-    def get_entities_by_guids(
-        self, guids, min_ext_info=False, ignore_relationships=False
-    ):
-        query_params = {
-            "guid": guids,
-            "minExtInfo": min_ext_info,
-            "ignoreRelationships": ignore_relationships,
-        }
-
-        return self.client.call_api(
-            EntityClient.GET_ENTITIES_BY_GUIDS, AtlanEntitiesWithExtInfo, query_params
-        )
-
-    def get_entities_by_attribute(
+    def get_entity_by_guid(
         self,
-        type_name,
-        uniq_attributes_list,
-        min_ext_info=False,
-        ignore_relationships=False,
-    ):
-        query_params = list_attributes_to_params(uniq_attributes_list)
-        query_params["minExtInfo"] = min_ext_info
-        query_params["ignoreRelationships"] = ignore_relationships
+        guid,
+        asset_type: Asset_Types,
+        min_ext_info: bool = False,
+        ignore_relationships: bool = False,
+    ) -> Assets:
+        query_params = {
+            "minExtInfo": min_ext_info,
+            "ignoreRelationships": ignore_relationships,
+        }
 
-        return self.client.call_api(
-            EntityClient.GET_ENTITIES_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
-                type_name
-            ),
-            AtlanEntitiesWithExtInfo,
+        raw_json = self.client.call_api(
+            EntityClient.GET_ENTITY_BY_GUID.format_path_with_params(guid),
             query_params,
         )
-
-    def get_entity_header_by_guid(self, entity_guid):
-        return self.client.call_api(
-            EntityClient.GET_ENTITY_HEADER_BY_GUID.format_path(
-                {"entity_guid": entity_guid}
-            ),
-            AtlanEntityHeader,
+        raw_json["entity"]["attributes"].update(
+            raw_json["entity"]["relationshipAttributes"]
         )
+        raw_json["entity"]["relationshipAttributes"] = {}
+        if issubclass(asset_type, AtlasGlossary):
+            return AssetResponse[AtlasGlossary](**raw_json).entity
+        if issubclass(asset_type, AtlasGlossaryCategory):
+            return AssetResponse[AtlasGlossaryCategory](**raw_json).entity
+        if issubclass(asset_type, AtlasGlossaryTerm):
+            return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
 
-    def get_entity_header_by_attribute(self, type_name, uniq_attributes):
-        query_params = attributes_to_params(uniq_attributes)
+    def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
+        entities: list[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+        request = BulkRequest[Asset](entities=entities)
+        raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
+        return AssetMutationResponse(**raw_json)
 
-        return self.client.call_api(
-            EntityClient.GET_ENTITY_HEADER_BY_UNIQUE_ATTRIBUTE.format_path(
-                {"type_name": type_name}
-            ),
-            AtlanEntityHeader,
-            query_params,
-        )
-
-    def get_audit_events(self, guid, start_key, audit_action, count):
-        query_params = {"startKey": start_key, "count": count}
-
-        if audit_action is not None:
-            query_params["auditAction"] = audit_action
-
-        return self.client.call_api(
-            EntityClient.GET_AUDIT_EVENTS.format_path({"guid": guid}),
-            list,
-            query_params,
-        )
-
-    def create_entity(self, entity):
-        return self.client.call_api(
-            EntityClient.CREATE_ENTITY, EntityMutationResponse, None, entity
-        )
-
-    def create_entities(self, atlas_entities):
-        return self.client.call_api(
-            EntityClient.CREATE_ENTITIES, EntityMutationResponse, None, atlas_entities
-        )
-
-    def update_entity(self, entity):
-        return self.client.call_api(
-            EntityClient.UPDATE_ENTITY, EntityMutationResponse, None, entity
-        )
-
-    def update_entities(self, atlas_entities):
-        return self.client.call_api(
-            EntityClient.UPDATE_ENTITY, EntityMutationResponse, None, atlas_entities
-        )
-
-    def partial_update_entity_by_guid(self, entity_guid, attr_value, attr_name):
-        query_params = {"name": attr_name}
-
-        return self.client.call_api(
-            EntityClient.PARTIAL_UPDATE_ENTITY_BY_GUID.format_path(
-                {"entity_guid": entity_guid}
-            ),
-            EntityMutationResponse,
-            query_params,
-            attr_value,
-        )
-
-    def delete_entity_by_guid(self, guid):
-        return self.client.call_api(
+    def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
+        raw_json = self.client.call_api(
             EntityClient.DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
-            EntityMutationResponse,
+            {"deleteType": AtlanDeleteType.HARD.value},
         )
-
-    def delete_entity_by_attribute(self, type_name, uniq_attributes):
-        query_param = attributes_to_params(uniq_attributes)
-
-        return self.client.call_api(
-            EntityClient.DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(type_name),
-            EntityMutationResponse,
-            query_param,
-        )
-
-    def delete_entities_by_guids(self, guids):
-        query_params = {"guid": guids}
-
-        return self.client.call_api(
-            EntityClient.DELETE_ENTITIES_BY_GUIDS, EntityMutationResponse, query_params
-        )
-
-    def purge_entities_by_guids(self, guids):
-        return self.client.call_api(
-            EntityClient.PURGE_ENTITIES_BY_GUIDS, EntityMutationResponse, None, guids
-        )
-
-    # Entity-classification APIs
-
-    def get_classifications(self, guid):
-        return self.client.call_api(
-            EntityClient.GET_CLASSIFICATIONS.format_path({"guid": guid}),
-            AtlanClassifications,
-        )
-
-    def get_entity_classifications(self, entity_guid, classification_name):
-        return self.client.call_api(
-            EntityClient.GET_FROM_CLASSIFICATION.format_path(
-                {"entity_guid": entity_guid, "classification": classification_name}
-            ),
-            AtlanClassifications,
-        )
-
-    def add_classification(self, request):
-        self.client.call_api(EntityClient.ADD_CLASSIFICATION, None, None, request)
-
-    def add_classifications_by_guid(self, guid, classifications):
-        self.client.call_api(
-            EntityClient.ADD_CLASSIFICATIONS.format_path({"guid": guid}),
-            None,
-            None,
-            classifications,
-        )
-
-    def add_classifications_by_type(self, type_name, uniq_attributes, classifications):
-        query_param = attributes_to_params(uniq_attributes)
-
-        self.client.call_api(
-            EntityClient.ADD_CLASSIFICATION_BY_TYPE_AND_ATTRIBUTE.format_path(
-                {"type_name": type_name}
-            ),
-            None,
-            query_param,
-            classifications,
-        )
-
-    def update_classifications(self, guid, classifications):
-        self.client.call_api(
-            EntityClient.UPDATE_CLASSIFICATIONS.format_path({"guid": guid}),
-            None,
-            None,
-            classifications,
-        )
-
-    def update_classifications_by_attr(
-        self, type_name, uniq_attributes, classifications
-    ):
-        query_param = attributes_to_params(uniq_attributes)
-
-        self.client.call_api(
-            EntityClient.UPDATE_CLASSIFICATION_BY_TYPE_AND_ATTRIBUTE.format_path(
-                {"type_name": type_name}
-            ),
-            None,
-            query_param,
-            classifications,
-        )
-
-    def set_classifications(self, entity_headers):
-        return self.client.call_api(
-            EntityClient.UPDATE_BULK_SET_CLASSIFICATIONS, str, None, entity_headers
-        )
-
-    def delete_classification(self, guid, classification_name):
-        query = {"guid": guid, "classification_name": classification_name}
-
-        return self.client.call_api(
-            EntityClient.DELETE_CLASSIFICATION.format_path(query)
-        )
-
-    def delete_classifications(self, guid, classifications):
-        for atlas_classification in classifications:
-            query = {"guid": guid, "classification_name": atlas_classification.typeName}
-
-            self.client.call_api(EntityClient.DELETE_CLASSIFICATION.format_path(query))
-
-    def remove_classification(
-        self, entity_guid, classification_name, associated_entity_guid
-    ):
-        query = {"guid": entity_guid, "classification_name": classification_name}
-
-        self.client.call_api(
-            EntityClient.DELETE_CLASSIFICATION.format_path(query),
-            None,
-            None,
-            associated_entity_guid,
-        )
-
-    def remove_classification_by_name(
-        self, type_name, uniq_attributes, classification_name
-    ):
-        query_params = attributes_to_params(uniq_attributes)
-        query = {"type_name": type_name, "classification_name": classification_name}
-
-        self.client.call_api(
-            EntityClient.DELETE_CLASSIFICATION_BY_TYPE_AND_ATTRIBUTE.format_path(
-                {query}
-            ),
-            None,
-            query_params,
-        )
-
-    def get_entity_headers(self, tag_update_start_time):
-        query_params = {"tagUpdateStartTime": tag_update_start_time}
-
-        return self.client.call_api(
-            EntityClient.GET_BULK_HEADERS, AtlanEntityHeaders, query_params
-        )
-
-    # Business attributes APIs
-    def add_or_update_business_attributes(
-        self, entity_guid, is_overwrite, business_attributes
-    ):
-        query_params = {"isOverwrite": is_overwrite}
-
-        self.client.call_api(
-            EntityClient.ADD_BUSINESS_ATTRIBUTE.format_path(
-                {"entity_guid": entity_guid}
-            ),
-            None,
-            query_params,
-            business_attributes,
-        )
-
-    def add_or_update_business_attributes_bm_name(
-        self, entity_guid, bm_name, business_attributes
-    ):
-        query = {"entity_guid": entity_guid, "bm_name": bm_name}
-
-        self.client.call_api(
-            EntityClient.ADD_BUSINESS_ATTRIBUTE_BY_NAME.format_path(query),
-            None,
-            None,
-            business_attributes,
-        )
-
-    def remove_business_attributes(self, entity_guid, business_attributes):
-        self.client.call_api(
-            EntityClient.DELETE_BUSINESS_ATTRIBUTE.format_path(
-                {"entity_guid": entity_guid}
-            ),
-            None,
-            None,
-            business_attributes,
-        )
-
-    def remove_business_attributes_bm_name(
-        self, entity_guid, bm_name, business_attributes
-    ):
-        query = {"entity_guid": entity_guid, "bm_name": bm_name}
-
-        self.client.call_api(
-            EntityClient.DELETE_BUSINESS_ATTRIBUTE_BY_NAME.format_path(query),
-            None,
-            None,
-            business_attributes,
-        )
-
-    # Labels APIs
-    def add_labels_by_guid(self, entity_guid, labels):
-        self.client.call_api(
-            EntityClient.ADD_LABELS.format_path({"entity_guid": entity_guid}),
-            None,
-            None,
-            labels,
-        )
-
-    def add_labels_by_name(self, type_name, uniq_attributes, labels):
-        query_param = attributes_to_params(uniq_attributes)
-
-        self.client.call_api(
-            EntityClient.SET_LABELS_BY_UNIQUE_ATTRIBUTE.format_path(
-                {"type_name": type_name}
-            ),
-            None,
-            query_param,
-            labels,
-        )
-
-    def remove_labels_by_guid(self, entity_guid, labels):
-        self.client.call_api(
-            EntityClient.DELETE_LABELS.format_path({"entity_guid": entity_guid}),
-            None,
-            None,
-            labels,
-        )
-
-    def remove_labels_by_name(self, type_name, uniq_attributes, labels):
-        query_param = attributes_to_params(uniq_attributes)
-
-        self.client.call_api(
-            EntityClient.DELETE_LABELS_BY_UNIQUE_ATTRIBUTE.format_path(
-                {"type_name": type_name}
-            ),
-            None,
-            query_param,
-            labels,
-        )
-
-    def set_labels_by_guid(self, entity_guid, labels):
-        self.client.call_api(
-            EntityClient.SET_LABELS.format_path({"entity_guid": entity_guid}),
-            None,
-            None,
-            labels,
-        )
-
-    def set_labels_by_name(self, type_name, uniq_attributes, labels):
-        query_param = attributes_to_params(uniq_attributes)
-
-        self.client.call_api(
-            EntityClient.ADD_LABELS_BY_UNIQUE_ATTRIBUTE.format_path(
-                {"type_name": type_name}
-            ),
-            None,
-            query_param,
-            labels,
-        )
+        return AssetMutationResponse(**raw_json)

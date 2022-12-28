@@ -1,0 +1,48 @@
+{
+    "mutatedEntities": {
+        "UPDATE": [
+            {
+                "typeName": "AtlasGlossary",
+                "attributes": {
+                    "popularityScore": 1.17549435E-38,
+                    "viewerUsers": [],
+                    "sourceCreatedAt": 0,
+                    "viewScore": 1.17549435E-38,
+                    "lastSyncRunAt": 0,
+                    "certificateStatus": "DRAFT",
+                    "userDescription": "",
+                    "adminRoles": [],
+                    "adminGroups": [],
+                    "qualifiedName": "rJCHYGhPokx9eeXZnqt8Y",
+                    "__hasLineage": false,
+                    "description": "This is an updated description",
+                    "adminUsers": [],
+                    "ownerGroups": [],
+                    "certificateUpdatedBy": "ernest",
+                    "isEditable": true,
+                    "sourceUpdatedAt": 0,
+                    "announcementUpdatedAt": 0,
+                    "name": "Metrics Glossary",
+                    "certificateUpdatedAt": 1666587779464,
+                    "isDiscoverable": true,
+                    "viewerGroups": [],
+                    "ownerUsers": []
+                },
+                "guid": "76d54dd6-925b-499b-a455-6f756ae2d522",
+                "status": "ACTIVE",
+                "displayText": "Metrics Glossary",
+                "classificationNames": [],
+                "classifications": [],
+                "meaningNames": [],
+                "meanings": [],
+                "isIncomplete": false,
+                "labels": [],
+                "createdBy": "ernest",
+                "updatedBy": "service-account-apikey-d2103f59-2ed8-4a93-96f1-4f61bb424a30",
+                "createTime": 1666587779464,
+                "updateTime": 1669839392168
+            }
+        ]
+    },
+    "guidAssignments": {}
+}

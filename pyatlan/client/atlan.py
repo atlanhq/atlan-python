@@ -23,62 +23,41 @@ import logging
 import os
 
 import requests
+from pydantic import BaseSettings, Field, HttpUrl, PrivateAttr
 
-from pyatlan.client.index import IndexClient
 from pyatlan.exceptions import AtlanServiceException
-from pyatlan.utils import HTTPMethod, HTTPStatus, get_logger, type_coerce
+from pyatlan.model.core import AtlanObject
+from pyatlan.utils import HTTPStatus, get_logger
 
 LOGGER = get_logger()
 
 
-class AtlanClient:
-    def __init__(self, host, api_key):
-        self.session = requests.Session()
-        self.host = host
-        self.request_params = {"headers": {"authorization": f"Bearer {api_key}"}}
-        self.index_client = IndexClient(self)
+class AtlanClient(BaseSettings):
+    host: HttpUrl
+    api_key: str
+    session: requests.Session = Field(default_factory=requests.Session)
+    _request_params: dict = PrivateAttr()
 
-    def call_api(self, api, response_type=None, query_params=None, request_obj=None):
-        params = copy.deepcopy(self.request_params)
-        path = os.path.join(self.host, api.path)
+    class Config:
+        env_prefix = "atlan_"
 
-        params["headers"]["Accept"] = api.consumes
-        params["headers"]["Content-type"] = api.produces
+    def __init__(self, **data):
+        super().__init__(**data)
+        self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
-        if query_params is not None:
-            params["params"] = query_params
-
-        if request_obj is not None:
-            params["data"] = json.dumps(request_obj)
-
-        if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug("------------------------------------------------------")
-            LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type : %s", api.consumes)
-            LOGGER.debug("Accept       : %s", api.produces)
-
-        response = None
-
-        if api.method == HTTPMethod.GET:
-            response = self.session.get(path, **params)
-        elif api.method == HTTPMethod.POST:
-            response = self.session.post(path, **params)
-        elif api.method == HTTPMethod.PUT:
-            response = self.session.put(path, **params)
-        elif api.method == HTTPMethod.DELETE:
-            response = self.session.delete(path, **params)
-
+    def call_api(self, api, query_params=None, request_obj=None):
+        params, path = self.create_params(api, query_params, request_obj)
+        response = self.session.request(api.method.value, path, **params)
         if response is not None:
             LOGGER.debug("HTTP Status: %s", response.status_code)
-
         if response is None:
             return None
-        elif response.status_code == api.expected_status:
-            if response_type is None:
-                return None
-
+        if response.status_code == api.expected_status:
             try:
-                if response.content is None:
+                if (
+                    response.content is None
+                    or response.status_code == HTTPStatus.NO_CONTENT
+                ):
                     return None
                 if LOGGER.isEnabledFor(logging.DEBUG):
                     LOGGER.debug(
@@ -88,12 +67,8 @@ class AtlanClient:
                         request_obj,
                         response,
                     )
-
                     LOGGER.debug(response.json())
-                if response_type == str:
-                    return json.dumps(response.json())
-
-                return type_coerce(response.json(), response_type)
+                return response.json()
             except Exception as e:
                 print(e)
                 LOGGER.exception(
@@ -109,3 +84,22 @@ class AtlanClient:
             return None
         else:
             raise AtlanServiceException(api, response)
+
+    def create_params(self, api, query_params, request_obj):
+        params = copy.deepcopy(self._request_params)
+        path = os.path.join(self.host, api.path)
+        params["headers"]["Accept"] = api.consumes
+        params["headers"]["content-type"] = api.produces
+        if query_params is not None:
+            params["params"] = query_params
+        if request_obj is not None:
+            if isinstance(request_obj, AtlanObject):
+                params["data"] = request_obj.json(by_alias=True)
+            else:
+                params["data"] = json.dumps(request_obj)
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug("------------------------------------------------------")
+            LOGGER.debug("Call         : %s %s", api.method, path)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
+            LOGGER.debug("Accept       : %s", api.produces)
+        return params, path

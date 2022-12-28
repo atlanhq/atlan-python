@@ -1,0 +1,168 @@
+{
+  "typeName": "AtlasGlossaryTerm",
+  "attributes": {
+    "popularityScore": 1.17549435E-38,
+    "lastSyncRunAt": 0,
+    "usage": null,
+    "__hasLineage": false,
+    "lastSyncRun": null,
+    "adminUsers": [],
+    "sourceURL": null,
+    "isEditable": true,
+    "sourceUpdatedAt": 0,
+    "announcementUpdatedAt": 0,
+    "announcementTitle": null,
+    "links": [],
+    "certificateStatusMessage": null,
+    "sourceCreatedAt": 0,
+    "qualifiedName": "HATbieQKsC9MqUIIpVLpb@rJCHYGhPokx9eeXZnqt8Y",
+    "shortDescription": null,
+    "examples": [],
+    "name": "Active Subscriptions",
+    "certificateUpdatedAt": 1666587854007,
+    "connectorName": null,
+    "subType": null,
+    "announcementUpdatedBy": null,
+    "connectionName": null,
+    "metrics": [],
+    "ownerUsers": [],
+    "additionalAttributes": null,
+    "lastSyncWorkflowName": null,
+    "longDescription": null,
+    "certificateStatus": "DRAFT",
+    "connectionQualifiedName": null,
+    "sourceCreatedBy": null,
+    "replicatedFrom": null,
+    "displayName": null,
+    "description": null,
+    "ownerGroups": [],
+    "certificateUpdatedBy": "ernest",
+    "isDiscoverable": true,
+    "announcementType": null,
+    "viewerUsers": [],
+    "viewScore": 1.17549435E-38,
+    "sourceOwners": null,
+    "replicatedTo": null,
+    "userDescription": "",
+    "adminRoles": [],
+    "adminGroups": [],
+    "readme": null,
+    "abbreviation": null,
+    "sourceUpdatedBy": null,
+    "tenantId": null,
+    "announcementMessage": null,
+    "viewerGroups": []
+  },
+  "guid": "9c9a7a04-d738-48e8-b1d3-a491eb2bccf5",
+  "isIncomplete": false,
+  "status": "ACTIVE",
+  "createdBy": "ernest",
+  "updatedBy": "markpavletich",
+  "createTime": 1666587854007,
+  "updateTime": 1668777812044,
+  "version": 0,
+  "relationshipAttributes": {
+    "translationTerms": [],
+    "validValuesFor": [],
+    "synonyms": [],
+    "replacedBy": [],
+    "readme": null,
+    "validValues": [],
+    "replacementTerms": [],
+    "meanings": [],
+    "seeAlso": [],
+    "translatedTerms": [],
+    "isA": [],
+    "anchor": {
+      "guid": "76d54dd6-925b-499b-a455-6f756ae2d522",
+      "typeName": "AtlasGlossary",
+      "entityStatus": "ACTIVE",
+      "displayText": "Metrics Glossary",
+      "relationshipType": "AtlasGlossaryTermAnchor",
+      "relationshipGuid": "8f425700-dc81-4638-a703-348b6010e949",
+      "relationshipStatus": "ACTIVE",
+      "relationshipAttributes": {
+        "typeName": "AtlasGlossaryTermAnchor"
+      }
+    },
+    "antonyms": [],
+    "assignedEntities": [
+      {
+        "guid": "38f62d02-ede7-4c26-b81d-8610c385d285",
+        "typeName": "Table",
+        "entityStatus": "ACTIVE",
+        "displayText": "subscription",
+        "relationshipType": "AtlasGlossarySemanticAssignment",
+        "relationshipGuid": "67a2caf3-6618-4cd9-9d32-068a8dcbefc7",
+        "relationshipStatus": "ACTIVE",
+        "relationshipAttributes": {
+          "typeName": "AtlasGlossarySemanticAssignment",
+          "attributes": {
+            "expression": null,
+            "createdBy": null,
+            "steward": null,
+            "confidence": null,
+            "description": null,
+            "source": null,
+            "status": null
+          }
+        }
+      }
+    ],
+    "links": [],
+    "categories": [
+      {
+        "guid": "18140435-50b4-40b9-bdf0-9cd002355c6a",
+        "typeName": "AtlasGlossaryCategory",
+        "entityStatus": "ACTIVE",
+        "displayText": "Cloud Analytics",
+        "relationshipType": "AtlasGlossaryTermCategorization",
+        "relationshipGuid": "e319b714-8ad8-4521-9572-bfa3fa977e3c",
+        "relationshipStatus": "ACTIVE",
+        "relationshipAttributes": {
+          "typeName": "AtlasGlossaryTermCategorization",
+          "attributes": {
+            "description": null,
+            "status": null
+          }
+        }
+      }
+    ],
+    "classifies": [],
+    "metrics": [],
+    "preferredToTerms": [],
+    "preferredTerms": []
+  },
+  "classifications": [
+    {
+      "typeName": "WQ6XGXwq9o7UnZlkWyKhQN",
+      "entityGuid": "9c9a7a04-d738-48e8-b1d3-a491eb2bccf5",
+      "entityStatus": "ACTIVE",
+      "propagate": true,
+      "removePropagationsOnEntityDelete": true,
+      "restrictPropagationThroughLineage": false
+    }
+  ],
+  "businessAttributes": {
+    "scAesIb5UhKQdTwu4GuCSN": {
+      "X16UI1dBjwcJTZvu6b2qI8": []
+    },
+    "IRw2E74P1FWG4DA8Sw11oo": {
+      "G8HvgcldqPkAO31ExSDe6x": []
+    },
+    "maVNaoaiPRvxO7HNcLSmcN": {
+      "qg3PsCicpj6z8l2pJ6nPec": []
+    },
+    "pVZUEv3xSIxp57VfIMOZEf": {
+      "in6JCCImVZGsGJKP4qXUWH": [],
+      "cywnsUDSg6o9Rty82TODYz": [],
+      "TlsfLz7fWFv8XNunUlb63X": [],
+      "j70ehw0aBpObvhvtF6Ffzh": [],
+      "IFqzm0PFgbuD98ga2coiuV": [],
+      "RPmUzqXiCHCQJcX2VlVaT5": [],
+      "o1KvKR9SOyksiZSnQyQFNI": [],
+      "ljSCESUceyXxxbc9aYMl7I": []
+    }
+  },
+  "labels": []
+}

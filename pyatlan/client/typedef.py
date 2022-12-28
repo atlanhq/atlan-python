@@ -17,15 +17,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pyatlan.model.misc import SearchFilter
+
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.exceptions import InvalidRequestException
+from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import (
-    AtlanBusinessMetadataDef,
-    AtlanClassificationDef,
-    AtlanEntityDef,
-    AtlanEnumDef,
-    AtlanRelationshipDef,
-    AtlanStructDef,
-    AtlanTypesDef,
+    ClassificationDef,
+    CustomMetadataDef,
+    TypeDef,
+    TypeDefResponse,
 )
 from pyatlan.utils import API, BASE_URI, HTTPMethod, HTTPStatus
 
@@ -33,8 +33,8 @@ from pyatlan.utils import API, BASE_URI, HTTPMethod, HTTPStatus
 class TypeDefClient:
     TYPES_API = BASE_URI + "types/"
     TYPEDEFS_API = TYPES_API + "typedefs/"
-    TYPEDEF_BY_NAME = TYPES_API + "typedef.py/name"
-    TYPEDEF_BY_GUID = TYPES_API + "typedef.py/guid"
+    TYPEDEF_BY_NAME = TYPES_API + "typedef/name/"
+    TYPEDEF_BY_GUID = TYPES_API + "typedef/guid/"
     GET_BY_NAME_TEMPLATE = TYPES_API + "{path_type}/name/{name}"
     GET_BY_GUID_TEMPLATE = TYPES_API + "{path_type}/guid/{guid}"
 
@@ -54,135 +54,58 @@ class TypeDefClient:
     def __init__(self, client):
         self.client = client
 
-    def get_all_typedefs(self, search_filter):
-        return self.client.call_api(
-            TypeDefClient.GET_ALL_TYPE_DEFS, AtlanTypesDef, search_filter.params
-        )
+    def get_all_typedefs(self) -> TypeDefResponse:
+        raw_json = self.client.call_api(TypeDefClient.GET_ALL_TYPE_DEFS)
+        return TypeDefResponse(**raw_json)
 
-    def get_all_typedef_headers(self, search_filter):
-        return self.client.call_api(
-            TypeDefClient.GET_ALL_TYPE_DEF_HEADERS, list, search_filter.params
+    def get_typedefs(self, type: AtlanTypeCategory) -> TypeDefResponse:
+        query_params = {"type": type.value}
+        raw_json = self.client.call_api(
+            TypeDefClient.GET_ALL_TYPE_DEFS.format_path_with_params(),
+            query_params,
         )
+        return TypeDefResponse(**raw_json)
 
-    def type_with_guid_exists(self, guid):
-        try:
-            obj = self.client.call_api(
-                TypeDefClient.GET_TYPEDEF_BY_GUID.format_path_with_params(guid), str
+    def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        payload = None
+        if isinstance(typedef, ClassificationDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[typedef],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                businessMetadataDefs=[],
             )
-
-            if obj is None:
-                return False
-        except Exception:
-            return False
-
-        return True
-
-    def type_with_name_exists(self, name):
-        try:
-            obj = self.client.call_api(
-                TypeDefClient.GET_TYPEDEF_BY_NAME.format_path_with_params(name), str
+        elif isinstance(typedef, CustomMetadataDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                businessMetadataDefs=[typedef],
             )
+        else:
+            raise InvalidRequestException(
+                "Unable to create new type definitions of category: "
+                + typedef.category.value,
+                param="category",
+            )
+            # Throw an invalid request exception
+        raw_json = self.client.call_api(
+            TypeDefClient.CREATE_TYPE_DEFS, request_obj=payload
+        )
+        return TypeDefResponse(**raw_json)
 
-            if obj is None:
-                return False
-        except Exception:
-            return False
-
-        return True
-
-    def get_enumdef_by_name(self, name):
-        return self.__get_typedef_by_name(name, AtlanEnumDef)
-
-    def get_enumdef_by_guid(self, guid):
-        return self.__get_typedef_by_guid(guid, AtlanEntityDef)
-
-    def get_structdef_by_name(self, name):
-        return self.__get_typedef_by_name(name, AtlanStructDef)
-
-    def get_structdef_by_guid(self, guid):
-        return self.__get_typedef_by_guid(guid, AtlanStructDef)
-
-    def get_classificationdef_by_name(self, name):
-        return self.__get_typedef_by_name(name, AtlanClassificationDef)
-
-    def get_classificationdef_by_guid(self, guid):
-        return self.__get_typedef_by_guid(guid, AtlanClassificationDef)
-
-    def get_entitydef_by_name(self, name):
-        return self.__get_typedef_by_name(name, AtlanEntityDef)
-
-    def get_entitydef_by_guid(self, guid):
-        return self.__get_typedef_by_guid(guid, AtlanEntityDef)
-
-    def get_relationshipdef_by_name(self, name):
-        return self.__get_typedef_by_name(name, AtlanRelationshipDef)
-
-    def get_relationshipdef_by_guid(self, guid):
-        return self.__get_typedef_by_guid(guid, AtlanRelationshipDef)
-
-    def get_businessmetadatadef_by_name(self, name):
-        return self.__get_typedef_by_name(name, AtlanBusinessMetadataDef)
-
-    def get_businessmetadatadef_by_guid(self, guid):
-        return self.__get_typedef_by_guid(guid, AtlanBusinessMetadataDef)
-
-    def get_businessmetadatadef_by_display_name(self, display_name):
-        type_defs = self.get_all_typedefs(SearchFilter())
-        return next(
-            (
-                business_meta_data
-                for business_meta_data in type_defs.businessMetadataDefs
-                if business_meta_data.displayName == display_name
-            ),
-            None,
+    def purge_typedef(self, internal_name: str) -> None:
+        self.client.call_api(
+            TypeDefClient.DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
         )
 
-    def create_atlas_typedefs(self, types_def):
-        return self.client.call_api(
-            TypeDefClient.CREATE_TYPE_DEFS, AtlanTypesDef, None, types_def
-        )
 
-    def update_atlas_typedefs(self, types_def):
-        return self.client.call_api(
-            TypeDefClient.UPDATE_TYPE_DEFS, AtlanTypesDef, None, types_def
-        )
-
-    def delete_atlas_typedefs(self, types_def):
-        return self.client.call_api(TypeDefClient.DELETE_TYPE_DEFS, None, types_def)
-
-    def delete_type_by_name(self, type_name):
-        return self.client.call_api(
-            TypeDefClient.DELETE_TYPE_DEF_BY_NAME.format_path_with_params(type_name)
-        )
-
-    def __get_typedef_by_name(self, name, typedef_class):
-        path_type = self.__get_path_for_type(typedef_class)
-        api = API(TypeDefClient.GET_BY_NAME_TEMPLATE, HTTPMethod.GET, HTTPStatus.OK)
-
-        return self.client.call_api(
-            api.format_path({"path_type": path_type, "name": name}), typedef_class
-        )
-
-    def __get_typedef_by_guid(self, guid, typedef_class):
-        path_type = self.__get_path_for_type(typedef_class)
-        api = API(TypeDefClient.GET_BY_GUID_TEMPLATE, HTTPMethod.GET, HTTPStatus.OK)
-
-        return self.client.call_api(
-            api.format_path({"path_type": path_type, "guid": guid}), typedef_class
-        )
-
-    def __get_path_for_type(self, typedef_class):
-        if issubclass(AtlanEnumDef, typedef_class):
-            return "enumdef"
-        if issubclass(AtlanEntityDef, typedef_class):
-            return "entitydef"
-        if issubclass(AtlanClassificationDef, typedef_class):
-            return "classificationdef"
-        if issubclass(AtlanStructDef, typedef_class):
-            return "structdef"
-        if issubclass(AtlanRelationshipDef, typedef_class):
-            return "relationshipdef"
-        if issubclass(AtlanBusinessMetadataDef, typedef_class):
-            return "businessmetadatadef"
-
-        return ""
+if __name__ == "__main__":
+    client = TypeDefClient(AtlanClient())
+    type_def_response = client.get_all_typedefs()

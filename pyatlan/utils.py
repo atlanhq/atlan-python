@@ -23,6 +23,7 @@ import time
 from functools import reduce
 from typing import Optional
 
+ADMIN_URI = "api/service/"
 BASE_URI = "api/meta/"
 APPLICATION_JSON = "application/json"
 APPLICATION_OCTET_STREAM = "application/octet-stream"
