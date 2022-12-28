@@ -185,7 +185,7 @@ class Referenceable(AtlanObject):
         description="Details on the handler used for deletion of the asset.",
         example="Hard",
     )
-    guid: Optional[str] = Field(
+    guid: str = Field(
         description="Unique identifier of the entity instance.\n",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
         default_factory=next_id,

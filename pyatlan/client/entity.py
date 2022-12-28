@@ -17,7 +17,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Type, TypeVar, Union
+from typing import Generator, Type, TypeVar, Union
+
+from pydantic import parse_obj_as
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
@@ -30,6 +32,7 @@ from pyatlan.model.assets import (
 )
 from pyatlan.model.core import AssetResponse, BulkRequest
 from pyatlan.model.enums import AtlanDeleteType
+from pyatlan.model.search import IndexSearchRequest
 from pyatlan.utils import (
     API,
     APPLICATION_JSON,
@@ -211,6 +214,9 @@ class EntityClient:
     LIMIT = "limit"
     OFFSET = "offset"
 
+    INDEX_API = BASE_URI + "search/indexsearch"
+    INDEX_SEARCH = API(INDEX_API, HTTPMethod.POST, HTTPStatus.OK)
+
     def __init__(self, client: AtlanClient):
         self.client = client
 
@@ -262,3 +268,19 @@ class EntityClient:
             {"deleteType": AtlanDeleteType.HARD.value},
         )
         return AssetMutationResponse(**raw_json)
+
+    def index_search(
+        self, criteria: IndexSearchRequest
+    ) -> Generator[Asset, None, None]:
+        while True:
+            start = criteria.dsl.from_
+            size = criteria.dsl.size
+            raw_json = self.client.call_api(
+                EntityClient.INDEX_SEARCH,
+                request_obj=criteria,
+            )
+            if "entities" not in raw_json:
+                break
+            assets = parse_obj_as(list[Asset], raw_json["entities"])
+            yield from assets
+            criteria.dsl.from_ = start + size
