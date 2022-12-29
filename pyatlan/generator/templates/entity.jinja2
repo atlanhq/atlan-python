@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Dict, Any, List, Literal
-from pydantic import Field
+from pydantic import Field, root_validator
 from datetime import datetime
 from pyatlan.model.core import AtlanObject, Classification, Announcement
 from pyatlan.model.enums import CertificateStatus, EntityStatus, google_datastudio_asset_type, powerbi_endorsement, \
@@ -178,6 +178,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
                     'type, so are described in the sub-types of this schema.\n',
     )
+    {% if entity_def.name.startswith("AtlasGlossary") %}
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if "attributes" in values  and values["attributes"] and not values["attributes"].qualified_name:
+            values["attributes"].qualified_name = values["guid"]
+        return values
+    {% endif %}
     {% if entity_def.name == "Asset" %}
     def has_announcement(self) -> bool:
         if self.attributes and (

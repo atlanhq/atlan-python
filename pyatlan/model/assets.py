@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import Field
+from pydantic import Field, root_validator
 
 from pyatlan.model.core import Announcement, AtlanObject, Classification
 from pyatlan.model.enums import (
@@ -637,6 +637,12 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "type, so are described in the sub-types of this schema.\n",
     )
 
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if "attributes" in values and not values["attributes"].qualified_name:
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
 
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
@@ -730,6 +736,16 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
 
 
 class Cloud(Asset, type_name="Cloud"):
@@ -884,6 +900,12 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if "attributes" in values and not values["attributes"].qualified_name:
+            values["attributes"].qualified_name = values["guid"]
+        return values
 
 
 class Badge(Asset, type_name="Badge"):
