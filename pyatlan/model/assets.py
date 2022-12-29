@@ -639,7 +639,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @root_validator()
     def update_qualified_name(cls, values):
-        if not values["attributes"].qualified_name:
+        if "attributes" in values and not values["attributes"].qualified_name:
             values["attributes"].qualified_name = values["guid"]
         return values
 
@@ -739,7 +739,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @root_validator()
     def update_qualified_name(cls, values):
-        if not values["attributes"].qualified_name:
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
             values["attributes"].qualified_name = values["guid"]
         return values
 
@@ -899,7 +903,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @root_validator()
     def update_qualified_name(cls, values):
-        if not values["attributes"].qualified_name:
+        if "attributes" in values and not values["attributes"].qualified_name:
             values["attributes"].qualified_name = values["guid"]
         return values
 

@@ -181,7 +181,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {% if entity_def.name.startswith("AtlasGlossary") %}
     @root_validator()
     def update_qualified_name(cls, values):
-        if not values["attributes"].qualified_name:
+        if "attributes" in values  and values["attributes"] and not values["attributes"].qualified_name:
             values["attributes"].qualified_name = values["guid"]
         return values
     {% endif %}
