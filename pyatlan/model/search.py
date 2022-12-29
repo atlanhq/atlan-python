@@ -15,6 +15,30 @@ else:
 class Query(ABC):
     ...
 
+    def __add__(self, other):
+        # make sure we give queries that know how to combine themselves
+        # preference
+        if hasattr(other, "__radd__"):
+            return other.__radd__(self)
+        return Bool(must=[self, other])
+
+    def __and__(self, other):
+        # make sure we give queries that know how to combine themselves
+        # preference
+        if hasattr(other, "__rand__"):
+            return other.__rand__(self)
+        return Bool(must=[self, other])
+
+    def __or__(self, other):
+        # make sure we give queries that know how to combine themselves
+        # preference
+        if hasattr(other, "__ror__"):
+            return other.__ror__(self)
+        return Bool(should=[self, other])
+
+    def __invert__(self):
+        return Bool(must_not=[self])
+
     @abstractmethod
     def to_dict(self) -> dict[Any, Any]:
         ...
@@ -69,7 +93,7 @@ class Bool(Query):
                     else:
                         clauses[name] = clause.to_dict()
 
-        for name in ["must"]:
+        for name in ["must", "should"]:
             add_clause(name)
 
         return {"bool": clauses}

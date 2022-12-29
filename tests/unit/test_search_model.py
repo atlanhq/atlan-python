@@ -60,21 +60,28 @@ def test_bool_without_parameters_reaises_value_error():
 
 
 @pytest.mark.parametrize(
-    "terms",
+    "must, should",
     [
-        (Term(field="name", value="Bob")),
-        ([Term(field="name", value="Bob"), Term(field="name", value="Dave")]),
+        (Term(field="name", value="Bob"), None),
+        ([Term(field="name", value="Bob"), Term(field="name", value="Dave")], None),
+        (Term(field="name", value="Bob"), Term(field="name", value="Dave")),
     ],
 )
-def test_bool_to_dict(terms):
-    b = Bool(must=terms)
-    assert b.to_dict() == {
-        "bool": {
-            "must": [t.to_dict() for t in terms]
-            if isinstance(terms, list)
-            else terms.to_dict()
-        }
-    }
+def test_bool_to_dict(must, should):
+    def get_section(section):
+        return (
+            [s.to_dict() for s in section]
+            if isinstance(section, list)
+            else section.to_dict()
+        )
+
+    b = Bool(must=must, should=should)
+    expected = {"bool": {}}
+    if must:
+        expected["bool"]["must"] = get_section(must)
+    if should:
+        expected["bool"]["should"] = get_section(should)
+    assert b.to_dict() == expected
 
 
 def test_dsl():
@@ -102,3 +109,38 @@ def test_index_search_request():
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}}, '
         '"attributes": ["schemaName", "databaseName"]}'
     )
+
+
+def test_adding_terms_results_in_must_bool():
+    term_1 = Term(field="name", value="Bob")
+    term_2 = Term(field="name", value="Dave")
+    result = term_1 + term_2
+    assert isinstance(result, Bool)
+    assert len(result.must) == 2
+    assert term_1 in result.must and term_2 in result.must
+
+
+def test_anding_terms_results_in_must_bool():
+    term_1 = Term(field="name", value="Bob")
+    term_2 = Term(field="name", value="Dave")
+    result = term_1 & term_2
+    assert isinstance(result, Bool)
+    assert len(result.must) == 2
+    assert term_1 in result.must and term_2 in result.must
+
+
+def test_oring_terms_results_in_must_bool():
+    term_1 = Term(field="name", value="Bob")
+    term_2 = Term(field="name", value="Dave")
+    result = term_1 | term_2
+    assert isinstance(result, Bool)
+    assert len(result.should) == 2
+    assert term_1 in result.should and term_2 in result.should
+
+
+def test_negate_terms_results_must_not_bool():
+    term_1 = Term(field="name", value="Bob")
+    result = ~term_1
+    assert isinstance(result, Bool)
+    assert len(result.must_not) == 1
+    assert term_1 in result.must_not
