@@ -270,7 +270,6 @@ def test_create_multiple_glossaries_one_at_time(
     assert glossary.guid == guid
 
 
-@pytest.mark.skip
 def test_create_multiple_glossaries(client: EntityClient, increment_counter):
     entities: list[Asset] = []
     count = 2
