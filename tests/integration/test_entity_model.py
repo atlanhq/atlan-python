@@ -250,7 +250,6 @@ def test_create_multiple_glossaries_one_at_time(
     assert glossary.guid == guid
 
 
-@pytest.mark.skip
 def test_create_multiple_glossaries(client: EntityClient, increment_counter):
     entities = []
     count = 2
@@ -264,7 +263,9 @@ def test_create_multiple_glossaries(client: EntityClient, increment_counter):
             )
         )
     response = client.upsert(entities)
+    assert response.mutated_entities
     assert not response.mutated_entities.UPDATE
+    assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == count
     for i in range(count):
         guid = response.guid_assignments[entities[i].guid]
