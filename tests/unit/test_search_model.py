@@ -1,6 +1,6 @@
 import pytest
 
-from pyatlan.model.search import Bool, Term
+from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term
 
 
 @pytest.mark.parametrize(
@@ -75,3 +75,30 @@ def test_bool_to_dict(terms):
             else terms.to_dict()
         }
     }
+
+
+def test_dsl():
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+    assert (
+        dsl.json(by_alias=True)
+        == '{"from": 0, "size": 100, "post_filter": {"term": {"databaseName.keyword": '
+        '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
+        '{"__typeName.keyword": {"value": "Schema"}}}}'
+    )
+
+
+def test_index_search_request():
+    dsl = DSL(
+        query=Term(field="__typeName.keyword", value="Schema"),
+        post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
+    )
+    request = IndexSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
+    assert (
+        request.json(by_alias=True)
+        == '{"dsl": {"from": 0, "size": 100, "post_filter": {"term": {"databaseName.keyword": '
+        '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}}, '
+        '"attributes": ["schemaName", "databaseName"]}'
+    )
