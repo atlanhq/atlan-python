@@ -57,18 +57,18 @@ def test_term_to_dict(parameters, expected):
     assert t.to_dict() == expected
 
 
-def test_bool_without_parameters_reaises_value_error():
-    with pytest.raises(ValueError) as exc_info:
-        Bool()
-    assert (
-        exc_info.value.args[0][0].exc.args[0]
-        == "At least one of must, should, must_not or filter is required"
-    )
-
-
 @pytest.mark.parametrize(
     "must, should, must_not, filter, boost,  minimum_should_match, expected",
     [
+        (
+            [],
+            [],
+            [],
+            [],
+            None,
+            None,
+            {"bool": {}},
+        ),
         (
             [Term(field="name", value="Bob")],
             [],
@@ -315,3 +315,63 @@ def test_match_all_or_other_is_match_all():
 
 def test_negate_match_all_is_match_none():
     assert ~MatchAll() == MatchNone()
+
+
+@pytest.mark.parametrize(
+    "q1, q2, expected",
+    [
+        (
+            Term(field="name", value="Bob"),
+            Bool(must=[Term(field="name", value="Fred")]),
+            {
+                "bool": {
+                    "should": [
+                        {"bool": {"must": [{"term": {"name": {"value": "Fred"}}}]}},
+                        {"term": {"name": {"value": "Bob"}}},
+                    ]
+                }
+            },
+        )
+    ],
+)
+def test_bool_or(q1, q2, expected):
+    b = q1 | q2
+    assert b.to_dict() == expected
+
+
+def test_negate_empty_bool_is_match_none():
+    assert ~Bool() == MatchNone()
+
+
+@pytest.mark.parametrize(
+    "q, expected",
+    [
+        (
+            Bool(must=[Term(field="name", value="Fred")]),
+            {"bool": {"must_not": [{"term": {"name": {"value": "Fred"}}}]}},
+        ),
+        (
+            Bool(should=[Term(field="name", value="Fred")]),
+            {"bool": {"must_not": [{"term": {"name": {"value": "Fred"}}}]}},
+        ),
+        (
+            Bool(
+                must=[
+                    Term(field="name", value="Fred"),
+                    Term(field="name", value="Dave"),
+                ]
+            ),
+            {
+                "bool": {
+                    "should": [
+                        {"bool": {"must_not": [{"term": {"name": {"value": "Fred"}}}]}},
+                        {"bool": {"must_not": [{"term": {"name": {"value": "Dave"}}}]}},
+                    ]
+                }
+            },
+        ),
+    ],
+)
+def test_negate_bool(q, expected):
+    b = ~q
+    assert b.to_dict() == expected

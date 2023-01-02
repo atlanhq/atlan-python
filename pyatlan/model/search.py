@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+from itertools import chain
 from typing import TYPE_CHECKING, Any, Literal, Optional
 
-from pydantic import Field, validator
+from pydantic import Field
 
 from pyatlan.model.core import AtlanObject
 
@@ -9,6 +10,7 @@ if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
     from pydantic.dataclasses import dataclass
+
 import copy
 
 
@@ -124,19 +126,6 @@ class Bool(Query):
     boost: Optional[float] = None
     minimum_should_match: Optional[int] = None
 
-    @validator("filter", always=True)
-    def has_clause(cls, v, values):
-        if (
-            len(v) < 1
-            and len(values["must"]) < 1
-            and len(values["should"]) < 1
-            and len(values["must_not"]) < 1
-        ):
-            raise ValueError(
-                "At least one of must, should, must_not or filter is required"
-            )
-        return v
-
     def __add__(self, other):
         q = self._clone()
         if isinstance(other, Bool):
@@ -154,6 +143,57 @@ class Bool(Query):
 
     __radd__ = __add__
 
+    def __or__(self, other):
+        for q in (self, other):
+            if isinstance(q, Bool) and not any(
+                (q.must, q.must_not, q.filter, getattr(q, "minimum_should_match", None))
+            ):
+                other = self if q is other else other
+                q = q._clone()
+                if isinstance(other, Bool) and not any(
+                    (
+                        other.must,
+                        other.must_not,
+                        other.filter,
+                        getattr(other, "minimum_should_match", None),
+                    )
+                ):
+                    q.should.extend(other.should)
+                else:
+                    q.should.append(other)
+                return q
+
+        return Bool(should=[self, other])
+
+    __ror__ = __or__
+
+    @property
+    def _min_should_match(self):
+        if not self.minimum_should_match:
+            return 0 if not self.should or (self.must or self.filter) else 1
+        else:
+            return self.minimum_should_match
+
+    def __invert__(self):
+        # Because an empty Bool query is treated like
+        # MatchAll the inverse should be MatchNone
+        if not any(chain(self.must, self.filter, self.should, self.must_not)):
+            return MatchNone()
+
+        negations = []
+        for q in chain(self.must, self.filter):
+            negations.append(~q)
+
+        for q in self.must_not:
+            negations.append(q)
+
+        if self.should and self._min_should_match:
+            negations.append(Bool(must_not=self.should[:]))
+
+        if len(negations) == 1:
+            return negations[0]
+        return Bool(should=negations)
+
     def to_dict(self) -> dict[Any, Any]:
         clauses = {}
 
@@ -161,10 +201,8 @@ class Bool(Query):
             if hasattr(self, name):
                 clause = self.__getattribute__(name)
                 if clause:
-                    if isinstance(clause, list):
+                    if isinstance(clause, list) and len(clause) > 0:
                         clauses[name] = [c.to_dict() for c in clause]
-                    else:
-                        clauses[name] = clause.to_dict()
 
         for name in ["must", "should", "must_not", "filter"]:
             add_clause(name)
