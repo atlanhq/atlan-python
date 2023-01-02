@@ -375,3 +375,36 @@ def test_negate_empty_bool_is_match_none():
 def test_negate_bool(q, expected):
     b = ~q
     assert b.to_dict() == expected
+
+
+@pytest.mark.parametrize(
+    "q1, q2, expected",
+    [
+        (
+            Bool(should=[Term(field="name", value="Dave")]),
+            Term(field="name", value="Bob"),
+            {
+                "bool": {
+                    "should": [{"term": {"name": {"value": "Dave"}}}],
+                    "must": [{"term": {"name": {"value": "Bob"}}}],
+                    "minimum_should_match": 1,
+                }
+            },
+        ),
+        (
+            Bool(should=[Term(field="name", value="Dave")]),
+            Bool(must=[Term(field="name", value="Bob")]),
+            {
+                "bool": {
+                    "must": [
+                        {"term": {"name": {"value": "Bob"}}},
+                        {"term": {"name": {"value": "Dave"}}},
+                    ]
+                }
+            },
+        ),
+    ],
+)
+def test_bool_and(q1, q2, expected):
+    b = q1 & q2
+    assert b.to_dict() == expected

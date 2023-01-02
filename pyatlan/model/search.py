@@ -43,7 +43,7 @@ class Query(ABC):
         return Bool(must_not=[self])
 
     def _clone(self):
-        return copy.copy(self)
+        return copy.deepcopy(self)
 
     @abstractmethod
     def to_dict(self) -> dict[Any, Any]:
@@ -193,6 +193,44 @@ class Bool(Query):
         if len(negations) == 1:
             return negations[0]
         return Bool(should=negations)
+
+    def __and__(self, other):
+        q = self._clone()
+        if isinstance(other, Bool):
+            q.must += other.must
+            q.must_not += other.must_not
+            q.filter += other.filter
+            q.should = []
+
+            # reset minimum_should_match as it will get calculated below
+            if q.minimum_should_match:
+                q.minimum_should_match = None
+
+            for qx in (self, other):
+                # TODO: percentages will fail here
+                min_should_match = qx._min_should_match
+                # all subqueries are required
+                if len(qx.should) <= min_should_match:
+                    q.must.extend(qx.should)
+                # not all of them are required, use it and remember min_should_match
+                elif not q.should:
+                    q.minimum_should_match = min_should_match
+                    q.should = qx.should
+                # all queries are optional, just extend should
+                elif q._min_should_match == 0 and min_should_match == 0:
+                    q.should.extend(qx.should)
+                # not all are required, add a should list to the must with proper min_should_match
+                else:
+                    q.must.append(
+                        Bool(should=qx.should, minimum_should_match=min_should_match)
+                    )
+        else:
+            if not (q.must or q.filter) and q.should:
+                q.minimum_should_match = 1
+            q.must.append(other)
+        return q
+
+    __rand__ = __and__
 
     def to_dict(self) -> dict[Any, Any]:
         clauses = {}

@@ -5,3 +5,4 @@ types-requests
 pytest
 pre-commit
 deepdiff
+pytest-cov
