@@ -7,6 +7,7 @@ from pyatlan.model.search import (
     MatchAll,
     MatchNone,
     Term,
+    Terms,
 )
 
 
@@ -408,3 +409,9 @@ def test_negate_bool(q, expected):
 def test_bool_and(q1, q2, expected):
     b = q1 & q2
     assert b.to_dict() == expected
+
+
+def test_terms_to_dict():
+    assert Terms(field="name", values=["john", "dave"]).to_dict() == {
+        "terms": {"name": ["john", "dave"]}
+    }

@@ -117,6 +117,20 @@ class Term(Query):
 
 
 @dataclass
+class Terms(Query):
+    field: str
+    values: list[str]
+    boost: Optional[float] = None
+    type_name: Literal["terms"] = "terms"
+
+    def to_dict(self):
+        terms = {self.field: self.values}
+        if self.boost is not None:
+            terms["boost"] = self.boost
+        return {self.type_name: terms}
+
+
+@dataclass
 class Bool(Query):
     must: list[Query] = Field(default_factory=list)
     should: list[Query] = Field(default_factory=list)
