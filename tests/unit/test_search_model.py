@@ -1,6 +1,13 @@
 import pytest
 
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Term
+from pyatlan.model.search import (
+    DSL,
+    Bool,
+    IndexSearchRequest,
+    MatchAll,
+    MatchNone,
+    Term,
+)
 
 
 @pytest.mark.parametrize(
@@ -60,28 +67,107 @@ def test_bool_without_parameters_reaises_value_error():
 
 
 @pytest.mark.parametrize(
-    "must, should",
+    "must, should, must_not, filter, boost,  minimum_should_match, expected",
     [
-        (Term(field="name", value="Bob"), None),
-        ([Term(field="name", value="Bob"), Term(field="name", value="Dave")], None),
-        (Term(field="name", value="Bob"), Term(field="name", value="Dave")),
+        (
+            [Term(field="name", value="Bob")],
+            [],
+            [],
+            [],
+            None,
+            None,
+            {"bool": {"must": [{"term": {"name": {"value": "Bob"}}}]}},
+        ),
+        (
+            [Term(field="name", value="Bob"), Term(field="name", value="Dave")],
+            [],
+            [],
+            [],
+            None,
+            None,
+            {
+                "bool": {
+                    "must": [
+                        {"term": {"name": {"value": "Bob"}}},
+                        {"term": {"name": {"value": "Dave"}}},
+                    ]
+                }
+            },
+        ),
+        (
+            [Term(field="name", value="Bob")],
+            [Term(field="name", value="Dave")],
+            [],
+            [],
+            None,
+            None,
+            {
+                "bool": {
+                    "must": [{"term": {"name": {"value": "Bob"}}}],
+                    "should": [
+                        {"term": {"name": {"value": "Dave"}}},
+                    ],
+                }
+            },
+        ),
+        (
+            [],
+            [],
+            [Term(field="name", value="Bob")],
+            [],
+            None,
+            None,
+            {"bool": {"must_not": [{"term": {"name": {"value": "Bob"}}}]}},
+        ),
+        (
+            [],
+            [],
+            [],
+            [Term(field="name", value="Bob")],
+            None,
+            None,
+            {"bool": {"filter": [{"term": {"name": {"value": "Bob"}}}]}},
+        ),
+        (
+            [Term(field="name", value="Bob")],
+            [],
+            [],
+            [],
+            1.0,
+            None,
+            {"bool": {"boost": 1.0, "must": [{"term": {"name": {"value": "Bob"}}}]}},
+        ),
+        (
+            [Term(field="name", value="Bob")],
+            [],
+            [],
+            [],
+            None,
+            3,
+            {
+                "bool": {
+                    "minimum_should_match": 3,
+                    "must": [{"term": {"name": {"value": "Bob"}}}],
+                }
+            },
+        ),
     ],
 )
-def test_bool_to_dict(must, should):
-    def get_section(section):
-        return (
-            [s.to_dict() for s in section]
-            if isinstance(section, list)
-            else section.to_dict()
-        )
+def test_bool_to_dict_without_optional_fields(
+    must, should, must_not, filter, boost, minimum_should_match, expected
+):
 
-    b = Bool(must=must, should=should)
-    expected = {"bool": {}}
-    if must:
-        expected["bool"]["must"] = get_section(must)
-    if should:
-        expected["bool"]["should"] = get_section(should)
-    assert b.to_dict() == expected
+    assert (
+        Bool(
+            must=must,
+            should=should,
+            must_not=must_not,
+            filter=filter,
+            boost=boost,
+            minimum_should_match=minimum_should_match,
+        ).to_dict()
+        == expected
+    )
 
 
 def test_dsl():
@@ -144,3 +230,88 @@ def test_negate_terms_results_must_not_bool():
     assert isinstance(result, Bool)
     assert len(result.must_not) == 1
     assert term_1 in result.must_not
+
+
+@pytest.mark.parametrize(
+    "q1, q2, expected",
+    [
+        (
+            Bool(must=[Term(field="name", value="Bob")]),
+            Bool(must=[Term(field="name", value="Dave")]),
+            {
+                "bool": {
+                    "must": [
+                        {"term": {"name": {"value": "Bob"}}},
+                        {"term": {"name": {"value": "Dave"}}},
+                    ]
+                }
+            },
+        ),
+        (
+            Term(field="name", value="Bob"),
+            Bool(must=[Term(field="name", value="Fred")]),
+            {
+                "bool": {
+                    "must": [
+                        {"term": {"name": {"value": "Fred"}}},
+                        {"term": {"name": {"value": "Bob"}}},
+                    ]
+                }
+            },
+        ),
+        (
+            Bool(must=[Term(field="name", value="Fred")]),
+            Term(field="name", value="Bob"),
+            {
+                "bool": {
+                    "must": [
+                        {"term": {"name": {"value": "Fred"}}},
+                        {"term": {"name": {"value": "Bob"}}},
+                    ]
+                }
+            },
+        ),
+    ],
+)
+def test_add_boolean(q1, q2, expected):
+    b = q1 + q2
+    assert b.to_dict() == expected
+
+
+def test_match_none_to_dict():
+    assert MatchNone().to_dict() == {"match_none": {}}
+
+
+def test_match_none_plus_other_is_match_none():
+    assert MatchNone() + Term(field="name", value="bob") == MatchNone()
+
+
+def test_match_one_or_other_is_other():
+    assert MatchNone() | Term(field="name", value="bob") == Term(
+        field="name", value="bob"
+    )
+
+
+def test_nagate_match_one_is_match_all():
+    assert ~MatchNone() == MatchAll()
+
+
+@pytest.mark.parametrize(
+    "boost, expected", [(None, {"match_all": {}}), (1.2, {"match_all": {"boost": 1.2}})]
+)
+def test_match_all_to_dict(boost, expected):
+    assert MatchAll(boost=boost).to_dict() == expected
+
+
+def test_match_all_and_other_is_other():
+    assert MatchAll() & Term(field="name", value="bob") == Term(
+        field="name", value="bob"
+    )
+
+
+def test_match_all_or_other_is_match_all():
+    assert MatchAll() | Term(field="name", value="bob") == MatchAll()
+
+
+def test_negate_match_all_is_match_none():
+    assert ~MatchAll() == MatchNone()
