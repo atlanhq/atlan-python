@@ -1,7 +1,11 @@
+from datetime import datetime
+
 import pytest
+from pydantic import StrictStr
 
 from pyatlan.model.search import (
     DSL,
+    Attributes,
     Bool,
     IndexSearchRequest,
     MatchAll,
@@ -9,6 +13,9 @@ from pyatlan.model.search import (
     Term,
     Terms,
 )
+
+NOW = datetime.now()
+VALUES_BY_TYPE: dict[type, str] = {StrictStr: "abc", datetime: NOW}
 
 
 @pytest.mark.parametrize(
@@ -38,6 +45,10 @@ def test_term_without_parameters_value_raises_exception(parameters, expected):
 @pytest.mark.parametrize(
     "parameters, expected",
     [
+        (
+            {"field": "name", "value": NOW},
+            {"term": {"name": {"value": int(NOW.timestamp() * 1000)}}},
+        ),
         ({"field": "name", "value": "dave"}, {"term": {"name": {"value": "dave"}}}),
         (
             {"field": "name", "value": "dave", "case_insensitive": True},
@@ -415,3 +426,18 @@ def test_terms_to_dict():
     assert Terms(field="name", values=["john", "dave"]).to_dict() == {
         "terms": {"name": ["john", "dave"]}
     }
+
+
+@pytest.mark.parametrize(
+    "name, value, field",
+    [
+        ("with_" + a.name.lower(), VALUES_BY_TYPE[a.attribute_type], a.value)
+        for a in Attributes
+    ],
+)
+def test_by_guid(name, value, field):
+    assert hasattr(Term, name)
+    t = getattr(Term, name)(value)
+    assert isinstance(t, Term)
+    assert t.field == field
+    assert t.value == value

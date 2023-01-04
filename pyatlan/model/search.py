@@ -1,8 +1,17 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
+from enum import Enum
 from itertools import chain
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
-from pydantic import Field
+from pydantic import (
+    ConfigDict,
+    Field,
+    StrictFloat,
+    StrictInt,
+    StrictStr,
+    validate_arguments,
+)
 
 from pyatlan.model.core import AtlanObject
 
@@ -13,11 +22,25 @@ else:
 
 import copy
 
+SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, datetime]
+
+
+class Attributes(str, Enum):
+    attribute_type: type
+
+    def __new__(cls, value: str, attribute_type: type) -> "Attributes":
+        obj = str.__new__(cls, value)
+        obj._value_ = value
+        obj.attribute_type = attribute_type
+        return obj
+
+    GUID = ("__guid", StrictStr)
+    CREATED_BY = ("__createdBy", StrictStr)
+    TIMESTAMP = ("__timestamp", datetime)
+
 
 @dataclass
 class Query(ABC):
-    ...
-
     def __add__(self, other):
         # make sure we give queries that know how to combine themselves
         # preference
@@ -99,16 +122,34 @@ class MatchNone(Query):
         return {"match_none": {}}
 
 
-@dataclass
+@dataclass(config=ConfigDict(smart_union=True))  # type: ignore
 class Term(Query):
     field: str
-    value: str
+    value: SearchFieldType
     boost: Optional[float] = None
     case_insensitive: Optional[bool] = None
     type_name: Literal["term"] = "term"
 
+    @classmethod
+    @validate_arguments()
+    def with_guid(cls, value: StrictStr):
+        return cls(field=Attributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(cls, value: StrictStr):
+        return cls(field=Attributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_timestamp(cls, value: datetime):
+        return cls(field=Attributes.TIMESTAMP.value, value=value)
+
     def to_dict(self):
-        parameters = {"value": self.value}
+        if isinstance(self.value, datetime):
+            parameters = {"value": int(self.value.timestamp() * 1000)}
+        else:
+            parameters = {"value": self.value}
         if self.case_insensitive is not None:
             parameters["case_insensitive"] = self.case_insensitive
         if self.boost is not None:
