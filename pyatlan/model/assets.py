@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
@@ -279,6 +280,8 @@ class Asset(Referenceable):
             raise ValueError("Missing 'type' in Asset")
 
         sub = cls._subtypes_.get(data_type)
+        if sub is None:
+            sub = getattr(sys.modules[__name__], data_type)
 
         if sub is None:
             raise TypeError(f"Unsupport sub-type: {data_type}")
