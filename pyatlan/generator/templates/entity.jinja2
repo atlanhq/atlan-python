@@ -127,6 +127,9 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     meanings: Optional[list[AtlasGlossaryTerm]] = Field(
         None, description="", alias="meanings"
     )
+    scrubbed: Optional[bool] = Field(
+        None, description="", alias="fields removed from results"
+    )
 {%- else %}
     {%- if entity_def.name == "Asset"  %}
     _subtypes_:dict[str, type] = dict()
