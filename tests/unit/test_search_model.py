@@ -12,6 +12,7 @@ from pyatlan.model.search import (
     IndexSearchRequest,
     MatchAll,
     MatchNone,
+    Prefix,
     Term,
     Terms,
 )
@@ -435,16 +436,17 @@ def test_terms_to_dict():
 
 
 @pytest.mark.parametrize(
-    "name, value, field",
+    "a_class, name, value, field",
     [
-        ("with_" + a.name.lower(), VALUES_BY_TYPE[a.attribute_type], a.value)
+        (c, "with_" + a.name.lower(), VALUES_BY_TYPE[a.attribute_type], a.value)
         for a in Attributes
+        for c in [Term, Prefix]
     ],
 )
-def test_by_methods_on_term(name, value, field):
-    assert hasattr(Term, name)
-    t = getattr(Term, name)(value)
-    assert isinstance(t, Term)
+def test_by_methods_on_term_or_prefix(a_class, name, value, field):
+    assert hasattr(a_class, name)
+    t = getattr(a_class, name)(value)
+    assert isinstance(t, a_class)
     assert t.field == field
     assert t.value == value
 

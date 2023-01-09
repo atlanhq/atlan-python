@@ -113,10 +113,7 @@ class MatchAll(Query):
         return MatchNone()
 
     def to_dict(self) -> dict[Any, Any]:
-        if self.boost:
-            value = {"boost": self.boost}
-        else:
-            value = {}
+        value = {"boost": self.boost} if self.boost else {}
         return {self.type_name: value}
 
 
@@ -352,19 +349,12 @@ class Bool(Query):
         if not any(chain(self.must, self.filter, self.should, self.must_not)):
             return MatchNone()
 
-        negations = []
-        for q in chain(self.must, self.filter):
-            negations.append(~q)
-
-        for q in self.must_not:
-            negations.append(q)
-
+        negations = [~q for q in chain(self.must, self.filter)]
+        negations.extend(iter(self.must_not))
         if self.should and self._min_should_match:
             negations.append(Bool(must_not=self.should[:]))
 
-        if len(negations) == 1:
-            return negations[0]
-        return Bool(should=negations)
+        return negations[0] if len(negations) == 1 else Bool(should=negations)
 
     def __and__(self, other):
         q = self._clone()
@@ -421,6 +411,77 @@ class Bool(Query):
         if self.minimum_should_match is not None:
             clauses["minimum_should_match"] = self.minimum_should_match
         return {"bool": clauses}
+
+
+@dataclass(config=ConfigDict(smart_union=True))  # type: ignore
+class Prefix(Query):
+    field: str
+    value: SearchFieldType
+    boost: Optional[float] = None
+    case_insensitive: Optional[bool] = None
+    type_name: Literal["prefix"] = "prefix"
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(cls, value: StrictStr):
+        return cls(field=Attributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_guid(cls, value: StrictStr):
+        # Use a GUID as a Query Term
+        return cls(field=Attributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(cls, value: StrictStr):
+        return cls(field=Attributes.MEANINGS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modification_timestamp(cls, value: datetime):
+        return cls(field=Attributes.MODIFICATION_TIMESTAMP.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(cls, value: StrictStr):
+        return cls(field=Attributes.MODIFIED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=Attributes.QUALIFIED_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_name(cls, value: StrictStr):
+        return cls(field=Attributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+        return cls(field=Attributes.STATE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_timestamp(cls, value: datetime):
+        return cls(field=Attributes.TIMESTAMP.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls, value: StrictStr):
+        return cls(field=Attributes.TYPE_NAME.value, value=value)
+
+    def to_dict(self):
+        if isinstance(self.value, datetime):
+            parameters = {"value": int(self.value.timestamp() * 1000)}
+        else:
+            parameters = {"value": self.value}
+        if self.case_insensitive is not None:
+            parameters["case_insensitive"] = self.case_insensitive
+        if self.boost is not None:
+            parameters["boost"] = self.boost
+        return {self.type_name: {self.field: parameters}}
 
 
 class DSL(AtlanObject):
