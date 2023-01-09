@@ -34,9 +34,30 @@ class Attributes(str, Enum):
         obj.attribute_type = attribute_type
         return obj
 
-    GUID = ("__guid", StrictStr)
     CREATED_BY = ("__createdBy", StrictStr)
+    GUID = ("__guid", StrictStr)
+    MEANINGS_TEXT = ("__meaningsText", StrictStr)
+    MODIFICATION_TIMESTAMP = ("__modificationTimestamp", datetime)
+    MODIFIED_BY = ("__modifiedBy", StrictStr)
+    QUALIFIED_NAME = ("qualifiedName", StrictStr)
+    NAME = ("name.keyword", StrictStr)
+    STATE = ("__state", Literal["ACTIVE", "DELETED"])
     TIMESTAMP = ("__timestamp", datetime)
+    TYPE_NAME = ("__typeName", StrictStr)
+
+
+def get_with_string(attribute: Attributes):
+    @validate_arguments()
+    def with_string(cls, value: StrictStr):
+        """This function returns a string"""
+        return cls(field=attribute.value, value=value)
+
+    return with_string
+
+
+# def add_with_methods(cls):
+#     setattr(cls, "with_guid", classmethod(get_with_string(Attributes.GUID)))
+#     return cls
 
 
 @dataclass
@@ -132,18 +153,54 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_guid(cls, value: StrictStr):
-        return cls(field=Attributes.GUID.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_created_by(cls, value: StrictStr):
         return cls(field=Attributes.CREATED_BY.value, value=value)
 
     @classmethod
     @validate_arguments()
+    def with_guid(cls, value: StrictStr):
+        # Use a GUID as a Query Term
+        return cls(field=Attributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(cls, value: StrictStr):
+        return cls(field=Attributes.MEANINGS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modification_timestamp(cls, value: datetime):
+        return cls(field=Attributes.MODIFICATION_TIMESTAMP.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(cls, value: StrictStr):
+        return cls(field=Attributes.MODIFIED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=Attributes.QUALIFIED_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_name(cls, value: StrictStr):
+        return cls(field=Attributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+        return cls(field=Attributes.STATE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
     def with_timestamp(cls, value: datetime):
         return cls(field=Attributes.TIMESTAMP.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls, value: StrictStr):
+        return cls(field=Attributes.TYPE_NAME.value, value=value)
 
     def to_dict(self):
         if isinstance(self.value, datetime):

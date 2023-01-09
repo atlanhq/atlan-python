@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal, Union
 
 import pytest
 from pydantic import StrictStr
@@ -15,7 +16,11 @@ from pyatlan.model.search import (
 )
 
 NOW = datetime.now()
-VALUES_BY_TYPE: dict[type, str] = {StrictStr: "abc", datetime: NOW}
+VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
+    StrictStr: "abc",
+    datetime: NOW,
+    Literal["ACTIVE", "DELETED"]: "ACTIVE",
+}
 
 
 @pytest.mark.parametrize(
