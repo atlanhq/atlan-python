@@ -143,6 +143,66 @@ class MatchNone(Query):
         return {"match_none": {}}
 
 
+@dataclass()
+class Exists(Query):
+    field: str
+    type_name: Literal["exists"] = "exists"
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(cls):
+        return cls(field=Attributes.CREATED_BY.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_guid(cls):
+        # Use a GUID as a Query Term
+        return cls(field=Attributes.GUID.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(cls):
+        return cls(field=Attributes.MEANINGS_TEXT.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modification_timestamp(cls):
+        return cls(field=Attributes.MODIFICATION_TIMESTAMP.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(cls):
+        return cls(field=Attributes.MODIFIED_BY.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls):
+        return cls(field=Attributes.QUALIFIED_NAME.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_name(cls):
+        return cls(field=Attributes.NAME.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_state(cls):
+        return cls(field=Attributes.STATE.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_timestamp(cls):
+        return cls(field=Attributes.TIMESTAMP.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls):
+        return cls(field=Attributes.TYPE_NAME.value)
+
+    def to_dict(self):
+        return {self.type_name: {"field": self.field}}
+
+
 @dataclass(config=ConfigDict(smart_union=True))  # type: ignore
 class Term(Query):
     field: str

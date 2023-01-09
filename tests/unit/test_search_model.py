@@ -8,6 +8,7 @@ from pyatlan.model.search import (
     DSL,
     Attributes,
     Bool,
+    Exists,
     IndexSearchRequest,
     MatchAll,
     MatchNone,
@@ -440,9 +441,20 @@ def test_terms_to_dict():
         for a in Attributes
     ],
 )
-def test_by_guid(name, value, field):
+def test_by_methods_on_term(name, value, field):
     assert hasattr(Term, name)
     t = getattr(Term, name)(value)
     assert isinstance(t, Term)
     assert t.field == field
     assert t.value == value
+
+
+@pytest.mark.parametrize(
+    "name,  field",
+    [("with_" + a.name.lower(), a.value) for a in Attributes],
+)
+def test_by_methods_on_exists(name, field):
+    assert hasattr(Exists, name)
+    t = getattr(Exists, name)()
+    assert isinstance(t, Exists)
+    assert t.field == field
