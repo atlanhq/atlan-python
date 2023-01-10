@@ -2,7 +2,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.entity import EntityClient
-from pyatlan.model.assets import AtlasGlossary, Connection, Database, Table
+from pyatlan.model.assets import AtlasGlossary, Connection, Database, Table, View
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 
 
@@ -37,6 +37,12 @@ def client() -> EntityClient:
             Term(field="__typeName.keyword", value="Table"),
             ["schemaName", "databaseName"],
             Table,
+        ),
+        (
+            Term(field="__state", value="ACTIVE"),
+            Term(field="__typeName.keyword", value="View"),
+            ["schemaName", "databaseName"],
+            View,
         ),
     ],
 )
