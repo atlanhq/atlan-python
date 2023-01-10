@@ -2,7 +2,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.entity import EntityClient
-from pyatlan.model.assets import AtlasGlossary, Connection, Database
+from pyatlan.model.assets import AtlasGlossary, Connection, Database, Table
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 
 
@@ -21,16 +21,22 @@ def client() -> EntityClient:
             AtlasGlossary,
         ),
         (
-            Term(field="connectorName", value="snowflake"),
+            Term(field="__state", value="ACTIVE"),
             Term(field="__typeName.keyword", value="Connection"),
             ["schemaName", "databaseName"],
             Connection,
         ),
         (
-            Term(field="connectorName", value="snowflake"),
+            Term(field="__state", value="ACTIVE"),
             Term(field="__typeName.keyword", value="Database"),
             ["schemaName", "databaseName"],
             Database,
+        ),
+        (
+            Term(field="__state", value="ACTIVE"),
+            Term(field="__typeName.keyword", value="Table"),
+            ["schemaName", "databaseName"],
+            Table,
         ),
     ],
 )
@@ -41,6 +47,10 @@ def test_index_search(client: EntityClient, query, post_filter, attributes, a_cl
     )
     request = IndexSearchRequest(dsl=dsl, attributes=attributes)
     assets = client.index_search(criteria=request)
-    assert len(list(assets)) > 0
+    counter = 0
     for asset in assets:
         assert isinstance(asset, a_class)
+        counter += 1
+        if counter > 3:
+            break
+    assert counter > 0

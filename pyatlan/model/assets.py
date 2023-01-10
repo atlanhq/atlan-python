@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import Field, root_validator
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification
+from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
 from pyatlan.model.enums import (
     AnnouncementType,
     CertificateStatus,
@@ -246,9 +246,7 @@ class Referenceable(AtlanObject):
     meaning_names: Optional[list[str]] = Field(
         None, description="Names of terms that have been linked to this asset."
     )
-    meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-        None, description="", alias="meanings"
-    )
+    meanings: Optional[list[Meaning]] = Field(None, description="", alias="meanings")
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )
@@ -277,6 +275,8 @@ class Asset(Referenceable):
         )
 
         if data_type is None:
+            if issubclass(cls, Asset):
+                return cls(**data)
             raise ValueError("Missing 'type' in Asset")
 
         sub = cls._subtypes_.get(data_type)

@@ -87,6 +87,25 @@ class Classification(AtlanObject):
     )
 
 
+class Meaning(AtlanObject):
+    term_guid: str = Field(
+        description="Unique identifier (GUID) of the related term.",
+        example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
+        alias="termGuid",
+    )
+    relation_guid: str = Field(
+        description="Unique identifier (GUID) of the relationship itself.",
+        example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
+        alias="relationGuid",
+    )
+    display_text: str = Field(
+        description="Human-readable display name of the related term.",
+        example="Company",
+        alias="displayText",
+    )
+    confidence: int = Field(description="Unused", example=1)
+
+
 T = TypeVar("T")
 
 
