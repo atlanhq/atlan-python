@@ -94,7 +94,7 @@ class Query(ABC):
         ...
 
 
-@dataclass
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class MatchAll(Query):
     type_name: Literal["match_all"] = "match_all"
     boost: Optional[float] = None
@@ -120,6 +120,7 @@ class MatchAll(Query):
 EMPTY_QUERY = MatchAll()
 
 
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class MatchNone(Query):
     type_name: Literal["match_none"] = "match_none"
 
@@ -140,7 +141,7 @@ class MatchNone(Query):
         return {"match_none": {}}
 
 
-@dataclass()
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Exists(Query):
     field: str
     type_name: Literal["exists"] = "exists"
@@ -200,7 +201,7 @@ class Exists(Query):
         return {self.type_name: {"field": self.field}}
 
 
-@dataclass(config=ConfigDict(smart_union=True))  # type: ignore
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Term(Query):
     field: str
     value: SearchFieldType
@@ -285,7 +286,7 @@ class Terms(Query):
         return {self.type_name: terms}
 
 
-@dataclass
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Bool(Query):
     must: list[Query] = Field(default_factory=list)
     should: list[Query] = Field(default_factory=list)
@@ -400,9 +401,8 @@ class Bool(Query):
         def add_clause(name):
             if hasattr(self, name):
                 clause = self.__getattribute__(name)
-                if clause:
-                    if isinstance(clause, list) and len(clause) > 0:
-                        clauses[name] = [c.to_dict() for c in clause]
+                if clause and isinstance(clause, list) and len(clause) > 0:
+                    clauses[name] = [c.to_dict() for c in clause]
 
         for name in ["must", "should", "must_not", "filter"]:
             add_clause(name)
@@ -413,7 +413,7 @@ class Bool(Query):
         return {"bool": clauses}
 
 
-@dataclass(config=ConfigDict(smart_union=True))  # type: ignore
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Prefix(Query):
     field: str
     value: SearchFieldType
@@ -472,15 +472,57 @@ class Prefix(Query):
     def with_type_name(cls, value: StrictStr):
         return cls(field=Attributes.TYPE_NAME.value, value=value)
 
-    def to_dict(self):
-        if isinstance(self.value, datetime):
-            parameters = {"value": int(self.value.timestamp() * 1000)}
-        else:
-            parameters = {"value": self.value}
+    def to_dict(self) -> dict[Any, Any]:
+        parameters: dict[str, Any] = {
+            "value": int(self.value.timestamp() * 1000)
+            if isinstance(self.value, datetime)
+            else self.value
+        }
+
         if self.case_insensitive is not None:
             parameters["case_insensitive"] = self.case_insensitive
         if self.boost is not None:
             parameters["boost"] = self.boost
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class Range(Query):
+    field: str
+    gt: Optional[SearchFieldType]
+    gte: Optional[SearchFieldType]
+    lt: Optional[SearchFieldType]
+    lte: Optional[SearchFieldType]
+    boost: Optional[float] = None
+    format: Optional[StrictStr] = None
+    relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None
+    time_zone: Optional[StrictStr] = None
+    type_name: Literal["range"] = "range"
+
+    def to_dict(self) -> dict[Any, Any]:
+        def get_value(attribute_name):
+            if hasattr(self, attribute_name):
+                attribute_value = getattr(self, attribute_name)
+                if isinstance(attribute_value, datetime):
+                    attribute_value = int(self.value.timestamp() * 1000)
+            else:
+                attribute_value = None
+            return attribute_value
+
+        parameters = {}
+        for name in [
+            "gt",
+            "gte",
+            "lt",
+            "lte",
+            "boost",
+            "format",
+            "relation",
+            "time_zone",
+        ]:
+            value = get_value(name)
+            if value:
+                parameters[name] = value
         return {self.type_name: {self.field: parameters}}
 
 

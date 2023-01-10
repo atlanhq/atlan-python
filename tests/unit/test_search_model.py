@@ -13,6 +13,7 @@ from pyatlan.model.search import (
     MatchAll,
     MatchNone,
     Prefix,
+    Range,
     Term,
     Terms,
 )
@@ -460,3 +461,148 @@ def test_by_methods_on_exists(name, field):
     t = getattr(Exists, name)()
     assert isinstance(t, Exists)
     assert t.field == field
+
+
+@pytest.mark.parametrize(
+    "gt, gte, lt, lte, boost, format, relation, timezone, expected",
+    [
+        (
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {}}},
+        ),
+        (
+            10,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {"gt": 10}}},
+        ),
+        (
+            None,
+            10,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {"gte": 10}}},
+        ),
+        (
+            None,
+            None,
+            10,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {"lt": 10}}},
+        ),
+        (
+            None,
+            None,
+            None,
+            10,
+            None,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {"lte": 10}}},
+        ),
+        (
+            None,
+            None,
+            None,
+            None,
+            2.0,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {"boost": 2.0}}},
+        ),
+        (
+            None,
+            None,
+            None,
+            None,
+            None,
+            "YY/MM/DD",
+            None,
+            None,
+            {"range": {"Bob": {"format": "YY/MM/DD"}}},
+        ),
+        (
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            "CONTAINS",
+            None,
+            {"range": {"Bob": {"relation": "CONTAINS"}}},
+        ),
+        (
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            "-01:00",
+            {"range": {"Bob": {"time_zone": "-01:00"}}},
+        ),
+        (
+            1,
+            2,
+            3,
+            4,
+            2.0,
+            "YY/MM/DD",
+            "WITHIN",
+            "-01:00",
+            {
+                "range": {
+                    "Bob": {
+                        "gt": 1,
+                        "gte": 2,
+                        "lt": 3,
+                        "lte": 4,
+                        "boost": 2.0,
+                        "format": "YY/MM/DD",
+                        "relation": "WITHIN",
+                        "time_zone": "-01:00",
+                    }
+                }
+            },
+        ),
+    ],
+)
+def test_range_to_dict(gt, gte, lt, lte, boost, format, relation, timezone, expected):
+    assert (
+        Range(
+            field="Bob",
+            gt=gt,
+            gte=gte,
+            lt=lt,
+            lte=lte,
+            boost=boost,
+            format=format,
+            relation=relation,
+            time_zone=timezone,
+        ).to_dict()
+        == expected
+    )
