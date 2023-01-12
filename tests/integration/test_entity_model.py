@@ -168,6 +168,13 @@ def cleanup_glossaries(atlan_host, headers, atlan_api_key):
     delete_assets(atlan_host, headers, "AtlasGlossary")
 
 
+# @pytest.fixture(autouse=True, scope="module")
+def cleanup_connections(atlan_host, headers, atlan_api_key):
+    delete_assets(atlan_host, headers, "Connection")
+    yield
+    delete_assets(atlan_host, headers, "Connection")
+
+
 def test_get_glossary_by_guid_good_guid(create_glossary, client: EntityClient):
     glossary = client.get_entity_by_guid(create_glossary(), AtlasGlossary)
     assert isinstance(glossary, AtlasGlossary)

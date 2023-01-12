@@ -10,7 +10,7 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
-from pyatlan.model.search import DSL, IndexSearchRequest, Term
+from pyatlan.model.search import DSL, Exists, IndexSearchRequest, Term
 
 
 @pytest.fixture(scope="module")
@@ -29,7 +29,9 @@ def client() -> EntityClient:
         ),
         (
             Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="Connection"),
+            Term(field="__typeName.keyword", value="Connection")
+            + Exists(field="category")
+            + Term(field="adminUsers", value="ernest"),
             ["schemaName", "databaseName"],
             Connection,
         ),
@@ -68,6 +70,8 @@ def test_index_search(client: EntityClient, query, post_filter, attributes, a_cl
     assets = client.index_search(criteria=request)
     counter = 0
     for asset in assets:
+        # if asset.scrubbed:
+        #     continue
         assert isinstance(asset, a_class)
         counter += 1
         if counter > 3:

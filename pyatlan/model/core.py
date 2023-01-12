@@ -51,6 +51,7 @@ class AtlanObject(BaseModel):
         alias_generator = to_camel_case
         extra = Extra.forbid
         json_encoders = {datetime: lambda v: int(v.timestamp() * 1000)}
+        validate_assignment = True
 
 
 @dataclass

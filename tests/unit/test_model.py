@@ -10,9 +10,10 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    Connection,
 )
 from pyatlan.model.core import Announcement, AssetResponse
-from pyatlan.model.enums import AnnouncementType
+from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
 
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"
@@ -122,3 +123,92 @@ def test_clear_announcement(glossary, announcement):
     assert glossary.attributes.announcement_title is None
     assert glossary.attributes.announcement_type is None
     assert glossary.attributes.announcement_message is None
+
+
+@pytest.mark.parametrize(
+    "connector_type, admin_users, admin_groups, admin_roles, error",
+    [
+        (None, None, None, ["123"], ValidationError),
+        (AtlanConnectorType.BIGQUERY, None, None, None, ValueError),
+        (AtlanConnectorType.BIGQUERY, [], [], [], ValueError),
+    ],
+)
+def test_connection_attributes_create_without_required_parameters_raises_validation_error(
+    connector_type, admin_users, admin_groups, admin_roles, error
+):
+    with pytest.raises(error):
+        Connection.Attributes.create(
+            connector_type=connector_type,
+            admin_users=admin_users,
+            admin_groups=admin_groups,
+            admin_roles=admin_roles,
+        )
+
+
+@pytest.mark.parametrize(
+    "connector_type, admin_users, admin_groups, admin_roles",
+    [
+        (AtlanConnectorType.BIGQUERY, ["bob"], None, None),
+        (AtlanConnectorType.BIGQUERY, None, ["bob"], None),
+        (AtlanConnectorType.BIGQUERY, None, None, ["bob"]),
+        (AtlanConnectorType.BIGQUERY, ["bob"], ["ted"], ["alice"]),
+    ],
+)
+def test_connection_attributes_create_with_required_parameters(
+    connector_type, admin_users, admin_groups, admin_roles
+):
+    c = Connection.Attributes.create(
+        connector_type=connector_type,
+        admin_users=admin_users,
+        admin_groups=admin_groups,
+        admin_roles=admin_roles,
+    )
+    assert c.qualified_name
+    assert c.qualified_name <= connector_type.to_qualified_name()
+    assert c.connector_name == connector_type.value
+    assert c.category == connector_type.category.value
+    assert c.admin_roles == admin_roles
+    assert c.admin_users == admin_users
+    assert c.admin_groups == admin_groups
+
+
+@pytest.mark.parametrize(
+    "connector_type, admin_users, admin_groups, admin_roles",
+    [(AtlanConnectorType.BIGQUERY, ["bob"], ["ted"], ["alice"])],
+)
+def test_connection_create_with_required_parameters(
+    connector_type, admin_users, admin_groups, admin_roles
+):
+    c = Connection.create(
+        connector_type=connector_type,
+        admin_users=admin_users,
+        admin_groups=admin_groups,
+        admin_roles=admin_roles,
+    )
+    assert c.attributes.qualified_name
+    assert c.attributes.qualified_name <= connector_type.to_qualified_name()
+    assert c.attributes.connector_name == connector_type.value
+    assert c.attributes.category == connector_type.category.value
+    assert c.attributes.admin_roles == admin_roles
+    assert c.attributes.admin_users == admin_users
+    assert c.attributes.admin_groups == admin_groups
+
+
+@pytest.mark.parametrize(
+    "connector_type, admin_users, admin_groups, admin_roles, error",
+    [
+        (None, None, None, ["123"], ValidationError),
+        (AtlanConnectorType.BIGQUERY, None, None, None, ValueError),
+        (AtlanConnectorType.BIGQUERY, [], [], [], ValueError),
+    ],
+)
+def test_connection_create_without_required_parameters_raises_validation_error(
+    connector_type, admin_users, admin_groups, admin_roles, error
+):
+    with pytest.raises(error):
+        Connection.create(
+            connector_type=connector_type,
+            admin_users=admin_users,
+            admin_groups=admin_groups,
+            admin_roles=admin_roles,
+        )

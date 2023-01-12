@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 from pydantic import (
     ConfigDict,
     Field,
+    StrictBool,
     StrictFloat,
     StrictInt,
     StrictStr,
@@ -22,7 +23,7 @@ else:
 
 import copy
 
-SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, datetime]
+SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
 
 
 class Attributes(str, Enum):
