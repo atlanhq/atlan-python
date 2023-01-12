@@ -40,6 +40,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%- set type = attribute_def.typeName | get_type %}
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
+
+        def validate_required(self):
+            pass
+
     attributes: '{{entity_def.name}}.Attributes' = Field(
         None,
         description='Map of attributes in the instance and their values. The specific keys of this map will vary '
@@ -133,6 +137,11 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )
+
+    def validate_required(self):
+        if not self.create_time or self.created_by:
+            self.attributes.validate_required()
+
 {%- else %}
     {%- if entity_def.name == "Asset"  %}
     _subtypes_:dict[str, type] = dict()
@@ -176,9 +185,6 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
         {%- endif %}
     class Attributes({{super_classes[0]}}.Attributes):
-        {%- if entity_def.name == "Connection"  %}
-        connector_type: AtlanConnectorType = Field(AtlanConnectorType.EMPTY, exclude=True, alias="connector_type")
-        {%- endif %}
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
@@ -188,6 +194,19 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
         {%- if entity_def.name == "Connection"  %}
+        def validate_required(self):
+            if self.admin_roles or self.admin_groups or self.admin_users:
+                if self.qualified_name:
+                    if self.category:
+                        if not self.connector_name:
+                            raise ValueError("connector_name is required")
+                    raise ValueError("category is required")
+                else:
+                    raise ValueError("qualified_name is required")
+            else:
+                raise ValueError(
+                    "One of admin_user, admin_groups or admin_roles is required"
+                )
         @classmethod
         @validate_arguments()
         def create(

@@ -212,3 +212,66 @@ def test_connection_create_without_required_parameters_raises_validation_error(
             admin_groups=admin_groups,
             admin_roles=admin_roles,
         )
+
+
+@pytest.mark.parametrize(
+    "qualified_name, connector_name, category, admin_users, admin_groups, admin_roles, msg",
+    [
+        (
+            AtlanConnectorType.BIGQUERY.to_qualified_name(),
+            AtlanConnectorType.BIGQUERY.value,
+            AtlanConnectorType.BIGQUERY.category.value,
+            None,
+            None,
+            None,
+            "One of admin_user, admin_groups or admin_roles is required",
+        ),
+        (
+            "",
+            AtlanConnectorType.BIGQUERY.value,
+            AtlanConnectorType.BIGQUERY.category.value,
+            ["Bob"],
+            None,
+            None,
+            "qualified_name is required",
+        ),
+        (
+            AtlanConnectorType.BIGQUERY.to_qualified_name(),
+            AtlanConnectorType.BIGQUERY.value,
+            "",
+            ["Bob"],
+            None,
+            None,
+            "category is required",
+        ),
+        (
+            AtlanConnectorType.BIGQUERY.to_qualified_name(),
+            "",
+            AtlanConnectorType.BIGQUERY.category.value,
+            ["Bob"],
+            None,
+            None,
+            "connector_name is required",
+        ),
+    ],
+)
+def test_connection_validate_required_when_fields_missing_raises_value_error(
+    qualified_name,
+    connector_name,
+    category,
+    admin_users,
+    admin_groups,
+    admin_roles,
+    msg,
+):
+    a = Connection.Attributes(
+        qualified_name=qualified_name,
+        connector_name=connector_name,
+        category=category,
+        admin_users=admin_users,
+        admin_groups=admin_groups,
+        admin_roles=admin_roles,
+    )
+    with pytest.raises(ValueError) as ve:
+        a.validate_required()
+    assert str(ve.value) == msg

@@ -181,6 +181,9 @@ class Referenceable(AtlanObject):
             None, description="", alias="meanings"
         )  # relationship
 
+        def validate_required(self):
+            pass
+
     attributes: "Referenceable.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
@@ -270,6 +273,10 @@ class Referenceable(AtlanObject):
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )
+
+    def validate_required(self):
+        if not self.create_time or self.created_by:
+            self.attributes.validate_required()
 
 
 class Asset(Referenceable):
@@ -792,9 +799,6 @@ class Connection(Asset, type_name="Connection"):
     type_name: Literal["Connection"] = Field("Connection")
 
     class Attributes(Asset.Attributes):
-        connector_type: AtlanConnectorType = Field(
-            AtlanConnectorType.EMPTY, exclude=True, alias="connector_type"
-        )
         category: Optional[str] = Field(None, description="", alias="category")
         sub_category: Optional[str] = Field(None, description="", alias="subCategory")
         host: Optional[str] = Field(None, description="", alias="host")
@@ -848,6 +852,20 @@ class Connection(Asset, type_name="Connection"):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+
+        def validate_required(self):
+            if self.admin_roles or self.admin_groups or self.admin_users:
+                if self.qualified_name:
+                    if self.category:
+                        if not self.connector_name:
+                            raise ValueError("connector_name is required")
+                    raise ValueError("category is required")
+                else:
+                    raise ValueError("qualified_name is required")
+            else:
+                raise ValueError(
+                    "One of admin_user, admin_groups or admin_roles is required"
+                )
 
         @classmethod
         @validate_arguments()

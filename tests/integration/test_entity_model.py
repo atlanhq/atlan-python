@@ -144,7 +144,8 @@ def delete_asset(atlan_host, headers, guid):
 
 def delete_assets(atlan_host, headers, type_name):
     for guid in get_guids(atlan_host, headers, type_name):
-        delete_asset(atlan_host, headers, guid)
+        if guid != "c85a9054-e80d-4e6f-b7d9-5967c39b5868":
+            delete_asset(atlan_host, headers, guid)
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -168,7 +169,7 @@ def cleanup_glossaries(atlan_host, headers, atlan_api_key):
     delete_assets(atlan_host, headers, "AtlasGlossary")
 
 
-# @pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="module")
 def cleanup_connections(atlan_host, headers, atlan_api_key):
     delete_assets(atlan_host, headers, "Connection")
     yield

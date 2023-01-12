@@ -258,6 +258,8 @@ class EntityClient:
             entities.extend(entity)
         else:
             entities.append(entity)
+        for asset in entities:
+            asset.validate_required()
         request = BulkRequest[Asset](entities=entities)
         raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
         return AssetMutationResponse(**raw_json)
