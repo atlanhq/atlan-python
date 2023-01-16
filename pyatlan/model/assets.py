@@ -854,30 +854,38 @@ class Connection(Asset, type_name="Connection"):
         )  # relationship
 
         def validate_required(self):
-            if self.admin_roles or self.admin_groups or self.admin_users:
-                if self.qualified_name:
-                    if self.category:
-                        if not self.connector_name:
-                            raise ValueError("connector_name is required")
-                    raise ValueError("category is required")
+            if self.name:
+                if self.admin_roles or self.admin_groups or self.admin_users:
+                    if self.qualified_name:
+                        if self.category:
+                            if not self.connector_name:
+                                raise ValueError("connector_name is required")
+                        else:
+                            raise ValueError("category is required")
+                    else:
+                        raise ValueError("qualified_name is required")
                 else:
-                    raise ValueError("qualified_name is required")
+                    raise ValueError(
+                        "One of admin_user, admin_groups or admin_roles is required"
+                    )
             else:
-                raise ValueError(
-                    "One of admin_user, admin_groups or admin_roles is required"
-                )
+                raise ValueError("name is required")
 
         @classmethod
         @validate_arguments()
         def create(
             cls,
+            name: str,
             connector_type: AtlanConnectorType,
-            admin_users: Optional[list[str]],
-            admin_groups: Optional[list[str]],
-            admin_roles: Optional[list[str]],
+            admin_users: Optional[list[str]] = None,
+            admin_groups: Optional[list[str]] = None,
+            admin_roles: Optional[list[str]] = None,
         ):
+            if not name:
+                raise ValueError("name cannot be blank")
             if admin_users or admin_groups or admin_roles:
                 return cls(
+                    name=name,
                     qualified_name=connector_type.to_qualified_name(),
                     connector_name=connector_type.value,
                     category=connector_type.category.value,
@@ -900,13 +908,17 @@ class Connection(Asset, type_name="Connection"):
     @validate_arguments()
     def create(
         cls,
+        name: str,
         connector_type: AtlanConnectorType,
-        admin_users: Optional[list[str]],
-        admin_groups: Optional[list[str]],
-        admin_roles: Optional[list[str]],
+        admin_users: Optional[list[str]] = None,
+        admin_groups: Optional[list[str]] = None,
+        admin_roles: Optional[list[str]] = None,
     ):
+        if not name:
+            raise ValueError("name cannot be blank")
         if admin_users or admin_groups or admin_roles:
             attr = cls.Attributes(
+                name=name,
                 qualified_name=connector_type.to_qualified_name(),
                 connector_name=connector_type.value,
                 category=connector_type.category.value,
@@ -5354,7 +5366,7 @@ class TableauDatasource(Tableau):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        fields: Optional[list[TableauCalculatedField]] = Field(
+        fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="fields"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(

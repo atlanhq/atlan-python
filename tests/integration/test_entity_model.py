@@ -5,6 +5,7 @@ import string
 import pytest
 import requests
 
+from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.entity import EntityClient
 from pyatlan.exceptions import AtlanServiceException
@@ -13,9 +14,10 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    Connection,
 )
 from pyatlan.model.core import Announcement
-from pyatlan.model.enums import AnnouncementType
+from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
 
 
 @pytest.fixture(scope="module")
@@ -139,13 +141,13 @@ def get_guids(atlan_host, headers, type_name):
 def delete_asset(atlan_host, headers, guid):
     url = f"{atlan_host}/api/meta/entity/guid/{guid}?deleteType=HARD"
     response = requests.delete(url, headers=headers)
-    response.raise_for_status()
+    if response.status_code != 200:
+        print(f"Faild to delete guid: {guid} status: {response.status_code}")
 
 
 def delete_assets(atlan_host, headers, type_name):
     for guid in get_guids(atlan_host, headers, type_name):
-        if guid != "c85a9054-e80d-4e6f-b7d9-5967c39b5868":
-            delete_asset(atlan_host, headers, guid)
+        delete_asset(atlan_host, headers, guid)
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -447,3 +449,23 @@ def test_create_hierarchy(client: EntityClient, increment_counter):
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
     term = response.mutated_entities.CREATE[0]
     assert guid == term.guid
+
+
+def test_create_connection(client: EntityClient, increment_counter):
+    role = RoleCache.get_id_for_name("$admin")
+    assert role
+    c = Connection.create(
+        name="Integration",
+        connector_type=AtlanConnectorType.SNOWFLAKE,
+        admin_roles=[role],
+    )
+    response = client.upsert(c)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    assert isinstance(response.mutated_entities.CREATE[0], Connection)
+    assert response.guid_assignments
+    assert c.guid in response.guid_assignments
+    guid = response.guid_assignments[c.guid]
+    c = response.mutated_entities.CREATE[0]
+    assert guid == c.guid
