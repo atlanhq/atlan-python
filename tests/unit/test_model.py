@@ -11,6 +11,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Connection,
+    Database,
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
@@ -352,3 +353,80 @@ def test_connection_validate_required_when_fields_are_present(
         admin_roles=admin_roles,
     )
     a.validate_required()
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, error",
+    [
+        (None, "default/snowflake/1673868111909", ValidationError),
+        ("DB", None, ValidationError),
+        ("", "default/snowflake/1673868111909", ValueError),
+        ("DB", "", ValueError),
+        ("DB", "default/snwflake/1673868111909", ValueError),
+        ("DB", "snowflake/1673868111909", ValueError),
+        ("DB", "default/snwflake", ValueError),
+    ],
+)
+def test_database_attributes_create_without_required_parameters_raises_validation_error(
+    name, connection_qualified_name, error
+):
+    with pytest.raises(error):
+        Database.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name",
+    [
+        ("TestDB", "default/snowflake/1673868111909"),
+    ],
+)
+def test_database_attributes_create_with_required_parameters(
+    name, connection_qualified_name
+):
+
+    attributes = Database.Attributes.create(
+        name=name, connection_qualified_name=connection_qualified_name
+    )
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{name}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, error",
+    [
+        (None, "default/snowflake/1673868111909", ValidationError),
+        ("DB", None, ValidationError),
+        ("", "default/snowflake/1673868111909", ValueError),
+        ("DB", "", ValueError),
+        ("DB", "default/snwflake/1673868111909", ValueError),
+        ("DB", "snowflake/1673868111909", ValueError),
+        ("DB", "default/snwflake", ValueError),
+    ],
+)
+def test_database_create_without_required_parameters_raises_validation_error(
+    name, connection_qualified_name, error
+):
+    with pytest.raises(error):
+        Database.create(name=name, connection_qualified_name=connection_qualified_name)
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name",
+    [
+        ("TestDB", "default/snowflake/1673868111909"),
+    ],
+)
+def test_database_create_with_required_parameters(name, connection_qualified_name):
+
+    database = Database.create(
+        name=name, connection_qualified_name=connection_qualified_name
+    )
+    attributes = database.attributes
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{name}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]

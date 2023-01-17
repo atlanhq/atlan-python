@@ -2920,11 +2920,50 @@ class Database(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: str, connection_qualified_name: str):
+            if not name:
+                raise ValueError("name cannot be blank")
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError:
+                raise ValueError("Invalid connection_qualified_name")
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
     attributes: "Database.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: str, connection_qualified_name: str):
+        if not name:
+            raise ValueError("name cannot be blank")
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError:
+            raise ValueError("Invalid connection_qualified_name")
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
 
 
 class SnowflakeStream(SQL):

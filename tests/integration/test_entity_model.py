@@ -15,6 +15,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Connection,
+    Database,
 )
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
@@ -141,41 +142,30 @@ def get_guids(atlan_host, headers, type_name):
 def delete_asset(atlan_host, headers, guid):
     url = f"{atlan_host}/api/meta/entity/guid/{guid}?deleteType=HARD"
     response = requests.delete(url, headers=headers)
-    if response.status_code != 200:
-        print(f"Faild to delete guid: {guid} status: {response.status_code}")
+    return response.status_code
 
 
 def delete_assets(atlan_host, headers, type_name):
     for guid in get_guids(atlan_host, headers, type_name):
-        delete_asset(atlan_host, headers, guid)
+        if delete_asset(atlan_host, headers, guid) != 200:
+            print(f"Failed to delete {type_name} with guid {guid}")
 
 
 @pytest.fixture(autouse=True, scope="module")
-def cleanup_terms(atlan_host, headers, atlan_api_key):
-    delete_assets(atlan_host, headers, "AtlasGlossaryTerm")
+def cleanup(atlan_host, headers, atlan_api_key):
+    type_names = [
+        "AtlasGlossaryTerm",
+        "AtlasGlossaryCategory",
+        "AtlasGlossary",
+        "Database",
+        "Connection",
+    ]
+    for type_name in type_names:
+        print()
+        delete_assets(atlan_host, headers, type_name)
     yield
-    delete_assets(atlan_host, headers, "AtlasGlossaryTerm")
-
-
-@pytest.fixture(autouse=True, scope="module")
-def cleanup_categories(atlan_host, headers, atlan_api_key):
-    delete_assets(atlan_host, headers, "AtlasGlossaryCategory")
-    yield
-    delete_assets(atlan_host, headers, "AtlasGlossaryCategory")
-
-
-@pytest.fixture(autouse=True, scope="module")
-def cleanup_glossaries(atlan_host, headers, atlan_api_key):
-    delete_assets(atlan_host, headers, "AtlasGlossary")
-    yield
-    delete_assets(atlan_host, headers, "AtlasGlossary")
-
-
-@pytest.fixture(autouse=True, scope="module")
-def cleanup_connections(atlan_host, headers, atlan_api_key):
-    delete_assets(atlan_host, headers, "Connection")
-    yield
-    delete_assets(atlan_host, headers, "Connection")
+    for type_name in type_names:
+        delete_assets(atlan_host, headers, type_name)
 
 
 def test_get_glossary_by_guid_good_guid(create_glossary, client: EntityClient):
@@ -455,9 +445,10 @@ def test_create_connection(client: EntityClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     c = Connection.create(
-        name="Integration",
+        name=f"Integration {increment_counter()}",
         connector_type=AtlanConnectorType.SNOWFLAKE,
         admin_roles=[role],
+        admin_groups=["admin"],
     )
     response = client.upsert(c)
     assert response.mutated_entities
@@ -469,3 +460,34 @@ def test_create_connection(client: EntityClient, increment_counter):
     guid = response.guid_assignments[c.guid]
     c = response.mutated_entities.CREATE[0]
     assert guid == c.guid
+
+
+def test_create_database(client: EntityClient, increment_counter):
+    role = RoleCache.get_id_for_name("$admin")
+    assert role
+    suffix = increment_counter()
+    connection = Connection.create(
+        name=f"Integration {suffix}",
+        connector_type=AtlanConnectorType.SNOWFLAKE,
+        admin_roles=[role],
+        admin_groups=["admin"],
+    )
+    response = client.upsert(connection)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    connection = response.mutated_entities.CREATE[0]
+    connection = client.get_entity_by_guid(connection.guid, Connection)
+    database = Database.create(
+        name=f"Integration_{suffix}",
+        connection_qualified_name=connection.attributes.qualified_name,
+    )
+    response = client.upsert(database)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    assert isinstance(response.mutated_entities.CREATE[0], Database)
+    assert response.guid_assignments
+    assert database.guid in response.guid_assignments
+    guid = response.guid_assignments[database.guid]
+    database = response.mutated_entities.CREATE[0]
+    assert guid == database.guid

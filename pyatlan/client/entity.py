@@ -28,7 +28,12 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    Connection,
+    Database,
+    MaterialisedView,
     Referenceable,
+    Table,
+    View,
 )
 from pyatlan.model.core import AssetResponse, BulkRequest
 from pyatlan.model.enums import AtlanDeleteType
@@ -220,9 +225,25 @@ class EntityClient:
     def __init__(self, client: AtlanClient):
         self.client = client
 
-    Assets = Union[AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm]
+    Assets = Union[
+        AtlasGlossary,
+        AtlasGlossaryCategory,
+        AtlasGlossaryTerm,
+        Connection,
+        Database,
+        Table,
+        View,
+        MaterialisedView,
+    ]
     Asset_Types = Union[
-        Type[AtlasGlossary], Type[AtlasGlossaryCategory], Type[AtlasGlossaryTerm]
+        Type[AtlasGlossary],
+        Type[AtlasGlossaryCategory],
+        Type[AtlasGlossaryTerm],
+        Type[Connection],
+        Type[Database],
+        Type[Table],
+        Type[View],
+        Type[MaterialisedView],
     ]
 
     def get_entity_by_guid(
@@ -251,6 +272,16 @@ class EntityClient:
             return AssetResponse[AtlasGlossaryCategory](**raw_json).entity
         if issubclass(asset_type, AtlasGlossaryTerm):
             return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
+        if issubclass(asset_type, Connection):
+            return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
+        if issubclass(asset_type, Database):
+            return AssetResponse[Database](**raw_json).entity
+        if issubclass(asset_type, Table):
+            return AssetResponse[Table](**raw_json).entity
+        if issubclass(asset_type, View):
+            return AssetResponse[View](**raw_json).entity
+        if issubclass(asset_type, MaterialisedView):
+            return AssetResponse[MaterialisedView](**raw_json).entity
 
     def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
         entities: list[Asset] = []

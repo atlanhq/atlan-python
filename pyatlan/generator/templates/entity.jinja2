@@ -238,7 +238,26 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 raise ValueError(
                     "One of admin_user, admin_groups or admin_roles is required"
                 )
-    {%- endif %}
+        {%- elif entity_def.name == "Database"  %}
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: str, connection_qualified_name: str):
+            if not name:
+                raise ValueError("name cannot be blank")
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1]) # type:ignore
+            except ValueError:
+                raise ValueError("Invalid connection_qualified_name")
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+        {%- endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
         None,
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
@@ -272,6 +291,26 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
+    {%- elif entity_def.name == "Database" %}
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: str, connection_qualified_name: str):
+        if not name:
+            raise ValueError("name cannot be blank")
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError:
+            raise ValueError("Invalid connection_qualified_name")
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
     {%- endif %}
     {% if entity_def.name.startswith("AtlasGlossary") %}
     @root_validator()
