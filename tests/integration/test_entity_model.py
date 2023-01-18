@@ -1,6 +1,7 @@
 import os
 import random
 import string
+import time
 
 import pytest
 import requests
@@ -16,9 +17,27 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    Schema,
 )
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
+
+GUIDS_UNABLE_TO_DELETE = {
+    "c85a9054-e80d-4e6f-b7d9-5967c39b5868",
+    "a6c823a5-51ca-4651-9356-2b4c8bebdf46",
+    "13f1e4fa-b7fb-455c-b604-f900c1d202ec",
+    "a63db828-cf3b-42b3-a0be-31ce27826c4f",
+    "ed165dba-9fc9-466c-8c96-26e1ff2efe13",
+    "8fe222aa-93f1-46a3-825c-f85c59079c97",
+    "63aa0a7f-bfc0-4ca7-87ed-3d0e9200b9fe",
+    "25865e20-cb7d-497b-bf2f-97bcc9f02a96",
+    "711b6004-1b84-49fe-ac42-e0d42bfa01fc",
+    "34d8106a-1478-4816-bfe1-97814ffff78e",
+    "04a4eca5-b7d5-4659-bbad-1dc2306ea9c3",
+    "619daa76-ab3c-4f29-836a-6ec0ddefbe0c",
+    "4af8d57c-61ef-4b57-983c-eff20e6d08b5",
+    "57f5463d-cc2a-4859-bf28-e4fa52002e8e",
+}
 
 
 @pytest.fixture(scope="module")
@@ -149,6 +168,8 @@ def delete_assets(atlan_host, headers, type_name):
     for guid in get_guids(atlan_host, headers, type_name):
         if delete_asset(atlan_host, headers, guid) != 200:
             print(f"Failed to delete {type_name} with guid {guid}")
+            if guid not in GUIDS_UNABLE_TO_DELETE:
+                print(f"\t new guid: {guid}")
 
 
 @pytest.fixture(autouse=True, scope="module")
@@ -157,6 +178,7 @@ def cleanup(atlan_host, headers, atlan_api_key):
         "AtlasGlossaryTerm",
         "AtlasGlossaryCategory",
         "AtlasGlossary",
+        "Schema",
         "Database",
         "Connection",
     ]
@@ -325,6 +347,9 @@ def test_create_glossary_category(client: EntityClient, increment_counter):
     category = response.mutated_entities.CREATE[0]
     assert isinstance(category, AtlasGlossaryCategory)
     assert guid == category.guid
+    category = client.get_entity_by_guid(guid, AtlasGlossaryCategory)
+    assert isinstance(category, AtlasGlossaryCategory)
+    assert category.guid == guid
 
 
 def test_create_glossary_term(client: EntityClient, increment_counter):
@@ -359,6 +384,9 @@ def test_create_glossary_term(client: EntityClient, increment_counter):
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
     term = response.mutated_entities.CREATE[0]
     assert guid == term.guid
+    term = client.get_entity_by_guid(guid, AtlasGlossaryTerm)
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert term.guid == guid
 
 
 def test_create_hierarchy(client: EntityClient, increment_counter):
@@ -460,6 +488,9 @@ def test_create_connection(client: EntityClient, increment_counter):
     guid = response.guid_assignments[c.guid]
     c = response.mutated_entities.CREATE[0]
     assert guid == c.guid
+    c = client.get_entity_by_guid(c.guid, Connection)
+    assert isinstance(c, Connection)
+    assert c.guid == guid
 
 
 def test_create_database(client: EntityClient, increment_counter):
@@ -491,3 +522,52 @@ def test_create_database(client: EntityClient, increment_counter):
     guid = response.guid_assignments[database.guid]
     database = response.mutated_entities.CREATE[0]
     assert guid == database.guid
+    database = client.get_entity_by_guid(guid, Database)
+    assert isinstance(database, Database)
+    assert guid == database.guid
+
+
+def test_create_schema(client: EntityClient, increment_counter):
+    role = RoleCache.get_id_for_name("$admin")
+    assert role
+    suffix = increment_counter()
+    connection = Connection.create(
+        name=f"Integration {suffix}",
+        connector_type=AtlanConnectorType.SNOWFLAKE,
+        admin_roles=[role],
+        admin_groups=["admin"],
+    )
+    response = client.upsert(connection)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    connection = response.mutated_entities.CREATE[0]
+    time.sleep(30)
+    connection = client.get_entity_by_guid(connection.guid, Connection)
+    database = Database.create(
+        name=f"Integration_{suffix}",
+        connection_qualified_name=connection.attributes.qualified_name,
+    )
+    response = client.upsert(database)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    database = response.mutated_entities.CREATE[0]
+    time.sleep(3)
+    database = client.get_entity_by_guid(database.guid, Database)
+    schema = Schema.create(
+        name=f"Integration_{suffix}",
+        database_qualified_name=database.attributes.qualified_name,
+    )
+    response = client.upsert(schema)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    assert isinstance(response.mutated_entities.CREATE[0], Schema)
+    assert response.guid_assignments
+    assert schema.guid in response.guid_assignments
+    guid = response.guid_assignments[schema.guid]
+    schema = response.mutated_entities.CREATE[0]
+    assert guid == schema.guid
+    time.sleep(3)
+    schema = client.get_entity_by_guid(guid, Schema)
+    assert isinstance(schema, Schema)
+    assert guid == schema.guid

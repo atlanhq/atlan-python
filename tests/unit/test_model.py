@@ -12,6 +12,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    Schema,
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
@@ -430,3 +431,67 @@ def test_database_create_with_required_parameters(name, connection_qualified_nam
     assert attributes.connection_qualified_name == connection_qualified_name
     assert attributes.qualified_name == f"{connection_qualified_name}/{name}"
     assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, database_qualified_name, error",
+    [
+        (None, "default/snowflake/1673868111909/TestDb", ValidationError),
+        ("Schema1", None, ValidationError),
+        ("", "default/snowflake/1673868111909/TestDb", ValueError),
+        ("Schema1", "", ValueError),
+        ("Schema1", "default/snwflake/1673868111909/TestDb", ValueError),
+        ("Schema1", "snowflake/1673868111909", ValueError),
+        ("Schema1", "default/snwflake", ValueError),
+    ],
+)
+def test_schema_attributes_create_without_required_parameters_raises_validation_error(
+    name, database_qualified_name, error
+):
+    with pytest.raises(error):
+        Schema.Attributes.create(
+            name=name, database_qualified_name=database_qualified_name
+        )
+
+
+@pytest.mark.parametrize(
+    "name, database_qualified_name",
+    [
+        ("Schema1", "default/snowflake/1673868111909/TestDb"),
+    ],
+)
+def test_schema_attributes_create_with_required_parameters(
+    name, database_qualified_name
+):
+    attributes = Schema.Attributes.create(
+        name=name, database_qualified_name=database_qualified_name
+    )
+    assert isinstance(attributes, Schema.Attributes)
+    assert attributes.name == name
+    assert attributes.database_qualified_name == database_qualified_name
+    assert (
+        attributes.connection_qualified_name
+        == database_qualified_name[: database_qualified_name.rindex("/")]
+    )
+    assert attributes.qualified_name == f"{database_qualified_name}/{name}"
+    assert attributes.connector_name == database_qualified_name.split("/")[1]
+    assert attributes.database_name == database_qualified_name.split(("/"))[3]
+
+
+@pytest.mark.parametrize(
+    "name, database_qualified_name, error",
+    [
+        (None, "default/snowflake/1673868111909/TestDb", ValidationError),
+        ("Schema1", None, ValidationError),
+        ("", "default/snowflake/1673868111909/TestDb", ValueError),
+        ("Schema1", "", ValueError),
+        ("Schema1", "default/snwflake/1673868111909/TestDb", ValueError),
+        ("Schema1", "snowflake/1673868111909", ValueError),
+        ("Schema1", "default/snwflake", ValueError),
+    ],
+)
+def test_schema__create_without_required_parameters_raises_validation_error(
+    name, database_qualified_name, error
+):
+    with pytest.raises(error):
+        Schema.create(name=name, database_qualified_name=database_qualified_name)

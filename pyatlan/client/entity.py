@@ -19,7 +19,7 @@
 # limitations under the License.
 from typing import Generator, Type, TypeVar, Union
 
-from pydantic import parse_obj_as
+from pydantic import parse_obj_as, validate_arguments
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
@@ -32,6 +32,7 @@ from pyatlan.model.assets import (
     Database,
     MaterialisedView,
     Referenceable,
+    Schema,
     Table,
     View,
 )
@@ -49,6 +50,29 @@ from pyatlan.utils import (
 )
 
 T = TypeVar("T", bound=Referenceable)
+A = TypeVar("A", bound=Asset)
+Assets = Union[
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+    Connection,
+    Database,
+    Schema,
+    Table,
+    View,
+    MaterialisedView,
+]
+Asset_Types = Union[
+    Type[AtlasGlossary],
+    Type[AtlasGlossaryCategory],
+    Type[AtlasGlossaryTerm],
+    Type[Connection],
+    Type[Database],
+    Type[Schema],
+    Type[Table],
+    Type[View],
+    Type[MaterialisedView],
+]
 
 
 class EntityClient:
@@ -225,34 +249,14 @@ class EntityClient:
     def __init__(self, client: AtlanClient):
         self.client = client
 
-    Assets = Union[
-        AtlasGlossary,
-        AtlasGlossaryCategory,
-        AtlasGlossaryTerm,
-        Connection,
-        Database,
-        Table,
-        View,
-        MaterialisedView,
-    ]
-    Asset_Types = Union[
-        Type[AtlasGlossary],
-        Type[AtlasGlossaryCategory],
-        Type[AtlasGlossaryTerm],
-        Type[Connection],
-        Type[Database],
-        Type[Table],
-        Type[View],
-        Type[MaterialisedView],
-    ]
-
+    @validate_arguments()
     def get_entity_by_guid(
         self,
-        guid,
-        asset_type: Asset_Types,
+        guid: str,
+        asset_type: Type[A],
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
-    ) -> Assets:
+    ) -> A:
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
@@ -266,22 +270,7 @@ class EntityClient:
             raw_json["entity"]["relationshipAttributes"]
         )
         raw_json["entity"]["relationshipAttributes"] = {}
-        if issubclass(asset_type, AtlasGlossary):
-            return AssetResponse[AtlasGlossary](**raw_json).entity
-        if issubclass(asset_type, AtlasGlossaryCategory):
-            return AssetResponse[AtlasGlossaryCategory](**raw_json).entity
-        if issubclass(asset_type, AtlasGlossaryTerm):
-            return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
-        if issubclass(asset_type, Connection):
-            return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
-        if issubclass(asset_type, Database):
-            return AssetResponse[Database](**raw_json).entity
-        if issubclass(asset_type, Table):
-            return AssetResponse[Table](**raw_json).entity
-        if issubclass(asset_type, View):
-            return AssetResponse[View](**raw_json).entity
-        if issubclass(asset_type, MaterialisedView):
-            return AssetResponse[MaterialisedView](**raw_json).entity
+        return AssetResponse[A](**raw_json).entity
 
     def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
         entities: list[Asset] = []

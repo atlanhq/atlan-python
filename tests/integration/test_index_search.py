@@ -7,6 +7,7 @@ from pyatlan.model.assets import (
     Connection,
     Database,
     MaterialisedView,
+    Schema,
     Table,
     View,
 )
@@ -40,6 +41,12 @@ def client() -> EntityClient:
             Term(field="__typeName.keyword", value="Database"),
             ["schemaName", "databaseName"],
             Database,
+        ),
+        (
+            Term(field="__state", value="ACTIVE"),
+            Term(field="__typeName.keyword", value="Schema"),
+            ["schemaName", "databaseName"],
+            Schema,
         ),
         (
             Term(field="__state", value="ACTIVE"),

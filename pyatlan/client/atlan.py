@@ -36,8 +36,7 @@ LOGGER = get_logger()
 
 def get_session():
     retry_strategy = Retry(
-        total=10,
-        read=10,
+        total=6,
         backoff_factor=1,
         status_forcelist=[403, 500, 502, 503, 504],
         allowed_methods=["HEAD", "GET", "OPTIONS"],
