@@ -2587,11 +2587,40 @@ class Table(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: str, schema_qualified_name: str):
+            if not name:
+                raise ValueError("name cannot be blank")
+            fields = schema_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid schema_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError:
+                raise ValueError("Invalid schema_qualified_name")
+            return Table.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                qualified_name=f"{schema_qualified_name}/{name}",
+                schema_qualified_name=schema_qualified_name,
+                schema_name=fields[4],
+                connector_name=connector_type.value,
+            )
+
     attributes: "Table.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: str, schema_qualified_name: str):
+        attributes = Table.Attributes.create(name, schema_qualified_name)
+        return cls(attributes=attributes)
 
 
 class Query(SQL):

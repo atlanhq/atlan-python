@@ -13,6 +13,7 @@ from pyatlan.model.assets import (
     Connection,
     Database,
     Schema,
+    Table,
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
@@ -495,3 +496,87 @@ def test_schema__create_without_required_parameters_raises_validation_error(
 ):
     with pytest.raises(error):
         Schema.create(name=name, database_qualified_name=database_qualified_name)
+
+
+@pytest.mark.parametrize(
+    "name, schema_qualified_name, error",
+    [
+        (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
+        ("Table_1", None, ValidationError),
+        ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
+        ("Table_1", "", ValueError),
+        ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
+        ("Table_1", "default/snowflake/1673868111909/TestDb", ValueError),
+        ("Table_1", "snowflake/1673868111909", ValueError),
+        ("Table_1", "default/snwflake", ValueError),
+    ],
+)
+def test_table_attributes_create_without_required_parameters_raises_validation_error(
+    name, schema_qualified_name, error
+):
+    with pytest.raises(error):
+        Table.Attributes.create(name=name, schema_qualified_name=schema_qualified_name)
+
+
+@pytest.mark.parametrize(
+    "name, schema_qualified_name",
+    [
+        ("Table_1", "default/snowflake/1673868111909/TestDb/Schema1"),
+    ],
+)
+def test_table_attributes_create_with_required_parameters(name, schema_qualified_name):
+    attributes = Table.Attributes.create(
+        name=name, schema_qualified_name=schema_qualified_name
+    )
+    assert isinstance(attributes, Table.Attributes)
+    assert attributes.name == name
+    assert attributes.schema_qualified_name == schema_qualified_name
+    assert attributes.qualified_name == f"{schema_qualified_name}/{name}"
+    assert attributes.connector_name == schema_qualified_name.split("/")[1]
+    assert attributes.database_name == schema_qualified_name.split(("/"))[3]
+    assert attributes.schema_name == schema_qualified_name.split(("/"))[4]
+    fields = schema_qualified_name.split("/")
+    assert attributes.connection_qualified_name == "/".join(fields[:3])
+    assert attributes.database_qualified_name == "/".join(fields[:4])
+
+
+@pytest.mark.parametrize(
+    "name, schema_qualified_name, error",
+    [
+        (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
+        ("Table_1", None, ValidationError),
+        ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
+        ("Table_1", "", ValueError),
+        ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
+        ("Table_1", "default/snowflake/1673868111909/TestDb", ValueError),
+        ("Table_1", "snowflake/1673868111909", ValueError),
+        ("Table_1", "default/snwflake", ValueError),
+    ],
+)
+def test_table_create_without_required_parameters_raises_validation_error(
+    name, schema_qualified_name, error
+):
+    with pytest.raises(error):
+        Table.create(name=name, schema_qualified_name=schema_qualified_name)
+
+
+@pytest.mark.parametrize(
+    "name, schema_qualified_name",
+    [
+        ("Table_1", "default/snowflake/1673868111909/TestDb/Schema1"),
+    ],
+)
+def test_table_create_with_required_parameters(name, schema_qualified_name):
+    attributes = Table.create(
+        name=name, schema_qualified_name=schema_qualified_name
+    ).attributes
+    assert isinstance(attributes, Table.Attributes)
+    assert attributes.name == name
+    assert attributes.schema_qualified_name == schema_qualified_name
+    assert attributes.qualified_name == f"{schema_qualified_name}/{name}"
+    assert attributes.connector_name == schema_qualified_name.split("/")[1]
+    assert attributes.database_name == schema_qualified_name.split(("/"))[3]
+    assert attributes.schema_name == schema_qualified_name.split(("/"))[4]
+    fields = schema_qualified_name.split("/")
+    assert attributes.connection_qualified_name == "/".join(fields[:3])
+    assert attributes.database_qualified_name == "/".join(fields[:4])

@@ -532,6 +532,7 @@ class DSL(AtlanObject):
     size: int = 100
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
+    sort: Optional[list[dict[Any, Any]]]
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict()}
