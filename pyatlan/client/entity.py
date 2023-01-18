@@ -17,7 +17,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Type, TypeVar, Union
+from typing import Generator, Type, TypeVar, Union
+
+from pydantic import parse_obj_as, validate_arguments
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
@@ -26,10 +28,17 @@ from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    Connection,
+    Database,
+    MaterialisedView,
     Referenceable,
+    Schema,
+    Table,
+    View,
 )
 from pyatlan.model.core import AssetResponse, BulkRequest
 from pyatlan.model.enums import AtlanDeleteType
+from pyatlan.model.search import IndexSearchRequest
 from pyatlan.utils import (
     API,
     APPLICATION_JSON,
@@ -41,6 +50,29 @@ from pyatlan.utils import (
 )
 
 T = TypeVar("T", bound=Referenceable)
+A = TypeVar("A", bound=Asset)
+Assets = Union[
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+    Connection,
+    Database,
+    Schema,
+    Table,
+    View,
+    MaterialisedView,
+]
+Asset_Types = Union[
+    Type[AtlasGlossary],
+    Type[AtlasGlossaryCategory],
+    Type[AtlasGlossaryTerm],
+    Type[Connection],
+    Type[Database],
+    Type[Schema],
+    Type[Table],
+    Type[View],
+    Type[MaterialisedView],
+]
 
 
 class EntityClient:
@@ -211,21 +243,20 @@ class EntityClient:
     LIMIT = "limit"
     OFFSET = "offset"
 
+    INDEX_API = BASE_URI + "search/indexsearch"
+    INDEX_SEARCH = API(INDEX_API, HTTPMethod.POST, HTTPStatus.OK)
+
     def __init__(self, client: AtlanClient):
         self.client = client
 
-    Assets = Union[AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm]
-    Asset_Types = Union[
-        Type[AtlasGlossary], Type[AtlasGlossaryCategory], Type[AtlasGlossaryTerm]
-    ]
-
+    @validate_arguments()
     def get_entity_by_guid(
         self,
-        guid,
-        asset_type: Asset_Types,
+        guid: str,
+        asset_type: Type[A],
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
-    ) -> Assets:
+    ) -> A:
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
@@ -239,12 +270,7 @@ class EntityClient:
             raw_json["entity"]["relationshipAttributes"]
         )
         raw_json["entity"]["relationshipAttributes"] = {}
-        if issubclass(asset_type, AtlasGlossary):
-            return AssetResponse[AtlasGlossary](**raw_json).entity
-        if issubclass(asset_type, AtlasGlossaryCategory):
-            return AssetResponse[AtlasGlossaryCategory](**raw_json).entity
-        if issubclass(asset_type, AtlasGlossaryTerm):
-            return AssetResponse[AtlasGlossaryTerm](**raw_json).entity
+        return AssetResponse[A](**raw_json).entity
 
     def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
         entities: list[Asset] = []
@@ -252,6 +278,8 @@ class EntityClient:
             entities.extend(entity)
         else:
             entities.append(entity)
+        for asset in entities:
+            asset.validate_required()
         request = BulkRequest[Asset](entities=entities)
         raw_json = self.client.call_api(EntityClient.BULK_UPDATE, None, request)
         return AssetMutationResponse(**raw_json)
@@ -262,3 +290,19 @@ class EntityClient:
             {"deleteType": AtlanDeleteType.HARD.value},
         )
         return AssetMutationResponse(**raw_json)
+
+    def index_search(
+        self, criteria: IndexSearchRequest
+    ) -> Generator[Asset, None, None]:
+        while True:
+            start = criteria.dsl.from_
+            size = criteria.dsl.size
+            raw_json = self.client.call_api(
+                EntityClient.INDEX_SEARCH,
+                request_obj=criteria,
+            )
+            if "entities" not in raw_json:
+                break
+            assets = parse_obj_as(list[Asset], raw_json["entities"])
+            yield from assets
+            criteria.dsl.from_ = start + size

@@ -24,6 +24,8 @@ import os
 
 import requests
 from pydantic import BaseSettings, Field, HttpUrl, PrivateAttr
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.model.core import AtlanObject
@@ -32,10 +34,23 @@ from pyatlan.utils import HTTPStatus, get_logger
 LOGGER = get_logger()
 
 
+def get_session():
+    retry_strategy = Retry(
+        total=6,
+        backoff_factor=1,
+        status_forcelist=[403, 500, 502, 503, 504],
+        allowed_methods=["HEAD", "GET", "OPTIONS"],
+    )
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session = requests.session()
+    session.mount("https://", adapter)
+    return session
+
+
 class AtlanClient(BaseSettings):
     host: HttpUrl
     api_key: str
-    session: requests.Session = Field(default_factory=requests.Session)
+    session: requests.Session = Field(default_factory=get_session)
     _request_params: dict = PrivateAttr()
 
     class Config:

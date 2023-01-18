@@ -1,13 +1,26 @@
 from __future__ import annotations
 
+import sys
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import Field, root_validator
+from pydantic import Field, root_validator, validate_arguments
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification
+from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
 from pyatlan.model.enums import (
+    ADLSAccessTier,
+    ADLSAccountStatus,
+    ADLSEncryptionTypes,
+    ADLSLeaseState,
+    ADLSLeaseStatus,
+    ADLSObjectArchiveStatus,
+    ADLSObjectType,
+    ADLSPerformance,
+    ADLSProvisionState,
+    ADLSReplicationType,
+    ADLSStorageKind,
     AnnouncementType,
+    AtlanConnectorType,
     CertificateStatus,
     EntityStatus,
     IconType,
@@ -105,6 +118,14 @@ class BadgeCondition(AtlanObject):
         )
 
 
+class AzureTag(AtlanObject):
+    """Description"""
+
+    class Attributes(AtlanObject):
+        azure_tag_key: str = Field(None, description="", alias="azureTagKey")
+        azure_tag_value: str = Field(None, description="", alias="azureTagValue")
+
+
 class GoogleLabel(AtlanObject):
     """Description"""
 
@@ -160,6 +181,9 @@ class Referenceable(AtlanObject):
             None, description="", alias="meanings"
         )  # relationship
 
+        def validate_required(self):
+            pass
+
     attributes: "Referenceable.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
@@ -185,7 +209,7 @@ class Referenceable(AtlanObject):
         description="Details on the handler used for deletion of the asset.",
         example="Hard",
     )
-    guid: Optional[str] = Field(
+    guid: str = Field(
         description="Unique identifier of the entity instance.\n",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
         default_factory=next_id,
@@ -245,9 +269,14 @@ class Referenceable(AtlanObject):
     meaning_names: Optional[list[str]] = Field(
         None, description="Names of terms that have been linked to this asset."
     )
-    meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-        None, description="", alias="meanings"
+    meanings: Optional[list[Meaning]] = Field(None, description="", alias="meanings")
+    scrubbed: Optional[bool] = Field(
+        None, description="", alias="fields removed from results"
     )
+
+    def validate_required(self):
+        if not self.create_time or self.created_by:
+            self.attributes.validate_required()
 
 
 class Asset(Referenceable):
@@ -273,9 +302,13 @@ class Asset(Referenceable):
         )
 
         if data_type is None:
+            if issubclass(cls, Asset):
+                return cls(**data)
             raise ValueError("Missing 'type' in Asset")
 
         sub = cls._subtypes_.get(data_type)
+        if sub is None:
+            sub = getattr(sys.modules[__name__], data_type)
 
         if sub is None:
             raise TypeError(f"Unsupport sub-type: {data_type}")
@@ -639,7 +672,11 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @root_validator()
     def update_qualified_name(cls, values):
-        if "attributes" in values and not values["attributes"].qualified_name:
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
             values["attributes"].qualified_name = values["guid"]
         return values
 
@@ -816,11 +853,84 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="meanings"
         )  # relationship
 
+        def validate_required(self):
+            if self.name:
+                if self.admin_roles or self.admin_groups or self.admin_users:
+                    if self.qualified_name:
+                        if self.category:
+                            if not self.connector_name:
+                                raise ValueError("connector_name is required")
+                        else:
+                            raise ValueError("category is required")
+                    else:
+                        raise ValueError("qualified_name is required")
+                else:
+                    raise ValueError(
+                        "One of admin_user, admin_groups or admin_roles is required"
+                    )
+            else:
+                raise ValueError("name is required")
+
+        @classmethod
+        @validate_arguments()
+        def create(
+            cls,
+            name: str,
+            connector_type: AtlanConnectorType,
+            admin_users: Optional[list[str]] = None,
+            admin_groups: Optional[list[str]] = None,
+            admin_roles: Optional[list[str]] = None,
+        ):
+            if not name:
+                raise ValueError("name cannot be blank")
+            if admin_users or admin_groups or admin_roles:
+                return cls(
+                    name=name,
+                    qualified_name=connector_type.to_qualified_name(),
+                    connector_name=connector_type.value,
+                    category=connector_type.category.value,
+                    admin_users=admin_users,
+                    admin_groups=admin_groups,
+                    admin_roles=admin_roles,
+                )
+            else:
+                raise ValueError(
+                    "One of admin_user, admin_groups or admin_roles is required"
+                )
+
     attributes: "Connection.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    @validate_arguments()
+    def create(
+        cls,
+        name: str,
+        connector_type: AtlanConnectorType,
+        admin_users: Optional[list[str]] = None,
+        admin_groups: Optional[list[str]] = None,
+        admin_roles: Optional[list[str]] = None,
+    ):
+        if not name:
+            raise ValueError("name cannot be blank")
+        if admin_users or admin_groups or admin_roles:
+            attr = cls.Attributes(
+                name=name,
+                qualified_name=connector_type.to_qualified_name(),
+                connector_name=connector_type.value,
+                category=connector_type.category.value,
+                admin_users=admin_users,
+                admin_groups=admin_groups,
+                admin_roles=admin_roles,
+            )
+            return cls(attributes=attr)
+        else:
+            raise ValueError(
+                "One of admin_user, admin_groups or admin_roles is required"
+            )
 
 
 class Process(Asset, type_name="Process"):
@@ -903,7 +1013,11 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @root_validator()
     def update_qualified_name(cls, values):
-        if "attributes" in values and not values["attributes"].qualified_name:
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
             values["attributes"].qualified_name = values["guid"]
         return values
 
@@ -990,6 +1104,42 @@ class Google(Cloud):
         )  # relationship
 
     attributes: "Google.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Azure(Cloud):
+    """Description"""
+
+    class Attributes(Cloud.Attributes):
+        azure_resource_id: Optional[str] = Field(
+            None, description="", alias="azureResourceId"
+        )
+        azure_location: Optional[str] = Field(
+            None, description="", alias="azureLocation"
+        )
+        adls_account_secondary_location: Optional[str] = Field(
+            None, description="", alias="adlsAccountSecondaryLocation"
+        )
+        azure_tags: Optional[list[AzureTag]] = Field(
+            None, description="", alias="azureTags"
+        )
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "Azure.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -1450,6 +1600,10 @@ class DataStudioAsset(DataStudio):
     )
 
 
+class ADLS(ObjectStore):
+    """Description"""
+
+
 class S3(ObjectStore):
     """Description"""
 
@@ -1690,6 +1844,54 @@ class Preset(BI):
         )  # relationship
 
     attributes: "Preset.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Sigma(BI):
+    """Description"""
+
+    class Attributes(BI.Attributes):
+        sigma_workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookQualifiedName"
+        )
+        sigma_workbook_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookName"
+        )
+        sigma_page_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageQualifiedName"
+        )
+        sigma_page_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageName"
+        )
+        sigma_data_element_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQualifiedName"
+        )
+        sigma_data_element_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Sigma.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -2385,11 +2587,40 @@ class Table(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: str, schema_qualified_name: str):
+            if not name:
+                raise ValueError("name cannot be blank")
+            fields = schema_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid schema_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError:
+                raise ValueError("Invalid schema_qualified_name")
+            return Table.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                qualified_name=f"{schema_qualified_name}/{name}",
+                schema_qualified_name=schema_qualified_name,
+                schema_name=fields[4],
+                connector_name=connector_type.value,
+            )
+
     attributes: "Table.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: str, schema_qualified_name: str):
+        attributes = Table.Attributes.create(name, schema_qualified_name)
+        return cls(attributes=attributes)
 
 
 class Query(SQL):
@@ -2676,11 +2907,38 @@ class Schema(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: str, database_qualified_name: str):
+            if not name:
+                raise ValueError("name cannot be blank")
+            fields = database_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid database_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError:
+                raise ValueError("Invalid database_qualified_name")
+            return Schema.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=database_qualified_name,
+                qualified_name=f"{database_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
     attributes: "Schema.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: str, database_qualified_name: str):
+        attributes = Schema.Attributes.create(name, database_qualified_name)
+        return cls(attributes=attributes)
 
 
 class Database(SQL):
@@ -2718,11 +2976,50 @@ class Database(SQL):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: str, connection_qualified_name: str):
+            if not name:
+                raise ValueError("name cannot be blank")
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError:
+                raise ValueError("Invalid connection_qualified_name")
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
     attributes: "Database.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: str, connection_qualified_name: str):
+        if not name:
+            raise ValueError("name cannot be blank")
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError:
+            raise ValueError("Invalid connection_qualified_name")
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
 
 
 class SnowflakeStream(SQL):
@@ -3124,6 +3421,226 @@ class GCSBucket(GCS):
         )  # relationship
 
     attributes: "GCSBucket.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ADLSAccount(ADLS):
+    """Description"""
+
+    type_name: Literal["ADLSAccount"] = Field("ADLSAccount")
+
+    class Attributes(ADLS.Attributes):
+        adls_e_tag: Optional[str] = Field(None, description="", alias="adlsETag")
+        adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
+            None, description="", alias="adlsEncryptionType"
+        )
+        adls_account_name: Optional[str] = Field(
+            None, description="", alias="adlsAccountName"
+        )
+        adls_account_resource_group: Optional[str] = Field(
+            None, description="", alias="adlsAccountResourceGroup"
+        )
+        adls_account_subscription: Optional[str] = Field(
+            None, description="", alias="adlsAccountSubscription"
+        )
+        adls_account_performance: Optional[ADLSPerformance] = Field(
+            None, description="", alias="adlsAccountPerformance"
+        )
+        adls_account_replication: Optional[ADLSReplicationType] = Field(
+            None, description="", alias="adlsAccountReplication"
+        )
+        adls_account_kind: Optional[ADLSStorageKind] = Field(
+            None, description="", alias="adlsAccountKind"
+        )
+        adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
+            None, description="", alias="adlsPrimaryDiskState"
+        )
+        adls_account_creation_time: Optional[datetime] = Field(
+            None, description="", alias="adlsAccountCreationTime"
+        )
+        adls_account_provision_state: Optional[ADLSProvisionState] = Field(
+            None, description="", alias="adlsAccountProvisionState"
+        )
+        adls_account_access_tier: Optional[ADLSAccessTier] = Field(
+            None, description="", alias="adlsAccountAccessTier"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        adls_containers: Optional[list[ADLSContainer]] = Field(
+            None, description="", alias="adlsContainers"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ADLSAccount.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ADLSContainer(ADLS):
+    """Description"""
+
+    type_name: Literal["ADLSContainer"] = Field("ADLSContainer")
+
+    class Attributes(ADLS.Attributes):
+        adls_container_name: Optional[str] = Field(
+            None, description="", alias="adlsContainerName"
+        )
+        adls_container_url: Optional[str] = Field(
+            None, description="", alias="adlsContainerUrl"
+        )
+        adls_container_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="adlsContainerLastModifiedTime"
+        )
+        adls_container_lease_state: Optional[ADLSLeaseState] = Field(
+            None, description="", alias="adlsContainerLeaseState"
+        )
+        adls_container_lease_status: Optional[ADLSLeaseStatus] = Field(
+            None, description="", alias="adlsContainerLeaseStatus"
+        )
+        adls_container_encryption_scope: Optional[str] = Field(
+            None, description="", alias="adlsContainerEncryptionScope"
+        )
+        adls_container_version_level_immutability_support: Optional[bool] = Field(
+            None, description="", alias="adlsContainerVersionLevelImmutabilitySupport"
+        )
+        adls_objects: Optional[list[ADLSObject]] = Field(
+            None, description="", alias="adlsObjects"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        adls_account: Optional[ADLSAccount] = Field(
+            None, description="", alias="adlsAccount"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ADLSContainer.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ADLSObject(ADLS):
+    """Description"""
+
+    type_name: Literal["ADLSObject"] = Field("ADLSObject")
+
+    class Attributes(ADLS.Attributes):
+        adls_object_name: Optional[str] = Field(
+            None, description="", alias="adlsObjectName"
+        )
+        adls_object_url: Optional[str] = Field(
+            None, description="", alias="adlsObjectUrl"
+        )
+        adls_object_creation_time: Optional[datetime] = Field(
+            None, description="", alias="adlsObjectCreationTime"
+        )
+        adls_object_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="adlsObjectLastModifiedTime"
+        )
+        adls_object_version_id: Optional[str] = Field(
+            None, description="", alias="adlsObjectVersionId"
+        )
+        adls_object_type: Optional[ADLSObjectType] = Field(
+            None, description="", alias="adlsObjectType"
+        )
+        adls_object_size: Optional[int] = Field(
+            None, description="", alias="adlsObjectSize"
+        )
+        adls_object_access_tier: Optional[ADLSAccessTier] = Field(
+            None, description="", alias="adlsObjectAccessTier"
+        )
+        adls_object_access_tier_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="adlsObjectAccessTierLastModifiedTime"
+        )
+        adls_object_archive_status: Optional[ADLSObjectArchiveStatus] = Field(
+            None, description="", alias="adlsObjectArchiveStatus"
+        )
+        adls_object_server_encrypted: Optional[bool] = Field(
+            None, description="", alias="adlsObjectServerEncrypted"
+        )
+        adls_object_version_level_immutability_support: Optional[bool] = Field(
+            None, description="", alias="adlsObjectVersionLevelImmutabilitySupport"
+        )
+        adls_object_cache_control: Optional[str] = Field(
+            None, description="", alias="adlsObjectCacheControl"
+        )
+        adls_object_content_type: Optional[str] = Field(
+            None, description="", alias="adlsObjectContentType"
+        )
+        adls_object_content_m_d5_hash: Optional[str] = Field(
+            None, description="", alias="adlsObjectContentMD5Hash"
+        )
+        adls_object_content_language: Optional[str] = Field(
+            None, description="", alias="adlsObjectContentLanguage"
+        )
+        adls_object_lease_status: Optional[ADLSLeaseStatus] = Field(
+            None, description="", alias="adlsObjectLeaseStatus"
+        )
+        adls_object_lease_state: Optional[ADLSLeaseState] = Field(
+            None, description="", alias="adlsObjectLeaseState"
+        )
+        adls_object_metadata: Optional[dict[str, str]] = Field(
+            None, description="", alias="adlsObjectMetadata"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        adls_container: Optional[ADLSContainer] = Field(
+            None, description="", alias="adlsContainer"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ADLSObject.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -4099,6 +4616,252 @@ class PresetWorkspace(Preset):
     )
 
 
+class SigmaDatasetColumn(Sigma):
+    """Description"""
+
+    type_name: Literal["SigmaDatasetColumn"] = Field("SigmaDatasetColumn")
+
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetQualifiedName"
+        )
+        sigma_dataset_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_dataset: Optional[SigmaDataset] = Field(
+            None, description="", alias="sigmaDataset"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDatasetColumn.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataset(Sigma):
+    """Description"""
+
+    type_name: Literal["SigmaDataset"] = Field("SigmaDataset")
+
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="sigmaDatasetColumnCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
+            None, description="", alias="sigmaDatasetColumns"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDataset.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaWorkbook(Sigma):
+    """Description"""
+
+    type_name: Literal["SigmaWorkbook"] = Field("SigmaWorkbook")
+
+    class Attributes(Sigma.Attributes):
+        sigma_page_count: Optional[int] = Field(
+            None, description="", alias="sigmaPageCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_pages: Optional[list[SigmaPage]] = Field(
+            None, description="", alias="sigmaPages"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaWorkbook.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElementField(Sigma):
+    """Description"""
+
+    type_name: Literal["SigmaDataElementField"] = Field("SigmaDataElementField")
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_field_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sigmaDataElementFieldIsHidden"
+        )
+        sigma_data_element_field_formula: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementFieldFormula"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_data_element: Optional[SigmaDataElement] = Field(
+            None, description="", alias="sigmaDataElement"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDataElementField.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaPage(Sigma):
+    """Description"""
+
+    type_name: Literal["SigmaPage"] = Field("SigmaPage")
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementCount"
+        )
+        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
+            None, description="", alias="sigmaDataElements"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        sigma_workbook: Optional[SigmaWorkbook] = Field(
+            None, description="", alias="sigmaWorkbook"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaPage.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElement(Sigma):
+    """Description"""
+
+    type_name: Literal["SigmaDataElement"] = Field("SigmaDataElement")
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_query: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQuery"
+        )
+        sigma_data_element_type: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementType"
+        )
+        sigma_data_element_field_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementFieldCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        sigma_page: Optional[SigmaPage] = Field(
+            None, description="", alias="sigmaPage"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
+            None, description="", alias="sigmaDataElementFields"
+        )  # relationship
+
+    attributes: "SigmaDataElement.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class ModeReport(Mode):
     """Description"""
 
@@ -4698,7 +5461,7 @@ class TableauDatasource(Tableau):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        fields: Optional[list[TableauCalculatedField]] = Field(
+        fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="fields"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
@@ -5682,6 +6445,8 @@ Catalog.Attributes.update_forward_refs()
 
 Google.Attributes.update_forward_refs()
 
+Azure.Attributes.update_forward_refs()
+
 AWS.Attributes.update_forward_refs()
 
 BIProcess.Attributes.update_forward_refs()
@@ -5716,6 +6481,8 @@ GCS.Attributes.update_forward_refs()
 
 DataStudioAsset.Attributes.update_forward_refs()
 
+ADLS.Attributes.update_forward_refs()
+
 S3.Attributes.update_forward_refs()
 
 DbtColumnProcess.Attributes.update_forward_refs()
@@ -5727,6 +6494,8 @@ Metabase.Attributes.update_forward_refs()
 PowerBI.Attributes.update_forward_refs()
 
 Preset.Attributes.update_forward_refs()
+
+Sigma.Attributes.update_forward_refs()
 
 Mode.Attributes.update_forward_refs()
 
@@ -5782,6 +6551,12 @@ GCSObject.Attributes.update_forward_refs()
 
 GCSBucket.Attributes.update_forward_refs()
 
+ADLSAccount.Attributes.update_forward_refs()
+
+ADLSContainer.Attributes.update_forward_refs()
+
+ADLSObject.Attributes.update_forward_refs()
+
 S3Bucket.Attributes.update_forward_refs()
 
 S3Object.Attributes.update_forward_refs()
@@ -5821,6 +6596,18 @@ PresetDataset.Attributes.update_forward_refs()
 PresetDashboard.Attributes.update_forward_refs()
 
 PresetWorkspace.Attributes.update_forward_refs()
+
+SigmaDatasetColumn.Attributes.update_forward_refs()
+
+SigmaDataset.Attributes.update_forward_refs()
+
+SigmaWorkbook.Attributes.update_forward_refs()
+
+SigmaDataElementField.Attributes.update_forward_refs()
+
+SigmaPage.Attributes.update_forward_refs()
+
+SigmaDataElement.Attributes.update_forward_refs()
 
 ModeReport.Attributes.update_forward_refs()
 
