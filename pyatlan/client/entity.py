@@ -17,7 +17,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Generator, Type, TypeVar, Union
+from typing import Type, TypeVar, Union
 
 from pydantic import parse_obj_as, validate_arguments
 
@@ -246,6 +246,54 @@ class EntityClient:
     INDEX_API = BASE_URI + "search/indexsearch"
     INDEX_SEARCH = API(INDEX_API, HTTPMethod.POST, HTTPStatus.OK)
 
+    class SearchResults:
+        def __init__(
+            self,
+            client: "AtlanClient",
+            criteria: IndexSearchRequest,
+            start: int,
+            size: int,
+            count: int,
+            assets: list[Asset],
+        ):
+            self._client = client
+            self._criteria = criteria
+            self._start = start
+            self._size = size
+            self.count = count
+            self._assets = assets
+
+        def current_page(self) -> list[Asset]:
+            return self._assets
+
+        def next_page(self, start=None, size=None) -> bool:
+            if start:
+                self._start = start
+            else:
+                self._start = self._start + self._size
+            if size:
+                self._size = size
+            if self._assets:
+                self._criteria.dsl.from_ = self._start
+                self._criteria.dsl.size = self._size
+                raw_json = self._client.call_api(
+                    EntityClient.INDEX_SEARCH,
+                    request_obj=self._criteria,
+                )
+                if "entities" not in raw_json:
+                    return False
+                self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+                return True
+            else:
+                return False
+
+        def __iter__(self):
+            while True:
+                for asset in self.current_page():
+                    yield asset
+                if not self.next_page():
+                    break
+
     def __init__(self, client: AtlanClient):
         self.client = client
 
@@ -291,18 +339,24 @@ class EntityClient:
         )
         return AssetMutationResponse(**raw_json)
 
-    def index_search(
-        self, criteria: IndexSearchRequest
-    ) -> Generator[Asset, None, None]:
-        while True:
-            start = criteria.dsl.from_
-            size = criteria.dsl.size
-            raw_json = self.client.call_api(
-                EntityClient.INDEX_SEARCH,
-                request_obj=criteria,
-            )
-            if "entities" not in raw_json:
-                break
+    def search(self, criteria: IndexSearchRequest) -> SearchResults:
+        raw_json = self.client.call_api(
+            EntityClient.INDEX_SEARCH,
+            request_obj=criteria,
+        )
+        if "entities" in raw_json:
             assets = parse_obj_as(list[Asset], raw_json["entities"])
-            yield from assets
-            criteria.dsl.from_ = start + size
+        else:
+            assets = []
+        if "approximateCount" in raw_json:
+            count = raw_json["approximateCount"]
+        else:
+            count = 0
+        return EntityClient.SearchResults(
+            client=self.client,
+            criteria=criteria,
+            start=criteria.dsl.from_,
+            size=criteria.dsl.size,
+            count=count,
+            assets=assets,
+        )

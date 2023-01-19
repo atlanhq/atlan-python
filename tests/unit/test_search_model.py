@@ -204,7 +204,7 @@ def test_dsl():
     )
     assert (
         dsl.json(by_alias=True, exclude_none=True)
-        == '{"from": 0, "size": 100, "post_filter": {"term": {"databaseName.keyword": '
+        == '{"from": 0, "size": 100, "track_total_hits": true, "post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
         '{"__typeName.keyword": {"value": "Schema"}}}}'
     )
@@ -218,7 +218,8 @@ def test_index_search_request():
     request = IndexSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
     assert (
         request.json(by_alias=True, exclude_none=True)
-        == '{"dsl": {"from": 0, "size": 100, "post_filter": {"term": {"databaseName.keyword": '
+        == '{"dsl": {"from": 0, "size": 100, "track_total_hits": true, '
+        '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}}, '
         '"attributes": ["schemaName", "databaseName"]}'
     )
