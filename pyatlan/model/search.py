@@ -12,9 +12,11 @@ from pydantic import (
     StrictInt,
     StrictStr,
     validate_arguments,
+    validator,
 )
 
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.enums import SortOrder
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -527,14 +529,37 @@ class Range(Query):
         return {self.type_name: {self.field: parameters}}
 
 
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class SortItem:
+    field: StrictStr
+    order: Optional[SortOrder]
+
+    def to_dict(self):
+        return {self.field: {"order": self.order.value}}
+
+    @validator("order", always=True)
+    def validate_order(cls, v, values):
+        if not v:
+            if "field" in values:
+                v = SortOrder.ASCENDING
+        return v
+
+
 class DSL(AtlanObject):
     from_: int = Field(0, alias="from")
     size: int = 100
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
+    sort: Optional[list[SortItem]] = Field(alias="sort")
 
     class Config:
-        json_encoders = {Query: lambda v: v.to_dict()}
+        json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+
+    @validator("query", always=True)
+    def validate_query(cls, v, values):
+        if not v and ("post_filter" not in values or not values["post_filter"]):
+            raise ValueError("Either query or post_filter is required")
+        return v
 
 
 class IndexSearchRequest(AtlanObject):
@@ -542,4 +567,4 @@ class IndexSearchRequest(AtlanObject):
     attributes: list = Field(default_factory=list)
 
     class Config:
-        json_encoders = {Query: lambda v: v.to_dict()}
+        json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal, Union
 
 import pytest
-from pydantic import StrictStr
+from pydantic import StrictStr, ValidationError
 
 from pyatlan.model.search import (
     DSL,
@@ -14,6 +14,8 @@ from pyatlan.model.search import (
     MatchNone,
     Prefix,
     Range,
+    SortItem,
+    SortOrder,
     Term,
     Terms,
 )
@@ -190,13 +192,18 @@ def test_bool_to_dict_without_optional_fields(
     )
 
 
+def test_dsl_without_query_and_post_filter_raises_validation_error():
+    with pytest.raises(ValidationError):
+        DSL()
+
+
 def test_dsl():
     dsl = DSL(
         query=Term(field="__typeName.keyword", value="Schema"),
         post_filter=Term(field="databaseName.keyword", value="ATLAN_SAMPLE_DATA"),
     )
     assert (
-        dsl.json(by_alias=True)
+        dsl.json(by_alias=True, exclude_none=True)
         == '{"from": 0, "size": 100, "post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
         '{"__typeName.keyword": {"value": "Schema"}}}}'
@@ -210,7 +217,7 @@ def test_index_search_request():
     )
     request = IndexSearchRequest(dsl=dsl, attributes=["schemaName", "databaseName"])
     assert (
-        request.json(by_alias=True)
+        request.json(by_alias=True, exclude_none=True)
         == '{"dsl": {"from": 0, "size": 100, "post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}}, '
         '"attributes": ["schemaName", "databaseName"]}'
@@ -606,3 +613,15 @@ def test_range_to_dict(gt, gte, lt, lte, boost, format, relation, timezone, expe
         ).to_dict()
         == expected
     )
+
+
+@pytest.mark.parametrize(
+    "field,  order, expected",
+    [
+        ("name.keyword", SortOrder.ASCENDING, {"name.keyword": {"order": "asc"}}),
+        ("name.keyword", None, {"name.keyword": {"order": "asc"}}),
+        ("name.keyword", SortOrder.DESCENDING, {"name.keyword": {"order": "desc"}}),
+    ],
+)
+def test_sort_item_to_dict(field, order, expected):
+    assert SortItem(field=field, order=order).to_dict() == expected
