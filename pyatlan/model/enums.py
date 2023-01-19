@@ -192,3 +192,8 @@ class AtlanConnectorType(str, Enum):
     HIVE = ("hive", AtlanConnectionCategory.WAREHOUSE)
     SAPHANA = ("sap-hana", AtlanConnectionCategory.WAREHOUSE)
     EMPTY = ("empty", None)
+
+
+class SortOrder(str, Enum):
+    ASCENDING = "asc"
+    DESCENDING = "desc"
