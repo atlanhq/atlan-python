@@ -548,6 +548,7 @@ class SortItem:
 class DSL(AtlanObject):
     from_: int = Field(0, alias="from")
     size: int = 100
+    track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
     sort: Optional[list[SortItem]] = Field(alias="sort")

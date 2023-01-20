@@ -89,18 +89,71 @@ def client() -> EntityClient:
         ),
     ],
 )
-def test_index_search(
+def test_search(
     client: EntityClient, query, post_filter, attributes, sort_order, a_class
 ):
     dsl = DSL(query=query, post_filter=post_filter, sort=sort_order)
     request = IndexSearchRequest(dsl=dsl, attributes=attributes)
-    assets = client.index_search(criteria=request)
+    results = client.search(criteria=request)
     counter = 0
-    for asset in assets:
-        # if asset.scrubbed:
-        #     continue
+    for asset in results:
         assert isinstance(asset, a_class)
         counter += 1
         if counter > 3:
             break
     assert counter > 0
+
+
+def test_search_next_page(client: EntityClient):
+    size = 15
+    dsl = DSL(
+        query=Term(field="__state", value="ACTIVE"),
+        post_filter=Term(field="__typeName.keyword", value="Database"),
+        size=size,
+    )
+    request = IndexSearchRequest(
+        dsl=dsl,
+        attributes=["databaseName"],
+    )
+    results = client.search(criteria=request)
+    assert results.count > size
+    assert len(results.current_page()) == size
+    counter = 0
+    while True:
+        for _ in results.current_page():
+            counter += 1
+        if results.next_page() is not True:
+            break
+    assert counter == results.count
+
+
+def test_search_iter(client: EntityClient):
+    size = 15
+    dsl = DSL(
+        query=Term(field="__state", value="ACTIVE"),
+        post_filter=Term(field="__typeName.keyword", value="Database"),
+        size=size,
+    )
+    request = IndexSearchRequest(
+        dsl=dsl,
+        attributes=["databaseName"],
+    )
+    results = client.search(criteria=request)
+    assert results.count > size
+    assert len([a for a in results]) == results.count
+
+
+def test_search_next_when_start_changed_returns_remaining(client: EntityClient):
+    size = 2
+    dsl = DSL(
+        query=Term(field="__state", value="ACTIVE"),
+        post_filter=Term(field="__typeName.keyword", value="Database"),
+        size=size,
+    )
+    request = IndexSearchRequest(
+        dsl=dsl,
+        attributes=["databaseName"],
+    )
+    results = client.search(criteria=request)
+    assert results.next_page(start=results.count - size) is True
+    assert len(list(results)) == size
