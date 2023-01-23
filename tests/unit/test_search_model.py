@@ -13,6 +13,7 @@ from pyatlan.model.search import (
     MatchNone,
     Prefix,
     Range,
+    Regexp,
     SortItem,
     SortOrder,
     Term,
@@ -34,7 +35,12 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.HAS_LINEAGE,
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
-    }
+    },
+    Regexp: {
+        TermAttributes.HAS_LINEAGE,
+        TermAttributes.MODIFICATION_TIMESTAMP,
+        TermAttributes.TIMESTAMP,
+    },
 }
 
 
@@ -465,7 +471,7 @@ def test_terms_to_dict():
             c in INCOMPATIPLE_QUERY and a in INCOMPATIPLE_QUERY[c],
         )
         for a in TermAttributes
-        for c in [Term, Prefix, Wildcard]
+        for c in [Term, Prefix, Regexp, Wildcard]
     ],
 )
 def test_by_methods_on_term_or_prefix(a_class, name, value, field, incompatable):

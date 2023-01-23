@@ -844,6 +844,127 @@ class Wildcard(Query):
 
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class Regexp(Query):
+    field: str
+    value: StrictStr
+    boost: Optional[float] = None
+    case_insensitive: Optional[bool] = None
+    max_determinized_states: Optional[int] = None
+    type_name: Literal["term"] = "term"
+
+    @classmethod
+    @validate_arguments()
+    def with_categories(cls, value: StrictStr):
+        return cls(field=TermAttributes.CATEGORIES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATION_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(cls, value: StrictStr):
+        return cls(field=TermAttributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(cls, value: StrictStr):
+        return cls(field=TermAttributes.GLOSSARY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_guid(cls, value: StrictStr):
+        # Use a GUID as a Query Term
+        return cls(field=TermAttributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(cls, value: StrictStr):
+        return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(cls, value: StrictStr):
+        return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(cls, value: StrictStr):
+        return cls(
+            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+        return cls(field=TermAttributes.STATE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TYPE_NAME.value, value=value)
+
+    def to_dict(self):
+        if isinstance(self.value, datetime):
+            parameters = {"value": int(self.value.timestamp() * 1000)}
+        else:
+            parameters = {"value": self.value}
+        if self.case_insensitive is not None:
+            parameters["case_insensitive"] = self.case_insensitive
+        if self.boost is not None:
+            parameters["boost"] = self.boost
+        if self.max_determinized_states:
+            parameters["max_determinized_states"] = self.max_determinized_states
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class SortItem:
     field: StrictStr
     order: Optional[SortOrder]
