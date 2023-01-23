@@ -2,11 +2,10 @@ from datetime import datetime
 from typing import Literal, Union
 
 import pytest
-from pydantic import StrictStr, ValidationError
+from pydantic import StrictBool, StrictStr, ValidationError
 
 from pyatlan.model.search import (
     DSL,
-    Attributes,
     Bool,
     Exists,
     IndexSearchRequest,
@@ -17,14 +16,25 @@ from pyatlan.model.search import (
     SortItem,
     SortOrder,
     Term,
+    TermAttributes,
     Terms,
+    Wildcard,
 )
 
 NOW = datetime.now()
 VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
     StrictStr: "abc",
+    StrictBool: True,
     datetime: NOW,
     Literal["ACTIVE", "DELETED"]: "ACTIVE",
+}
+
+INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
+    Wildcard: {
+        TermAttributes.HAS_LINEAGE,
+        TermAttributes.MODIFICATION_TIMESTAMP,
+        TermAttributes.TIMESTAMP,
+    }
 }
 
 
@@ -445,24 +455,34 @@ def test_terms_to_dict():
 
 
 @pytest.mark.parametrize(
-    "a_class, name, value, field",
+    "a_class, name, value, field, incompatable",
     [
-        (c, "with_" + a.name.lower(), VALUES_BY_TYPE[a.attribute_type], a.value)
-        for a in Attributes
-        for c in [Term, Prefix]
+        (
+            c,
+            "with_" + a.name.lower(),
+            VALUES_BY_TYPE[a.attribute_type],
+            a.value,
+            c in INCOMPATIPLE_QUERY and a in INCOMPATIPLE_QUERY[c],
+        )
+        for a in TermAttributes
+        for c in [Term, Prefix, Wildcard]
     ],
 )
-def test_by_methods_on_term_or_prefix(a_class, name, value, field):
-    assert hasattr(a_class, name)
-    t = getattr(a_class, name)(value)
-    assert isinstance(t, a_class)
-    assert t.field == field
-    assert t.value == value
+def test_by_methods_on_term_or_prefix(a_class, name, value, field, incompatable):
+    if incompatable:
+        assert not hasattr(a_class, name)
+    else:
+        a_class.__pydantic_model__.schema()
+        assert hasattr(a_class, name)
+        t = getattr(a_class, name)(value)
+        assert isinstance(t, a_class)
+        assert t.field == field
+        assert t.value == value
 
 
 @pytest.mark.parametrize(
     "name,  field",
-    [("with_" + a.name.lower(), a.value) for a in Attributes],
+    [("with_" + a.name.lower(), a.value) for a in TermAttributes],
 )
 def test_by_methods_on_exists(name, field):
     assert hasattr(Exists, name)
