@@ -37,19 +37,38 @@ class Attributes(str, Enum):
         obj.attribute_type = attribute_type
         return obj
 
+
+class TermAttributes(Attributes):
+
+    CATEGORIES = ("__categories", StrictStr)
+    CLASSIFICATION_NAMES = ("__classificationNames", StrictStr)
+    CLASSIFICATIONS_TEXT = ("__classificationsText", StrictStr)
     CREATED_BY = ("__createdBy", StrictStr)
+    GLOSSARY = ("__glossary.keyword", StrictStr)
     GUID = ("__guid", StrictStr)
+    HAS_LINEAGE = ("__hasLineage", StrictBool)
+    MEANINGS = ("__meanings", StrictStr)
     MEANINGS_TEXT = ("__meaningsText", StrictStr)
     MODIFICATION_TIMESTAMP = ("__modificationTimestamp", datetime)
     MODIFIED_BY = ("__modifiedBy", StrictStr)
-    QUALIFIED_NAME = ("qualifiedName", StrictStr)
     NAME = ("name.keyword", StrictStr)
+    PARENT_CATEGORY = ("__parentCategory.keyword", StrictStr)
+    PROPAGATED_CLASSIFICATION_NAMES = ("__propagatedClassificationNames", StrictStr)
+    PROPAGATED_TRAIT_NAMES = ("__propagatedTraitNames", StrictStr)
+    QUALIFIED_NAME = ("qualifiedName", StrictStr)
     STATE = ("__state", Literal["ACTIVE", "DELETED"])
+    SUPER_TYPE_NAME = ("__superTypeNames", StrictStr)
     TIMESTAMP = ("__timestamp", datetime)
+    TRAIT_NAME = ("__traitNames", StrictStr)
     TYPE_NAME = ("__typeName", StrictStr)
 
 
-def get_with_string(attribute: Attributes):
+class TextAttributes(Attributes):
+    NAME = ("name", StrictStr)
+    QUALIFIED_NAME = ("qualifiedName.text", StrictStr)
+
+
+def get_with_string(attribute: TermAttributes):
     @validate_arguments()
     def with_string(cls, value: StrictStr):
         """This function returns a string"""
@@ -151,54 +170,110 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
+    def with_categories(cls):
+        return cls(field=TermAttributes.CATEGORIES.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(cls):
+        return cls(field=TermAttributes.CLASSIFICATION_NAMES.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(cls):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value)
+
+    @classmethod
+    @validate_arguments()
     def with_created_by(cls):
-        return cls(field=Attributes.CREATED_BY.value)
+        return cls(field=TermAttributes.CREATED_BY.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(cls):
+        return cls(field=TermAttributes.GLOSSARY.value)
 
     @classmethod
     @validate_arguments()
     def with_guid(cls):
         # Use a GUID as a Query Term
-        return cls(field=Attributes.GUID.value)
+        return cls(field=TermAttributes.GUID.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_has_lineage(cls):
+        # Use a GUID as a Query Term
+        return cls(field=TermAttributes.HAS_LINEAGE.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(cls):
+        return cls(field=TermAttributes.MEANINGS.value)
 
     @classmethod
     @validate_arguments()
     def with_meanings_text(cls):
-        return cls(field=Attributes.MEANINGS_TEXT.value)
+        return cls(field=TermAttributes.MEANINGS_TEXT.value)
 
     @classmethod
     @validate_arguments()
     def with_modification_timestamp(cls):
-        return cls(field=Attributes.MODIFICATION_TIMESTAMP.value)
+        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value)
 
     @classmethod
     @validate_arguments()
     def with_modified_by(cls):
-        return cls(field=Attributes.MODIFIED_BY.value)
-
-    @classmethod
-    @validate_arguments()
-    def with_qualified_name(cls):
-        return cls(field=Attributes.QUALIFIED_NAME.value)
+        return cls(field=TermAttributes.MODIFIED_BY.value)
 
     @classmethod
     @validate_arguments()
     def with_name(cls):
-        return cls(field=Attributes.NAME.value)
+        return cls(field=TermAttributes.NAME.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(cls):
+        return cls(field=TermAttributes.PARENT_CATEGORY.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(cls):
+        return cls(field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(cls):
+        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls):
+        return cls(field=TermAttributes.QUALIFIED_NAME.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(cls):
+        return cls(field=TermAttributes.SUPER_TYPE_NAME.value)
 
     @classmethod
     @validate_arguments()
     def with_state(cls):
-        return cls(field=Attributes.STATE.value)
+        return cls(field=TermAttributes.STATE.value)
 
     @classmethod
     @validate_arguments()
     def with_timestamp(cls):
-        return cls(field=Attributes.TIMESTAMP.value)
+        return cls(field=TermAttributes.TIMESTAMP.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(cls):
+        return cls(field=TermAttributes.TRAIT_NAME.value)
 
     @classmethod
     @validate_arguments()
     def with_type_name(cls):
-        return cls(field=Attributes.TYPE_NAME.value)
+        return cls(field=TermAttributes.TYPE_NAME.value)
 
     def to_dict(self):
         return {self.type_name: {"field": self.field}}
@@ -214,54 +289,117 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
+    def with_categories(cls, value: StrictStr):
+        return cls(field=TermAttributes.CATEGORIES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATION_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
     def with_created_by(cls, value: StrictStr):
-        return cls(field=Attributes.CREATED_BY.value, value=value)
+        return cls(field=TermAttributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(cls, value: StrictStr):
+        return cls(field=TermAttributes.GLOSSARY.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_guid(cls, value: StrictStr):
         # Use a GUID as a Query Term
-        return cls(field=Attributes.GUID.value, value=value)
+        return cls(field=TermAttributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_has_lineage(cls, value: StrictBool):
+        # Use a GUID as a Query Term
+        return cls(field=TermAttributes.HAS_LINEAGE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_meanings_text(cls, value: StrictStr):
-        return cls(field=Attributes.MEANINGS_TEXT.value, value=value)
+        return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_modification_timestamp(cls, value: datetime):
-        return cls(field=Attributes.MODIFICATION_TIMESTAMP.value, value=value)
+        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_modified_by(cls, value: StrictStr):
-        return cls(field=Attributes.MODIFIED_BY.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_qualified_name(cls, value: StrictStr):
-        return cls(field=Attributes.QUALIFIED_NAME.value, value=value)
+        return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_name(cls, value: StrictStr):
-        return cls(field=Attributes.NAME.value, value=value)
+        return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(cls, value: StrictStr):
+        return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(cls, value: StrictStr):
+        return cls(
+            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
-        return cls(field=Attributes.STATE.value, value=value)
+        return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_timestamp(cls, value: datetime):
-        return cls(field=Attributes.TIMESTAMP.value, value=value)
+        return cls(field=TermAttributes.TIMESTAMP.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_type_name(cls, value: StrictStr):
-        return cls(field=Attributes.TYPE_NAME.value, value=value)
+        return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
     def to_dict(self):
         if isinstance(self.value, datetime):
@@ -426,54 +564,112 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
+    def with_categories(cls, value: StrictStr):
+        return cls(field=TermAttributes.CATEGORIES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATION_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
     def with_created_by(cls, value: StrictStr):
-        return cls(field=Attributes.CREATED_BY.value, value=value)
+        return cls(field=TermAttributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(cls, value: StrictStr):
+        return cls(field=TermAttributes.GLOSSARY.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_guid(cls, value: StrictStr):
         # Use a GUID as a Query Term
-        return cls(field=Attributes.GUID.value, value=value)
+        return cls(field=TermAttributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_has_lineage(cls, value: StrictBool):
+        # Use a GUID as a Query Term
+        return cls(field=TermAttributes.HAS_LINEAGE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_meanings_text(cls, value: StrictStr):
-        return cls(field=Attributes.MEANINGS_TEXT.value, value=value)
+        return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_modification_timestamp(cls, value: datetime):
-        return cls(field=Attributes.MODIFICATION_TIMESTAMP.value, value=value)
+        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_modified_by(cls, value: StrictStr):
-        return cls(field=Attributes.MODIFIED_BY.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_qualified_name(cls, value: StrictStr):
-        return cls(field=Attributes.QUALIFIED_NAME.value, value=value)
+        return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_name(cls, value: StrictStr):
-        return cls(field=Attributes.NAME.value, value=value)
+        return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(cls, value: StrictStr):
+        return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(cls, value: StrictStr):
+        return cls(
+            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
-        return cls(field=Attributes.STATE.value, value=value)
+        return cls(field=TermAttributes.STATE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_timestamp(cls, value: datetime):
-        return cls(field=Attributes.TIMESTAMP.value, value=value)
+        return cls(field=TermAttributes.TIMESTAMP.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
     def with_type_name(cls, value: StrictStr):
-        return cls(field=Attributes.TYPE_NAME.value, value=value)
+        return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
     def to_dict(self) -> dict[Any, Any]:
         parameters: dict[str, Any] = {
@@ -526,6 +722,124 @@ class Range(Query):
             value = get_value(name)
             if value:
                 parameters[name] = value
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class Wildcard(Query):
+    field: str
+    value: StrictStr
+    boost: Optional[float] = None
+    case_insensitive: Optional[bool] = None
+    type_name: Literal["term"] = "term"
+
+    @classmethod
+    @validate_arguments()
+    def with_categories(cls, value: StrictStr):
+        return cls(field=TermAttributes.CATEGORIES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATION_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(cls, value: StrictStr):
+        return cls(field=TermAttributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(cls, value: StrictStr):
+        return cls(field=TermAttributes.GLOSSARY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_guid(cls, value: StrictStr):
+        # Use a GUID as a Query Term
+        return cls(field=TermAttributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(cls, value: StrictStr):
+        return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(cls, value: StrictStr):
+        return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(cls, value: StrictStr):
+        return cls(
+            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+        return cls(field=TermAttributes.STATE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TYPE_NAME.value, value=value)
+
+    def to_dict(self):
+        if isinstance(self.value, datetime):
+            parameters = {"value": int(self.value.timestamp() * 1000)}
+        else:
+            parameters = {"value": self.value}
+        if self.case_insensitive is not None:
+            parameters["case_insensitive"] = self.case_insensitive
+        if self.boost is not None:
+            parameters["boost"] = self.boost
         return {self.type_name: {self.field: parameters}}
 
 
