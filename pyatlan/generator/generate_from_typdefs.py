@@ -93,8 +93,28 @@ class Generator:
                 continue
             self.add_entity_def(entity_defs, name)
 
+    def merge_attributes(self, entity_def):
+        def merge_them(s, a):
+            if s != "Asset":
+                entity = self.entity_defs[s]
+                for attribute in entity.attribute_defs:
+                    if attribute["name"] not in a:
+                        a[attribute["name"]] = attribute
+                for s_type in entity.super_types:
+                    merge_them(s_type, a)
+
+        attributes = {
+            attribute["name"]: attribute for attribute in entity_def.attribute_defs
+        }
+
+        for super_type in entity_def.super_types:
+            merge_them(super_type, attributes)
+        return [attribute for attribute in attributes.values()]
+
     def add_entity_def(self, entity_defs, name):
         entity_def = self.entity_defs[name]
+        if len(entity_def.super_types) > 1:
+            entity_def.attribute_defs = self.merge_attributes(entity_def)
         names = set()
         for attribute_def in entity_def.attribute_defs:
             names.add(attribute_def["name"])

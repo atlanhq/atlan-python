@@ -8,6 +8,7 @@ from pyatlan.model.search import (
     DSL,
     Bool,
     Exists,
+    Fuzzy,
     IndexSearchRequest,
     MatchAll,
     MatchNone,
@@ -37,6 +38,11 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.TIMESTAMP,
     },
     Regexp: {
+        TermAttributes.HAS_LINEAGE,
+        TermAttributes.MODIFICATION_TIMESTAMP,
+        TermAttributes.TIMESTAMP,
+    },
+    Fuzzy: {
         TermAttributes.HAS_LINEAGE,
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
@@ -474,11 +480,12 @@ def test_terms_to_dict():
         for c in [Term, Prefix, Regexp, Wildcard]
     ],
 )
-def test_by_methods_on_term_or_prefix(a_class, name, value, field, incompatable):
+def test_by_methods_on_term_prefix_regexp_wildcard(
+    a_class, name, value, field, incompatable
+):
     if incompatable:
         assert not hasattr(a_class, name)
     else:
-        a_class.__pydantic_model__.schema()
         assert hasattr(a_class, name)
         t = getattr(a_class, name)(value)
         assert isinstance(t, a_class)
@@ -652,3 +659,170 @@ def test_range_to_dict(gt, gte, lt, lte, boost, format, relation, timezone, expe
 )
 def test_sort_item_to_dict(field, order, expected):
     assert SortItem(field=field, order=order).to_dict() == expected
+
+
+@pytest.mark.parametrize(
+    "field, value, fuzziness, max_expansions, prefix_length, transpositions, rewrite, expected",
+    [
+        (
+            "user",
+            "ki",
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"fuzzy": {"user": {"value": "ki"}}},
+        ),
+        (
+            "user",
+            "ki",
+            "AUTO",
+            None,
+            None,
+            None,
+            None,
+            {"fuzzy": {"user": {"value": "ki", "fuzziness": "AUTO"}}},
+        ),
+        (
+            "user",
+            "ki",
+            "AUTO",
+            3,
+            None,
+            None,
+            None,
+            {
+                "fuzzy": {
+                    "user": {"value": "ki", "fuzziness": "AUTO", "max_expansions": 3}
+                }
+            },
+        ),
+        (
+            "user",
+            "ki",
+            "AUTO",
+            3,
+            0,
+            None,
+            None,
+            {
+                "fuzzy": {
+                    "user": {
+                        "value": "ki",
+                        "fuzziness": "AUTO",
+                        "max_expansions": 3,
+                        "prefix_length": 0,
+                    }
+                }
+            },
+        ),
+        (
+            "user",
+            "ki",
+            "AUTO",
+            3,
+            0,
+            1,
+            None,
+            {
+                "fuzzy": {
+                    "user": {
+                        "value": "ki",
+                        "fuzziness": "AUTO",
+                        "max_expansions": 3,
+                        "prefix_length": 0,
+                        "transpositions": 1,
+                    }
+                }
+            },
+        ),
+        (
+            "user",
+            "ki",
+            "AUTO",
+            3,
+            0,
+            1,
+            "constant_score",
+            {
+                "fuzzy": {
+                    "user": {
+                        "value": "ki",
+                        "fuzziness": "AUTO",
+                        "max_expansions": 3,
+                        "prefix_length": 0,
+                        "transpositions": 1,
+                        "rewrite": "constant_score",
+                    }
+                }
+            },
+        ),
+    ],
+)
+def test_fuzzy_to_dict(
+    field,
+    value,
+    fuzziness,
+    max_expansions,
+    prefix_length,
+    transpositions,
+    rewrite,
+    expected,
+):
+    assert (
+        Fuzzy(
+            field=field,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        ).to_dict()
+        == expected
+    )
+
+
+@pytest.mark.parametrize(
+    "name, value, fuzziness, max_expansions, prefix_length, transpositions, rewrite, attributes, incompatable",
+    [
+        (
+            "with_" + a.name.lower(),
+            "ki",
+            "AUTO",
+            3,
+            0,
+            1,
+            "constant_score",
+            a,
+            Fuzzy in INCOMPATIPLE_QUERY and a in INCOMPATIPLE_QUERY[Fuzzy],
+        )
+        for a in TermAttributes
+    ],
+)
+def test_fuzziness_with(
+    name,
+    value,
+    fuzziness,
+    max_expansions,
+    prefix_length,
+    transpositions,
+    rewrite,
+    attributes,
+    incompatable,
+):
+    if incompatable:
+        assert not hasattr(Fuzzy, name)
+    else:
+        assert hasattr(Fuzzy, name)
+        t = getattr(Fuzzy, name)(
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+        assert isinstance(t, Fuzzy)
+        assert t.field == attributes.value
