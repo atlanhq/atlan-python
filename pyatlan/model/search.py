@@ -1354,6 +1354,52 @@ class Fuzzy(Query):
 
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class Match(Query):
+    field: str
+    query: StrictStr
+    analyzer: Optional[str] = None
+    auto_generate_synonyms_phrase_query: Optional[bool] = None
+    fuzziness: Optional[str] = None
+    fuzzy_transpositions: Optional[bool] = None
+    fuzzy_rewrite: Optional[str] = None
+    lenient: Optional[bool] = None
+    operator: Optional[Literal["OR", "AND"]] = None
+    minimum_should_match: Optional[int] = None
+    zero_terms_query: Optional[Literal["none", "all"]] = None
+    max_expansions: Optional[int] = None
+    prefix_length: Optional[int] = None
+    type_name: Literal["match"] = "match"
+
+    def to_dict(self):
+        parameters = {"query": self.query}
+        if self.analyzer is not None:
+            parameters["analyzer"] = self.analyzer
+        if self.auto_generate_synonyms_phrase_query is not None:
+            parameters[
+                "auto_generate_synonyms_phrase_query"
+            ] = self.auto_generate_synonyms_phrase_query
+        if self.fuzziness is not None:
+            parameters["fuzziness"] = self.fuzziness
+        if self.fuzzy_transpositions is not None:
+            parameters["fuzzy_transpositions"] = self.fuzzy_transpositions
+        if self.fuzzy_rewrite is not None:
+            parameters["fuzzy_rewrite"] = self.fuzzy_rewrite
+        if self.lenient is not None:
+            parameters["lenient"] = self.lenient
+        if self.operator is not None:
+            parameters["operator"] = self.operator
+        if self.minimum_should_match is not None:
+            parameters["minimum_should_match"] = self.minimum_should_match
+        if self.zero_terms_query is not None:
+            parameters["zero_terms_query"] = self.zero_terms_query
+        if self.max_expansions is not None:
+            parameters["max_expansions"] = self.max_expansions
+        if self.prefix_length is not None:
+            parameters["prefix_length"] = self.prefix_length
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class SortItem:
     field: StrictStr
     order: Optional[SortOrder]
