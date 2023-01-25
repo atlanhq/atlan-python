@@ -576,6 +576,9 @@ class Asset(Referenceable):
         asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
             None, description="", alias="assetDbtSemanticLayerProxyUrl"
         )
+        asset_dbt_source_freshness_criteria: Optional[str] = Field(
+            None, description="", alias="assetDbtSourceFreshnessCriteria"
+        )
         sample_data_url: Optional[str] = Field(
             None, description="", alias="sampleDataUrl"
         )
@@ -816,6 +819,9 @@ class Connection(Asset, type_name="Connection"):
         )
         preview_credential_strategy: Optional[str] = Field(
             None, description="", alias="previewCredentialStrategy"
+        )
+        policy_strategy: Optional[str] = Field(
+            None, description="", alias="policyStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
         default_credential_guid: Optional[str] = Field(
@@ -1509,6 +1515,56 @@ class SQL(Catalog):
 class DataStudio(Google):
     """Description"""
 
+    class Attributes(Google.Attributes):
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "DataStudio.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class GCS(Google):
     """Description"""
@@ -1529,6 +1585,30 @@ class GCS(Google):
         )
         gcs_meta_generation_id: Optional[int] = Field(
             None, description="", alias="gcsMetaGenerationId"
+        )
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
@@ -1574,6 +1654,30 @@ class DataStudioAsset(DataStudio):
         is_trashed_data_studio_asset: Optional[bool] = Field(
             None, description="", alias="isTrashedDataStudioAsset"
         )
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -1603,6 +1707,44 @@ class DataStudioAsset(DataStudio):
 class ADLS(ObjectStore):
     """Description"""
 
+    class Attributes(ObjectStore.Attributes):
+        azure_resource_id: Optional[str] = Field(
+            None, description="", alias="azureResourceId"
+        )
+        azure_location: Optional[str] = Field(
+            None, description="", alias="azureLocation"
+        )
+        adls_account_secondary_location: Optional[str] = Field(
+            None, description="", alias="adlsAccountSecondaryLocation"
+        )
+        azure_tags: Optional[list[AzureTag]] = Field(
+            None, description="", alias="azureTags"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ADLS.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class S3(ObjectStore):
     """Description"""
@@ -1610,6 +1752,21 @@ class S3(ObjectStore):
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
         s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
+        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
+        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
+        aws_service: Optional[str] = Field(None, description="", alias="awsService")
+        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
+        aws_account_id: Optional[str] = Field(
+            None, description="", alias="awsAccountId"
+        )
+        aws_resource_id: Optional[str] = Field(
+            None, description="", alias="awsResourceId"
+        )
+        aws_owner_name: Optional[str] = Field(
+            None, description="", alias="awsOwnerName"
+        )
+        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
+        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -1645,17 +1802,60 @@ class DbtColumnProcess(Dbt):
         dbt_column_process_job_status: Optional[str] = Field(
             None, description="", alias="dbtColumnProcessJobStatus"
         )
-        outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
-        )  # relationship
+        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
+        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
+        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_account_name: Optional[str] = Field(
+            None, description="", alias="dbtAccountName"
+        )
+        dbt_project_name: Optional[str] = Field(
+            None, description="", alias="dbtProjectName"
+        )
+        dbt_package_name: Optional[str] = Field(
+            None, description="", alias="dbtPackageName"
+        )
+        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+        dbt_job_schedule: Optional[str] = Field(
+            None, description="", alias="dbtJobSchedule"
+        )
+        dbt_job_status: Optional[str] = Field(
+            None, description="", alias="dbtJobStatus"
+        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobScheduleCronHumanized"
+        )
+        dbt_job_last_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobLastRun"
+        )
+        dbt_job_next_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobNextRun"
+        )
+        dbt_job_next_run_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobNextRunHumanized"
+        )
+        dbt_environment_name: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentName"
+        )
+        dbt_environment_dbt_version: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentDbtVersion"
+        )
+        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_connection_context: Optional[str] = Field(
+            None, description="", alias="dbtConnectionContext"
+        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            None, description="", alias="dbtSemanticLayerProxyUrl"
+        )
+        inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
+        outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
+        code: Optional[str] = Field(None, description="", alias="code")
+        sql: Optional[str] = Field(None, description="", alias="sql")
+        ast: Optional[str] = Field(None, description="", alias="ast")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
         process: Optional[Process] = Field(
             None, description="", alias="process"
-        )  # relationship
-        inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -2121,6 +2321,58 @@ class DbtMetric(Dbt):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
             None, description="", alias="dbtMetricFilters"
         )
+        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
+        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
+        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_account_name: Optional[str] = Field(
+            None, description="", alias="dbtAccountName"
+        )
+        dbt_project_name: Optional[str] = Field(
+            None, description="", alias="dbtProjectName"
+        )
+        dbt_package_name: Optional[str] = Field(
+            None, description="", alias="dbtPackageName"
+        )
+        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+        dbt_job_schedule: Optional[str] = Field(
+            None, description="", alias="dbtJobSchedule"
+        )
+        dbt_job_status: Optional[str] = Field(
+            None, description="", alias="dbtJobStatus"
+        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobScheduleCronHumanized"
+        )
+        dbt_job_last_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobLastRun"
+        )
+        dbt_job_next_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobNextRun"
+        )
+        dbt_job_next_run_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobNextRunHumanized"
+        )
+        dbt_environment_name: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentName"
+        )
+        dbt_environment_dbt_version: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentDbtVersion"
+        )
+        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_connection_context: Optional[str] = Field(
+            None, description="", alias="dbtConnectionContext"
+        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            None, description="", alias="dbtSemanticLayerProxyUrl"
+        )
+        metric_type: Optional[str] = Field(None, description="", alias="metricType")
+        metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
+        metric_filters: Optional[str] = Field(
+            None, description="", alias="metricFilters"
+        )
+        metric_time_grains: Optional[list[str]] = Field(
+            None, description="", alias="metricTimeGrains"
+        )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -2210,14 +2462,57 @@ class DbtProcess(Dbt):
         dbt_process_job_status: Optional[str] = Field(
             None, description="", alias="dbtProcessJobStatus"
         )
-        outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
-        )  # relationship
+        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
+        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
+        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_account_name: Optional[str] = Field(
+            None, description="", alias="dbtAccountName"
+        )
+        dbt_project_name: Optional[str] = Field(
+            None, description="", alias="dbtProjectName"
+        )
+        dbt_package_name: Optional[str] = Field(
+            None, description="", alias="dbtPackageName"
+        )
+        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+        dbt_job_schedule: Optional[str] = Field(
+            None, description="", alias="dbtJobSchedule"
+        )
+        dbt_job_status: Optional[str] = Field(
+            None, description="", alias="dbtJobStatus"
+        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobScheduleCronHumanized"
+        )
+        dbt_job_last_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobLastRun"
+        )
+        dbt_job_next_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobNextRun"
+        )
+        dbt_job_next_run_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobNextRunHumanized"
+        )
+        dbt_environment_name: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentName"
+        )
+        dbt_environment_dbt_version: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentDbtVersion"
+        )
+        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_connection_context: Optional[str] = Field(
+            None, description="", alias="dbtConnectionContext"
+        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            None, description="", alias="dbtSemanticLayerProxyUrl"
+        )
+        inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
+        outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
+        code: Optional[str] = Field(None, description="", alias="code")
+        sql: Optional[str] = Field(None, description="", alias="sql")
+        ast: Optional[str] = Field(None, description="", alias="ast")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -3437,9 +3732,6 @@ class ADLSAccount(ADLS):
         adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
             None, description="", alias="adlsEncryptionType"
         )
-        adls_account_name: Optional[str] = Field(
-            None, description="", alias="adlsAccountName"
-        )
         adls_account_resource_group: Optional[str] = Field(
             None, description="", alias="adlsAccountResourceGroup"
         )
@@ -3502,9 +3794,6 @@ class ADLSContainer(ADLS):
     type_name: Literal["ADLSContainer"] = Field("ADLSContainer")
 
     class Attributes(ADLS.Attributes):
-        adls_container_name: Optional[str] = Field(
-            None, description="", alias="adlsContainerName"
-        )
         adls_container_url: Optional[str] = Field(
             None, description="", alias="adlsContainerUrl"
         )
@@ -3561,9 +3850,6 @@ class ADLSObject(ADLS):
     type_name: Literal["ADLSObject"] = Field("ADLSObject")
 
     class Attributes(ADLS.Attributes):
-        adls_object_name: Optional[str] = Field(
-            None, description="", alias="adlsObjectName"
-        )
         adls_object_url: Optional[str] = Field(
             None, description="", alias="adlsObjectUrl"
         )

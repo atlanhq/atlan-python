@@ -44,7 +44,7 @@ class TermAttributes(Attributes):
     CLASSIFICATION_NAMES = ("__classificationNames", StrictStr)
     CLASSIFICATIONS_TEXT = ("__classificationsText", StrictStr)
     CREATED_BY = ("__createdBy", StrictStr)
-    GLOSSARY = ("__glossary.keyword", StrictStr)
+    GLOSSARY = ("__glossary", StrictStr)
     GUID = ("__guid", StrictStr)
     HAS_LINEAGE = ("__hasLineage", StrictBool)
     MEANINGS = ("__meanings", StrictStr)
@@ -52,7 +52,7 @@ class TermAttributes(Attributes):
     MODIFICATION_TIMESTAMP = ("__modificationTimestamp", datetime)
     MODIFIED_BY = ("__modifiedBy", StrictStr)
     NAME = ("name.keyword", StrictStr)
-    PARENT_CATEGORY = ("__parentCategory.keyword", StrictStr)
+    PARENT_CATEGORY = ("__parentCategory", StrictStr)
     PROPAGATED_CLASSIFICATION_NAMES = ("__propagatedClassificationNames", StrictStr)
     PROPAGATED_TRAIT_NAMES = ("__propagatedTraitNames", StrictStr)
     QUALIFIED_NAME = ("qualifiedName", StrictStr)
@@ -60,7 +60,7 @@ class TermAttributes(Attributes):
     SUPER_TYPE_NAME = ("__superTypeNames", StrictStr)
     TIMESTAMP = ("__timestamp", datetime)
     TRAIT_NAME = ("__traitNames", StrictStr)
-    TYPE_NAME = ("__typeName", StrictStr)
+    TYPE_NAME = ("__typeName.keyword", StrictStr)
 
 
 class TextAttributes(Attributes):
@@ -75,11 +75,6 @@ def get_with_string(attribute: TermAttributes):
         return cls(field=attribute.value, value=value)
 
     return with_string
-
-
-# def add_with_methods(cls):
-#     setattr(cls, "with_guid", classmethod(get_with_string(Attributes.GUID)))
-#     return cls
 
 
 @dataclass
@@ -306,11 +301,6 @@ class Term(Query):
     @validate_arguments()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_classification_text(cls, value: StrictStr):
-        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -595,12 +585,6 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
-    def with_has_lineage(cls, value: StrictBool):
-        # Use a GUID as a Query Term
-        return cls(field=TermAttributes.HAS_LINEAGE.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_meanings(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS.value, value=value)
 
@@ -608,11 +592,6 @@ class Prefix(Query):
     @validate_arguments()
     def with_meanings_text(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_modification_timestamp(cls, value: datetime):
-        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -655,11 +634,6 @@ class Prefix(Query):
     @validate_arguments()
     def with_super_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_timestamp(cls, value: datetime):
-        return cls(field=TermAttributes.TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -731,7 +705,7 @@ class Wildcard(Query):
     value: StrictStr
     boost: Optional[float] = None
     case_insensitive: Optional[bool] = None
-    type_name: Literal["term"] = "term"
+    type_name: Literal["wildcard"] = "wildcard"
 
     @classmethod
     @validate_arguments()
@@ -752,11 +726,6 @@ class Wildcard(Query):
     @validate_arguments()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_classification_text(cls, value: StrictStr):
-        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -840,6 +809,547 @@ class Wildcard(Query):
             parameters["case_insensitive"] = self.case_insensitive
         if self.boost is not None:
             parameters["boost"] = self.boost
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class Regexp(Query):
+    field: str
+    value: StrictStr
+    boost: Optional[float] = None
+    case_insensitive: Optional[bool] = None
+    max_determinized_states: Optional[int] = None
+    type_name: Literal["regexp"] = "regexp"
+
+    @classmethod
+    @validate_arguments()
+    def with_categories(cls, value: StrictStr):
+        return cls(field=TermAttributes.CATEGORIES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATION_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(cls, value: StrictStr):
+        return cls(field=TermAttributes.CREATED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(cls, value: StrictStr):
+        return cls(field=TermAttributes.GLOSSARY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_guid(cls, value: StrictStr):
+        # Use a GUID as a Query Term
+        return cls(field=TermAttributes.GUID.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(cls, value: StrictStr):
+        return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(cls, value: StrictStr):
+        return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(cls, value: StrictStr):
+        return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(cls, value: StrictStr):
+        return cls(
+            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(cls, value: StrictStr):
+        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+        return cls(field=TermAttributes.STATE.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls, value: StrictStr):
+        return cls(field=TermAttributes.TYPE_NAME.value, value=value)
+
+    def to_dict(self):
+        if isinstance(self.value, datetime):
+            parameters = {"value": int(self.value.timestamp() * 1000)}
+        else:
+            parameters = {"value": self.value}
+        if self.case_insensitive is not None:
+            parameters["case_insensitive"] = self.case_insensitive
+        if self.boost is not None:
+            parameters["boost"] = self.boost
+        if self.max_determinized_states:
+            parameters["max_determinized_states"] = self.max_determinized_states
+        return {self.type_name: {self.field: parameters}}
+
+
+@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+class Fuzzy(Query):
+    field: str
+    value: StrictStr
+    fuzziness: Optional[str] = None
+    max_expansions: Optional[int] = None
+    prefix_length: Optional[int] = None
+    transpositions: Optional[bool] = None
+    rewrite: Optional[str] = None
+    type_name: Literal["fuzzy"] = "fuzzy"
+
+    @classmethod
+    @validate_arguments()
+    def with_categories(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.CATEGORIES.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_names(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.CLASSIFICATION_NAMES.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_classifications_text(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.CLASSIFICATIONS_TEXT.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_created_by(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.CREATED_BY.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_classification_text(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.CLASSIFICATIONS_TEXT.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_glossary(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.GLOSSARY.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_guid(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.GUID.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.MEANINGS.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_meanings_text(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.MEANINGS_TEXT.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_modified_by(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.MODIFIED_BY.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_name(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.NAME.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_parent_category(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.PARENT_CATEGORY.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_classification_names(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.PROPAGATED_TRAIT_NAMES.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_qualified_name(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.QUALIFIED_NAME.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_super_type_name(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.SUPER_TYPE_NAME.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_state(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.STATE.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_name(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.TRAIT_NAME.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_type_name(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.TYPE_NAME.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    def to_dict(self):
+        parameters = {"value": self.value}
+        if self.fuzziness is not None:
+            parameters["fuzziness"] = self.fuzziness
+        if self.max_expansions is not None:
+            parameters["max_expansions"] = self.max_expansions
+        if self.prefix_length is not None:
+            parameters["prefix_length"] = self.prefix_length
+        if self.transpositions is not None:
+            parameters["transpositions"] = self.transpositions
+        if self.rewrite is not None:
+            parameters["rewrite"] = self.rewrite
         return {self.type_name: {self.field: parameters}}
 
 
