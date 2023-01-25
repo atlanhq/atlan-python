@@ -171,7 +171,7 @@ def query_value(request):
     if method_name == "with_created_by":
         return "bryan"
     if method_name == "with_glossary":
-        return "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi"
+        return "mweSfpXBwfYWedQTvA3Gi"
     if method_name == "with_guid":
         return "331bae42-5f97-4068-a084-1557f31de770"
     if method_name == "with_has_lineage":
@@ -198,6 +198,8 @@ def query_value(request):
         return "Asset"
     if method_name == "with_timestamp":
         return 1665086276846
+    if method_name == "with_propagated_trait_names":
+        return "abc"
     print(f"Missing: {method_name}")
     return "abc"
 
