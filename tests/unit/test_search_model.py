@@ -47,6 +47,11 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
     },
+    Prefix: {
+        TermAttributes.HAS_LINEAGE,
+        TermAttributes.MODIFICATION_TIMESTAMP,
+        TermAttributes.TIMESTAMP,
+    },
 }
 
 

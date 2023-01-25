@@ -77,11 +77,6 @@ def get_with_string(attribute: TermAttributes):
     return with_string
 
 
-# def add_with_methods(cls):
-#     setattr(cls, "with_guid", classmethod(get_with_string(Attributes.GUID)))
-#     return cls
-
-
 @dataclass
 class Query(ABC):
     def __add__(self, other):
@@ -590,12 +585,6 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
-    def with_has_lineage(cls, value: StrictBool):
-        # Use a GUID as a Query Term
-        return cls(field=TermAttributes.HAS_LINEAGE.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_meanings(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS.value, value=value)
 
@@ -603,11 +592,6 @@ class Prefix(Query):
     @validate_arguments()
     def with_meanings_text(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS_TEXT.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_modification_timestamp(cls, value: datetime):
-        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -650,11 +634,6 @@ class Prefix(Query):
     @validate_arguments()
     def with_super_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAME.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_timestamp(cls, value: datetime):
-        return cls(field=TermAttributes.TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -747,11 +726,6 @@ class Wildcard(Query):
     @validate_arguments()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_classification_text(cls, value: StrictStr):
-        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -866,11 +840,6 @@ class Regexp(Query):
     @validate_arguments()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_classification_text(cls, value: StrictStr):
-        return cls(field=TermAttributes.CLASSIFICATIONS_TEXT.value, value=value)
 
     @classmethod
     @validate_arguments()

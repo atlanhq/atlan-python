@@ -1,24 +1,50 @@
+from dataclasses import dataclass, field
+from typing import Generator
+
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.entity import EntityClient
-from pyatlan.model.assets import (
-    AtlasGlossary,
-    Connection,
-    Database,
-    MaterialisedView,
-    Schema,
-    Table,
-    View,
-)
+from pyatlan.model.assets import Asset
 from pyatlan.model.search import (
     DSL,
     Exists,
     IndexSearchRequest,
-    SortItem,
-    SortOrder,
+    Prefix,
+    Regexp,
     Term,
+    Wildcard,
 )
+
+VALUES_FOR_TERM_QUERIES = {
+    "with_categories": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
+    "with_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
+    "with_classifications_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
+    "with_created_by": "bryan",
+    "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
+    "with_guid": "331bae42-5f97-4068-a084-1557f31de770",
+    "with_has_lineage": True,
+    "with_meanings": "2EqDFWZ6sCjbxcDNL0jFV@3Wn0W7PFCfjyKmGBZ7FLD",
+    "with_meanings_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
+    "with_modification_timestamp": 1665086276846,
+    "with_modified_by": "bryan",
+    "with_name": "Schema",
+    "with_parent_category": "fWB1bJLOhEd4ik1Um1EJ8@3Wn0W7PFCfjyKmGBZ7FLD",
+    "with_propagated_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
+    "with_qualified_name": "default/oracle/1665680872/ORCL/SCALE_TEST/TABLE_MVD_3042/PERSON_ID",
+    "with_state": "ACTIVE",
+    "with_super_type_name": "Asset",
+    "with_timestamp": 1665727666701,
+    "with_trait_name": "bb",
+    "with_propagated_trait_names": "abc",
+    "with_type_name": "Schema",
+}
+
+
+@dataclass()
+class AssetTracker:
+    good_count: int = 0
+    missing_types: set[str] = field(default_factory=set)
 
 
 @pytest.fixture(scope="module")
@@ -26,82 +52,45 @@ def client() -> EntityClient:
     return EntityClient(AtlanClient())
 
 
-@pytest.mark.parametrize(
-    "query,  post_filter,attributes, sort_order, a_class",
-    [
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="AtlasGlossary"),
-            ["schemaName", "databaseName"],
-            None,
-            AtlasGlossary,
-        ),
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="Connection")
-            + Exists(field="category")
-            + Term(field="adminUsers", value="ernest"),
-            ["schemaName", "databaseName"],
-            None,
-            Connection,
-        ),
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="Database"),
-            ["schemaName", "databaseName"],
-            None,
-            Database,
-        ),
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="Schema"),
-            ["schemaName", "databaseName"],
-            None,
-            Schema,
-        ),
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="Table"),
-            ["schemaName", "databaseName"],
-            [SortItem(field="__typeName.keyword", order=SortOrder.ASCENDING)],
-            Table,
-        ),
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="View"),
-            ["schemaName", "databaseName"],
-            None,
-            View,
-        ),
-        (
-            Term(field="__state", value="ACTIVE"),
-            Term(field="__typeName.keyword", value="MaterialisedView"),
-            ["schemaName", "databaseName"],
-            None,
-            MaterialisedView,
-        ),
-        (
-            Term(field="__typeName.keyword", value="AtlasGlossary"),
-            None,
-            ["schemaName", "databaseName"],
-            None,
-            AtlasGlossary,
-        ),
-    ],
-)
-def test_search(
-    client: EntityClient, query, post_filter, attributes, sort_order, a_class
-):
-    dsl = DSL(query=query, post_filter=post_filter, sort=sort_order)
-    request = IndexSearchRequest(dsl=dsl, attributes=attributes)
+@pytest.fixture(scope="module")
+def asset_tracker() -> Generator[AssetTracker, None, None]:
+    tracker = AssetTracker()
+    yield tracker
+    print("Total number of asset types found: ", tracker.good_count)
+    print("Total number of asset types missing: ", len(tracker.missing_types))
+    print("Assets were not found for the following types:")
+    for name in sorted(tracker.missing_types):
+        print("\t", name)
+
+
+def get_all_subclasses(cls):
+    all_subclasses = []
+
+    for subclass in cls.__subclasses__():
+        all_subclasses.append(subclass)
+        all_subclasses.extend(get_all_subclasses(subclass))
+
+    return all_subclasses
+
+
+@pytest.mark.parametrize("cls", [(cls) for cls in get_all_subclasses(Asset)])
+def test_search(client: EntityClient, asset_tracker, cls):
+    name = cls.__name__
+    query = Term(field="__state", value="ACTIVE")
+    post_filter = Term(field="__typeName.keyword", value=name)
+    dsl = DSL(query=query, post_filter=post_filter)
+    request = IndexSearchRequest(dsl=dsl, attributes=["name"])
     results = client.search(criteria=request)
-    counter = 0
-    for asset in results:
-        assert isinstance(asset, a_class)
-        counter += 1
-        if counter > 3:
-            break
-    assert counter > 0
+    if results.count > 0:
+        asset_tracker.good_count += 1
+        counter = 0
+        for asset in results:
+            assert isinstance(asset, cls)
+            counter += 1
+            if counter > 3:
+                break
+    else:
+        asset_tracker.missing_types.add(name)
 
 
 def test_search_next_page(client: EntityClient):
@@ -161,52 +150,17 @@ def test_search_next_when_start_changed_returns_remaining(client: EntityClient):
 
 @pytest.fixture()
 def query_value(request):
-    method_name = request.param
-    if method_name == "with_categories":
-        return "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi"
-    if method_name == "with_classification_names":
-        return "|RBmhFJqX50bl5RAeJhwt1a|"  # Fixme
-    if method_name == "with_classifications_text":
-        return "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi"
-    if method_name == "with_created_by":
-        return "bryan"
-    if method_name == "with_glossary":
-        return "mweSfpXBwfYWedQTvA3Gi"
-    if method_name == "with_guid":
-        return "331bae42-5f97-4068-a084-1557f31de770"
-    if method_name == "with_has_lineage":
-        return True
-    if method_name == "with_meanings":
-        return "|RBmhFJqX50bl5RAeJhwt1a|"  # Fixme
-    if method_name == "with_meanings_text":
-        return "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi"
-    if method_name == "with_modification_timestamp":
-        return 1665086276846
-    if method_name == "with_modified_by":
-        return "bryan"
-    if method_name == "with_name":
-        return "Schema"
-    if method_name == "with_parent_category":
-        return "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi"
-    if method_name == "with_propagated_classification_names":
-        return "|RBmhFJqX50bl5RAeJhwt1a|"  # Fixme
-    if method_name == "with_qualified_name":
-        return "default/oracle/1665680872/ORCL/SCALE_TEST/TABLE_MVD_3042/PERSON_ID"
-    if method_name == "with_state":
-        return "ACTIVE"
-    if method_name == "with_super_type_name":
-        return "Asset"
-    if method_name == "with_timestamp":
-        return 1665086276846
-    if method_name == "with_propagated_trait_names":
-        return "abc"
-    print(f"Missing: {method_name}")
-    return "abc"
+    return VALUES_FOR_TERM_QUERIES[request.param]
 
 
 @pytest.mark.parametrize(
     "query_value, method, clazz",
-    [(method, method, Term) for method in dir(Term) if method.startswith("with_")],
+    [
+        (method, method, query)
+        for query in [Term, Prefix, Regexp, Wildcard]
+        for method in sorted(dir(query))
+        if method.startswith("with_")
+    ],
     indirect=["query_value"],
 )
 def test_factory(client: EntityClient, query_value, method, clazz):

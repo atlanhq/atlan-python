@@ -86,6 +86,7 @@ class Classification(AtlanObject):
     restrict_propagation_through_lineage: Optional[bool] = Field(
         None, description="", alias="restrictPropagationThroughLineage"
     )
+    validity_peridos: Optional[list[str]] = Field(None, alias="validityPeriods")
 
 
 class Meaning(AtlanObject):
