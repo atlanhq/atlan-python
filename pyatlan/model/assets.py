@@ -576,6 +576,9 @@ class Asset(Referenceable):
         asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
             None, description="", alias="assetDbtSemanticLayerProxyUrl"
         )
+        asset_dbt_source_freshness_criteria: Optional[str] = Field(
+            None, description="", alias="assetDbtSourceFreshnessCriteria"
+        )
         sample_data_url: Optional[str] = Field(
             None, description="", alias="sampleDataUrl"
         )
@@ -816,6 +819,9 @@ class Connection(Asset, type_name="Connection"):
         )
         preview_credential_strategy: Optional[str] = Field(
             None, description="", alias="previewCredentialStrategy"
+        )
+        policy_strategy: Optional[str] = Field(
+            None, description="", alias="policyStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
         default_credential_guid: Optional[str] = Field(
