@@ -10,6 +10,7 @@ from pyatlan.model.search import (
     Exists,
     Fuzzy,
     IndexSearchRequest,
+    Match,
     MatchAll,
     MatchNone,
     Prefix,
@@ -831,3 +832,362 @@ def test_fuzziness_with(
         )
         assert isinstance(t, Fuzzy)
         assert t.field == attributes.value
+
+
+@pytest.mark.parametrize(
+    "field, query, analyzer, auto_generate_synonyms_phrase_query, fuzziness, fuzzy_transpositions,  fuzzy_rewrite,"
+    "lenient, operator, minimum_should_match, zero_terms_query, max_expansions, ,prefix_length, expected",
+    [
+        (
+            "name",
+            "test",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"match": {"name": {"query": "test"}}},
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"match": {"name": {"query": "test", "analyzer": "an analyzer"}}},
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            True,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                        "lenient": True,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            True,
+            "OR",
+            None,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                        "lenient": True,
+                        "operator": "OR",
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            True,
+            "OR",
+            3,
+            None,
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                        "lenient": True,
+                        "operator": "OR",
+                        "minimum_should_match": 3,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            True,
+            "OR",
+            3,
+            "none",
+            None,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                        "lenient": True,
+                        "operator": "OR",
+                        "minimum_should_match": 3,
+                        "zero_terms_query": "none",
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            True,
+            "OR",
+            3,
+            "none",
+            4,
+            None,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                        "lenient": True,
+                        "operator": "OR",
+                        "minimum_should_match": 3,
+                        "zero_terms_query": "none",
+                        "max_expansions": 4,
+                    }
+                }
+            },
+        ),
+        (
+            "name",
+            "test",
+            "an analyzer",
+            True,
+            "0",
+            False,
+            "constant_score",
+            True,
+            "OR",
+            3,
+            "none",
+            4,
+            2,
+            {
+                "match": {
+                    "name": {
+                        "query": "test",
+                        "analyzer": "an analyzer",
+                        "auto_generate_synonyms_phrase_query": True,
+                        "fuzziness": "0",
+                        "fuzzy_transpositions": False,
+                        "fuzzy_rewrite": "constant_score",
+                        "lenient": True,
+                        "operator": "OR",
+                        "minimum_should_match": 3,
+                        "zero_terms_query": "none",
+                        "max_expansions": 4,
+                        "prefix_length": 2,
+                    }
+                }
+            },
+        ),
+    ],
+)
+def test_match_to_string(
+    field,
+    query,
+    analyzer,
+    auto_generate_synonyms_phrase_query,
+    fuzziness,
+    fuzzy_transpositions,
+    fuzzy_rewrite,
+    lenient,
+    operator,
+    minimum_should_match,
+    zero_terms_query,
+    max_expansions,
+    prefix_length,
+    expected,
+):
+    assert (
+        Match(
+            field=field,
+            query=query,
+            analyzer=analyzer,
+            auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
+            fuzziness=fuzziness,
+            fuzzy_transpositions=fuzzy_transpositions,
+            fuzzy_rewrite=fuzzy_rewrite,
+            lenient=lenient,
+            operator=operator,
+            minimum_should_match=minimum_should_match,
+            zero_terms_query=zero_terms_query,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+        ).to_dict()
+        == expected
+    )
