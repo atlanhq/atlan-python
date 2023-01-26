@@ -38,11 +38,13 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.HAS_LINEAGE,
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
+        TermAttributes.POPULARITY_SCORE,
     },
     Regexp: {
         TermAttributes.HAS_LINEAGE,
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
+        TermAttributes.POPULARITY_SCORE,
     },
     Fuzzy: {
         TermAttributes.HAS_LINEAGE,
@@ -54,6 +56,10 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.HAS_LINEAGE,
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
+        TermAttributes.POPULARITY_SCORE,
+    },
+    Term: {
+        TermAttributes.POPULARITY_SCORE,
     },
 }
 

@@ -248,6 +248,11 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
+    def with_popularity_score(cls):
+        return cls(field=TermAttributes.POPULARITY_SCORE.value)
+
+    @classmethod
+    @validate_arguments()
     def with_propagated_classification_names(cls):
         return cls(field=TextAttributes.PROPAGATED_CLASSIFICATION_NAMES.value)
 
