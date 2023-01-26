@@ -30,6 +30,7 @@ VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
     StrictBool: True,
     datetime: NOW,
     Literal["ACTIVE", "DELETED"]: "ACTIVE",
+    float: 1.0,
 }
 
 INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
@@ -47,6 +48,7 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.HAS_LINEAGE,
         TermAttributes.MODIFICATION_TIMESTAMP,
         TermAttributes.TIMESTAMP,
+        TermAttributes.POPULARITY_SCORE,
     },
     Prefix: {
         TermAttributes.HAS_LINEAGE,
