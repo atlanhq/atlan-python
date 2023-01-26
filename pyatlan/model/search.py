@@ -49,7 +49,10 @@ class TermAttributes(Attributes):
     MODIFICATION_TIMESTAMP = ("__modificationTimestamp", datetime)
     MODIFIED_BY = ("__modifiedBy", StrictStr)
     NAME = ("name.keyword", StrictStr)
+    OWNER_GROUPS = ("ownerGroups", StrictStr)
+    OWNER_USERS = ("ownerUsers", StrictStr)
     PARENT_CATEGORY = ("__parentCategory", StrictStr)
+    POPULARITY_SCORE = ("popularityScore", float)
     QUALIFIED_NAME = ("qualifiedName", StrictStr)
     STATE = ("__state", Literal["ACTIVE", "DELETED"])
     SUPER_TYPE_NAMES = ("__superTypeNames.keyword", StrictStr)
@@ -60,6 +63,7 @@ class TermAttributes(Attributes):
 class TextAttributes(Attributes):
     CLASSIFICATION_NAMES = ("__classificationNames", StrictStr)
     CLASSIFICATIONS_TEXT = ("__classificationsText", StrictStr)
+    DESCRIPTION = ("description", StrictStr)
     MEANINGS_TEXT = ("__meaningsText", StrictStr)
     NAME = ("name", StrictStr)
     QUALIFIED_NAME = ("qualifiedName.text", StrictStr)
@@ -67,6 +71,7 @@ class TextAttributes(Attributes):
     PROPAGATED_TRAIT_NAMES = ("__propagatedTraitNames", StrictStr)
     SUPER_TYPE_NAMES = ("__superTypeNames", StrictStr)
     TRAIT_NAMES = ("__traitNames", StrictStr)
+    USER_DESCRIPTION = ("userDescription", StrictStr)
 
 
 def get_with_string(attribute: TermAttributes):
@@ -186,6 +191,11 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
+    def with_description(cls):
+        return cls(field=TextAttributes.DESCRIPTION.value)
+
+    @classmethod
+    @validate_arguments()
     def with_glossary(cls):
         return cls(field=TermAttributes.GLOSSARY.value)
 
@@ -228,6 +238,11 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
+    def with_owner_users(cls):
+        return cls(field=TermAttributes.OWNER_USERS.value)
+
+    @classmethod
+    @validate_arguments()
     def with_parent_category(cls):
         return cls(field=TermAttributes.PARENT_CATEGORY.value)
 
@@ -258,6 +273,11 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
+    def with_owner_groups(cls):
+        return cls(field=TermAttributes.OWNER_GROUPS.value)
+
+    @classmethod
+    @validate_arguments()
     def with_timestamp(cls):
         return cls(field=TermAttributes.TIMESTAMP.value)
 
@@ -270,6 +290,11 @@ class Exists(Query):
     @validate_arguments()
     def with_type_name(cls):
         return cls(field=TermAttributes.TYPE_NAME.value)
+
+    @classmethod
+    @validate_arguments()
+    def with_user_description(cls):
+        return cls(field=TextAttributes.USER_DESCRIPTION.value)
 
     def to_dict(self):
         return {self.type_name: {"field": self.field}}
@@ -329,6 +354,16 @@ class Term(Query):
     @validate_arguments()
     def with_name(cls, value: StrictStr):
         return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_groups(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_users(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -559,6 +594,16 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
+    def with_owner_groups(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_users(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_USERS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
     def with_parent_category(cls, value: StrictStr):
         return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
 
@@ -608,6 +653,31 @@ class Range(Query):
     relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None
     time_zone: Optional[StrictStr] = None
     type_name: Literal["range"] = "range"
+
+    @classmethod
+    @validate_arguments()
+    def with_popularity_score(
+        cls,
+        gt: Optional[SearchFieldType] = None,
+        gte: Optional[SearchFieldType] = None,
+        lt: Optional[SearchFieldType] = None,
+        lte: Optional[SearchFieldType] = None,
+        boost: Optional[float] = None,
+        format: Optional[StrictStr] = None,
+        relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None,
+        time_zone: Optional[StrictStr] = None,
+    ):
+        return cls(
+            field=TermAttributes.POPULARITY_SCORE.value,
+            gt=gt,
+            gte=gte,
+            lt=lt,
+            lte=lte,
+            boost=boost,
+            format=format,
+            relation=relation,
+            time_zone=time_zone,
+        )
 
     def to_dict(self) -> dict[Any, Any]:
         def get_value(attribute_name):
@@ -679,6 +749,16 @@ class Wildcard(Query):
     @validate_arguments()
     def with_name(cls, value: StrictStr):
         return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_groups(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_users(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -761,6 +841,16 @@ class Regexp(Query):
     @validate_arguments()
     def with_name(cls, value: StrictStr):
         return cls(field=TermAttributes.NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_groups(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_users(cls, value: StrictStr):
+        return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -951,6 +1041,48 @@ class Fuzzy(Query):
     ):
         return cls(
             field=TermAttributes.NAME.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_groups(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.OWNER_GROUPS.value,
+            value=value,
+            fuzziness=fuzziness,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+            transpositions=transpositions,
+            rewrite=rewrite,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_owner_users(
+        cls,
+        value: StrictStr,
+        fuzziness: Optional[str] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+        transpositions: Optional[bool] = None,
+        rewrite: Optional[str] = None,
+    ):
+        return cls(
+            field=TermAttributes.OWNER_USERS.value,
             value=value,
             fuzziness=fuzziness,
             max_expansions=max_expansions,
@@ -1230,6 +1362,39 @@ class Match(Query):
 
     @classmethod
     @validate_arguments()
+    def with_description(
+        cls,
+        query: StrictStr,
+        analyzer: Optional[str] = None,
+        auto_generate_synonyms_phrase_query: Optional[bool] = None,
+        fuzziness: Optional[str] = None,
+        fuzzy_transpositions: Optional[bool] = None,
+        fuzzy_rewrite: Optional[str] = None,
+        lenient: Optional[bool] = None,
+        operator: Optional[Literal["OR", "AND"]] = None,
+        minimum_should_match: Optional[int] = None,
+        zero_terms_query: Optional[Literal["none", "all"]] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+    ):
+        return cls(
+            field=TextAttributes.DESCRIPTION.value,
+            query=query,
+            analyzer=analyzer,
+            auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
+            fuzziness=fuzziness,
+            fuzzy_transpositions=fuzzy_transpositions,
+            fuzzy_rewrite=fuzzy_rewrite,
+            lenient=lenient,
+            operator=operator,
+            minimum_should_match=minimum_should_match,
+            zero_terms_query=zero_terms_query,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+        )
+
+    @classmethod
+    @validate_arguments()
     def with_propagated_trait_names(
         cls,
         query: StrictStr,
@@ -1346,6 +1511,39 @@ class Match(Query):
     ):
         return cls(
             field=TextAttributes.TRAIT_NAMES.value,
+            query=query,
+            analyzer=analyzer,
+            auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
+            fuzziness=fuzziness,
+            fuzzy_transpositions=fuzzy_transpositions,
+            fuzzy_rewrite=fuzzy_rewrite,
+            lenient=lenient,
+            operator=operator,
+            minimum_should_match=minimum_should_match,
+            zero_terms_query=zero_terms_query,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_user_description(
+        cls,
+        query: StrictStr,
+        analyzer: Optional[str] = None,
+        auto_generate_synonyms_phrase_query: Optional[bool] = None,
+        fuzziness: Optional[str] = None,
+        fuzzy_transpositions: Optional[bool] = None,
+        fuzzy_rewrite: Optional[str] = None,
+        lenient: Optional[bool] = None,
+        operator: Optional[Literal["OR", "AND"]] = None,
+        minimum_should_match: Optional[int] = None,
+        zero_terms_query: Optional[Literal["none", "all"]] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+    ):
+        return cls(
+            field=TextAttributes.USER_DESCRIPTION.value,
             query=query,
             analyzer=analyzer,
             auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,

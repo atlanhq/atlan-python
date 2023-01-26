@@ -12,6 +12,7 @@ from pyatlan.model.search import (
     IndexSearchRequest,
     Match,
     Prefix,
+    Range,
     Regexp,
     Term,
     Wildcard,
@@ -30,6 +31,8 @@ VALUES_FOR_TERM_QUERIES = {
     "with_modification_timestamp": 1665086276846,
     "with_modified_by": "bryan",
     "with_name": "Schema",
+    "with_owner_groups": "data_engineering",
+    "with_owner_users": "ravi",
     "with_parent_category": "fWB1bJLOhEd4ik1Um1EJ8@3Wn0W7PFCfjyKmGBZ7FLD",
     "with_qualified_name": "default/oracle/1665680872/ORCL/SCALE_TEST/TABLE_MVD_3042/PERSON_ID",
     "with_state": "ACTIVE",
@@ -43,6 +46,7 @@ VALUES_FOR_TEXT_QUERIES = {
     "with_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_classifications_text": "RBmhFJqX50bl5RAeJhwt1a",
     "with_created_by": "bryan",
+    "with_description": "snapshot",
     "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
     "with_guid": "331bae42-5f97-4068-a084-1557f31de770",
     "with_has_lineage": True,
@@ -60,6 +64,7 @@ VALUES_FOR_TEXT_QUERIES = {
     "with_trait_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_propagated_trait_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_type_name": "Schema",
+    "with_user_description": "this",
 }
 
 
@@ -235,6 +240,21 @@ def test_exists_query_factory(client: EntityClient, with_name):
 def test_text_queries_factory(client: EntityClient, text_query_value, method, clazz):
     assert hasattr(clazz, method)
     query = getattr(clazz, method)(text_query_value)
+    filter = ~Term.with_type_name("__AtlasAuditEntry")
+    dsl = DSL(query=query, post_filter=filter, size=1)
+    request = IndexSearchRequest(
+        dsl=dsl,
+        attributes=["name"],
+    )
+    # print(request.json(by_alias=True, exclude_none=True))
+    results = client.search(criteria=request)
+    assert results.count > 0
+
+
+@pytest.mark.parametrize("value, method", [(0, "with_popularity_score")])
+def test_range_factory(client: EntityClient, value, method):
+    assert hasattr(Range, method)
+    query = getattr(Range, method)(lt=value)
     filter = ~Term.with_type_name("__AtlasAuditEntry")
     dsl = DSL(query=query, post_filter=filter, size=1)
     request = IndexSearchRequest(
