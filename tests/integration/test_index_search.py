@@ -31,13 +31,10 @@ VALUES_FOR_TERM_QUERIES = {
     "with_modified_by": "bryan",
     "with_name": "Schema",
     "with_parent_category": "fWB1bJLOhEd4ik1Um1EJ8@3Wn0W7PFCfjyKmGBZ7FLD",
-    "with_propagated_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_qualified_name": "default/oracle/1665680872/ORCL/SCALE_TEST/TABLE_MVD_3042/PERSON_ID",
     "with_state": "ACTIVE",
     "with_super_type_names": "SQL",
     "with_timestamp": 1665727666701,
-    "with_trait_name": "bb",
-    "with_propagated_trait_names": "abc",
     "with_type_name": "Schema",
 }
 
@@ -60,8 +57,8 @@ VALUES_FOR_TEXT_QUERIES = {
     "with_state": "ACTIVE",
     "with_super_type_names": "ObjectStore SQL",
     "with_timestamp": 1665727666701,
-    "with_trait_name": "bb",
-    "with_propagated_trait_names": "abc",
+    "with_trait_names": "RBmhFJqX50bl5RAeJhwt1a",
+    "with_propagated_trait_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_type_name": "Schema",
 }
 
@@ -207,7 +204,7 @@ def test_term_queries_factory(client: EntityClient, term_query_value, method, cl
     )
     # print(request.json(by_alias=True, exclude_none=True))
     results = client.search(criteria=request)
-    assert results.count >= 0
+    assert results.count > 0
 
 
 @pytest.mark.parametrize(

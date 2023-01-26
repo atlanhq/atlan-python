@@ -50,13 +50,10 @@ class TermAttributes(Attributes):
     MODIFIED_BY = ("__modifiedBy", StrictStr)
     NAME = ("name.keyword", StrictStr)
     PARENT_CATEGORY = ("__parentCategory", StrictStr)
-    PROPAGATED_CLASSIFICATION_NAMES = ("__propagatedClassificationNames", StrictStr)
-    PROPAGATED_TRAIT_NAMES = ("__propagatedTraitNames", StrictStr)
     QUALIFIED_NAME = ("qualifiedName", StrictStr)
     STATE = ("__state", Literal["ACTIVE", "DELETED"])
     SUPER_TYPE_NAMES = ("__superTypeNames.keyword", StrictStr)
     TIMESTAMP = ("__timestamp", datetime)
-    TRAIT_NAME = ("__traitNames", StrictStr)
     TYPE_NAME = ("__typeName.keyword", StrictStr)
 
 
@@ -66,7 +63,10 @@ class TextAttributes(Attributes):
     MEANINGS_TEXT = ("__meaningsText", StrictStr)
     NAME = ("name", StrictStr)
     QUALIFIED_NAME = ("qualifiedName.text", StrictStr)
+    PROPAGATED_CLASSIFICATION_NAMES = ("__propagatedClassificationNames", StrictStr)
+    PROPAGATED_TRAIT_NAMES = ("__propagatedTraitNames", StrictStr)
     SUPER_TYPE_NAMES = ("__superTypeNames", StrictStr)
+    TRAIT_NAMES = ("__traitNames", StrictStr)
 
 
 def get_with_string(attribute: TermAttributes):
@@ -234,12 +234,12 @@ class Exists(Query):
     @classmethod
     @validate_arguments()
     def with_propagated_classification_names(cls):
-        return cls(field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value)
+        return cls(field=TextAttributes.PROPAGATED_CLASSIFICATION_NAMES.value)
 
     @classmethod
     @validate_arguments()
     def with_propagated_trait_names(cls):
-        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value)
+        return cls(field=TextAttributes.PROPAGATED_TRAIT_NAMES.value)
 
     @classmethod
     @validate_arguments()
@@ -263,8 +263,8 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
-    def with_trait_name(cls):
-        return cls(field=TermAttributes.TRAIT_NAME.value)
+    def with_trait_names(cls):
+        return cls(field=TextAttributes.TRAIT_NAMES.value)
 
     @classmethod
     @validate_arguments()
@@ -337,18 +337,6 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_propagated_classification_names(cls, value: StrictStr):
-        return cls(
-            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
-        )
-
-    @classmethod
-    @validate_arguments()
-    def with_propagated_trait_names(cls, value: StrictStr):
-        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
@@ -366,11 +354,6 @@ class Term(Query):
     @validate_arguments()
     def with_timestamp(cls, value: datetime):
         return cls(field=TermAttributes.TIMESTAMP.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_trait_name(cls, value: StrictStr):
-        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -581,18 +564,6 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
-    def with_propagated_classification_names(cls, value: StrictStr):
-        return cls(
-            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
-        )
-
-    @classmethod
-    @validate_arguments()
-    def with_propagated_trait_names(cls, value: StrictStr):
-        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
@@ -605,11 +576,6 @@ class Prefix(Query):
     @validate_arguments()
     def with_super_type_names(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAMES.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_trait_name(cls, value: StrictStr):
-        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -633,10 +599,10 @@ class Prefix(Query):
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class Range(Query):
     field: str
-    gt: Optional[SearchFieldType]
-    gte: Optional[SearchFieldType]
-    lt: Optional[SearchFieldType]
-    lte: Optional[SearchFieldType]
+    gt: Optional[SearchFieldType] = None
+    gte: Optional[SearchFieldType] = None
+    lt: Optional[SearchFieldType] = None
+    lte: Optional[SearchFieldType] = None
     boost: Optional[float] = None
     format: Optional[StrictStr] = None
     relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None
@@ -721,18 +687,6 @@ class Wildcard(Query):
 
     @classmethod
     @validate_arguments()
-    def with_propagated_classification_names(cls, value: StrictStr):
-        return cls(
-            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
-        )
-
-    @classmethod
-    @validate_arguments()
-    def with_propagated_trait_names(cls, value: StrictStr):
-        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
@@ -745,11 +699,6 @@ class Wildcard(Query):
     @validate_arguments()
     def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
         return cls(field=TermAttributes.STATE.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_trait_name(cls, value: StrictStr):
-        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -820,18 +769,6 @@ class Regexp(Query):
 
     @classmethod
     @validate_arguments()
-    def with_propagated_classification_names(cls, value: StrictStr):
-        return cls(
-            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value, value=value
-        )
-
-    @classmethod
-    @validate_arguments()
-    def with_propagated_trait_names(cls, value: StrictStr):
-        return cls(field=TermAttributes.PROPAGATED_TRAIT_NAMES.value, value=value)
-
-    @classmethod
-    @validate_arguments()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
@@ -844,11 +781,6 @@ class Regexp(Query):
     @validate_arguments()
     def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
         return cls(field=TermAttributes.STATE.value, value=value)
-
-    @classmethod
-    @validate_arguments()
-    def with_trait_name(cls, value: StrictStr):
-        return cls(field=TermAttributes.TRAIT_NAME.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -1050,48 +982,6 @@ class Fuzzy(Query):
 
     @classmethod
     @validate_arguments()
-    def with_propagated_classification_names(
-        cls,
-        value: StrictStr,
-        fuzziness: Optional[str] = None,
-        max_expansions: Optional[int] = None,
-        prefix_length: Optional[int] = None,
-        transpositions: Optional[bool] = None,
-        rewrite: Optional[str] = None,
-    ):
-        return cls(
-            field=TermAttributes.PROPAGATED_CLASSIFICATION_NAMES.value,
-            value=value,
-            fuzziness=fuzziness,
-            max_expansions=max_expansions,
-            prefix_length=prefix_length,
-            transpositions=transpositions,
-            rewrite=rewrite,
-        )
-
-    @classmethod
-    @validate_arguments()
-    def with_propagated_trait_names(
-        cls,
-        value: StrictStr,
-        fuzziness: Optional[str] = None,
-        max_expansions: Optional[int] = None,
-        prefix_length: Optional[int] = None,
-        transpositions: Optional[bool] = None,
-        rewrite: Optional[str] = None,
-    ):
-        return cls(
-            field=TermAttributes.PROPAGATED_TRAIT_NAMES.value,
-            value=value,
-            fuzziness=fuzziness,
-            max_expansions=max_expansions,
-            prefix_length=prefix_length,
-            transpositions=transpositions,
-            rewrite=rewrite,
-        )
-
-    @classmethod
-    @validate_arguments()
     def with_qualified_name(
         cls,
         value: StrictStr,
@@ -1145,27 +1035,6 @@ class Fuzzy(Query):
     ):
         return cls(
             field=TermAttributes.STATE.value,
-            value=value,
-            fuzziness=fuzziness,
-            max_expansions=max_expansions,
-            prefix_length=prefix_length,
-            transpositions=transpositions,
-            rewrite=rewrite,
-        )
-
-    @classmethod
-    @validate_arguments()
-    def with_trait_name(
-        cls,
-        value: StrictStr,
-        fuzziness: Optional[str] = None,
-        max_expansions: Optional[int] = None,
-        prefix_length: Optional[int] = None,
-        transpositions: Optional[bool] = None,
-        rewrite: Optional[str] = None,
-    ):
-        return cls(
-            field=TermAttributes.TRAIT_NAME.value,
             value=value,
             fuzziness=fuzziness,
             max_expansions=max_expansions,
@@ -1328,6 +1197,72 @@ class Match(Query):
 
     @classmethod
     @validate_arguments()
+    def with_propagated_classification_names(
+        cls,
+        query: StrictStr,
+        analyzer: Optional[str] = None,
+        auto_generate_synonyms_phrase_query: Optional[bool] = None,
+        fuzziness: Optional[str] = None,
+        fuzzy_transpositions: Optional[bool] = None,
+        fuzzy_rewrite: Optional[str] = None,
+        lenient: Optional[bool] = None,
+        operator: Optional[Literal["OR", "AND"]] = None,
+        minimum_should_match: Optional[int] = None,
+        zero_terms_query: Optional[Literal["none", "all"]] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+    ):
+        return cls(
+            field=TextAttributes.PROPAGATED_CLASSIFICATION_NAMES.value,
+            query=query,
+            analyzer=analyzer,
+            auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
+            fuzziness=fuzziness,
+            fuzzy_transpositions=fuzzy_transpositions,
+            fuzzy_rewrite=fuzzy_rewrite,
+            lenient=lenient,
+            operator=operator,
+            minimum_should_match=minimum_should_match,
+            zero_terms_query=zero_terms_query,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_propagated_trait_names(
+        cls,
+        query: StrictStr,
+        analyzer: Optional[str] = None,
+        auto_generate_synonyms_phrase_query: Optional[bool] = None,
+        fuzziness: Optional[str] = None,
+        fuzzy_transpositions: Optional[bool] = None,
+        fuzzy_rewrite: Optional[str] = None,
+        lenient: Optional[bool] = None,
+        operator: Optional[Literal["OR", "AND"]] = None,
+        minimum_should_match: Optional[int] = None,
+        zero_terms_query: Optional[Literal["none", "all"]] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+    ):
+        return cls(
+            field=TextAttributes.PROPAGATED_TRAIT_NAMES.value,
+            query=query,
+            analyzer=analyzer,
+            auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
+            fuzziness=fuzziness,
+            fuzzy_transpositions=fuzzy_transpositions,
+            fuzzy_rewrite=fuzzy_rewrite,
+            lenient=lenient,
+            operator=operator,
+            minimum_should_match=minimum_should_match,
+            zero_terms_query=zero_terms_query,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+        )
+
+    @classmethod
+    @validate_arguments()
     def with_qualified_name(
         cls,
         query: StrictStr,
@@ -1378,6 +1313,39 @@ class Match(Query):
     ):
         return cls(
             field=TextAttributes.SUPER_TYPE_NAMES.value,
+            query=query,
+            analyzer=analyzer,
+            auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
+            fuzziness=fuzziness,
+            fuzzy_transpositions=fuzzy_transpositions,
+            fuzzy_rewrite=fuzzy_rewrite,
+            lenient=lenient,
+            operator=operator,
+            minimum_should_match=minimum_should_match,
+            zero_terms_query=zero_terms_query,
+            max_expansions=max_expansions,
+            prefix_length=prefix_length,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_trait_names(
+        cls,
+        query: StrictStr,
+        analyzer: Optional[str] = None,
+        auto_generate_synonyms_phrase_query: Optional[bool] = None,
+        fuzziness: Optional[str] = None,
+        fuzzy_transpositions: Optional[bool] = None,
+        fuzzy_rewrite: Optional[str] = None,
+        lenient: Optional[bool] = None,
+        operator: Optional[Literal["OR", "AND"]] = None,
+        minimum_should_match: Optional[int] = None,
+        zero_terms_query: Optional[Literal["none", "all"]] = None,
+        max_expansions: Optional[int] = None,
+        prefix_length: Optional[int] = None,
+    ):
+        return cls(
+            field=TextAttributes.TRAIT_NAMES.value,
             query=query,
             analyzer=analyzer,
             auto_generate_synonyms_phrase_query=auto_generate_synonyms_phrase_query,
