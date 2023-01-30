@@ -4,7 +4,6 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.entity import EntityClient
 from pyatlan.model.assets import Asset
 from pyatlan.model.search import (
     DSL,
@@ -75,8 +74,8 @@ class AssetTracker:
 
 
 @pytest.fixture(scope="module")
-def client() -> EntityClient:
-    return EntityClient(AtlanClient())
+def client() -> AtlanClient:
+    return AtlanClient()
 
 
 @pytest.fixture(scope="module")
@@ -104,7 +103,7 @@ def get_all_subclasses(cls):
 
 
 @pytest.mark.parametrize("cls", [(cls) for cls in get_all_subclasses(Asset)])
-def test_search(client: EntityClient, asset_tracker, cls):
+def test_search(client: AtlanClient, asset_tracker, cls):
     name = cls.__name__
     query = Term(field="__state", value="ACTIVE")
     post_filter = Term(field="__typeName.keyword", value=name)
@@ -123,7 +122,7 @@ def test_search(client: EntityClient, asset_tracker, cls):
         asset_tracker.missing_types.add(name)
 
 
-def test_search_next_page(client: EntityClient):
+def test_search_next_page(client: AtlanClient):
     size = 15
     dsl = DSL(
         query=Term(field="__state", value="ACTIVE"),
@@ -146,7 +145,7 @@ def test_search_next_page(client: EntityClient):
     assert counter == results.count
 
 
-def test_search_iter(client: EntityClient):
+def test_search_iter(client: AtlanClient):
     size = 15
     dsl = DSL(
         query=Term(field="__state", value="ACTIVE"),
@@ -162,7 +161,7 @@ def test_search_iter(client: EntityClient):
     assert len([a for a in results]) == results.count
 
 
-def test_search_next_when_start_changed_returns_remaining(client: EntityClient):
+def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
     size = 2
     dsl = DSL(
         query=Term(field="__state", value="ACTIVE"),
@@ -198,7 +197,7 @@ def text_query_value(request):
     ],
     indirect=["term_query_value"],
 )
-def test_term_queries_factory(client: EntityClient, term_query_value, method, clazz):
+def test_term_queries_factory(client: AtlanClient, term_query_value, method, clazz):
     assert hasattr(clazz, method)
     query = getattr(clazz, method)(term_query_value)
     filter = ~Term.with_type_name("__AtlasAuditEntry")
@@ -215,7 +214,7 @@ def test_term_queries_factory(client: EntityClient, term_query_value, method, cl
 @pytest.mark.parametrize(
     "with_name", [(method) for method in dir(Exists) if method.startswith("with_")]
 )
-def test_exists_query_factory(client: EntityClient, with_name):
+def test_exists_query_factory(client: AtlanClient, with_name):
     assert hasattr(Exists, with_name)
     query = getattr(Exists, with_name)()
     dsl = DSL(query=query, size=1)
@@ -237,7 +236,7 @@ def test_exists_query_factory(client: EntityClient, with_name):
     ],
     indirect=["text_query_value"],
 )
-def test_text_queries_factory(client: EntityClient, text_query_value, method, clazz):
+def test_text_queries_factory(client: AtlanClient, text_query_value, method, clazz):
     assert hasattr(clazz, method)
     query = getattr(clazz, method)(text_query_value)
     filter = ~Term.with_type_name("__AtlasAuditEntry")
@@ -261,7 +260,7 @@ def test_text_queries_factory(client: EntityClient, text_query_value, method, cl
         ("2023-01", "with_update_time_as_date", "yyyy-MM"),
     ],
 )
-def test_range_factory(client: EntityClient, value, method, format):
+def test_range_factory(client: AtlanClient, value, method, format):
     assert hasattr(Range, method)
     query = getattr(Range, method)(lt=value, format=format)
     filter = ~Term.with_type_name("__AtlasAuditEntry")

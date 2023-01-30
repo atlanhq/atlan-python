@@ -7,7 +7,6 @@ from typing import Any
 from jinja2 import Environment, PackageLoader
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.typedef import TypeDefClient
 from pyatlan.model.core import to_snake_case
 from pyatlan.model.typedef import EntityDef, TypeDefResponse
 
@@ -52,7 +51,7 @@ def get_type_defs() -> TypeDefResponse:
         with TYPE_DEF_FILE.open() as input_file:
             return TypeDefResponse(**json.load(input_file))
     else:
-        client = TypeDefClient(AtlanClient())
+        client = AtlanClient()
         type_defs = client.get_all_typedefs()
         with TYPE_DEF_FILE.open("w") as output_file:
             output_file.write(type_defs.json())

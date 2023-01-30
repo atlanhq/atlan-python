@@ -21,20 +21,82 @@ import copy
 import json
 import logging
 import os
-from typing import Optional
+from typing import Optional, Type, TypeVar, Union
 
 import requests
-from pydantic import BaseSettings, Field, HttpUrl, PrivateAttr
+from pydantic import (
+    BaseSettings,
+    Field,
+    HttpUrl,
+    PrivateAttr,
+    parse_obj_as,
+    validate_arguments,
+)
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from pyatlan.client.constants import GET_ROLES
-from pyatlan.exceptions import AtlanServiceException
-from pyatlan.model.core import AtlanObject
+from pyatlan.client.constants import (
+    BULK_UPDATE,
+    CREATE_TYPE_DEFS,
+    DELETE_ENTITY_BY_GUID,
+    DELETE_TYPE_DEF_BY_NAME,
+    GET_ALL_TYPE_DEFS,
+    GET_ENTITY_BY_GUID,
+    GET_ROLES,
+    INDEX_SEARCH,
+)
+from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
+from pyatlan.model.assets import (
+    Asset,
+    AssetMutationResponse,
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+    Connection,
+    Database,
+    MaterialisedView,
+    Referenceable,
+    Schema,
+    Table,
+    View,
+)
+from pyatlan.model.core import AssetResponse, AtlanObject, BulkRequest
+from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory
 from pyatlan.model.role import RoleResponse
+from pyatlan.model.search import IndexSearchRequest
+from pyatlan.model.typedef import (
+    ClassificationDef,
+    CustomMetadataDef,
+    TypeDef,
+    TypeDefResponse,
+)
 from pyatlan.utils import HTTPStatus, get_logger
 
 LOGGER = get_logger()
+T = TypeVar("T", bound=Referenceable)
+A = TypeVar("A", bound=Asset)
+Assets = Union[
+    AtlasGlossary,
+    AtlasGlossaryCategory,
+    AtlasGlossaryTerm,
+    Connection,
+    Database,
+    Schema,
+    Table,
+    View,
+    MaterialisedView,
+]
+Asset_Types = Union[
+    Type[AtlasGlossary],
+    Type[AtlasGlossaryCategory],
+    Type[AtlasGlossaryTerm],
+    Type[Connection],
+    Type[Database],
+    Type[Schema],
+    Type[Table],
+    Type[View],
+    Type[MaterialisedView],
+]
 
 
 def get_session():
@@ -58,6 +120,54 @@ class AtlanClient(BaseSettings):
 
     class Config:
         env_prefix = "atlan_"
+
+    class SearchResults:
+        def __init__(
+            self,
+            client: "AtlanClient",
+            criteria: IndexSearchRequest,
+            start: int,
+            size: int,
+            count: int,
+            assets: list[Asset],
+        ):
+            self._client = client
+            self._criteria = criteria
+            self._start = start
+            self._size = size
+            self.count = count
+            self._assets = assets
+
+        def current_page(self) -> list[Asset]:
+            return self._assets
+
+        def next_page(self, start=None, size=None) -> bool:
+            if start:
+                self._start = start
+            else:
+                self._start = self._start + self._size
+            if size:
+                self._size = size
+            if self._assets:
+                self._criteria.dsl.from_ = self._start
+                self._criteria.dsl.size = self._size
+                raw_json = self._client.call_api(
+                    INDEX_SEARCH,
+                    request_obj=self._criteria,
+                )
+                if "entities" not in raw_json:
+                    return False
+                self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+                return True
+            else:
+                return False
+
+        def __iter__(self):
+            while True:
+                for asset in self.current_page():
+                    yield asset
+                if not self.next_page():
+                    break
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -152,3 +262,114 @@ class AtlanClient(BaseSettings):
         raw_json = self.call_api(GET_ROLES.format_path_with_params())
         response = RoleResponse(**raw_json)
         return response
+
+    @validate_arguments()
+    def get_entity_by_guid(
+        self,
+        guid: str,
+        asset_type: Type[A],
+        min_ext_info: bool = False,
+        ignore_relationships: bool = False,
+    ) -> A:
+        query_params = {
+            "minExtInfo": min_ext_info,
+            "ignoreRelationships": ignore_relationships,
+        }
+
+        raw_json = self.call_api(
+            GET_ENTITY_BY_GUID.format_path_with_params(guid),
+            query_params,
+        )
+        raw_json["entity"]["attributes"].update(
+            raw_json["entity"]["relationshipAttributes"]
+        )
+        raw_json["entity"]["relationshipAttributes"] = {}
+        return AssetResponse[A](**raw_json).entity
+
+    def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
+        entities: list[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+        for asset in entities:
+            asset.validate_required()
+        request = BulkRequest[Asset](entities=entities)
+        raw_json = self.call_api(BULK_UPDATE, None, request)
+        return AssetMutationResponse(**raw_json)
+
+    def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
+        raw_json = self.call_api(
+            DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
+            {"deleteType": AtlanDeleteType.HARD.value},
+        )
+        return AssetMutationResponse(**raw_json)
+
+    def search(self, criteria: IndexSearchRequest) -> SearchResults:
+        raw_json = self.call_api(
+            INDEX_SEARCH,
+            request_obj=criteria,
+        )
+        if "entities" in raw_json:
+            assets = parse_obj_as(list[Asset], raw_json["entities"])
+        else:
+            assets = []
+        if "approximateCount" in raw_json:
+            count = raw_json["approximateCount"]
+        else:
+            count = 0
+        return AtlanClient.SearchResults(
+            client=self,
+            criteria=criteria,
+            start=criteria.dsl.from_,
+            size=criteria.dsl.size,
+            count=count,
+            assets=assets,
+        )
+
+    def get_all_typedefs(self) -> TypeDefResponse:
+        raw_json = self.call_api(GET_ALL_TYPE_DEFS)
+        return TypeDefResponse(**raw_json)
+
+    def get_typedefs(self, type: AtlanTypeCategory) -> TypeDefResponse:
+        query_params = {"type": type.value}
+        raw_json = self.call_api(
+            GET_ALL_TYPE_DEFS.format_path_with_params(),
+            query_params,
+        )
+        return TypeDefResponse(**raw_json)
+
+    def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        payload = None
+        if isinstance(typedef, ClassificationDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[typedef],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                businessMetadataDefs=[],
+            )
+        elif isinstance(typedef, CustomMetadataDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                businessMetadataDefs=[typedef],
+            )
+        else:
+            raise InvalidRequestException(
+                "Unable to create new type definitions of category: "
+                + typedef.category.value,
+                param="category",
+            )
+            # Throw an invalid request exception
+        raw_json = self.call_api(CREATE_TYPE_DEFS, request_obj=payload)
+        return TypeDefResponse(**raw_json)
+
+    def purge_typedef(self, internal_name: str) -> None:
+        self.call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
