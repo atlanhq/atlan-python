@@ -2,7 +2,6 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.typedef import TypeDefClient
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
 CM_NAME = "psdk-CustomMetadataTest"
@@ -17,11 +16,11 @@ CM_ATTR_URL = "URL"
 
 
 @pytest.fixture
-def client() -> TypeDefClient:
-    return TypeDefClient(AtlanClient())
+def client() -> AtlanClient:
+    return AtlanClient()
 
 
-def test_001_create_custom_metadata(client: TypeDefClient):
+def test_001_create_custom_metadata(client: AtlanClient):
     attribute_defs = [
         AttributeDef(
             name=CM_ATTR_LICENSE,
@@ -77,7 +76,7 @@ def test_002_custom_metadata_cache():
     assert cm_name == CM_NAME
 
 
-def test_003_purge_custom_metadata(client: TypeDefClient):
+def test_003_purge_custom_metadata(client: AtlanClient):
     cm_id = CustomMetadataCache.get_id_for_name(CM_NAME)
     assert cm_id
     client.purge_typedef(cm_id)

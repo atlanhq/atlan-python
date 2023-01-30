@@ -8,7 +8,6 @@ import requests
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.entity import EntityClient
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.model.assets import (
     Asset,
@@ -42,8 +41,8 @@ GUIDS_UNABLE_TO_DELETE = {
 
 
 @pytest.fixture(scope="module")
-def client() -> EntityClient:
-    return EntityClient(AtlanClient())
+def client() -> AtlanClient:
+    return AtlanClient()
 
 
 @pytest.fixture()
@@ -192,12 +191,12 @@ def cleanup(atlan_host, headers, atlan_api_key):
         delete_assets(atlan_host, headers, type_name)
 
 
-def test_get_glossary_by_guid_good_guid(create_glossary, client: EntityClient):
+def test_get_glossary_by_guid_good_guid(create_glossary, client: AtlanClient):
     glossary = client.get_entity_by_guid(create_glossary(), AtlasGlossary)
     assert isinstance(glossary, AtlasGlossary)
 
 
-def test_get_glossary_by_guid_bad_guid(client: EntityClient):
+def test_get_glossary_by_guid_bad_guid(client: AtlanClient):
     with pytest.raises(AtlanServiceException) as ex_info:
         client.get_entity_by_guid("76d54dd6-925b-499b-a455-6", AtlasGlossary)
     assert (
@@ -206,7 +205,7 @@ def test_get_glossary_by_guid_bad_guid(client: EntityClient):
     )
 
 
-def test_update_glossary_when_no_changes(create_glossary, client: EntityClient):
+def test_update_glossary_when_no_changes(create_glossary, client: AtlanClient):
     glossary = client.get_entity_by_guid(create_glossary(), AtlasGlossary)
     response = client.upsert(glossary)
     assert not response.guid_assignments
@@ -214,7 +213,7 @@ def test_update_glossary_when_no_changes(create_glossary, client: EntityClient):
 
 
 def test_update_glossary_with_changes(
-    create_glossary, client: EntityClient, announcement
+    create_glossary, client: AtlanClient, announcement
 ):
     glossary = client.get_entity_by_guid(create_glossary(), AtlasGlossary)
     glossary.set_announcement(announcement)
@@ -230,7 +229,7 @@ def test_update_glossary_with_changes(
     assert glossary.attributes.announcement_title == announcement.announcement_title
 
 
-def test_purge_glossary(create_glossary, client: EntityClient):
+def test_purge_glossary(create_glossary, client: AtlanClient):
     response = client.purge_entity_by_guid(create_glossary())
     assert response.mutated_entities
     assert response.mutated_entities.DELETE
@@ -239,7 +238,7 @@ def test_purge_glossary(create_glossary, client: EntityClient):
     assert not response.mutated_entities.CREATE
 
 
-def test_create_glossary(client: EntityClient, increment_counter):
+def test_create_glossary(client: AtlanClient, increment_counter):
     glossary = AtlasGlossary(
         attributes=AtlasGlossary.Attributes(
             name=f"Integration Test Glossary {increment_counter()}",
@@ -259,9 +258,7 @@ def test_create_glossary(client: EntityClient, increment_counter):
     assert glossary.guid == guid
 
 
-def test_create_multiple_glossaries_one_at_time(
-    client: EntityClient, increment_counter
-):
+def test_create_multiple_glossaries_one_at_time(client: AtlanClient, increment_counter):
     glossary = AtlasGlossary(
         attributes=AtlasGlossary.Attributes(
             name=f"Integration Test Glossary {increment_counter()}",
@@ -294,7 +291,7 @@ def test_create_multiple_glossaries_one_at_time(
     assert glossary.guid == guid
 
 
-def test_create_multiple_glossaries(client: EntityClient, increment_counter):
+def test_create_multiple_glossaries(client: AtlanClient, increment_counter):
     entities: list[Asset] = []
     count = 2
     for i in range(count):
@@ -317,7 +314,7 @@ def test_create_multiple_glossaries(client: EntityClient, increment_counter):
         assert glossary.guid == guid
 
 
-def test_create_glossary_category(client: EntityClient, increment_counter):
+def test_create_glossary_category(client: AtlanClient, increment_counter):
     suffix = increment_counter()
     glossary = AtlasGlossary(
         attributes=AtlasGlossary.Attributes(
@@ -354,7 +351,7 @@ def test_create_glossary_category(client: EntityClient, increment_counter):
     assert category.guid == guid
 
 
-def test_create_glossary_term(client: EntityClient, increment_counter):
+def test_create_glossary_term(client: AtlanClient, increment_counter):
     suffix = increment_counter()
     glossary = AtlasGlossary(
         attributes=AtlasGlossary.Attributes(
@@ -391,7 +388,7 @@ def test_create_glossary_term(client: EntityClient, increment_counter):
     assert term.guid == guid
 
 
-def test_create_hierarchy(client: EntityClient, increment_counter):
+def test_create_hierarchy(client: AtlanClient, increment_counter):
     suffix = increment_counter()
     glossary = AtlasGlossary(
         attributes=AtlasGlossary.Attributes(
@@ -472,7 +469,7 @@ def test_create_hierarchy(client: EntityClient, increment_counter):
 
 
 @pytest.mark.skip(reason="connection creation is intermittently failing")
-def test_create_connection(client: EntityClient, increment_counter):
+def test_create_connection(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     c = Connection.create(
@@ -497,7 +494,7 @@ def test_create_connection(client: EntityClient, increment_counter):
 
 
 @pytest.mark.skip(reason="connection creation is intermittently failing")
-def test_create_database(client: EntityClient, increment_counter):
+def test_create_database(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     suffix = increment_counter()
@@ -532,7 +529,7 @@ def test_create_database(client: EntityClient, increment_counter):
 
 
 @pytest.mark.skip(reason="connection creation is intermittently failing")
-def test_create_schema(client: EntityClient, increment_counter):
+def test_create_schema(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     suffix = increment_counter()
@@ -579,7 +576,7 @@ def test_create_schema(client: EntityClient, increment_counter):
 
 
 @pytest.mark.skip(reason="connection creation is intermittently failing")
-def test_create_table(client: EntityClient, increment_counter):
+def test_create_table(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     suffix = increment_counter()

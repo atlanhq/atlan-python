@@ -2,7 +2,6 @@ import pytest
 
 from pyatlan.cache.classification_cache import ClassificationCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.typedef import TypeDefClient
 from pyatlan.model.typedef import ClassificationDef
 
 CLS_NAME = "psdk-ClassificationTest"
@@ -12,11 +11,11 @@ CLS_NAME = "psdk-ClassificationTest"
 
 
 @pytest.fixture
-def client() -> TypeDefClient:
-    return TypeDefClient(AtlanClient())
+def client() -> AtlanClient:
+    return AtlanClient()
 
 
-def test_001_create_classification(client: TypeDefClient):
+def test_001_create_classification(client: AtlanClient):
     cls = ClassificationDef(
         name=CLS_NAME, display_name=CLS_NAME, options={"color": "GREEN"}
     )
@@ -37,7 +36,7 @@ def test_002_classification_cache():
     assert cls_name == CLS_NAME
 
 
-def test_003_purge_classification(client: TypeDefClient):
+def test_003_purge_classification(client: AtlanClient):
     cls_id = ClassificationCache.get_id_for_name(CLS_NAME)
     assert cls_id
     client.purge_typedef(cls_id)

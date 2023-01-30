@@ -1,7 +1,6 @@
 from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.typedef import TypeDefClient
 from pyatlan.error import LogicError, NotFoundError
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
@@ -18,9 +17,7 @@ class CustomMetadataCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = TypeDefClient(AtlanClient()).get_typedefs(
-            type=AtlanTypeCategory.CUSTOM_METADATA
-        )
+        response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CUSTOM_METADATA)
         if response is not None:
             cls.cache_by_id = dict()
             cls.map_id_to_name = dict()
