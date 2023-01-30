@@ -22,13 +22,13 @@ VALUES_FOR_TERM_QUERIES = {
     "with_categories": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
     "with_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_classifications_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
+    "with_create_time_as_timestamp": 1665727666701,
     "with_created_by": "bryan",
     "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
     "with_guid": "331bae42-5f97-4068-a084-1557f31de770",
     "with_has_lineage": True,
     "with_meanings": "2EqDFWZ6sCjbxcDNL0jFV@3Wn0W7PFCfjyKmGBZ7FLD",
     "with_meanings_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
-    "with_modification_timestamp": 1665086276846,
     "with_modified_by": "bryan",
     "with_name": "Schema",
     "with_owner_groups": "data_engineering",
@@ -37,8 +37,8 @@ VALUES_FOR_TERM_QUERIES = {
     "with_qualified_name": "default/oracle/1665680872/ORCL/SCALE_TEST/TABLE_MVD_3042/PERSON_ID",
     "with_state": "ACTIVE",
     "with_super_type_names": "SQL",
-    "with_timestamp": 1665727666701,
     "with_type_name": "Schema",
+    "with_update_time_as_timestamp": 1665086276846,
 }
 
 VALUES_FOR_TEXT_QUERIES = {
@@ -251,10 +251,19 @@ def test_text_queries_factory(client: EntityClient, text_query_value, method, cl
     assert results.count > 0
 
 
-@pytest.mark.parametrize("value, method", [(0, "with_popularity_score")])
-def test_range_factory(client: EntityClient, value, method):
+@pytest.mark.parametrize(
+    "value, method, format",
+    [
+        (0, "with_popularity_score", None),
+        (1665727666701, "with_create_time_as_timestamp", None),
+        ("2023-01", "with_create_time_as_date", "yyyy-MM"),
+        (1665727666701, "with_update_time_as_timestamp", None),
+        ("2023-01", "with_update_time_as_date", "yyyy-MM"),
+    ],
+)
+def test_range_factory(client: EntityClient, value, method, format):
     assert hasattr(Range, method)
-    query = getattr(Range, method)(lt=value)
+    query = getattr(Range, method)(lt=value, format=format)
     filter = ~Term.with_type_name("__AtlasAuditEntry")
     dsl = DSL(query=query, post_filter=filter, size=1)
     request = IndexSearchRequest(

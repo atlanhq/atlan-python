@@ -36,26 +36,26 @@ VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
 INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
     Wildcard: {
         TermAttributes.HAS_LINEAGE,
-        TermAttributes.MODIFICATION_TIMESTAMP,
-        TermAttributes.TIMESTAMP,
+        TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
+        TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Regexp: {
         TermAttributes.HAS_LINEAGE,
-        TermAttributes.MODIFICATION_TIMESTAMP,
-        TermAttributes.TIMESTAMP,
+        TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
+        TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Fuzzy: {
         TermAttributes.HAS_LINEAGE,
-        TermAttributes.MODIFICATION_TIMESTAMP,
-        TermAttributes.TIMESTAMP,
+        TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
+        TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Prefix: {
         TermAttributes.HAS_LINEAGE,
-        TermAttributes.MODIFICATION_TIMESTAMP,
-        TermAttributes.TIMESTAMP,
+        TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
+        TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Term: {
@@ -474,6 +474,12 @@ def test_bool_and(q1, q2, expected):
     assert b.to_dict() == expected
 
 
+@pytest.fixture()
+def with_name(request):
+    attribute = request.param
+    return "with_" + attribute.name.lower()
+
+
 def test_terms_to_dict():
     assert Terms(field="name", values=["john", "dave"]).to_dict() == {
         "terms": {"name": ["john", "dave"]}
@@ -481,11 +487,11 @@ def test_terms_to_dict():
 
 
 @pytest.mark.parametrize(
-    "a_class, name, value, field, incompatable",
+    "a_class, with_name, value, field, incompatable",
     [
         (
             c,
-            "with_" + a.name.lower(),
+            a,
             VALUES_BY_TYPE[a.attribute_type],
             a.value,
             c in INCOMPATIPLE_QUERY and a in INCOMPATIPLE_QUERY[c],
@@ -493,27 +499,27 @@ def test_terms_to_dict():
         for a in TermAttributes
         for c in [Term, Prefix, Regexp, Wildcard]
     ],
+    indirect=["with_name"],
 )
 def test_by_methods_on_term_prefix_regexp_wildcard(
-    a_class, name, value, field, incompatable
+    a_class, with_name, value, field, incompatable
 ):
     if incompatable:
-        assert not hasattr(a_class, name)
+        assert not hasattr(a_class, with_name)
     else:
-        assert hasattr(a_class, name)
-        t = getattr(a_class, name)(value)
+        assert hasattr(a_class, with_name)
+        t = getattr(a_class, with_name)(value)
         assert isinstance(t, a_class)
         assert t.field == field
         assert t.value == value
 
 
 @pytest.mark.parametrize(
-    "name,  field",
-    [("with_" + a.name.lower(), a.value) for a in TermAttributes],
+    "with_name,  field", [(a, a.value) for a in TermAttributes], indirect=["with_name"]
 )
-def test_by_methods_on_exists(name, field):
-    assert hasattr(Exists, name)
-    t = getattr(Exists, name)()
+def test_by_methods_on_exists(with_name, field):
+    assert hasattr(Exists, with_name)
+    t = getattr(Exists, with_name)()
     assert isinstance(t, Exists)
     assert t.field == field
 
