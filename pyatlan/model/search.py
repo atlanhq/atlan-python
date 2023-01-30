@@ -41,12 +41,12 @@ class Attributes(str, Enum):
 class TermAttributes(Attributes):
 
     CATEGORIES = ("__categories", StrictStr)
+    CREATE_TIME_AS_TIMESTAMP = ("__timestamp", datetime)
     CREATED_BY = ("__createdBy", StrictStr)
     GLOSSARY = ("__glossary", StrictStr)
     GUID = ("__guid", StrictStr)
     HAS_LINEAGE = ("__hasLineage", StrictBool)
     MEANINGS = ("__meanings", StrictStr)
-    MODIFICATION_TIMESTAMP = ("__modificationTimestamp", datetime)
     MODIFIED_BY = ("__modifiedBy", StrictStr)
     NAME = ("name.keyword", StrictStr)
     OWNER_GROUPS = ("ownerGroups", StrictStr)
@@ -56,13 +56,14 @@ class TermAttributes(Attributes):
     QUALIFIED_NAME = ("qualifiedName", StrictStr)
     STATE = ("__state", Literal["ACTIVE", "DELETED"])
     SUPER_TYPE_NAMES = ("__superTypeNames.keyword", StrictStr)
-    TIMESTAMP = ("__timestamp", datetime)
     TYPE_NAME = ("__typeName.keyword", StrictStr)
+    UPDATE_TIME_AS_TIMESTAMP = ("__modificationTimestamp", datetime)
 
 
 class TextAttributes(Attributes):
     CLASSIFICATION_NAMES = ("__classificationNames", StrictStr)
     CLASSIFICATIONS_TEXT = ("__classificationsText", StrictStr)
+    CREATE_TIME_AS_DATE = ("__timestamp.date", StrictStr)
     DESCRIPTION = ("description", StrictStr)
     MEANINGS_TEXT = ("__meaningsText", StrictStr)
     NAME = ("name", StrictStr)
@@ -71,6 +72,7 @@ class TextAttributes(Attributes):
     PROPAGATED_TRAIT_NAMES = ("__propagatedTraitNames", StrictStr)
     SUPER_TYPE_NAMES = ("__superTypeNames", StrictStr)
     TRAIT_NAMES = ("__traitNames", StrictStr)
+    UPDATE_TIME_AS_DATE = ("__modificationTimestamp.date", StrictStr)
     USER_DESCRIPTION = ("userDescription", StrictStr)
 
 
@@ -223,8 +225,8 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
-    def with_modification_timestamp(cls):
-        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value)
+    def with_update_time_as_timestamp(cls):
+        return cls(field=TermAttributes.UPDATE_TIME_AS_TIMESTAMP.value)
 
     @classmethod
     @validate_arguments()
@@ -283,8 +285,8 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
-    def with_timestamp(cls):
-        return cls(field=TermAttributes.TIMESTAMP.value)
+    def with_create_time_as_timestamp(cls):
+        return cls(field=TermAttributes.CREATE_TIME_AS_TIMESTAMP.value)
 
     @classmethod
     @validate_arguments()
@@ -347,8 +349,8 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_modification_timestamp(cls, value: datetime):
-        return cls(field=TermAttributes.MODIFICATION_TIMESTAMP.value, value=value)
+    def with_update_time_as_timestamp(cls, value: datetime):
+        return cls(field=TermAttributes.UPDATE_TIME_AS_TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -392,8 +394,8 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_timestamp(cls, value: datetime):
-        return cls(field=TermAttributes.TIMESTAMP.value, value=value)
+    def with_create_time_as_timestamp(cls, value: datetime):
+        return cls(field=TermAttributes.CREATE_TIME_AS_TIMESTAMP.value, value=value)
 
     @classmethod
     @validate_arguments()
@@ -674,6 +676,106 @@ class Range(Query):
     ):
         return cls(
             field=TermAttributes.POPULARITY_SCORE.value,
+            gt=gt,
+            gte=gte,
+            lt=lt,
+            lte=lte,
+            boost=boost,
+            format=format,
+            relation=relation,
+            time_zone=time_zone,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_create_time_as_timestamp(
+        cls,
+        gt: Optional[SearchFieldType] = None,
+        gte: Optional[SearchFieldType] = None,
+        lt: Optional[SearchFieldType] = None,
+        lte: Optional[SearchFieldType] = None,
+        boost: Optional[float] = None,
+        format: Optional[StrictStr] = None,
+        relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None,
+        time_zone: Optional[StrictStr] = None,
+    ):
+        return cls(
+            field=TermAttributes.CREATE_TIME_AS_TIMESTAMP.value,
+            gt=gt,
+            gte=gte,
+            lt=lt,
+            lte=lte,
+            boost=boost,
+            format=format,
+            relation=relation,
+            time_zone=time_zone,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_create_time_as_date(
+        cls,
+        gt: Optional[SearchFieldType] = None,
+        gte: Optional[SearchFieldType] = None,
+        lt: Optional[SearchFieldType] = None,
+        lte: Optional[SearchFieldType] = None,
+        boost: Optional[float] = None,
+        format: Optional[StrictStr] = None,
+        relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None,
+        time_zone: Optional[StrictStr] = None,
+    ):
+        return cls(
+            field=TextAttributes.CREATE_TIME_AS_DATE.value,
+            gt=gt,
+            gte=gte,
+            lt=lt,
+            lte=lte,
+            boost=boost,
+            format=format,
+            relation=relation,
+            time_zone=time_zone,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_update_time_as_timestamp(
+        cls,
+        gt: Optional[SearchFieldType] = None,
+        gte: Optional[SearchFieldType] = None,
+        lt: Optional[SearchFieldType] = None,
+        lte: Optional[SearchFieldType] = None,
+        boost: Optional[float] = None,
+        format: Optional[StrictStr] = None,
+        relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None,
+        time_zone: Optional[StrictStr] = None,
+    ):
+        return cls(
+            field=TermAttributes.UPDATE_TIME_AS_TIMESTAMP.value,
+            gt=gt,
+            gte=gte,
+            lt=lt,
+            lte=lte,
+            boost=boost,
+            format=format,
+            relation=relation,
+            time_zone=time_zone,
+        )
+
+    @classmethod
+    @validate_arguments()
+    def with_update_time_as_date(
+        cls,
+        gt: Optional[SearchFieldType] = None,
+        gte: Optional[SearchFieldType] = None,
+        lt: Optional[SearchFieldType] = None,
+        lte: Optional[SearchFieldType] = None,
+        boost: Optional[float] = None,
+        format: Optional[StrictStr] = None,
+        relation: Optional[Literal["INTERSECTS", "CONTAINS", "WITHIN"]] = None,
+        time_zone: Optional[StrictStr] = None,
+    ):
+        return cls(
+            field=TextAttributes.UPDATE_TIME_AS_DATE.value,
             gt=gt,
             gte=gte,
             lt=lt,
