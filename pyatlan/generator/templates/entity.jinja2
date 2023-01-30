@@ -134,6 +134,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     meanings: Optional[list[Meaning]] = Field(
         None, description="", alias="meanings"
     )
+    custom_attributes: Optional[dict[str, Any]] = Field(None, description="", alias="customAttributes")
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )

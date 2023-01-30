@@ -270,6 +270,9 @@ class Referenceable(AtlanObject):
         None, description="Names of terms that have been linked to this asset."
     )
     meanings: Optional[list[Meaning]] = Field(None, description="", alias="meanings")
+    custom_attributes: Optional[dict[str, Any]] = Field(
+        None, description="", alias="customAttributes"
+    )
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )

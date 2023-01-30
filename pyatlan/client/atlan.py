@@ -42,6 +42,7 @@ from pyatlan.client.constants import (
     DELETE_TYPE_DEF_BY_NAME,
     GET_ALL_TYPE_DEFS,
     GET_ENTITY_BY_GUID,
+    GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_ROLES,
     INDEX_SEARCH,
 )
@@ -151,7 +152,7 @@ class AtlanClient(BaseSettings):
             if self._assets:
                 self._criteria.dsl.from_ = self._start
                 self._criteria.dsl.size = self._size
-                raw_json = self._client.call_api(
+                raw_json = self._client._call_api(
                     INDEX_SEARCH,
                     request_obj=self._criteria,
                 )
@@ -173,8 +174,8 @@ class AtlanClient(BaseSettings):
         super().__init__(**data)
         self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
-    def call_api(self, api, query_params=None, request_obj=None):
-        params, path = self.create_params(api, query_params, request_obj)
+    def _call_api(self, api, query_params=None, request_obj=None):
+        params, path = self._create_params(api, query_params, request_obj)
         response = self.session.request(api.method.value, path, **params)
         if response is not None:
             LOGGER.debug("HTTP Status: %s", response.status_code)
@@ -213,7 +214,7 @@ class AtlanClient(BaseSettings):
         else:
             raise AtlanServiceException(api, response)
 
-    def create_params(self, api, query_params, request_obj):
+    def _create_params(self, api, query_params, request_obj):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.host, api.path)
         params["headers"]["Accept"] = api.consumes
@@ -251,7 +252,7 @@ class AtlanClient(BaseSettings):
             "offset": offset,
             "limit": limit,
         }
-        raw_json = self.call_api(GET_ROLES.format_path_with_params(), query_params)
+        raw_json = self._call_api(GET_ROLES.format_path_with_params(), query_params)
         response = RoleResponse(**raw_json)
         return response
 
@@ -259,12 +260,35 @@ class AtlanClient(BaseSettings):
         """
         Retrieve all roles defined in Atlan.
         """
-        raw_json = self.call_api(GET_ROLES.format_path_with_params())
+        raw_json = self._call_api(GET_ROLES.format_path_with_params())
         response = RoleResponse(**raw_json)
         return response
 
     @validate_arguments()
-    def get_entity_by_guid(
+    def get_asset_by_qualified_name(
+        self,
+        qualified_name: str,
+        asset_type: Type[A],
+        min_ext_info: bool = False,
+        ignore_relationships: bool = False,
+    ) -> A:
+        query_params = {
+            "attr:qualifiedName": qualified_name,
+            "minExtInfo": min_ext_info,
+            "ignoreRelationships": ignore_relationships,
+        }
+        raw_json = self._call_api(
+            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
+            query_params,
+        )
+        raw_json["entity"]["attributes"].update(
+            raw_json["entity"]["relationshipAttributes"]
+        )
+        raw_json["entity"]["relationshipAttributes"] = {}
+        return AssetResponse[A](**raw_json).entity
+
+    @validate_arguments()
+    def get_asset_by_guid(
         self,
         guid: str,
         asset_type: Type[A],
@@ -276,7 +300,7 @@ class AtlanClient(BaseSettings):
             "ignoreRelationships": ignore_relationships,
         }
 
-        raw_json = self.call_api(
+        raw_json = self._call_api(
             GET_ENTITY_BY_GUID.format_path_with_params(guid),
             query_params,
         )
@@ -295,18 +319,18 @@ class AtlanClient(BaseSettings):
         for asset in entities:
             asset.validate_required()
         request = BulkRequest[Asset](entities=entities)
-        raw_json = self.call_api(BULK_UPDATE, None, request)
+        raw_json = self._call_api(BULK_UPDATE, None, request)
         return AssetMutationResponse(**raw_json)
 
     def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
-        raw_json = self.call_api(
+        raw_json = self._call_api(
             DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
             {"deleteType": AtlanDeleteType.HARD.value},
         )
         return AssetMutationResponse(**raw_json)
 
     def search(self, criteria: IndexSearchRequest) -> SearchResults:
-        raw_json = self.call_api(
+        raw_json = self._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
         )
@@ -328,12 +352,12 @@ class AtlanClient(BaseSettings):
         )
 
     def get_all_typedefs(self) -> TypeDefResponse:
-        raw_json = self.call_api(GET_ALL_TYPE_DEFS)
+        raw_json = self._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
     def get_typedefs(self, type: AtlanTypeCategory) -> TypeDefResponse:
         query_params = {"type": type.value}
-        raw_json = self.call_api(
+        raw_json = self._call_api(
             GET_ALL_TYPE_DEFS.format_path_with_params(),
             query_params,
         )
@@ -368,8 +392,8 @@ class AtlanClient(BaseSettings):
                 param="category",
             )
             # Throw an invalid request exception
-        raw_json = self.call_api(CREATE_TYPE_DEFS, request_obj=payload)
+        raw_json = self._call_api(CREATE_TYPE_DEFS, request_obj=payload)
         return TypeDefResponse(**raw_json)
 
     def purge_typedef(self, internal_name: str) -> None:
-        self.call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
+        self._call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
