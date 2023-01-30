@@ -1,7 +1,6 @@
 from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.client.role import RoleClient
 from pyatlan.model.role import AtlanRole
 
 
@@ -13,7 +12,7 @@ class RoleCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = RoleClient(AtlanClient()).get_all_roles()
+        response = AtlanClient().get_all_roles()
         if response is not None:
             cls.cache_by_id = dict()
             cls.map_id_to_name = dict()

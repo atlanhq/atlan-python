@@ -21,14 +21,17 @@ import copy
 import json
 import logging
 import os
+from typing import Optional
 
 import requests
 from pydantic import BaseSettings, Field, HttpUrl, PrivateAttr
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from pyatlan.client.constants import GET_ROLES
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.role import RoleResponse
 from pyatlan.utils import HTTPStatus, get_logger
 
 LOGGER = get_logger()
@@ -118,3 +121,34 @@ class AtlanClient(BaseSettings):
             LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
         return params, path
+
+    def get_roles(
+        self,
+        limit: int,
+        filter: Optional[str] = None,
+        sort: Optional[str] = None,
+        count: bool = True,
+        offset: int = 0,
+    ) -> RoleResponse:
+        if filter is None:
+            filter = ""
+        if sort is None:
+            sort = ""
+        query_params = {
+            "filter": filter,
+            "sort": sort,
+            "count": count,
+            "offset": offset,
+            "limit": limit,
+        }
+        raw_json = self.call_api(GET_ROLES.format_path_with_params(), query_params)
+        response = RoleResponse(**raw_json)
+        return response
+
+    def get_all_roles(self) -> RoleResponse:
+        """
+        Retrieve all roles defined in Atlan.
+        """
+        raw_json = self.call_api(GET_ROLES.format_path_with_params())
+        response = RoleResponse(**raw_json)
+        return response
