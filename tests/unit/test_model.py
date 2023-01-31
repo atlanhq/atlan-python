@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from unittest.mock import create_autospec
 
 import pytest
 from deepdiff import DeepDiff
@@ -618,3 +619,24 @@ def test_remove_desscription(clazz, method_name, property_names, values):
     getattr(attributes, method_name)()
     for property in property_names:
         assert getattr(attributes, property) is None
+
+
+@pytest.mark.parametrize(
+    "clazz, method_name",
+    [
+        (clazz, method_name)
+        for clazz in get_all_subclasses(Asset)
+        for method_name in [
+            "remove_description",
+            "remove_user_description",
+            "remove_owners",
+            "remove_certificate",
+            "remove_owners",
+        ]
+    ],
+)
+def test_it(clazz, method_name):
+    mock_attributes = create_autospec(clazz.Attributes)
+    sut = clazz(attributes=mock_attributes)
+    sut.remove_owners()
+    sut.attributes.remove_owners.assert_called_once()
