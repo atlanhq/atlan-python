@@ -270,6 +270,9 @@ class Referenceable(AtlanObject):
         None, description="Names of terms that have been linked to this asset."
     )
     meanings: Optional[list[Meaning]] = Field(None, description="", alias="meanings")
+    custom_attributes: Optional[dict[str, Any]] = Field(
+        None, description="", alias="customAttributes"
+    )
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )
@@ -595,6 +598,25 @@ class Asset(Referenceable):
             None, description="", alias="meanings"
         )  # relationship
 
+        def remove_description(self):
+            self.description = None
+
+        def remove_user_description(self):
+            self.user_description = None
+
+        def remove_owners(self):
+            self.owner_groups = None
+            self.owner_users = None
+
+        def remove_certificate(self):
+            self.certificate_status = None
+            self.certificate_status_message = None
+
+        def remove_announcement(self):
+            self.announcement_message = None
+            self.announcement_title = None
+            self.announcement_type = None
+
     attributes: "Asset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -625,10 +647,20 @@ class Asset(Referenceable):
             )
         return None
 
-    def clear_announcment(self):
-        self.attributes.announcement_message = None
-        self.attributes.announcement_title = None
-        self.attributes.announcement_type = None
+    def remove_announcement(self):
+        self.attributes.remove_announcement()
+
+    def remove_description(self):
+        self.attributes.remove_description()
+
+    def remove_user_description(self):
+        self.attributes.remove_user_description()
+
+    def remove_owners(self):
+        self.attributes.remove_owners()
+
+    def remove_certificate(self):
+        self.attributes.remove_certificate()
 
 
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
