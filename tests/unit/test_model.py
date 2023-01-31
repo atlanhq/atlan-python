@@ -16,6 +16,7 @@ from pyatlan.model.assets import (
     Database,
     Schema,
     Table,
+    View,
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
@@ -511,36 +512,41 @@ def test_schema__create_without_required_parameters_raises_validation_error(
 
 
 @pytest.mark.parametrize(
-    "name, schema_qualified_name, error",
+    "cls, name, schema_qualified_name, error",
     [
-        (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
-        ("Table_1", None, ValidationError),
-        ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
-        ("Table_1", "", ValueError),
-        ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
-        ("Table_1", "default/snowflake/1673868111909/TestDb", ValueError),
-        ("Table_1", "snowflake/1673868111909", ValueError),
-        ("Table_1", "default/snwflake", ValueError),
+        (cls, values[0], values[1], values[2])
+        for values in [
+            (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
+            ("Table_1", None, ValidationError),
+            ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
+            ("Table_1", "", ValueError),
+            ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
+            ("Table_1", "default/snowflake/1673868111909/TestDb", ValueError),
+            ("Table_1", "snowflake/1673868111909", ValueError),
+            ("Table_1", "default/snwflake", ValueError),
+        ]
+        for cls in [Table.Attributes, View.Attributes]
     ],
 )
 def test_table_attributes_create_without_required_parameters_raises_validation_error(
-    name, schema_qualified_name, error
+    cls, name, schema_qualified_name, error
 ):
     with pytest.raises(error):
-        Table.Attributes.create(name=name, schema_qualified_name=schema_qualified_name)
+        cls.create(name=name, schema_qualified_name=schema_qualified_name)
 
 
 @pytest.mark.parametrize(
-    "name, schema_qualified_name",
+    "cls, name, schema_qualified_name",
     [
-        ("Table_1", "default/snowflake/1673868111909/TestDb/Schema1"),
+        (cls, "Table_1", "default/snowflake/1673868111909/TestDb/Schema1")
+        for cls in [Table.Attributes, View.Attributes]
     ],
 )
-def test_table_attributes_create_with_required_parameters(name, schema_qualified_name):
-    attributes = Table.Attributes.create(
-        name=name, schema_qualified_name=schema_qualified_name
-    )
-    assert isinstance(attributes, Table.Attributes)
+def test_table_attributes_create_with_required_parameters(
+    cls, name, schema_qualified_name
+):
+    attributes = cls.create(name=name, schema_qualified_name=schema_qualified_name)
+    assert isinstance(attributes, cls)
     assert attributes.name == name
     assert attributes.schema_qualified_name == schema_qualified_name
     assert attributes.qualified_name == f"{schema_qualified_name}/{name}"
@@ -553,36 +559,41 @@ def test_table_attributes_create_with_required_parameters(name, schema_qualified
 
 
 @pytest.mark.parametrize(
-    "name, schema_qualified_name, error",
+    "cls, name, schema_qualified_name, error",
     [
-        (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
-        ("Table_1", None, ValidationError),
-        ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
-        ("Table_1", "", ValueError),
-        ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
-        ("Table_1", "default/snowflake/1673868111909/TestDb", ValueError),
-        ("Table_1", "snowflake/1673868111909", ValueError),
-        ("Table_1", "default/snwflake", ValueError),
+        (cls, values[0], values[1], values[2])
+        for values in [
+            (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
+            ("Table_1", None, ValidationError),
+            ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
+            ("Table_1", "", ValueError),
+            ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
+            ("Table_1", "default/snowflake/1673868111909/TestDb", ValueError),
+            ("Table_1", "snowflake/1673868111909", ValueError),
+            ("Table_1", "default/snwflake", ValueError),
+        ]
+        for cls in [Table.Attributes, View.Attributes]
     ],
 )
 def test_table_create_without_required_parameters_raises_validation_error(
-    name, schema_qualified_name, error
+    cls, name, schema_qualified_name, error
 ):
     with pytest.raises(error):
-        Table.create(name=name, schema_qualified_name=schema_qualified_name)
+        cls.create(name=name, schema_qualified_name=schema_qualified_name)
 
 
 @pytest.mark.parametrize(
-    "name, schema_qualified_name",
+    "cls, name, schema_qualified_name",
     [
-        ("Table_1", "default/snowflake/1673868111909/TestDb/Schema1"),
+        (cls, "Table_1", "default/snowflake/1673868111909/TestDb/Schema1")
+        for cls in [Table, View]
     ],
 )
-def test_table_create_with_required_parameters(name, schema_qualified_name):
-    attributes = Table.create(
+def test_table_create_with_required_parameters(cls, name, schema_qualified_name):
+    attributes = cls.create(
         name=name, schema_qualified_name=schema_qualified_name
     ).attributes
-    assert isinstance(attributes, Table.Attributes)
+    assert isinstance(attributes, cls.Attributes)
     assert attributes.name == name
     assert attributes.schema_qualified_name == schema_qualified_name
     assert attributes.qualified_name == f"{schema_qualified_name}/{name}"
