@@ -19,6 +19,7 @@ from pyatlan.model.assets import (
     Database,
     Schema,
     Table,
+    View,
 )
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
@@ -183,6 +184,7 @@ def cleanup(atlan_host, headers, atlan_api_key):
         "Schema",
         "Database",
         "Connection",
+        "View",
     ]
     for type_name in type_names:
         print()
@@ -639,3 +641,20 @@ def test_get_by_qualified_name(client: AtlanClient):
         qualified_name=qualified_name, asset_type=Column
     )
     assert column.attributes.qualified_name == qualified_name
+
+
+def test_create_view(client: AtlanClient, increment_counter):
+    view = View.create(
+        f"Integration {increment_counter()}",
+        schema_qualified_name="default/snowflake/1658945299/ATLAN_SAMPLE_DATA/US_ECONOMIC_DATA",
+    )
+    response = client.upsert(view)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    assert isinstance(response.mutated_entities.CREATE[0], View)
+    assert response.guid_assignments
+    assert view.guid in response.guid_assignments
+    guid = response.guid_assignments[view.guid]
+    view = response.mutated_entities.CREATE[0]
+    assert guid == view.guid

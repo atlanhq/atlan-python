@@ -21,7 +21,7 @@
 from setuptools import find_packages, setup
 
 # External dependencies
-requirements = ["requests>=2.24"]
+requirements = ["requests>=2.24", "pydantic", "jinja2"]
 
 long_description = ""
 with open("README.md", "r") as fh:
