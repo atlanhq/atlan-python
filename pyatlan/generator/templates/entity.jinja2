@@ -194,6 +194,26 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%- set type = attribute_def.typeName | get_type %}
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
+        {%- if entity_def.name == "Asset"  %}
+        def remove_description(self):
+            self.description = None
+
+        def remove_user_description(self):
+            self.user_description = None
+
+        def remove_owners(self):
+            self.owner_groups = None
+            self.owner_users = None
+
+        def remove_certificate(self):
+            self.certificate_status = None
+            self.certificate_status_message = None
+
+        def remove_announcement(self):
+            self.announcement_message = None
+            self.announcement_title = None
+            self.announcement_type = None
+        {%- endif  %}
         {%- if entity_def.name == "Connection"  %}
         def validate_required(self):
             if self.name:
@@ -401,10 +421,20 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             )
         return None
 
-    def clear_announcment(self):
-        self.attributes.announcement_message = None
-        self.attributes.announcement_title = None
-        self.attributes.announcement_type = None
+    def remove_announcement(self):
+        self.attributes.remove_announcement()
+
+    def remove_description(self):
+        self.attributes.remove_description()
+
+    def remove_user_description(self):
+        self.attributes.remove_user_description()
+
+    def remove_owners(self):
+        self.attributes.remove_owners()
+
+    def remove_certificate(self):
+        self.attributes.remove_certificate()
     {% endif %}
     {% endif %}
 {%- endif %}

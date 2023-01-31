@@ -133,7 +133,7 @@ def test_create_glossary():
 
 def test_clear_announcement(glossary, announcement):
     glossary.set_announcement(announcement)
-    glossary.clear_announcment()
+    glossary.remove_announcement()
     assert not glossary.has_announcement()
     assert glossary.attributes.announcement_title is None
     assert glossary.attributes.announcement_type is None
@@ -609,6 +609,13 @@ def test_table_create_with_required_parameters(name, schema_qualified_name):
                 "certificate_status",
                 "certificate_status_message",
             ),
+            (
+                ["a message", "a title", "issue"],
+                "remove_announcement",
+                "announcement_message",
+                "announcement_title",
+                "announcement_type",
+            ),
         ]
     ],
 )
@@ -632,6 +639,7 @@ def test_remove_desscription(clazz, method_name, property_names, values):
             "remove_owners",
             "remove_certificate",
             "remove_owners",
+            "remove_announcement",
         ]
     ],
 )

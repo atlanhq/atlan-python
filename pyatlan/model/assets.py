@@ -612,6 +612,11 @@ class Asset(Referenceable):
             self.certificate_status = None
             self.certificate_status_message = None
 
+        def remove_announcement(self):
+            self.announcement_message = None
+            self.announcement_title = None
+            self.announcement_type = None
+
     attributes: "Asset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -642,10 +647,8 @@ class Asset(Referenceable):
             )
         return None
 
-    def clear_announcment(self):
-        self.attributes.announcement_message = None
-        self.attributes.announcement_title = None
-        self.attributes.announcement_type = None
+    def remove_announcement(self):
+        self.attributes.remove_announcement()
 
     def remove_description(self):
         self.attributes.remove_description()
