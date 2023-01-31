@@ -21,7 +21,7 @@ import copy
 import json
 import logging
 import os
-from typing import Optional, Type, TypeVar, Union
+from typing import Generator, Optional, Type, TypeVar, Union
 
 import requests
 from pydantic import (
@@ -163,7 +163,7 @@ class AtlanClient(BaseSettings):
             else:
                 return False
 
-        def __iter__(self):
+        def __iter__(self) -> Generator[Asset, None, None]:
             while True:
                 for asset in self.current_page():
                     yield asset
