@@ -6,6 +6,7 @@ from deepdiff import DeepDiff
 from pydantic.error_wrappers import ValidationError
 
 from pyatlan.model.assets import (
+    Asset,
     AssetMutationResponse,
     AtlasGlossary,
     AtlasGlossaryCategory,
@@ -16,7 +17,7 @@ from pyatlan.model.assets import (
     Table,
 )
 from pyatlan.model.core import Announcement, AssetResponse
-from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
+from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
 
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"
@@ -27,6 +28,16 @@ GLOSSARY_CATEGORY_JSON = "glossary_category.json"
 def load_json(filename):
     with (DATA_DIR / filename).open() as input_file:
         return json.load(input_file)
+
+
+def get_all_subclasses(cls):
+    all_subclasses = []
+
+    for subclass in cls.__subclasses__():
+        all_subclasses.append(subclass)
+        all_subclasses.extend(get_all_subclasses(subclass))
+
+    return all_subclasses
 
 
 @pytest.fixture()
@@ -580,3 +591,30 @@ def test_table_create_with_required_parameters(name, schema_qualified_name):
     fields = schema_qualified_name.split("/")
     assert attributes.connection_qualified_name == "/".join(fields[:3])
     assert attributes.database_qualified_name == "/".join(fields[:4])
+
+
+@pytest.mark.parametrize(
+    "clazz, method_name, property_names, values",
+    [
+        (clazz, attribute_info[1], attribute_info[2:], attribute_info[0])
+        for clazz in get_all_subclasses(Asset.Attributes)
+        for attribute_info in [
+            (["abc"], "remove_description", "description"),
+            (["abc"], "remove_user_description", "user_description"),
+            ([["bob"], ["dave"]], "remove_owners", "owner_groups", "owner_users"),
+            (
+                [CertificateStatus.DRAFT, "some message"],
+                "remove_certificate",
+                "certificate_status",
+                "certificate_status_message",
+            ),
+        ]
+    ],
+)
+def test_remove_desscription(clazz, method_name, property_names, values):
+    attributes = clazz()
+    for property, value in zip(property_names, values):
+        setattr(attributes, property, value)
+    getattr(attributes, method_name)()
+    for property in property_names:
+        assert getattr(attributes, property) is None

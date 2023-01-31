@@ -598,6 +598,20 @@ class Asset(Referenceable):
             None, description="", alias="meanings"
         )  # relationship
 
+        def remove_description(self):
+            self.description = None
+
+        def remove_user_description(self):
+            self.user_description = None
+
+        def remove_owners(self):
+            self.owner_groups = None
+            self.owner_users = None
+
+        def remove_certificate(self):
+            self.certificate_status = None
+            self.certificate_status_message = None
+
     attributes: "Asset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -632,6 +646,18 @@ class Asset(Referenceable):
         self.attributes.announcement_message = None
         self.attributes.announcement_title = None
         self.attributes.announcement_type = None
+
+    def remove_description(self):
+        self.attributes.remove_description()
+
+    def remove_user_description(self):
+        self.attributes.remove_user_description()
+
+    def remove_owners(self):
+        self.attributes.remove_owners()
+
+    def remove_certificate(self):
+        self.attributes.remove_certificate()
 
 
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
