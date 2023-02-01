@@ -314,24 +314,17 @@ def test_create_multiple_glossaries(client: AtlanClient, increment_counter):
 
 def test_create_glossary_category(client: AtlanClient, increment_counter):
     suffix = increment_counter()
-    glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(
-            name=f"Integration Test Glossary {suffix}",
-            user_description="This a test glossary",
-        )
-    )
+    glossary = AtlasGlossary.create(f"Integration Test Glossary {suffix}")
+    glossary.attributes.user_description = "This a test glossary"
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
-    category = AtlasGlossaryCategory(
-        attributes=AtlasGlossaryCategory.Attributes(
-            name=f"Integration Test Glossary Category {suffix}",
-            user_description="This is a test glossary category",
-            anchor=glossary,
-        )
+    category = AtlasGlossaryCategory.create(
+        f"Integration Test Glossary Category {suffix}", anchor=glossary
     )
+    category.attributes.user_description = "This is a test glossary category"
     response = client.upsert(category)
     assert response.mutated_entities
     assert response.mutated_entities.UPDATE

@@ -669,3 +669,20 @@ def test_glossary_attributes_create_when_missing_name_raises_validation_error():
 def test_glossary_attributes_create_sets_name():
     sut = AtlasGlossary.Attributes.create("Bob")
     assert sut.name == "Bob"
+
+
+@pytest.mark.parametrize(
+    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+)
+def test_glossary_category_attributes_create_when_missing_name_raises_validation_error(
+    name, anchor
+):
+    with pytest.raises(ValidationError):
+        AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor)
+
+
+def test_glossary_category_attributes_create_sets_name_anchor():
+    glossary = AtlasGlossary.create("Glossary")
+    sut = AtlasGlossaryCategory.Attributes.create("Bob", anchor=glossary)
+    assert sut.name == "Bob"
+    assert sut.anchor == glossary
