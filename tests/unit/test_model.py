@@ -654,8 +654,18 @@ def test_remove_desscription(clazz, method_name, property_names, values):
         ]
     ],
 )
-def test_it(clazz, method_name):
+def test_class_remove_methods(clazz, method_name):
     mock_attributes = create_autospec(clazz.Attributes)
     sut = clazz(attributes=mock_attributes)
     sut.remove_owners()
     sut.attributes.remove_owners.assert_called_once()
+
+
+def test_glossary_attributes_create_when_missing_name_raises_validation_error():
+    with pytest.raises(ValidationError):
+        AtlasGlossary.Attributes.create()
+
+
+def test_glossary_attributes_create_sets_name():
+    sut = AtlasGlossary.Attributes.create("Bob")
+    assert sut.name == "Bob"

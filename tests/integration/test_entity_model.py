@@ -242,12 +242,7 @@ def test_purge_glossary(create_glossary, client: AtlanClient):
 
 
 def test_create_glossary(client: AtlanClient, increment_counter):
-    glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(
-            name=f"Integration Test Glossary {increment_counter()}",
-            user_description="This a test glossary",
-        )
-    )
+    glossary = AtlasGlossary.create(f"Integration Test Glossary {increment_counter()}")
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert not response.mutated_entities.UPDATE

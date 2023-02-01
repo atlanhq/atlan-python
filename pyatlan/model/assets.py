@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import Field, root_validator, validate_arguments
+from pydantic import Field, StrictStr, root_validator, validate_arguments
 
 from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
 from pyatlan.model.enums import (
@@ -699,6 +699,11 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             None, description="", alias="meanings"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: StrictStr):
+            return AtlasGlossary.Attributes(name=name)
+
     attributes: "AtlasGlossary.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -714,6 +719,11 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         ):
             values["attributes"].qualified_name = values["guid"]
         return values
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: StrictStr):
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
 
 
 class DataSet(Asset, type_name="DataSet"):
@@ -818,6 +828,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         ):
             values["attributes"].qualified_name = values["guid"]
         return values
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: StrictStr):
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
 
 
 class Cloud(Asset, type_name="Cloud"):
@@ -1058,6 +1073,11 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         ):
             values["attributes"].qualified_name = values["guid"]
         return values
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: StrictStr):
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
 
 
 class Badge(Asset, type_name="Badge"):
