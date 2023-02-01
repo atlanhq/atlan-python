@@ -327,11 +327,11 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         @validate_arguments()
         def create(cls, name: StrictStr):
             return AtlasGlossary.Attributes(name=name)
-        {%- elif entity_def.name == "AtlasGlossaryCategory"  %}
+        {%- elif entity_def.name == "AtlasGlossaryCategory" or entity_def.name == "AtlasGlossaryTerm" %}
         @classmethod
         @validate_arguments()
         def create(cls, name: StrictStr, anchor: AtlasGlossary):
-            return AtlasGlossaryCategory.Attributes(name=name, anchor=anchor)
+            return {{ entity_def.name }}.Attributes(name=name, anchor=anchor)
         {%- endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
         None,
@@ -411,11 +411,11 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     @validate_arguments()
     def create(cls, name: StrictStr):
         return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
-    {% elif entity_def.name == "AtlasGlossaryCategory" %}
+    {% elif entity_def.name == "AtlasGlossaryCategory" or entity_def.name == "AtlasGlossaryTerm"%}
     @classmethod
     @validate_arguments()
     def create(cls, name: StrictStr, anchor: AtlasGlossary):
-        return cls(attributes=AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor))
+        return cls(attributes={{ entity_def.name }}.Attributes.create(name=name, anchor=anchor))
     {%- endif  %}
     {% endif %}
     {% if entity_def.name == "Asset" %}

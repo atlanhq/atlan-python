@@ -813,6 +813,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             None, description="", alias="preferredTerms"
         )  # relationship
 
+        @classmethod
+        @validate_arguments()
+        def create(cls, name: StrictStr, anchor: AtlasGlossary):
+            return AtlasGlossaryTerm.Attributes(name=name, anchor=anchor)
+
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -828,6 +833,13 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         ):
             values["attributes"].qualified_name = values["guid"]
         return values
+
+    @classmethod
+    @validate_arguments()
+    def create(cls, name: StrictStr, anchor: AtlasGlossary):
+        return cls(
+            attributes=AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
+        )
 
 
 class Cloud(Asset, type_name="Cloud"):
