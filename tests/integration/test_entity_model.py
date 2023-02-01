@@ -8,6 +8,7 @@ import requests
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.error import NotFoundError
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.model.assets import (
     Asset,
@@ -197,6 +198,18 @@ def cleanup(atlan_host, headers, atlan_api_key):
 def test_get_glossary_by_guid_good_guid(create_glossary, client: AtlanClient):
     glossary = client.get_asset_by_guid(create_glossary(), AtlasGlossary)
     assert isinstance(glossary, AtlasGlossary)
+
+
+def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not_found_error(
+    create_glossary, client: AtlanClient
+):
+    with pytest.raises(NotFoundError) as ex_info:
+        guid = create_glossary()
+        client.get_asset_by_guid(guid, Table)
+    assert (
+        f"Asset with GUID {guid} is not of the type requested: Table."
+        in ex_info.value.args[0]
+    )
 
 
 def test_get_glossary_by_guid_bad_guid(client: AtlanClient):

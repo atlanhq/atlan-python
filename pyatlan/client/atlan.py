@@ -46,6 +46,7 @@ from pyatlan.client.constants import (
     GET_ROLES,
     INDEX_SEARCH,
 )
+from pyatlan.error import NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.assets import (
     Asset,
@@ -284,8 +285,14 @@ class AtlanClient(BaseSettings):
         raw_json["entity"]["attributes"].update(
             raw_json["entity"]["relationshipAttributes"]
         )
-        raw_json["entity"]["relationshipAttributes"] = {}
-        return AssetResponse[A](**raw_json).entity
+        asset = AssetResponse[A](**raw_json).entity
+        if not isinstance(asset, asset_type):
+            raise NotFoundError(
+                message=f"Asset with qualifiedName {qualified_name} "
+                f"is not of the type requested: {asset_type.__name__}.",
+                code="ATLAN-PYTHON-404-002",
+            )
+        return asset
 
     @validate_arguments()
     def get_asset_by_guid(
@@ -308,7 +315,13 @@ class AtlanClient(BaseSettings):
             raw_json["entity"]["relationshipAttributes"]
         )
         raw_json["entity"]["relationshipAttributes"] = {}
-        return AssetResponse[A](**raw_json).entity
+        asset = AssetResponse[A](**raw_json).entity
+        if not isinstance(asset, asset_type):
+            raise NotFoundError(
+                message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
+                code="ATLAN-PYTHON-404-002",
+            )
+        return asset
 
     def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
         entities: list[Asset] = []
