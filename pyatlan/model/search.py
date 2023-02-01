@@ -1697,7 +1697,7 @@ class Match(Query):
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
 class SortItem:
     field: StrictStr
-    order: Optional[SortOrder]
+    order: Optional[SortOrder] = None
 
     def to_dict(self):
         return {self.field: {"order": self.order.value}}
