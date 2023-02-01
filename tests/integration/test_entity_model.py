@@ -8,6 +8,7 @@ import requests
 
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.error import NotFoundError
 from pyatlan.exceptions import AtlanServiceException
 from pyatlan.model.assets import (
     Asset,
@@ -199,6 +200,18 @@ def test_get_glossary_by_guid_good_guid(create_glossary, client: AtlanClient):
     assert isinstance(glossary, AtlasGlossary)
 
 
+def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not_found_error(
+    create_glossary, client: AtlanClient
+):
+    with pytest.raises(NotFoundError) as ex_info:
+        guid = create_glossary()
+        client.get_asset_by_guid(guid, Table)
+    assert (
+        f"Asset with GUID {guid} is not of the type requested: Table."
+        in ex_info.value.args[0]
+    )
+
+
 def test_get_glossary_by_guid_bad_guid(client: AtlanClient):
     with pytest.raises(AtlanServiceException) as ex_info:
         client.get_asset_by_guid("76d54dd6-925b-499b-a455-6", AtlasGlossary)
@@ -242,12 +255,7 @@ def test_purge_glossary(create_glossary, client: AtlanClient):
 
 
 def test_create_glossary(client: AtlanClient, increment_counter):
-    glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(
-            name=f"Integration Test Glossary {increment_counter()}",
-            user_description="This a test glossary",
-        )
-    )
+    glossary = AtlasGlossary.create(f"Integration Test Glossary {increment_counter()}")
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert not response.mutated_entities.UPDATE
@@ -319,24 +327,17 @@ def test_create_multiple_glossaries(client: AtlanClient, increment_counter):
 
 def test_create_glossary_category(client: AtlanClient, increment_counter):
     suffix = increment_counter()
-    glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(
-            name=f"Integration Test Glossary {suffix}",
-            user_description="This a test glossary",
-        )
-    )
+    glossary = AtlasGlossary.create(f"Integration Test Glossary {suffix}")
+    glossary.attributes.user_description = "This a test glossary"
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
-    category = AtlasGlossaryCategory(
-        attributes=AtlasGlossaryCategory.Attributes(
-            name=f"Integration Test Glossary Category {suffix}",
-            user_description="This is a test glossary category",
-            anchor=glossary,
-        )
+    category = AtlasGlossaryCategory.create(
+        f"Integration Test Glossary Category {suffix}", anchor=glossary
     )
+    category.attributes.user_description = "This is a test glossary category"
     response = client.upsert(category)
     assert response.mutated_entities
     assert response.mutated_entities.UPDATE
@@ -356,23 +357,14 @@ def test_create_glossary_category(client: AtlanClient, increment_counter):
 
 def test_create_glossary_term(client: AtlanClient, increment_counter):
     suffix = increment_counter()
-    glossary = AtlasGlossary(
-        attributes=AtlasGlossary.Attributes(
-            name=f"Integration Test Glossary {suffix}",
-            user_description="This a test glossary",
-        )
-    )
+    glossary = AtlasGlossary.create(f"Integration Test Glossary {suffix}")
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
-    term = AtlasGlossaryTerm(
-        attributes=AtlasGlossaryTerm.Attributes(
-            name=f"Integration Test Glossary Term {suffix}",
-            user_description="This is a test glossary term",
-            anchor=glossary,
-        )
+    term = AtlasGlossaryTerm.create(
+        f"Integration Test Glossary Term {suffix}", anchor=glossary
     )
     response = client.upsert(term)
     assert response.mutated_entities

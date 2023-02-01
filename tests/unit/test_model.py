@@ -654,8 +654,52 @@ def test_remove_desscription(clazz, method_name, property_names, values):
         ]
     ],
 )
-def test_it(clazz, method_name):
+def test_class_remove_methods(clazz, method_name):
     mock_attributes = create_autospec(clazz.Attributes)
     sut = clazz(attributes=mock_attributes)
     sut.remove_owners()
     sut.attributes.remove_owners.assert_called_once()
+
+
+def test_glossary_attributes_create_when_missing_name_raises_validation_error():
+    with pytest.raises(ValidationError):
+        AtlasGlossary.Attributes.create()
+
+
+def test_glossary_attributes_create_sets_name():
+    sut = AtlasGlossary.Attributes.create("Bob")
+    assert sut.name == "Bob"
+
+
+@pytest.mark.parametrize(
+    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+)
+def test_glossary_category_attributes_create_when_missing_name_raises_validation_error(
+    name, anchor
+):
+    with pytest.raises(ValidationError):
+        AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor)
+
+
+def test_glossary_category_attributes_create_sets_name_anchor():
+    glossary = AtlasGlossary.create("Glossary")
+    sut = AtlasGlossaryCategory.Attributes.create("Bob", anchor=glossary)
+    assert sut.name == "Bob"
+    assert sut.anchor == glossary
+
+
+@pytest.mark.parametrize(
+    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+)
+def test_glossary_term_attributes_create_when_missing_name_raises_validation_error(
+    name, anchor
+):
+    with pytest.raises(ValidationError):
+        AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
+
+
+def test_glossary_term_attributes_create_sets_name_anchor():
+    glossary = AtlasGlossary.create("Glossary")
+    sut = AtlasGlossaryTerm.Attributes.create("Bob", anchor=glossary)
+    assert sut.name == "Bob"
+    assert sut.anchor == glossary
