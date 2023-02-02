@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
-from pydantic import Field, StrictStr, root_validator, validate_arguments
+from pydantic import Field, StrictStr, root_validator
 
 from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
 from pyatlan.model.enums import (
@@ -29,6 +29,14 @@ from pyatlan.model.enums import (
     powerbi_endorsement,
 )
 from pyatlan.utils import next_id
+
+
+def validate_required_fields(field_names: list[str], values: list[Any]):
+    for field_name, value in zip(field_names, values):
+        if value is None:
+            raise ValueError(f"{field_name} is required")
+        if isinstance(value, str) and not value.strip():
+            raise ValueError(f"{field_name} cannot be blank")
 
 
 class Internal(AtlanObject):
@@ -700,8 +708,9 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: StrictStr):
+        # @validate_arguments()
+        def create(cls, name: StrictStr) -> AtlasGlossary.Attributes:
+            validate_required_fields(["name"], [name])
             return AtlasGlossary.Attributes(name=name)
 
     attributes: "AtlasGlossary.Attributes" = Field(
@@ -721,8 +730,9 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         return values
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: StrictStr):
+    # @validate_arguments()
+    def create(cls, name: StrictStr) -> AtlasGlossary:
+        validate_required_fields(["name"], [name])
         return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
 
 
@@ -814,8 +824,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: StrictStr, anchor: AtlasGlossary):
+        # @validate_arguments()
+        def create(
+            cls, name: StrictStr, anchor: AtlasGlossary
+        ) -> AtlasGlossaryTerm.Attributes:
+            validate_required_fields(["name", "anchor"], [name, anchor])
             return AtlasGlossaryTerm.Attributes(name=name, anchor=anchor)
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
@@ -835,8 +848,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         return values
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: StrictStr, anchor: AtlasGlossary):
+    # @validate_arguments()
+    def create(cls, name: StrictStr, anchor: AtlasGlossary) -> AtlasGlossaryTerm:
+        validate_required_fields(["name", "anchor"], [name, anchor])
         return cls(
             attributes=AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
         )
@@ -932,7 +946,7 @@ class Connection(Asset, type_name="Connection"):
                 raise ValueError("name is required")
 
         @classmethod
-        @validate_arguments()
+        # @validate_arguments()
         def create(
             cls,
             name: str,
@@ -940,9 +954,10 @@ class Connection(Asset, type_name="Connection"):
             admin_users: Optional[list[str]] = None,
             admin_groups: Optional[list[str]] = None,
             admin_roles: Optional[list[str]] = None,
-        ):
+        ) -> Connection.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
+            validate_required_fields(["connector_type"], [connector_type])
             if admin_users or admin_groups or admin_roles:
                 return cls(
                     name=name,
@@ -965,7 +980,7 @@ class Connection(Asset, type_name="Connection"):
     )
 
     @classmethod
-    @validate_arguments()
+    # @validate_arguments()
     def create(
         cls,
         name: str,
@@ -973,9 +988,10 @@ class Connection(Asset, type_name="Connection"):
         admin_users: Optional[list[str]] = None,
         admin_groups: Optional[list[str]] = None,
         admin_roles: Optional[list[str]] = None,
-    ):
+    ) -> Connection:
         if not name:
             raise ValueError("name cannot be blank")
+        validate_required_fields(["connector_type"], [connector_type])
         if admin_users or admin_groups or admin_roles:
             attr = cls.Attributes(
                 name=name,
@@ -1066,8 +1082,11 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: StrictStr, anchor: AtlasGlossary):
+        # @validate_arguments()
+        def create(
+            cls, name: StrictStr, anchor: AtlasGlossary
+        ) -> AtlasGlossaryCategory.Attributes:
+            validate_required_fields(["name", "anchor"], [name, anchor])
             return AtlasGlossaryCategory.Attributes(name=name, anchor=anchor)
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
@@ -1087,8 +1106,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         return values
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: StrictStr, anchor: AtlasGlossary):
+    # @validate_arguments()
+    def create(cls, name: StrictStr, anchor: AtlasGlossary) -> AtlasGlossaryCategory:
+        validate_required_fields(["name", "anchor"], [name, anchor])
         return cls(
             attributes=AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor)
         )
@@ -2949,10 +2969,11 @@ class Table(SQL):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: str, schema_qualified_name: str):
+        # @validate_arguments()
+        def create(cls, name: str, schema_qualified_name: str) -> Table.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
+            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
             fields = schema_qualified_name.split("/")
             if len(fields) != 5:
                 raise ValueError("Invalid schema_qualified_name")
@@ -2978,8 +2999,11 @@ class Table(SQL):
     )
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: str, schema_qualified_name: str):
+    # @validate_arguments()
+    def create(cls, name: str, schema_qualified_name: str) -> Table:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
         attributes = Table.Attributes.create(name, schema_qualified_name)
         return cls(attributes=attributes)
 
@@ -3269,10 +3293,13 @@ class Schema(SQL):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: str, database_qualified_name: str):
+        # @validate_arguments()
+        def create(cls, name: str, database_qualified_name: str) -> Schema.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
+            validate_required_fields(
+                ["database_qualified_name"], [database_qualified_name]
+            )
             fields = database_qualified_name.split("/")
             if len(fields) != 4:
                 raise ValueError("Invalid database_qualified_name")
@@ -3296,8 +3323,11 @@ class Schema(SQL):
     )
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: str, database_qualified_name: str):
+    # @validate_arguments()
+    def create(cls, name: str, database_qualified_name: str) -> Schema:
+        validate_required_fields(
+            ["name", "database_qualified_name"], [name, database_qualified_name]
+        )
         attributes = Schema.Attributes.create(name, database_qualified_name)
         return cls(attributes=attributes)
 
@@ -3338,10 +3368,15 @@ class Database(SQL):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: str, connection_qualified_name: str):
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str
+        ) -> Database.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
+            validate_required_fields(
+                ["connection_qualified_name"], [connection_qualified_name]
+            )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
                 raise ValueError("Invalid connection_qualified_name")
@@ -3363,10 +3398,13 @@ class Database(SQL):
     )
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: str, connection_qualified_name: str):
+    # @validate_arguments()
+    def create(cls, name: str, connection_qualified_name: str) -> Database:
         if not name:
             raise ValueError("name cannot be blank")
+        validate_required_fields(
+            ["connection_qualified_name"], [connection_qualified_name]
+        )
         fields = connection_qualified_name.split("/")
         if len(fields) != 3:
             raise ValueError("Invalid connection_qualified_name")
@@ -3582,10 +3620,11 @@ class View(SQL):
         )  # relationship
 
         @classmethod
-        @validate_arguments()
-        def create(cls, name: str, schema_qualified_name: str):
+        # @validate_arguments()
+        def create(cls, name: str, schema_qualified_name: str) -> View.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
+            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
             fields = schema_qualified_name.split("/")
             if len(fields) != 5:
                 raise ValueError("Invalid schema_qualified_name")
@@ -3611,8 +3650,11 @@ class View(SQL):
     )
 
     @classmethod
-    @validate_arguments()
-    def create(cls, name: str, schema_qualified_name: str):
+    # @validate_arguments()
+    def create(cls, name: str, schema_qualified_name: str) -> View:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
         attributes = View.Attributes.create(name, schema_qualified_name)
         return cls(attributes=attributes)
 
