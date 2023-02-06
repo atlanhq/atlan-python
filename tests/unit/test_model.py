@@ -167,10 +167,10 @@ def test_connection_attributes_create_without_required_parameters_raises_validat
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles",
     [
-        ("query", AtlanConnectorType.BIGQUERY, ["bob"], None, None),
-        ("query", AtlanConnectorType.BIGQUERY, None, ["bob"], None),
-        ("query", AtlanConnectorType.BIGQUERY, None, None, ["bob"]),
-        ("query", AtlanConnectorType.BIGQUERY, ["bob"], ["ted"], ["alice"]),
+        ("query", AtlanConnectorType.BIGQUERY, {"bob"}, None, None),
+        ("query", AtlanConnectorType.BIGQUERY, None, {"bob"}, None),
+        ("query", AtlanConnectorType.BIGQUERY, None, None, {"bob"}),
+        ("query", AtlanConnectorType.BIGQUERY, {"bob"}, {"ted"}, {"alice"}),
     ],
 )
 def test_connection_attributes_create_with_required_parameters(
@@ -194,7 +194,7 @@ def test_connection_attributes_create_with_required_parameters(
 
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles",
-    [("somequery", AtlanConnectorType.BIGQUERY, ["bob"], ["ted"], ["alice"])],
+    [("somequery", AtlanConnectorType.BIGQUERY, {"bob"}, {"ted"}, {"alice"})],
 )
 def test_connection_create_with_required_parameters(
     name, connector_type, admin_users, admin_groups, admin_roles

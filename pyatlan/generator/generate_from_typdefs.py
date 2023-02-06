@@ -16,6 +16,12 @@ LIST_DICT_BY_STRING = list[DICT_BY_STRING]
 TEMPLATES_DIR = PARENT.parent / "templates"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
 TYPE_REPLACEMENTS = [
+    ("array<string>", "set[string]"),
+    ("array<date>", "set[date]"),
+    ("array<boolean>", "set[bool]"),
+    ("array<int>", "set[int]"),
+    ("array<float>", "set[float]"),
+    ("array<long>", "set[int]"),
     ("icon_type", "IconType"),
     ("string", "str"),
     ("date", "datetime"),
@@ -29,10 +35,12 @@ TYPE_REPLACEMENTS = [
     (">", "]"),
     ("<", "["),
 ]
+ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 
 
 def get_type(type_: str):
     ret_value = type_
+
     for (field, replacement) in TYPE_REPLACEMENTS:
         ret_value = ret_value.replace(field, replacement)
     return ret_value
