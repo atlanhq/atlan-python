@@ -463,7 +463,6 @@ def test_create_hierarchy(client: AtlanClient, increment_counter):
     assert guid == term.guid
 
 
-@pytest.mark.skip(reason="connection creation is intermittently failing")
 def test_create_connection(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -488,7 +487,6 @@ def test_create_connection(client: AtlanClient, increment_counter):
     assert c.guid == guid
 
 
-@pytest.mark.skip(reason="connection creation is intermittently failing")
 def test_create_database(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -523,7 +521,6 @@ def test_create_database(client: AtlanClient, increment_counter):
     assert guid == database.guid
 
 
-@pytest.mark.skip(reason="connection creation is intermittently failing")
 def test_create_schema(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -570,7 +567,6 @@ def test_create_schema(client: AtlanClient, increment_counter):
     assert guid == schema.guid
 
 
-@pytest.mark.skip(reason="connection creation is intermittently failing")
 def test_create_table(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -623,7 +619,7 @@ def test_create_table(client: AtlanClient, increment_counter):
     assert guid == table.guid
     time.sleep(3)
     table = client.get_asset_by_guid(guid, Table)
-    assert isinstance(schema, Table)
+    assert isinstance(table, Table)
     assert guid == table.guid
 
 
