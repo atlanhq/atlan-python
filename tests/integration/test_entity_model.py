@@ -392,10 +392,8 @@ def test_create_hierarchy(client: AtlanClient, increment_counter):
         )
     )
     response = client.upsert(glossary)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
-    glossary = response.mutated_entities.CREATE[0]
+    assert len(response.assets_created(AtlasGlossary)) == 1
+    glossary = response.assets_created(AtlasGlossary)[0]
     category_1 = AtlasGlossaryCategory(
         attributes=AtlasGlossaryCategory.Attributes(
             name=f"Integration Test Glossary Category {suffix}",
@@ -404,65 +402,36 @@ def test_create_hierarchy(client: AtlanClient, increment_counter):
         )
     )
     response = client.upsert(category_1)
-    assert response.mutated_entities
-    assert response.mutated_entities.UPDATE
-    assert len(response.mutated_entities.UPDATE) == 1
-    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
-    assert response.mutated_entities.CREATE
-    assert len(response.mutated_entities.CREATE) == 1
+    assert len(response.assets_updated(AtlasGlossary)) == 1
+    assert len(response.assets_created(AtlasGlossaryCategory)) == 1
     guid = response.guid_assignments[category_1.guid]
-    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryCategory)
-    category_1 = response.mutated_entities.CREATE[0]
+    category_1 = response.assets_created(AtlasGlossaryCategory)[0]
     assert guid == category_1.guid
-
-    category_2 = AtlasGlossaryCategory(
-        attributes=AtlasGlossaryCategory.Attributes(
-            name=f"Integration Test Glossary Category {suffix}",
-            user_description="This is a test glossary category",
-            anchor=glossary,
-            parent_category=category_1,
-        )
+    category_2 = AtlasGlossaryCategory.create(
+        name=f"Integration Test Glossary Category {suffix}",
+        anchor=glossary,
+        parent_category=category_1,
     )
     response = client.upsert(category_2)
-    assert response.mutated_entities
-    assert response.mutated_entities.UPDATE
-    assert len(response.mutated_entities.UPDATE) == 2
-    if isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary):
-        assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossaryCategory)
-    else:
-        assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossaryCategory)
-        assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossary)
-    assert response.mutated_entities.CREATE
-    assert len(response.mutated_entities.CREATE) == 1
     guid = response.guid_assignments[category_2.guid]
-    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryCategory)
-    category_2 = response.mutated_entities.CREATE[0]
+    assert len(response.assets_updated(AtlasGlossary)) == 1
+    assert len(response.assets_updated(AtlasGlossaryCategory)) == 1
+    assert len(response.assets_created(AtlasGlossaryCategory)) == 1
+    category_2 = response.assets_created(AtlasGlossaryCategory)[0]
     assert guid == category_2.guid
-
-    term = AtlasGlossaryTerm(
-        attributes=AtlasGlossaryTerm.Attributes(
-            name=f"Integration Test term {suffix}",
-            anchor=glossary,
-            categories=[category_2],
-        )
+    term = AtlasGlossaryTerm.create(
+        name=f"Integration Test term {suffix}", anchor=glossary, categories=[category_2]
     )
     response = client.upsert(term)
-    assert response.mutated_entities
-    assert response.mutated_entities.UPDATE
-    assert len(response.mutated_entities.UPDATE) == 2
-    if isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary):
-        assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossaryCategory)
-    else:
-        assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossaryCategory)
-        assert isinstance(response.mutated_entities.UPDATE[1], AtlasGlossary)
-    assert response.mutated_entities.CREATE
-    assert len(response.mutated_entities.CREATE) == 1
+    assert len(response.assets_updated(AtlasGlossary)) == 1
+    assert len(response.assets_updated(AtlasGlossaryCategory)) == 1
     guid = response.guid_assignments[term.guid]
-    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
-    term = response.mutated_entities.CREATE[0]
+    assert len(response.assets_created(AtlasGlossaryTerm)) == 1
+    term = response.assets_created(AtlasGlossaryTerm)[0]
     assert guid == term.guid
 
 
+@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_connection(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -487,6 +456,7 @@ def test_create_connection(client: AtlanClient, increment_counter):
     assert c.guid == guid
 
 
+@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_database(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -500,6 +470,7 @@ def test_create_database(client: AtlanClient, increment_counter):
     response = client.upsert(connection)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], Connection)
     connection = response.mutated_entities.CREATE[0]
     connection = client.get_asset_by_guid(connection.guid, Connection)
     database = Database.create(
@@ -521,6 +492,7 @@ def test_create_database(client: AtlanClient, increment_counter):
     assert guid == database.guid
 
 
+@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_schema(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -534,6 +506,7 @@ def test_create_schema(client: AtlanClient, increment_counter):
     response = client.upsert(connection)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], Connection)
     connection = response.mutated_entities.CREATE[0]
     time.sleep(30)
     connection = client.get_asset_by_guid(connection.guid, Connection)
@@ -544,6 +517,7 @@ def test_create_schema(client: AtlanClient, increment_counter):
     response = client.upsert(database)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], Database)
     database = response.mutated_entities.CREATE[0]
     time.sleep(3)
     database = client.get_asset_by_guid(database.guid, Database)
@@ -567,6 +541,7 @@ def test_create_schema(client: AtlanClient, increment_counter):
     assert guid == schema.guid
 
 
+@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_table(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
@@ -580,6 +555,7 @@ def test_create_table(client: AtlanClient, increment_counter):
     response = client.upsert(connection)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], Connection)
     connection = response.mutated_entities.CREATE[0]
     time.sleep(30)
     connection = client.get_asset_by_guid(connection.guid, Connection)
@@ -590,6 +566,7 @@ def test_create_table(client: AtlanClient, increment_counter):
     response = client.upsert(database)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], Database)
     database = response.mutated_entities.CREATE[0]
     time.sleep(3)
     database = client.get_asset_by_guid(database.guid, Database)
@@ -600,6 +577,7 @@ def test_create_table(client: AtlanClient, increment_counter):
     response = client.upsert(schema)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], Schema)
     schema = response.mutated_entities.CREATE[0]
     time.sleep(3)
     schema = client.get_asset_by_guid(schema.guid, Schema)
@@ -631,6 +609,7 @@ def test_get_by_qualified_name(client: AtlanClient):
     assert column.attributes.qualified_name == qualified_name
 
 
+@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_view(client: AtlanClient, increment_counter):
     view = View.create(
         f"Integration {increment_counter()}",

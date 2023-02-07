@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Type, TypeVar
 
 from pydantic import Field, StrictStr, root_validator
 
@@ -237,12 +237,12 @@ class Referenceable(AtlanObject):
     )
     updated_by: Optional[str] = Field(
         None,
-        description="Username of the user who last updated the object.\n",
+        description="Username of the user who last assets_updated the object.\n",
         example="jsmith",
     )
     update_time: Optional[int] = Field(
         None,
-        description="Time (epoch) at which this object was last updated, in milliseconds.\n",
+        description="Time (epoch) at which this object was last assets_updated, in milliseconds.\n",
         example=1649172284333,
     )
     version: Optional[int] = Field(
@@ -826,10 +826,15 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: StrictStr, anchor: AtlasGlossary
+            cls,
+            name: StrictStr,
+            anchor: AtlasGlossary,
+            categories: Optional[list[AtlasGlossaryCategory]] = None,
         ) -> AtlasGlossaryTerm.Attributes:
             validate_required_fields(["name", "anchor"], [name, anchor])
-            return AtlasGlossaryTerm.Attributes(name=name, anchor=anchor)
+            return AtlasGlossaryTerm.Attributes(
+                name=name, anchor=anchor, categories=categories
+            )
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
         None,
@@ -849,10 +854,17 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: StrictStr, anchor: AtlasGlossary) -> AtlasGlossaryTerm:
+    def create(
+        cls,
+        name: StrictStr,
+        anchor: AtlasGlossary,
+        categories: Optional[list[AtlasGlossaryCategory]] = None,
+    ) -> AtlasGlossaryTerm:
         validate_required_fields(["name", "anchor"], [name, anchor])
         return cls(
-            attributes=AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
+            attributes=AtlasGlossaryTerm.Attributes.create(
+                name=name, anchor=anchor, categories=categories
+            )
         )
 
 
@@ -1084,10 +1096,15 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: StrictStr, anchor: AtlasGlossary
+            cls,
+            name: StrictStr,
+            anchor: AtlasGlossary,
+            parent_category: Optional[AtlasGlossaryCategory] = None,
         ) -> AtlasGlossaryCategory.Attributes:
             validate_required_fields(["name", "anchor"], [name, anchor])
-            return AtlasGlossaryCategory.Attributes(name=name, anchor=anchor)
+            return AtlasGlossaryCategory.Attributes(
+                name=name, anchor=anchor, parent_category=parent_category
+            )
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
         None,
@@ -1107,10 +1124,17 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: StrictStr, anchor: AtlasGlossary) -> AtlasGlossaryCategory:
+    def create(
+        cls,
+        name: StrictStr,
+        anchor: AtlasGlossary,
+        parent_category: Optional[AtlasGlossaryCategory] = None,
+    ) -> AtlasGlossaryCategory:
         validate_required_fields(["name", "anchor"], [name, anchor])
         return cls(
-            attributes=AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor)
+            attributes=AtlasGlossaryCategory.Attributes.create(
+                name=name, anchor=anchor, parent_category=parent_category
+            )
         )
 
 
@@ -6814,8 +6838,8 @@ class MutatedEntities(AtlanObject):
     )
     UPDATE: Optional[list[Asset]] = Field(
         None,
-        description="Assets that were updated. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
+        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on"
+        " the type of asset, but listed in the example are the common set of properties across assets.",
         alias="UPDATE",
     )
     DELETE: Optional[list[Asset]] = Field(
@@ -6826,6 +6850,9 @@ class MutatedEntities(AtlanObject):
     )
 
 
+A = TypeVar("A", bound=Asset)
+
+
 class AssetMutationResponse(AtlanObject):
     guid_assignments: dict[str, Any] = Field(
         None, description="Map of assigned unique identifiers for the changed assets."
@@ -6833,6 +6860,33 @@ class AssetMutationResponse(AtlanObject):
     mutated_entities: Optional[MutatedEntities] = Field(
         None, description="Assets that were changed."
     )
+
+    def assets_created(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.CREATE:
+            return [
+                asset
+                for asset in self.mutated_entities.CREATE
+                if isinstance(asset, asset_type)
+            ]
+        return []
+
+    def assets_updated(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.UPDATE:
+            return [
+                asset
+                for asset in self.mutated_entities.UPDATE
+                if isinstance(asset, asset_type)
+            ]
+        return []
+
+    def assets_deleted(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.DELETE:
+            return [
+                asset
+                for asset in self.mutated_entities.DELETE
+                if isinstance(asset, asset_type)
+            ]
+        return []
 
 
 Referenceable.update_forward_refs()
