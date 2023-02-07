@@ -144,9 +144,9 @@ def test_clear_announcement(glossary, announcement):
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles, error",
     [
-        (None, AtlanConnectorType.BIGQUERY, None, None, ["123"], ValidationError),
+        (None, AtlanConnectorType.BIGQUERY, None, None, ["123"], ValueError),
         ("", AtlanConnectorType.BIGQUERY, None, None, ["123"], ValueError),
-        ("query", None, None, None, ["123"], ValidationError),
+        ("query", None, None, None, ["123"], ValueError),
         ("query", AtlanConnectorType.BIGQUERY, None, None, None, ValueError),
         ("query", AtlanConnectorType.BIGQUERY, [], [], [], ValueError),
     ],
@@ -218,9 +218,9 @@ def test_connection_create_with_required_parameters(
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles, error",
     [
-        (None, AtlanConnectorType.BIGQUERY, None, None, ["123"], ValidationError),
+        (None, AtlanConnectorType.BIGQUERY, None, None, ["123"], ValueError),
         ("", AtlanConnectorType.BIGQUERY, None, None, ["123"], ValueError),
-        ("SomeQuery", None, None, None, ["123"], ValidationError),
+        ("SomeQuery", None, None, None, ["123"], ValueError),
         ("SomeQuery", AtlanConnectorType.BIGQUERY, None, None, None, ValueError),
         ("SomeQuery", AtlanConnectorType.BIGQUERY, [], [], [], ValueError),
     ],
@@ -373,8 +373,8 @@ def test_connection_validate_required_when_fields_are_present(
 @pytest.mark.parametrize(
     "name, connection_qualified_name, error",
     [
-        (None, "default/snowflake/1673868111909", ValidationError),
-        ("DB", None, ValidationError),
+        (None, "default/snowflake/1673868111909", ValueError),
+        ("DB", None, ValueError),
         ("", "default/snowflake/1673868111909", ValueError),
         ("DB", "", ValueError),
         ("DB", "default/snwflake/1673868111909", ValueError),
@@ -413,8 +413,8 @@ def test_database_attributes_create_with_required_parameters(
 @pytest.mark.parametrize(
     "name, connection_qualified_name, error",
     [
-        (None, "default/snowflake/1673868111909", ValidationError),
-        ("DB", None, ValidationError),
+        (None, "default/snowflake/1673868111909", ValueError),
+        ("DB", None, ValueError),
         ("", "default/snowflake/1673868111909", ValueError),
         ("DB", "", ValueError),
         ("DB", "default/snwflake/1673868111909", ValueError),
@@ -450,8 +450,8 @@ def test_database_create_with_required_parameters(name, connection_qualified_nam
 @pytest.mark.parametrize(
     "name, database_qualified_name, error",
     [
-        (None, "default/snowflake/1673868111909/TestDb", ValidationError),
-        ("Schema1", None, ValidationError),
+        (None, "default/snowflake/1673868111909/TestDb", ValueError),
+        ("Schema1", None, ValueError),
         ("", "default/snowflake/1673868111909/TestDb", ValueError),
         ("Schema1", "", ValueError),
         ("Schema1", "default/snwflake/1673868111909/TestDb", ValueError),
@@ -495,8 +495,8 @@ def test_schema_attributes_create_with_required_parameters(
 @pytest.mark.parametrize(
     "name, database_qualified_name, error",
     [
-        (None, "default/snowflake/1673868111909/TestDb", ValidationError),
-        ("Schema1", None, ValidationError),
+        (None, "default/snowflake/1673868111909/TestDb", ValueError),
+        ("Schema1", None, ValueError),
         ("", "default/snowflake/1673868111909/TestDb", ValueError),
         ("Schema1", "", ValueError),
         ("Schema1", "default/snwflake/1673868111909/TestDb", ValueError),
@@ -516,8 +516,8 @@ def test_schema__create_without_required_parameters_raises_validation_error(
     [
         (cls, values[0], values[1], values[2])
         for values in [
-            (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
-            ("Table_1", None, ValidationError),
+            (None, "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
+            ("Table_1", None, ValueError),
             ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
             ("Table_1", "", ValueError),
             ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
@@ -563,8 +563,8 @@ def test_table_attributes_create_with_required_parameters(
     [
         (cls, values[0], values[1], values[2])
         for values in [
-            (None, "default/snowflake/1673868111909/TestDb/Schema1", ValidationError),
-            ("Table_1", None, ValidationError),
+            (None, "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
+            ("Table_1", None, ValueError),
             ("", "default/snowflake/1673868111909/TestDb/Schema1", ValueError),
             ("Table_1", "", ValueError),
             ("Table_1", "default/snwflake/1673868111909/TestDb/Schema1", ValueError),
@@ -662,8 +662,8 @@ def test_class_remove_methods(clazz, method_name):
 
 
 def test_glossary_attributes_create_when_missing_name_raises_validation_error():
-    with pytest.raises(ValidationError):
-        AtlasGlossary.Attributes.create()
+    with pytest.raises(ValueError):
+        AtlasGlossary.Attributes.create(name=None)
 
 
 def test_glossary_attributes_create_sets_name():
@@ -677,7 +677,7 @@ def test_glossary_attributes_create_sets_name():
 def test_glossary_category_attributes_create_when_missing_name_raises_validation_error(
     name, anchor
 ):
-    with pytest.raises(ValidationError):
+    with pytest.raises(ValueError):
         AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor)
 
 
@@ -694,8 +694,9 @@ def test_glossary_category_attributes_create_sets_name_anchor():
 def test_glossary_term_attributes_create_when_missing_name_raises_validation_error(
     name, anchor
 ):
-    with pytest.raises(ValidationError):
-        AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
+    with pytest.raises(ValueError):
+        a = AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
+        a.validate_required()
 
 
 def test_glossary_term_attributes_create_sets_name_anchor():
