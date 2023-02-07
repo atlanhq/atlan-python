@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Type, TypeVar
 
 from pydantic import Field, StrictStr, root_validator
 
@@ -71,8 +71,8 @@ class Histogram(AtlanObject):
     """Description"""
 
     class Attributes(AtlanObject):
-        boundaries: list[float] = Field(None, description="", alias="boundaries")
-        frequencies: list[float] = Field(None, description="", alias="frequencies")
+        boundaries: set[float] = Field(None, description="", alias="boundaries")
+        frequencies: set[float] = Field(None, description="", alias="frequencies")
 
 
 class DbtMetricFilter(AtlanObject):
@@ -237,12 +237,12 @@ class Referenceable(AtlanObject):
     )
     updated_by: Optional[str] = Field(
         None,
-        description="Username of the user who last updated the object.\n",
+        description="Username of the user who last assets_updated the object.\n",
         example="jsmith",
     )
     update_time: Optional[int] = Field(
         None,
-        description="Time (epoch) at which this object was last updated, in milliseconds.\n",
+        description="Time (epoch) at which this object was last assets_updated, in milliseconds.\n",
         example=1649172284333,
     )
     version: Optional[int] = Field(
@@ -361,22 +361,22 @@ class Asset(Referenceable):
         announcement_updated_by: Optional[str] = Field(
             None, description="", alias="announcementUpdatedBy"
         )
-        owner_users: Optional[list[str]] = Field(
+        owner_users: Optional[set[str]] = Field(
             None, description="", alias="ownerUsers"
         )
-        owner_groups: Optional[list[str]] = Field(
+        owner_groups: Optional[set[str]] = Field(
             None, description="", alias="ownerGroups"
         )
-        admin_users: Optional[list[str]] = Field(
+        admin_users: Optional[set[str]] = Field(
             None, description="", alias="adminUsers"
         )
-        admin_groups: Optional[list[str]] = Field(
+        admin_groups: Optional[set[str]] = Field(
             None, description="", alias="adminGroups"
         )
-        viewer_users: Optional[list[str]] = Field(
+        viewer_users: Optional[set[str]] = Field(
             None, description="", alias="viewerUsers"
         )
-        viewer_groups: Optional[list[str]] = Field(
+        viewer_groups: Optional[set[str]] = Field(
             None, description="", alias="viewerGroups"
         )
         connector_name: Optional[str] = Field(
@@ -422,7 +422,7 @@ class Asset(Referenceable):
             None, description="", alias="lastSyncRunAt"
         )
         last_sync_run: Optional[str] = Field(None, description="", alias="lastSyncRun")
-        admin_roles: Optional[list[str]] = Field(
+        admin_roles: Optional[set[str]] = Field(
             None, description="", alias="adminRoles"
         )
         source_read_count: Optional[int] = Field(
@@ -443,13 +443,13 @@ class Asset(Referenceable):
         source_cost_unit: Optional[SourceCostUnitType] = Field(
             None, description="", alias="sourceCostUnit"
         )
-        source_read_recent_user_list: Optional[list[str]] = Field(
+        source_read_recent_user_list: Optional[set[str]] = Field(
             None, description="", alias="sourceReadRecentUserList"
         )
         source_read_recent_user_record_list: Optional[list[PopularityInsights]] = Field(
             None, description="", alias="sourceReadRecentUserRecordList"
         )
-        source_read_top_user_list: Optional[list[str]] = Field(
+        source_read_top_user_list: Optional[set[str]] = Field(
             None, description="", alias="sourceReadTopUserList"
         )
         source_read_top_user_record_list: Optional[list[PopularityInsights]] = Field(
@@ -464,7 +464,7 @@ class Asset(Referenceable):
         source_read_slow_query_record_list: Optional[list[PopularityInsights]] = Field(
             None, description="", alias="sourceReadSlowQueryRecordList"
         )
-        source_query_compute_cost_list: Optional[list[str]] = Field(
+        source_query_compute_cost_list: Optional[set[str]] = Field(
             None, description="", alias="sourceQueryComputeCostList"
         )
         source_query_compute_cost_record_list: Optional[
@@ -581,7 +581,7 @@ class Asset(Referenceable):
         asset_dbt_environment_dbt_version: Optional[str] = Field(
             None, description="", alias="assetDbtEnvironmentDbtVersion"
         )
-        asset_dbt_tags: Optional[list[str]] = Field(
+        asset_dbt_tags: Optional[set[str]] = Field(
             None, description="", alias="assetDbtTags"
         )
         asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
@@ -756,7 +756,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         long_description: Optional[str] = Field(
             None, description="", alias="longDescription"
         )
-        examples: Optional[list[str]] = Field(None, description="", alias="examples")
+        examples: Optional[set[str]] = Field(None, description="", alias="examples")
         abbreviation: Optional[str] = Field(None, description="", alias="abbreviation")
         usage: Optional[str] = Field(None, description="", alias="usage")
         additional_attributes: Optional[dict[str, str]] = Field(
@@ -826,10 +826,15 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: StrictStr, anchor: AtlasGlossary
+            cls,
+            name: StrictStr,
+            anchor: AtlasGlossary,
+            categories: Optional[list[AtlasGlossaryCategory]] = None,
         ) -> AtlasGlossaryTerm.Attributes:
             validate_required_fields(["name", "anchor"], [name, anchor])
-            return AtlasGlossaryTerm.Attributes(name=name, anchor=anchor)
+            return AtlasGlossaryTerm.Attributes(
+                name=name, anchor=anchor, categories=categories
+            )
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
         None,
@@ -849,10 +854,17 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: StrictStr, anchor: AtlasGlossary) -> AtlasGlossaryTerm:
+    def create(
+        cls,
+        name: StrictStr,
+        anchor: AtlasGlossary,
+        categories: Optional[list[AtlasGlossaryCategory]] = None,
+    ) -> AtlasGlossaryTerm:
         validate_required_fields(["name", "anchor"], [name, anchor])
         return cls(
-            attributes=AtlasGlossaryTerm.Attributes.create(name=name, anchor=anchor)
+            attributes=AtlasGlossaryTerm.Attributes.create(
+                name=name, anchor=anchor, categories=categories
+            )
         )
 
 
@@ -911,7 +923,7 @@ class Connection(Asset, type_name="Connection"):
         has_popularity_insights: Optional[bool] = Field(
             None, description="", alias="hasPopularityInsights"
         )
-        connection_dbt_environments: Optional[list[str]] = Field(
+        connection_dbt_environments: Optional[set[str]] = Field(
             None, description="", alias="connectionDbtEnvironments"
         )
         links: Optional[list[Link]] = Field(
@@ -1084,10 +1096,15 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: StrictStr, anchor: AtlasGlossary
+            cls,
+            name: StrictStr,
+            anchor: AtlasGlossary,
+            parent_category: Optional[AtlasGlossaryCategory] = None,
         ) -> AtlasGlossaryCategory.Attributes:
             validate_required_fields(["name", "anchor"], [name, anchor])
-            return AtlasGlossaryCategory.Attributes(name=name, anchor=anchor)
+            return AtlasGlossaryCategory.Attributes(
+                name=name, anchor=anchor, parent_category=parent_category
+            )
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
         None,
@@ -1107,10 +1124,17 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: StrictStr, anchor: AtlasGlossary) -> AtlasGlossaryCategory:
+    def create(
+        cls,
+        name: StrictStr,
+        anchor: AtlasGlossary,
+        parent_category: Optional[AtlasGlossaryCategory] = None,
+    ) -> AtlasGlossaryCategory:
         validate_required_fields(["name", "anchor"], [name, anchor])
         return cls(
-            attributes=AtlasGlossaryCategory.Attributes.create(name=name, anchor=anchor)
+            attributes=AtlasGlossaryCategory.Attributes.create(
+                name=name, anchor=anchor, parent_category=parent_category
+            )
         )
 
 
@@ -1415,7 +1439,7 @@ class Dbt(Catalog):
         dbt_environment_dbt_version: Optional[str] = Field(
             None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
         dbt_connection_context: Optional[str] = Field(
             None, description="", alias="dbtConnectionContext"
         )
@@ -1925,7 +1949,7 @@ class DbtColumnProcess(Dbt):
         dbt_environment_dbt_version: Optional[str] = Field(
             None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
         dbt_connection_context: Optional[str] = Field(
             None, description="", alias="dbtConnectionContext"
         )
@@ -1978,7 +2002,7 @@ class Metric(DataQuality):
         metric_filters: Optional[str] = Field(
             None, description="", alias="metricFilters"
         )
-        metric_time_grains: Optional[list[str]] = Field(
+        metric_time_grains: Optional[set[str]] = Field(
             None, description="", alias="metricTimeGrains"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -2444,7 +2468,7 @@ class DbtMetric(Dbt):
         dbt_environment_dbt_version: Optional[str] = Field(
             None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
         dbt_connection_context: Optional[str] = Field(
             None, description="", alias="dbtConnectionContext"
         )
@@ -2456,7 +2480,7 @@ class DbtMetric(Dbt):
         metric_filters: Optional[str] = Field(
             None, description="", alias="metricFilters"
         )
-        metric_time_grains: Optional[list[str]] = Field(
+        metric_time_grains: Optional[set[str]] = Field(
             None, description="", alias="metricTimeGrains"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -2585,7 +2609,7 @@ class DbtProcess(Dbt):
         dbt_environment_dbt_version: Optional[str] = Field(
             None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[list[str]] = Field(None, description="", alias="dbtTags")
+        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
         dbt_connection_context: Optional[str] = Field(
             None, description="", alias="dbtConnectionContext"
         )
@@ -2778,7 +2802,7 @@ class APIPath(API):
         api_path_is_templated: Optional[bool] = Field(
             None, description="", alias="apiPathIsTemplated"
         )
-        api_path_available_operations: Optional[list[str]] = Field(
+        api_path_available_operations: Optional[set[str]] = Field(
             None, description="", alias="apiPathAvailableOperations"
         )
         api_path_available_response_codes: Optional[dict[str, str]] = Field(
@@ -3154,13 +3178,13 @@ class Column(SQL):
         column_maximum_string_length: Optional[int] = Field(
             None, description="", alias="columnMaximumStringLength"
         )
-        column_maxs: Optional[list[str]] = Field(
+        column_maxs: Optional[set[str]] = Field(
             None, description="", alias="columnMaxs"
         )
         column_minimum_string_length: Optional[int] = Field(
             None, description="", alias="columnMinimumStringLength"
         )
-        column_mins: Optional[list[str]] = Field(
+        column_mins: Optional[set[str]] = Field(
             None, description="", alias="columnMins"
         )
         column_missing_values_count: Optional[int] = Field(
@@ -4518,7 +4542,7 @@ class PowerBITable(PowerBI):
         dataset_qualified_name: Optional[str] = Field(
             None, description="", alias="datasetQualifiedName"
         )
-        power_b_i_table_source_expressions: Optional[list[str]] = Field(
+        power_b_i_table_source_expressions: Optional[set[str]] = Field(
             None, description="", alias="powerBITableSourceExpressions"
         )
         power_b_i_table_column_count: Optional[int] = Field(
@@ -6424,7 +6448,7 @@ class LookerQuery(Looker):
         source_definition_schema: Optional[str] = Field(
             None, description="", alias="sourceDefinitionSchema"
         )
-        fields: Optional[list[str]] = Field(None, description="", alias="fields")
+        fields: Optional[set[str]] = Field(None, description="", alias="fields")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -6634,7 +6658,7 @@ class SalesforceField(Salesforce):
             None, description="", alias="numericScale"
         )
         is_unique: Optional[bool] = Field(None, description="", alias="isUnique")
-        picklist_values: Optional[list[str]] = Field(
+        picklist_values: Optional[set[str]] = Field(
             None, description="", alias="picklistValues"
         )
         is_polymorphic_foreign_key: Optional[bool] = Field(
@@ -6770,7 +6794,7 @@ class SalesforceReport(Salesforce):
         report_type: Optional[dict[str, str]] = Field(
             None, description="", alias="reportType"
         )
-        detail_columns: Optional[list[str]] = Field(
+        detail_columns: Optional[set[str]] = Field(
             None, description="", alias="detailColumns"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -6814,8 +6838,8 @@ class MutatedEntities(AtlanObject):
     )
     UPDATE: Optional[list[Asset]] = Field(
         None,
-        description="Assets that were updated. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
+        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on"
+        " the type of asset, but listed in the example are the common set of properties across assets.",
         alias="UPDATE",
     )
     DELETE: Optional[list[Asset]] = Field(
@@ -6826,6 +6850,9 @@ class MutatedEntities(AtlanObject):
     )
 
 
+A = TypeVar("A", bound=Asset)
+
+
 class AssetMutationResponse(AtlanObject):
     guid_assignments: dict[str, Any] = Field(
         None, description="Map of assigned unique identifiers for the changed assets."
@@ -6833,6 +6860,33 @@ class AssetMutationResponse(AtlanObject):
     mutated_entities: Optional[MutatedEntities] = Field(
         None, description="Assets that were changed."
     )
+
+    def assets_created(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.CREATE:
+            return [
+                asset
+                for asset in self.mutated_entities.CREATE
+                if isinstance(asset, asset_type)
+            ]
+        return []
+
+    def assets_updated(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.UPDATE:
+            return [
+                asset
+                for asset in self.mutated_entities.UPDATE
+                if isinstance(asset, asset_type)
+            ]
+        return []
+
+    def assets_deleted(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.DELETE:
+            return [
+                asset
+                for asset in self.mutated_entities.DELETE
+                if isinstance(asset, asset_type)
+            ]
+        return []
 
 
 Referenceable.update_forward_refs()

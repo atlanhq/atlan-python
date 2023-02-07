@@ -36,12 +36,12 @@ class TypeDef(AtlanObject):
     )
     update_time: Optional[int] = Field(
         None,
-        description="Time (epoch) at which this object was last updated, in milliseconds.\n",
+        description="Time (epoch) at which this object was last assets_updated, in milliseconds.\n",
         example=1649172284333,
     )
     updated_by: Optional[str] = Field(
         None,
-        description="Username of the user who last updated the object.\n",
+        description="Username of the user who last assets_updated the object.\n",
         example="jsmith",
     )
     version: Optional[int] = Field(
