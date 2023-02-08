@@ -301,6 +301,7 @@ class AtlanClient(BaseSettings):
                 raw_json["entity"]["relationshipAttributes"]
             )
             asset = AssetResponse[A](**raw_json).entity
+            asset.is_incomplete = False
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
                     message=f"Asset with qualifiedName {qualified_name} "
@@ -336,6 +337,7 @@ class AtlanClient(BaseSettings):
             )
             raw_json["entity"]["relationshipAttributes"] = {}
             asset = AssetResponse[A](**raw_json).entity
+            asset.is_incomplete = False
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
                     message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, Extra, Field, validator
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -45,12 +45,25 @@ def to_snake_case(str):
     return "".join(res)
 
 
+def encode_classification(v: "Classification"):
+    from pyatlan.cache.classification_cache import ClassificationCache
+
+    if v.type_name:
+        ret_value = v.dict()
+        ret_value["type_name"] = ClassificationCache.get_id_for_name(v.type_name)
+        return ret_value
+    return v.dict()
+
+
 class AtlanObject(BaseModel):
     class Config:
         allow_population_by_field_name = True
         alias_generator = to_camel_case
         extra = Extra.forbid
-        json_encoders = {datetime: lambda v: int(v.timestamp() * 1000)}
+        json_encoders = {
+            datetime: lambda v: int(v.timestamp() * 1000),
+            "Classification": encode_classification,
+        }
         validate_assignment = True
 
 
@@ -87,6 +100,28 @@ class Classification(AtlanObject):
         None, description="", alias="restrictPropagationThroughLineage"
     )
     validity_peridos: Optional[list[str]] = Field(None, alias="validityPeriods")
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._map_type_name
+
+    @classmethod
+    def _map_type_name(cls, data):
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        if "typeName" in data and data["typeName"]:
+            type_name = data["typeName"]
+            data["typeName"] = ClassificationCache.get_name_for_id(type_name)
+        return cls(**data)
+
+    @validator("type_name")
+    def valid_classification_name(cls, v):
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        id = ClassificationCache.get_id_for_name(v)
+        if id:
+            return v
+        raise ValueError(f"{v} is not a valid classification")
 
 
 class Meaning(AtlanObject):
