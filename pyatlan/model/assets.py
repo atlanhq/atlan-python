@@ -222,7 +222,7 @@ class Referenceable(AtlanObject):
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
         default_factory=next_id,
     )
-    is_incomplete: Optional[bool] = Field(False, description="", example=False)
+    is_incomplete: Optional[bool] = Field(True, description="", example=True)
     labels: Optional[List[str]] = Field(None, description="Internal use only.")
     relationship_attributes: Optional[Dict[str, Any]] = Field(
         None,
@@ -6838,8 +6838,8 @@ class MutatedEntities(AtlanObject):
     )
     UPDATE: Optional[list[Asset]] = Field(
         None,
-        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on"
-        " the type of asset, but listed in the example are the common set of properties across assets.",
+        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on "
+        "the type of asset, but listed in the example are the common set of properties across assets.",
         alias="UPDATE",
     )
     DELETE: Optional[list[Asset]] = Field(

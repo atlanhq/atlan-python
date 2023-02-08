@@ -29,7 +29,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pyatlan",
-    version="0.0.2",
+    version="0.0.3",
     author="Atlan Pte, Ltd",
     author_email="engineering@atlan.com",
     description="Atlan Python Client",
