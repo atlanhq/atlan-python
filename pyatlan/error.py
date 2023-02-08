@@ -24,7 +24,7 @@ class AtlanError(Exception):
     """
 
     def __init__(self, message: str, code: str, status_code: Optional[int]):
-        super(AtlanError, self).__init__(message)
+        super().__init__(message)
         self._message = message
         self.code = code
         self.status_code = status_code
@@ -104,7 +104,7 @@ class AuthenticationError(AtlanError):
         status_code: int = 403,
         should_retry: bool = False,
     ):
-        super(AtlanError, self).__init__(message, code, status_code)
+        super().__init__(message, code, status_code)
         self.should_retry = should_retry
 
 
@@ -130,7 +130,7 @@ class RateLimitError(AtlanError):
     """
 
     def __init__(self, message: str, code: str, status_code: int = 429):
-        super(AtlanError, self).__init__(message, code, status_code)
+        super().__init__(message, code, status_code)
 
 
 class NotFoundError(AtlanError):
@@ -140,7 +140,7 @@ class NotFoundError(AtlanError):
     """
 
     def __init__(self, message: str, code: str, status_code: int = 404):
-        super(AtlanError, self).__init__(message, code, status_code)
+        super().__init__(message, code, status_code)
 
 
 class ConflictError(AtlanError):
@@ -150,7 +150,7 @@ class ConflictError(AtlanError):
     """
 
     def __init__(self, message: str, code: str, status_code: int = 409):
-        super(AtlanError, self).__init__(message, code, status_code)
+        super().__init__(message, code, status_code)
 
 
 class LogicError(AtlanError):
@@ -160,4 +160,4 @@ class LogicError(AtlanError):
     """
 
     def __init__(self, message: str, code: str, status_code: int = 500):
-        super(AtlanError, self).__init__(message, code, status_code)
+        super().__init__(message, code, status_code)

@@ -26,7 +26,6 @@ from typing import Generator, Optional, Type, TypeVar, Union
 import requests
 from pydantic import (
     BaseSettings,
-    Field,
     HttpUrl,
     PrivateAttr,
     parse_obj_as,
@@ -46,7 +45,7 @@ from pyatlan.client.constants import (
     GET_ROLES,
     INDEX_SEARCH,
 )
-from pyatlan.error import NotFoundError
+from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.assets import (
     Asset,
@@ -111,13 +110,14 @@ def get_session():
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
     session.mount("https://", adapter)
+    session.headers.update({"x-atlan-agent": "sdk", "x-atlan-agent-id": "python"})
     return session
 
 
 class AtlanClient(BaseSettings):
     host: HttpUrl
     api_key: str
-    session: requests.Session = Field(default_factory=get_session)
+    _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
 
     class Config:
@@ -177,7 +177,7 @@ class AtlanClient(BaseSettings):
 
     def _call_api(self, api, query_params=None, request_obj=None):
         params, path = self._create_params(api, query_params, request_obj)
-        response = self.session.request(api.method.value, path, **params)
+        response = self._session.request(api.method.value, path, **params)
         if response is not None:
             LOGGER.debug("HTTP Status: %s", response.status_code)
         if response is None:
@@ -213,6 +213,18 @@ class AtlanClient(BaseSettings):
 
             return None
         else:
+            try:
+                error_info = json.loads(response.text)
+                error_code = error_info.get("errorCode", 0)
+                error_message = error_info.get("errorMessage", "")
+                if error_code and error_message:
+                    raise AtlanError(
+                        message=error_message,
+                        code=error_code,
+                        status_code=response.status_code,
+                    )
+            except ValueError:
+                pass
             raise AtlanServiceException(api, response)
 
     def _create_params(self, api, query_params, request_obj):
@@ -307,21 +319,26 @@ class AtlanClient(BaseSettings):
             "ignoreRelationships": ignore_relationships,
         }
 
-        raw_json = self._call_api(
-            GET_ENTITY_BY_GUID.format_path_with_params(guid),
-            query_params,
-        )
-        raw_json["entity"]["attributes"].update(
-            raw_json["entity"]["relationshipAttributes"]
-        )
-        raw_json["entity"]["relationshipAttributes"] = {}
-        asset = AssetResponse[A](**raw_json).entity
-        if not isinstance(asset, asset_type):
-            raise NotFoundError(
-                message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
-                code="ATLAN-PYTHON-404-002",
+        try:
+            raw_json = self._call_api(
+                GET_ENTITY_BY_GUID.format_path_with_params(guid),
+                query_params,
             )
-        return asset
+            raw_json["entity"]["attributes"].update(
+                raw_json["entity"]["relationshipAttributes"]
+            )
+            raw_json["entity"]["relationshipAttributes"] = {}
+            asset = AssetResponse[A](**raw_json).entity
+            if not isinstance(asset, asset_type):
+                raise NotFoundError(
+                    message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
+                    code="ATLAN-PYTHON-404-002",
+                )
+            return asset
+        except AtlanError as ae:
+            if ae.status_code == HTTPStatus.NOT_FOUND:
+                raise NotFoundError(message=ae.user_message, code=ae.code)
+            raise ae
 
     def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
         entities: list[Asset] = []

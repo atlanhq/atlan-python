@@ -24,7 +24,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_create_time_as_timestamp": 1665727666701,
     "with_created_by": "bryan",
     "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
-    "with_guid": "331bae42-5f97-4068-a084-1557f31de770",
+    "with_guid": "b95eed37-fe38-48d7-8240-0c3390ef4e48",
     "with_has_lineage": True,
     "with_meanings": "2EqDFWZ6sCjbxcDNL0jFV@3Wn0W7PFCfjyKmGBZ7FLD",
     "with_meanings_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
@@ -37,7 +37,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_state": "ACTIVE",
     "with_super_type_names": "SQL",
     "with_type_name": "Schema",
-    "with_update_time_as_timestamp": 1665086276846,
+    "with_update_time_as_timestamp": 1666587249715,
 }
 
 VALUES_FOR_TEXT_QUERIES = {
@@ -47,7 +47,7 @@ VALUES_FOR_TEXT_QUERIES = {
     "with_created_by": "bryan",
     "with_description": "snapshot",
     "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
-    "with_guid": "331bae42-5f97-4068-a084-1557f31de770",
+    "with_guid": "b95eed37-fe38-48d7-8240-0c3390ef4e48",
     "with_has_lineage": True,
     "with_meanings": "2EqDFWZ6sCjbxcDNL0jFV@3Wn0W7PFCfjyKmGBZ7FLD",
     "with_meanings_text": "Term Test",
