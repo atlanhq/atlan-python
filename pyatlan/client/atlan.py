@@ -290,21 +290,28 @@ class AtlanClient(BaseSettings):
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-        raw_json = self._call_api(
-            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
-            query_params,
-        )
-        raw_json["entity"]["attributes"].update(
-            raw_json["entity"]["relationshipAttributes"]
-        )
-        asset = AssetResponse[A](**raw_json).entity
-        if not isinstance(asset, asset_type):
-            raise NotFoundError(
-                message=f"Asset with qualifiedName {qualified_name} "
-                f"is not of the type requested: {asset_type.__name__}.",
-                code="ATLAN-PYTHON-404-002",
+        try:
+            raw_json = self._call_api(
+                GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
+                    asset_type.__name__
+                ),
+                query_params,
             )
-        return asset
+            raw_json["entity"]["attributes"].update(
+                raw_json["entity"]["relationshipAttributes"]
+            )
+            asset = AssetResponse[A](**raw_json).entity
+            if not isinstance(asset, asset_type):
+                raise NotFoundError(
+                    message=f"Asset with qualifiedName {qualified_name} "
+                    f"is not of the type requested: {asset_type.__name__}.",
+                    code="ATLAN-PYTHON-404-002",
+                )
+            return asset
+        except AtlanError as ae:
+            if ae.status_code == HTTPStatus.NOT_FOUND:
+                raise NotFoundError(message=ae.user_message, code=ae.code)
+            raise ae
 
     @validate_arguments()
     def get_asset_by_guid(
