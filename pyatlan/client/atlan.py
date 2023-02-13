@@ -44,6 +44,7 @@ from pyatlan.client.constants import (
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_ROLES,
     INDEX_SEARCH,
+    UPDATE_ENTITY_BY_ATTRIBUTE,
 )
 from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
@@ -61,7 +62,14 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
-from pyatlan.model.core import AssetResponse, AtlanObject, BulkRequest
+from pyatlan.model.core import (
+    AssetResponse,
+    AtlanObject,
+    BulkRequest,
+    Classification,
+    ClassificationName,
+    Classifications,
+)
 from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import IndexSearchRequest
@@ -436,3 +444,33 @@ class AtlanClient(BaseSettings):
 
     def purge_typedef(self, internal_name: str) -> None:
         self._call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
+
+    @validate_arguments()
+    def add_classifications(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        classification_names: list[str],
+        propagate: bool = True,
+        remove_propagation_on_delete: bool = True,
+        restrict_lineage_propogation: bool = True,
+    ) -> None:
+        classifications = Classifications(
+            __root__=[
+                Classification(
+                    type_name=ClassificationName(display_text=name),
+                    propagate=propagate,
+                    remove_propagations_on_entity_delete=remove_propagation_on_delete,
+                    restrict_propagation_through_lineage=restrict_lineage_propogation,
+                )
+                for name in classification_names
+            ]
+        )
+        query_params = {"attr:qualifiedName": qualified_name}
+        self._call_api(
+            UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
+                asset_type.__name__, "classifications"
+            ),
+            query_params,
+            classifications,
+        )

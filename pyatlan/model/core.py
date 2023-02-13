@@ -24,6 +24,8 @@ CAMEL_CASE_OVERRIDES = {
 def to_camel_case(value: str) -> str:
     if not isinstance(value, str):
         raise ValueError("Value must be a string")
+    if value == "__root__":
+        return value
     value = "".join(word.capitalize() for word in value.split("_"))
     if value in CAMEL_CASE_OVERRIDES:
         value = CAMEL_CASE_OVERRIDES[value]
@@ -135,6 +137,10 @@ class Classification(AtlanObject):
         None, description="", alias="restrictPropagationThroughLineage"
     )
     validity_peridos: Optional[list[str]] = Field(None, alias="validityPeriods")
+
+
+class Classifications(AtlanObject):
+    __root__: list[Classification] = Field(list(), description="classifications")
 
 
 class Meaning(AtlanObject):

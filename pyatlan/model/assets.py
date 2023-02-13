@@ -284,6 +284,7 @@ class Referenceable(AtlanObject):
     scrubbed: Optional[bool] = Field(
         None, description="", alias="fields removed from results"
     )
+    pending_tasks: Optional[list[str]] = Field(None)
 
     def validate_required(self):
         if not self.create_time or self.created_by:
@@ -6838,8 +6839,8 @@ class MutatedEntities(AtlanObject):
     )
     UPDATE: Optional[list[Asset]] = Field(
         None,
-        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on "
-        "the type of asset, but listed in the example are the common set of properties across assets.",
+        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on"
+        " the type of asset, but listed in the example are the common set of properties across assets.",
         alias="UPDATE",
     )
     DELETE: Optional[list[Asset]] = Field(
