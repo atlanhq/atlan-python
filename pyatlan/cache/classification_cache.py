@@ -1,6 +1,5 @@
 from typing import Optional
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import ClassificationDef
 
@@ -15,6 +14,8 @@ class ClassificationCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
+        from pyatlan.client.atlan import AtlanClient
+
         response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CLASSIFICATION)
         if response is not None:
             cls.cache_by_id = dict()
