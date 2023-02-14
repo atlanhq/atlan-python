@@ -28,6 +28,7 @@ from pyatlan.model.enums import (
     google_datastudio_asset_type,
     powerbi_endorsement,
 )
+from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.utils import next_id
 
 
@@ -37,14 +38,6 @@ def validate_required_fields(field_names: list[str], values: list[Any]):
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
-
-
-class Internal(AtlanObject):
-    """For internal usage"""
-
-
-class AtlasServer(AtlanObject):
-    """For internal usage"""
 
 
 class AwsTag(AtlanObject):
