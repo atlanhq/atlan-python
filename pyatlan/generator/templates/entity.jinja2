@@ -9,6 +9,17 @@ from pyatlan.model.enums import CertificateStatus, EntityStatus, google_datastud
     IconType, AnnouncementType, SourceCostUnitType, AtlanConnectorType, ADLSEncryptionTypes, \
     ADLSPerformance, ADLSReplicationType, ADLSStorageKind, ADLSAccountStatus, ADLSProvisionState, ADLSAccessTier, \
     ADLSLeaseState, ADLSLeaseStatus, ADLSObjectType, ADLSObjectArchiveStatus
+from pyatlan.model.structs import (
+    AwsTag,
+    AzureTag,
+    Histogram,
+    BadgeCondition,
+    GoogleLabel,
+    GoogleTag,
+    DbtMetricFilter,
+    ColumnValueFrequencyMap,
+    PopularityInsights
+)
 from pyatlan.utils import next_id
 
 def validate_required_fields(field_names:list[str], values:list[Any]):
@@ -18,15 +29,6 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
 
-{% for struct in struct_defs %}
-class {{struct.name}}(AtlanObject):
-    """Description"""
-    class Attributes(AtlanObject):
-        {%- for attribute_def in struct.attribute_defs %}
-        {%- set type = attribute_def.type_name | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
-        {%- endfor %}
-{% endfor %}
 {% for entity_def in entity_defs %}
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
 class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
