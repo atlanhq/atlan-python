@@ -624,3 +624,28 @@ def test_create_view(client: AtlanClient, increment_counter):
     guid = response.guid_assignments[view.guid]
     view = response.mutated_entities.CREATE[0]
     assert guid == view.guid
+
+
+def test_add_and_remove_classifications(client: AtlanClient):
+    glossary = AtlasGlossary.create("Integration Classification Test")
+    glossary.attributes.user_description = "This is a description of the glossary"
+    glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
+    glossary_term = AtlasGlossaryTerm.create(
+        "Integration Classification Term", anchor=glossary
+    )
+    glossary_term = client.upsert(glossary_term).assets_created(AtlasGlossaryTerm)[0]
+    qualified_name = glossary_term.attributes.qualified_name
+    classification_name = "TEST"
+    client.add_classifications(AtlasGlossaryTerm, qualified_name, [classification_name])
+    glossary_term = client.get_asset_by_guid(
+        glossary_term.guid, asset_type=AtlasGlossaryTerm
+    )
+    assert glossary_term.classifications
+    assert len(glossary_term.classifications) == 1
+    classification = glossary_term.classifications[0]
+    assert str(classification.type_name) == classification_name
+    client.remove_classification(AtlasGlossaryTerm, qualified_name, classification_name)
+    glossary_term = client.get_asset_by_guid(
+        glossary_term.guid, asset_type=AtlasGlossaryTerm
+    )
+    assert glossary_term.classifications is None

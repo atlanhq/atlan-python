@@ -6,6 +6,7 @@ import pytest
 from deepdiff import DeepDiff
 from pydantic.error_wrappers import ValidationError
 
+import pyatlan.cache.classification_cache
 from pyatlan.model.assets import (
     Asset,
     AssetMutationResponse,
@@ -101,7 +102,25 @@ def the_json(request):
     ],
     indirect=["the_json"],
 )
-def test_constructor(the_json, a_type):
+def test_constructor(the_json, a_type, monkeypatch):
+    def get_name_for_id(value):
+        return "PII"
+
+    def get_id_for_name(value):
+        return "WQ6XGXwq9o7UnZlkWyKhQN"
+
+    monkeypatch.setattr(
+        pyatlan.cache.classification_cache.ClassificationCache,
+        "get_id_for_name",
+        get_id_for_name,
+    )
+
+    monkeypatch.setattr(
+        pyatlan.cache.classification_cache.ClassificationCache,
+        "get_name_for_id",
+        get_name_for_id,
+    )
+
     asset = a_type(**the_json)
     assert not DeepDiff(
         the_json,

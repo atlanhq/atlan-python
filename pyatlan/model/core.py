@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -18,12 +18,15 @@ CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
     "sourceUrl": "sourceURL",
     "sourceEmbedUrl": "sourceEmbedURL",
+    "sql_dbt_sources": "sqlDBTSources",
 }
 
 
 def to_camel_case(value: str) -> str:
     if not isinstance(value, str):
         raise ValueError("Value must be a string")
+    if value == "__root__":
+        return value
     value = "".join(word.capitalize() for word in value.split("_"))
     if value in CAMEL_CASE_OVERRIDES:
         value = CAMEL_CASE_OVERRIDES[value]
@@ -36,7 +39,7 @@ def to_snake_case(str):
     if str.startswith("__"):
         str = str[2:]
     res = [str[0].lower()]
-    for c in str.replace("URL", "Url")[1:]:
+    for c in str.replace("URL", "Url").replace("DBT", "Dbt")[1:]:
         if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
             res.append("_")
             res.append(c.lower())
@@ -45,14 +48,49 @@ def to_snake_case(str):
     return "".join(res)
 
 
-def encode_classification(v: "Classification"):
-    from pyatlan.cache.classification_cache import ClassificationCache
+class ClassificationName:
+    def __init__(self, display_text: str):
+        from pyatlan.cache.classification_cache import ClassificationCache
 
-    if v.type_name:
-        ret_value = v.dict()
-        ret_value["type_name"] = ClassificationCache.get_id_for_name(v.type_name)
-        return ret_value
-    return v.dict()
+        if not ClassificationCache.get_id_for_name(display_text):
+            raise ValueError(f"{display_text} is not a valid Classification")
+        self._display_text = display_text
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._convert_to_display_text
+
+    def __str__(self):
+        return self._display_text
+
+    def __repr__(self):
+        return f"ClassificationName({self._display_text.__repr__()})"
+
+    def __hash__(self):
+        return self._display_text.__hash__()
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, ClassificationName)
+            and self._display_text == other._display_text
+        )
+
+    @classmethod
+    def _convert_to_display_text(cls, data):
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        if isinstance(data, ClassificationName):
+            return data
+        display_text = ClassificationCache.get_name_for_id(data)
+        if not display_text:
+            raise ValueError(f"{data} is not a valid Classification")
+        return ClassificationName(display_text)
+
+    @staticmethod
+    def json_encode_classification(classification_name: "ClassificationName"):
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        return ClassificationCache.get_id_for_name(classification_name._display_text)
 
 
 class AtlanObject(BaseModel):
@@ -62,7 +100,7 @@ class AtlanObject(BaseModel):
         extra = Extra.forbid
         json_encoders = {
             datetime: lambda v: int(v.timestamp() * 1000),
-            "Classification": encode_classification,
+            "ClassificationName": ClassificationName.json_encode_classification,
         }
         validate_assignment = True
 
@@ -75,7 +113,7 @@ class Announcement:
 
 
 class Classification(AtlanObject):
-    type_name: Optional[str] = Field(
+    type_name: Optional[ClassificationName] = Field(
         None,
         description="Name of the type definition that defines this instance.\n",
         alias="typeName",
@@ -101,27 +139,9 @@ class Classification(AtlanObject):
     )
     validity_peridos: Optional[list[str]] = Field(None, alias="validityPeriods")
 
-    @classmethod
-    def __get_validators__(cls):
-        yield cls._map_type_name
 
-    @classmethod
-    def _map_type_name(cls, data):
-        from pyatlan.cache.classification_cache import ClassificationCache
-
-        if "typeName" in data and data["typeName"]:
-            type_name = data["typeName"]
-            data["typeName"] = ClassificationCache.get_name_for_id(type_name)
-        return cls(**data)
-
-    @validator("type_name")
-    def valid_classification_name(cls, v):
-        from pyatlan.cache.classification_cache import ClassificationCache
-
-        id = ClassificationCache.get_id_for_name(v)
-        if id:
-            return v
-        raise ValueError(f"{v} is not a valid classification")
+class Classifications(AtlanObject):
+    __root__: list[Classification] = Field(list(), description="classifications")
 
 
 class Meaning(AtlanObject):
