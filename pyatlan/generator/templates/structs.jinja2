@@ -1,0 +1,17 @@
+from datetime import datetime
+from typing import Optional
+
+from pydantic import Field
+
+from pyatlan.model.core import AtlanObject
+from pyatlan.model.enums import SourceCostUnitType
+
+{% for struct in struct_defs %}
+class {{struct.name}}(AtlanObject):
+    """Description"""
+    class Attributes(AtlanObject):
+        {%- for attribute_def in struct.attribute_defs %}
+        {%- set type = attribute_def.type_name | get_type %}
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
+        {%- endfor %}
+{% endfor %}

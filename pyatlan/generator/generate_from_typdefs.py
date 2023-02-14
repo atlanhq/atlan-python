@@ -76,6 +76,7 @@ class Generator:
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
         self.template = self.environment.get_template("entity.jinja2")
+        self.structs = self.environment.get_template("structs.jinja2")
         self.processed: set[str] = set()
 
     def render(self, name: str) -> None:
@@ -91,6 +92,9 @@ class Generator:
             {"struct_defs": self.type_defs.struct_defs, "entity_defs": entity_defs}
         )
         with (PARENT.parent / "model" / "assets.py").open("w") as script:
+            script.write(content)
+        content = self.structs.render({"struct_defs": self.type_defs.struct_defs})
+        with (PARENT.parent / "model" / "structs.py").open("w") as script:
             script.write(content)
 
     def add_children(self, i, entity_defs):
