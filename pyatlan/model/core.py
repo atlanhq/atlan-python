@@ -18,6 +18,7 @@ CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
     "sourceUrl": "sourceURL",
     "sourceEmbedUrl": "sourceEmbedURL",
+    "sql_dbt_sources": "sqlDBTSources",
 }
 
 
@@ -38,7 +39,7 @@ def to_snake_case(str):
     if str.startswith("__"):
         str = str[2:]
     res = [str[0].lower()]
-    for c in str.replace("URL", "Url")[1:]:
+    for c in str.replace("URL", "Url").replace("DBT", "Dbt")[1:]:
         if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
             res.append("_")
             res.append(c.lower())

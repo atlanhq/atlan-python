@@ -37,7 +37,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_state": "ACTIVE",
     "with_super_type_names": "SQL",
     "with_type_name": "Schema",
-    "with_update_time_as_timestamp": 1666587249715,
+    "with_update_time_as_timestamp": 1665723703029,
 }
 
 VALUES_FOR_TEXT_QUERIES = {

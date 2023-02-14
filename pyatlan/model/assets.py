@@ -1615,6 +1615,9 @@ class SQL(Catalog):
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
 
     attributes: "SQL.Attributes" = Field(
         None,
@@ -2538,6 +2541,9 @@ class DbtSource(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        sql_assets: Optional[list[SQL]] = Field(
+            None, description="", alias="sqlAssets"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -2910,6 +2916,9 @@ class TablePartition(SQL):
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
         None,
@@ -2962,23 +2971,11 @@ class Table(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -2988,6 +2985,21 @@ class Table(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -3069,29 +3081,32 @@ class Query(SQL):
             None, description="", alias="inputToProcesses"
         )  # relationship
         parent: Namespace = Field(None, description="", alias="parent")  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        tables: Optional[list[Table]] = Field(
-            None, description="", alias="tables"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        tables: Optional[list[Table]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
         )  # relationship
         views: Optional[list[View]] = Field(
             None, description="", alias="views"
@@ -3227,6 +3242,9 @@ class Column(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
         )  # relationship
@@ -3285,6 +3303,9 @@ class Schema(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
         )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
@@ -3391,6 +3412,9 @@ class Database(SQL):
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
 
         @classmethod
         # @validate_arguments()
@@ -3494,6 +3518,9 @@ class SnowflakeStream(SQL):
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
 
     attributes: "SnowflakeStream.Attributes" = Field(
         None,
@@ -3542,6 +3569,9 @@ class SnowflakePipe(SQL):
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
 
     attributes: "SnowflakePipe.Attributes" = Field(
         None,
@@ -3583,6 +3613,9 @@ class Procedure(SQL):
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
         )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
@@ -3642,6 +3675,9 @@ class View(SQL):
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
         )  # relationship
 
         @classmethod
@@ -3739,6 +3775,9 @@ class MaterialisedView(SQL):
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
         )  # relationship
 
     attributes: "MaterialisedView.Attributes" = Field(
