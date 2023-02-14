@@ -626,7 +626,7 @@ def test_create_view(client: AtlanClient, increment_counter):
     assert guid == view.guid
 
 
-def test_add_classifications(client: AtlanClient):
+def test_add_and_remove_classifications(client: AtlanClient):
     glossary = AtlasGlossary.create("Integration Classification Test")
     glossary.attributes.user_description = "This is a description of the glossary"
     glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
@@ -634,9 +634,8 @@ def test_add_classifications(client: AtlanClient):
         "Integration Classification Term", anchor=glossary
     )
     glossary_term = client.upsert(glossary_term).assets_created(AtlasGlossaryTerm)[0]
-    client.add_classifications(
-        AtlasGlossaryTerm, glossary_term.attributes.qualified_name, ["PII"]
-    )
+    qualified_name = glossary_term.attributes.qualified_name
+    client.add_classifications(AtlasGlossaryTerm, qualified_name, ["PII"])
     glossary_term = client.get_asset_by_guid(
         glossary_term.guid, asset_type=AtlasGlossaryTerm
     )
@@ -644,3 +643,8 @@ def test_add_classifications(client: AtlanClient):
     assert len(glossary_term.classifications) == 1
     classification = glossary_term.classifications[0]
     assert str(classification.type_name) == "PII"
+    client.remove_classification(AtlasGlossaryTerm, qualified_name, "PII")
+    glossary_term = client.get_asset_by_guid(
+        glossary_term.guid, asset_type=AtlasGlossaryTerm
+    )
+    pass

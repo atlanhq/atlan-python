@@ -37,6 +37,7 @@ from urllib3.util.retry import Retry
 from pyatlan.client.constants import (
     BULK_UPDATE,
     CREATE_TYPE_DEFS,
+    DELETE_ENTITY_BY_ATTRIBUTE,
     DELETE_ENTITY_BY_GUID,
     DELETE_TYPE_DEF_BY_NAME,
     GET_ALL_TYPE_DEFS,
@@ -473,4 +474,21 @@ class AtlanClient(BaseSettings):
             ),
             query_params,
             classifications,
+        )
+
+    @validate_arguments()
+    def remove_classification(
+        self, asset_type: Type[A], qualified_name: str, classification_name: str
+    ) -> None:
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        classification_id = ClassificationCache.get_id_for_name(classification_name)
+        if not classification_id:
+            raise ValueError(f"{classification_name} is not a valid Classification")
+        query_params = {"attr:qualifiedName": qualified_name}
+        self._call_api(
+            DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
+                asset_type.__name__, "classification", classification_id
+            ),
+            query_params,
         )
