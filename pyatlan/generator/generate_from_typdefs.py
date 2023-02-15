@@ -123,15 +123,13 @@ class Generator:
 
         for super_type in entity_def.super_types:
             merge_them(super_type, attributes)
-        return [attribute for attribute in attributes.values()]
+        return list(attributes.values())
 
     def add_entity_def(self, entity_defs, name):
         entity_def = self.entity_defs[name]
         if len(entity_def.super_types) > 1:
             entity_def.attribute_defs = self.merge_attributes(entity_def)
-        names = set()
-        for attribute_def in entity_def.attribute_defs:
-            names.add(attribute_def["name"])
+        names = {attribute_def["name"] for attribute_def in entity_def.attribute_defs}
         entity_def.relationship_attribute_defs = [
             relationship_def
             for relationship_def in entity_def.relationship_attribute_defs

@@ -32,8 +32,7 @@ class AtlanError(Exception):
         self.status_code = status_code
 
     def __str__(self):
-        msg = self._message or "<empty message>"
-        return msg
+        return self._message or "<empty message>"
 
     # Returns the underlying `Exception` (base class) message, which is usually
     # the raw message returned by Atlan's API.
@@ -73,6 +72,10 @@ class APIConnectionError(AtlanError):
 
 
 class AtlanErrorWithParamCode(AtlanError):
+    def __init__(self, message: str, param: str, code: str, status_code: int):
+        self.param = param
+        super().__init__(message=message, code=code, status_code=status_code)
+
     def __repr__(self):
         return "%s(message=%r, param=%r, code=%r, status_code=%r)" % (
             self.__class__.__name__,
@@ -90,7 +93,7 @@ class InvalidRequestError(AtlanErrorWithParamCode):
     """
 
     def __init__(self, message: str, param: str, code: str, status_code: int = 400):
-        super(InvalidRequestError, self).__init__(message, code, status_code)
+        super().__init__(message, param, code, status_code)
         self.param = param
 
 

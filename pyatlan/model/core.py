@@ -37,11 +37,11 @@ def to_camel_case(value: str) -> str:
     return f"{value[0].lower()}{value[1:]}"
 
 
-def to_snake_case(str):
-    if str.startswith("__"):
-        str = str[2:]
-    res = [str[0].lower()]
-    for c in str.replace("URL", "Url").replace("DBT", "Dbt")[1:]:
+def to_snake_case(value):
+    if value.startswith("__"):
+        value = value[2:]
+    res = [value[0].lower()]
+    for c in value.replace("URL", "Url").replace("DBT", "Dbt")[1:]:
         if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
             res.append("_")
             res.append(c.lower())
