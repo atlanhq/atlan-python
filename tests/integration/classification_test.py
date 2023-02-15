@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
 import pytest
 
 from pyatlan.cache.classification_cache import ClassificationCache

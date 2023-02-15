@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Extra, Field

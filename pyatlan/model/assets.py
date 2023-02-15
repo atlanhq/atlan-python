@@ -510,12 +510,12 @@ class Asset(Referenceable):
     )
 
     def has_announcement(self) -> bool:
-        if self.attributes and (
-            self.attributes.announcement_title or self.attributes.announcement_type
-        ):
-            return True
-        else:
-            return False
+        return bool(
+            self.attributes
+            and (
+                self.attributes.announcement_title or self.attributes.announcement_type
+            )
+        )
 
     def set_announcement(self, announcement: Announcement) -> None:
         self.attributes.announcement_type = announcement.announcement_type.value
@@ -818,22 +818,18 @@ class Connection(Asset, type_name="Connection"):
         )  # relationship
 
         def validate_required(self):
-            if self.name:
-                if self.admin_roles or self.admin_groups or self.admin_users:
-                    if self.qualified_name:
-                        if self.category:
-                            if not self.connector_name:
-                                raise ValueError("connector_name is required")
-                        else:
-                            raise ValueError("category is required")
-                    else:
-                        raise ValueError("qualified_name is required")
-                else:
-                    raise ValueError(
-                        "One of admin_user, admin_groups or admin_roles is required"
-                    )
-            else:
+            if not self.name:
                 raise ValueError("name is required")
+            if not self.admin_roles and not self.admin_groups and not self.admin_users:
+                raise ValueError(
+                    "One of admin_user, admin_groups or admin_roles is required"
+                )
+            if not self.qualified_name:
+                raise ValueError("qualified_name is required")
+            if not self.category:
+                raise ValueError("category is required")
+            if not self.connector_name:
+                raise ValueError("connector_name is required")
 
         @classmethod
         # @validate_arguments()
@@ -2893,8 +2889,8 @@ class Table(SQL):
                 raise ValueError("Invalid schema_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid schema_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
             return Table.Attributes(
                 name=name,
                 database_name=fields[3],
@@ -3228,8 +3224,8 @@ class Schema(SQL):
                 raise ValueError("Invalid database_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid database_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid database_qualified_name") from e
             return Schema.Attributes(
                 name=name,
                 database_name=fields[3],
@@ -3308,8 +3304,8 @@ class Database(SQL):
                 raise ValueError("Invalid connection_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid connection_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
             return Database.Attributes(
                 name=name,
                 connection_qualified_name=connection_qualified_name,
@@ -3336,8 +3332,8 @@ class Database(SQL):
             raise ValueError("Invalid connection_qualified_name")
         try:
             connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError:
-            raise ValueError("Invalid connection_qualified_name")
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
         attributes = Database.Attributes(
             name=name,
             connection_qualified_name=connection_qualified_name,
@@ -3568,8 +3564,8 @@ class View(SQL):
                 raise ValueError("Invalid schema_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid schema_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
             return View.Attributes(
                 name=name,
                 database_name=fields[3],

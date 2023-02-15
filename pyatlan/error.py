@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
 from __future__ import absolute_import, division, print_function
 
 from typing import Optional

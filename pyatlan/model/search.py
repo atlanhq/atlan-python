@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
+# Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
