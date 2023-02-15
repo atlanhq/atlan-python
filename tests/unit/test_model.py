@@ -11,7 +11,6 @@ from pydantic.error_wrappers import ValidationError
 import pyatlan.cache.classification_cache
 from pyatlan.model.assets import (
     Asset,
-    AssetMutationResponse,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
@@ -23,6 +22,7 @@ from pyatlan.model.assets import (
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
+from pyatlan.model.response import AssetMutationResponse
 
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"

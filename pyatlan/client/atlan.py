@@ -35,7 +35,6 @@ from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.assets import (
     Asset,
-    AssetMutationResponse,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
@@ -56,6 +55,7 @@ from pyatlan.model.core import (
     Classifications,
 )
 from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory
+from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import (
