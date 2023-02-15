@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
 from pyatlan.model.enums import AtlanTypeCategory
@@ -18,9 +20,9 @@ class ClassificationCache:
 
         response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CLASSIFICATION)
         if response is not None:
-            cls.cache_by_id = dict()
-            cls.map_id_to_name = dict()
-            cls.map_name_to_id = dict()
+            cls.cache_by_id = {}
+            cls.map_id_to_name = {}
+            cls.map_name_to_id = {}
             for classification in response.classification_defs:
                 classification_id = classification.name
                 classification_name = classification.display_name

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
@@ -19,20 +21,20 @@ class CustomMetadataCache:
     def _refresh_cache(cls) -> None:
         response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CUSTOM_METADATA)
         if response is not None:
-            cls.cache_by_id = dict()
-            cls.map_id_to_name = dict()
-            cls.map_name_to_id = dict()
-            cls.map_attr_id_to_name = dict()
-            cls.map_attr_name_to_id = dict()
-            cls.archived_attr_ids = dict()
+            cls.map_id_to_name = {}
+            cls.map_name_to_id = {}
+            cls.map_attr_id_to_name = {}
+            cls.map_attr_name_to_id = {}
+            cls.archived_attr_ids = {}
+            cls.cache_by_id = {}
             for cm in response.custom_metadata_defs:
                 type_id = cm.name
                 type_name = cm.display_name
                 cls.cache_by_id[type_id] = cm
                 cls.map_id_to_name[type_id] = type_name
                 cls.map_name_to_id[type_name] = type_id
-                cls.map_attr_id_to_name[type_id] = dict()
-                cls.map_attr_name_to_id[type_id] = dict()
+                cls.map_attr_id_to_name[type_id] = {}
+                cls.map_attr_name_to_id[type_id] = {}
                 if cm.attribute_defs:
                     for attr in cm.attribute_defs:
                         attr_id = attr.name
@@ -40,15 +42,13 @@ class CustomMetadataCache:
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_name
                         if attr.options and attr.options.is_archived:
                             cls.archived_attr_ids[attr_id] = attr_name
+                        elif attr_name in cls.map_attr_name_to_id[type_id]:
+                            raise LogicError(
+                                f"Multiple custom attributes with exactly the same name ({attr_name}) "
+                                f"found for: {type_name}",
+                                code="ATLAN-PYTHON-500-100",
+                            )
                         else:
-                            if attr_name in cls.map_attr_name_to_id[type_id]:
-                                raise LogicError(
-                                    "Multiple custom attributes with exactly the same name ("
-                                    + attr_name
-                                    + ") found for: "
-                                    + type_name,
-                                    code="ATLAN-PYTHON-500-100",
-                                )
                             cls.map_attr_name_to_id[type_id][attr_name] = attr_id
 
     @classmethod
@@ -56,26 +56,22 @@ class CustomMetadataCache:
         """
         Translate the provided human-readable custom metadata set name to its Atlan-internal ID string.
         """
-        cm_id = cls.map_name_to_id.get(name)
-        if cm_id:
+        if cm_id := cls.map_name_to_id.get(name):
             return cm_id
-        else:
-            # If not found, refresh the cache and look again (could be stale)
-            cls._refresh_cache()
-            return cls.map_name_to_id.get(name)
+        # If not found, refresh the cache and look again (could be stale)
+        cls._refresh_cache()
+        return cls.map_name_to_id.get(name)
 
     @classmethod
     def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.
         """
-        cm_name = cls.map_id_to_name.get(idstr)
-        if cm_name:
+        if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
-        else:
-            # If not found, refresh the cache and look again (could be stale)
-            cls._refresh_cache()
-            return cls.map_id_to_name.get(idstr)
+        # If not found, refresh the cache and look again (could be stale)
+        cls._refresh_cache()
+        return cls.map_id_to_name.get(idstr)
 
     @classmethod
     def get_all_custom_attributes(
@@ -101,9 +97,11 @@ class CustomMetadataCache:
             else:
                 to_include = []
                 if attribute_defs:
-                    for attr in attribute_defs:
-                        if not attr.options or not attr.options.is_archived:
-                            to_include.append(attr)
+                    to_include.extend(
+                        attr
+                        for attr in attribute_defs
+                        if not attr.options or not attr.options.is_archived
+                    )
             m[type_name] = to_include
         return m
 
@@ -114,31 +112,23 @@ class CustomMetadataCache:
         for the attribute.
         """
         attr_id = None
-        set_id = cls.get_id_for_name(set_name)
-        if set_id:
-            sub_map = cls.map_attr_name_to_id.get(set_id)
-            if sub_map:
+        if set_id := cls.get_id_for_name(set_name):
+            if sub_map := cls.map_attr_name_to_id.get(set_id):
                 attr_id = sub_map.get(attr_name)
             if attr_id:
                 # If found, return straight away
                 return attr_id
-            else:
-                # Otherwise, refresh the cache and look again (could be stale)
-                cls._refresh_cache()
-                sub_map = cls.map_attr_name_to_id.get(set_id)
-                if sub_map:
-                    return sub_map.get(attr_name)
+            # Otherwise, refresh the cache and look again (could be stale)
+            cls._refresh_cache()
+            if sub_map := cls.map_attr_name_to_id.get(set_id):
+                return sub_map.get(attr_name)
         return None
 
     @classmethod
     def _get_attributes_for_search_results(cls, set_id: str) -> Optional[list[str]]:
-        sub_map = cls.map_attr_name_to_id.get(set_id)
-        if sub_map:
+        if sub_map := cls.map_attr_name_to_id.get(set_id):
             attr_ids = sub_map.values()
-            dot_names = []
-            for idstr in attr_ids:
-                dot_names.append(set_id + "." + idstr)
-            return dot_names
+            return [f"{set_id}.{idstr}" for idstr in attr_ids]
         return None
 
     @classmethod
@@ -146,12 +136,9 @@ class CustomMetadataCache:
         """
         Retrieve the full set of custom attributes to include on search results.
         """
-        set_id = cls.get_id_for_name(set_name)
-        if set_id:
-            dot_names = cls._get_attributes_for_search_results(set_id)
-            if dot_names:
+        if set_id := cls.get_id_for_name(set_name):
+            if dot_names := cls._get_attributes_for_search_results(set_id):
                 return dot_names
-            else:
-                cls._refresh_cache()
-                return cls._get_attributes_for_search_results(set_id)
+            cls._refresh_cache()
+            return cls._get_attributes_for_search_results(set_id)
         return None

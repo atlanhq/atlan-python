@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
+# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 import datetime
 import json
 import os
@@ -76,6 +79,7 @@ class Generator:
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
         self.template = self.environment.get_template("entity.jinja2")
+        self.structs = self.environment.get_template("structs.jinja2")
         self.processed: set[str] = set()
 
     def render(self, name: str) -> None:
@@ -91,6 +95,9 @@ class Generator:
             {"struct_defs": self.type_defs.struct_defs, "entity_defs": entity_defs}
         )
         with (PARENT.parent / "model" / "assets.py").open("w") as script:
+            script.write(content)
+        content = self.structs.render({"struct_defs": self.type_defs.struct_defs})
+        with (PARENT.parent / "model" / "structs.py").open("w") as script:
             script.write(content)
 
     def add_children(self, i, entity_defs):
@@ -116,15 +123,13 @@ class Generator:
 
         for super_type in entity_def.super_types:
             merge_them(super_type, attributes)
-        return [attribute for attribute in attributes.values()]
+        return list(attributes.values())
 
     def add_entity_def(self, entity_defs, name):
         entity_def = self.entity_defs[name]
         if len(entity_def.super_types) > 1:
             entity_def.attribute_defs = self.merge_attributes(entity_def)
-        names = set()
-        for attribute_def in entity_def.attribute_defs:
-            names.add(attribute_def["name"])
+        names = {attribute_def["name"] for attribute_def in entity_def.attribute_defs}
         entity_def.relationship_attribute_defs = [
             relationship_def
             for relationship_def in entity_def.relationship_attribute_defs

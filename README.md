@@ -1,22 +1,26 @@
-# Atlan Python Client
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+<!-- Copyright 2022 Atlan Pte. Ltd. -->
+# Atlan Python SDK
 
-Python library for Atlan.
+This repository houses the code for a Python SDK to interact with [Atlan](https://atlan.com).
 
-## Installation
+## [Documentation](https://developer.atlan.com/sdks/python/)
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install Python client for Atlan
+[https://developer.atlan.com/sdks/python/](https://developer.atlan.com/sdks/python/)
 
-```bash
-> pip install pyatlan
+## Attribution
+
+Portions of the SDK are based on original work from https://github.com/apache/atlas. Those classes that derive from this original work have an extra heading comment as follows:
+
+```python
+# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 ```
 
-Verify if atlan client is installed:
-```bash
-> pip list
+Portions of the SDK are based on original work from https://github.com/elastic/elasticsearch-dsl-py. Those classes that derive from this original work have an extra heading comment as follows:
 
-Package      Version
------------- ---------
-pyatlan      0.0.1
+```python
+# Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
 ```
-
-## Usage
+----
+License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/),
+Copyright 2022 Atlan Pte. Ltd.

@@ -1,8 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
+# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional, Type, TypeVar
+from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import Field, StrictStr, root_validator
 
@@ -28,6 +31,18 @@ from pyatlan.model.enums import (
     google_datastudio_asset_type,
     powerbi_endorsement,
 )
+from pyatlan.model.internal import AtlasServer, Internal
+from pyatlan.model.structs import (
+    AwsTag,
+    AzureTag,
+    BadgeCondition,
+    ColumnValueFrequencyMap,
+    DbtMetricFilter,
+    GoogleLabel,
+    GoogleTag,
+    Histogram,
+    PopularityInsights,
+)
 from pyatlan.utils import next_id
 
 
@@ -37,141 +52,6 @@ def validate_required_fields(field_names: list[str], values: list[Any]):
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
-
-
-class Internal(AtlanObject):
-    """For internal usage"""
-
-
-class AtlasServer(AtlanObject):
-    """For internal usage"""
-
-
-class AwsTag(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        aws_tag_key: str = Field(None, description="", alias="awsTagKey")
-        aws_tag_value: str = Field(None, description="", alias="awsTagValue")
-
-
-class AwsCloudWatchMetric(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        aws_cloud_watch_metric_name: str = Field(
-            None, description="", alias="awsCloudWatchMetricName"
-        )
-        aws_cloud_watch_metric_scope: str = Field(
-            None, description="", alias="awsCloudWatchMetricScope"
-        )
-
-
-class Histogram(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        boundaries: set[float] = Field(None, description="", alias="boundaries")
-        frequencies: set[float] = Field(None, description="", alias="frequencies")
-
-
-class DbtMetricFilter(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        dbt_metric_filter_column_qualified_name: Optional[str] = Field(
-            None, description="", alias="dbtMetricFilterColumnQualifiedName"
-        )
-        dbt_metric_filter_field: Optional[str] = Field(
-            None, description="", alias="dbtMetricFilterField"
-        )
-        dbt_metric_filter_operator: Optional[str] = Field(
-            None, description="", alias="dbtMetricFilterOperator"
-        )
-        dbt_metric_filter_value: Optional[str] = Field(
-            None, description="", alias="dbtMetricFilterValue"
-        )
-
-
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        google_tag_key: str = Field(None, description="", alias="googleTagKey")
-        google_tag_value: str = Field(None, description="", alias="googleTagValue")
-
-
-class ColumnValueFrequencyMap(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        column_value: Optional[str] = Field(None, description="", alias="columnValue")
-        column_value_frequency: Optional[int] = Field(
-            None, description="", alias="columnValueFrequency"
-        )
-
-
-class BadgeCondition(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        badge_condition_operator: Optional[str] = Field(
-            None, description="", alias="badgeConditionOperator"
-        )
-        badge_condition_value: Optional[str] = Field(
-            None, description="", alias="badgeConditionValue"
-        )
-        badge_condition_colorhex: Optional[str] = Field(
-            None, description="", alias="badgeConditionColorhex"
-        )
-
-
-class AzureTag(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        azure_tag_key: str = Field(None, description="", alias="azureTagKey")
-        azure_tag_value: str = Field(None, description="", alias="azureTagValue")
-
-
-class GoogleLabel(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        google_label_key: str = Field(None, description="", alias="googleLabelKey")
-        google_label_value: str = Field(None, description="", alias="googleLabelValue")
-
-
-class PopularityInsights(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        record_user: Optional[str] = Field(None, description="", alias="recordUser")
-        record_query: Optional[str] = Field(None, description="", alias="recordQuery")
-        record_query_duration: Optional[int] = Field(
-            None, description="", alias="recordQueryDuration"
-        )
-        record_query_count: Optional[int] = Field(
-            None, description="", alias="recordQueryCount"
-        )
-        record_total_user_count: Optional[int] = Field(
-            None, description="", alias="recordTotalUserCount"
-        )
-        record_compute_cost: Optional[float] = Field(
-            None, description="", alias="recordComputeCost"
-        )
-        record_max_compute_cost: Optional[float] = Field(
-            None, description="", alias="recordMaxComputeCost"
-        )
-        record_compute_cost_unit: Optional[SourceCostUnitType] = Field(
-            None, description="", alias="recordComputeCostUnit"
-        )
-        record_last_timestamp: Optional[datetime] = Field(
-            None, description="", alias="recordLastTimestamp"
-        )
-        record_warehouse: Optional[str] = Field(
-            None, description="", alias="recordWarehouse"
-        )
 
 
 class Referenceable(AtlanObject):
@@ -633,12 +513,12 @@ class Asset(Referenceable):
     )
 
     def has_announcement(self) -> bool:
-        if self.attributes and (
-            self.attributes.announcement_title or self.attributes.announcement_type
-        ):
-            return True
-        else:
-            return False
+        return bool(
+            self.attributes
+            and (
+                self.attributes.announcement_title or self.attributes.announcement_type
+            )
+        )
 
     def set_announcement(self, announcement: Announcement) -> None:
         self.attributes.announcement_type = announcement.announcement_type.value
@@ -941,22 +821,18 @@ class Connection(Asset, type_name="Connection"):
         )  # relationship
 
         def validate_required(self):
-            if self.name:
-                if self.admin_roles or self.admin_groups or self.admin_users:
-                    if self.qualified_name:
-                        if self.category:
-                            if not self.connector_name:
-                                raise ValueError("connector_name is required")
-                        else:
-                            raise ValueError("category is required")
-                    else:
-                        raise ValueError("qualified_name is required")
-                else:
-                    raise ValueError(
-                        "One of admin_user, admin_groups or admin_roles is required"
-                    )
-            else:
+            if not self.name:
                 raise ValueError("name is required")
+            if not self.admin_roles and not self.admin_groups and not self.admin_users:
+                raise ValueError(
+                    "One of admin_user, admin_groups or admin_roles is required"
+                )
+            if not self.qualified_name:
+                raise ValueError("qualified_name is required")
+            if not self.category:
+                raise ValueError("category is required")
+            if not self.connector_name:
+                raise ValueError("connector_name is required")
 
         @classmethod
         # @validate_arguments()
@@ -3016,8 +2892,8 @@ class Table(SQL):
                 raise ValueError("Invalid schema_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid schema_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
             return Table.Attributes(
                 name=name,
                 database_name=fields[3],
@@ -3351,8 +3227,8 @@ class Schema(SQL):
                 raise ValueError("Invalid database_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid database_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid database_qualified_name") from e
             return Schema.Attributes(
                 name=name,
                 database_name=fields[3],
@@ -3431,8 +3307,8 @@ class Database(SQL):
                 raise ValueError("Invalid connection_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid connection_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
             return Database.Attributes(
                 name=name,
                 connection_qualified_name=connection_qualified_name,
@@ -3459,8 +3335,8 @@ class Database(SQL):
             raise ValueError("Invalid connection_qualified_name")
         try:
             connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError:
-            raise ValueError("Invalid connection_qualified_name")
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
         attributes = Database.Attributes(
             name=name,
             connection_qualified_name=connection_qualified_name,
@@ -3691,8 +3567,8 @@ class View(SQL):
                 raise ValueError("Invalid schema_qualified_name")
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError:
-                raise ValueError("Invalid schema_qualified_name")
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
             return View.Attributes(
                 name=name,
                 database_name=fields[3],
@@ -6867,66 +6743,6 @@ class SalesforceReport(Salesforce):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-class MutatedEntities(AtlanObject):
-    CREATE: Optional[list[Asset]] = Field(
-        None,
-        description="Assets that were created. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
-        alias="CREATE",
-    )
-    UPDATE: Optional[list[Asset]] = Field(
-        None,
-        description="Assets that were assets_updated. The detailed properties of the returned asset will vary based on"
-        " the type of asset, but listed in the example are the common set of properties across assets.",
-        alias="UPDATE",
-    )
-    DELETE: Optional[list[Asset]] = Field(
-        None,
-        description="Assets that were deleted. The detailed properties of the returned asset will vary based on the "
-        "type of asset, but listed in the example are the common set of properties across assets.",
-        alias="DELETE",
-    )
-
-
-A = TypeVar("A", bound=Asset)
-
-
-class AssetMutationResponse(AtlanObject):
-    guid_assignments: dict[str, Any] = Field(
-        None, description="Map of assigned unique identifiers for the changed assets."
-    )
-    mutated_entities: Optional[MutatedEntities] = Field(
-        None, description="Assets that were changed."
-    )
-
-    def assets_created(self, asset_type: Type[A]) -> list[A]:
-        if self.mutated_entities and self.mutated_entities.CREATE:
-            return [
-                asset
-                for asset in self.mutated_entities.CREATE
-                if isinstance(asset, asset_type)
-            ]
-        return []
-
-    def assets_updated(self, asset_type: Type[A]) -> list[A]:
-        if self.mutated_entities and self.mutated_entities.UPDATE:
-            return [
-                asset
-                for asset in self.mutated_entities.UPDATE
-                if isinstance(asset, asset_type)
-            ]
-        return []
-
-    def assets_deleted(self, asset_type: Type[A]) -> list[A]:
-        if self.mutated_entities and self.mutated_entities.DELETE:
-            return [
-                asset
-                for asset in self.mutated_entities.DELETE
-                if isinstance(asset, asset_type)
-            ]
-        return []
 
 
 Referenceable.update_forward_refs()

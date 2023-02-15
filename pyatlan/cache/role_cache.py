@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
@@ -14,9 +16,9 @@ class RoleCache:
     def _refresh_cache(cls) -> None:
         response = AtlanClient().get_all_roles()
         if response is not None:
-            cls.cache_by_id = dict()
-            cls.map_id_to_name = dict()
-            cls.map_name_to_id = dict()
+            cls.cache_by_id = {}
+            cls.map_id_to_name = {}
+            cls.map_name_to_id = {}
             for role in response.records:
                 role_id = role.id
                 role_name = role.name
@@ -29,21 +31,17 @@ class RoleCache:
         """
         Translate the provided human-readable role name to its GUID.
         """
-        role_id = cls.map_name_to_id.get(name)
-        if role_id:
+        if role_id := cls.map_name_to_id.get(name):
             return role_id
-        else:
-            cls._refresh_cache()
-            return cls.map_name_to_id.get(name)
+        cls._refresh_cache()
+        return cls.map_name_to_id.get(name)
 
     @classmethod
     def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided role GUID to the human-readable role name.
         """
-        role_name = cls.map_id_to_name.get(idstr)
-        if role_name:
+        if role_name := cls.map_id_to_name.get(idstr):
             return role_name
-        else:
-            cls._refresh_cache()
-            return cls.map_id_to_name.get(idstr)
+        cls._refresh_cache()
+        return cls.map_id_to_name.get(idstr)

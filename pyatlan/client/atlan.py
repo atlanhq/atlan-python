@@ -1,22 +1,7 @@
-#!/usr/bin/env/python
-# Copyright 2022 Atlan Pte, Ltd
-# Copyright [2015-2021] The Apache Software Foundation
-#
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
+# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+import contextlib
 import copy
 import json
 import logging
@@ -51,7 +36,6 @@ from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.assets import (
     Asset,
-    AssetMutationResponse,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
@@ -72,6 +56,7 @@ from pyatlan.model.core import (
     Classifications,
 )
 from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory
+from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import (
@@ -153,30 +138,27 @@ class AtlanClient(BaseSettings):
             return self._assets
 
         def next_page(self, start=None, size=None) -> bool:
-            if start:
-                self._start = start
-            else:
-                self._start = self._start + self._size
+            self._start = start or self._start + self._size
             if size:
                 self._size = size
-            if self._assets:
-                self._criteria.dsl.from_ = self._start
-                self._criteria.dsl.size = self._size
-                raw_json = self._client._call_api(
-                    INDEX_SEARCH,
-                    request_obj=self._criteria,
-                )
-                if "entities" not in raw_json:
-                    return False
-                self._assets = parse_obj_as(list[Asset], raw_json["entities"])
-                return True
-            else:
+            return self._get_next_page() if self._assets else False
+
+        # TODO Rename this here and in `next_page`
+        def _get_next_page(self):
+            self._criteria.dsl.from_ = self._start
+            self._criteria.dsl.size = self._size
+            raw_json = self._client._call_api(
+                INDEX_SEARCH,
+                request_obj=self._criteria,
+            )
+            if "entities" not in raw_json:
                 return False
+            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+            return True
 
         def __iter__(self) -> Generator[Asset, None, None]:
             while True:
-                for asset in self.current_page():
-                    yield asset
+                yield from self.current_page()
                 if not self.next_page():
                     break
 
@@ -222,7 +204,7 @@ class AtlanClient(BaseSettings):
 
             return None
         else:
-            try:
+            with contextlib.suppress(ValueError):
                 error_info = json.loads(response.text)
                 error_code = error_info.get("errorCode", 0)
                 error_message = error_info.get("errorMessage", "")
@@ -232,8 +214,6 @@ class AtlanClient(BaseSettings):
                         code=error_code,
                         status_code=response.status_code,
                     )
-            except ValueError:
-                pass
             raise AtlanServiceException(api, response)
 
     def _create_params(self, api, query_params, request_obj):
@@ -275,16 +255,14 @@ class AtlanClient(BaseSettings):
             "limit": limit,
         }
         raw_json = self._call_api(GET_ROLES.format_path_with_params(), query_params)
-        response = RoleResponse(**raw_json)
-        return response
+        return RoleResponse(**raw_json)
 
     def get_all_roles(self) -> RoleResponse:
         """
         Retrieve all roles defined in Atlan.
         """
         raw_json = self._call_api(GET_ROLES.format_path_with_params())
-        response = RoleResponse(**raw_json)
-        return response
+        return RoleResponse(**raw_json)
 
     @validate_arguments()
     def get_asset_by_qualified_name(
@@ -386,10 +364,7 @@ class AtlanClient(BaseSettings):
             assets = parse_obj_as(list[Asset], raw_json["entities"])
         else:
             assets = []
-        if "approximateCount" in raw_json:
-            count = raw_json["approximateCount"]
-        else:
-            count = 0
+        count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
         return AtlanClient.SearchResults(
             client=self,
             criteria=criteria,
@@ -421,7 +396,7 @@ class AtlanClient(BaseSettings):
                 struct_defs=[],
                 entity_defs=[],
                 relationship_defs=[],
-                businessMetadataDefs=[],
+                custom_metadata_defs=[],
             )
         elif isinstance(typedef, CustomMetadataDef):
             # Set up the request payload...
@@ -431,7 +406,7 @@ class AtlanClient(BaseSettings):
                 struct_defs=[],
                 entity_defs=[],
                 relationship_defs=[],
-                businessMetadataDefs=[typedef],
+                custom_metadata_defs=[typedef],
             )
         else:
             raise InvalidRequestException(

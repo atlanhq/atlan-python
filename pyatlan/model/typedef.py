@@ -229,6 +229,7 @@ class AttributeDef(AtlanObject):
     index_type_es_fields: Optional[Dict[str, dict[str, str]]] = Field(
         None, description="", alias="indexTypeESFields"
     )
+    is_default_value_null: Optional[bool] = Field(None, description="TBC")
 
 
 class StructDef(TypeDef):
