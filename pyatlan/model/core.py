@@ -99,7 +99,7 @@ class AtlanObject(BaseModel):
     class Config:
         allow_population_by_field_name = True
         alias_generator = to_camel_case
-        extra = Extra.forbid
+        extra = Extra.ignore
         json_encoders = {
             datetime: lambda v: int(v.timestamp() * 1000),
             "ClassificationName": ClassificationName.json_encode_classification,
