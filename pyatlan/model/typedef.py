@@ -276,6 +276,7 @@ class ClassificationDef(TypeDef):
     service_type: Optional[str] = Field(
         None, description="Name used for display purposes (in user interfaces).\n"
     )
+    skip_display_name_uniqueness_check: Optional[bool] = Field(None)
 
 
 class EntityDef(TypeDef):
