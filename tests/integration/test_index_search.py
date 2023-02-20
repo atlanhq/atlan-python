@@ -107,8 +107,8 @@ def get_all_subclasses(cls):
 @pytest.mark.parametrize("cls", [(cls) for cls in get_all_subclasses(Asset)])
 def test_search(client: AtlanClient, asset_tracker, cls):
     name = cls.__name__
-    query = Term(field="__state", value="ACTIVE")
-    post_filter = Term(field="__typeName.keyword", value=name)
+    query = Term.with_state("ACTIVE")
+    post_filter = Term.with_type_name(name)
     dsl = DSL(query=query, post_filter=post_filter)
     request = IndexSearchRequest(dsl=dsl, attributes=["name"])
     results = client.search(criteria=request)
@@ -127,8 +127,8 @@ def test_search(client: AtlanClient, asset_tracker, cls):
 def test_search_next_page(client: AtlanClient):
     size = 15
     dsl = DSL(
-        query=Term(field="__state", value="ACTIVE"),
-        post_filter=Term(field="__typeName.keyword", value="Database"),
+        query=Term.with_state("ACTIVE"),
+        post_filter=Term.with_type_name(value="Database"),
         size=size,
     )
     request = IndexSearchRequest(
@@ -150,8 +150,8 @@ def test_search_next_page(client: AtlanClient):
 def test_search_iter(client: AtlanClient):
     size = 15
     dsl = DSL(
-        query=Term(field="__state", value="ACTIVE"),
-        post_filter=Term(field="__typeName.keyword", value="Database"),
+        query=Term.with_state("ACTIVE"),
+        post_filter=Term.with_type_name("Database"),
         size=size,
     )
     request = IndexSearchRequest(
@@ -166,8 +166,8 @@ def test_search_iter(client: AtlanClient):
 def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
     size = 2
     dsl = DSL(
-        query=Term(field="__state", value="ACTIVE"),
-        post_filter=Term(field="__typeName.keyword", value="Database"),
+        query=Term.with_state("ACTIVE"),
+        post_filter=Term.with_type_name("Database"),
         size=size,
     )
     request = IndexSearchRequest(
@@ -208,7 +208,6 @@ def test_term_queries_factory(client: AtlanClient, term_query_value, method, cla
         dsl=dsl,
         attributes=["name"],
     )
-    # print(request.json(by_alias=True, exclude_none=True))
     results = client.search(criteria=request)
     assert results.count > 0
 
@@ -271,6 +270,5 @@ def test_range_factory(client: AtlanClient, value, method, format):
         dsl=dsl,
         attributes=["name"],
     )
-    # print(request.json(by_alias=True, exclude_none=True))
     results = client.search(criteria=request)
     assert results.count > 0
