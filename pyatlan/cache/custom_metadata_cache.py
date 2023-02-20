@@ -19,7 +19,7 @@ class CustomMetadataCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CUSTOM_METADATA)
+        response = AtlanClient().get_typedefs(type_=AtlanTypeCategory.CUSTOM_METADATA)
         if response is not None:
             cls.map_id_to_name = {}
             cls.map_name_to_id = {}

@@ -620,9 +620,13 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
+    type_name: Literal["DataSet"] = Field("DataSet")
+
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
+
+    type_name: Literal["ProcessExecution"] = Field("ProcessExecution")
 
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
@@ -755,6 +759,8 @@ class Cloud(Asset, type_name="Cloud"):
 
 class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
+
+    type_name: Literal["Infrastructure"] = Field("Infrastructure")
 
 
 class Connection(Asset, type_name="Connection"):
@@ -1181,6 +1187,8 @@ class AWS(Cloud):
 class BIProcess(Process):
     """Description"""
 
+    type_name: Literal["BIProcess"] = Field("BIProcess")
+
 
 class ColumnProcess(Process):
     """Description"""
@@ -1387,6 +1395,8 @@ class Resource(Catalog):
 
 class Insight(Catalog):
     """Description"""
+
+    type_name: Literal["Insight"] = Field("Insight")
 
 
 class API(Catalog):
@@ -2569,6 +2579,18 @@ class ReadmeTemplate(Resource):
 
 class Readme(Resource):
     """Description"""
+
+    type_name: Literal["Readme"] = Field("Readme")
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, asset: Asset) -> Readme:
+        return Readme(
+            attributes=Readme.Attributes(
+                qualified_name=f"{asset.guid}/readme",
+                name=f"{asset.attributes.name} Readme",
+            ),
+        )
 
 
 class Link(Resource):
@@ -5844,6 +5866,8 @@ class TableauDatasource(Tableau):
 class TableauSite(Tableau):
     """Description"""
 
+    type_name: Literal["TableauSite"] = Field("TableauSite")
+
 
 class TableauDashboard(Tableau):
     """Description"""
@@ -6347,6 +6371,8 @@ class LookerExplore(Looker):
 
 class LookerProject(Looker):
     """Description"""
+
+    type_name: Literal["LookerProject"] = Field("LookerProject")
 
 
 class LookerQuery(Looker):
