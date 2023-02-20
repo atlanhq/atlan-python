@@ -207,12 +207,21 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
         return sub(**data)
     {%- endif %}
-    {%- if entity_def.attribute_defs %}
-        {%- if not entity_def.sub_types %}
-
+    {%- if not entity_def.sub_types %}
     type_name: Literal['{{ entity_def.name }}'] = Field("{{ entity_def.name }}")
-
-        {%- endif %}
+    {%- endif %}
+    {%- if entity_def.name == "Readme" %}
+    @classmethod
+    # @validate_arguments()
+    def create(cls, asset: Asset) -> Readme:
+        return Readme(
+            attributes=Readme.Attributes(
+                qualified_name=f"{asset.guid}/readme",
+                name=f"{asset.attributes.name} Readme",
+            ),
+        )
+    {%- endif %}
+    {%- if entity_def.attribute_defs %}
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}

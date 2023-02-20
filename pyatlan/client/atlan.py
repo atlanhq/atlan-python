@@ -238,17 +238,17 @@ class AtlanClient(BaseSettings):
     def get_roles(
         self,
         limit: int,
-        filter: Optional[str] = None,
+        post_filter: Optional[str] = None,
         sort: Optional[str] = None,
         count: bool = True,
         offset: int = 0,
     ) -> RoleResponse:
-        if filter is None:
-            filter = ""
+        if post_filter is None:
+            post_filter = ""
         if sort is None:
             sort = ""
         query_params = {
-            "filter": filter,
+            "filter": post_filter,
             "sort": sort,
             "count": count,
             "offset": offset,
@@ -298,7 +298,7 @@ class AtlanClient(BaseSettings):
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code)
+                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
 
     @validate_arguments()
@@ -333,7 +333,7 @@ class AtlanClient(BaseSettings):
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code)
+                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
 
     def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
@@ -378,8 +378,8 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
-    def get_typedefs(self, type: AtlanTypeCategory) -> TypeDefResponse:
-        query_params = {"type": type.value}
+    def get_typedefs(self, type_: AtlanTypeCategory) -> TypeDefResponse:
+        query_params = {"type": type_.value}
         raw_json = self._call_api(
             GET_ALL_TYPE_DEFS.format_path_with_params(),
             query_params,
