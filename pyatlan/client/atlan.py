@@ -336,7 +336,16 @@ class AtlanClient(BaseSettings):
                 raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
 
-    def upsert(self, entity: Union[Asset, list[Asset]]) -> AssetMutationResponse:
+    def upsert(
+        self,
+        entity: Union[Asset, list[Asset]],
+        replace_classifications: bool = False,
+        replace_custom_metadata: bool = False,
+    ) -> AssetMutationResponse:
+        query_params = {
+            "replaceClassifications": replace_classifications,
+            "replaceBusinessAttributes": replace_custom_metadata,
+        }
         entities: list[Asset] = []
         if isinstance(entity, list):
             entities.extend(entity)
@@ -345,7 +354,7 @@ class AtlanClient(BaseSettings):
         for asset in entities:
             asset.validate_required()
         request = BulkRequest[Asset](entities=entities)
-        raw_json = self._call_api(BULK_UPDATE, None, request)
+        raw_json = self._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
 
     def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
