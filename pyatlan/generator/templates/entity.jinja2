@@ -199,7 +199,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
         if not isinstance(business_attributes, BusinessAttributes):
             raise ValueError(
-                f"business_attributes must be an instance of BusinessAttributes"
+                "business_attributes must be an instance of BusinessAttributes"
             )
         if (
             type(business_attributes)
@@ -401,6 +401,32 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 schema_name=fields[4],
                 connector_name=connector_type.value,
             )
+        {%- elif entity_def.name == "S3Bucket" %}
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str, aws_arn: str
+        ) -> S3Bucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 2:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Bucket.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+            )
         {%- elif entity_def.name == "AtlasGlossary" %}
         @classmethod
         # @validate_arguments()
@@ -503,6 +529,20 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
         attributes = {{ entity_def.name }}.Attributes.create(name, schema_qualified_name)
         return cls(attributes=attributes)
+    {%- elif entity_def.name == "S3Bucket" %}
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name, connection_qualified_name, aws_arn
+        )
+        return cls(attributes=attributes)
     {%- endif %}
     {% if entity_def.name.startswith("AtlasGlossary") %}
     @root_validator()
@@ -510,7 +550,6 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         if "attributes" in values  and values["attributes"] and not values["attributes"].qualified_name:
             values["attributes"].qualified_name = values["guid"]
         return values
-
     {%- if entity_def.name == "AtlasGlossary" %}
     @classmethod
     # @validate_arguments()

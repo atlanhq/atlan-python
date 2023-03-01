@@ -17,6 +17,7 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    S3Bucket,
     Schema,
     Table,
     View,
@@ -1044,3 +1045,40 @@ def test_set_business_attributes_with_appropriate_business_attribute_updates_dic
     monte_carlo_dict = table.business_attributes[MONTE_CARLO]
     assert monte_carlo_dict[FRESHNESS] == monte_carlo.freshness
     assert monte_carlo_dict[TABLE_URL] == monte_carlo.table_url
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn, msg",
+    [
+        (None, "default/s3/production", "abc", "name is required"),
+        ("my-bucket", None, "abc", "connection_qualified_name is required"),
+        ("", "default/s3/production", "abc", "name cannot be blank"),
+        ("my-bucket", "", "abc", "connection_qualified_name cannot be blank"),
+        ("my-bucket", "default/s3/", "abc", "Invalid connection_qualified_name"),
+        (
+            "my-bucket",
+            "default/s3/production/TestDb",
+            "abc",
+            "Invalid connection_qualified_name",
+        ),
+        ("my-bucket", "s3/production", "abc", "Invalid connection_qualified_name"),
+        (
+            "my-bucket",
+            "default/s33/production",
+            "abc",
+            "Invalid connection_qualified_name",
+        ),
+        ("my-bucket", "default/s3", None, "aws_arn is required"),
+        ("my-bucket", "default/s3", "", "aws_arn cannot be blank"),
+    ],
+)
+def test_s3bucket_attributes_create_without_required_parameters_raises_validation_error(
+    name, connection_qualified_name, aws_arn, msg
+):
+    with pytest.raises(ValueError) as exc_info:
+        S3Bucket.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+    assert exc_info.value.args[0] == msg
