@@ -41,8 +41,10 @@ def to_snake_case(value):
     if value.startswith("__"):
         value = value[2:]
     res = [value[0].lower()]
-    for c in value.replace("URL", "Url").replace("DBT", "Dbt")[1:]:
-        if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+    for c in (
+        value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]
+    ):
+        if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
             res.append("_")
             res.append(c.lower())
         else:
@@ -83,10 +85,10 @@ class ClassificationName:
 
         if isinstance(data, ClassificationName):
             return data
-        display_text = ClassificationCache.get_name_for_id(data)
-        if not display_text:
+        if display_text := ClassificationCache.get_name_for_id(data):
+            return ClassificationName(display_text)
+        else:
             raise ValueError(f"{data} is not a valid Classification")
-        return ClassificationName(display_text)
 
     @staticmethod
     def json_encode_classification(classification_name: "ClassificationName"):
@@ -143,7 +145,9 @@ class Classification(AtlanObject):
 
 
 class Classifications(AtlanObject):
-    __root__: list[Classification] = Field(list(), description="classifications")
+    __root__: list[Classification] = Field(
+        default_factory=list, description="classifications"
+    )
 
 
 class Meaning(AtlanObject):
@@ -183,3 +187,60 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
+
+
+class Synonym:
+    def __init__(self, storage_name):
+        self.storage_name = storage_name
+
+    def __set__(self, instance, value):
+        instance[self.storage_name] = value
+
+    def __get__(self, instance, owner):
+        return instance[self.storage_name]
+
+
+class BusinessAttributes(dict):
+    _meta_data_type_name = ""
+    _meta_data_type_id = ""
+    # types_by_id: dict[str, type] = {}
+    #
+    # @classmethod
+    # def __get_validators__(cls):
+    #     yield cls._convert_to_real_type_
+    #
+    # @classmethod
+    # def _convert_to_real_type_(cls, data):
+    #     from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+    #
+    #     if isinstance(data, BusinessAttributes):
+    #         return data
+    #     if isinstance(data, dict):
+    #         class_name = "BA_" + "".join([name for name in data.keys()])
+    #         if class_name not in cls.types_by_id:
+    #             business_attributes_type = type(class_name, (BusinessAttributes,), {})
+    #             cls.types_by_id[class_name] = business_attributes_type
+    #             for key in data.keys():
+    #                 meta_name = CustomMetadataCache.get_name_for_id(key).replace(
+    #                     " ", ""
+    #                 )
+    #                 setattr(
+    #                     business_attributes_type, to_snake_case(meta_name), Synonym(key)
+    #                 )
+    #         else:
+    #             business_attributes_type = cls.types_by_id[class_name]
+    #         business_attributes = business_attributes_type()
+    #         for key, value in data.items():
+    #             attrib_type = CustomMetadataCache.get_type_for_id(key)
+    #             business_attributes[key] = attrib_type(value)
+    #         return business_attributes
+    #     raise TypeError(f"Unsupported type: {type(data)}")
+
+
+class CustomMetadataAttributes(AtlanObject):
+    attributes: dict[str, Any] = Field(default_factory=dict)
+    archived_attributes: dict[str, Any] = Field(default_factory=dict)
+
+    @property
+    def is_empty(self) -> bool:
+        return self.attributes is None or len(self.attributes) == 0

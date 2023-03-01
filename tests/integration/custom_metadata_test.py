@@ -4,6 +4,7 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.model.assets import Table
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
 CM_NAME = "psdk-CustomMetadataTest"
@@ -82,3 +83,36 @@ def test_003_purge_custom_metadata(client: AtlanClient):
     cm_id = CustomMetadataCache.get_id_for_name(CM_NAME)
     assert cm_id
     client.purge_typedef(cm_id)
+
+
+def test_custom_metadata_has_human_readable_properties(client: AtlanClient):
+    table = client.get_asset_by_guid("5f47cfb9-1313-4f03-9213-9913fff3c878", Table)
+    anomalo = table.get_business_attributes("Anomalo")
+    assert hasattr(anomalo, "data_volume")
+    assert anomalo.data_volume is None
+    assert hasattr(anomalo, "data_volume_details")
+    assert anomalo.data_volume_details is None
+    assert hasattr(anomalo, "data_freshness")
+    assert anomalo.data_freshness is None
+    assert hasattr(anomalo, "data_freshness_details")
+    assert anomalo.data_freshness_details is None
+    assert hasattr(anomalo, "table_url")
+    assert anomalo.table_url is None
+    assert hasattr(anomalo, "missing_data")
+    assert anomalo.missing_data is None
+    assert hasattr(anomalo, "missing_data_details")
+    assert anomalo.missing_data_details is None
+    assert hasattr(anomalo, "table_anomalies")
+    assert anomalo.table_anomalies is None
+    assert hasattr(anomalo, "table_anomalies_details")
+    assert anomalo.table_anomalies_details is None
+    assert hasattr(anomalo, "key_metrics")
+    assert anomalo.key_metrics is None
+    assert hasattr(anomalo, "key_metrics_details")
+    assert anomalo.key_metrics_details is None
+    assert hasattr(anomalo, "validation_rules")
+    assert anomalo.validation_rules is None
+    assert hasattr(anomalo, "validation_rules_details")
+    assert anomalo.validation_rules_details is None
+    monte_carlo = table.get_business_attributes("Monte Carlo")
+    assert monte_carlo is not None

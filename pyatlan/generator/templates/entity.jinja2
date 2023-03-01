@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import Field, StrictStr, root_validator
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
+from pyatlan.model.core import Announcement, AtlanObject, BusinessAttributes, Classification, Meaning
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSAccountStatus,
@@ -170,6 +170,48 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     def validate_required(self):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
+
+    def get_business_attributes(self, name: str) -> BusinessAttributes:
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        ba_id = CustomMetadataCache.get_id_for_name(name)
+        if ba_id is None:
+            raise ValueError(f"No business attributes with the name: {name} exist")
+        for a_type in CustomMetadataCache.types_by_asset[self.type_name]:
+            if hasattr(a_type, "_meta_data_type_name") and a_type._meta_data_type_name == name:
+                break
+        else:
+            raise ValueError(
+                f"Business attributes {name} are not applicable to {self.type_name}"
+            )
+        ba_type = CustomMetadataCache.get_type_for_id(ba_id)
+        if not ba_type:
+            raise ValueError(
+                f"Business attributes {name} are not applicable to {self.type_name}"
+            )
+        if self.business_attributes and ba_id in self.business_attributes:
+            return ba_type(self.business_attributes[ba_id])
+        else:
+            return ba_type()
+
+    def set_business_attribute(self, business_attributes: BusinessAttributes) -> None:
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        if not isinstance(business_attributes, BusinessAttributes):
+            raise ValueError(
+                f"business_attributes must be an instance of BusinessAttributes"
+            )
+        if (
+            type(business_attributes)
+            not in CustomMetadataCache.types_by_asset[self.type_name]
+        ):
+            raise ValueError(
+                f"Business attributes {business_attributes._meta_data_type_name} are not applicable to {self.type_name}"
+            )
+        ba_dict = dict(business_attributes)
+        if not self.business_attributes:
+            self.business_attributes = {}
+        self.business_attributes[business_attributes._meta_data_type_id] = ba_dict
 
 {%- else %}
     {%- if entity_def.name == "Asset"  %}

@@ -9,7 +9,13 @@ from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import Field, StrictStr, root_validator
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
+from pyatlan.model.core import (
+    Announcement,
+    AtlanObject,
+    BusinessAttributes,
+    Classification,
+    Meaning,
+)
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSAccountStatus,
@@ -169,6 +175,51 @@ class Referenceable(AtlanObject):
     def validate_required(self):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
+
+    def get_business_attributes(self, name: str) -> BusinessAttributes:
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        ba_id = CustomMetadataCache.get_id_for_name(name)
+        if ba_id is None:
+            raise ValueError(f"No business attributes with the name: {name} exist")
+        for a_type in CustomMetadataCache.types_by_asset[self.type_name]:
+            if (
+                hasattr(a_type, "_meta_data_type_name")
+                and a_type._meta_data_type_name == name
+            ):
+                break
+        else:
+            raise ValueError(
+                f"Business attributes {name} are not applicable to {self.type_name}"
+            )
+        ba_type = CustomMetadataCache.get_type_for_id(ba_id)
+        if not ba_type:
+            raise ValueError(
+                f"Business attributes {name} are not applicable to {self.type_name}"
+            )
+        if self.business_attributes and ba_id in self.business_attributes:
+            return ba_type(self.business_attributes[ba_id])
+        else:
+            return ba_type()
+
+    def set_business_attribute(self, business_attributes: BusinessAttributes) -> None:
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        if not isinstance(business_attributes, BusinessAttributes):
+            raise ValueError(
+                "business_attributes must be an instance of BusinessAttributes"
+            )
+        if (
+            type(business_attributes)
+            not in CustomMetadataCache.types_by_asset[self.type_name]
+        ):
+            raise ValueError(
+                f"Business attributes {business_attributes._meta_data_type_name} are not applicable to {self.type_name}"
+            )
+        ba_dict = dict(business_attributes)
+        if not self.business_attributes:
+            self.business_attributes = {}
+        self.business_attributes[business_attributes._meta_data_type_id] = ba_dict
 
 
 class Asset(Referenceable):
@@ -1708,6 +1759,9 @@ class ADLS(ObjectStore):
     """Description"""
 
     class Attributes(ObjectStore.Attributes):
+        adls_account_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsAccountQualifiedName"
+        )
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
         )
@@ -2145,6 +2199,50 @@ class Mode(BI):
         )  # relationship
 
     attributes: "Mode.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Qlik(BI):
+    """Description"""
+
+    class Attributes(BI.Attributes):
+        qlik_id: Optional[str] = Field(None, description="", alias="qlikId")
+        qlik_q_r_i: Optional[str] = Field(None, description="", alias="qlikQRI")
+        qlik_space_id: Optional[str] = Field(None, description="", alias="qlikSpaceId")
+        qlik_space_qualified_name: Optional[str] = Field(
+            None, description="", alias="qlikSpaceQualifiedName"
+        )
+        qlik_app_id: Optional[str] = Field(None, description="", alias="qlikAppId")
+        qlik_app_qualified_name: Optional[str] = Field(
+            None, description="", alias="qlikAppQualifiedName"
+        )
+        qlik_owner_id: Optional[str] = Field(None, description="", alias="qlikOwnerId")
+        qlik_is_published: Optional[bool] = Field(
+            None, description="", alias="qlikIsPublished"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Qlik.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -3849,9 +3947,6 @@ class ADLSAccount(ADLS):
         adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
             None, description="", alias="adlsPrimaryDiskState"
         )
-        adls_account_creation_time: Optional[datetime] = Field(
-            None, description="", alias="adlsAccountCreationTime"
-        )
         adls_account_provision_state: Optional[ADLSProvisionState] = Field(
             None, description="", alias="adlsAccountProvisionState"
         )
@@ -3896,9 +3991,6 @@ class ADLSContainer(ADLS):
         adls_container_url: Optional[str] = Field(
             None, description="", alias="adlsContainerUrl"
         )
-        adls_container_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="adlsContainerLastModifiedTime"
-        )
         adls_container_lease_state: Optional[ADLSLeaseState] = Field(
             None, description="", alias="adlsContainerLeaseState"
         )
@@ -3910,6 +4002,9 @@ class ADLSContainer(ADLS):
         )
         adls_container_version_level_immutability_support: Optional[bool] = Field(
             None, description="", alias="adlsContainerVersionLevelImmutabilitySupport"
+        )
+        adls_object_count: Optional[int] = Field(
+            None, description="", alias="adlsObjectCount"
         )
         adls_objects: Optional[list[ADLSObject]] = Field(
             None, description="", alias="adlsObjects"
@@ -3951,12 +4046,6 @@ class ADLSObject(ADLS):
     class Attributes(ADLS.Attributes):
         adls_object_url: Optional[str] = Field(
             None, description="", alias="adlsObjectUrl"
-        )
-        adls_object_creation_time: Optional[datetime] = Field(
-            None, description="", alias="adlsObjectCreationTime"
-        )
-        adls_object_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="adlsObjectLastModifiedTime"
         )
         adls_object_version_id: Optional[str] = Field(
             None, description="", alias="adlsObjectVersionId"
@@ -4002,6 +4091,9 @@ class ADLSObject(ADLS):
         )
         adls_object_metadata: Optional[dict[str, str]] = Field(
             None, description="", alias="adlsObjectMetadata"
+        )
+        adls_container_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsContainerQualifiedName"
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
@@ -5470,6 +5562,235 @@ class ModeCollection(Mode):
     )
 
 
+class QlikSpace(Qlik):
+    """Description"""
+
+    type_name: Literal["QlikSpace"] = Field("QlikSpace")
+
+    class Attributes(Qlik.Attributes):
+        qlik_space_type: Optional[str] = Field(
+            None, description="", alias="qlikSpaceType"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_datasets: Optional[list[QlikDataset]] = Field(
+            None, description="", alias="qlikDatasets"
+        )  # relationship
+        qlik_apps: Optional[list[QlikApp]] = Field(
+            None, description="", alias="qlikApps"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikSpace.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikApp(Qlik):
+    """Description"""
+
+    type_name: Literal["QlikApp"] = Field("QlikApp")
+
+    class Attributes(Qlik.Attributes):
+        qlik_has_section_access: Optional[bool] = Field(
+            None, description="", alias="qlikHasSectionAccess"
+        )
+        qlik_origin_app_id: Optional[str] = Field(
+            None, description="", alias="qlikOriginAppId"
+        )
+        qlik_is_encrypted: Optional[bool] = Field(
+            None, description="", alias="qlikIsEncrypted"
+        )
+        qlik_is_direct_query_mode: Optional[bool] = Field(
+            None, description="", alias="qlikIsDirectQueryMode"
+        )
+        qlik_app_static_byte_size: Optional[int] = Field(
+            None, description="", alias="qlikAppStaticByteSize"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+        qlik_sheets: Optional[list[QlikSheet]] = Field(
+            None, description="", alias="qlikSheets"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikApp.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikChart(Qlik):
+    """Description"""
+
+    type_name: Literal["QlikChart"] = Field("QlikChart")
+
+    class Attributes(Qlik.Attributes):
+        qlik_chart_subtitle: Optional[str] = Field(
+            None, description="", alias="qlikChartSubtitle"
+        )
+        qlik_chart_footnote: Optional[str] = Field(
+            None, description="", alias="qlikChartFootnote"
+        )
+        qlik_chart_orientation: Optional[str] = Field(
+            None, description="", alias="qlikChartOrientation"
+        )
+        qlik_chart_type: Optional[str] = Field(
+            None, description="", alias="qlikChartType"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_sheet: Optional[QlikSheet] = Field(
+            None, description="", alias="qlikSheet"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikChart.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikDataset(Qlik):
+    """Description"""
+
+    type_name: Literal["QlikDataset"] = Field("QlikDataset")
+
+    class Attributes(Qlik.Attributes):
+        qlik_dataset_technical_name: Optional[str] = Field(
+            None, description="", alias="qlikDatasetTechnicalName"
+        )
+        qlik_dataset_type: Optional[str] = Field(
+            None, description="", alias="qlikDatasetType"
+        )
+        qlik_dataset_uri: Optional[str] = Field(
+            None, description="", alias="qlikDatasetUri"
+        )
+        qlik_dataset_subtype: Optional[str] = Field(
+            None, description="", alias="qlikDatasetSubtype"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikDataset.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikSheet(Qlik):
+    """Description"""
+
+    type_name: Literal["QlikSheet"] = Field("QlikSheet")
+
+    class Attributes(Qlik.Attributes):
+        qlik_sheet_is_approved: Optional[bool] = Field(
+            None, description="", alias="qlikSheetIsApproved"
+        )
+        qlik_app: Optional[QlikApp] = Field(
+            None, description="", alias="qlikApp"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_charts: Optional[list[QlikChart]] = Field(
+            None, description="", alias="qlikCharts"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikSheet.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class TableauWorkbook(Tableau):
     """Description"""
 
@@ -6858,6 +7179,8 @@ Sigma.Attributes.update_forward_refs()
 
 Mode.Attributes.update_forward_refs()
 
+Qlik.Attributes.update_forward_refs()
+
 Tableau.Attributes.update_forward_refs()
 
 Looker.Attributes.update_forward_refs()
@@ -6977,6 +7300,16 @@ ModeChart.Attributes.update_forward_refs()
 ModeWorkspace.Attributes.update_forward_refs()
 
 ModeCollection.Attributes.update_forward_refs()
+
+QlikSpace.Attributes.update_forward_refs()
+
+QlikApp.Attributes.update_forward_refs()
+
+QlikChart.Attributes.update_forward_refs()
+
+QlikDataset.Attributes.update_forward_refs()
+
+QlikSheet.Attributes.update_forward_refs()
 
 TableauWorkbook.Attributes.update_forward_refs()
 
