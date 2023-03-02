@@ -4168,9 +4168,11 @@ class S3Bucket(S3):
                 [name, connection_qualified_name, aws_arn],
             )
             fields = connection_qualified_name.split("/")
-            if len(fields) != 2:
+            if len(fields) != 3:
                 raise ValueError("Invalid connection_qualified_name")
             try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
                 if connector_type != AtlanConnectorType.S3:
                     raise ValueError("Connector type must be s3")

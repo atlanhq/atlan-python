@@ -1048,37 +1048,74 @@ def test_set_business_attributes_with_appropriate_business_attribute_updates_dic
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn, msg",
+    "cls, name, connection_qualified_name, aws_arn, msg",
     [
-        (None, "default/s3/production", "abc", "name is required"),
-        ("my-bucket", None, "abc", "connection_qualified_name is required"),
-        ("", "default/s3/production", "abc", "name cannot be blank"),
-        ("my-bucket", "", "abc", "connection_qualified_name cannot be blank"),
-        ("my-bucket", "default/s3/", "abc", "Invalid connection_qualified_name"),
-        (
-            "my-bucket",
-            "default/s3/production/TestDb",
-            "abc",
-            "Invalid connection_qualified_name",
-        ),
-        ("my-bucket", "s3/production", "abc", "Invalid connection_qualified_name"),
-        (
-            "my-bucket",
-            "default/s33/production",
-            "abc",
-            "Invalid connection_qualified_name",
-        ),
-        ("my-bucket", "default/s3", None, "aws_arn is required"),
-        ("my-bucket", "default/s3", "", "aws_arn cannot be blank"),
+        (cls, values[0], values[1], values[2], values[3])
+        for values in [
+            (None, "default/s3/production", "abc", "name is required"),
+            ("my-bucket", None, "abc", "connection_qualified_name is required"),
+            ("", "default/s3/production", "abc", "name cannot be blank"),
+            ("my-bucket", "", "abc", "connection_qualified_name cannot be blank"),
+            ("my-bucket", "default/s3/", "abc", "Invalid connection_qualified_name"),
+            ("my-bucket", "/s3/", "abc", "Invalid connection_qualified_name"),
+            (
+                "my-bucket",
+                "default/s3/production/TestDb",
+                "abc",
+                "Invalid connection_qualified_name",
+            ),
+            ("my-bucket", "s3/production", "abc", "Invalid connection_qualified_name"),
+            (
+                "my-bucket",
+                "default/s33/production",
+                "abc",
+                "Invalid connection_qualified_name",
+            ),
+            ("my-bucket", "default/s3", None, "aws_arn is required"),
+            ("my-bucket", "default/s3", "", "aws_arn cannot be blank"),
+        ]
+        for cls in [S3Bucket.Attributes, S3Bucket]
     ],
 )
 def test_s3bucket_attributes_create_without_required_parameters_raises_validation_error(
-    name, connection_qualified_name, aws_arn, msg
+    cls, name, connection_qualified_name, aws_arn, msg
 ):
     with pytest.raises(ValueError) as exc_info:
-        S3Bucket.create(
+        cls.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
         )
     assert exc_info.value.args[0] == msg
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn",
+    [("my-bucket", "default/s3/production", "my-arn")],
+)
+def test_s3bucket_attributes_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn
+):
+    attributes = S3Bucket.Attributes.create(
+        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+    )
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn",
+    [("my-bucket", "default/s3/production", "my-arn")],
+)
+def test_s3bucket_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn
+):
+    attributes = S3Bucket.create(
+        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+    ).attributes
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
