@@ -5,9 +5,9 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 
-from pydantic import Field, StrictStr, root_validator
+from pydantic import Field, StrictStr, root_validator, validator
 
 from pyatlan.model.core import Announcement, AtlanObject, BusinessAttributes, Classification, Meaning
 from pyatlan.model.enums import (
@@ -249,9 +249,14 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
         return sub(**data)
     {%- endif %}
-    {%- if not entity_def.sub_types %}
-    type_name: Literal['{{ entity_def.name }}'] = Field("{{ entity_def.name }}")
-    {%- endif %}
+    type_name: str = Field("{{ entity_def.name }}", allow_mutation=False)
+
+    @validator('type_name')
+    def validate_type_name(cls, v):
+        if v != "{{ entity_def.name }}":
+            raise ValueError('must be {{ entity_def.name }}')
+        return v
+
     {%- if entity_def.name == "Readme" %}
     @classmethod
     # @validate_arguments()
