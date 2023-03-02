@@ -18,6 +18,7 @@ from pyatlan.model.assets import (
     Connection,
     Database,
     S3Bucket,
+    S3Object,
     Schema,
     Table,
     View,
@@ -1074,7 +1075,7 @@ def test_set_business_attributes_with_appropriate_business_attribute_updates_dic
             ("my-bucket", "default/s3", None, "aws_arn is required"),
             ("my-bucket", "default/s3", "", "aws_arn cannot be blank"),
         ]
-        for cls in [S3Bucket.Attributes, S3Bucket]
+        for cls in [S3Bucket.Attributes, S3Bucket, S3Object.Attributes, S3Object]
     ],
 )
 def test_s3bucket_attributes_create_without_required_parameters_raises_validation_error(
@@ -1115,6 +1116,38 @@ def test_s3bucket_create_with_required_parameters(
     attributes = S3Bucket.create(
         name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
     ).attributes
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn",
+    [("my-bucket", "default/s3/production", "my-arn")],
+)
+def test_s3object_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn
+):
+    attributes = S3Object.create(
+        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+    ).attributes
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn",
+    [("my-bucket", "default/s3/production", "my-arn")],
+)
+def test_s3object_attributes_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn
+):
+    attributes = S3Object.Attributes.create(
+        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+    )
     assert attributes.name == name
     assert attributes.connection_qualified_name == connection_qualified_name
     assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"

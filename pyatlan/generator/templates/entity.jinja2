@@ -401,12 +401,12 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 schema_name=fields[4],
                 connector_name=connector_type.value,
             )
-        {%- elif entity_def.name == "S3Bucket" %}
+        {%- elif entity_def.name == "S3Bucket" or entity_def.name == "S3Object"%}
         @classmethod
         # @validate_arguments()
         def create(
             cls, name: str, connection_qualified_name: str, aws_arn: str
-        ) -> S3Bucket.Attributes:
+        ) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "aws_arn"],
                 [name, connection_qualified_name, aws_arn],
@@ -422,7 +422,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                     raise ValueError("Connector type must be s3")
             except ValueError as e:
                 raise ValueError("Invalid connection_qualified_name") from e
-            return S3Bucket.Attributes(
+            return {{ entity_def.name }}.Attributes(
                 aws_arn=aws_arn,
                 name=name,
                 connection_qualified_name=connection_qualified_name,
@@ -531,17 +531,17 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
         attributes = {{ entity_def.name }}.Attributes.create(name, schema_qualified_name)
         return cls(attributes=attributes)
-    {%- elif entity_def.name == "S3Bucket" %}
+    {%- elif entity_def.name == "S3Bucket" or entity_def.name == "S3Object" %}
     @classmethod
     # @validate_arguments()
     def create(
         cls, name: str, connection_qualified_name: str, aws_arn: str
-    ) -> S3Bucket:
+    ) -> {{ entity_def.name }}:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
             [name, connection_qualified_name, aws_arn],
         )
-        attributes = S3Bucket.Attributes.create(
+        attributes = {{ entity_def.name }}.Attributes.create(
             name, connection_qualified_name, aws_arn
         )
         return cls(attributes=attributes)

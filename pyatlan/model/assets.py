@@ -4260,11 +4260,53 @@ class S3Object(S3):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str, aws_arn: str
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Object.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+            )
+
     attributes: "S3Object.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Object:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Object.Attributes.create(
+            name, connection_qualified_name, aws_arn
+        )
+        return cls(attributes=attributes)
 
 
 class MetabaseQuestion(Metabase):
