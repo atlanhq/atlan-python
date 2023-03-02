@@ -999,7 +999,7 @@ def test_set_busines_attributes_with_non_business_attributes_object_raises_value
         table.set_business_attribute({})
 
 
-def test_set_busines_attributes_with_non_appropriate_meta_data_type_name_raises_value_error(
+def test_set_business_attributes_with_non_appropriate_meta_data_type_name_raises_value_error(
     table,
 ):
 
@@ -1008,6 +1008,22 @@ def test_set_busines_attributes_with_non_appropriate_meta_data_type_name_raises_
         match="business_attributes must be an instance of BusinessAttributes",
     ):
         table.set_business_attribute({})
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_assigning_to_invalid_business_attribute_raises_attribute_error(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+    table.business_attributes = {
+        MONTE_CARLO: {
+            FRESHNESS: "pass",
+            TABLE_URL: "https://getmontecarlo.com/catalog/",
+        }
+    }
+    business_attributes = table.get_business_attributes("Monte Carlo")
+    with pytest.raises(AttributeError, match="Attribute bogus does not exist"):
+        business_attributes.bogus = "123"
 
 
 @patch("pyatlan.cache.custom_metadata_cache.AtlanClient")

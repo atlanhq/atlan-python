@@ -203,38 +203,11 @@ class Synonym:
 class BusinessAttributes(dict):
     _meta_data_type_name = ""
     _meta_data_type_id = ""
-    # types_by_id: dict[str, type] = {}
-    #
-    # @classmethod
-    # def __get_validators__(cls):
-    #     yield cls._convert_to_real_type_
-    #
-    # @classmethod
-    # def _convert_to_real_type_(cls, data):
-    #     from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-    #
-    #     if isinstance(data, BusinessAttributes):
-    #         return data
-    #     if isinstance(data, dict):
-    #         class_name = "BA_" + "".join([name for name in data.keys()])
-    #         if class_name not in cls.types_by_id:
-    #             business_attributes_type = type(class_name, (BusinessAttributes,), {})
-    #             cls.types_by_id[class_name] = business_attributes_type
-    #             for key in data.keys():
-    #                 meta_name = CustomMetadataCache.get_name_for_id(key).replace(
-    #                     " ", ""
-    #                 )
-    #                 setattr(
-    #                     business_attributes_type, to_snake_case(meta_name), Synonym(key)
-    #                 )
-    #         else:
-    #             business_attributes_type = cls.types_by_id[class_name]
-    #         business_attributes = business_attributes_type()
-    #         for key, value in data.items():
-    #             attrib_type = CustomMetadataCache.get_type_for_id(key)
-    #             business_attributes[key] = attrib_type(value)
-    #         return business_attributes
-    #     raise TypeError(f"Unsupported type: {type(data)}")
+
+    def __setattr__(self, key, value):
+        if not hasattr(self, key):
+            raise AttributeError(f"Attribute {key} does not exist")
+        super().__setattr__(key, value)
 
 
 class CustomMetadataAttributes(AtlanObject):
