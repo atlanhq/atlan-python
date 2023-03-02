@@ -5,9 +5,9 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 
-from pydantic import Field, StrictStr, root_validator
+from pydantic import Field, StrictStr, root_validator, validator
 
 from pyatlan.model.core import (
     Announcement,
@@ -257,6 +257,14 @@ class Asset(Referenceable):
             raise TypeError(f"Unsupport sub-type: {data_type}")
 
         return sub(**data)
+
+    type_name: str = Field("Asset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Asset":
+            raise ValueError("must be Asset")
+        return v
 
     class Attributes(Referenceable.Attributes):
         name: str = Field(None, description="", alias="name")
@@ -606,7 +614,13 @@ class Asset(Referenceable):
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
-    type_name: Literal["AtlasGlossary"] = Field("AtlasGlossary")
+    type_name: str = Field("AtlasGlossary", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "AtlasGlossary":
+            raise ValueError("must be AtlasGlossary")
+        return v
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -671,19 +685,37 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
-    type_name: Literal["DataSet"] = Field("DataSet")
+    type_name: str = Field("DataSet", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DataSet":
+            raise ValueError("must be DataSet")
+        return v
 
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
-    type_name: Literal["ProcessExecution"] = Field("ProcessExecution")
+    type_name: str = Field("ProcessExecution", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ProcessExecution":
+            raise ValueError("must be ProcessExecution")
+        return v
 
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
 
-    type_name: Literal["AtlasGlossaryTerm"] = Field("AtlasGlossaryTerm")
+    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "AtlasGlossaryTerm":
+            raise ValueError("must be AtlasGlossaryTerm")
+        return v
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -807,17 +839,37 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
+    type_name: str = Field("Cloud", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Cloud":
+            raise ValueError("must be Cloud")
+        return v
+
 
 class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
 
-    type_name: Literal["Infrastructure"] = Field("Infrastructure")
+    type_name: str = Field("Infrastructure", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Infrastructure":
+            raise ValueError("must be Infrastructure")
+        return v
 
 
 class Connection(Asset, type_name="Connection"):
     """Description"""
 
-    type_name: Literal["Connection"] = Field("Connection")
+    type_name: str = Field("Connection", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Connection":
+            raise ValueError("must be Connection")
+        return v
 
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
@@ -958,6 +1010,14 @@ class Connection(Asset, type_name="Connection"):
 class Process(Asset, type_name="Process"):
     """Description"""
 
+    type_name: str = Field("Process", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Process":
+            raise ValueError("must be Process")
+        return v
+
     class Attributes(Asset.Attributes):
         inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
         outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
@@ -990,7 +1050,13 @@ class Process(Asset, type_name="Process"):
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
 
-    type_name: Literal["AtlasGlossaryCategory"] = Field("AtlasGlossaryCategory")
+    type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "AtlasGlossaryCategory":
+            raise ValueError("must be AtlasGlossaryCategory")
+        return v
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -1075,7 +1141,13 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 class Badge(Asset, type_name="Badge"):
     """Description"""
 
-    type_name: Literal["Badge"] = Field("Badge")
+    type_name: str = Field("Badge", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Badge":
+            raise ValueError("must be Badge")
+        return v
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
@@ -1107,13 +1179,37 @@ class Badge(Asset, type_name="Badge"):
 class Namespace(Asset, type_name="Namespace"):
     """Description"""
 
+    type_name: str = Field("Namespace", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Namespace":
+            raise ValueError("must be Namespace")
+        return v
+
 
 class Catalog(Asset, type_name="Catalog"):
     """Description"""
 
+    type_name: str = Field("Catalog", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Catalog":
+            raise ValueError("must be Catalog")
+        return v
+
 
 class Google(Cloud):
     """Description"""
+
+    type_name: str = Field("Google", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Google":
+            raise ValueError("must be Google")
+        return v
 
     class Attributes(Cloud.Attributes):
         google_service: Optional[str] = Field(
@@ -1163,6 +1259,14 @@ class Google(Cloud):
 class Azure(Cloud):
     """Description"""
 
+    type_name: str = Field("Azure", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Azure":
+            raise ValueError("must be Azure")
+        return v
+
     class Attributes(Cloud.Attributes):
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
@@ -1198,6 +1302,14 @@ class Azure(Cloud):
 
 class AWS(Cloud):
     """Description"""
+
+    type_name: str = Field("AWS", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "AWS":
+            raise ValueError("must be AWS")
+        return v
 
     class Attributes(Cloud.Attributes):
         aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
@@ -1238,17 +1350,37 @@ class AWS(Cloud):
 class BIProcess(Process):
     """Description"""
 
-    type_name: Literal["BIProcess"] = Field("BIProcess")
+    type_name: str = Field("BIProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "BIProcess":
+            raise ValueError("must be BIProcess")
+        return v
 
 
 class ColumnProcess(Process):
     """Description"""
 
+    type_name: str = Field("ColumnProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ColumnProcess":
+            raise ValueError("must be ColumnProcess")
+        return v
+
 
 class Collection(Namespace):
     """Description"""
 
-    type_name: Literal["Collection"] = Field("Collection")
+    type_name: str = Field("Collection", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Collection":
+            raise ValueError("must be Collection")
+        return v
 
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -1282,7 +1414,13 @@ class Collection(Namespace):
 class Folder(Namespace):
     """Description"""
 
-    type_name: Literal["Folder"] = Field("Folder")
+    type_name: str = Field("Folder", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Folder":
+            raise ValueError("must be Folder")
+        return v
 
     class Attributes(Namespace.Attributes):
         parent_qualified_name: str = Field(
@@ -1321,21 +1459,61 @@ class Folder(Namespace):
 class ObjectStore(Catalog):
     """Description"""
 
+    type_name: str = Field("ObjectStore", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ObjectStore":
+            raise ValueError("must be ObjectStore")
+        return v
+
 
 class DataQuality(Catalog):
     """Description"""
+
+    type_name: str = Field("DataQuality", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DataQuality":
+            raise ValueError("must be DataQuality")
+        return v
 
 
 class BI(Catalog):
     """Description"""
 
+    type_name: str = Field("BI", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "BI":
+            raise ValueError("must be BI")
+        return v
+
 
 class SaaS(Catalog):
     """Description"""
 
+    type_name: str = Field("SaaS", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SaaS":
+            raise ValueError("must be SaaS")
+        return v
+
 
 class Dbt(Catalog):
     """Description"""
+
+    type_name: str = Field("Dbt", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Dbt":
+            raise ValueError("must be Dbt")
+        return v
 
     class Attributes(Catalog.Attributes):
         dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
@@ -1411,6 +1589,14 @@ class Dbt(Catalog):
 class Resource(Catalog):
     """Description"""
 
+    type_name: str = Field("Resource", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Resource":
+            raise ValueError("must be Resource")
+        return v
+
     class Attributes(Catalog.Attributes):
         link: Optional[str] = Field(None, description="", alias="link")
         is_global: Optional[bool] = Field(None, description="", alias="isGlobal")
@@ -1447,11 +1633,25 @@ class Resource(Catalog):
 class Insight(Catalog):
     """Description"""
 
-    type_name: Literal["Insight"] = Field("Insight")
+    type_name: str = Field("Insight", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Insight":
+            raise ValueError("must be Insight")
+        return v
 
 
 class API(Catalog):
     """Description"""
+
+    type_name: str = Field("API", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "API":
+            raise ValueError("must be API")
+        return v
 
     class Attributes(Catalog.Attributes):
         api_spec_type: Optional[str] = Field(None, description="", alias="apiSpecType")
@@ -1496,6 +1696,14 @@ class API(Catalog):
 
 class SQL(Catalog):
     """Description"""
+
+    type_name: str = Field("SQL", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SQL":
+            raise ValueError("must be SQL")
+        return v
 
     class Attributes(Catalog.Attributes):
         query_count: Optional[int] = Field(None, description="", alias="queryCount")
@@ -1566,6 +1774,14 @@ class SQL(Catalog):
 class DataStudio(Google):
     """Description"""
 
+    type_name: str = Field("DataStudio", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DataStudio":
+            raise ValueError("must be DataStudio")
+        return v
+
     class Attributes(Google.Attributes):
         google_service: Optional[str] = Field(
             None, description="", alias="googleService"
@@ -1619,6 +1835,14 @@ class DataStudio(Google):
 
 class GCS(Google):
     """Description"""
+
+    type_name: str = Field("GCS", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "GCS":
+            raise ValueError("must be GCS")
+        return v
 
     class Attributes(Google.Attributes):
         gcs_storage_class: Optional[str] = Field(
@@ -1690,7 +1914,13 @@ class GCS(Google):
 class DataStudioAsset(DataStudio):
     """Description"""
 
-    type_name: Literal["DataStudioAsset"] = Field("DataStudioAsset")
+    type_name: str = Field("DataStudioAsset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DataStudioAsset":
+            raise ValueError("must be DataStudioAsset")
+        return v
 
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[google_datastudio_asset_type] = Field(
@@ -1758,6 +1988,14 @@ class DataStudioAsset(DataStudio):
 class ADLS(ObjectStore):
     """Description"""
 
+    type_name: str = Field("ADLS", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ADLS":
+            raise ValueError("must be ADLS")
+        return v
+
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsAccountQualifiedName"
@@ -1802,6 +2040,14 @@ class ADLS(ObjectStore):
 
 class S3(ObjectStore):
     """Description"""
+
+    type_name: str = Field("S3", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "S3":
+            raise ValueError("must be S3")
+        return v
 
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
@@ -1850,7 +2096,13 @@ class S3(ObjectStore):
 class DbtColumnProcess(Dbt):
     """Description"""
 
-    type_name: Literal["DbtColumnProcess"] = Field("DbtColumnProcess")
+    type_name: str = Field("DbtColumnProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DbtColumnProcess":
+            raise ValueError("must be DbtColumnProcess")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
@@ -1940,6 +2192,14 @@ class DbtColumnProcess(Dbt):
 class Metric(DataQuality):
     """Description"""
 
+    type_name: str = Field("Metric", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Metric":
+            raise ValueError("must be Metric")
+        return v
+
     class Attributes(DataQuality.Attributes):
         metric_type: Optional[str] = Field(None, description="", alias="metricType")
         metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
@@ -1987,6 +2247,14 @@ class Metric(DataQuality):
 class Metabase(BI):
     """Description"""
 
+    type_name: str = Field("Metabase", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Metabase":
+            raise ValueError("must be Metabase")
+        return v
+
     class Attributes(BI.Attributes):
         metabase_collection_name: Optional[str] = Field(
             None, description="", alias="metabaseCollectionName"
@@ -2022,6 +2290,14 @@ class Metabase(BI):
 
 class PowerBI(BI):
     """Description"""
+
+    type_name: str = Field("PowerBI", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBI":
+            raise ValueError("must be PowerBI")
+        return v
 
     class Attributes(BI.Attributes):
         power_b_i_is_hidden: Optional[bool] = Field(
@@ -2065,6 +2341,14 @@ class PowerBI(BI):
 class Preset(BI):
     """Description"""
 
+    type_name: str = Field("Preset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Preset":
+            raise ValueError("must be Preset")
+        return v
+
     class Attributes(BI.Attributes):
         preset_workspace_id: Optional[int] = Field(
             None, description="", alias="presetWorkspaceId"
@@ -2106,6 +2390,14 @@ class Preset(BI):
 
 class Sigma(BI):
     """Description"""
+
+    type_name: str = Field("Sigma", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Sigma":
+            raise ValueError("must be Sigma")
+        return v
 
     class Attributes(BI.Attributes):
         sigma_workbook_qualified_name: Optional[str] = Field(
@@ -2154,6 +2446,14 @@ class Sigma(BI):
 
 class Mode(BI):
     """Description"""
+
+    type_name: str = Field("Mode", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Mode":
+            raise ValueError("must be Mode")
+        return v
 
     class Attributes(BI.Attributes):
         mode_id: Optional[str] = Field(None, description="", alias="modeId")
@@ -2208,6 +2508,14 @@ class Mode(BI):
 class Qlik(BI):
     """Description"""
 
+    type_name: str = Field("Qlik", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Qlik":
+            raise ValueError("must be Qlik")
+        return v
+
     class Attributes(BI.Attributes):
         qlik_id: Optional[str] = Field(None, description="", alias="qlikId")
         qlik_q_r_i: Optional[str] = Field(None, description="", alias="qlikQRI")
@@ -2252,13 +2560,37 @@ class Qlik(BI):
 class Tableau(BI):
     """Description"""
 
+    type_name: str = Field("Tableau", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Tableau":
+            raise ValueError("must be Tableau")
+        return v
+
 
 class Looker(BI):
     """Description"""
 
+    type_name: str = Field("Looker", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Looker":
+            raise ValueError("must be Looker")
+        return v
+
 
 class Salesforce(SaaS):
     """Description"""
+
+    type_name: str = Field("Salesforce", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Salesforce":
+            raise ValueError("must be Salesforce")
+        return v
 
     class Attributes(SaaS.Attributes):
         organization_qualified_name: Optional[str] = Field(
@@ -2294,7 +2626,13 @@ class Salesforce(SaaS):
 class DbtModelColumn(Dbt):
     """Description"""
 
-    type_name: Literal["DbtModelColumn"] = Field("DbtModelColumn")
+    type_name: str = Field("DbtModelColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DbtModelColumn":
+            raise ValueError("must be DbtModelColumn")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
@@ -2341,7 +2679,13 @@ class DbtModelColumn(Dbt):
 class DbtModel(Dbt):
     """Description"""
 
-    type_name: Literal["DbtModel"] = Field("DbtModel")
+    type_name: str = Field("DbtModel", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DbtModel":
+            raise ValueError("must be DbtModel")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_status: Optional[str] = Field(None, description="", alias="dbtStatus")
@@ -2413,7 +2757,13 @@ class DbtModel(Dbt):
 class DbtMetric(Dbt):
     """Description"""
 
-    type_name: Literal["DbtMetric"] = Field("DbtMetric")
+    type_name: str = Field("DbtMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DbtMetric":
+            raise ValueError("must be DbtMetric")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
@@ -2515,7 +2865,13 @@ class DbtMetric(Dbt):
 class DbtSource(Dbt):
     """Description"""
 
-    type_name: Literal["DbtSource"] = Field("DbtSource")
+    type_name: str = Field("DbtSource", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DbtSource":
+            raise ValueError("must be DbtSource")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(None, description="", alias="dbtState")
@@ -2557,7 +2913,13 @@ class DbtSource(Dbt):
 class DbtProcess(Dbt):
     """Description"""
 
-    type_name: Literal["DbtProcess"] = Field("DbtProcess")
+    type_name: str = Field("DbtProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "DbtProcess":
+            raise ValueError("must be DbtProcess")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(
@@ -2644,7 +3006,13 @@ class DbtProcess(Dbt):
 class ReadmeTemplate(Resource):
     """Description"""
 
-    type_name: Literal["ReadmeTemplate"] = Field("ReadmeTemplate")
+    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ReadmeTemplate":
+            raise ValueError("must be ReadmeTemplate")
+        return v
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -2678,7 +3046,13 @@ class ReadmeTemplate(Resource):
 class Readme(Resource):
     """Description"""
 
-    type_name: Literal["Readme"] = Field("Readme")
+    type_name: str = Field("Readme", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Readme":
+            raise ValueError("must be Readme")
+        return v
 
     @classmethod
     # @validate_arguments()
@@ -2694,7 +3068,13 @@ class Readme(Resource):
 class Link(Resource):
     """Description"""
 
-    type_name: Literal["Link"] = Field("Link")
+    type_name: str = Field("Link", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Link":
+            raise ValueError("must be Link")
+        return v
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -2734,7 +3114,13 @@ class Link(Resource):
 class APISpec(API):
     """Description"""
 
-    type_name: Literal["APISpec"] = Field("APISpec")
+    type_name: str = Field("APISpec", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "APISpec":
+            raise ValueError("must be APISpec")
+        return v
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
@@ -2793,7 +3179,13 @@ class APISpec(API):
 class APIPath(API):
     """Description"""
 
-    type_name: Literal["APIPath"] = Field("APIPath")
+    type_name: str = Field("APIPath", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "APIPath":
+            raise ValueError("must be APIPath")
+        return v
 
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
@@ -2846,7 +3238,13 @@ class APIPath(API):
 class TablePartition(SQL):
     """Description"""
 
-    type_name: Literal["TablePartition"] = Field("TablePartition")
+    type_name: str = Field("TablePartition", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TablePartition":
+            raise ValueError("must be TablePartition")
+        return v
 
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(None, description="", alias="constraint")
@@ -2926,7 +3324,13 @@ class TablePartition(SQL):
 class Table(SQL):
     """Description"""
 
-    type_name: Literal["Table"] = Field("Table")
+    type_name: str = Field("Table", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Table":
+            raise ValueError("must be Table")
+        return v
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -3044,7 +3448,13 @@ class Table(SQL):
 class Query(SQL):
     """Description"""
 
-    type_name: Literal["Query"] = Field("Query")
+    type_name: str = Field("Query", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Query":
+            raise ValueError("must be Query")
+        return v
 
     class Attributes(SQL.Attributes):
         raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
@@ -3121,7 +3531,13 @@ class Query(SQL):
 class Column(SQL):
     """Description"""
 
-    type_name: Literal["Column"] = Field("Column")
+    type_name: str = Field("Column", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Column":
+            raise ValueError("must be Column")
+        return v
 
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -3280,7 +3696,13 @@ class Column(SQL):
 class Schema(SQL):
     """Description"""
 
-    type_name: Literal["Schema"] = Field("Schema")
+    type_name: str = Field("Schema", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Schema":
+            raise ValueError("must be Schema")
+        return v
 
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
@@ -3377,7 +3799,13 @@ class Schema(SQL):
 class Database(SQL):
     """Description"""
 
-    type_name: Literal["Database"] = Field("Database")
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
@@ -3469,7 +3897,13 @@ class Database(SQL):
 class SnowflakeStream(SQL):
     """Description"""
 
-    type_name: Literal["SnowflakeStream"] = Field("SnowflakeStream")
+    type_name: str = Field("SnowflakeStream", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SnowflakeStream":
+            raise ValueError("must be SnowflakeStream")
+        return v
 
     class Attributes(SQL.Attributes):
         snowflake_stream_type: Optional[str] = Field(
@@ -3528,7 +3962,13 @@ class SnowflakeStream(SQL):
 class SnowflakePipe(SQL):
     """Description"""
 
-    type_name: Literal["SnowflakePipe"] = Field("SnowflakePipe")
+    type_name: str = Field("SnowflakePipe", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SnowflakePipe":
+            raise ValueError("must be SnowflakePipe")
+        return v
 
     class Attributes(SQL.Attributes):
         definition: Optional[str] = Field(None, description="", alias="definition")
@@ -3579,7 +4019,13 @@ class SnowflakePipe(SQL):
 class Procedure(SQL):
     """Description"""
 
-    type_name: Literal["Procedure"] = Field("Procedure")
+    type_name: str = Field("Procedure", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "Procedure":
+            raise ValueError("must be Procedure")
+        return v
 
     class Attributes(SQL.Attributes):
         definition: str = Field(None, description="", alias="definition")
@@ -3624,7 +4070,13 @@ class Procedure(SQL):
 class View(SQL):
     """Description"""
 
-    type_name: Literal["View"] = Field("View")
+    type_name: str = Field("View", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "View":
+            raise ValueError("must be View")
+        return v
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -3719,7 +4171,13 @@ class View(SQL):
 class MaterialisedView(SQL):
     """Description"""
 
-    type_name: Literal["MaterialisedView"] = Field("MaterialisedView")
+    type_name: str = Field("MaterialisedView", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "MaterialisedView":
+            raise ValueError("must be MaterialisedView")
+        return v
 
     class Attributes(SQL.Attributes):
         refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
@@ -3786,7 +4244,13 @@ class MaterialisedView(SQL):
 class GCSObject(GCS):
     """Description"""
 
-    type_name: Literal["GCSObject"] = Field("GCSObject")
+    type_name: str = Field("GCSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
+        return v
 
     class Attributes(GCS.Attributes):
         gcs_bucket_name: Optional[str] = Field(
@@ -3866,7 +4330,13 @@ class GCSObject(GCS):
 class GCSBucket(GCS):
     """Description"""
 
-    type_name: Literal["GCSBucket"] = Field("GCSBucket")
+    type_name: str = Field("GCSBucket", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
+        return v
 
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(
@@ -3922,7 +4392,13 @@ class GCSBucket(GCS):
 class ADLSAccount(ADLS):
     """Description"""
 
-    type_name: Literal["ADLSAccount"] = Field("ADLSAccount")
+    type_name: str = Field("ADLSAccount", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ADLSAccount":
+            raise ValueError("must be ADLSAccount")
+        return v
 
     class Attributes(ADLS.Attributes):
         adls_e_tag: Optional[str] = Field(None, description="", alias="adlsETag")
@@ -3985,7 +4461,13 @@ class ADLSAccount(ADLS):
 class ADLSContainer(ADLS):
     """Description"""
 
-    type_name: Literal["ADLSContainer"] = Field("ADLSContainer")
+    type_name: str = Field("ADLSContainer", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ADLSContainer":
+            raise ValueError("must be ADLSContainer")
+        return v
 
     class Attributes(ADLS.Attributes):
         adls_container_url: Optional[str] = Field(
@@ -4041,7 +4523,13 @@ class ADLSContainer(ADLS):
 class ADLSObject(ADLS):
     """Description"""
 
-    type_name: Literal["ADLSObject"] = Field("ADLSObject")
+    type_name: str = Field("ADLSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ADLSObject":
+            raise ValueError("must be ADLSObject")
+        return v
 
     class Attributes(ADLS.Attributes):
         adls_object_url: Optional[str] = Field(
@@ -4127,7 +4615,13 @@ class ADLSObject(ADLS):
 class S3Bucket(S3):
     """Description"""
 
-    type_name: Literal["S3Bucket"] = Field("S3Bucket")
+    type_name: str = Field("S3Bucket", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "S3Bucket":
+            raise ValueError("must be S3Bucket")
+        return v
 
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(
@@ -4210,7 +4704,13 @@ class S3Bucket(S3):
 class S3Object(S3):
     """Description"""
 
-    type_name: Literal["S3Object"] = Field("S3Object")
+    type_name: str = Field("S3Object", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "S3Object":
+            raise ValueError("must be S3Object")
+        return v
 
     class Attributes(S3.Attributes):
         s3_object_last_modified_time: Optional[datetime] = Field(
@@ -4312,7 +4812,13 @@ class S3Object(S3):
 class MetabaseQuestion(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseQuestion"] = Field("MetabaseQuestion")
+    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "MetabaseQuestion":
+            raise ValueError("must be MetabaseQuestion")
+        return v
 
     class Attributes(Metabase.Attributes):
         metabase_dashboard_count: Optional[int] = Field(
@@ -4359,7 +4865,13 @@ class MetabaseQuestion(Metabase):
 class MetabaseCollection(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseCollection"] = Field("MetabaseCollection")
+    type_name: str = Field("MetabaseCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "MetabaseCollection":
+            raise ValueError("must be MetabaseCollection")
+        return v
 
     class Attributes(Metabase.Attributes):
         metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
@@ -4407,7 +4919,13 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseDashboard"] = Field("MetabaseDashboard")
+    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "MetabaseDashboard":
+            raise ValueError("must be MetabaseDashboard")
+        return v
 
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(
@@ -4448,7 +4966,13 @@ class MetabaseDashboard(Metabase):
 class PowerBIReport(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIReport"] = Field("PowerBIReport")
+    type_name: str = Field("PowerBIReport", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIReport":
+            raise ValueError("must be PowerBIReport")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4500,7 +5024,13 @@ class PowerBIReport(PowerBI):
 class PowerBIMeasure(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIMeasure"] = Field("PowerBIMeasure")
+    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIMeasure":
+            raise ValueError("must be PowerBIMeasure")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4547,7 +5077,13 @@ class PowerBIMeasure(PowerBI):
 class PowerBIColumn(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIColumn"] = Field("PowerBIColumn")
+    type_name: str = Field("PowerBIColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIColumn":
+            raise ValueError("must be PowerBIColumn")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4600,7 +5136,13 @@ class PowerBIColumn(PowerBI):
 class PowerBITile(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBITile"] = Field("PowerBITile")
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4647,7 +5189,13 @@ class PowerBITile(PowerBI):
 class PowerBITable(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBITable"] = Field("PowerBITable")
+    type_name: str = Field("PowerBITable", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBITable":
+            raise ValueError("must be PowerBITable")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4703,7 +5251,13 @@ class PowerBITable(PowerBI):
 class PowerBIDatasource(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDatasource"] = Field("PowerBIDatasource")
+    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIDatasource":
+            raise ValueError("must be PowerBIDatasource")
+        return v
 
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
@@ -4741,7 +5295,13 @@ class PowerBIDatasource(PowerBI):
 class PowerBIWorkspace(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIWorkspace"] = Field("PowerBIWorkspace")
+    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIWorkspace":
+            raise ValueError("must be PowerBIWorkspace")
+        return v
 
     class Attributes(PowerBI.Attributes):
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
@@ -4794,7 +5354,13 @@ class PowerBIWorkspace(PowerBI):
 class PowerBIDataset(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDataset"] = Field("PowerBIDataset")
+    type_name: str = Field("PowerBIDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIDataset":
+            raise ValueError("must be PowerBIDataset")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4848,7 +5414,13 @@ class PowerBIDataset(PowerBI):
 class PowerBIDashboard(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDashboard"] = Field("PowerBIDashboard")
+    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4891,7 +5463,13 @@ class PowerBIDashboard(PowerBI):
 class PowerBIPage(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIPage"] = Field("PowerBIPage")
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4932,7 +5510,13 @@ class PowerBIPage(PowerBI):
 class PowerBIDataflow(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDataflow"] = Field("PowerBIDataflow")
+    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PowerBIDataflow":
+            raise ValueError("must be PowerBIDataflow")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4974,7 +5558,13 @@ class PowerBIDataflow(PowerBI):
 class PresetChart(Preset):
     """Description"""
 
-    type_name: Literal["PresetChart"] = Field("PresetChart")
+    type_name: str = Field("PresetChart", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PresetChart":
+            raise ValueError("must be PresetChart")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
@@ -5015,7 +5605,13 @@ class PresetChart(Preset):
 class PresetDataset(Preset):
     """Description"""
 
-    type_name: Literal["PresetDataset"] = Field("PresetDataset")
+    type_name: str = Field("PresetDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PresetDataset":
+            raise ValueError("must be PresetDataset")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
@@ -5059,7 +5655,13 @@ class PresetDataset(Preset):
 class PresetDashboard(Preset):
     """Description"""
 
-    type_name: Literal["PresetDashboard"] = Field("PresetDashboard")
+    type_name: str = Field("PresetDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PresetDashboard":
+            raise ValueError("must be PresetDashboard")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
@@ -5118,7 +5720,13 @@ class PresetDashboard(Preset):
 class PresetWorkspace(Preset):
     """Description"""
 
-    type_name: Literal["PresetWorkspace"] = Field("PresetWorkspace")
+    type_name: str = Field("PresetWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "PresetWorkspace":
+            raise ValueError("must be PresetWorkspace")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
@@ -5180,7 +5788,13 @@ class PresetWorkspace(Preset):
 class SigmaDatasetColumn(Sigma):
     """Description"""
 
-    type_name: Literal["SigmaDatasetColumn"] = Field("SigmaDatasetColumn")
+    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SigmaDatasetColumn":
+            raise ValueError("must be SigmaDatasetColumn")
+        return v
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_qualified_name: Optional[str] = Field(
@@ -5221,7 +5835,13 @@ class SigmaDatasetColumn(Sigma):
 class SigmaDataset(Sigma):
     """Description"""
 
-    type_name: Literal["SigmaDataset"] = Field("SigmaDataset")
+    type_name: str = Field("SigmaDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SigmaDataset":
+            raise ValueError("must be SigmaDataset")
+        return v
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_column_count: Optional[int] = Field(
@@ -5259,7 +5879,13 @@ class SigmaDataset(Sigma):
 class SigmaWorkbook(Sigma):
     """Description"""
 
-    type_name: Literal["SigmaWorkbook"] = Field("SigmaWorkbook")
+    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SigmaWorkbook":
+            raise ValueError("must be SigmaWorkbook")
+        return v
 
     class Attributes(Sigma.Attributes):
         sigma_page_count: Optional[int] = Field(
@@ -5297,7 +5923,13 @@ class SigmaWorkbook(Sigma):
 class SigmaDataElementField(Sigma):
     """Description"""
 
-    type_name: Literal["SigmaDataElementField"] = Field("SigmaDataElementField")
+    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SigmaDataElementField":
+            raise ValueError("must be SigmaDataElementField")
+        return v
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_field_is_hidden: Optional[bool] = Field(
@@ -5338,7 +5970,13 @@ class SigmaDataElementField(Sigma):
 class SigmaPage(Sigma):
     """Description"""
 
-    type_name: Literal["SigmaPage"] = Field("SigmaPage")
+    type_name: str = Field("SigmaPage", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SigmaPage":
+            raise ValueError("must be SigmaPage")
+        return v
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_count: Optional[int] = Field(
@@ -5379,7 +6017,13 @@ class SigmaPage(Sigma):
 class SigmaDataElement(Sigma):
     """Description"""
 
-    type_name: Literal["SigmaDataElement"] = Field("SigmaDataElement")
+    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SigmaDataElement":
+            raise ValueError("must be SigmaDataElement")
+        return v
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_query: Optional[str] = Field(
@@ -5426,7 +6070,13 @@ class SigmaDataElement(Sigma):
 class ModeReport(Mode):
     """Description"""
 
-    type_name: Literal["ModeReport"] = Field("ModeReport")
+    type_name: str = Field("ModeReport", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ModeReport":
+            raise ValueError("must be ModeReport")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
@@ -5485,7 +6135,13 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
-    type_name: Literal["ModeQuery"] = Field("ModeQuery")
+    type_name: str = Field("ModeQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ModeQuery":
+            raise ValueError("must be ModeQuery")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
@@ -5529,7 +6185,13 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
-    type_name: Literal["ModeChart"] = Field("ModeChart")
+    type_name: str = Field("ModeChart", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ModeChart":
+            raise ValueError("must be ModeChart")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
@@ -5567,7 +6229,13 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
-    type_name: Literal["ModeWorkspace"] = Field("ModeWorkspace")
+    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ModeWorkspace":
+            raise ValueError("must be ModeWorkspace")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(
@@ -5605,7 +6273,13 @@ class ModeWorkspace(Mode):
 class ModeCollection(Mode):
     """Description"""
 
-    type_name: Literal["ModeCollection"] = Field("ModeCollection")
+    type_name: str = Field("ModeCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "ModeCollection":
+            raise ValueError("must be ModeCollection")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
@@ -5649,7 +6323,13 @@ class ModeCollection(Mode):
 class QlikSpace(Qlik):
     """Description"""
 
-    type_name: Literal["QlikSpace"] = Field("QlikSpace")
+    type_name: str = Field("QlikSpace", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "QlikSpace":
+            raise ValueError("must be QlikSpace")
+        return v
 
     class Attributes(Qlik.Attributes):
         qlik_space_type: Optional[str] = Field(
@@ -5690,7 +6370,13 @@ class QlikSpace(Qlik):
 class QlikApp(Qlik):
     """Description"""
 
-    type_name: Literal["QlikApp"] = Field("QlikApp")
+    type_name: str = Field("QlikApp", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "QlikApp":
+            raise ValueError("must be QlikApp")
+        return v
 
     class Attributes(Qlik.Attributes):
         qlik_has_section_access: Optional[bool] = Field(
@@ -5743,7 +6429,13 @@ class QlikApp(Qlik):
 class QlikChart(Qlik):
     """Description"""
 
-    type_name: Literal["QlikChart"] = Field("QlikChart")
+    type_name: str = Field("QlikChart", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "QlikChart":
+            raise ValueError("must be QlikChart")
+        return v
 
     class Attributes(Qlik.Attributes):
         qlik_chart_subtitle: Optional[str] = Field(
@@ -5790,7 +6482,13 @@ class QlikChart(Qlik):
 class QlikDataset(Qlik):
     """Description"""
 
-    type_name: Literal["QlikDataset"] = Field("QlikDataset")
+    type_name: str = Field("QlikDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "QlikDataset":
+            raise ValueError("must be QlikDataset")
+        return v
 
     class Attributes(Qlik.Attributes):
         qlik_dataset_technical_name: Optional[str] = Field(
@@ -5837,7 +6535,13 @@ class QlikDataset(Qlik):
 class QlikSheet(Qlik):
     """Description"""
 
-    type_name: Literal["QlikSheet"] = Field("QlikSheet")
+    type_name: str = Field("QlikSheet", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "QlikSheet":
+            raise ValueError("must be QlikSheet")
+        return v
 
     class Attributes(Qlik.Attributes):
         qlik_sheet_is_approved: Optional[bool] = Field(
@@ -5878,7 +6582,13 @@ class QlikSheet(Qlik):
 class TableauWorkbook(Tableau):
     """Description"""
 
-    type_name: Literal["TableauWorkbook"] = Field("TableauWorkbook")
+    type_name: str = Field("TableauWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauWorkbook":
+            raise ValueError("must be TableauWorkbook")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5937,7 +6647,13 @@ class TableauWorkbook(Tableau):
 class TableauDatasourceField(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDatasourceField"] = Field("TableauDatasourceField")
+    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauDatasourceField":
+            raise ValueError("must be TableauDatasourceField")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6023,7 +6739,13 @@ class TableauDatasourceField(Tableau):
 class TableauCalculatedField(Tableau):
     """Description"""
 
-    type_name: Literal["TableauCalculatedField"] = Field("TableauCalculatedField")
+    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauCalculatedField":
+            raise ValueError("must be TableauCalculatedField")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6088,7 +6810,13 @@ class TableauCalculatedField(Tableau):
 class TableauProject(Tableau):
     """Description"""
 
-    type_name: Literal["TableauProject"] = Field("TableauProject")
+    type_name: str = Field("TableauProject", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauProject":
+            raise ValueError("must be TableauProject")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6150,7 +6878,13 @@ class TableauProject(Tableau):
 class TableauMetric(Tableau):
     """Description"""
 
-    type_name: Literal["TableauMetric"] = Field("TableauMetric")
+    type_name: str = Field("TableauMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauMetric":
+            raise ValueError("must be TableauMetric")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6197,7 +6931,13 @@ class TableauMetric(Tableau):
 class TableauDatasource(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDatasource"] = Field("TableauDatasource")
+    type_name: str = Field("TableauDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauDatasource":
+            raise ValueError("must be TableauDatasource")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6271,13 +7011,25 @@ class TableauDatasource(Tableau):
 class TableauSite(Tableau):
     """Description"""
 
-    type_name: Literal["TableauSite"] = Field("TableauSite")
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
 
 
 class TableauDashboard(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDashboard"] = Field("TableauDashboard")
+    type_name: str = Field("TableauDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauDashboard":
+            raise ValueError("must be TableauDashboard")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6330,7 +7082,13 @@ class TableauDashboard(Tableau):
 class TableauFlow(Tableau):
     """Description"""
 
-    type_name: Literal["TableauFlow"] = Field("TableauFlow")
+    type_name: str = Field("TableauFlow", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauFlow":
+            raise ValueError("must be TableauFlow")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6386,7 +7144,13 @@ class TableauFlow(Tableau):
 class TableauWorksheet(Tableau):
     """Description"""
 
-    type_name: Literal["TableauWorksheet"] = Field("TableauWorksheet")
+    type_name: str = Field("TableauWorksheet", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "TableauWorksheet":
+            raise ValueError("must be TableauWorksheet")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6445,7 +7209,13 @@ class TableauWorksheet(Tableau):
 class LookerLook(Looker):
     """Description"""
 
-    type_name: Literal["LookerLook"] = Field("LookerLook")
+    type_name: str = Field("LookerLook", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerLook":
+            raise ValueError("must be LookerLook")
+        return v
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -6515,7 +7285,13 @@ class LookerLook(Looker):
 class LookerDashboard(Looker):
     """Description"""
 
-    type_name: Literal["LookerDashboard"] = Field("LookerDashboard")
+    type_name: str = Field("LookerDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerDashboard":
+            raise ValueError("must be LookerDashboard")
+        return v
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -6575,7 +7351,13 @@ class LookerDashboard(Looker):
 class LookerFolder(Looker):
     """Description"""
 
-    type_name: Literal["LookerFolder"] = Field("LookerFolder")
+    type_name: str = Field("LookerFolder", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerFolder":
+            raise ValueError("must be LookerFolder")
+        return v
 
     class Attributes(Looker.Attributes):
         source_content_metadata_id: Optional[int] = Field(
@@ -6625,7 +7407,13 @@ class LookerFolder(Looker):
 class LookerTile(Looker):
     """Description"""
 
-    type_name: Literal["LookerTile"] = Field("LookerTile")
+    type_name: str = Field("LookerTile", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerTile":
+            raise ValueError("must be LookerTile")
+        return v
 
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(
@@ -6679,7 +7467,13 @@ class LookerTile(Looker):
 class LookerModel(Looker):
     """Description"""
 
-    type_name: Literal["LookerModel"] = Field("LookerModel")
+    type_name: str = Field("LookerModel", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerModel":
+            raise ValueError("must be LookerModel")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6727,7 +7521,13 @@ class LookerModel(Looker):
 class LookerExplore(Looker):
     """Description"""
 
-    type_name: Literal["LookerExplore"] = Field("LookerExplore")
+    type_name: str = Field("LookerExplore", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerExplore":
+            raise ValueError("must be LookerExplore")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6777,13 +7577,25 @@ class LookerExplore(Looker):
 class LookerProject(Looker):
     """Description"""
 
-    type_name: Literal["LookerProject"] = Field("LookerProject")
+    type_name: str = Field("LookerProject", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerProject":
+            raise ValueError("must be LookerProject")
+        return v
 
 
 class LookerQuery(Looker):
     """Description"""
 
-    type_name: Literal["LookerQuery"] = Field("LookerQuery")
+    type_name: str = Field("LookerQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerQuery":
+            raise ValueError("must be LookerQuery")
+        return v
 
     class Attributes(Looker.Attributes):
         source_definition: Optional[str] = Field(
@@ -6834,7 +7646,13 @@ class LookerQuery(Looker):
 class LookerField(Looker):
     """Description"""
 
-    type_name: Literal["LookerField"] = Field("LookerField")
+    type_name: str = Field("LookerField", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerField":
+            raise ValueError("must be LookerField")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6895,7 +7713,13 @@ class LookerField(Looker):
 class LookerView(Looker):
     """Description"""
 
-    type_name: Literal["LookerView"] = Field("LookerView")
+    type_name: str = Field("LookerView", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "LookerView":
+            raise ValueError("must be LookerView")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6934,7 +7758,13 @@ class LookerView(Looker):
 class SalesforceObject(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceObject"] = Field("SalesforceObject")
+    type_name: str = Field("SalesforceObject", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SalesforceObject":
+            raise ValueError("must be SalesforceObject")
+        return v
 
     class Attributes(Salesforce.Attributes):
         is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
@@ -6979,7 +7809,13 @@ class SalesforceObject(Salesforce):
 class SalesforceField(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceField"] = Field("SalesforceField")
+    type_name: str = Field("SalesforceField", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SalesforceField":
+            raise ValueError("must be SalesforceField")
+        return v
 
     class Attributes(Salesforce.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -7049,7 +7885,13 @@ class SalesforceField(Salesforce):
 class SalesforceOrganization(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceOrganization"] = Field("SalesforceOrganization")
+    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SalesforceOrganization":
+            raise ValueError("must be SalesforceOrganization")
+        return v
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -7091,7 +7933,13 @@ class SalesforceOrganization(Salesforce):
 class SalesforceDashboard(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceDashboard"] = Field("SalesforceDashboard")
+    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SalesforceDashboard":
+            raise ValueError("must be SalesforceDashboard")
+        return v
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -7134,7 +7982,13 @@ class SalesforceDashboard(Salesforce):
 class SalesforceReport(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceReport"] = Field("SalesforceReport")
+    type_name: str = Field("SalesforceReport", allow_mutation=False)
+
+    @validator("type_name")
+    def name_must_contain_space(cls, v):
+        if v != "SalesforceReport":
+            raise ValueError("must be SalesforceReport")
+        return v
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
