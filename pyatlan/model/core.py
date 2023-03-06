@@ -189,17 +189,6 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
 
 
-class Synonym:
-    def __init__(self, storage_name):
-        self.storage_name = storage_name
-
-    def __set__(self, instance, value):
-        instance[self.storage_name] = value
-
-    def __get__(self, instance, owner):
-        return instance[self.storage_name]
-
-
 class BusinessAttributes(dict):
     _meta_data_type_name = ""
     _meta_data_type_id = ""
@@ -208,12 +197,3 @@ class BusinessAttributes(dict):
         if not hasattr(self, key):
             raise AttributeError(f"Attribute {key} does not exist")
         super().__setattr__(key, value)
-
-
-class CustomMetadataAttributes(AtlanObject):
-    attributes: dict[str, Any] = Field(default_factory=dict)
-    archived_attributes: dict[str, Any] = Field(default_factory=dict)
-
-    @property
-    def is_empty(self) -> bool:
-        return self.attributes is None or len(self.attributes) == 0
