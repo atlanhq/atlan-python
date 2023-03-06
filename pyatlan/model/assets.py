@@ -261,7 +261,7 @@ class Asset(Referenceable):
     type_name: str = Field("Asset", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Asset":
             raise ValueError("must be Asset")
         return v
@@ -617,7 +617,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     type_name: str = Field("AtlasGlossary", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "AtlasGlossary":
             raise ValueError("must be AtlasGlossary")
         return v
@@ -688,7 +688,7 @@ class DataSet(Asset, type_name="DataSet"):
     type_name: str = Field("DataSet", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DataSet":
             raise ValueError("must be DataSet")
         return v
@@ -700,7 +700,7 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
     type_name: str = Field("ProcessExecution", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ProcessExecution":
             raise ValueError("must be ProcessExecution")
         return v
@@ -712,7 +712,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "AtlasGlossaryTerm":
             raise ValueError("must be AtlasGlossaryTerm")
         return v
@@ -775,11 +775,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
-        )  # relationship
         classifies: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="classifies"
+        )  # relationship
+        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+            None, description="", alias="categories"
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
@@ -842,7 +842,7 @@ class Cloud(Asset, type_name="Cloud"):
     type_name: str = Field("Cloud", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Cloud":
             raise ValueError("must be Cloud")
         return v
@@ -854,7 +854,7 @@ class Infrastructure(Asset, type_name="Infrastructure"):
     type_name: str = Field("Infrastructure", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Infrastructure":
             raise ValueError("must be Infrastructure")
         return v
@@ -866,7 +866,7 @@ class Connection(Asset, type_name="Connection"):
     type_name: str = Field("Connection", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Connection":
             raise ValueError("must be Connection")
         return v
@@ -1013,7 +1013,7 @@ class Process(Asset, type_name="Process"):
     type_name: str = Field("Process", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Process":
             raise ValueError("must be Process")
         return v
@@ -1053,7 +1053,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "AtlasGlossaryCategory":
             raise ValueError("must be AtlasGlossaryCategory")
         return v
@@ -1144,7 +1144,7 @@ class Badge(Asset, type_name="Badge"):
     type_name: str = Field("Badge", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Badge":
             raise ValueError("must be Badge")
         return v
@@ -1182,7 +1182,7 @@ class Namespace(Asset, type_name="Namespace"):
     type_name: str = Field("Namespace", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Namespace":
             raise ValueError("must be Namespace")
         return v
@@ -1194,7 +1194,7 @@ class Catalog(Asset, type_name="Catalog"):
     type_name: str = Field("Catalog", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Catalog":
             raise ValueError("must be Catalog")
         return v
@@ -1206,7 +1206,7 @@ class Google(Cloud):
     type_name: str = Field("Google", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Google":
             raise ValueError("must be Google")
         return v
@@ -1262,7 +1262,7 @@ class Azure(Cloud):
     type_name: str = Field("Azure", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Azure":
             raise ValueError("must be Azure")
         return v
@@ -1306,7 +1306,7 @@ class AWS(Cloud):
     type_name: str = Field("AWS", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "AWS":
             raise ValueError("must be AWS")
         return v
@@ -1353,7 +1353,7 @@ class BIProcess(Process):
     type_name: str = Field("BIProcess", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "BIProcess":
             raise ValueError("must be BIProcess")
         return v
@@ -1365,7 +1365,7 @@ class ColumnProcess(Process):
     type_name: str = Field("ColumnProcess", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ColumnProcess":
             raise ValueError("must be ColumnProcess")
         return v
@@ -1377,7 +1377,7 @@ class Collection(Namespace):
     type_name: str = Field("Collection", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Collection":
             raise ValueError("must be Collection")
         return v
@@ -1417,7 +1417,7 @@ class Folder(Namespace):
     type_name: str = Field("Folder", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Folder":
             raise ValueError("must be Folder")
         return v
@@ -1462,7 +1462,7 @@ class ObjectStore(Catalog):
     type_name: str = Field("ObjectStore", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ObjectStore":
             raise ValueError("must be ObjectStore")
         return v
@@ -1474,7 +1474,7 @@ class DataQuality(Catalog):
     type_name: str = Field("DataQuality", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DataQuality":
             raise ValueError("must be DataQuality")
         return v
@@ -1486,7 +1486,7 @@ class BI(Catalog):
     type_name: str = Field("BI", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "BI":
             raise ValueError("must be BI")
         return v
@@ -1498,7 +1498,7 @@ class SaaS(Catalog):
     type_name: str = Field("SaaS", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SaaS":
             raise ValueError("must be SaaS")
         return v
@@ -1510,7 +1510,7 @@ class Dbt(Catalog):
     type_name: str = Field("Dbt", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Dbt":
             raise ValueError("must be Dbt")
         return v
@@ -1592,7 +1592,7 @@ class Resource(Catalog):
     type_name: str = Field("Resource", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Resource":
             raise ValueError("must be Resource")
         return v
@@ -1636,7 +1636,7 @@ class Insight(Catalog):
     type_name: str = Field("Insight", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Insight":
             raise ValueError("must be Insight")
         return v
@@ -1648,7 +1648,7 @@ class API(Catalog):
     type_name: str = Field("API", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "API":
             raise ValueError("must be API")
         return v
@@ -1700,7 +1700,7 @@ class SQL(Catalog):
     type_name: str = Field("SQL", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SQL":
             raise ValueError("must be SQL")
         return v
@@ -1777,7 +1777,7 @@ class DataStudio(Google):
     type_name: str = Field("DataStudio", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DataStudio":
             raise ValueError("must be DataStudio")
         return v
@@ -1839,7 +1839,7 @@ class GCS(Google):
     type_name: str = Field("GCS", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "GCS":
             raise ValueError("must be GCS")
         return v
@@ -1917,7 +1917,7 @@ class DataStudioAsset(DataStudio):
     type_name: str = Field("DataStudioAsset", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DataStudioAsset":
             raise ValueError("must be DataStudioAsset")
         return v
@@ -1991,7 +1991,7 @@ class ADLS(ObjectStore):
     type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ADLS":
             raise ValueError("must be ADLS")
         return v
@@ -2044,7 +2044,7 @@ class S3(ObjectStore):
     type_name: str = Field("S3", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "S3":
             raise ValueError("must be S3")
         return v
@@ -2099,7 +2099,7 @@ class DbtColumnProcess(Dbt):
     type_name: str = Field("DbtColumnProcess", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DbtColumnProcess":
             raise ValueError("must be DbtColumnProcess")
         return v
@@ -2195,7 +2195,7 @@ class Metric(DataQuality):
     type_name: str = Field("Metric", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Metric":
             raise ValueError("must be Metric")
         return v
@@ -2250,7 +2250,7 @@ class Metabase(BI):
     type_name: str = Field("Metabase", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Metabase":
             raise ValueError("must be Metabase")
         return v
@@ -2294,7 +2294,7 @@ class PowerBI(BI):
     type_name: str = Field("PowerBI", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBI":
             raise ValueError("must be PowerBI")
         return v
@@ -2344,7 +2344,7 @@ class Preset(BI):
     type_name: str = Field("Preset", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Preset":
             raise ValueError("must be Preset")
         return v
@@ -2388,69 +2388,13 @@ class Preset(BI):
     )
 
 
-class Sigma(BI):
-    """Description"""
-
-    type_name: str = Field("Sigma", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "Sigma":
-            raise ValueError("must be Sigma")
-        return v
-
-    class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
-        )
-        sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
-        )
-        sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
-        )
-        sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
-        )
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
-        )
-        sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "Sigma.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Mode(BI):
     """Description"""
 
     type_name: str = Field("Mode", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Mode":
             raise ValueError("must be Mode")
         return v
@@ -2505,13 +2449,69 @@ class Mode(BI):
     )
 
 
+class Sigma(BI):
+    """Description"""
+
+    type_name: str = Field("Sigma", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Sigma":
+            raise ValueError("must be Sigma")
+        return v
+
+    class Attributes(BI.Attributes):
+        sigma_workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookQualifiedName"
+        )
+        sigma_workbook_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookName"
+        )
+        sigma_page_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageQualifiedName"
+        )
+        sigma_page_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageName"
+        )
+        sigma_data_element_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQualifiedName"
+        )
+        sigma_data_element_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Sigma.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Qlik(BI):
     """Description"""
 
     type_name: str = Field("Qlik", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Qlik":
             raise ValueError("must be Qlik")
         return v
@@ -2563,7 +2563,7 @@ class Tableau(BI):
     type_name: str = Field("Tableau", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Tableau":
             raise ValueError("must be Tableau")
         return v
@@ -2575,7 +2575,7 @@ class Looker(BI):
     type_name: str = Field("Looker", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Looker":
             raise ValueError("must be Looker")
         return v
@@ -2587,7 +2587,7 @@ class Salesforce(SaaS):
     type_name: str = Field("Salesforce", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Salesforce":
             raise ValueError("must be Salesforce")
         return v
@@ -2629,7 +2629,7 @@ class DbtModelColumn(Dbt):
     type_name: str = Field("DbtModelColumn", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DbtModelColumn":
             raise ValueError("must be DbtModelColumn")
         return v
@@ -2682,7 +2682,7 @@ class DbtModel(Dbt):
     type_name: str = Field("DbtModel", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DbtModel":
             raise ValueError("must be DbtModel")
         return v
@@ -2760,7 +2760,7 @@ class DbtMetric(Dbt):
     type_name: str = Field("DbtMetric", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DbtMetric":
             raise ValueError("must be DbtMetric")
         return v
@@ -2868,7 +2868,7 @@ class DbtSource(Dbt):
     type_name: str = Field("DbtSource", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DbtSource":
             raise ValueError("must be DbtSource")
         return v
@@ -2916,7 +2916,7 @@ class DbtProcess(Dbt):
     type_name: str = Field("DbtProcess", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "DbtProcess":
             raise ValueError("must be DbtProcess")
         return v
@@ -3009,7 +3009,7 @@ class ReadmeTemplate(Resource):
     type_name: str = Field("ReadmeTemplate", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ReadmeTemplate":
             raise ValueError("must be ReadmeTemplate")
         return v
@@ -3049,7 +3049,7 @@ class Readme(Resource):
     type_name: str = Field("Readme", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Readme":
             raise ValueError("must be Readme")
         return v
@@ -3071,7 +3071,7 @@ class Link(Resource):
     type_name: str = Field("Link", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Link":
             raise ValueError("must be Link")
         return v
@@ -3117,7 +3117,7 @@ class APISpec(API):
     type_name: str = Field("APISpec", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "APISpec":
             raise ValueError("must be APISpec")
         return v
@@ -3182,7 +3182,7 @@ class APIPath(API):
     type_name: str = Field("APIPath", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "APIPath":
             raise ValueError("must be APIPath")
         return v
@@ -3241,7 +3241,7 @@ class TablePartition(SQL):
     type_name: str = Field("TablePartition", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TablePartition":
             raise ValueError("must be TablePartition")
         return v
@@ -3327,7 +3327,7 @@ class Table(SQL):
     type_name: str = Field("Table", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Table":
             raise ValueError("must be Table")
         return v
@@ -3451,7 +3451,7 @@ class Query(SQL):
     type_name: str = Field("Query", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Query":
             raise ValueError("must be Query")
         return v
@@ -3534,7 +3534,7 @@ class Column(SQL):
     type_name: str = Field("Column", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Column":
             raise ValueError("must be Column")
         return v
@@ -3699,7 +3699,7 @@ class Schema(SQL):
     type_name: str = Field("Schema", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Schema":
             raise ValueError("must be Schema")
         return v
@@ -3796,13 +3796,135 @@ class Schema(SQL):
         return cls(attributes=attributes)
 
 
+class SnowflakeStream(SQL):
+    """Description"""
+
+    type_name: str = Field("SnowflakeStream", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeStream":
+            raise ValueError("must be SnowflakeStream")
+        return v
+
+    class Attributes(SQL.Attributes):
+        snowflake_stream_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamType"
+        )
+        snowflake_stream_source_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamSourceType"
+        )
+        snowflake_stream_mode: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamMode"
+        )
+        snowflake_stream_is_stale: Optional[bool] = Field(
+            None, description="", alias="snowflakeStreamIsStale"
+        )
+        snowflake_stream_stale_after: Optional[datetime] = Field(
+            None, description="", alias="snowflakeStreamStaleAfter"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+
+    attributes: "SnowflakeStream.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakePipe(SQL):
+    """Description"""
+
+    type_name: str = Field("SnowflakePipe", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakePipe":
+            raise ValueError("must be SnowflakePipe")
+        return v
+
+    class Attributes(SQL.Attributes):
+        definition: Optional[str] = Field(None, description="", alias="definition")
+        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
+            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
+        )
+        snowflake_pipe_notification_channel_name: Optional[str] = Field(
+            None, description="", alias="snowflakePipeNotificationChannelName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+
+    attributes: "SnowflakePipe.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Database(SQL):
     """Description"""
 
     type_name: str = Field("Database", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Database":
             raise ValueError("must be Database")
         return v
@@ -3894,135 +4016,13 @@ class Database(SQL):
         return cls(attributes=attributes)
 
 
-class SnowflakeStream(SQL):
-    """Description"""
-
-    type_name: str = Field("SnowflakeStream", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SnowflakeStream":
-            raise ValueError("must be SnowflakeStream")
-        return v
-
-    class Attributes(SQL.Attributes):
-        snowflake_stream_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamType"
-        )
-        snowflake_stream_source_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamSourceType"
-        )
-        snowflake_stream_mode: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamMode"
-        )
-        snowflake_stream_is_stale: Optional[bool] = Field(
-            None, description="", alias="snowflakeStreamIsStale"
-        )
-        snowflake_stream_stale_after: Optional[datetime] = Field(
-            None, description="", alias="snowflakeStreamStaleAfter"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-
-    attributes: "SnowflakeStream.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SnowflakePipe(SQL):
-    """Description"""
-
-    type_name: str = Field("SnowflakePipe", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SnowflakePipe":
-            raise ValueError("must be SnowflakePipe")
-        return v
-
-    class Attributes(SQL.Attributes):
-        definition: Optional[str] = Field(None, description="", alias="definition")
-        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
-            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
-        )
-        snowflake_pipe_notification_channel_name: Optional[str] = Field(
-            None, description="", alias="snowflakePipeNotificationChannelName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-
-    attributes: "SnowflakePipe.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Procedure(SQL):
     """Description"""
 
     type_name: str = Field("Procedure", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "Procedure":
             raise ValueError("must be Procedure")
         return v
@@ -4073,7 +4073,7 @@ class View(SQL):
     type_name: str = Field("View", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "View":
             raise ValueError("must be View")
         return v
@@ -4174,7 +4174,7 @@ class MaterialisedView(SQL):
     type_name: str = Field("MaterialisedView", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "MaterialisedView":
             raise ValueError("must be MaterialisedView")
         return v
@@ -4247,7 +4247,7 @@ class GCSObject(GCS):
     type_name: str = Field("GCSObject", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "GCSObject":
             raise ValueError("must be GCSObject")
         return v
@@ -4333,7 +4333,7 @@ class GCSBucket(GCS):
     type_name: str = Field("GCSBucket", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "GCSBucket":
             raise ValueError("must be GCSBucket")
         return v
@@ -4395,7 +4395,7 @@ class ADLSAccount(ADLS):
     type_name: str = Field("ADLSAccount", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ADLSAccount":
             raise ValueError("must be ADLSAccount")
         return v
@@ -4464,7 +4464,7 @@ class ADLSContainer(ADLS):
     type_name: str = Field("ADLSContainer", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ADLSContainer":
             raise ValueError("must be ADLSContainer")
         return v
@@ -4526,7 +4526,7 @@ class ADLSObject(ADLS):
     type_name: str = Field("ADLSObject", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ADLSObject":
             raise ValueError("must be ADLSObject")
         return v
@@ -4618,7 +4618,7 @@ class S3Bucket(S3):
     type_name: str = Field("S3Bucket", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "S3Bucket":
             raise ValueError("must be S3Bucket")
         return v
@@ -4707,7 +4707,7 @@ class S3Object(S3):
     type_name: str = Field("S3Object", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "S3Object":
             raise ValueError("must be S3Object")
         return v
@@ -4815,7 +4815,7 @@ class MetabaseQuestion(Metabase):
     type_name: str = Field("MetabaseQuestion", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "MetabaseQuestion":
             raise ValueError("must be MetabaseQuestion")
         return v
@@ -4868,7 +4868,7 @@ class MetabaseCollection(Metabase):
     type_name: str = Field("MetabaseCollection", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "MetabaseCollection":
             raise ValueError("must be MetabaseCollection")
         return v
@@ -4922,7 +4922,7 @@ class MetabaseDashboard(Metabase):
     type_name: str = Field("MetabaseDashboard", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "MetabaseDashboard":
             raise ValueError("must be MetabaseDashboard")
         return v
@@ -4969,7 +4969,7 @@ class PowerBIReport(PowerBI):
     type_name: str = Field("PowerBIReport", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIReport":
             raise ValueError("must be PowerBIReport")
         return v
@@ -5027,7 +5027,7 @@ class PowerBIMeasure(PowerBI):
     type_name: str = Field("PowerBIMeasure", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIMeasure":
             raise ValueError("must be PowerBIMeasure")
         return v
@@ -5080,7 +5080,7 @@ class PowerBIColumn(PowerBI):
     type_name: str = Field("PowerBIColumn", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIColumn":
             raise ValueError("must be PowerBIColumn")
         return v
@@ -5133,66 +5133,13 @@ class PowerBIColumn(PowerBI):
     )
 
 
-class PowerBITile(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBITile", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "PowerBITile":
-            raise ValueError("must be PowerBITile")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="dashboardQualifiedName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "PowerBITile.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class PowerBITable(PowerBI):
     """Description"""
 
     type_name: str = Field("PowerBITable", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBITable":
             raise ValueError("must be PowerBITable")
         return v
@@ -5248,13 +5195,66 @@ class PowerBITable(PowerBI):
     )
 
 
+class PowerBITile(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="dashboardQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        dashboard: Optional[PowerBIDashboard] = Field(
+            None, description="", alias="dashboard"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "PowerBITile.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PowerBIDatasource(PowerBI):
     """Description"""
 
     type_name: str = Field("PowerBIDatasource", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIDatasource":
             raise ValueError("must be PowerBIDatasource")
         return v
@@ -5298,7 +5298,7 @@ class PowerBIWorkspace(PowerBI):
     type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIWorkspace":
             raise ValueError("must be PowerBIWorkspace")
         return v
@@ -5357,7 +5357,7 @@ class PowerBIDataset(PowerBI):
     type_name: str = Field("PowerBIDataset", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIDataset":
             raise ValueError("must be PowerBIDataset")
         return v
@@ -5370,11 +5370,11 @@ class PowerBIDataset(PowerBI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
-        )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
+        )  # relationship
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
@@ -5417,7 +5417,7 @@ class PowerBIDashboard(PowerBI):
     type_name: str = Field("PowerBIDashboard", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIDashboard":
             raise ValueError("must be PowerBIDashboard")
         return v
@@ -5460,60 +5460,13 @@ class PowerBIDashboard(PowerBI):
     )
 
 
-class PowerBIPage(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBIPage", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "PowerBIPage":
-            raise ValueError("must be PowerBIPage")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        report_qualified_name: Optional[str] = Field(
-            None, description="", alias="reportQualifiedName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "PowerBIPage.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class PowerBIDataflow(PowerBI):
     """Description"""
 
     type_name: str = Field("PowerBIDataflow", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PowerBIDataflow":
             raise ValueError("must be PowerBIDataflow")
         return v
@@ -5555,13 +5508,60 @@ class PowerBIDataflow(PowerBI):
     )
 
 
+class PowerBIPage(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        report_qualified_name: Optional[str] = Field(
+            None, description="", alias="reportQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "PowerBIPage.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PresetChart(Preset):
     """Description"""
 
     type_name: str = Field("PresetChart", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PresetChart":
             raise ValueError("must be PresetChart")
         return v
@@ -5608,7 +5608,7 @@ class PresetDataset(Preset):
     type_name: str = Field("PresetDataset", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PresetDataset":
             raise ValueError("must be PresetDataset")
         return v
@@ -5658,7 +5658,7 @@ class PresetDashboard(Preset):
     type_name: str = Field("PresetDashboard", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PresetDashboard":
             raise ValueError("must be PresetDashboard")
         return v
@@ -5723,7 +5723,7 @@ class PresetWorkspace(Preset):
     type_name: str = Field("PresetWorkspace", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "PresetWorkspace":
             raise ValueError("must be PresetWorkspace")
         return v
@@ -5785,295 +5785,13 @@ class PresetWorkspace(Preset):
     )
 
 
-class SigmaDatasetColumn(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SigmaDatasetColumn":
-            raise ValueError("must be SigmaDatasetColumn")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetQualifiedName"
-        )
-        sigma_dataset_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        sigma_dataset: Optional[SigmaDataset] = Field(
-            None, description="", alias="sigmaDataset"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaDatasetColumn.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataset(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SigmaDataset":
-            raise ValueError("must be SigmaDataset")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="sigmaDatasetColumnCount"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
-            None, description="", alias="sigmaDatasetColumns"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaDataset.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaWorkbook(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SigmaWorkbook":
-            raise ValueError("must be SigmaWorkbook")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_page_count: Optional[int] = Field(
-            None, description="", alias="sigmaPageCount"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        sigma_pages: Optional[list[SigmaPage]] = Field(
-            None, description="", alias="sigmaPages"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaWorkbook.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataElementField(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SigmaDataElementField":
-            raise ValueError("must be SigmaDataElementField")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_field_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sigmaDataElementFieldIsHidden"
-        )
-        sigma_data_element_field_formula: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementFieldFormula"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        sigma_data_element: Optional[SigmaDataElement] = Field(
-            None, description="", alias="sigmaDataElement"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaDataElementField.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaPage(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaPage", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SigmaPage":
-            raise ValueError("must be SigmaPage")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementCount"
-        )
-        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
-            None, description="", alias="sigmaDataElements"
-        )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        sigma_workbook: Optional[SigmaWorkbook] = Field(
-            None, description="", alias="sigmaWorkbook"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaPage.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataElement(Sigma):
-    """Description"""
-
-    type_name: str = Field("SigmaDataElement", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "SigmaDataElement":
-            raise ValueError("must be SigmaDataElement")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_query: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQuery"
-        )
-        sigma_data_element_type: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementType"
-        )
-        sigma_data_element_field_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementFieldCount"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        sigma_page: Optional[SigmaPage] = Field(
-            None, description="", alias="sigmaPage"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
-            None, description="", alias="sigmaDataElementFields"
-        )  # relationship
-
-    attributes: "SigmaDataElement.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class ModeReport(Mode):
     """Description"""
 
     type_name: str = Field("ModeReport", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ModeReport":
             raise ValueError("must be ModeReport")
         return v
@@ -6138,7 +5856,7 @@ class ModeQuery(Mode):
     type_name: str = Field("ModeQuery", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ModeQuery":
             raise ValueError("must be ModeQuery")
         return v
@@ -6188,7 +5906,7 @@ class ModeChart(Mode):
     type_name: str = Field("ModeChart", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ModeChart":
             raise ValueError("must be ModeChart")
         return v
@@ -6232,7 +5950,7 @@ class ModeWorkspace(Mode):
     type_name: str = Field("ModeWorkspace", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ModeWorkspace":
             raise ValueError("must be ModeWorkspace")
         return v
@@ -6276,7 +5994,7 @@ class ModeCollection(Mode):
     type_name: str = Field("ModeCollection", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "ModeCollection":
             raise ValueError("must be ModeCollection")
         return v
@@ -6320,13 +6038,295 @@ class ModeCollection(Mode):
     )
 
 
+class SigmaDatasetColumn(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDatasetColumn":
+            raise ValueError("must be SigmaDatasetColumn")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetQualifiedName"
+        )
+        sigma_dataset_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_dataset: Optional[SigmaDataset] = Field(
+            None, description="", alias="sigmaDataset"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDatasetColumn.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataset(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataset":
+            raise ValueError("must be SigmaDataset")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="sigmaDatasetColumnCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
+            None, description="", alias="sigmaDatasetColumns"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDataset.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaWorkbook(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaWorkbook":
+            raise ValueError("must be SigmaWorkbook")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_page_count: Optional[int] = Field(
+            None, description="", alias="sigmaPageCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_pages: Optional[list[SigmaPage]] = Field(
+            None, description="", alias="sigmaPages"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaWorkbook.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElementField(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElementField":
+            raise ValueError("must be SigmaDataElementField")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_field_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sigmaDataElementFieldIsHidden"
+        )
+        sigma_data_element_field_formula: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementFieldFormula"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_data_element: Optional[SigmaDataElement] = Field(
+            None, description="", alias="sigmaDataElement"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDataElementField.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaPage(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaPage":
+            raise ValueError("must be SigmaPage")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementCount"
+        )
+        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
+            None, description="", alias="sigmaDataElements"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        sigma_workbook: Optional[SigmaWorkbook] = Field(
+            None, description="", alias="sigmaWorkbook"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaPage.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElement(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElement":
+            raise ValueError("must be SigmaDataElement")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_query: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQuery"
+        )
+        sigma_data_element_type: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementType"
+        )
+        sigma_data_element_field_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementFieldCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        sigma_page: Optional[SigmaPage] = Field(
+            None, description="", alias="sigmaPage"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
+            None, description="", alias="sigmaDataElementFields"
+        )  # relationship
+
+    attributes: "SigmaDataElement.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class QlikSpace(Qlik):
     """Description"""
 
     type_name: str = Field("QlikSpace", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "QlikSpace":
             raise ValueError("must be QlikSpace")
         return v
@@ -6373,7 +6373,7 @@ class QlikApp(Qlik):
     type_name: str = Field("QlikApp", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "QlikApp":
             raise ValueError("must be QlikApp")
         return v
@@ -6432,7 +6432,7 @@ class QlikChart(Qlik):
     type_name: str = Field("QlikChart", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "QlikChart":
             raise ValueError("must be QlikChart")
         return v
@@ -6485,7 +6485,7 @@ class QlikDataset(Qlik):
     type_name: str = Field("QlikDataset", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "QlikDataset":
             raise ValueError("must be QlikDataset")
         return v
@@ -6538,7 +6538,7 @@ class QlikSheet(Qlik):
     type_name: str = Field("QlikSheet", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "QlikSheet":
             raise ValueError("must be QlikSheet")
         return v
@@ -6585,7 +6585,7 @@ class TableauWorkbook(Tableau):
     type_name: str = Field("TableauWorkbook", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauWorkbook":
             raise ValueError("must be TableauWorkbook")
         return v
@@ -6650,7 +6650,7 @@ class TableauDatasourceField(Tableau):
     type_name: str = Field("TableauDatasourceField", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauDatasourceField":
             raise ValueError("must be TableauDatasourceField")
         return v
@@ -6742,7 +6742,7 @@ class TableauCalculatedField(Tableau):
     type_name: str = Field("TableauCalculatedField", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauCalculatedField":
             raise ValueError("must be TableauCalculatedField")
         return v
@@ -6813,7 +6813,7 @@ class TableauProject(Tableau):
     type_name: str = Field("TableauProject", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauProject":
             raise ValueError("must be TableauProject")
         return v
@@ -6881,7 +6881,7 @@ class TableauMetric(Tableau):
     type_name: str = Field("TableauMetric", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauMetric":
             raise ValueError("must be TableauMetric")
         return v
@@ -6928,13 +6928,25 @@ class TableauMetric(Tableau):
     )
 
 
+class TableauSite(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
+
+
 class TableauDatasource(Tableau):
     """Description"""
 
     type_name: str = Field("TableauDatasource", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauDatasource":
             raise ValueError("must be TableauDatasource")
         return v
@@ -7008,25 +7020,13 @@ class TableauDatasource(Tableau):
     )
 
 
-class TableauSite(Tableau):
-    """Description"""
-
-    type_name: str = Field("TableauSite", allow_mutation=False)
-
-    @validator("type_name")
-    def name_must_contain_space(cls, v):
-        if v != "TableauSite":
-            raise ValueError("must be TableauSite")
-        return v
-
-
 class TableauDashboard(Tableau):
     """Description"""
 
     type_name: str = Field("TableauDashboard", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauDashboard":
             raise ValueError("must be TableauDashboard")
         return v
@@ -7085,7 +7085,7 @@ class TableauFlow(Tableau):
     type_name: str = Field("TableauFlow", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauFlow":
             raise ValueError("must be TableauFlow")
         return v
@@ -7147,7 +7147,7 @@ class TableauWorksheet(Tableau):
     type_name: str = Field("TableauWorksheet", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "TableauWorksheet":
             raise ValueError("must be TableauWorksheet")
         return v
@@ -7212,7 +7212,7 @@ class LookerLook(Looker):
     type_name: str = Field("LookerLook", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerLook":
             raise ValueError("must be LookerLook")
         return v
@@ -7288,7 +7288,7 @@ class LookerDashboard(Looker):
     type_name: str = Field("LookerDashboard", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerDashboard":
             raise ValueError("must be LookerDashboard")
         return v
@@ -7354,7 +7354,7 @@ class LookerFolder(Looker):
     type_name: str = Field("LookerFolder", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerFolder":
             raise ValueError("must be LookerFolder")
         return v
@@ -7410,7 +7410,7 @@ class LookerTile(Looker):
     type_name: str = Field("LookerTile", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerTile":
             raise ValueError("must be LookerTile")
         return v
@@ -7470,7 +7470,7 @@ class LookerModel(Looker):
     type_name: str = Field("LookerModel", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerModel":
             raise ValueError("must be LookerModel")
         return v
@@ -7524,7 +7524,7 @@ class LookerExplore(Looker):
     type_name: str = Field("LookerExplore", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerExplore":
             raise ValueError("must be LookerExplore")
         return v
@@ -7580,7 +7580,7 @@ class LookerProject(Looker):
     type_name: str = Field("LookerProject", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerProject":
             raise ValueError("must be LookerProject")
         return v
@@ -7592,7 +7592,7 @@ class LookerQuery(Looker):
     type_name: str = Field("LookerQuery", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerQuery":
             raise ValueError("must be LookerQuery")
         return v
@@ -7649,7 +7649,7 @@ class LookerField(Looker):
     type_name: str = Field("LookerField", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerField":
             raise ValueError("must be LookerField")
         return v
@@ -7716,7 +7716,7 @@ class LookerView(Looker):
     type_name: str = Field("LookerView", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "LookerView":
             raise ValueError("must be LookerView")
         return v
@@ -7761,7 +7761,7 @@ class SalesforceObject(Salesforce):
     type_name: str = Field("SalesforceObject", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SalesforceObject":
             raise ValueError("must be SalesforceObject")
         return v
@@ -7812,7 +7812,7 @@ class SalesforceField(Salesforce):
     type_name: str = Field("SalesforceField", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SalesforceField":
             raise ValueError("must be SalesforceField")
         return v
@@ -7888,7 +7888,7 @@ class SalesforceOrganization(Salesforce):
     type_name: str = Field("SalesforceOrganization", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SalesforceOrganization":
             raise ValueError("must be SalesforceOrganization")
         return v
@@ -7936,7 +7936,7 @@ class SalesforceDashboard(Salesforce):
     type_name: str = Field("SalesforceDashboard", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SalesforceDashboard":
             raise ValueError("must be SalesforceDashboard")
         return v
@@ -7985,7 +7985,7 @@ class SalesforceReport(Salesforce):
     type_name: str = Field("SalesforceReport", allow_mutation=False)
 
     @validator("type_name")
-    def name_must_contain_space(cls, v):
+    def validate_type_name(cls, v):
         if v != "SalesforceReport":
             raise ValueError("must be SalesforceReport")
         return v
@@ -8113,9 +8113,9 @@ PowerBI.Attributes.update_forward_refs()
 
 Preset.Attributes.update_forward_refs()
 
-Sigma.Attributes.update_forward_refs()
-
 Mode.Attributes.update_forward_refs()
+
+Sigma.Attributes.update_forward_refs()
 
 Qlik.Attributes.update_forward_refs()
 
@@ -8155,11 +8155,11 @@ Column.Attributes.update_forward_refs()
 
 Schema.Attributes.update_forward_refs()
 
-Database.Attributes.update_forward_refs()
-
 SnowflakeStream.Attributes.update_forward_refs()
 
 SnowflakePipe.Attributes.update_forward_refs()
+
+Database.Attributes.update_forward_refs()
 
 Procedure.Attributes.update_forward_refs()
 
@@ -8193,9 +8193,9 @@ PowerBIMeasure.Attributes.update_forward_refs()
 
 PowerBIColumn.Attributes.update_forward_refs()
 
-PowerBITile.Attributes.update_forward_refs()
-
 PowerBITable.Attributes.update_forward_refs()
+
+PowerBITile.Attributes.update_forward_refs()
 
 PowerBIDatasource.Attributes.update_forward_refs()
 
@@ -8205,9 +8205,9 @@ PowerBIDataset.Attributes.update_forward_refs()
 
 PowerBIDashboard.Attributes.update_forward_refs()
 
-PowerBIPage.Attributes.update_forward_refs()
-
 PowerBIDataflow.Attributes.update_forward_refs()
+
+PowerBIPage.Attributes.update_forward_refs()
 
 PresetChart.Attributes.update_forward_refs()
 
@@ -8216,6 +8216,16 @@ PresetDataset.Attributes.update_forward_refs()
 PresetDashboard.Attributes.update_forward_refs()
 
 PresetWorkspace.Attributes.update_forward_refs()
+
+ModeReport.Attributes.update_forward_refs()
+
+ModeQuery.Attributes.update_forward_refs()
+
+ModeChart.Attributes.update_forward_refs()
+
+ModeWorkspace.Attributes.update_forward_refs()
+
+ModeCollection.Attributes.update_forward_refs()
 
 SigmaDatasetColumn.Attributes.update_forward_refs()
 
@@ -8228,16 +8238,6 @@ SigmaDataElementField.Attributes.update_forward_refs()
 SigmaPage.Attributes.update_forward_refs()
 
 SigmaDataElement.Attributes.update_forward_refs()
-
-ModeReport.Attributes.update_forward_refs()
-
-ModeQuery.Attributes.update_forward_refs()
-
-ModeChart.Attributes.update_forward_refs()
-
-ModeWorkspace.Attributes.update_forward_refs()
-
-ModeCollection.Attributes.update_forward_refs()
 
 QlikSpace.Attributes.update_forward_refs()
 
@@ -8259,9 +8259,9 @@ TableauProject.Attributes.update_forward_refs()
 
 TableauMetric.Attributes.update_forward_refs()
 
-TableauDatasource.Attributes.update_forward_refs()
-
 TableauSite.Attributes.update_forward_refs()
+
+TableauDatasource.Attributes.update_forward_refs()
 
 TableauDashboard.Attributes.update_forward_refs()
 
