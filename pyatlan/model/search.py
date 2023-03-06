@@ -19,7 +19,7 @@ from pydantic import (
 )
 
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import SortOrder
+from pyatlan.model.enums import AtlanConnectorType, SortOrder
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -43,6 +43,7 @@ class Attributes(str, Enum):
 
 class TermAttributes(Attributes):
 
+    CONNECTOR_NAME = ("connectorName", AtlanConnectorType)
     CATEGORIES = ("__categories", StrictStr)
     CREATE_TIME_AS_TIMESTAMP = ("__timestamp", datetime)
     CREATED_BY = ("__createdBy", StrictStr)
@@ -191,6 +192,11 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
+    def with_connector_name(cls):
+        return cls(field=TermAttributes.CONNECTOR_NAME.value)
+
+    @classmethod
+    @validate_arguments()
     def with_created_by(cls):
         return cls(field=TermAttributes.CREATED_BY.value)
 
@@ -322,6 +328,11 @@ class Term(Query):
     @validate_arguments()
     def with_categories(cls, value: StrictStr):
         return cls(field=TermAttributes.CATEGORIES.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_connector_name(cls, value: AtlanConnectorType):
+        return cls(field=TermAttributes.CONNECTOR_NAME.value, value=value.value)
 
     @classmethod
     @validate_arguments()
