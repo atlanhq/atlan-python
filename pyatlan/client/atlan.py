@@ -298,7 +298,7 @@ class AtlanClient(BaseSettings):
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
+                raise NotFoundError(message=ae.user_message, code=ae.code)
             raise ae
 
     @validate_arguments()
@@ -333,7 +333,7 @@ class AtlanClient(BaseSettings):
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
+                raise NotFoundError(message=ae.user_message, code=ae.code)
             raise ae
 
     def upsert(
@@ -387,8 +387,8 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
-    def get_typedefs(self, type_: AtlanTypeCategory) -> TypeDefResponse:
-        query_params = {"type": type_.value}
+    def get_typedefs(self, type_category: AtlanTypeCategory) -> TypeDefResponse:
+        query_params = {"type": type_category.value}
         raw_json = self._call_api(
             GET_ALL_TYPE_DEFS.format_path_with_params(),
             query_params,

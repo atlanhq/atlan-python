@@ -6,6 +6,7 @@ from typing import Literal, Union
 import pytest
 from pydantic import StrictBool, StrictStr, ValidationError
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -33,28 +34,33 @@ VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
     datetime: NOW,
     Literal["ACTIVE", "DELETED"]: "ACTIVE",
     float: 1.0,
+    AtlanConnectorType: AtlanConnectorType.SNOWFLAKE,
 }
 
 INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
     Wildcard: {
+        TermAttributes.CONNECTOR_NAME,
         TermAttributes.HAS_LINEAGE,
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Regexp: {
+        TermAttributes.CONNECTOR_NAME,
         TermAttributes.HAS_LINEAGE,
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Fuzzy: {
+        TermAttributes.CONNECTOR_NAME,
         TermAttributes.HAS_LINEAGE,
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
     },
     Prefix: {
+        TermAttributes.CONNECTOR_NAME,
         TermAttributes.HAS_LINEAGE,
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,

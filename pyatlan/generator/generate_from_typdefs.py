@@ -37,6 +37,7 @@ TYPE_REPLACEMENTS = [
     ("map", "dict"),
     (">", "]"),
     ("<", "["),
+    ("query_username_strategy", "QueryUsernameStrategy"),
 ]
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 

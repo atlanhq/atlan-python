@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import json
 from typing import Optional
 
 from pyatlan.client.atlan import AtlanClient
@@ -8,18 +9,37 @@ from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
 
+class Synonym:
+    def __init__(self, storage_name):
+        self.storage_name = storage_name
+
+    def __set__(self, instance, value):
+        instance[self.storage_name] = value
+
+    def __get__(self, instance, owner):
+        if self.storage_name in instance:
+            return instance[self.storage_name]
+        return None
+
+
 class CustomMetadataCache:
 
     cache_by_id: dict[str, CustomMetadataDef] = dict()
     map_id_to_name: dict[str, str] = dict()
+    map_id_to_type: dict[str, type] = dict()
     map_name_to_id: dict[str, str] = dict()
     map_attr_id_to_name: dict[str, dict[str, str]] = dict()
     map_attr_name_to_id: dict[str, dict[str, str]] = dict()
     archived_attr_ids: dict[str, str] = dict()
+    types_by_asset: dict[str, set[type]] = dict()
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = AtlanClient().get_typedefs(type_=AtlanTypeCategory.CUSTOM_METADATA)
+        from pyatlan.model.core import BusinessAttributes, to_snake_case
+
+        response = AtlanClient().get_typedefs(
+            type_category=AtlanTypeCategory.CUSTOM_METADATA
+        )
         if response is not None:
             cls.map_id_to_name = {}
             cls.map_name_to_id = {}
@@ -35,8 +55,19 @@ class CustomMetadataCache:
                 cls.map_name_to_id[type_name] = type_id
                 cls.map_attr_id_to_name[type_id] = {}
                 cls.map_attr_name_to_id[type_id] = {}
+                meta_name = cm.display_name.replace(" ", "")
+                attribute_class_name = f"Attributes_{meta_name}"
+                attrib_type = type(attribute_class_name, (BusinessAttributes,), {})
+                attrib_type._meta_data_type_id = type_id  # type: ignore
+                attrib_type._meta_data_type_name = type_name  # type: ignore
+                cls.map_id_to_type[type_id] = attrib_type
+                applicable_types: set[str] = set()
                 if cm.attribute_defs:
                     for attr in cm.attribute_defs:
+                        if attr.options.custom_applicable_entity_types:
+                            applicable_types.update(
+                                json.loads(attr.options.custom_applicable_entity_types)
+                            )
                         attr_id = attr.name
                         attr_name = attr.display_name
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_name
@@ -49,7 +80,13 @@ class CustomMetadataCache:
                                 code="ATLAN-PYTHON-500-100",
                             )
                         else:
+                            attr_name = to_snake_case(attr_name.replace(" ", ""))
+                            setattr(attrib_type, attr_name, Synonym(attr_id))
                             cls.map_attr_name_to_id[type_id][attr_name] = attr_id
+                    for asset_type in applicable_types:
+                        if asset_type not in cls.types_by_asset:
+                            cls.types_by_asset[asset_type] = set()
+                        cls.types_by_asset[asset_type].add(attrib_type)
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
@@ -72,6 +109,13 @@ class CustomMetadataCache:
         # If not found, refresh the cache and look again (could be stale)
         cls._refresh_cache()
         return cls.map_id_to_name.get(idstr)
+
+    @classmethod
+    def get_type_for_id(cls, idstr: str) -> Optional[type]:
+        if cm_type := cls.map_id_to_type.get(idstr):
+            return cm_type
+        cls._refresh_cache()
+        return cls.map_id_to_type.get(idstr)
 
     @classmethod
     def get_all_custom_attributes(
@@ -122,6 +166,21 @@ class CustomMetadataCache:
             cls._refresh_cache()
             if sub_map := cls.map_attr_name_to_id.get(set_id):
                 return sub_map.get(attr_name)
+        return None
+
+    @classmethod
+    def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> Optional[str]:
+        """
+        Translate the provided human-readable custom metadata set and attribute names to the Atlan-internal ID string
+        for the attribute.
+        """
+        if sub_map := cls.map_attr_id_to_name.get(set_id):
+            attr_name = sub_map.get(attr_id)
+            if attr_name:
+                return attr_name
+            cls._refresh_cache()
+            if sub_map := cls.map_attr_id_to_name.get(set_id):
+                return sub_map.get(attr_id)
         return None
 
     @classmethod

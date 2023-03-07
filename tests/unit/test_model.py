@@ -2,13 +2,14 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import json
 from pathlib import Path
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, patch
 
 import pytest
 from deepdiff import DeepDiff
 from pydantic.error_wrappers import ValidationError
 
 import pyatlan.cache.classification_cache
+from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -16,6 +17,8 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Connection,
     Database,
+    S3Bucket,
+    S3Object,
     Schema,
     Table,
     View,
@@ -23,6 +26,15 @@ from pyatlan.model.assets import (
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
 from pyatlan.model.response import AssetMutationResponse
+from pyatlan.model.typedef import TypeDefResponse
+
+TABLE_URL = "POsWut55wIYsXZ5v4z3K98"
+
+FRESHNESS = "VdRC4dyNdTJHfFjCiNaKt9"
+
+MONTE_CARLO = "AFq4ctARP76ctapiTbuT92"
+
+MOON = "FAq4ctARP76ctapiTbuT92"
 
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"
@@ -62,6 +74,201 @@ def announcement():
         announcement_message="Very important info",
         announcement_type=AnnouncementType.ISSUE,
     )
+
+
+@pytest.fixture()
+def table():
+    return Table.create(
+        "MKT_EXPENSES", "efault/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
+    )
+
+
+@pytest.fixture()
+def type_def_response():
+    data = {
+        "enumDefs": [],
+        "structDefs": [],
+        "classificationDefs": [],
+        "entityDefs": [],
+        "relationshipDefs": [],
+        "businessMetadataDefs": [
+            {
+                "category": "BUSINESS_METADATA",
+                "guid": "733fcf3a-30f3-4ecc-8e4a-02a8bac775ea",
+                "createdBy": "markpavletich",
+                "updatedBy": "ernest",
+                "createTime": 1649133333317,
+                "updateTime": 1659328396300,
+                "version": 7,
+                "name": "AFq4ctARP76ctapiTbuT92",
+                "description": "Data from Monte Carlo",
+                "typeVersion": "1.0",
+                "options": {
+                    "imageId": "b053efca-c5b1-43f3-8dd3-b1e81dc47b70",
+                    "logoType": "image",
+                    "emoji": None,
+                },
+                "attributeDefs": [
+                    {
+                        "name": "POsWut55wIYsXZ5v4z3K98",
+                        "typeName": "string",
+                        "isOptional": True,
+                        "cardinality": "SINGLE",
+                        "valuesMinCount": 0,
+                        "valuesMaxCount": 1,
+                        "isUnique": False,
+                        "isIndexable": True,
+                        "includeInNotification": False,
+                        "skipScrubbing": False,
+                        "searchWeight": -1,
+                        "indexType": "STRING",
+                        "options": {
+                            "showInOverview": "false",
+                            "enumType": "",
+                            "isEnum": "false",
+                            "description": "https://getmontecarlo.com/catalog/",
+                            "multiValueSelect": "false",
+                            "customType": "url",
+                            "customApplicableEntityTypes": '["Query","Folder","Collection",'
+                            '"Database","Schema","View","Table","TablePartition",'
+                            '"MaterialisedView","Column"]',
+                            "allowSearch": "false",
+                            "maxStrLength": "100000000",
+                            "allowFiltering": "true",
+                            "applicableEntityTypes": '["Asset"]',
+                            "primitiveType": "url",
+                        },
+                        "displayName": "Table URL",
+                        "isDefaultValueNull": False,
+                        "indexTypeESConfig": {"normalizer": "atlan_normalizer"},
+                        "indexTypeESFields": {
+                            "text": {"analyzer": "atlan_text_analyzer", "type": "text"}
+                        },
+                    },
+                    {
+                        "name": "VdRC4dyNdTJHfFjCiNaKt9",
+                        "typeName": "Data Freshness",
+                        "isOptional": True,
+                        "cardinality": "SINGLE",
+                        "valuesMinCount": 0,
+                        "valuesMaxCount": 1,
+                        "isUnique": False,
+                        "isIndexable": True,
+                        "includeInNotification": False,
+                        "skipScrubbing": False,
+                        "searchWeight": -1,
+                        "indexType": "STRING",
+                        "options": {
+                            "customApplicableEntityTypes": '["Database","Schema","View","Table","TablePartition",'
+                            '"MaterialisedView","Column"]',
+                            "showInOverview": "false",
+                            "enumType": "Data Freshness",
+                            "allowSearch": "false",
+                            "maxStrLength": "100000000",
+                            "isEnum": "true",
+                            "allowFiltering": "true",
+                            "applicableEntityTypes": '["Asset"]',
+                            "multiValueSelect": "false",
+                            "primitiveType": "enum",
+                        },
+                        "displayName": "Freshness",
+                        "isDefaultValueNull": False,
+                        "indexTypeESConfig": {"normalizer": "atlan_normalizer"},
+                        "indexTypeESFields": {
+                            "text": {"analyzer": "atlan_text_analyzer", "type": "text"}
+                        },
+                    },
+                    {
+                        "name": "loYJQi6ycokTirQTGVCHpD",
+                        "typeName": "date",
+                        "isOptional": True,
+                        "cardinality": "SINGLE",
+                        "valuesMinCount": 0,
+                        "valuesMaxCount": 1,
+                        "isUnique": False,
+                        "isIndexable": True,
+                        "includeInNotification": False,
+                        "skipScrubbing": False,
+                        "searchWeight": -1,
+                        "options": {
+                            "customApplicableEntityTypes": '["Database","Schema","View","Table","TablePartition",'
+                            '"MaterialisedView","Column","Query","Folder","Collection",'
+                            '"Process","ColumnProcess","BIProcess","AtlasGlossary","AtlasGlossaryTerm",'
+                            '"AtlasGlossaryCategory"]',
+                            "showInOverview": "false",
+                            "enumType": "",
+                            "allowSearch": "false",
+                            "maxStrLength": "100000000",
+                            "isEnum": "false",
+                            "allowFiltering": "true",
+                            "applicableEntityTypes": '["Asset"]',
+                            "multiValueSelect": "false",
+                            "primitiveType": "date",
+                        },
+                        "displayName": "Freshness Date",
+                        "isDefaultValueNull": False,
+                        "indexTypeESFields": {
+                            "date": {"format": "epoch_millis", "type": "date"}
+                        },
+                    },
+                ],
+                "displayName": "Monte Carlo",
+            },
+            {
+                "category": "BUSINESS_METADATA",
+                "guid": "833fcf3a-30f3-4ecc-8e4a-02a8bac775ea",
+                "createdBy": "markpavletich",
+                "updatedBy": "ernest",
+                "createTime": 1649133333317,
+                "updateTime": 1659328396300,
+                "version": 7,
+                "name": "FAq4ctARP76ctapiTbuT92",
+                "description": "Data from Moon",
+                "typeVersion": "1.0",
+                "options": {
+                    "imageId": "b053efca-c5b1-43f3-8dd3-b1e81dc47b70",
+                    "logoType": "image",
+                    "emoji": None,
+                },
+                "attributeDefs": [
+                    {
+                        "name": "dVRC4dyNdTJHfFjCiNaKt9",
+                        "typeName": "Data Freshness",
+                        "isOptional": True,
+                        "cardinality": "SINGLE",
+                        "valuesMinCount": 0,
+                        "valuesMaxCount": 1,
+                        "isUnique": False,
+                        "isIndexable": True,
+                        "includeInNotification": False,
+                        "skipScrubbing": False,
+                        "searchWeight": -1,
+                        "indexType": "STRING",
+                        "options": {
+                            "customApplicableEntityTypes": '["Database"]',
+                            "showInOverview": "false",
+                            "enumType": "",
+                            "allowSearch": "false",
+                            "maxStrLength": "100000000",
+                            "isEnum": "true",
+                            "allowFiltering": "true",
+                            "applicableEntityTypes": '["Database"]',
+                            "multiValueSelect": "false",
+                            "primitiveType": "text",
+                        },
+                        "displayName": "Name",
+                        "isDefaultValueNull": False,
+                        "indexTypeESConfig": {"normalizer": "atlan_normalizer"},
+                        "indexTypeESFields": {
+                            "text": {"analyzer": "atlan_text_analyzer", "type": "text"}
+                        },
+                    }
+                ],
+                "displayName": "Moon",
+            },
+        ],
+    }
+    return TypeDefResponse(**data)
 
 
 @pytest.fixture()
@@ -725,3 +932,265 @@ def test_glossary_term_attributes_create_sets_name_anchor():
     sut = AtlasGlossaryTerm.Attributes.create("Bob", anchor=glossary)
     assert sut.name == "Bob"
     assert sut.anchor == glossary
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_get_business_attributes_when_name_not_valid_raises_value_error(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+    with pytest.raises(
+        ValueError, match="No business attributes with the name: Zoro exist"
+    ):
+        table.get_business_attributes("Zoro")
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_get_business_attributes_when_name_not_appropriate_for_asset_raises_value_error(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+    with pytest.raises(
+        ValueError, match="Business attributes Moon are not applicable to Table"
+    ):
+        table.get_business_attributes("Moon")
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_get_business_attributes_with_valid_name_returns_empty_attribute_when_table_does_not_have_attribute(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+
+    monte_carlo = table.get_business_attributes("Monte Carlo")
+
+    assert monte_carlo is not None
+    assert monte_carlo.freshness is None
+    assert monte_carlo.freshness_date is None
+    assert monte_carlo.table_url is None
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_get_business_attributes_with_valid_name_returns_attribute_when_table_has_attribute(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+    table.business_attributes = {
+        MONTE_CARLO: {
+            FRESHNESS: "pass",
+            TABLE_URL: "https://getmontecarlo.com/catalog/",
+        }
+    }
+
+    monte_carlo = table.get_business_attributes("Monte Carlo")
+
+    assert monte_carlo is not None
+    assert monte_carlo.freshness == "pass"
+    assert monte_carlo.table_url == "https://getmontecarlo.com/catalog/"
+
+
+def test_set_busines_attributes_with_non_business_attributes_object_raises_value_error(
+    table,
+):
+    with pytest.raises(
+        ValueError,
+        match="business_attributes must be an instance of BusinessAttributes",
+    ):
+        table.set_business_attribute({})
+
+
+def test_set_business_attributes_with_non_appropriate_meta_data_type_name_raises_value_error(
+    table,
+):
+
+    with pytest.raises(
+        ValueError,
+        match="business_attributes must be an instance of BusinessAttributes",
+    ):
+        table.set_business_attribute({})
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_assigning_to_invalid_business_attribute_raises_attribute_error(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+    table.business_attributes = {
+        MONTE_CARLO: {
+            FRESHNESS: "pass",
+            TABLE_URL: "https://getmontecarlo.com/catalog/",
+        }
+    }
+    business_attributes = table.get_business_attributes("Monte Carlo")
+    with pytest.raises(AttributeError, match="Attribute bogus does not exist"):
+        business_attributes.bogus = "123"
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_set_business_attributes_with_business_attribute_not_appropriate_to_asset_raises_value_error(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+
+    moon = CustomMetadataCache.get_type_for_id(MOON)()
+
+    with pytest.raises(
+        ValueError,
+        match="Business attributes Moon are not applicable to Table",
+    ):
+        table.set_business_attribute(moon)
+
+
+@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
+def test_set_business_attributes_with_appropriate_business_attribute_updates_dictionary(
+    mock_client, table, type_def_response
+):
+    mock_client.return_value.get_typedefs.return_value = type_def_response
+
+    table.business_attributes = {
+        MONTE_CARLO: {
+            FRESHNESS: "pass",
+            TABLE_URL: "https://getmontecarlo.com/catalog/",
+        }
+    }
+    monte_carlo = table.get_business_attributes("Monte Carlo")
+
+    monte_carlo.freshness = "fail"
+    monte_carlo.table_url = "http://anywhere.com"
+    table.set_business_attribute(monte_carlo)
+
+    monte_carlo_dict = table.business_attributes[MONTE_CARLO]
+    assert monte_carlo_dict[FRESHNESS] == monte_carlo.freshness
+    assert monte_carlo_dict[TABLE_URL] == monte_carlo.table_url
+
+
+@pytest.mark.parametrize(
+    "cls, name, connection_qualified_name, aws_arn, msg",
+    [
+        (cls, values[0], values[1], values[2], values[3])
+        for values in [
+            (None, "default/s3/production", "abc", "name is required"),
+            ("my-bucket", None, "abc", "connection_qualified_name is required"),
+            ("", "default/s3/production", "abc", "name cannot be blank"),
+            ("my-bucket", "", "abc", "connection_qualified_name cannot be blank"),
+            ("my-bucket", "default/s3/", "abc", "Invalid connection_qualified_name"),
+            ("my-bucket", "/s3/", "abc", "Invalid connection_qualified_name"),
+            (
+                "my-bucket",
+                "default/s3/production/TestDb",
+                "abc",
+                "Invalid connection_qualified_name",
+            ),
+            ("my-bucket", "s3/production", "abc", "Invalid connection_qualified_name"),
+            (
+                "my-bucket",
+                "default/s33/production",
+                "abc",
+                "Invalid connection_qualified_name",
+            ),
+            ("my-bucket", "default/s3", None, "aws_arn is required"),
+            ("my-bucket", "default/s3", "", "aws_arn cannot be blank"),
+        ]
+        for cls in [S3Bucket.Attributes, S3Bucket, S3Object.Attributes, S3Object]
+    ],
+)
+def test_s3bucket_attributes_create_without_required_parameters_raises_validation_error(
+    cls, name, connection_qualified_name, aws_arn, msg
+):
+    with pytest.raises(ValueError) as exc_info:
+        cls.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+    assert exc_info.value.args[0] == msg
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn",
+    [("my-bucket", "default/s3/production", "my-arn")],
+)
+def test_s3bucket_attributes_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn
+):
+    attributes = S3Bucket.Attributes.create(
+        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+    )
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn",
+    [
+        ("my-bucket", "default/s3/production", "my-arn"),
+    ],
+)
+def test_s3bucket_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn
+):
+    attributes = S3Bucket.create(
+        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+    ).attributes
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn, , s3_bucket_qualified_name",
+    [
+        ("my-bucket", "default/s3/production", "my-arn", None),
+        (
+            "my-bucket",
+            "default/s3/production",
+            "my-arn",
+            "default/s3/production/bucket_123",
+        ),
+    ],
+)
+def test_s3object_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
+):
+    attributes = S3Object.create(
+        name=name,
+        connection_qualified_name=connection_qualified_name,
+        aws_arn=aws_arn,
+        s3_bucket_qualified_name=s3_bucket_qualified_name,
+    ).attributes
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+    assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, aws_arn, s3_bucket_qualified_name",
+    [
+        ("my-bucket", "default/s3/production", "my-arn", None),
+        (
+            "my-bucket",
+            "default/s3/production",
+            "my-arn",
+            "default/s3/production/bucket_123",
+        ),
+    ],
+)
+def test_s3object_attributes_create_with_required_parameters(
+    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
+):
+    attributes = S3Object.Attributes.create(
+        name=name,
+        connection_qualified_name=connection_qualified_name,
+        aws_arn=aws_arn,
+        s3_bucket_qualified_name=s3_bucket_qualified_name,
+    )
+    assert attributes.name == name
+    assert attributes.connection_qualified_name == connection_qualified_name
+    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
+    assert attributes.connector_name == connection_qualified_name.split("/")[1]
+    assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name

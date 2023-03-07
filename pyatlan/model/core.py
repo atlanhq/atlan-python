@@ -41,8 +41,10 @@ def to_snake_case(value):
     if value.startswith("__"):
         value = value[2:]
     res = [value[0].lower()]
-    for c in value.replace("URL", "Url").replace("DBT", "Dbt")[1:]:
-        if c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+    for c in (
+        value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]
+    ):
+        if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
             res.append("_")
             res.append(c.lower())
         else:
@@ -83,10 +85,10 @@ class ClassificationName:
 
         if isinstance(data, ClassificationName):
             return data
-        display_text = ClassificationCache.get_name_for_id(data)
-        if not display_text:
+        if display_text := ClassificationCache.get_name_for_id(data):
+            return ClassificationName(display_text)
+        else:
             raise ValueError(f"{data} is not a valid Classification")
-        return ClassificationName(display_text)
 
     @staticmethod
     def json_encode_classification(classification_name: "ClassificationName"):
@@ -139,11 +141,13 @@ class Classification(AtlanObject):
     restrict_propagation_through_lineage: Optional[bool] = Field(
         None, description="", alias="restrictPropagationThroughLineage"
     )
-    validity_peridos: Optional[list[str]] = Field(None, alias="validityPeriods")
+    validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
 
 
 class Classifications(AtlanObject):
-    __root__: list[Classification] = Field(list(), description="classifications")
+    __root__: list[Classification] = Field(
+        default_factory=list, description="classifications"
+    )
 
 
 class Meaning(AtlanObject):
@@ -183,3 +187,13 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
+
+
+class BusinessAttributes(dict):
+    _meta_data_type_name = ""
+    _meta_data_type_id = ""
+
+    def __setattr__(self, key, value):
+        if not hasattr(self, key):
+            raise AttributeError(f"Attribute {key} does not exist")
+        super().__setattr__(key, value)

@@ -5,11 +5,17 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 
-from pydantic import Field, StrictStr, root_validator
+from pydantic import Field, StrictStr, root_validator, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
+from pyatlan.model.core import (
+    Announcement,
+    AtlanObject,
+    BusinessAttributes,
+    Classification,
+    Meaning,
+)
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSAccountStatus,
@@ -27,6 +33,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
     IconType,
+    QueryUsernameStrategy,
     SourceCostUnitType,
     google_datastudio_asset_type,
     powerbi_endorsement,
@@ -170,6 +177,51 @@ class Referenceable(AtlanObject):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
 
+    def get_business_attributes(self, name: str) -> BusinessAttributes:
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        ba_id = CustomMetadataCache.get_id_for_name(name)
+        if ba_id is None:
+            raise ValueError(f"No business attributes with the name: {name} exist")
+        for a_type in CustomMetadataCache.types_by_asset[self.type_name]:
+            if (
+                hasattr(a_type, "_meta_data_type_name")
+                and a_type._meta_data_type_name == name
+            ):
+                break
+        else:
+            raise ValueError(
+                f"Business attributes {name} are not applicable to {self.type_name}"
+            )
+        ba_type = CustomMetadataCache.get_type_for_id(ba_id)
+        if not ba_type:
+            raise ValueError(
+                f"Business attributes {name} are not applicable to {self.type_name}"
+            )
+        if self.business_attributes and ba_id in self.business_attributes:
+            return ba_type(self.business_attributes[ba_id])
+        else:
+            return ba_type()
+
+    def set_business_attribute(self, business_attributes: BusinessAttributes) -> None:
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        if not isinstance(business_attributes, BusinessAttributes):
+            raise ValueError(
+                "business_attributes must be an instance of BusinessAttributes"
+            )
+        if (
+            type(business_attributes)
+            not in CustomMetadataCache.types_by_asset[self.type_name]
+        ):
+            raise ValueError(
+                f"Business attributes {business_attributes._meta_data_type_name} are not applicable to {self.type_name}"
+            )
+        ba_dict = dict(business_attributes)
+        if not self.business_attributes:
+            self.business_attributes = {}
+        self.business_attributes[business_attributes._meta_data_type_id] = ba_dict
+
 
 class Asset(Referenceable):
     """Description"""
@@ -206,6 +258,14 @@ class Asset(Referenceable):
             raise TypeError(f"Unsupport sub-type: {data_type}")
 
         return sub(**data)
+
+    type_name: str = Field("Asset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Asset":
+            raise ValueError("must be Asset")
+        return v
 
     class Attributes(Referenceable.Attributes):
         name: str = Field(None, description="", alias="name")
@@ -555,7 +615,13 @@ class Asset(Referenceable):
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
-    type_name: Literal["AtlasGlossary"] = Field("AtlasGlossary")
+    type_name: str = Field("AtlasGlossary", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AtlasGlossary":
+            raise ValueError("must be AtlasGlossary")
+        return v
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -620,19 +686,37 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
-    type_name: Literal["DataSet"] = Field("DataSet")
+    type_name: str = Field("DataSet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataSet":
+            raise ValueError("must be DataSet")
+        return v
 
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
-    type_name: Literal["ProcessExecution"] = Field("ProcessExecution")
+    type_name: str = Field("ProcessExecution", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ProcessExecution":
+            raise ValueError("must be ProcessExecution")
+        return v
 
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
 
-    type_name: Literal["AtlasGlossaryTerm"] = Field("AtlasGlossaryTerm")
+    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AtlasGlossaryTerm":
+            raise ValueError("must be AtlasGlossaryTerm")
+        return v
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -692,11 +776,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
-        )  # relationship
         classifies: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="classifies"
+        )  # relationship
+        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+            None, description="", alias="categories"
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
@@ -756,17 +840,37 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
+    type_name: str = Field("Cloud", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Cloud":
+            raise ValueError("must be Cloud")
+        return v
+
 
 class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
 
-    type_name: Literal["Infrastructure"] = Field("Infrastructure")
+    type_name: str = Field("Infrastructure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Infrastructure":
+            raise ValueError("must be Infrastructure")
+        return v
 
 
 class Connection(Asset, type_name="Connection"):
     """Description"""
 
-    type_name: Literal["Connection"] = Field("Connection")
+    type_name: str = Field("Connection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Connection":
+            raise ValueError("must be Connection")
+        return v
 
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
@@ -789,6 +893,9 @@ class Connection(Asset, type_name="Connection"):
         )
         policy_strategy: Optional[str] = Field(
             None, description="", alias="policyStrategy"
+        )
+        query_username_strategy: Optional[QueryUsernameStrategy] = Field(
+            None, description="", alias="queryUsernameStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
         default_credential_guid: Optional[str] = Field(
@@ -907,6 +1014,14 @@ class Connection(Asset, type_name="Connection"):
 class Process(Asset, type_name="Process"):
     """Description"""
 
+    type_name: str = Field("Process", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Process":
+            raise ValueError("must be Process")
+        return v
+
     class Attributes(Asset.Attributes):
         inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
         outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
@@ -939,7 +1054,13 @@ class Process(Asset, type_name="Process"):
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
 
-    type_name: Literal["AtlasGlossaryCategory"] = Field("AtlasGlossaryCategory")
+    type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AtlasGlossaryCategory":
+            raise ValueError("must be AtlasGlossaryCategory")
+        return v
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
@@ -1024,7 +1145,13 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 class Badge(Asset, type_name="Badge"):
     """Description"""
 
-    type_name: Literal["Badge"] = Field("Badge")
+    type_name: str = Field("Badge", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Badge":
+            raise ValueError("must be Badge")
+        return v
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
@@ -1056,13 +1183,37 @@ class Badge(Asset, type_name="Badge"):
 class Namespace(Asset, type_name="Namespace"):
     """Description"""
 
+    type_name: str = Field("Namespace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Namespace":
+            raise ValueError("must be Namespace")
+        return v
+
 
 class Catalog(Asset, type_name="Catalog"):
     """Description"""
 
+    type_name: str = Field("Catalog", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Catalog":
+            raise ValueError("must be Catalog")
+        return v
+
 
 class Google(Cloud):
     """Description"""
+
+    type_name: str = Field("Google", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Google":
+            raise ValueError("must be Google")
+        return v
 
     class Attributes(Cloud.Attributes):
         google_service: Optional[str] = Field(
@@ -1112,6 +1263,14 @@ class Google(Cloud):
 class Azure(Cloud):
     """Description"""
 
+    type_name: str = Field("Azure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Azure":
+            raise ValueError("must be Azure")
+        return v
+
     class Attributes(Cloud.Attributes):
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
@@ -1147,6 +1306,14 @@ class Azure(Cloud):
 
 class AWS(Cloud):
     """Description"""
+
+    type_name: str = Field("AWS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AWS":
+            raise ValueError("must be AWS")
+        return v
 
     class Attributes(Cloud.Attributes):
         aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
@@ -1187,17 +1354,37 @@ class AWS(Cloud):
 class BIProcess(Process):
     """Description"""
 
-    type_name: Literal["BIProcess"] = Field("BIProcess")
+    type_name: str = Field("BIProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "BIProcess":
+            raise ValueError("must be BIProcess")
+        return v
 
 
 class ColumnProcess(Process):
     """Description"""
 
+    type_name: str = Field("ColumnProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ColumnProcess":
+            raise ValueError("must be ColumnProcess")
+        return v
+
 
 class Collection(Namespace):
     """Description"""
 
-    type_name: Literal["Collection"] = Field("Collection")
+    type_name: str = Field("Collection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Collection":
+            raise ValueError("must be Collection")
+        return v
 
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -1231,7 +1418,13 @@ class Collection(Namespace):
 class Folder(Namespace):
     """Description"""
 
-    type_name: Literal["Folder"] = Field("Folder")
+    type_name: str = Field("Folder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Folder":
+            raise ValueError("must be Folder")
+        return v
 
     class Attributes(Namespace.Attributes):
         parent_qualified_name: str = Field(
@@ -1270,21 +1463,61 @@ class Folder(Namespace):
 class ObjectStore(Catalog):
     """Description"""
 
+    type_name: str = Field("ObjectStore", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ObjectStore":
+            raise ValueError("must be ObjectStore")
+        return v
+
 
 class DataQuality(Catalog):
     """Description"""
+
+    type_name: str = Field("DataQuality", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataQuality":
+            raise ValueError("must be DataQuality")
+        return v
 
 
 class BI(Catalog):
     """Description"""
 
+    type_name: str = Field("BI", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "BI":
+            raise ValueError("must be BI")
+        return v
+
 
 class SaaS(Catalog):
     """Description"""
 
+    type_name: str = Field("SaaS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SaaS":
+            raise ValueError("must be SaaS")
+        return v
+
 
 class Dbt(Catalog):
     """Description"""
+
+    type_name: str = Field("Dbt", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Dbt":
+            raise ValueError("must be Dbt")
+        return v
 
     class Attributes(Catalog.Attributes):
         dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
@@ -1360,6 +1593,14 @@ class Dbt(Catalog):
 class Resource(Catalog):
     """Description"""
 
+    type_name: str = Field("Resource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Resource":
+            raise ValueError("must be Resource")
+        return v
+
     class Attributes(Catalog.Attributes):
         link: Optional[str] = Field(None, description="", alias="link")
         is_global: Optional[bool] = Field(None, description="", alias="isGlobal")
@@ -1396,11 +1637,25 @@ class Resource(Catalog):
 class Insight(Catalog):
     """Description"""
 
-    type_name: Literal["Insight"] = Field("Insight")
+    type_name: str = Field("Insight", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Insight":
+            raise ValueError("must be Insight")
+        return v
 
 
 class API(Catalog):
     """Description"""
+
+    type_name: str = Field("API", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "API":
+            raise ValueError("must be API")
+        return v
 
     class Attributes(Catalog.Attributes):
         api_spec_type: Optional[str] = Field(None, description="", alias="apiSpecType")
@@ -1445,6 +1700,14 @@ class API(Catalog):
 
 class SQL(Catalog):
     """Description"""
+
+    type_name: str = Field("SQL", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SQL":
+            raise ValueError("must be SQL")
+        return v
 
     class Attributes(Catalog.Attributes):
         query_count: Optional[int] = Field(None, description="", alias="queryCount")
@@ -1515,6 +1778,14 @@ class SQL(Catalog):
 class DataStudio(Google):
     """Description"""
 
+    type_name: str = Field("DataStudio", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataStudio":
+            raise ValueError("must be DataStudio")
+        return v
+
     class Attributes(Google.Attributes):
         google_service: Optional[str] = Field(
             None, description="", alias="googleService"
@@ -1568,6 +1839,14 @@ class DataStudio(Google):
 
 class GCS(Google):
     """Description"""
+
+    type_name: str = Field("GCS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCS":
+            raise ValueError("must be GCS")
+        return v
 
     class Attributes(Google.Attributes):
         gcs_storage_class: Optional[str] = Field(
@@ -1639,7 +1918,13 @@ class GCS(Google):
 class DataStudioAsset(DataStudio):
     """Description"""
 
-    type_name: Literal["DataStudioAsset"] = Field("DataStudioAsset")
+    type_name: str = Field("DataStudioAsset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataStudioAsset":
+            raise ValueError("must be DataStudioAsset")
+        return v
 
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[google_datastudio_asset_type] = Field(
@@ -1707,7 +1992,18 @@ class DataStudioAsset(DataStudio):
 class ADLS(ObjectStore):
     """Description"""
 
+    type_name: str = Field("ADLS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLS":
+            raise ValueError("must be ADLS")
+        return v
+
     class Attributes(ObjectStore.Attributes):
+        adls_account_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsAccountQualifiedName"
+        )
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
         )
@@ -1748,6 +2044,14 @@ class ADLS(ObjectStore):
 
 class S3(ObjectStore):
     """Description"""
+
+    type_name: str = Field("S3", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3":
+            raise ValueError("must be S3")
+        return v
 
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
@@ -1796,7 +2100,13 @@ class S3(ObjectStore):
 class DbtColumnProcess(Dbt):
     """Description"""
 
-    type_name: Literal["DbtColumnProcess"] = Field("DbtColumnProcess")
+    type_name: str = Field("DbtColumnProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtColumnProcess":
+            raise ValueError("must be DbtColumnProcess")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
@@ -1886,6 +2196,14 @@ class DbtColumnProcess(Dbt):
 class Metric(DataQuality):
     """Description"""
 
+    type_name: str = Field("Metric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Metric":
+            raise ValueError("must be Metric")
+        return v
+
     class Attributes(DataQuality.Attributes):
         metric_type: Optional[str] = Field(None, description="", alias="metricType")
         metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
@@ -1933,6 +2251,14 @@ class Metric(DataQuality):
 class Metabase(BI):
     """Description"""
 
+    type_name: str = Field("Metabase", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Metabase":
+            raise ValueError("must be Metabase")
+        return v
+
     class Attributes(BI.Attributes):
         metabase_collection_name: Optional[str] = Field(
             None, description="", alias="metabaseCollectionName"
@@ -1968,6 +2294,14 @@ class Metabase(BI):
 
 class PowerBI(BI):
     """Description"""
+
+    type_name: str = Field("PowerBI", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBI":
+            raise ValueError("must be PowerBI")
+        return v
 
     class Attributes(BI.Attributes):
         power_b_i_is_hidden: Optional[bool] = Field(
@@ -2011,6 +2345,14 @@ class PowerBI(BI):
 class Preset(BI):
     """Description"""
 
+    type_name: str = Field("Preset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Preset":
+            raise ValueError("must be Preset")
+        return v
+
     class Attributes(BI.Attributes):
         preset_workspace_id: Optional[int] = Field(
             None, description="", alias="presetWorkspaceId"
@@ -2050,56 +2392,16 @@ class Preset(BI):
     )
 
 
-class Sigma(BI):
-    """Description"""
-
-    class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
-        )
-        sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
-        )
-        sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
-        )
-        sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
-        )
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
-        )
-        sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "Sigma.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Mode(BI):
     """Description"""
+
+    type_name: str = Field("Mode", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Mode":
+            raise ValueError("must be Mode")
+        return v
 
     class Attributes(BI.Attributes):
         mode_id: Optional[str] = Field(None, description="", alias="modeId")
@@ -2151,16 +2453,148 @@ class Mode(BI):
     )
 
 
+class Sigma(BI):
+    """Description"""
+
+    type_name: str = Field("Sigma", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Sigma":
+            raise ValueError("must be Sigma")
+        return v
+
+    class Attributes(BI.Attributes):
+        sigma_workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookQualifiedName"
+        )
+        sigma_workbook_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookName"
+        )
+        sigma_page_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageQualifiedName"
+        )
+        sigma_page_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageName"
+        )
+        sigma_data_element_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQualifiedName"
+        )
+        sigma_data_element_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Sigma.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Qlik(BI):
+    """Description"""
+
+    type_name: str = Field("Qlik", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Qlik":
+            raise ValueError("must be Qlik")
+        return v
+
+    class Attributes(BI.Attributes):
+        qlik_id: Optional[str] = Field(None, description="", alias="qlikId")
+        qlik_q_r_i: Optional[str] = Field(None, description="", alias="qlikQRI")
+        qlik_space_id: Optional[str] = Field(None, description="", alias="qlikSpaceId")
+        qlik_space_qualified_name: Optional[str] = Field(
+            None, description="", alias="qlikSpaceQualifiedName"
+        )
+        qlik_app_id: Optional[str] = Field(None, description="", alias="qlikAppId")
+        qlik_app_qualified_name: Optional[str] = Field(
+            None, description="", alias="qlikAppQualifiedName"
+        )
+        qlik_owner_id: Optional[str] = Field(None, description="", alias="qlikOwnerId")
+        qlik_is_published: Optional[bool] = Field(
+            None, description="", alias="qlikIsPublished"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Qlik.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Tableau(BI):
     """Description"""
+
+    type_name: str = Field("Tableau", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Tableau":
+            raise ValueError("must be Tableau")
+        return v
 
 
 class Looker(BI):
     """Description"""
 
+    type_name: str = Field("Looker", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Looker":
+            raise ValueError("must be Looker")
+        return v
+
 
 class Salesforce(SaaS):
     """Description"""
+
+    type_name: str = Field("Salesforce", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Salesforce":
+            raise ValueError("must be Salesforce")
+        return v
 
     class Attributes(SaaS.Attributes):
         organization_qualified_name: Optional[str] = Field(
@@ -2196,7 +2630,13 @@ class Salesforce(SaaS):
 class DbtModelColumn(Dbt):
     """Description"""
 
-    type_name: Literal["DbtModelColumn"] = Field("DbtModelColumn")
+    type_name: str = Field("DbtModelColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtModelColumn":
+            raise ValueError("must be DbtModelColumn")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
@@ -2243,7 +2683,13 @@ class DbtModelColumn(Dbt):
 class DbtModel(Dbt):
     """Description"""
 
-    type_name: Literal["DbtModel"] = Field("DbtModel")
+    type_name: str = Field("DbtModel", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtModel":
+            raise ValueError("must be DbtModel")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_status: Optional[str] = Field(None, description="", alias="dbtStatus")
@@ -2315,7 +2761,13 @@ class DbtModel(Dbt):
 class DbtMetric(Dbt):
     """Description"""
 
-    type_name: Literal["DbtMetric"] = Field("DbtMetric")
+    type_name: str = Field("DbtMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtMetric":
+            raise ValueError("must be DbtMetric")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
@@ -2417,7 +2869,13 @@ class DbtMetric(Dbt):
 class DbtSource(Dbt):
     """Description"""
 
-    type_name: Literal["DbtSource"] = Field("DbtSource")
+    type_name: str = Field("DbtSource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtSource":
+            raise ValueError("must be DbtSource")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(None, description="", alias="dbtState")
@@ -2459,7 +2917,13 @@ class DbtSource(Dbt):
 class DbtProcess(Dbt):
     """Description"""
 
-    type_name: Literal["DbtProcess"] = Field("DbtProcess")
+    type_name: str = Field("DbtProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtProcess":
+            raise ValueError("must be DbtProcess")
+        return v
 
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(
@@ -2546,7 +3010,13 @@ class DbtProcess(Dbt):
 class ReadmeTemplate(Resource):
     """Description"""
 
-    type_name: Literal["ReadmeTemplate"] = Field("ReadmeTemplate")
+    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ReadmeTemplate":
+            raise ValueError("must be ReadmeTemplate")
+        return v
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -2580,7 +3050,13 @@ class ReadmeTemplate(Resource):
 class Readme(Resource):
     """Description"""
 
-    type_name: Literal["Readme"] = Field("Readme")
+    type_name: str = Field("Readme", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Readme":
+            raise ValueError("must be Readme")
+        return v
 
     @classmethod
     # @validate_arguments()
@@ -2596,7 +3072,13 @@ class Readme(Resource):
 class Link(Resource):
     """Description"""
 
-    type_name: Literal["Link"] = Field("Link")
+    type_name: str = Field("Link", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Link":
+            raise ValueError("must be Link")
+        return v
 
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
@@ -2636,7 +3118,13 @@ class Link(Resource):
 class APISpec(API):
     """Description"""
 
-    type_name: Literal["APISpec"] = Field("APISpec")
+    type_name: str = Field("APISpec", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "APISpec":
+            raise ValueError("must be APISpec")
+        return v
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
@@ -2695,7 +3183,13 @@ class APISpec(API):
 class APIPath(API):
     """Description"""
 
-    type_name: Literal["APIPath"] = Field("APIPath")
+    type_name: str = Field("APIPath", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "APIPath":
+            raise ValueError("must be APIPath")
+        return v
 
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
@@ -2748,7 +3242,13 @@ class APIPath(API):
 class TablePartition(SQL):
     """Description"""
 
-    type_name: Literal["TablePartition"] = Field("TablePartition")
+    type_name: str = Field("TablePartition", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TablePartition":
+            raise ValueError("must be TablePartition")
+        return v
 
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(None, description="", alias="constraint")
@@ -2828,7 +3328,13 @@ class TablePartition(SQL):
 class Table(SQL):
     """Description"""
 
-    type_name: Literal["Table"] = Field("Table")
+    type_name: str = Field("Table", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Table":
+            raise ValueError("must be Table")
+        return v
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -2946,7 +3452,13 @@ class Table(SQL):
 class Query(SQL):
     """Description"""
 
-    type_name: Literal["Query"] = Field("Query")
+    type_name: str = Field("Query", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Query":
+            raise ValueError("must be Query")
+        return v
 
     class Attributes(SQL.Attributes):
         raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
@@ -3023,7 +3535,13 @@ class Query(SQL):
 class Column(SQL):
     """Description"""
 
-    type_name: Literal["Column"] = Field("Column")
+    type_name: str = Field("Column", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Column":
+            raise ValueError("must be Column")
+        return v
 
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -3182,7 +3700,13 @@ class Column(SQL):
 class Schema(SQL):
     """Description"""
 
-    type_name: Literal["Schema"] = Field("Schema")
+    type_name: str = Field("Schema", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Schema":
+            raise ValueError("must be Schema")
+        return v
 
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
@@ -3276,10 +3800,138 @@ class Schema(SQL):
         return cls(attributes=attributes)
 
 
+class SnowflakeStream(SQL):
+    """Description"""
+
+    type_name: str = Field("SnowflakeStream", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeStream":
+            raise ValueError("must be SnowflakeStream")
+        return v
+
+    class Attributes(SQL.Attributes):
+        snowflake_stream_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamType"
+        )
+        snowflake_stream_source_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamSourceType"
+        )
+        snowflake_stream_mode: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamMode"
+        )
+        snowflake_stream_is_stale: Optional[bool] = Field(
+            None, description="", alias="snowflakeStreamIsStale"
+        )
+        snowflake_stream_stale_after: Optional[datetime] = Field(
+            None, description="", alias="snowflakeStreamStaleAfter"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+
+    attributes: "SnowflakeStream.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakePipe(SQL):
+    """Description"""
+
+    type_name: str = Field("SnowflakePipe", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakePipe":
+            raise ValueError("must be SnowflakePipe")
+        return v
+
+    class Attributes(SQL.Attributes):
+        definition: Optional[str] = Field(None, description="", alias="definition")
+        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
+            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
+        )
+        snowflake_pipe_notification_channel_name: Optional[str] = Field(
+            None, description="", alias="snowflakePipeNotificationChannelName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+
+    attributes: "SnowflakePipe.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Database(SQL):
     """Description"""
 
-    type_name: Literal["Database"] = Field("Database")
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
@@ -3368,120 +4020,16 @@ class Database(SQL):
         return cls(attributes=attributes)
 
 
-class SnowflakeStream(SQL):
-    """Description"""
-
-    type_name: Literal["SnowflakeStream"] = Field("SnowflakeStream")
-
-    class Attributes(SQL.Attributes):
-        snowflake_stream_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamType"
-        )
-        snowflake_stream_source_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamSourceType"
-        )
-        snowflake_stream_mode: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamMode"
-        )
-        snowflake_stream_is_stale: Optional[bool] = Field(
-            None, description="", alias="snowflakeStreamIsStale"
-        )
-        snowflake_stream_stale_after: Optional[datetime] = Field(
-            None, description="", alias="snowflakeStreamStaleAfter"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-
-    attributes: "SnowflakeStream.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SnowflakePipe(SQL):
-    """Description"""
-
-    type_name: Literal["SnowflakePipe"] = Field("SnowflakePipe")
-
-    class Attributes(SQL.Attributes):
-        definition: Optional[str] = Field(None, description="", alias="definition")
-        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
-            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
-        )
-        snowflake_pipe_notification_channel_name: Optional[str] = Field(
-            None, description="", alias="snowflakePipeNotificationChannelName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-
-    attributes: "SnowflakePipe.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Procedure(SQL):
     """Description"""
 
-    type_name: Literal["Procedure"] = Field("Procedure")
+    type_name: str = Field("Procedure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Procedure":
+            raise ValueError("must be Procedure")
+        return v
 
     class Attributes(SQL.Attributes):
         definition: str = Field(None, description="", alias="definition")
@@ -3526,7 +4074,13 @@ class Procedure(SQL):
 class View(SQL):
     """Description"""
 
-    type_name: Literal["View"] = Field("View")
+    type_name: str = Field("View", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "View":
+            raise ValueError("must be View")
+        return v
 
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -3621,7 +4175,13 @@ class View(SQL):
 class MaterialisedView(SQL):
     """Description"""
 
-    type_name: Literal["MaterialisedView"] = Field("MaterialisedView")
+    type_name: str = Field("MaterialisedView", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MaterialisedView":
+            raise ValueError("must be MaterialisedView")
+        return v
 
     class Attributes(SQL.Attributes):
         refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
@@ -3688,7 +4248,13 @@ class MaterialisedView(SQL):
 class GCSObject(GCS):
     """Description"""
 
-    type_name: Literal["GCSObject"] = Field("GCSObject")
+    type_name: str = Field("GCSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
+        return v
 
     class Attributes(GCS.Attributes):
         gcs_bucket_name: Optional[str] = Field(
@@ -3768,7 +4334,13 @@ class GCSObject(GCS):
 class GCSBucket(GCS):
     """Description"""
 
-    type_name: Literal["GCSBucket"] = Field("GCSBucket")
+    type_name: str = Field("GCSBucket", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
+        return v
 
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(
@@ -3824,7 +4396,13 @@ class GCSBucket(GCS):
 class ADLSAccount(ADLS):
     """Description"""
 
-    type_name: Literal["ADLSAccount"] = Field("ADLSAccount")
+    type_name: str = Field("ADLSAccount", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSAccount":
+            raise ValueError("must be ADLSAccount")
+        return v
 
     class Attributes(ADLS.Attributes):
         adls_e_tag: Optional[str] = Field(None, description="", alias="adlsETag")
@@ -3848,9 +4426,6 @@ class ADLSAccount(ADLS):
         )
         adls_primary_disk_state: Optional[ADLSAccountStatus] = Field(
             None, description="", alias="adlsPrimaryDiskState"
-        )
-        adls_account_creation_time: Optional[datetime] = Field(
-            None, description="", alias="adlsAccountCreationTime"
         )
         adls_account_provision_state: Optional[ADLSProvisionState] = Field(
             None, description="", alias="adlsAccountProvisionState"
@@ -3890,14 +4465,17 @@ class ADLSAccount(ADLS):
 class ADLSContainer(ADLS):
     """Description"""
 
-    type_name: Literal["ADLSContainer"] = Field("ADLSContainer")
+    type_name: str = Field("ADLSContainer", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSContainer":
+            raise ValueError("must be ADLSContainer")
+        return v
 
     class Attributes(ADLS.Attributes):
         adls_container_url: Optional[str] = Field(
             None, description="", alias="adlsContainerUrl"
-        )
-        adls_container_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="adlsContainerLastModifiedTime"
         )
         adls_container_lease_state: Optional[ADLSLeaseState] = Field(
             None, description="", alias="adlsContainerLeaseState"
@@ -3910,6 +4488,9 @@ class ADLSContainer(ADLS):
         )
         adls_container_version_level_immutability_support: Optional[bool] = Field(
             None, description="", alias="adlsContainerVersionLevelImmutabilitySupport"
+        )
+        adls_object_count: Optional[int] = Field(
+            None, description="", alias="adlsObjectCount"
         )
         adls_objects: Optional[list[ADLSObject]] = Field(
             None, description="", alias="adlsObjects"
@@ -3946,17 +4527,17 @@ class ADLSContainer(ADLS):
 class ADLSObject(ADLS):
     """Description"""
 
-    type_name: Literal["ADLSObject"] = Field("ADLSObject")
+    type_name: str = Field("ADLSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSObject":
+            raise ValueError("must be ADLSObject")
+        return v
 
     class Attributes(ADLS.Attributes):
         adls_object_url: Optional[str] = Field(
             None, description="", alias="adlsObjectUrl"
-        )
-        adls_object_creation_time: Optional[datetime] = Field(
-            None, description="", alias="adlsObjectCreationTime"
-        )
-        adls_object_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="adlsObjectLastModifiedTime"
         )
         adls_object_version_id: Optional[str] = Field(
             None, description="", alias="adlsObjectVersionId"
@@ -4003,6 +4584,9 @@ class ADLSObject(ADLS):
         adls_object_metadata: Optional[dict[str, str]] = Field(
             None, description="", alias="adlsObjectMetadata"
         )
+        adls_container_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsContainerQualifiedName"
+        )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -4035,7 +4619,13 @@ class ADLSObject(ADLS):
 class S3Bucket(S3):
     """Description"""
 
-    type_name: Literal["S3Bucket"] = Field("S3Bucket")
+    type_name: str = Field("S3Bucket", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3Bucket":
+            raise ValueError("must be S3Bucket")
+        return v
 
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(
@@ -4066,17 +4656,65 @@ class S3Bucket(S3):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str, aws_arn: str
+        ) -> S3Bucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Bucket.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+            )
+
     attributes: "S3Bucket.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name, connection_qualified_name, aws_arn
+        )
+        return cls(attributes=attributes)
+
 
 class S3Object(S3):
     """Description"""
 
-    type_name: Literal["S3Object"] = Field("S3Object")
+    type_name: str = Field("S3Object", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3Object":
+            raise ValueError("must be S3Object")
+        return v
 
     class Attributes(S3.Attributes):
         s3_object_last_modified_time: Optional[datetime] = Field(
@@ -4126,17 +4764,74 @@ class S3Object(S3):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: str,
+            s3_bucket_qualified_name: Optional[str] = None,
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Object.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
+            )
+
     attributes: "S3Object.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: Optional[str] = None,
+    ) -> S3Object:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Object.Attributes.create(
+            name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
+        )
+        return cls(attributes=attributes)
+
 
 class MetabaseQuestion(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseQuestion"] = Field("MetabaseQuestion")
+    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseQuestion":
+            raise ValueError("must be MetabaseQuestion")
+        return v
 
     class Attributes(Metabase.Attributes):
         metabase_dashboard_count: Optional[int] = Field(
@@ -4183,7 +4878,13 @@ class MetabaseQuestion(Metabase):
 class MetabaseCollection(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseCollection"] = Field("MetabaseCollection")
+    type_name: str = Field("MetabaseCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseCollection":
+            raise ValueError("must be MetabaseCollection")
+        return v
 
     class Attributes(Metabase.Attributes):
         metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
@@ -4231,7 +4932,13 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
-    type_name: Literal["MetabaseDashboard"] = Field("MetabaseDashboard")
+    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseDashboard":
+            raise ValueError("must be MetabaseDashboard")
+        return v
 
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(
@@ -4272,7 +4979,13 @@ class MetabaseDashboard(Metabase):
 class PowerBIReport(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIReport"] = Field("PowerBIReport")
+    type_name: str = Field("PowerBIReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIReport":
+            raise ValueError("must be PowerBIReport")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4324,7 +5037,13 @@ class PowerBIReport(PowerBI):
 class PowerBIMeasure(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIMeasure"] = Field("PowerBIMeasure")
+    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIMeasure":
+            raise ValueError("must be PowerBIMeasure")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4371,7 +5090,13 @@ class PowerBIMeasure(PowerBI):
 class PowerBIColumn(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIColumn"] = Field("PowerBIColumn")
+    type_name: str = Field("PowerBIColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIColumn":
+            raise ValueError("must be PowerBIColumn")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4421,57 +5146,16 @@ class PowerBIColumn(PowerBI):
     )
 
 
-class PowerBITile(PowerBI):
-    """Description"""
-
-    type_name: Literal["PowerBITile"] = Field("PowerBITile")
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="dashboardQualifiedName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "PowerBITile.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class PowerBITable(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBITable"] = Field("PowerBITable")
+    type_name: str = Field("PowerBITable", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITable":
+            raise ValueError("must be PowerBITable")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4524,10 +5208,69 @@ class PowerBITable(PowerBI):
     )
 
 
+class PowerBITile(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="dashboardQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        dashboard: Optional[PowerBIDashboard] = Field(
+            None, description="", alias="dashboard"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "PowerBITile.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PowerBIDatasource(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDatasource"] = Field("PowerBIDatasource")
+    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDatasource":
+            raise ValueError("must be PowerBIDatasource")
+        return v
 
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
@@ -4565,7 +5308,13 @@ class PowerBIDatasource(PowerBI):
 class PowerBIWorkspace(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIWorkspace"] = Field("PowerBIWorkspace")
+    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIWorkspace":
+            raise ValueError("must be PowerBIWorkspace")
+        return v
 
     class Attributes(PowerBI.Attributes):
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
@@ -4618,7 +5367,13 @@ class PowerBIWorkspace(PowerBI):
 class PowerBIDataset(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDataset"] = Field("PowerBIDataset")
+    type_name: str = Field("PowerBIDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataset":
+            raise ValueError("must be PowerBIDataset")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4628,11 +5383,11 @@ class PowerBIDataset(PowerBI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
-        )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
+        )  # relationship
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
@@ -4672,7 +5427,13 @@ class PowerBIDataset(PowerBI):
 class PowerBIDashboard(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDashboard"] = Field("PowerBIDashboard")
+    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4712,51 +5473,16 @@ class PowerBIDashboard(PowerBI):
     )
 
 
-class PowerBIPage(PowerBI):
-    """Description"""
-
-    type_name: Literal["PowerBIPage"] = Field("PowerBIPage")
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        report_qualified_name: Optional[str] = Field(
-            None, description="", alias="reportQualifiedName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "PowerBIPage.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class PowerBIDataflow(PowerBI):
     """Description"""
 
-    type_name: Literal["PowerBIDataflow"] = Field("PowerBIDataflow")
+    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataflow":
+            raise ValueError("must be PowerBIDataflow")
+        return v
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
@@ -4795,10 +5521,63 @@ class PowerBIDataflow(PowerBI):
     )
 
 
+class PowerBIPage(PowerBI):
+    """Description"""
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        report_qualified_name: Optional[str] = Field(
+            None, description="", alias="reportQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "PowerBIPage.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PresetChart(Preset):
     """Description"""
 
-    type_name: Literal["PresetChart"] = Field("PresetChart")
+    type_name: str = Field("PresetChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetChart":
+            raise ValueError("must be PresetChart")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
@@ -4839,7 +5618,13 @@ class PresetChart(Preset):
 class PresetDataset(Preset):
     """Description"""
 
-    type_name: Literal["PresetDataset"] = Field("PresetDataset")
+    type_name: str = Field("PresetDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetDataset":
+            raise ValueError("must be PresetDataset")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
@@ -4883,7 +5668,13 @@ class PresetDataset(Preset):
 class PresetDashboard(Preset):
     """Description"""
 
-    type_name: Literal["PresetDashboard"] = Field("PresetDashboard")
+    type_name: str = Field("PresetDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetDashboard":
+            raise ValueError("must be PresetDashboard")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
@@ -4942,7 +5733,13 @@ class PresetDashboard(Preset):
 class PresetWorkspace(Preset):
     """Description"""
 
-    type_name: Literal["PresetWorkspace"] = Field("PresetWorkspace")
+    type_name: str = Field("PresetWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetWorkspace":
+            raise ValueError("must be PresetWorkspace")
+        return v
 
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
@@ -5001,256 +5798,16 @@ class PresetWorkspace(Preset):
     )
 
 
-class SigmaDatasetColumn(Sigma):
-    """Description"""
-
-    type_name: Literal["SigmaDatasetColumn"] = Field("SigmaDatasetColumn")
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetQualifiedName"
-        )
-        sigma_dataset_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetName"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        sigma_dataset: Optional[SigmaDataset] = Field(
-            None, description="", alias="sigmaDataset"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaDatasetColumn.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataset(Sigma):
-    """Description"""
-
-    type_name: Literal["SigmaDataset"] = Field("SigmaDataset")
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="sigmaDatasetColumnCount"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
-            None, description="", alias="sigmaDatasetColumns"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaDataset.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaWorkbook(Sigma):
-    """Description"""
-
-    type_name: Literal["SigmaWorkbook"] = Field("SigmaWorkbook")
-
-    class Attributes(Sigma.Attributes):
-        sigma_page_count: Optional[int] = Field(
-            None, description="", alias="sigmaPageCount"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        sigma_pages: Optional[list[SigmaPage]] = Field(
-            None, description="", alias="sigmaPages"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaWorkbook.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataElementField(Sigma):
-    """Description"""
-
-    type_name: Literal["SigmaDataElementField"] = Field("SigmaDataElementField")
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_field_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sigmaDataElementFieldIsHidden"
-        )
-        sigma_data_element_field_formula: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementFieldFormula"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        sigma_data_element: Optional[SigmaDataElement] = Field(
-            None, description="", alias="sigmaDataElement"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaDataElementField.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaPage(Sigma):
-    """Description"""
-
-    type_name: Literal["SigmaPage"] = Field("SigmaPage")
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementCount"
-        )
-        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
-            None, description="", alias="sigmaDataElements"
-        )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        sigma_workbook: Optional[SigmaWorkbook] = Field(
-            None, description="", alias="sigmaWorkbook"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SigmaPage.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataElement(Sigma):
-    """Description"""
-
-    type_name: Literal["SigmaDataElement"] = Field("SigmaDataElement")
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_query: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQuery"
-        )
-        sigma_data_element_type: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementType"
-        )
-        sigma_data_element_field_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementFieldCount"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        sigma_page: Optional[SigmaPage] = Field(
-            None, description="", alias="sigmaPage"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
-            None, description="", alias="sigmaDataElementFields"
-        )  # relationship
-
-    attributes: "SigmaDataElement.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class ModeReport(Mode):
     """Description"""
 
-    type_name: Literal["ModeReport"] = Field("ModeReport")
+    type_name: str = Field("ModeReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeReport":
+            raise ValueError("must be ModeReport")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
@@ -5309,7 +5866,13 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
-    type_name: Literal["ModeQuery"] = Field("ModeQuery")
+    type_name: str = Field("ModeQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeQuery":
+            raise ValueError("must be ModeQuery")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
@@ -5353,7 +5916,13 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
-    type_name: Literal["ModeChart"] = Field("ModeChart")
+    type_name: str = Field("ModeChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeChart":
+            raise ValueError("must be ModeChart")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
@@ -5391,7 +5960,13 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
-    type_name: Literal["ModeWorkspace"] = Field("ModeWorkspace")
+    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeWorkspace":
+            raise ValueError("must be ModeWorkspace")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(
@@ -5429,7 +6004,13 @@ class ModeWorkspace(Mode):
 class ModeCollection(Mode):
     """Description"""
 
-    type_name: Literal["ModeCollection"] = Field("ModeCollection")
+    type_name: str = Field("ModeCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeCollection":
+            raise ValueError("must be ModeCollection")
+        return v
 
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
@@ -5470,10 +6051,557 @@ class ModeCollection(Mode):
     )
 
 
+class SigmaDatasetColumn(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDatasetColumn":
+            raise ValueError("must be SigmaDatasetColumn")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetQualifiedName"
+        )
+        sigma_dataset_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_dataset: Optional[SigmaDataset] = Field(
+            None, description="", alias="sigmaDataset"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDatasetColumn.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataset(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataset":
+            raise ValueError("must be SigmaDataset")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="sigmaDatasetColumnCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
+            None, description="", alias="sigmaDatasetColumns"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDataset.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaWorkbook(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaWorkbook":
+            raise ValueError("must be SigmaWorkbook")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_page_count: Optional[int] = Field(
+            None, description="", alias="sigmaPageCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_pages: Optional[list[SigmaPage]] = Field(
+            None, description="", alias="sigmaPages"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaWorkbook.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElementField(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElementField":
+            raise ValueError("must be SigmaDataElementField")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_field_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sigmaDataElementFieldIsHidden"
+        )
+        sigma_data_element_field_formula: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementFieldFormula"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        sigma_data_element: Optional[SigmaDataElement] = Field(
+            None, description="", alias="sigmaDataElement"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaDataElementField.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaPage(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaPage":
+            raise ValueError("must be SigmaPage")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementCount"
+        )
+        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
+            None, description="", alias="sigmaDataElements"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        sigma_workbook: Optional[SigmaWorkbook] = Field(
+            None, description="", alias="sigmaWorkbook"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SigmaPage.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElement(Sigma):
+    """Description"""
+
+    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElement":
+            raise ValueError("must be SigmaDataElement")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_query: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQuery"
+        )
+        sigma_data_element_type: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementType"
+        )
+        sigma_data_element_field_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementFieldCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        sigma_page: Optional[SigmaPage] = Field(
+            None, description="", alias="sigmaPage"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
+            None, description="", alias="sigmaDataElementFields"
+        )  # relationship
+
+    attributes: "SigmaDataElement.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikSpace(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikSpace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSpace":
+            raise ValueError("must be QlikSpace")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_space_type: Optional[str] = Field(
+            None, description="", alias="qlikSpaceType"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_datasets: Optional[list[QlikDataset]] = Field(
+            None, description="", alias="qlikDatasets"
+        )  # relationship
+        qlik_apps: Optional[list[QlikApp]] = Field(
+            None, description="", alias="qlikApps"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikSpace.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikApp(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikApp", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikApp":
+            raise ValueError("must be QlikApp")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_has_section_access: Optional[bool] = Field(
+            None, description="", alias="qlikHasSectionAccess"
+        )
+        qlik_origin_app_id: Optional[str] = Field(
+            None, description="", alias="qlikOriginAppId"
+        )
+        qlik_is_encrypted: Optional[bool] = Field(
+            None, description="", alias="qlikIsEncrypted"
+        )
+        qlik_is_direct_query_mode: Optional[bool] = Field(
+            None, description="", alias="qlikIsDirectQueryMode"
+        )
+        qlik_app_static_byte_size: Optional[int] = Field(
+            None, description="", alias="qlikAppStaticByteSize"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+        qlik_sheets: Optional[list[QlikSheet]] = Field(
+            None, description="", alias="qlikSheets"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikApp.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikChart(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikChart":
+            raise ValueError("must be QlikChart")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_chart_subtitle: Optional[str] = Field(
+            None, description="", alias="qlikChartSubtitle"
+        )
+        qlik_chart_footnote: Optional[str] = Field(
+            None, description="", alias="qlikChartFootnote"
+        )
+        qlik_chart_orientation: Optional[str] = Field(
+            None, description="", alias="qlikChartOrientation"
+        )
+        qlik_chart_type: Optional[str] = Field(
+            None, description="", alias="qlikChartType"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_sheet: Optional[QlikSheet] = Field(
+            None, description="", alias="qlikSheet"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikChart.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikDataset(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikDataset":
+            raise ValueError("must be QlikDataset")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_dataset_technical_name: Optional[str] = Field(
+            None, description="", alias="qlikDatasetTechnicalName"
+        )
+        qlik_dataset_type: Optional[str] = Field(
+            None, description="", alias="qlikDatasetType"
+        )
+        qlik_dataset_uri: Optional[str] = Field(
+            None, description="", alias="qlikDatasetUri"
+        )
+        qlik_dataset_subtype: Optional[str] = Field(
+            None, description="", alias="qlikDatasetSubtype"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikDataset.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikSheet(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikSheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSheet":
+            raise ValueError("must be QlikSheet")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_sheet_is_approved: Optional[bool] = Field(
+            None, description="", alias="qlikSheetIsApproved"
+        )
+        qlik_app: Optional[QlikApp] = Field(
+            None, description="", alias="qlikApp"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_charts: Optional[list[QlikChart]] = Field(
+            None, description="", alias="qlikCharts"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikSheet.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class TableauWorkbook(Tableau):
     """Description"""
 
-    type_name: Literal["TableauWorkbook"] = Field("TableauWorkbook")
+    type_name: str = Field("TableauWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauWorkbook":
+            raise ValueError("must be TableauWorkbook")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5532,7 +6660,13 @@ class TableauWorkbook(Tableau):
 class TableauDatasourceField(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDatasourceField"] = Field("TableauDatasourceField")
+    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDatasourceField":
+            raise ValueError("must be TableauDatasourceField")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5618,7 +6752,13 @@ class TableauDatasourceField(Tableau):
 class TableauCalculatedField(Tableau):
     """Description"""
 
-    type_name: Literal["TableauCalculatedField"] = Field("TableauCalculatedField")
+    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauCalculatedField":
+            raise ValueError("must be TableauCalculatedField")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5683,7 +6823,13 @@ class TableauCalculatedField(Tableau):
 class TableauProject(Tableau):
     """Description"""
 
-    type_name: Literal["TableauProject"] = Field("TableauProject")
+    type_name: str = Field("TableauProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauProject":
+            raise ValueError("must be TableauProject")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5745,7 +6891,13 @@ class TableauProject(Tableau):
 class TableauMetric(Tableau):
     """Description"""
 
-    type_name: Literal["TableauMetric"] = Field("TableauMetric")
+    type_name: str = Field("TableauMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauMetric":
+            raise ValueError("must be TableauMetric")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5789,10 +6941,28 @@ class TableauMetric(Tableau):
     )
 
 
+class TableauSite(Tableau):
+    """Description"""
+
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
+
+
 class TableauDatasource(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDatasource"] = Field("TableauDatasource")
+    type_name: str = Field("TableauDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDatasource":
+            raise ValueError("must be TableauDatasource")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5863,16 +7033,16 @@ class TableauDatasource(Tableau):
     )
 
 
-class TableauSite(Tableau):
-    """Description"""
-
-    type_name: Literal["TableauSite"] = Field("TableauSite")
-
-
 class TableauDashboard(Tableau):
     """Description"""
 
-    type_name: Literal["TableauDashboard"] = Field("TableauDashboard")
+    type_name: str = Field("TableauDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDashboard":
+            raise ValueError("must be TableauDashboard")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5925,7 +7095,13 @@ class TableauDashboard(Tableau):
 class TableauFlow(Tableau):
     """Description"""
 
-    type_name: Literal["TableauFlow"] = Field("TableauFlow")
+    type_name: str = Field("TableauFlow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauFlow":
+            raise ValueError("must be TableauFlow")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -5981,7 +7157,13 @@ class TableauFlow(Tableau):
 class TableauWorksheet(Tableau):
     """Description"""
 
-    type_name: Literal["TableauWorksheet"] = Field("TableauWorksheet")
+    type_name: str = Field("TableauWorksheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauWorksheet":
+            raise ValueError("must be TableauWorksheet")
+        return v
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
@@ -6040,7 +7222,13 @@ class TableauWorksheet(Tableau):
 class LookerLook(Looker):
     """Description"""
 
-    type_name: Literal["LookerLook"] = Field("LookerLook")
+    type_name: str = Field("LookerLook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerLook":
+            raise ValueError("must be LookerLook")
+        return v
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -6110,7 +7298,13 @@ class LookerLook(Looker):
 class LookerDashboard(Looker):
     """Description"""
 
-    type_name: Literal["LookerDashboard"] = Field("LookerDashboard")
+    type_name: str = Field("LookerDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerDashboard":
+            raise ValueError("must be LookerDashboard")
+        return v
 
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
@@ -6170,7 +7364,13 @@ class LookerDashboard(Looker):
 class LookerFolder(Looker):
     """Description"""
 
-    type_name: Literal["LookerFolder"] = Field("LookerFolder")
+    type_name: str = Field("LookerFolder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerFolder":
+            raise ValueError("must be LookerFolder")
+        return v
 
     class Attributes(Looker.Attributes):
         source_content_metadata_id: Optional[int] = Field(
@@ -6220,7 +7420,13 @@ class LookerFolder(Looker):
 class LookerTile(Looker):
     """Description"""
 
-    type_name: Literal["LookerTile"] = Field("LookerTile")
+    type_name: str = Field("LookerTile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerTile":
+            raise ValueError("must be LookerTile")
+        return v
 
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(
@@ -6274,7 +7480,13 @@ class LookerTile(Looker):
 class LookerModel(Looker):
     """Description"""
 
-    type_name: Literal["LookerModel"] = Field("LookerModel")
+    type_name: str = Field("LookerModel", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerModel":
+            raise ValueError("must be LookerModel")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6322,7 +7534,13 @@ class LookerModel(Looker):
 class LookerExplore(Looker):
     """Description"""
 
-    type_name: Literal["LookerExplore"] = Field("LookerExplore")
+    type_name: str = Field("LookerExplore", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerExplore":
+            raise ValueError("must be LookerExplore")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6372,13 +7590,25 @@ class LookerExplore(Looker):
 class LookerProject(Looker):
     """Description"""
 
-    type_name: Literal["LookerProject"] = Field("LookerProject")
+    type_name: str = Field("LookerProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerProject":
+            raise ValueError("must be LookerProject")
+        return v
 
 
 class LookerQuery(Looker):
     """Description"""
 
-    type_name: Literal["LookerQuery"] = Field("LookerQuery")
+    type_name: str = Field("LookerQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerQuery":
+            raise ValueError("must be LookerQuery")
+        return v
 
     class Attributes(Looker.Attributes):
         source_definition: Optional[str] = Field(
@@ -6429,7 +7659,13 @@ class LookerQuery(Looker):
 class LookerField(Looker):
     """Description"""
 
-    type_name: Literal["LookerField"] = Field("LookerField")
+    type_name: str = Field("LookerField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerField":
+            raise ValueError("must be LookerField")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6490,7 +7726,13 @@ class LookerField(Looker):
 class LookerView(Looker):
     """Description"""
 
-    type_name: Literal["LookerView"] = Field("LookerView")
+    type_name: str = Field("LookerView", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerView":
+            raise ValueError("must be LookerView")
+        return v
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
@@ -6529,7 +7771,13 @@ class LookerView(Looker):
 class SalesforceObject(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceObject"] = Field("SalesforceObject")
+    type_name: str = Field("SalesforceObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceObject":
+            raise ValueError("must be SalesforceObject")
+        return v
 
     class Attributes(Salesforce.Attributes):
         is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
@@ -6574,7 +7822,13 @@ class SalesforceObject(Salesforce):
 class SalesforceField(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceField"] = Field("SalesforceField")
+    type_name: str = Field("SalesforceField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceField":
+            raise ValueError("must be SalesforceField")
+        return v
 
     class Attributes(Salesforce.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
@@ -6644,7 +7898,13 @@ class SalesforceField(Salesforce):
 class SalesforceOrganization(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceOrganization"] = Field("SalesforceOrganization")
+    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceOrganization":
+            raise ValueError("must be SalesforceOrganization")
+        return v
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -6686,7 +7946,13 @@ class SalesforceOrganization(Salesforce):
 class SalesforceDashboard(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceDashboard"] = Field("SalesforceDashboard")
+    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceDashboard":
+            raise ValueError("must be SalesforceDashboard")
+        return v
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -6729,7 +7995,13 @@ class SalesforceDashboard(Salesforce):
 class SalesforceReport(Salesforce):
     """Description"""
 
-    type_name: Literal["SalesforceReport"] = Field("SalesforceReport")
+    type_name: str = Field("SalesforceReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceReport":
+            raise ValueError("must be SalesforceReport")
+        return v
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
@@ -6854,9 +8126,11 @@ PowerBI.Attributes.update_forward_refs()
 
 Preset.Attributes.update_forward_refs()
 
+Mode.Attributes.update_forward_refs()
+
 Sigma.Attributes.update_forward_refs()
 
-Mode.Attributes.update_forward_refs()
+Qlik.Attributes.update_forward_refs()
 
 Tableau.Attributes.update_forward_refs()
 
@@ -6894,11 +8168,11 @@ Column.Attributes.update_forward_refs()
 
 Schema.Attributes.update_forward_refs()
 
-Database.Attributes.update_forward_refs()
-
 SnowflakeStream.Attributes.update_forward_refs()
 
 SnowflakePipe.Attributes.update_forward_refs()
+
+Database.Attributes.update_forward_refs()
 
 Procedure.Attributes.update_forward_refs()
 
@@ -6932,9 +8206,9 @@ PowerBIMeasure.Attributes.update_forward_refs()
 
 PowerBIColumn.Attributes.update_forward_refs()
 
-PowerBITile.Attributes.update_forward_refs()
-
 PowerBITable.Attributes.update_forward_refs()
+
+PowerBITile.Attributes.update_forward_refs()
 
 PowerBIDatasource.Attributes.update_forward_refs()
 
@@ -6944,9 +8218,9 @@ PowerBIDataset.Attributes.update_forward_refs()
 
 PowerBIDashboard.Attributes.update_forward_refs()
 
-PowerBIPage.Attributes.update_forward_refs()
-
 PowerBIDataflow.Attributes.update_forward_refs()
+
+PowerBIPage.Attributes.update_forward_refs()
 
 PresetChart.Attributes.update_forward_refs()
 
@@ -6955,6 +8229,16 @@ PresetDataset.Attributes.update_forward_refs()
 PresetDashboard.Attributes.update_forward_refs()
 
 PresetWorkspace.Attributes.update_forward_refs()
+
+ModeReport.Attributes.update_forward_refs()
+
+ModeQuery.Attributes.update_forward_refs()
+
+ModeChart.Attributes.update_forward_refs()
+
+ModeWorkspace.Attributes.update_forward_refs()
+
+ModeCollection.Attributes.update_forward_refs()
 
 SigmaDatasetColumn.Attributes.update_forward_refs()
 
@@ -6968,15 +8252,15 @@ SigmaPage.Attributes.update_forward_refs()
 
 SigmaDataElement.Attributes.update_forward_refs()
 
-ModeReport.Attributes.update_forward_refs()
+QlikSpace.Attributes.update_forward_refs()
 
-ModeQuery.Attributes.update_forward_refs()
+QlikApp.Attributes.update_forward_refs()
 
-ModeChart.Attributes.update_forward_refs()
+QlikChart.Attributes.update_forward_refs()
 
-ModeWorkspace.Attributes.update_forward_refs()
+QlikDataset.Attributes.update_forward_refs()
 
-ModeCollection.Attributes.update_forward_refs()
+QlikSheet.Attributes.update_forward_refs()
 
 TableauWorkbook.Attributes.update_forward_refs()
 
@@ -6988,9 +8272,9 @@ TableauProject.Attributes.update_forward_refs()
 
 TableauMetric.Attributes.update_forward_refs()
 
-TableauDatasource.Attributes.update_forward_refs()
-
 TableauSite.Attributes.update_forward_refs()
+
+TableauDatasource.Attributes.update_forward_refs()
 
 TableauDashboard.Attributes.update_forward_refs()
 

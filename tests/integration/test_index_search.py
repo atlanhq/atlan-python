@@ -7,6 +7,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.search import (
     DSL,
     Exists,
@@ -23,6 +24,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_categories": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
     "with_classification_names": "RBmhFJqX50bl5RAeJhwt1a",
     "with_classifications_text": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
+    "with_connector_name": AtlanConnectorType.SNOWFLAKE,
     "with_create_time_as_timestamp": 1665727666701,
     "with_created_by": "bryan",
     "with_glossary": "mweSfpXBwfYWedQTvA3Gi",
