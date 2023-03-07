@@ -27,9 +27,10 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
     IconType,
+    QueryUsernameStrategy,
     SourceCostUnitType,
     google_datastudio_asset_type,
-    powerbi_endorsement,
+    powerbi_endorsement
 )
 from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.model.structs import (
@@ -406,7 +407,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 schema_name=fields[4],
                 connector_name=connector_type.value,
             )
-        {%- elif entity_def.name == "S3Bucket" or entity_def.name == "S3Object"%}
+        {%- elif entity_def.name == "S3Bucket" %}
         @classmethod
         # @validate_arguments()
         def create(
@@ -433,6 +434,39 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 connection_qualified_name=connection_qualified_name,
                 qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
+            )
+        {%- elif entity_def.name == "S3Object" %}
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: str,
+            s3_bucket_qualified_name: Optional[str] = None,
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Object.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
             )
         {%- elif entity_def.name == "AtlasGlossary" %}
         @classmethod
@@ -536,7 +570,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
         attributes = {{ entity_def.name }}.Attributes.create(name, schema_qualified_name)
         return cls(attributes=attributes)
-    {%- elif entity_def.name == "S3Bucket" or entity_def.name == "S3Object" %}
+    {%- elif entity_def.name == "S3Bucket" %}
     @classmethod
     # @validate_arguments()
     def create(
@@ -548,6 +582,24 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         )
         attributes = {{ entity_def.name }}.Attributes.create(
             name, connection_qualified_name, aws_arn
+        )
+        return cls(attributes=attributes)
+    {%- elif entity_def.name == "S3Object" %}
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: Optional[str] = None,
+    ) -> S3Object:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Object.Attributes.create(
+            name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
         )
         return cls(attributes=attributes)
     {%- endif %}

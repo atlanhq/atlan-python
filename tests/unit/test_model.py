@@ -1124,7 +1124,9 @@ def test_s3bucket_attributes_create_with_required_parameters(
 
 @pytest.mark.parametrize(
     "name, connection_qualified_name, aws_arn",
-    [("my-bucket", "default/s3/production", "my-arn")],
+    [
+        ("my-bucket", "default/s3/production", "my-arn"),
+    ],
 )
 def test_s3bucket_create_with_required_parameters(
     name, connection_qualified_name, aws_arn
@@ -1139,32 +1141,56 @@ def test_s3bucket_create_with_required_parameters(
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn",
-    [("my-bucket", "default/s3/production", "my-arn")],
+    "name, connection_qualified_name, aws_arn, , s3_bucket_qualified_name",
+    [
+        ("my-bucket", "default/s3/production", "my-arn", None),
+        (
+            "my-bucket",
+            "default/s3/production",
+            "my-arn",
+            "default/s3/production/bucket_123",
+        ),
+    ],
 )
 def test_s3object_create_with_required_parameters(
-    name, connection_qualified_name, aws_arn
+    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
 ):
     attributes = S3Object.create(
-        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+        name=name,
+        connection_qualified_name=connection_qualified_name,
+        aws_arn=aws_arn,
+        s3_bucket_qualified_name=s3_bucket_qualified_name,
     ).attributes
     assert attributes.name == name
     assert attributes.connection_qualified_name == connection_qualified_name
     assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
     assert attributes.connector_name == connection_qualified_name.split("/")[1]
+    assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn",
-    [("my-bucket", "default/s3/production", "my-arn")],
+    "name, connection_qualified_name, aws_arn, s3_bucket_qualified_name",
+    [
+        ("my-bucket", "default/s3/production", "my-arn", None),
+        (
+            "my-bucket",
+            "default/s3/production",
+            "my-arn",
+            "default/s3/production/bucket_123",
+        ),
+    ],
 )
 def test_s3object_attributes_create_with_required_parameters(
-    name, connection_qualified_name, aws_arn
+    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
 ):
     attributes = S3Object.Attributes.create(
-        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
+        name=name,
+        connection_qualified_name=connection_qualified_name,
+        aws_arn=aws_arn,
+        s3_bucket_qualified_name=s3_bucket_qualified_name,
     )
     assert attributes.name == name
     assert attributes.connection_qualified_name == connection_qualified_name
     assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
     assert attributes.connector_name == connection_qualified_name.split("/")[1]
+    assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name

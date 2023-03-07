@@ -33,6 +33,7 @@ from pyatlan.model.enums import (
     CertificateStatus,
     EntityStatus,
     IconType,
+    QueryUsernameStrategy,
     SourceCostUnitType,
     google_datastudio_asset_type,
     powerbi_endorsement,
@@ -892,6 +893,9 @@ class Connection(Asset, type_name="Connection"):
         )
         policy_strategy: Optional[str] = Field(
             None, description="", alias="policyStrategy"
+        )
+        query_username_strategy: Optional[QueryUsernameStrategy] = Field(
+            None, description="", alias="queryUsernameStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
         default_credential_guid: Optional[str] = Field(
@@ -4763,7 +4767,11 @@ class S3Object(S3):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: str, connection_qualified_name: str, aws_arn: str
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: str,
+            s3_bucket_qualified_name: Optional[str] = None,
         ) -> S3Object.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "aws_arn"],
@@ -4786,6 +4794,7 @@ class S3Object(S3):
                 connection_qualified_name=connection_qualified_name,
                 qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
             )
 
     attributes: "S3Object.Attributes" = Field(
@@ -4797,14 +4806,18 @@ class S3Object(S3):
     @classmethod
     # @validate_arguments()
     def create(
-        cls, name: str, connection_qualified_name: str, aws_arn: str
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: Optional[str] = None,
     ) -> S3Object:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
             [name, connection_qualified_name, aws_arn],
         )
         attributes = S3Object.Attributes.create(
-            name, connection_qualified_name, aws_arn
+            name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
         )
         return cls(attributes=attributes)
 

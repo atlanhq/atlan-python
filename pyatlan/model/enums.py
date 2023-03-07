@@ -124,6 +124,11 @@ class powerbi_endorsement(Enum):
     CERTIFIED = "Certified"
 
 
+class QueryUsernameStrategy(Enum):
+    CONNECTION_USERNAME = ("connectionUsername",)
+    ATLAN_USERNAME = "atlanUsername"
+
+
 class IconType(Enum):
     IMAGE = "Image"
     EMOJI = "Emoji"
