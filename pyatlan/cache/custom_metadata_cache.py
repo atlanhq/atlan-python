@@ -37,7 +37,9 @@ class CustomMetadataCache:
     def _refresh_cache(cls) -> None:
         from pyatlan.model.core import BusinessAttributes, to_snake_case
 
-        response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CUSTOM_METADATA)
+        response = AtlanClient().get_typedefs(
+            type_category=AtlanTypeCategory.CUSTOM_METADATA
+        )
         if response is not None:
             cls.map_id_to_name = {}
             cls.map_name_to_id = {}

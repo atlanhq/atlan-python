@@ -18,7 +18,9 @@ class ClassificationCache:
     def _refresh_cache(cls) -> None:
         from pyatlan.client.atlan import AtlanClient
 
-        response = AtlanClient().get_typedefs(type=AtlanTypeCategory.CLASSIFICATION)
+        response = AtlanClient().get_typedefs(
+            type_category=AtlanTypeCategory.CLASSIFICATION
+        )
         if response is not None:
             cls.cache_by_id = {}
             cls.map_id_to_name = {}
