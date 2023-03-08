@@ -57,6 +57,20 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
 class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
     """Description"""
+
+    {%- for attribute_def in entity_def.attribute_defs %}
+    {%- set type = attribute_def.typeName | get_type %}
+    {%- set property_type %}{% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %}{% endset %}
+    {%- set property_name =  attribute_def.name | to_snake_case %}
+    @property
+    def {{ property_name }}(self)->{{ property_type }}:
+        return self.attributes.{{ property_name }}
+
+    @{{ property_name }}.setter
+    def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
+        self.attributes.{{ property_name }} = {{ property_name }}
+
+    {%- endfor %}
 {%- if entity_def.name == "Referenceable"  %}
     class Attributes(AtlanObject):
         {%- for attribute_def in entity_def.attribute_defs %}
