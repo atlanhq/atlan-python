@@ -14,7 +14,10 @@ class RoleCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        response = AtlanClient().get_all_roles()
+        client = AtlanClient.get_default_client()
+        if client is None:
+            client = AtlanClient()
+        response = client.get_all_roles()
         if response is not None:
             cls.cache_by_id = {}
             cls.map_id_to_name = {}

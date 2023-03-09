@@ -6,7 +6,7 @@ import copy
 import json
 import logging
 import os
-from typing import Generator, Optional, Type, TypeVar, Union
+from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
 import requests
 from pydantic import (
@@ -109,6 +109,7 @@ def get_session():
 
 
 class AtlanClient(BaseSettings):
+    _default_client: "ClassVar[Optional[AtlanClient]]" = None
     host: HttpUrl
     api_key: str
     _session: requests.Session = PrivateAttr(default_factory=get_session)
@@ -161,6 +162,16 @@ class AtlanClient(BaseSettings):
                 yield from self.current_page()
                 if not self.next_page():
                     break
+
+    @classmethod
+    def register_client(cls, client: "AtlanClient"):
+        if not isinstance(client, AtlanClient):
+            raise ValueError("client must be an instance of AtlanClient")
+        cls._default_client = client
+
+    @classmethod
+    def get_default_client(cls) -> "Optional[AtlanClient]":
+        return cls._default_client
 
     def __init__(self, **data):
         super().__init__(**data)

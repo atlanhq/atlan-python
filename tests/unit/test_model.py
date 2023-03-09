@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import json
+from datetime import datetime
+from inspect import signature
 from pathlib import Path
 from unittest.mock import create_autospec, patch
 
@@ -11,12 +13,25 @@ from pydantic.error_wrappers import ValidationError
 import pyatlan.cache.classification_cache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.model.assets import (
+    ADLSAccountStatus,
+    ADLSEncryptionTypes,
+    ADLSReplicationType,
     Asset,
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
+    AtlasServer,
+    AwsTag,
+    AzureTag,
+    BadgeCondition,
+    ColumnValueFrequencyMap,
     Connection,
     Database,
+    DbtMetricFilter,
+    GoogleLabel,
+    GoogleTag,
+    Histogram,
+    PopularityInsights,
     S3Bucket,
     S3Object,
     Schema,
@@ -24,7 +39,24 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.core import Announcement, AssetResponse
-from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
+from pyatlan.model.enums import (
+    ADLSAccessTier,
+    ADLSLeaseState,
+    ADLSLeaseStatus,
+    ADLSObjectArchiveStatus,
+    ADLSObjectType,
+    ADLSPerformance,
+    ADLSProvisionState,
+    ADLSStorageKind,
+    AnnouncementType,
+    AtlanConnectorType,
+    CertificateStatus,
+    GoogleDatastudioAssetType,
+    IconType,
+    PowerbiEndorsement,
+    QueryUsernameStrategy,
+    SourceCostUnitType,
+)
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.typedef import TypeDefResponse
 
@@ -40,6 +72,49 @@ DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"
 GLOSSARY_TERM_JSON = "glossary_term.json"
 GLOSSARY_CATEGORY_JSON = "glossary_category.json"
+STRING_VALUE = "Bob"
+INT_VALUE = 42
+FLOAT_VALUE = 42.00
+ATTRIBUTE_VALUES_BY_TYPE = {
+    "str": STRING_VALUE,
+    "Optional[set[str]]": {STRING_VALUE},
+    "Optional[str]": STRING_VALUE,
+    "Optional[datetime]": datetime.now(),
+    "Optional[bool]": True,
+    "Optional[CertificateStatus]": CertificateStatus.DRAFT,
+    "Optional[int]": INT_VALUE,
+    "Optional[float]": FLOAT_VALUE,
+    "Optional[dict[str, str]]": {STRING_VALUE: STRING_VALUE},
+    "Optional[dict[str, int]]": {STRING_VALUE: INT_VALUE},
+    "Optional[list[AtlasServer]]": [AtlasServer()],
+    "Optional[SourceCostUnitType]": SourceCostUnitType.CREDITS,
+    "Optional[list[PopularityInsights]]": [PopularityInsights()],
+    "Optional[QueryUsernameStrategy]": QueryUsernameStrategy.CONNECTION_USERNAME,
+    "Optional[list[GoogleLabel]]": [GoogleLabel()],
+    "Optional[list[GoogleTag]]": [GoogleTag()],
+    "Optional[GoogleDatastudioAssetType]": GoogleDatastudioAssetType.REPORT,
+    "Optional[list[AzureTag]]": [AzureTag()],
+    "Optional[list[AwsTag]]": [AwsTag()],
+    "Optional[list[Catalog]]": [S3Object()],
+    "Optional[list[BadgeCondition]]": [BadgeCondition()],
+    "Optional[IconType]": IconType.EMOJI,
+    "Optional[ADLSAccessTier]": ADLSAccessTier.HOT,
+    "Optional[ADLSStorageKind]": ADLSStorageKind.STORAGE_V2,
+    "Optional[ADLSPerformance]": ADLSPerformance.STANDARD,
+    "Optional[ADLSProvisionState]": ADLSProvisionState.SUCCEEDED,
+    "Optional[ADLSReplicationType]": ADLSReplicationType.GRS,
+    "Optional[ADLSEncryptionTypes]": ADLSEncryptionTypes.MICROSOFT_STORAGE,
+    "Optional[ADLSAccountStatus]": ADLSAccountStatus.AVAILABLE,
+    "Optional[ADLSLeaseState]": ADLSLeaseState.LEASED,
+    "Optional[ADLSLeaseStatus]": ADLSLeaseStatus.LOCKED,
+    "Optional[ADLSObjectArchiveStatus]": ADLSObjectArchiveStatus.REHYDRATE_PENDING_TO_HOT,
+    "Optional[ADLSObjectType]": ADLSObjectType.PAGE_BLOB,
+    "Optional[PowerbiEndorsement]": PowerbiEndorsement.PROMOTED,
+    "Optional[list[dict[str, str]]]": [{STRING_VALUE: STRING_VALUE}],
+    "Optional[list[DbtMetricFilter]]": [DbtMetricFilter()],
+    "Optional[Histogram]": Histogram(),
+    "Optional[list[ColumnValueFrequencyMap]]": [ColumnValueFrequencyMap()],
+}
 
 
 def load_json(filename):
@@ -949,7 +1024,8 @@ def test_get_business_attributes_when_name_not_valid_raises_value_error(
 def test_get_business_attributes_when_name_not_appropriate_for_asset_raises_value_error(
     mock_client, table, type_def_response
 ):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
+    mock_client.get_default_client.return_value = mock_client
+    mock_client.get_typedefs.return_value = type_def_response
     with pytest.raises(
         ValueError, match="Business attributes Moon are not applicable to Table"
     ):
@@ -1194,3 +1270,38 @@ def test_s3object_attributes_create_with_required_parameters(
     assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
     assert attributes.connector_name == connection_qualified_name.split("/")[1]
     assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
+
+
+@pytest.fixture()
+def attribute_value(request):
+    sig = signature(getattr(request.param[0], request.param[1]).fget)
+    return ATTRIBUTE_VALUES_BY_TYPE[sig.return_annotation]
+
+
+@pytest.mark.parametrize(
+    "clazz, property_name, attribute_value",
+    [
+        (asset_type, property_name, (asset_type, property_name))
+        for asset_type in get_all_subclasses(Asset)
+        for property_name in [
+            p for p in dir(asset_type) if isinstance(getattr(asset_type, p), property)
+        ]
+    ],
+    indirect=["attribute_value"],
+)
+def test_attributes(clazz, property_name, attribute_value):
+    local_ns = {}
+    sut = clazz(attributes=clazz.Attributes())
+    exec(f"sut.{property_name} = attribute_value")
+    exec(
+        f"ret_value = sut.{property_name}",
+        {"sut": sut, "property_name": property_name},
+        local_ns,
+    )
+    assert attribute_value == local_ns["ret_value"]
+    exec(
+        f"ret_value = sut.attributes.{property_name}",
+        {"sut": sut, "property_name": property_name},
+        local_ns,
+    )
+    assert attribute_value == local_ns["ret_value"]
