@@ -1024,7 +1024,8 @@ def test_get_business_attributes_when_name_not_valid_raises_value_error(
 def test_get_business_attributes_when_name_not_appropriate_for_asset_raises_value_error(
     mock_client, table, type_def_response
 ):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
+    mock_client.get_default_client.return_value = mock_client
+    mock_client.get_typedefs.return_value = type_def_response
     with pytest.raises(
         ValueError, match="Business attributes Moon are not applicable to Table"
     ):
