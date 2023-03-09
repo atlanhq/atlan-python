@@ -38,6 +38,8 @@ TYPE_REPLACEMENTS = [
     (">", "]"),
     ("<", "["),
     ("query_username_strategy", "QueryUsernameStrategy"),
+    ("google_datastudio_asset_type", "GoogleDatastudioAssetType"),
+    ("powerbi_endorsement", "PowerbiEndorsement"),
 ]
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 

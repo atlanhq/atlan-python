@@ -114,12 +114,12 @@ class IndexType(Enum):
     STRING = "STRING"
 
 
-class google_datastudio_asset_type(Enum):
+class GoogleDatastudioAssetType(Enum):
     DATA_SOURCE = "DATA_SOURCE"
     REPORT = "REPORT"
 
 
-class powerbi_endorsement(Enum):
+class PowerbiEndorsement(Enum):
     PROMOTED = "Promoted"
     CERTIFIED = "Certified"
 

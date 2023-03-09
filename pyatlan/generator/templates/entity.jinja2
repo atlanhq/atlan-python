@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from pydantic import Field, StrictStr, root_validator, validator
 
@@ -29,8 +29,8 @@ from pyatlan.model.enums import (
     IconType,
     QueryUsernameStrategy,
     SourceCostUnitType,
-    google_datastudio_asset_type,
-    powerbi_endorsement
+    GoogleDatastudioAssetType,
+    PowerbiEndorsement
 )
 from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.model.structs import (
@@ -52,13 +52,12 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
-
-{% for entity_def in entity_defs %}
-{%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
-class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
-    """Description"""
-
-    {%- for attribute_def in entity_def.attribute_defs %}
+{%- macro gen_properties(attribute_defs) %}
+    _convience_properties: ClassVar[list[str]] = [
+        {%- for attribute_def in attribute_defs %}
+        "{{ attribute_def.name | to_snake_case }}",
+        {%- endfor %}]
+    {%- for attribute_def in attribute_defs %}
     {%- set type = attribute_def.typeName | get_type %}
     {%- set property_type %}{% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %}{% endset %}
     {%- set property_name =  attribute_def.name | to_snake_case %}
@@ -71,7 +70,21 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         self.attributes.{{ property_name }} = {{ property_name }}
 
     {%- endfor %}
+{% endmacro %}
+{% for entity_def in entity_defs %}
+{%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
+class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
+    """Description"""
+
+    def __setattr__(self, name, value):
+            if name in {{ entity_def.name }}._convience_properties:
+                return object.__setattr__(self, name, value)
+            super().__setattr__( name, value)
+
+    {{ gen_properties(entity_def.attribute_defs) }}
+
 {%- if entity_def.name == "Referenceable"  %}
+
     class Attributes(AtlanObject):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}

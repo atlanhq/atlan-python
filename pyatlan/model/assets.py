@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from pydantic import Field, StrictStr, root_validator, validator
 
@@ -32,11 +32,11 @@ from pyatlan.model.enums import (
     AtlanConnectorType,
     CertificateStatus,
     EntityStatus,
+    GoogleDatastudioAssetType,
     IconType,
+    PowerbiEndorsement,
     QueryUsernameStrategy,
     SourceCostUnitType,
-    google_datastudio_asset_type,
-    powerbi_endorsement,
 )
 from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.model.structs import (
@@ -63,6 +63,17 @@ def validate_required_fields(field_names: list[str], values: list[Any]):
 
 class Referenceable(AtlanObject):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Referenceable._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qualified_name",
+        "replicated_from",
+        "replicated_to",
+    ]
 
     @property
     def qualified_name(self) -> str:
@@ -249,6 +260,110 @@ class Referenceable(AtlanObject):
 
 class Asset(Referenceable):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Asset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "name",
+        "display_name",
+        "description",
+        "user_description",
+        "tenant_id",
+        "certificate_status",
+        "certificate_status_message",
+        "certificate_updated_by",
+        "certificate_updated_at",
+        "announcement_title",
+        "announcement_message",
+        "announcement_type",
+        "announcement_updated_at",
+        "announcement_updated_by",
+        "owner_users",
+        "owner_groups",
+        "admin_users",
+        "admin_groups",
+        "viewer_users",
+        "viewer_groups",
+        "connector_name",
+        "connection_name",
+        "connection_qualified_name",
+        "has_lineage",
+        "is_discoverable",
+        "is_editable",
+        "sub_type",
+        "view_score",
+        "popularity_score",
+        "source_owners",
+        "source_created_by",
+        "source_created_at",
+        "source_updated_at",
+        "source_updated_by",
+        "source_url",
+        "source_embed_url",
+        "last_sync_workflow_name",
+        "last_sync_run_at",
+        "last_sync_run",
+        "admin_roles",
+        "source_read_count",
+        "source_read_user_count",
+        "source_last_read_at",
+        "last_row_changed_at",
+        "source_total_cost",
+        "source_cost_unit",
+        "source_read_recent_user_list",
+        "source_read_recent_user_record_list",
+        "source_read_top_user_list",
+        "source_read_top_user_record_list",
+        "source_read_popular_query_record_list",
+        "source_read_expensive_query_record_list",
+        "source_read_slow_query_record_list",
+        "source_query_compute_cost_list",
+        "source_query_compute_cost_record_list",
+        "dbt_qualified_name",
+        "asset_dbt_alias",
+        "asset_dbt_meta",
+        "asset_dbt_unique_id",
+        "asset_dbt_account_name",
+        "asset_dbt_project_name",
+        "asset_dbt_package_name",
+        "asset_dbt_job_name",
+        "asset_dbt_job_schedule",
+        "asset_dbt_job_status",
+        "asset_dbt_job_schedule_cron_humanized",
+        "asset_dbt_job_last_run",
+        "asset_dbt_job_last_run_url",
+        "asset_dbt_job_last_run_created_at",
+        "asset_dbt_job_last_run_updated_at",
+        "asset_dbt_job_last_run_dequed_at",
+        "asset_dbt_job_last_run_started_at",
+        "asset_dbt_job_last_run_total_duration",
+        "asset_dbt_job_last_run_total_duration_humanized",
+        "asset_dbt_job_last_run_queued_duration",
+        "asset_dbt_job_last_run_queued_duration_humanized",
+        "asset_dbt_job_last_run_run_duration",
+        "asset_dbt_job_last_run_run_duration_humanized",
+        "asset_dbt_job_last_run_git_branch",
+        "asset_dbt_job_last_run_git_sha",
+        "asset_dbt_job_last_run_status_message",
+        "asset_dbt_job_last_run_owner_thread_id",
+        "asset_dbt_job_last_run_executed_by_thread_id",
+        "asset_dbt_job_last_run_artifacts_saved",
+        "asset_dbt_job_last_run_artifact_s3_path",
+        "asset_dbt_job_last_run_has_docs_generated",
+        "asset_dbt_job_last_run_has_sources_generated",
+        "asset_dbt_job_last_run_notifications_sent",
+        "asset_dbt_job_next_run",
+        "asset_dbt_job_next_run_humanized",
+        "asset_dbt_environment_name",
+        "asset_dbt_environment_dbt_version",
+        "asset_dbt_tags",
+        "asset_dbt_semantic_layer_proxy_url",
+        "asset_dbt_source_freshness_criteria",
+        "sample_data_url",
+    ]
 
     @property
     def name(self) -> str:
@@ -1540,6 +1655,19 @@ class Asset(Referenceable):
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in AtlasGlossary._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "short_description",
+        "long_description",
+        "language",
+        "usage",
+        "additional_attributes",
+    ]
+
     @property
     def short_description(self) -> Optional[str]:
         return self.attributes.short_description
@@ -1651,6 +1779,13 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in DataSet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("DataSet", allow_mutation=False)
 
     @validator("type_name")
@@ -1663,6 +1798,13 @@ class DataSet(Asset, type_name="DataSet"):
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ProcessExecution._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("ProcessExecution", allow_mutation=False)
 
     @validator("type_name")
@@ -1674,6 +1816,20 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in AtlasGlossaryTerm._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "short_description",
+        "long_description",
+        "examples",
+        "abbreviation",
+        "usage",
+        "additional_attributes",
+    ]
 
     @property
     def short_description(self) -> Optional[str]:
@@ -1853,6 +2009,13 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Cloud._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Cloud", allow_mutation=False)
 
     @validator("type_name")
@@ -1865,6 +2028,13 @@ class Cloud(Asset, type_name="Cloud"):
 class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Infrastructure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Infrastructure", allow_mutation=False)
 
     @validator("type_name")
@@ -1876,6 +2046,35 @@ class Infrastructure(Asset, type_name="Infrastructure"):
 
 class Connection(Asset, type_name="Connection"):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Connection._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "category",
+        "sub_category",
+        "host",
+        "port",
+        "allow_query",
+        "allow_query_preview",
+        "query_preview_config",
+        "query_config",
+        "credential_strategy",
+        "preview_credential_strategy",
+        "policy_strategy",
+        "query_username_strategy",
+        "row_limit",
+        "default_credential_guid",
+        "connector_icon",
+        "connector_image",
+        "source_logo",
+        "is_sample_data_preview_enabled",
+        "popularity_insights_timeframe",
+        "has_popularity_insights",
+        "connection_dbt_environments",
+    ]
 
     @property
     def category(self) -> Optional[str]:
@@ -2203,6 +2402,19 @@ class Connection(Asset, type_name="Connection"):
 class Process(Asset, type_name="Process"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Process._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "inputs",
+        "outputs",
+        "code",
+        "sql",
+        "ast",
+    ]
+
     @property
     def inputs(self) -> Optional[list[Catalog]]:
         return self.attributes.inputs
@@ -2282,6 +2494,17 @@ class Process(Asset, type_name="Process"):
 
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in AtlasGlossaryCategory._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "short_description",
+        "long_description",
+        "additional_attributes",
+    ]
 
     @property
     def short_description(self) -> Optional[str]:
@@ -2398,6 +2621,16 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 class Badge(Asset, type_name="Badge"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Badge._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "badge_conditions",
+        "badge_metadata_attribute",
+    ]
+
     @property
     def badge_conditions(self) -> Optional[list[BadgeCondition]]:
         return self.attributes.badge_conditions
@@ -2452,6 +2685,13 @@ class Badge(Asset, type_name="Badge"):
 class Namespace(Asset, type_name="Namespace"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Namespace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Namespace", allow_mutation=False)
 
     @validator("type_name")
@@ -2464,6 +2704,13 @@ class Namespace(Asset, type_name="Namespace"):
 class Catalog(Asset, type_name="Catalog"):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Catalog._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Catalog", allow_mutation=False)
 
     @validator("type_name")
@@ -2475,6 +2722,22 @@ class Catalog(Asset, type_name="Catalog"):
 
 class Google(Cloud):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Google._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
+    ]
 
     @property
     def google_service(self) -> Optional[str]:
@@ -2596,6 +2859,18 @@ class Google(Cloud):
 class Azure(Cloud):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Azure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "azure_resource_id",
+        "azure_location",
+        "adls_account_secondary_location",
+        "azure_tags",
+    ]
+
     @property
     def azure_resource_id(self) -> Optional[str]:
         return self.attributes.azure_resource_id
@@ -2675,6 +2950,23 @@ class Azure(Cloud):
 
 class AWS(Cloud):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in AWS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "aws_arn",
+        "aws_partition",
+        "aws_service",
+        "aws_region",
+        "aws_account_id",
+        "aws_resource_id",
+        "aws_owner_name",
+        "aws_owner_id",
+        "aws_tags",
+    ]
 
     @property
     def aws_arn(self) -> Optional[str]:
@@ -2795,6 +3087,13 @@ class AWS(Cloud):
 class BIProcess(Process):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in BIProcess._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("BIProcess", allow_mutation=False)
 
     @validator("type_name")
@@ -2807,6 +3106,13 @@ class BIProcess(Process):
 class ColumnProcess(Process):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ColumnProcess._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("ColumnProcess", allow_mutation=False)
 
     @validator("type_name")
@@ -2818,6 +3124,16 @@ class ColumnProcess(Process):
 
 class Collection(Namespace):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Collection._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "icon",
+        "icon_type",
+    ]
 
     @property
     def icon(self) -> Optional[str]:
@@ -2874,6 +3190,16 @@ class Collection(Namespace):
 
 class Folder(Namespace):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Folder._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "parent_qualified_name",
+        "collection_qualified_name",
+    ]
 
     @property
     def parent_qualified_name(self) -> str:
@@ -2936,6 +3262,13 @@ class Folder(Namespace):
 class ObjectStore(Catalog):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ObjectStore._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("ObjectStore", allow_mutation=False)
 
     @validator("type_name")
@@ -2947,6 +3280,13 @@ class ObjectStore(Catalog):
 
 class DataQuality(Catalog):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DataQuality._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("DataQuality", allow_mutation=False)
 
@@ -2960,6 +3300,13 @@ class DataQuality(Catalog):
 class BI(Catalog):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in BI._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("BI", allow_mutation=False)
 
     @validator("type_name")
@@ -2972,6 +3319,13 @@ class BI(Catalog):
 class SaaS(Catalog):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SaaS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("SaaS", allow_mutation=False)
 
     @validator("type_name")
@@ -2983,6 +3337,32 @@ class SaaS(Catalog):
 
 class Dbt(Catalog):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Dbt._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_alias",
+        "dbt_meta",
+        "dbt_unique_id",
+        "dbt_account_name",
+        "dbt_project_name",
+        "dbt_package_name",
+        "dbt_job_name",
+        "dbt_job_schedule",
+        "dbt_job_status",
+        "dbt_job_schedule_cron_humanized",
+        "dbt_job_last_run",
+        "dbt_job_next_run",
+        "dbt_job_next_run_humanized",
+        "dbt_environment_name",
+        "dbt_environment_dbt_version",
+        "dbt_tags",
+        "dbt_connection_context",
+        "dbt_semantic_layer_proxy_url",
+    ]
 
     @property
     def dbt_alias(self) -> Optional[str]:
@@ -3214,6 +3594,18 @@ class Dbt(Catalog):
 class Resource(Catalog):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Resource._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "link",
+        "is_global",
+        "reference",
+        "resource_metadata",
+    ]
+
     @property
     def link(self) -> Optional[str]:
         return self.attributes.link
@@ -3290,6 +3682,13 @@ class Resource(Catalog):
 class Insight(Catalog):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Insight._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Insight", allow_mutation=False)
 
     @validator("type_name")
@@ -3301,6 +3700,20 @@ class Insight(Catalog):
 
 class API(Catalog):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in API._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "api_spec_type",
+        "api_spec_version",
+        "api_spec_name",
+        "api_spec_qualified_name",
+        "api_external_docs",
+        "api_is_auth_optional",
+    ]
 
     @property
     def api_spec_type(self) -> Optional[str]:
@@ -3401,6 +3814,28 @@ class API(Catalog):
 
 class SQL(Catalog):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SQL._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "query_count",
+        "query_user_count",
+        "query_user_map",
+        "query_count_updated_at",
+        "database_name",
+        "database_qualified_name",
+        "schema_name",
+        "schema_qualified_name",
+        "table_name",
+        "table_qualified_name",
+        "view_name",
+        "view_qualified_name",
+        "is_profiled",
+        "last_profiled_at",
+    ]
 
     @property
     def query_count(self) -> Optional[int]:
@@ -3591,6 +4026,22 @@ class SQL(Catalog):
 class DataStudio(Google):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in DataStudio._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
+    ]
+
     @property
     def google_service(self) -> Optional[str]:
         return self.attributes.google_service
@@ -3716,6 +4167,28 @@ class DataStudio(Google):
 
 class GCS(Google):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in GCS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "gcs_storage_class",
+        "gcs_encryption_type",
+        "gcs_e_tag",
+        "gcs_requester_pays",
+        "gcs_access_control",
+        "gcs_meta_generation_id",
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
+    ]
 
     @property
     def gcs_storage_class(self) -> Optional[str]:
@@ -3907,13 +4380,33 @@ class GCS(Google):
 class DataStudioAsset(DataStudio):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in DataStudioAsset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "data_studio_asset_type",
+        "data_studio_asset_title",
+        "data_studio_asset_owner",
+        "is_trashed_data_studio_asset",
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
+    ]
+
     @property
-    def data_studio_asset_type(self) -> Optional[google_datastudio_asset_type]:
+    def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
         return self.attributes.data_studio_asset_type
 
     @data_studio_asset_type.setter
     def data_studio_asset_type(
-        self, data_studio_asset_type: Optional[google_datastudio_asset_type]
+        self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
     ):
         self.attributes.data_studio_asset_type = data_studio_asset_type
 
@@ -4016,7 +4509,7 @@ class DataStudioAsset(DataStudio):
         return v
 
     class Attributes(DataStudio.Attributes):
-        data_studio_asset_type: Optional[google_datastudio_asset_type] = Field(
+        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
             None, description="", alias="dataStudioAssetType"
         )
         data_studio_asset_title: Optional[str] = Field(
@@ -4080,6 +4573,19 @@ class DataStudioAsset(DataStudio):
 
 class ADLS(ObjectStore):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ADLS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "adls_account_qualified_name",
+        "azure_resource_id",
+        "azure_location",
+        "adls_account_secondary_location",
+        "azure_tags",
+    ]
 
     @property
     def adls_account_qualified_name(self) -> Optional[str]:
@@ -4177,6 +4683,25 @@ class ADLS(ObjectStore):
 
 class S3(ObjectStore):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in S3._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "s3_e_tag",
+        "s3_encryption",
+        "aws_arn",
+        "aws_partition",
+        "aws_service",
+        "aws_region",
+        "aws_account_id",
+        "aws_resource_id",
+        "aws_owner_name",
+        "aws_owner_id",
+        "aws_tags",
+    ]
 
     @property
     def s3_e_tag(self) -> Optional[str]:
@@ -4320,6 +4845,38 @@ class S3(ObjectStore):
 
 class DbtColumnProcess(Dbt):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DbtColumnProcess._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_column_process_job_status",
+        "dbt_alias",
+        "dbt_meta",
+        "dbt_unique_id",
+        "dbt_account_name",
+        "dbt_project_name",
+        "dbt_package_name",
+        "dbt_job_name",
+        "dbt_job_schedule",
+        "dbt_job_status",
+        "dbt_job_schedule_cron_humanized",
+        "dbt_job_last_run",
+        "dbt_job_next_run",
+        "dbt_job_next_run_humanized",
+        "dbt_environment_name",
+        "dbt_environment_dbt_version",
+        "dbt_tags",
+        "dbt_connection_context",
+        "dbt_semantic_layer_proxy_url",
+        "inputs",
+        "outputs",
+        "code",
+        "sql",
+        "ast",
+    ]
 
     @property
     def dbt_column_process_job_status(self) -> Optional[str]:
@@ -4615,6 +5172,18 @@ class DbtColumnProcess(Dbt):
 class Metric(DataQuality):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Metric._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metric_type",
+        "metric_s_q_l",
+        "metric_filters",
+        "metric_time_grains",
+    ]
+
     @property
     def metric_type(self) -> Optional[str]:
         return self.attributes.metric_type
@@ -4702,6 +5271,16 @@ class Metric(DataQuality):
 class Metabase(BI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Metabase._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_collection_name",
+        "metabase_collection_qualified_name",
+    ]
+
     @property
     def metabase_collection_name(self) -> Optional[str]:
         return self.attributes.metabase_collection_name
@@ -4766,6 +5345,18 @@ class Metabase(BI):
 class PowerBI(BI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBI._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "power_b_i_is_hidden",
+        "power_b_i_table_qualified_name",
+        "power_b_i_format_string",
+        "power_b_i_endorsement",
+    ]
+
     @property
     def power_b_i_is_hidden(self) -> Optional[bool]:
         return self.attributes.power_b_i_is_hidden
@@ -4793,12 +5384,12 @@ class PowerBI(BI):
         self.attributes.power_b_i_format_string = power_b_i_format_string
 
     @property
-    def power_b_i_endorsement(self) -> Optional[powerbi_endorsement]:
+    def power_b_i_endorsement(self) -> Optional[PowerbiEndorsement]:
         return self.attributes.power_b_i_endorsement
 
     @power_b_i_endorsement.setter
     def power_b_i_endorsement(
-        self, power_b_i_endorsement: Optional[powerbi_endorsement]
+        self, power_b_i_endorsement: Optional[PowerbiEndorsement]
     ):
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
@@ -4820,7 +5411,7 @@ class PowerBI(BI):
         power_b_i_format_string: Optional[str] = Field(
             None, description="", alias="powerBIFormatString"
         )
-        power_b_i_endorsement: Optional[powerbi_endorsement] = Field(
+        power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
             None, description="", alias="powerBIEndorsement"
         )
         input_to_processes: Optional[list[Process]] = Field(
@@ -4851,6 +5442,18 @@ class PowerBI(BI):
 
 class Preset(BI):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Preset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "preset_workspace_id",
+        "preset_workspace_qualified_name",
+        "preset_dashboard_id",
+        "preset_dashboard_qualified_name",
+    ]
 
     @property
     def preset_workspace_id(self) -> Optional[int]:
@@ -4941,6 +5544,23 @@ class Preset(BI):
 
 class Mode(BI):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Mode._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_id",
+        "mode_token",
+        "mode_workspace_name",
+        "mode_workspace_username",
+        "mode_workspace_qualified_name",
+        "mode_report_name",
+        "mode_report_qualified_name",
+        "mode_query_name",
+        "mode_query_qualified_name",
+    ]
 
     @property
     def mode_id(self) -> Optional[str]:
@@ -5077,6 +5697,20 @@ class Mode(BI):
 class Sigma(BI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Sigma._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_workbook_qualified_name",
+        "sigma_workbook_name",
+        "sigma_page_qualified_name",
+        "sigma_page_name",
+        "sigma_data_element_qualified_name",
+        "sigma_data_element_name",
+    ]
+
     @property
     def sigma_workbook_qualified_name(self) -> Optional[str]:
         return self.attributes.sigma_workbook_qualified_name
@@ -5186,6 +5820,22 @@ class Sigma(BI):
 
 class Qlik(BI):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Qlik._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_id",
+        "qlik_q_r_i",
+        "qlik_space_id",
+        "qlik_space_qualified_name",
+        "qlik_app_id",
+        "qlik_app_qualified_name",
+        "qlik_owner_id",
+        "qlik_is_published",
+    ]
 
     @property
     def qlik_id(self) -> Optional[str]:
@@ -5303,6 +5953,13 @@ class Qlik(BI):
 class Tableau(BI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Tableau._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Tableau", allow_mutation=False)
 
     @validator("type_name")
@@ -5315,6 +5972,13 @@ class Tableau(BI):
 class Looker(BI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Looker._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Looker", allow_mutation=False)
 
     @validator("type_name")
@@ -5326,6 +5990,16 @@ class Looker(BI):
 
 class Salesforce(SaaS):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Salesforce._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "organization_qualified_name",
+        "api_name",
+    ]
 
     @property
     def organization_qualified_name(self) -> Optional[str]:
@@ -5384,6 +6058,17 @@ class Salesforce(SaaS):
 
 class DbtModelColumn(Dbt):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DbtModelColumn._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_model_qualified_name",
+        "dbt_model_column_data_type",
+        "dbt_model_column_order",
+    ]
 
     @property
     def dbt_model_qualified_name(self) -> Optional[str]:
@@ -5461,6 +6146,27 @@ class DbtModelColumn(Dbt):
 
 class DbtModel(Dbt):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DbtModel._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_status",
+        "dbt_error",
+        "dbt_raw_s_q_l",
+        "dbt_compiled_s_q_l",
+        "dbt_stats",
+        "dbt_materialization_type",
+        "dbt_model_compile_started_at",
+        "dbt_model_compile_completed_at",
+        "dbt_model_execute_started_at",
+        "dbt_model_execute_completed_at",
+        "dbt_model_execution_time",
+        "dbt_model_run_generated_at",
+        "dbt_model_run_elapsed_time",
+    ]
 
     @property
     def dbt_status(self) -> Optional[str]:
@@ -5653,6 +6359,37 @@ class DbtModel(Dbt):
 
 class DbtMetric(Dbt):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DbtMetric._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_metric_filters",
+        "dbt_alias",
+        "dbt_meta",
+        "dbt_unique_id",
+        "dbt_account_name",
+        "dbt_project_name",
+        "dbt_package_name",
+        "dbt_job_name",
+        "dbt_job_schedule",
+        "dbt_job_status",
+        "dbt_job_schedule_cron_humanized",
+        "dbt_job_last_run",
+        "dbt_job_next_run",
+        "dbt_job_next_run_humanized",
+        "dbt_environment_name",
+        "dbt_environment_dbt_version",
+        "dbt_tags",
+        "dbt_connection_context",
+        "dbt_semantic_layer_proxy_url",
+        "metric_type",
+        "metric_s_q_l",
+        "metric_filters",
+        "metric_time_grains",
+    ]
 
     @property
     def dbt_metric_filters(self) -> Optional[list[DbtMetricFilter]]:
@@ -5950,6 +6687,16 @@ class DbtMetric(Dbt):
 class DbtSource(Dbt):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in DbtSource._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_state",
+        "dbt_freshness_criteria",
+    ]
+
     @property
     def dbt_state(self) -> Optional[str]:
         return self.attributes.dbt_state
@@ -6013,6 +6760,38 @@ class DbtSource(Dbt):
 
 class DbtProcess(Dbt):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DbtProcess._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_process_job_status",
+        "dbt_alias",
+        "dbt_meta",
+        "dbt_unique_id",
+        "dbt_account_name",
+        "dbt_project_name",
+        "dbt_package_name",
+        "dbt_job_name",
+        "dbt_job_schedule",
+        "dbt_job_status",
+        "dbt_job_schedule_cron_humanized",
+        "dbt_job_last_run",
+        "dbt_job_next_run",
+        "dbt_job_next_run_humanized",
+        "dbt_environment_name",
+        "dbt_environment_dbt_version",
+        "dbt_tags",
+        "dbt_connection_context",
+        "dbt_semantic_layer_proxy_url",
+        "inputs",
+        "outputs",
+        "code",
+        "sql",
+        "ast",
+    ]
 
     @property
     def dbt_process_job_status(self) -> Optional[str]:
@@ -6303,6 +7082,16 @@ class DbtProcess(Dbt):
 class ReadmeTemplate(Resource):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ReadmeTemplate._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "icon",
+        "icon_type",
+    ]
+
     @property
     def icon(self) -> Optional[str]:
         return self.attributes.icon
@@ -6359,6 +7148,13 @@ class ReadmeTemplate(Resource):
 class Readme(Resource):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Readme._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("Readme", allow_mutation=False)
 
     @validator("type_name")
@@ -6380,6 +7176,16 @@ class Readme(Resource):
 
 class Link(Resource):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Link._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "icon",
+        "icon_type",
+    ]
 
     @property
     def icon(self) -> Optional[str]:
@@ -6442,6 +7248,22 @@ class Link(Resource):
 
 class APISpec(API):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in APISpec._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "api_spec_terms_of_service_url",
+        "api_spec_contact_email",
+        "api_spec_contact_name",
+        "api_spec_contact_url",
+        "api_spec_license_name",
+        "api_spec_license_url",
+        "api_spec_contract_version",
+        "api_spec_service_alias",
+    ]
 
     @property
     def api_spec_terms_of_service_url(self) -> Optional[str]:
@@ -6574,6 +7396,20 @@ class APISpec(API):
 class APIPath(API):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in APIPath._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "api_path_summary",
+        "api_path_raw_u_r_i",
+        "api_path_is_templated",
+        "api_path_available_operations",
+        "api_path_available_response_codes",
+        "api_path_is_ingress_exposed",
+    ]
+
     @property
     def api_path_summary(self) -> Optional[str]:
         return self.attributes.api_path_summary
@@ -6686,6 +7522,29 @@ class APIPath(API):
 
 class TablePartition(SQL):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TablePartition._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "constraint",
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "alias",
+        "is_temporary",
+        "is_query_preview",
+        "query_preview_config",
+        "external_location",
+        "external_location_region",
+        "external_location_format",
+        "is_partitioned",
+        "partition_strategy",
+        "partition_count",
+        "partition_list",
+    ]
 
     @property
     def constraint(self) -> Optional[str]:
@@ -6892,6 +7751,28 @@ class TablePartition(SQL):
 
 class Table(SQL):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Table._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "alias",
+        "is_temporary",
+        "is_query_preview",
+        "query_preview_config",
+        "external_location",
+        "external_location_region",
+        "external_location_format",
+        "is_partitioned",
+        "partition_strategy",
+        "partition_count",
+        "partition_list",
+    ]
 
     @property
     def column_count(self) -> Optional[int]:
@@ -7129,6 +8010,24 @@ class Table(SQL):
 class Query(SQL):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Query._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "raw_query",
+        "default_schema_qualified_name",
+        "default_database_qualified_name",
+        "variables_schema_base64",
+        "is_private",
+        "is_sql_snippet",
+        "parent_qualified_name",
+        "collection_qualified_name",
+        "is_visual_query",
+        "visual_builder_schema_base64",
+    ]
+
     @property
     def raw_query(self) -> Optional[str]:
         return self.attributes.raw_query
@@ -7297,6 +8196,59 @@ class Query(SQL):
 
 class Column(SQL):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Column._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "data_type",
+        "sub_data_type",
+        "order",
+        "is_partition",
+        "partition_order",
+        "is_clustered",
+        "is_primary",
+        "is_foreign",
+        "is_indexed",
+        "is_sort",
+        "is_dist",
+        "is_pinned",
+        "pinned_by",
+        "pinned_at",
+        "precision",
+        "default_value",
+        "is_nullable",
+        "numeric_scale",
+        "max_length",
+        "validations",
+        "column_distinct_values_count",
+        "column_distinct_values_count_long",
+        "column_histogram",
+        "column_max",
+        "column_min",
+        "column_mean",
+        "column_sum",
+        "column_median",
+        "column_standard_deviation",
+        "column_unique_values_count",
+        "column_unique_values_count_long",
+        "column_average",
+        "column_average_length",
+        "column_duplicate_values_count",
+        "column_duplicate_values_count_long",
+        "column_maximum_string_length",
+        "column_maxs",
+        "column_minimum_string_length",
+        "column_mins",
+        "column_missing_values_count",
+        "column_missing_values_count_long",
+        "column_missing_values_percentage",
+        "column_uniqueness_percentage",
+        "column_variance",
+        "column_top_values",
+    ]
 
     @property
     def data_type(self) -> Optional[str]:
@@ -7849,6 +8801,16 @@ class Column(SQL):
 class Schema(SQL):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Schema._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "table_count",
+        "views_count",
+    ]
+
     @property
     def table_count(self) -> Optional[int]:
         return self.attributes.table_count
@@ -7968,6 +8930,19 @@ class Schema(SQL):
 class SnowflakeStream(SQL):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SnowflakeStream._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "snowflake_stream_type",
+        "snowflake_stream_source_type",
+        "snowflake_stream_mode",
+        "snowflake_stream_is_stale",
+        "snowflake_stream_stale_after",
+    ]
+
     @property
     def snowflake_stream_type(self) -> Optional[str]:
         return self.attributes.snowflake_stream_type
@@ -8075,6 +9050,17 @@ class SnowflakeStream(SQL):
 class SnowflakePipe(SQL):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SnowflakePipe._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "definition",
+        "snowflake_pipe_is_auto_ingest_enabled",
+        "snowflake_pipe_notification_channel_name",
+    ]
+
     @property
     def definition(self) -> Optional[str]:
         return self.attributes.definition
@@ -8163,6 +9149,15 @@ class SnowflakePipe(SQL):
 
 class Database(SQL):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Database._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "schema_count",
+    ]
 
     @property
     def schema_count(self) -> Optional[int]:
@@ -8270,6 +9265,15 @@ class Database(SQL):
 class Procedure(SQL):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in Procedure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "definition",
+    ]
+
     @property
     def definition(self) -> str:
         return self.attributes.definition
@@ -8328,6 +9332,22 @@ class Procedure(SQL):
 
 class View(SQL):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in View._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "is_query_preview",
+        "query_preview_config",
+        "alias",
+        "is_temporary",
+        "definition",
+    ]
 
     @property
     def column_count(self) -> Optional[int]:
@@ -8493,6 +9513,26 @@ class View(SQL):
 
 class MaterialisedView(SQL):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MaterialisedView._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "refresh_mode",
+        "refresh_method",
+        "staleness",
+        "stale_since_date",
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "is_query_preview",
+        "query_preview_config",
+        "alias",
+        "is_temporary",
+        "definition",
+    ]
 
     @property
     def refresh_mode(self) -> Optional[str]:
@@ -8662,6 +9702,29 @@ class MaterialisedView(SQL):
 
 class GCSObject(GCS):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in GCSObject._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "gcs_bucket_name",
+        "gcs_bucket_qualified_name",
+        "gcs_object_size",
+        "gcs_object_key",
+        "gcs_object_media_link",
+        "gcs_object_hold_type",
+        "gcs_object_generation_id",
+        "gcs_object_c_r_c32_c_hash",
+        "gcs_object_m_d5_hash",
+        "gcs_object_data_last_modified_time",
+        "gcs_object_content_type",
+        "gcs_object_content_encoding",
+        "gcs_object_content_disposition",
+        "gcs_object_content_language",
+        "gcs_object_retention_expiration_date",
+    ]
 
     @property
     def gcs_bucket_name(self) -> Optional[str]:
@@ -8879,6 +9942,21 @@ class GCSObject(GCS):
 class GCSBucket(GCS):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in GCSBucket._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "gcs_object_count",
+        "gcs_bucket_versioning_enabled",
+        "gcs_bucket_retention_locked",
+        "gcs_bucket_retention_period",
+        "gcs_bucket_retention_effective_time",
+        "gcs_bucket_lifecycle_rules",
+        "gcs_bucket_retention_policy",
+    ]
+
     @property
     def gcs_object_count(self) -> Optional[int]:
         return self.attributes.gcs_object_count
@@ -9002,6 +10080,24 @@ class GCSBucket(GCS):
 
 class ADLSAccount(ADLS):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ADLSAccount._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "adls_e_tag",
+        "adls_encryption_type",
+        "adls_account_resource_group",
+        "adls_account_subscription",
+        "adls_account_performance",
+        "adls_account_replication",
+        "adls_account_kind",
+        "adls_primary_disk_state",
+        "adls_account_provision_state",
+        "adls_account_access_tier",
+    ]
 
     @property
     def adls_e_tag(self) -> Optional[str]:
@@ -9162,6 +10258,20 @@ class ADLSAccount(ADLS):
 class ADLSContainer(ADLS):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ADLSContainer._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "adls_container_url",
+        "adls_container_lease_state",
+        "adls_container_lease_status",
+        "adls_container_encryption_scope",
+        "adls_container_version_level_immutability_support",
+        "adls_object_count",
+    ]
+
     @property
     def adls_container_url(self) -> Optional[str]:
         return self.attributes.adls_container_url
@@ -9283,6 +10393,31 @@ class ADLSContainer(ADLS):
 
 class ADLSObject(ADLS):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ADLSObject._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "adls_object_url",
+        "adls_object_version_id",
+        "adls_object_type",
+        "adls_object_size",
+        "adls_object_access_tier",
+        "adls_object_access_tier_last_modified_time",
+        "adls_object_archive_status",
+        "adls_object_server_encrypted",
+        "adls_object_version_level_immutability_support",
+        "adls_object_cache_control",
+        "adls_object_content_type",
+        "adls_object_content_m_d5_hash",
+        "adls_object_content_language",
+        "adls_object_lease_status",
+        "adls_object_lease_state",
+        "adls_object_metadata",
+        "adls_container_qualified_name",
+    ]
 
     @property
     def adls_object_url(self) -> Optional[str]:
@@ -9534,6 +10669,16 @@ class ADLSObject(ADLS):
 class S3Bucket(S3):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in S3Bucket._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "s3_object_count",
+        "s3_bucket_versioning_enabled",
+    ]
+
     @property
     def s3_object_count(self) -> Optional[int]:
         return self.attributes.s3_object_count
@@ -9640,6 +10785,23 @@ class S3Bucket(S3):
 
 class S3Object(S3):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in S3Object._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "s3_object_last_modified_time",
+        "s3_bucket_name",
+        "s3_bucket_qualified_name",
+        "s3_object_size",
+        "s3_object_storage_class",
+        "s3_object_key",
+        "s3_object_content_type",
+        "s3_object_content_disposition",
+        "s3_object_version_id",
+    ]
 
     @property
     def s3_object_last_modified_time(self) -> Optional[datetime]:
@@ -9834,6 +10996,17 @@ class S3Object(S3):
 class MetabaseQuestion(Metabase):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in MetabaseQuestion._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_dashboard_count",
+        "metabase_query_type",
+        "metabase_query",
+    ]
+
     @property
     def metabase_dashboard_count(self) -> Optional[int]:
         return self.attributes.metabase_dashboard_count
@@ -9910,6 +11083,18 @@ class MetabaseQuestion(Metabase):
 
 class MetabaseCollection(Metabase):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MetabaseCollection._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_slug",
+        "metabase_color",
+        "metabase_namespace",
+        "metabase_is_personal_collection",
+    ]
 
     @property
     def metabase_slug(self) -> Optional[str]:
@@ -10001,6 +11186,15 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in MetabaseDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_question_count",
+    ]
+
     @property
     def metabase_question_count(self) -> Optional[int]:
         return self.attributes.metabase_question_count
@@ -10055,6 +11249,18 @@ class MetabaseDashboard(Metabase):
 
 class PowerBIReport(PowerBI):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIReport._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "web_url",
+        "page_count",
+    ]
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
@@ -10146,6 +11352,18 @@ class PowerBIReport(PowerBI):
 class PowerBIMeasure(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBIMeasure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_measure_expression",
+        "power_b_i_is_external_measure",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10232,6 +11450,20 @@ class PowerBIMeasure(PowerBI):
 
 class PowerBIColumn(PowerBI):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIColumn._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_column_data_category",
+        "power_b_i_column_data_type",
+        "power_b_i_sort_by_column",
+        "power_b_i_column_summarize_by",
+    ]
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
@@ -10344,6 +11576,19 @@ class PowerBIColumn(PowerBI):
 class PowerBITable(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBITable._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_table_source_expressions",
+        "power_b_i_table_column_count",
+        "power_b_i_table_measure_count",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10452,6 +11697,16 @@ class PowerBITable(PowerBI):
 class PowerBITile(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBITile._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dashboard_qualified_name",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10521,6 +11776,15 @@ class PowerBITile(PowerBI):
 class PowerBIDatasource(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBIDatasource._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "connection_details",
+    ]
+
     @property
     def connection_details(self) -> Optional[dict[str, str]]:
         return self.attributes.connection_details
@@ -10572,6 +11836,19 @@ class PowerBIDatasource(PowerBI):
 
 class PowerBIWorkspace(PowerBI):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIWorkspace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "web_url",
+        "report_count",
+        "dashboard_count",
+        "dataset_count",
+        "dataflow_count",
+    ]
 
     @property
     def web_url(self) -> Optional[str]:
@@ -10672,6 +11949,16 @@ class PowerBIWorkspace(PowerBI):
 class PowerBIDataset(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBIDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10748,6 +12035,17 @@ class PowerBIDataset(PowerBI):
 class PowerBIDashboard(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBIDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "tile_count",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10821,6 +12119,16 @@ class PowerBIDashboard(PowerBI):
 class PowerBIDataflow(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBIDataflow._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10885,6 +12193,16 @@ class PowerBIDataflow(PowerBI):
 class PowerBIPage(PowerBI):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in PowerBIPage._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "report_qualified_name",
+    ]
+
     @property
     def workspace_qualified_name(self) -> Optional[str]:
         return self.attributes.workspace_qualified_name
@@ -10947,6 +12265,16 @@ class PowerBIPage(PowerBI):
 
 class PresetChart(Preset):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PresetChart._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "preset_chart_description_markdown",
+        "preset_chart_form_data",
+    ]
 
     @property
     def preset_chart_description_markdown(self) -> Optional[str]:
@@ -11014,6 +12342,17 @@ class PresetChart(Preset):
 
 class PresetDataset(Preset):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PresetDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "preset_dataset_datasource_name",
+        "preset_dataset_id",
+        "preset_dataset_type",
+    ]
 
     @property
     def preset_dataset_datasource_name(self) -> Optional[str]:
@@ -11090,6 +12429,20 @@ class PresetDataset(Preset):
 
 class PresetDashboard(Preset):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PresetDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "preset_dashboard_changed_by_name",
+        "preset_dashboard_changed_by_url",
+        "preset_dashboard_is_managed_externally",
+        "preset_dashboard_is_published",
+        "preset_dashboard_thumbnail_url",
+        "preset_dashboard_chart_count",
+    ]
 
     @property
     def preset_dashboard_changed_by_name(self) -> Optional[str]:
@@ -11219,6 +12572,23 @@ class PresetDashboard(Preset):
 
 class PresetWorkspace(Preset):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PresetWorkspace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "preset_workspace_public_dashboards_allowed",
+        "preset_workspace_cluster_id",
+        "preset_workspace_hostname",
+        "preset_workspace_is_in_maintenance_mode",
+        "preset_workspace_region",
+        "preset_workspace_status",
+        "preset_workspace_deployment_id",
+        "preset_workspace_dashboard_count",
+        "preset_workspace_dataset_count",
+    ]
 
     @property
     def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
@@ -11376,6 +12746,21 @@ class PresetWorkspace(Preset):
 class ModeReport(Mode):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ModeReport._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_collection_token",
+        "mode_report_published_at",
+        "mode_query_count",
+        "mode_chart_count",
+        "mode_query_preview",
+        "mode_is_public",
+        "mode_is_shared",
+    ]
+
     @property
     def mode_collection_token(self) -> Optional[str]:
         return self.attributes.mode_collection_token
@@ -11497,6 +12882,16 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ModeQuery._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_raw_query",
+        "mode_report_import_count",
+    ]
+
     @property
     def mode_raw_query(self) -> Optional[str]:
         return self.attributes.mode_raw_query
@@ -11563,6 +12958,15 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ModeChart._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_chart_type",
+    ]
+
     @property
     def mode_chart_type(self) -> Optional[str]:
         return self.attributes.mode_chart_type
@@ -11615,6 +13019,15 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in ModeWorkspace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_collection_count",
+    ]
+
     @property
     def mode_collection_count(self) -> Optional[int]:
         return self.attributes.mode_collection_count
@@ -11666,6 +13079,16 @@ class ModeWorkspace(Mode):
 
 class ModeCollection(Mode):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ModeCollection._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_collection_type",
+        "mode_collection_state",
+    ]
 
     @property
     def mode_collection_type(self) -> Optional[str]:
@@ -11733,6 +13156,16 @@ class ModeCollection(Mode):
 class SigmaDatasetColumn(Sigma):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SigmaDatasetColumn._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_dataset_qualified_name",
+        "sigma_dataset_name",
+    ]
+
     @property
     def sigma_dataset_qualified_name(self) -> Optional[str]:
         return self.attributes.sigma_dataset_qualified_name
@@ -11796,6 +13229,15 @@ class SigmaDatasetColumn(Sigma):
 class SigmaDataset(Sigma):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SigmaDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_dataset_column_count",
+    ]
+
     @property
     def sigma_dataset_column_count(self) -> Optional[int]:
         return self.attributes.sigma_dataset_column_count
@@ -11848,6 +13290,15 @@ class SigmaDataset(Sigma):
 class SigmaWorkbook(Sigma):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SigmaWorkbook._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_page_count",
+    ]
+
     @property
     def sigma_page_count(self) -> Optional[int]:
         return self.attributes.sigma_page_count
@@ -11899,6 +13350,16 @@ class SigmaWorkbook(Sigma):
 
 class SigmaDataElementField(Sigma):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SigmaDataElementField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_data_element_field_is_hidden",
+        "sigma_data_element_field_formula",
+    ]
 
     @property
     def sigma_data_element_field_is_hidden(self) -> Optional[bool]:
@@ -11971,6 +13432,15 @@ class SigmaDataElementField(Sigma):
 class SigmaPage(Sigma):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SigmaPage._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_data_element_count",
+    ]
+
     @property
     def sigma_data_element_count(self) -> Optional[int]:
         return self.attributes.sigma_data_element_count
@@ -12025,6 +13495,17 @@ class SigmaPage(Sigma):
 
 class SigmaDataElement(Sigma):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SigmaDataElement._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_data_element_query",
+        "sigma_data_element_type",
+        "sigma_data_element_field_count",
+    ]
 
     @property
     def sigma_data_element_query(self) -> Optional[str]:
@@ -12105,6 +13586,15 @@ class SigmaDataElement(Sigma):
 class QlikSpace(Qlik):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in QlikSpace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_space_type",
+    ]
+
     @property
     def qlik_space_type(self) -> Optional[str]:
         return self.attributes.qlik_space_type
@@ -12159,6 +13649,19 @@ class QlikSpace(Qlik):
 
 class QlikApp(Qlik):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikApp._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_has_section_access",
+        "qlik_origin_app_id",
+        "qlik_is_encrypted",
+        "qlik_is_direct_query_mode",
+        "qlik_app_static_byte_size",
+    ]
 
     @property
     def qlik_has_section_access(self) -> Optional[bool]:
@@ -12259,6 +13762,18 @@ class QlikApp(Qlik):
 class QlikChart(Qlik):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in QlikChart._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_chart_subtitle",
+        "qlik_chart_footnote",
+        "qlik_chart_orientation",
+        "qlik_chart_type",
+    ]
+
     @property
     def qlik_chart_subtitle(self) -> Optional[str]:
         return self.attributes.qlik_chart_subtitle
@@ -12343,6 +13858,18 @@ class QlikChart(Qlik):
 
 class QlikDataset(Qlik):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_dataset_technical_name",
+        "qlik_dataset_type",
+        "qlik_dataset_uri",
+        "qlik_dataset_subtype",
+    ]
 
     @property
     def qlik_dataset_technical_name(self) -> Optional[str]:
@@ -12429,6 +13956,15 @@ class QlikDataset(Qlik):
 class QlikSheet(Qlik):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in QlikSheet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_sheet_is_approved",
+    ]
+
     @property
     def qlik_sheet_is_approved(self) -> Optional[bool]:
         return self.attributes.qlik_sheet_is_approved
@@ -12483,6 +14019,19 @@ class QlikSheet(Qlik):
 
 class TableauWorkbook(Tableau):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TableauWorkbook._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+    ]
 
     @property
     def site_qualified_name(self) -> Optional[str]:
@@ -12592,6 +14141,30 @@ class TableauWorkbook(Tableau):
 
 class TableauDatasourceField(Tableau):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TableauDatasourceField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "datasource_qualified_name",
+        "project_hierarchy",
+        "fully_qualified_name",
+        "tableau_datasource_field_data_category",
+        "tableau_datasource_field_role",
+        "tableau_datasource_field_data_type",
+        "upstream_tables",
+        "tableau_datasource_field_formula",
+        "tableau_datasource_field_bin_size",
+        "upstream_columns",
+        "upstream_fields",
+        "datasource_field_type",
+    ]
 
     @property
     def site_qualified_name(self) -> Optional[str]:
@@ -12835,6 +14408,25 @@ class TableauDatasourceField(Tableau):
 class TableauCalculatedField(Tableau):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in TableauCalculatedField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "datasource_qualified_name",
+        "project_hierarchy",
+        "data_category",
+        "role",
+        "tableau_data_type",
+        "formula",
+        "upstream_fields",
+    ]
+
     @property
     def site_qualified_name(self) -> Optional[str]:
         return self.attributes.site_qualified_name
@@ -12998,6 +14590,18 @@ class TableauCalculatedField(Tableau):
 class TableauProject(Tableau):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in TableauProject._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "top_level_project_qualified_name",
+        "is_top_level_project",
+        "project_hierarchy",
+    ]
+
     @property
     def site_qualified_name(self) -> Optional[str]:
         return self.attributes.site_qualified_name
@@ -13102,6 +14706,18 @@ class TableauProject(Tableau):
 class TableauMetric(Tableau):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in TableauMetric._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+    ]
+
     @property
     def site_qualified_name(self) -> Optional[str]:
         return self.attributes.site_qualified_name
@@ -13191,6 +14807,13 @@ class TableauMetric(Tableau):
 class TableauSite(Tableau):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in TableauSite._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("TableauSite", allow_mutation=False)
 
     @validator("type_name")
@@ -13202,6 +14825,27 @@ class TableauSite(Tableau):
 
 class TableauDatasource(Tableau):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TableauDatasource._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "workbook_qualified_name",
+        "project_hierarchy",
+        "is_published",
+        "has_extracts",
+        "is_certified",
+        "certifier",
+        "certification_note",
+        "certifier_display_name",
+        "upstream_tables",
+        "upstream_datasources",
+    ]
 
     @property
     def site_qualified_name(self) -> Optional[str]:
@@ -13393,6 +15037,19 @@ class TableauDatasource(Tableau):
 class TableauDashboard(Tableau):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in TableauDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "workbook_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+    ]
+
     @property
     def site_qualified_name(self) -> Optional[str]:
         return self.attributes.site_qualified_name
@@ -13495,6 +15152,21 @@ class TableauDashboard(Tableau):
 
 class TableauFlow(Tableau):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TableauFlow._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "input_fields",
+        "output_fields",
+        "output_steps",
+    ]
 
     @property
     def site_qualified_name(self) -> Optional[str]:
@@ -13618,6 +15290,19 @@ class TableauFlow(Tableau):
 class TableauWorksheet(Tableau):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in TableauWorksheet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "site_qualified_name",
+        "project_qualified_name",
+        "top_level_project_qualified_name",
+        "project_hierarchy",
+        "workbook_qualified_name",
+    ]
+
     @property
     def site_qualified_name(self) -> Optional[str]:
         return self.attributes.site_qualified_name
@@ -13726,6 +15411,23 @@ class TableauWorksheet(Tableau):
 
 class LookerLook(Looker):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in LookerLook._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "folder_name",
+        "source_user_id",
+        "source_view_count",
+        "sourcelast_updater_id",
+        "source_last_accessed_at",
+        "source_last_viewed_at",
+        "source_content_metadata_id",
+        "source_query_id",
+        "model_name",
+    ]
 
     @property
     def folder_name(self) -> Optional[str]:
@@ -13875,6 +15577,21 @@ class LookerLook(Looker):
 class LookerDashboard(Looker):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in LookerDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "folder_name",
+        "source_user_id",
+        "source_view_count",
+        "source_metadata_id",
+        "sourcelast_updater_id",
+        "source_last_accessed_at",
+        "source_last_viewed_at",
+    ]
+
     @property
     def folder_name(self) -> Optional[str]:
         return self.attributes.folder_name
@@ -13997,6 +15714,18 @@ class LookerDashboard(Looker):
 class LookerFolder(Looker):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in LookerFolder._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "source_content_metadata_id",
+        "source_creator_id",
+        "source_child_count",
+        "source_parent_i_d",
+    ]
+
     @property
     def source_content_metadata_id(self) -> Optional[int]:
         return self.attributes.source_content_metadata_id
@@ -14084,6 +15813,21 @@ class LookerFolder(Looker):
 
 class LookerTile(Looker):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in LookerTile._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "lookml_link_id",
+        "merge_result_id",
+        "note_text",
+        "query_i_d",
+        "result_maker_i_d",
+        "subtitle_text",
+        "look_id",
+    ]
 
     @property
     def lookml_link_id(self) -> Optional[str]:
@@ -14201,6 +15945,15 @@ class LookerTile(Looker):
 class LookerModel(Looker):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in LookerModel._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "project_name",
+    ]
+
     @property
     def project_name(self) -> Optional[str]:
         return self.attributes.project_name
@@ -14262,6 +16015,19 @@ class LookerModel(Looker):
 
 class LookerExplore(Looker):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in LookerExplore._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "project_name",
+        "model_name",
+        "source_connection_name",
+        "view_name",
+        "sql_table_name",
+    ]
 
     @property
     def project_name(self) -> Optional[str]:
@@ -14359,6 +16125,13 @@ class LookerExplore(Looker):
 class LookerProject(Looker):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in LookerProject._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
     type_name: str = Field("LookerProject", allow_mutation=False)
 
     @validator("type_name")
@@ -14370,6 +16143,18 @@ class LookerProject(Looker):
 
 class LookerQuery(Looker):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in LookerQuery._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "source_definition",
+        "source_definition_database",
+        "source_definition_schema",
+        "fields",
+    ]
 
     @property
     def source_definition(self) -> Optional[str]:
@@ -14459,6 +16244,21 @@ class LookerQuery(Looker):
 
 class LookerField(Looker):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in LookerField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "project_name",
+        "looker_explore_qualified_name",
+        "looker_view_qualified_name",
+        "model_name",
+        "source_definition",
+        "looker_field_data_type",
+        "looker_times_used",
+    ]
 
     @property
     def project_name(self) -> Optional[str]:
@@ -14585,6 +16385,15 @@ class LookerField(Looker):
 class LookerView(Looker):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in LookerView._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "project_name",
+    ]
+
     @property
     def project_name(self) -> Optional[str]:
         return self.attributes.project_name
@@ -14637,6 +16446,18 @@ class LookerView(Looker):
 
 class SalesforceObject(Salesforce):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SalesforceObject._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "is_custom",
+        "is_mergable",
+        "is_queryable",
+        "field_count",
+    ]
 
     @property
     def is_custom(self) -> Optional[bool]:
@@ -14720,6 +16541,30 @@ class SalesforceObject(Salesforce):
 
 class SalesforceField(Salesforce):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SalesforceField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "data_type",
+        "object_qualified_name",
+        "order",
+        "inline_help_text",
+        "is_calculated",
+        "formula",
+        "is_case_sensitive",
+        "is_encrypted",
+        "max_length",
+        "is_nullable",
+        "precision",
+        "numeric_scale",
+        "is_unique",
+        "picklist_values",
+        "is_polymorphic_foreign_key",
+        "default_value_formula",
+    ]
 
     @property
     def data_type(self) -> Optional[str]:
@@ -14925,6 +16770,15 @@ class SalesforceField(Salesforce):
 class SalesforceOrganization(Salesforce):
     """Description"""
 
+    def __setattr__(self, name, value):
+        if name in SalesforceOrganization._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "source_id",
+    ]
+
     @property
     def source_id(self) -> Optional[str]:
         return self.attributes.source_id
@@ -14980,6 +16834,17 @@ class SalesforceOrganization(Salesforce):
 
 class SalesforceDashboard(Salesforce):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SalesforceDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "source_id",
+        "dashboard_type",
+        "report_count",
+    ]
 
     @property
     def source_id(self) -> Optional[str]:
@@ -15053,6 +16918,17 @@ class SalesforceDashboard(Salesforce):
 
 class SalesforceReport(Salesforce):
     """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SalesforceReport._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "source_id",
+        "report_type",
+        "detail_columns",
+    ]
 
     @property
     def source_id(self) -> Optional[str]:
