@@ -115,7 +115,7 @@ class Referenceable(AtlanObject):
             pass
 
     attributes: "Referenceable.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Referenceable.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",
     )
@@ -1607,7 +1607,7 @@ class Asset(Referenceable):
             self.announcement_type = None
 
     attributes: "Asset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Asset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1754,7 +1754,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             return AtlasGlossary.Attributes(name=name)
 
     attributes: "AtlasGlossary.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("AtlasGlossary.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1975,7 +1975,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("AtlasGlossaryTerm.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2364,7 +2364,7 @@ class Connection(Asset, type_name="Connection"):
                 )
 
     attributes: "Connection.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Connection.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2486,7 +2486,7 @@ class Process(Asset, type_name="Process"):
         )  # relationship
 
     attributes: "Process.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Process.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2587,7 +2587,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("AtlasGlossaryCategory.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2676,7 +2676,7 @@ class Badge(Asset, type_name="Badge"):
         )  # relationship
 
     attributes: "Badge.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Badge.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2850,7 +2850,7 @@ class Google(Cloud):
         )  # relationship
 
     attributes: "Google.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Google.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2942,7 +2942,7 @@ class Azure(Cloud):
         )  # relationship
 
     attributes: "Azure.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Azure.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3078,7 +3078,7 @@ class AWS(Cloud):
         )  # relationship
 
     attributes: "AWS.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("AWS.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3182,7 +3182,7 @@ class Collection(Namespace):
         )  # relationship
 
     attributes: "Collection.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Collection.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3253,7 +3253,7 @@ class Folder(Namespace):
         )  # relationship
 
     attributes: "Folder.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Folder.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3585,7 +3585,7 @@ class Dbt(Catalog):
         )  # relationship
 
     attributes: "Dbt.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Dbt.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3673,7 +3673,7 @@ class Resource(Catalog):
         )  # relationship
 
     attributes: "Resource.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Resource.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3806,7 +3806,7 @@ class API(Catalog):
         )  # relationship
 
     attributes: "API.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("API.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4017,7 +4017,7 @@ class SQL(Catalog):
         )  # relationship
 
     attributes: "SQL.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SQL.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4159,7 +4159,7 @@ class DataStudio(Google):
         )  # relationship
 
     attributes: "DataStudio.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DataStudio.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4371,7 +4371,7 @@ class GCS(Google):
         )  # relationship
 
     attributes: "GCS.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("GCS.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4565,7 +4565,7 @@ class DataStudioAsset(DataStudio):
         )  # relationship
 
     attributes: "DataStudioAsset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DataStudioAsset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4675,7 +4675,7 @@ class ADLS(ObjectStore):
         )  # relationship
 
     attributes: "ADLS.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ADLS.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4837,7 +4837,7 @@ class S3(ObjectStore):
         )  # relationship
 
     attributes: "S3.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("S3.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5163,7 +5163,7 @@ class DbtColumnProcess(Dbt):
         )  # relationship
 
     attributes: "DbtColumnProcess.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DbtColumnProcess.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5262,7 +5262,7 @@ class Metric(DataQuality):
         )  # relationship
 
     attributes: "Metric.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Metric.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5336,7 +5336,7 @@ class Metabase(BI):
         )  # relationship
 
     attributes: "Metabase.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Metabase.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5434,7 +5434,7 @@ class PowerBI(BI):
         )  # relationship
 
     attributes: "PowerBI.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBI.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5536,7 +5536,7 @@ class Preset(BI):
         )  # relationship
 
     attributes: "Preset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Preset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5688,7 +5688,7 @@ class Mode(BI):
         )  # relationship
 
     attributes: "Mode.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Mode.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5812,7 +5812,7 @@ class Sigma(BI):
         )  # relationship
 
     attributes: "Sigma.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Sigma.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5944,7 +5944,7 @@ class Qlik(BI):
         )  # relationship
 
     attributes: "Qlik.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Qlik.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6050,7 +6050,7 @@ class Salesforce(SaaS):
         )  # relationship
 
     attributes: "Salesforce.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Salesforce.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6138,7 +6138,7 @@ class DbtModelColumn(Dbt):
         )  # relationship
 
     attributes: "DbtModelColumn.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DbtModelColumn.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6351,7 +6351,7 @@ class DbtModel(Dbt):
         )  # relationship
 
     attributes: "DbtModel.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DbtModel.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6678,7 +6678,7 @@ class DbtMetric(Dbt):
         )  # relationship
 
     attributes: "DbtMetric.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DbtMetric.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6752,7 +6752,7 @@ class DbtSource(Dbt):
         )  # relationship
 
     attributes: "DbtSource.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DbtSource.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7073,7 +7073,7 @@ class DbtProcess(Dbt):
         )  # relationship
 
     attributes: "DbtProcess.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("DbtProcess.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7139,7 +7139,7 @@ class ReadmeTemplate(Resource):
         )  # relationship
 
     attributes: "ReadmeTemplate.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ReadmeTemplate.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7240,7 +7240,7 @@ class Link(Resource):
         )  # relationship
 
     attributes: "Link.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Link.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7387,7 +7387,7 @@ class APISpec(API):
         )  # relationship
 
     attributes: "APISpec.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("APISpec.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7514,7 +7514,7 @@ class APIPath(API):
         )  # relationship
 
     attributes: "APIPath.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("APIPath.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7743,7 +7743,7 @@ class TablePartition(SQL):
         )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TablePartition.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7992,7 +7992,7 @@ class Table(SQL):
             )
 
     attributes: "Table.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Table.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8188,7 +8188,7 @@ class Query(SQL):
         )  # relationship
 
     attributes: "Query.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Query.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8792,7 +8792,7 @@ class Column(SQL):
         )  # relationship
 
     attributes: "Column.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Column.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8912,7 +8912,7 @@ class Schema(SQL):
             )
 
     attributes: "Schema.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Schema.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9041,7 +9041,7 @@ class SnowflakeStream(SQL):
         )  # relationship
 
     attributes: "SnowflakeStream.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SnowflakeStream.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9141,7 +9141,7 @@ class SnowflakePipe(SQL):
         )  # relationship
 
     attributes: "SnowflakePipe.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SnowflakePipe.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9233,7 +9233,7 @@ class Database(SQL):
             )
 
     attributes: "Database.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Database.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9324,7 +9324,7 @@ class Procedure(SQL):
         )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("Procedure.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9496,7 +9496,7 @@ class View(SQL):
             )
 
     attributes: "View.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("View.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9694,7 +9694,7 @@ class MaterialisedView(SQL):
         )  # relationship
 
     attributes: "MaterialisedView.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("MaterialisedView.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9933,7 +9933,7 @@ class GCSObject(GCS):
         )  # relationship
 
     attributes: "GCSObject.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("GCSObject.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10072,7 +10072,7 @@ class GCSBucket(GCS):
         )  # relationship
 
     attributes: "GCSBucket.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("GCSBucket.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10249,7 +10249,7 @@ class ADLSAccount(ADLS):
         )  # relationship
 
     attributes: "ADLSAccount.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ADLSAccount.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10385,7 +10385,7 @@ class ADLSContainer(ADLS):
         )  # relationship
 
     attributes: "ADLSContainer.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ADLSContainer.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10660,7 +10660,7 @@ class ADLSObject(ADLS):
         )  # relationship
 
     attributes: "ADLSObject.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ADLSObject.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10763,7 +10763,7 @@ class S3Bucket(S3):
             )
 
     attributes: "S3Bucket.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("S3Bucket.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10969,7 +10969,7 @@ class S3Object(S3):
             )
 
     attributes: "S3Object.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("S3Object.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11075,7 +11075,7 @@ class MetabaseQuestion(Metabase):
         )  # relationship
 
     attributes: "MetabaseQuestion.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("MetabaseQuestion.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11177,7 +11177,7 @@ class MetabaseCollection(Metabase):
         )  # relationship
 
     attributes: "MetabaseCollection.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("MetabaseCollection.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11241,7 +11241,7 @@ class MetabaseDashboard(Metabase):
         )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("MetabaseDashboard.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11343,7 +11343,7 @@ class PowerBIReport(PowerBI):
         )  # relationship
 
     attributes: "PowerBIReport.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIReport.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11442,7 +11442,7 @@ class PowerBIMeasure(PowerBI):
         )  # relationship
 
     attributes: "PowerBIMeasure.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIMeasure.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11567,7 +11567,7 @@ class PowerBIColumn(PowerBI):
         )  # relationship
 
     attributes: "PowerBIColumn.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIColumn.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11688,7 +11688,7 @@ class PowerBITable(PowerBI):
         )  # relationship
 
     attributes: "PowerBITable.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBITable.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11767,7 +11767,7 @@ class PowerBITile(PowerBI):
         )  # relationship
 
     attributes: "PowerBITile.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBITile.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11828,7 +11828,7 @@ class PowerBIDatasource(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDatasource.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIDatasource.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11940,7 +11940,7 @@ class PowerBIWorkspace(PowerBI):
         )  # relationship
 
     attributes: "PowerBIWorkspace.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIWorkspace.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12026,7 +12026,7 @@ class PowerBIDataset(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIDataset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12110,7 +12110,7 @@ class PowerBIDashboard(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIDashboard.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12184,7 +12184,7 @@ class PowerBIDataflow(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDataflow.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIDataflow.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12257,7 +12257,7 @@ class PowerBIPage(PowerBI):
         )  # relationship
 
     attributes: "PowerBIPage.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PowerBIPage.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12334,7 +12334,7 @@ class PresetChart(Preset):
         )  # relationship
 
     attributes: "PresetChart.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PresetChart.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12421,7 +12421,7 @@ class PresetDataset(Preset):
         )  # relationship
 
     attributes: "PresetDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PresetDataset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12564,7 +12564,7 @@ class PresetDashboard(Preset):
         )  # relationship
 
     attributes: "PresetDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PresetDashboard.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12737,7 +12737,7 @@ class PresetWorkspace(Preset):
         )  # relationship
 
     attributes: "PresetWorkspace.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("PresetWorkspace.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12873,7 +12873,7 @@ class ModeReport(Mode):
         )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ModeReport.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12949,7 +12949,7 @@ class ModeQuery(Mode):
         )  # relationship
 
     attributes: "ModeQuery.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ModeQuery.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13010,7 +13010,7 @@ class ModeChart(Mode):
         )  # relationship
 
     attributes: "ModeChart.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ModeChart.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13071,7 +13071,7 @@ class ModeWorkspace(Mode):
         )  # relationship
 
     attributes: "ModeWorkspace.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ModeWorkspace.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13147,7 +13147,7 @@ class ModeCollection(Mode):
         )  # relationship
 
     attributes: "ModeCollection.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("ModeCollection.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13220,7 +13220,7 @@ class SigmaDatasetColumn(Sigma):
         )  # relationship
 
     attributes: "SigmaDatasetColumn.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SigmaDatasetColumn.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13281,7 +13281,7 @@ class SigmaDataset(Sigma):
         )  # relationship
 
     attributes: "SigmaDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SigmaDataset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13342,7 +13342,7 @@ class SigmaWorkbook(Sigma):
         )  # relationship
 
     attributes: "SigmaWorkbook.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SigmaWorkbook.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13423,7 +13423,7 @@ class SigmaDataElementField(Sigma):
         )  # relationship
 
     attributes: "SigmaDataElementField.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SigmaDataElementField.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13487,7 +13487,7 @@ class SigmaPage(Sigma):
         )  # relationship
 
     attributes: "SigmaPage.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SigmaPage.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13577,7 +13577,7 @@ class SigmaDataElement(Sigma):
         )  # relationship
 
     attributes: "SigmaDataElement.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SigmaDataElement.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13641,7 +13641,7 @@ class QlikSpace(Qlik):
         )  # relationship
 
     attributes: "QlikSpace.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("QlikSpace.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13753,7 +13753,7 @@ class QlikApp(Qlik):
         )  # relationship
 
     attributes: "QlikApp.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("QlikApp.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13850,7 +13850,7 @@ class QlikChart(Qlik):
         )  # relationship
 
     attributes: "QlikChart.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("QlikChart.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13947,7 +13947,7 @@ class QlikDataset(Qlik):
         )  # relationship
 
     attributes: "QlikDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("QlikDataset.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14011,7 +14011,7 @@ class QlikSheet(Qlik):
         )  # relationship
 
     attributes: "QlikSheet.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("QlikSheet.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14133,7 +14133,7 @@ class TableauWorkbook(Tableau):
         )  # relationship
 
     attributes: "TableauWorkbook.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauWorkbook.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14399,7 +14399,7 @@ class TableauDatasourceField(Tableau):
         )  # relationship
 
     attributes: "TableauDatasourceField.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauDatasourceField.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14581,7 +14581,7 @@ class TableauCalculatedField(Tableau):
         )  # relationship
 
     attributes: "TableauCalculatedField.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauCalculatedField.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14697,7 +14697,7 @@ class TableauProject(Tableau):
         )  # relationship
 
     attributes: "TableauProject.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauProject.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14798,7 +14798,7 @@ class TableauMetric(Tableau):
         )  # relationship
 
     attributes: "TableauMetric.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauMetric.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15028,7 +15028,7 @@ class TableauDatasource(Tableau):
         )  # relationship
 
     attributes: "TableauDatasource.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauDatasource.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15144,7 +15144,7 @@ class TableauDashboard(Tableau):
         )  # relationship
 
     attributes: "TableauDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauDashboard.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15281,7 +15281,7 @@ class TableauFlow(Tableau):
         )  # relationship
 
     attributes: "TableauFlow.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauFlow.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15403,7 +15403,7 @@ class TableauWorksheet(Tableau):
         )  # relationship
 
     attributes: "TableauWorksheet.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("TableauWorksheet.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15568,7 +15568,7 @@ class LookerLook(Looker):
         )  # relationship
 
     attributes: "LookerLook.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerLook.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15705,7 +15705,7 @@ class LookerDashboard(Looker):
         )  # relationship
 
     attributes: "LookerDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerDashboard.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15805,7 +15805,7 @@ class LookerFolder(Looker):
         )  # relationship
 
     attributes: "LookerFolder.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerFolder.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15936,7 +15936,7 @@ class LookerTile(Looker):
         )  # relationship
 
     attributes: "LookerTile.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerTile.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16007,7 +16007,7 @@ class LookerModel(Looker):
         )  # relationship
 
     attributes: "LookerModel.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerModel.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16116,7 +16116,7 @@ class LookerExplore(Looker):
         )  # relationship
 
     attributes: "LookerExplore.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerExplore.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16236,7 +16236,7 @@ class LookerQuery(Looker):
         )  # relationship
 
     attributes: "LookerQuery.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerQuery.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16376,7 +16376,7 @@ class LookerField(Looker):
         )  # relationship
 
     attributes: "LookerField.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerField.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16438,7 +16438,7 @@ class LookerView(Looker):
         )  # relationship
 
     attributes: "LookerView.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("LookerView.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16533,7 +16533,7 @@ class SalesforceObject(Salesforce):
         )  # relationship
 
     attributes: "SalesforceObject.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SalesforceObject.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16761,7 +16761,7 @@ class SalesforceField(Salesforce):
         )  # relationship
 
     attributes: "SalesforceField.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SalesforceField.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16826,7 +16826,7 @@ class SalesforceOrganization(Salesforce):
         )  # relationship
 
     attributes: "SalesforceOrganization.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SalesforceOrganization.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16910,7 +16910,7 @@ class SalesforceDashboard(Salesforce):
         )  # relationship
 
     attributes: "SalesforceDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SalesforceDashboard.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16996,7 +16996,7 @@ class SalesforceReport(Salesforce):
         )  # relationship
 
     attributes: "SalesforceReport.Attributes" = Field(
-        None,
+        default_factory=lambda: eval("SalesforceReport.Attributes()"),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

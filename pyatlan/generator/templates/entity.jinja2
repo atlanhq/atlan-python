@@ -100,7 +100,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             pass
 
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        None,
+        default_factory=lambda : eval("{{ entity_def.name  }}.Attributes()"),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary '
                     'by type, so are described in the sub-types of this schema.\n',
     )
@@ -529,7 +529,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             )
         {%- endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        None,
+        default_factory=lambda : eval("{{ entity_def.name  }}.Attributes()"),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
                     'type, so are described in the sub-types of this schema.\n',
     )

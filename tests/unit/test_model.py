@@ -77,7 +77,7 @@ INT_VALUE = 42
 FLOAT_VALUE = 42.00
 ATTRIBUTE_VALUES_BY_TYPE = {
     "str": STRING_VALUE,
-    "Optional[set[str]]": set().add(STRING_VALUE),
+    "Optional[set[str]]": {STRING_VALUE},
     "Optional[str]": STRING_VALUE,
     "Optional[datetime]": datetime.now(),
     "Optional[bool]": True,
