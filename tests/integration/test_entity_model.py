@@ -24,7 +24,7 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.core import Announcement
-from pyatlan.model.enums import AnnouncementType, AtlanConnectorType
+from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
 
 GUIDS_UNABLE_TO_DELETE = {
     "c85a9054-e80d-4e6f-b7d9-5967c39b5868",
@@ -262,8 +262,7 @@ def test_create_glossary(client: AtlanClient, increment_counter):
     assert not response.mutated_entities.UPDATE
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
-    assert response.guid_assignments[glossary.guid]
-    guid = response.guid_assignments[glossary.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert response.mutated_entities.CREATE
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
@@ -282,7 +281,7 @@ def test_create_multiple_glossaries_one_at_time(client: AtlanClient, increment_c
     assert not response.mutated_entities.UPDATE
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
-    guid = response.guid_assignments[glossary.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
     assert glossary.guid == guid
@@ -297,7 +296,7 @@ def test_create_multiple_glossaries_one_at_time(client: AtlanClient, increment_c
     assert not response.mutated_entities.UPDATE
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
-    guid = response.guid_assignments[glossary.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
     assert glossary.guid == guid
@@ -308,11 +307,8 @@ def test_create_multiple_glossaries(client: AtlanClient, increment_counter):
     count = 2
     for i in range(count):
         entities.append(
-            AtlasGlossary(
-                attributes=AtlasGlossary.Attributes(
-                    name=f"Integration Test Glossary {increment_counter() + i}",
-                    user_description="This a test glossary",
-                )
+            AtlasGlossary.create(
+                name=f"Integration Test Glossary {increment_counter() + i}"
             )
         )
     response = client.upsert(entities)
@@ -320,10 +316,8 @@ def test_create_multiple_glossaries(client: AtlanClient, increment_counter):
     assert not response.mutated_entities.UPDATE
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == count
-    for i in range(count):
-        guid = response.guid_assignments[entities[i].guid]
-        glossary = response.mutated_entities.CREATE[i]
-        assert glossary.guid == guid
+    for glossary in response.assets_created(AtlasGlossary):
+        assert glossary.guid in response.guid_assignments.values()
 
 
 def test_create_glossary_category(client: AtlanClient, increment_counter):
@@ -346,7 +340,7 @@ def test_create_glossary_category(client: AtlanClient, increment_counter):
     assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
-    guid = response.guid_assignments[category.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryCategory)
     category = response.mutated_entities.CREATE[0]
     assert isinstance(category, AtlasGlossaryCategory)
@@ -375,7 +369,7 @@ def test_create_glossary_term(client: AtlanClient, increment_counter):
     assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
     assert response.mutated_entities.CREATE
     assert len(response.mutated_entities.CREATE) == 1
-    guid = response.guid_assignments[term.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
     term = response.mutated_entities.CREATE[0]
     assert guid == term.guid
@@ -405,7 +399,7 @@ def test_create_hierarchy(client: AtlanClient, increment_counter):
     response = client.upsert(category_1)
     assert len(response.assets_updated(AtlasGlossary)) == 1
     assert len(response.assets_created(AtlasGlossaryCategory)) == 1
-    guid = response.guid_assignments[category_1.guid]
+    guid = list(response.guid_assignments.values())[0]
     category_1 = response.assets_created(AtlasGlossaryCategory)[0]
     assert guid == category_1.guid
     category_2 = AtlasGlossaryCategory.create(
@@ -414,7 +408,7 @@ def test_create_hierarchy(client: AtlanClient, increment_counter):
         parent_category=category_1,
     )
     response = client.upsert(category_2)
-    guid = response.guid_assignments[category_2.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert len(response.assets_updated(AtlasGlossary)) == 1
     assert len(response.assets_updated(AtlasGlossaryCategory)) == 1
     assert len(response.assets_created(AtlasGlossaryCategory)) == 1
@@ -426,7 +420,7 @@ def test_create_hierarchy(client: AtlanClient, increment_counter):
     response = client.upsert(term)
     assert len(response.assets_updated(AtlasGlossary)) == 1
     assert len(response.assets_updated(AtlasGlossaryCategory)) == 1
-    guid = response.guid_assignments[term.guid]
+    guid = list(response.guid_assignments.values())[0]
     assert len(response.assets_created(AtlasGlossaryTerm)) == 1
     term = response.assets_created(AtlasGlossaryTerm)[0]
     assert guid == term.guid
@@ -651,3 +645,28 @@ def test_add_and_remove_classifications(client: AtlanClient):
         glossary_term.guid, asset_type=AtlasGlossaryTerm
     )
     assert glossary_term.classifications is None
+
+
+def test_update_remove_certificate(client: AtlanClient):
+    glossary = AtlasGlossary.create("Integration Certificate Test")
+    glossary.attributes.user_description = "This is a description of the glossary"
+    glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
+    message = "An important message"
+    asset = client.update_certificate(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+        certificate_status=CertificateStatus.DRAFT,
+        message=message,
+    )
+    assert asset is not None
+    assert asset.certificate_status == CertificateStatus.DRAFT
+    assert asset.certificate_status_message == message
+    asset = client.remove_certificate(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+    )
+    assert asset is not None
+    assert asset.certificate_status is None
+    assert asset.certificate_status_message is None

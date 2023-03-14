@@ -67,6 +67,8 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
 
     @{{ property_name }}.setter
     def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
         self.attributes.{{ property_name }} = {{ property_name }}
 
     {%- endfor %}
@@ -75,7 +77,11 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
 class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
     """Description"""
-
+{% if entity_def.name == "Referenceable" %}
+    def __init__(__pydantic_self__, **data:Any)->None:
+        super().__init__(**data)
+        __pydantic_self__.__fields_set__.add('type_name')
+{% endif %}
     def __setattr__(self, name, value):
             if name in {{ entity_def.name }}._convience_properties:
                 return object.__setattr__(self, name, value)
@@ -100,7 +106,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             pass
 
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        default_factory=lambda : eval("{{ entity_def.name  }}.Attributes()"),
+        None,
         description='Map of attributes in the instance and their values. The specific keys of this map will vary '
                     'by type, so are described in the sub-types of this schema.\n',
     )
@@ -125,9 +131,9 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         example="Hard",
     )
     guid: str = Field(
+        "",
         description='Unique identifier of the entity instance.\n',
         example='917ffec9-fa84-4c59-8e6c-c7b114d04be3',
-        default_factory=next_id,
     )
     is_incomplete: Optional[bool] = Field(True, description='', example=True)
     labels: Optional[List[str]] = Field(None, description='Internal use only.')
@@ -500,7 +506,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         # @validate_arguments()
         def create(cls, name: StrictStr)->{{ entity_def.name }}.Attributes:
             validate_required_fields(["name"], [name])
-            return AtlasGlossary.Attributes(name=name)
+            return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
         {%- elif entity_def.name == "AtlasGlossaryCategory" %}
         @classmethod
         # @validate_arguments()
@@ -512,7 +518,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         ) -> AtlasGlossaryCategory.Attributes:
             validate_required_fields(["name", "anchor"], [name, anchor])
             return AtlasGlossaryCategory.Attributes(
-                name=name, anchor=anchor, parent_category=parent_category
+                name=name, anchor=anchor, parent_category=parent_category, qualified_name=next_id()
             )
         {%- elif entity_def.name == "AtlasGlossaryTerm" %}
         @classmethod
@@ -525,11 +531,11 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         ) -> AtlasGlossaryTerm.Attributes:
             validate_required_fields(["name", "anchor"], [name, anchor])
             return AtlasGlossaryTerm.Attributes(
-                name=name, anchor=anchor, categories=categories
+                name=name, anchor=anchor, categories=categories, qualified_name=next_id()
             )
         {%- endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        default_factory=lambda : eval("{{ entity_def.name  }}.Attributes()"),
+        None,
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
                     'type, so are described in the sub-types of this schema.\n',
     )

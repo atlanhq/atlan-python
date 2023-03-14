@@ -30,6 +30,7 @@ from pyatlan.client.constants import (
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_ROLES,
     INDEX_SEARCH,
+    PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
     UPDATE_ENTITY_BY_ATTRIBUTE,
 )
 from pyatlan.error import AtlanError, NotFoundError
@@ -48,6 +49,7 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.core import (
+    AssetRequest,
     AssetResponse,
     AtlanObject,
     BulkRequest,
@@ -55,7 +57,7 @@ from pyatlan.model.core import (
     ClassificationName,
     Classifications,
 )
-from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory
+from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import IndexSearchRequest
@@ -177,8 +179,12 @@ class AtlanClient(BaseSettings):
         super().__init__(**data)
         self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
-    def _call_api(self, api, query_params=None, request_obj=None):
-        params, path = self._create_params(api, query_params, request_obj)
+    def _call_api(
+        self, api, query_params=None, request_obj=None, exclude_unset: bool = True
+    ):
+        params, path = self._create_params(
+            api, query_params, request_obj, exclude_unset
+        )
         response = self._session.request(api.method.value, path, **params)
         if response is not None:
             LOGGER.debug("HTTP Status: %s", response.status_code)
@@ -227,7 +233,9 @@ class AtlanClient(BaseSettings):
                     )
             raise AtlanServiceException(api, response)
 
-    def _create_params(self, api, query_params, request_obj):
+    def _create_params(
+        self, api, query_params, request_obj, exclude_unset: bool = True
+    ):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.host, api.path)
         params["headers"]["Accept"] = api.consumes
@@ -236,7 +244,9 @@ class AtlanClient(BaseSettings):
             params["params"] = query_params
         if request_obj is not None:
             if isinstance(request_obj, AtlanObject):
-                params["data"] = request_obj.json(by_alias=True, exclude_none=True)
+                params["data"] = request_obj.json(
+                    by_alias=True, exclude_unset=exclude_unset
+                )
             else:
                 params["data"] = json.dumps(request_obj)
         if LOGGER.isEnabledFor(logging.DEBUG):
@@ -435,7 +445,9 @@ class AtlanClient(BaseSettings):
                 param="category",
             )
             # Throw an invalid request exception
-        raw_json = self._call_api(CREATE_TYPE_DEFS, request_obj=payload)
+        raw_json = self._call_api(
+            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=False
+        )
         return TypeDefResponse(**raw_json)
 
     def purge_typedef(self, internal_name: str) -> None:
@@ -487,3 +499,47 @@ class AtlanClient(BaseSettings):
             ),
             query_params,
         )
+
+    @validate_arguments()
+    def update_certificate(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        certificate_status: CertificateStatus,
+        message: str,
+    ) -> Optional[A]:
+        asset = asset_type()
+        asset.qualified_name = qualified_name
+        asset.certificate_status = certificate_status
+        asset.name = name
+        asset.certificate_status_message = message
+        return self._update_asset_by_attribute(asset, asset_type, qualified_name)
+
+    def _update_asset_by_attribute(self, asset, asset_type, qualified_name: str):
+        query_params = {"attr:qualifiedName": qualified_name}
+        raw_json = self._call_api(
+            PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
+                asset_type.__name__
+            ),
+            query_params,
+            AssetRequest[Asset](entity=asset),
+        )
+        response = AssetMutationResponse(**raw_json)
+        assets = response.assets_partially_updated(asset_type=asset_type)
+        if assets:
+            return assets[0]
+        assets = response.assets_updated(asset_type=asset_type)
+        if assets:
+            return assets[0]
+        return None
+
+    @validate_arguments()
+    def remove_certificate(
+        self, asset_type: Type[A], qualified_name: str, name: str
+    ) -> Optional[A]:
+        asset = asset_type()
+        asset.qualified_name = qualified_name
+        asset.name = name
+        asset.remove_certificate()
+        return self._update_asset_by_attribute(asset, asset_type, qualified_name)
