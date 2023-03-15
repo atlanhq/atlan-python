@@ -28,6 +28,12 @@ class MutatedEntities(AtlanObject):
         "type of asset, but listed in the example are the common set of properties across assets.",
         alias="DELETE",
     )
+    PARTIAL_UPDATE: Optional[list[Asset]] = Field(
+        None,
+        description="Assets that were partially updated. The detailed properties of the returned asset will "
+        "vary based on the type of asset, but listed in the example are the common set of properties across assets.",
+        alias="DELETE",
+    )
 
 
 A = TypeVar("A", bound=Asset)
@@ -39,6 +45,9 @@ class AssetMutationResponse(AtlanObject):
     )
     mutated_entities: Optional[MutatedEntities] = Field(
         None, description="Assets that were changed."
+    )
+    partial_updated_entities: Optional[list[Asset]] = Field(
+        None, description="Assets that were partially updated"
     )
 
     def assets_created(self, asset_type: Type[A]) -> list[A]:
@@ -64,6 +73,15 @@ class AssetMutationResponse(AtlanObject):
             return [
                 asset
                 for asset in self.mutated_entities.DELETE
+                if isinstance(asset, asset_type)
+            ]
+        return []
+
+    def assets_partially_updated(self, asset_type: Type[A]) -> list[A]:
+        if self.mutated_entities and self.mutated_entities.PARTIAL_UPDATE:
+            return [
+                asset
+                for asset in self.mutated_entities.PARTIAL_UPDATE
                 if isinstance(asset, asset_type)
             ]
         return []
