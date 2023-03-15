@@ -670,3 +670,24 @@ def test_update_remove_certificate(client: AtlanClient):
     assert asset is not None
     assert asset.certificate_status is None
     assert asset.certificate_status_message is None
+
+
+def test_update_remove_announcement(client: AtlanClient, announcement: Announcement):
+    glossary = AtlasGlossary.create("Integration Announcement Test")
+    glossary.attributes.user_description = "This is a description of the glossary"
+    glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
+    asset = client.update_announcement(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+        announcement=announcement,
+    )
+    assert asset is not None
+    assert asset.get_announcment() == announcement
+    asset = client.remove_announcement(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+    )
+    assert asset is not None
+    assert asset.get_announcment() is None
