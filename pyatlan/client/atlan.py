@@ -49,6 +49,7 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.core import (
+    Announcement,
     AssetRequest,
     AssetResponse,
     AtlanObject,
@@ -542,4 +543,28 @@ class AtlanClient(BaseSettings):
         asset.qualified_name = qualified_name
         asset.name = name
         asset.remove_certificate()
+        return self._update_asset_by_attribute(asset, asset_type, qualified_name)
+
+    @validate_arguments()
+    def update_announcement(
+        self,
+        asset_type: Type[A],
+        qualified_name: str,
+        name: str,
+        announcement: Announcement,
+    ) -> Optional[A]:
+        asset = asset_type()
+        asset.qualified_name = qualified_name
+        asset.set_announcement(announcement)
+        asset.name = name
+        return self._update_asset_by_attribute(asset, asset_type, qualified_name)
+
+    @validate_arguments()
+    def remove_announcement(
+        self, asset_type: Type[A], qualified_name: str, name: str
+    ) -> Optional[A]:
+        asset = asset_type()
+        asset.qualified_name = qualified_name
+        asset.name = name
+        asset.remove_announcement()
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
