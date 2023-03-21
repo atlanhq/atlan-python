@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional, TypeVar
 
 from pydantic import Field, StrictStr, root_validator, validator
 
@@ -59,6 +59,9 @@ def validate_required_fields(field_names: list[str], values: list[Any]):
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
+
+
+SelfAsset = TypeVar("SelfAsset", bound="Asset")
 
 
 class Referenceable(AtlanObject):
@@ -1472,6 +1475,12 @@ class Asset(Referenceable):
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset], qualified_name: str, name: str
+    ) -> SelfAsset:
+        return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
 
     @classmethod
     def __get_validators__(cls):

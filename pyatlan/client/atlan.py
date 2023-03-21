@@ -367,6 +367,7 @@ class AtlanClient(BaseSettings):
         query_params = {
             "replaceClassifications": replace_classifications,
             "replaceBusinessAttributes": replace_custom_metadata,
+            "overwriteBusinessAttribute": replace_custom_metadata,
         }
         entities: list[Asset] = []
         if isinstance(entity, list):

@@ -647,6 +647,21 @@ def test_add_and_remove_classifications(client: AtlanClient):
     assert glossary_term.classifications is None
 
 
+def test_create_for_modification(client: AtlanClient):
+    qualified_name = (
+        "default/snowflake/1669038939/GREENE_HOMES_DEMO/STAGE/CONTRACT_STATUS"
+    )
+    classification_name = "TEST"
+    client.add_classifications(Table, qualified_name, [classification_name])
+    table = Table.create_for_modification(
+        qualified_name=qualified_name, name="CONTRACT_STATUS"
+    )
+    response = client.upsert(table, replace_classifications=True)
+    tables = response.assets_updated(asset_type=Table)
+    assert 1 == len(tables)
+    assert 0 == len(tables[0].classifications)
+
+
 def test_update_remove_certificate(client: AtlanClient):
     glossary = AtlasGlossary.create("Integration Certificate Test")
     glossary.attributes.user_description = "This is a description of the glossary"

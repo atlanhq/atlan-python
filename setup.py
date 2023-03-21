@@ -29,7 +29,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pyatlan",
-    version="0.0.15",
+    version="0.0.16",
     author="Atlan Pte, Ltd",
     author_email="engineering@atlan.com",
     description="Atlan Python Client",
@@ -41,6 +41,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
+        "Development Status :: 4 - Beta",
     ],
     packages=find_packages(),
     install_requires=requirements,
