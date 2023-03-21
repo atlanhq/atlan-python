@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import sys
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional, TypeVar
 
 from pydantic import Field, StrictStr, root_validator, validator
 
@@ -73,6 +73,7 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
 
     {%- endfor %}
 {% endmacro %}
+SelfAsset = TypeVar("SelfAsset", bound="Asset")
 {% for entity_def in entity_defs %}
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
 class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
@@ -253,6 +254,12 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset], qualified_name: str, name: str
+    ) -> SelfAsset:
+        return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
 
     @classmethod
     def __get_validators__(cls):
