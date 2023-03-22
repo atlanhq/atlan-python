@@ -21,7 +21,7 @@
 from setuptools import find_packages, setup
 
 # External dependencies
-requirements = ["requests>=2.24", "pydantic", "jinja2"]
+requirements = ["requests>=2.24", "pydantic>=1.10.4", "jinja2>=3.1.2"]
 
 long_description = ""
 with open("README.md", "r") as fh:
@@ -29,8 +29,8 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pyatlan",
-    version="0.0.16",
-    author="Atlan Pte, Ltd",
+    version="0.0.17",
+    author="Atlan Technologies Pvt Ltd",
     author_email="engineering@atlan.com",
     description="Atlan Python Client",
     long_description=long_description,
@@ -45,8 +45,22 @@ setup(
     ],
     packages=find_packages(),
     install_requires=requirements,
+    extra_requires={
+        "dev": [
+            "pytest>=7.2.0",
+            "flake8>=5.0.4",
+            "mypy>=0.991",
+            "black>=22.10.0",
+            "types-requests>=2.28.11.4",
+            "pre-commit>=2.20.0",
+            "deepdiff>=6.2.1",
+            "pytest-cov>=4.0.0",
+            "twine>=4.0.2",
+        ]
+    },
     include_package_data=True,
     zip_safe=False,
-    keywords="atlas client, apache atlas",
+    keywords="atlan client",
     python_requires=">=3.9",
+    repository="https://github.com/atlanhq/atlan-python",
 )
