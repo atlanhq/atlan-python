@@ -41,7 +41,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pyatlan",
-    version=read("version.txt"),
+    version=read("pyatlan/version.txt"),
     author="Atlan Technologies Pvt Ltd",
     author_email="engineering@atlan.com",
     description="Atlan Python Client",
