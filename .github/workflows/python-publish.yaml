@@ -32,7 +32,7 @@ jobs:
           pip install build
       - name: check tag
         id: check-tag
-        run: ./check_tag.py
+        run: python check_tag.py
       - name: Build package
         run: python -m build
       - name: Publish package
