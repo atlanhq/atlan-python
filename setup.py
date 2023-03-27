@@ -18,10 +18,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import io
+import os
+
 from setuptools import find_packages, setup
 
 # External dependencies
 requirements = ["requests>=2.24", "pydantic>=1.10.4", "jinja2>=3.1.2"]
+
+
+def read(file_name):
+    """Read a text file and return the content as a string."""
+    with io.open(
+        os.path.join(os.path.dirname(__file__), file_name), encoding="utf-8"
+    ) as f:
+        return f.read()
+
 
 long_description = ""
 with open("README.md", "r") as fh:
@@ -29,7 +41,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pyatlan",
-    version="0.0.17",
+    version=read("version.txt"),
     author="Atlan Technologies Pvt Ltd",
     author_email="engineering@atlan.com",
     description="Atlan Python Client",
