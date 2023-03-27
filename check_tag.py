@@ -34,7 +34,7 @@ def read(file_name):
 def main(env_var="GITHUB_REF") -> int:
     git_ref = os.getenv(env_var, "none")
     tag = re.sub("^refs/tags/v*", "", git_ref.lower())
-    version = read("version.txt").strip()
+    version = read("pyatlan/version.txt").strip()
     if tag == version:
         return 0
     else:
