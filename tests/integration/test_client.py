@@ -10,6 +10,6 @@ def test_register_client_with_bad_parameter_raises_valueerror():
 
 
 def test_register_client():
-    client = AtlanClient(host="http://mark.atlan.com", api_key="123")
+    client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
     AtlanClient.register_client(client)
     assert AtlanClient.get_default_client() == client

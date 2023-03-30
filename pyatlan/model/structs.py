@@ -37,6 +37,20 @@ class Histogram(AtlanObject):
         frequencies: set[float] = Field(None, description="", alias="frequencies")
 
 
+class KafkaTopicConsumption(AtlanObject):
+    """Description"""
+
+    class Attributes(AtlanObject):
+        topic_name: Optional[str] = Field(None, description="", alias="topicName")
+        topic_partition: Optional[str] = Field(
+            None, description="", alias="topicPartition"
+        )
+        topic_lag: Optional[int] = Field(None, description="", alias="topicLag")
+        topic_current_offset: Optional[int] = Field(
+            None, description="", alias="topicCurrentOffset"
+        )
+
+
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
