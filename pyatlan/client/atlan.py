@@ -113,7 +113,7 @@ def get_session():
 
 class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
-    host: HttpUrl
+    base_url: HttpUrl
     api_key: str
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
@@ -238,7 +238,7 @@ class AtlanClient(BaseSettings):
         self, api, query_params, request_obj, exclude_unset: bool = True
     ):
         params = copy.deepcopy(self._request_params)
-        path = os.path.join(self.host, api.path)
+        path = os.path.join(self.base_url, api.path)
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
         if query_params is not None:
