@@ -40,6 +40,12 @@ TYPE_REPLACEMENTS = [
     ("query_username_strategy", "QueryUsernameStrategy"),
     ("google_datastudio_asset_type", "GoogleDatastudioAssetType"),
     ("powerbi_endorsement", "PowerbiEndorsement"),
+    ("kafka_topic_compression_type", "KafkaTopicCompressionType"),
+    ("kafka_topic_cleanup_policy", "PowerbiEndorsement"),
+    ("quick_sight_folder_type", "QuickSightFolderType"),
+    ("quick_sight_dataset_field_type", "QuickSightDatasetFieldType"),
+    ("quick_sight_analysis_status", "QuickSightAnalysisStatus"),
+    ("quick_sight_dataset_import_mode", "QuickSightDatasetImportMode"),
 ]
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 

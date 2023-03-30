@@ -143,6 +143,46 @@ class AtlanDeleteType(Enum):
     SOFT = "SOFT"
 
 
+class KafkaTopicCompressionType(Enum):
+    UNCOMPRESSED = "uncompressed"
+    ZSTD = "zstd"
+    LZ4 = "lz4"
+    SNAPPY = "snappy"
+    GZIP = "gzip"
+    PRODUCER = "producer"
+
+
+class KafkaTopicCleanupPolicy(Enum):
+    COMPACT = "compact"
+    DELETE = "delete"
+
+
+class QuickSightFolderType(Enum):
+    SHARED = "SHARED"
+
+
+class QuickSightDatasetFieldType(Enum):
+    STRING = "STRING"
+    INTEGER = "INTEGER"
+    DECIMAL = "DECIMAL"
+    DATETIME = "DATETIME"
+
+
+class QuickSightAnalysisStatus(Enum):
+    CREATION_IN_PROGRESS = "CREATION_IN_PROGRESS"
+    CREATION_SUCCESSFUL = "CREATION_SUCCESSFUL"
+    CREATION_FAILED = "CREATION_FAILED"
+    UPDATE_IN_PROGRESS = "UPDATE_IN_PROGRESS"
+    UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFUL"
+    UPDATE_FAILED = "UPDATE_FAILED"
+    DELETED = "DELETED"
+
+
+class QuickSightDatasetImportMode(Enum):
+    SPICE = "SPICE"
+    DIRECT_QUERY = "DIRECT_QUERY"
+
+
 class AtlanConnectionCategory(Enum):
     WAREHOUSE = "warehouse"
     BI = "bi"

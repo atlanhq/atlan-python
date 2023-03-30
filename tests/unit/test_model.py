@@ -53,11 +53,17 @@ from pyatlan.model.enums import (
     CertificateStatus,
     GoogleDatastudioAssetType,
     IconType,
+    KafkaTopicCompressionType,
     PowerbiEndorsement,
     QueryUsernameStrategy,
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
     SourceCostUnitType,
 )
 from pyatlan.model.response import AssetMutationResponse
+from pyatlan.model.structs import KafkaTopicConsumption
 from pyatlan.model.typedef import TypeDefResponse
 
 TABLE_URL = "POsWut55wIYsXZ5v4z3K98"
@@ -114,6 +120,12 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[list[DbtMetricFilter]]": [DbtMetricFilter()],
     "Optional[Histogram]": Histogram(),
     "Optional[list[ColumnValueFrequencyMap]]": [ColumnValueFrequencyMap()],
+    "Optional[KafkaTopicCompressionType]": KafkaTopicCompressionType.GZIP,
+    "Optional[QuickSightFolderType]": QuickSightFolderType.SHARED,
+    "Optional[QuickSightDatasetFieldType]": QuickSightDatasetFieldType.STRING,
+    "Optional[QuickSightAnalysisStatus]": QuickSightAnalysisStatus.CREATION_FAILED,
+    "Optional[QuickSightDatasetImportMode]": QuickSightDatasetImportMode.SPICE,
+    "Optional[list[KafkaTopicConsumption]]": [KafkaTopicConsumption()],
 }
 
 

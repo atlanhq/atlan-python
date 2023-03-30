@@ -34,8 +34,13 @@ from pyatlan.model.enums import (
     EntityStatus,
     GoogleDatastudioAssetType,
     IconType,
+    KafkaTopicCompressionType,
     PowerbiEndorsement,
     QueryUsernameStrategy,
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
     SourceCostUnitType,
 )
 from pyatlan.model.internal import AtlasServer, Internal
@@ -48,6 +53,7 @@ from pyatlan.model.structs import (
     GoogleLabel,
     GoogleTag,
     Histogram,
+    KafkaTopicConsumption,
     PopularityInsights,
 )
 from pyatlan.utils import next_id
@@ -3610,6 +3616,25 @@ class Folder(Namespace):
     )
 
 
+class EventStore(Catalog):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in EventStore._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("EventStore", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "EventStore":
+            raise ValueError("must be EventStore")
+        return v
+
+
 class ObjectStore(Catalog):
     """Description"""
 
@@ -4440,6 +4465,9 @@ class SQL(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -5752,6 +5780,25 @@ class DbtColumnProcess(Dbt):
     )
 
 
+class Kafka(EventStore):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Kafka._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("Kafka", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Kafka":
+            raise ValueError("must be Kafka")
+        return v
+
+
 class Metric(DataQuality):
     """Description"""
 
@@ -5931,6 +5978,94 @@ class Metabase(BI):
         )  # relationship
 
     attributes: "Metabase.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSight(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSight._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_id",
+        "quick_sight_sheet_id",
+        "quick_sight_sheet_name",
+    ]
+
+    @property
+    def quick_sight_id(self) -> Optional[str]:
+        return self.attributes.quick_sight_id
+
+    @quick_sight_id.setter
+    def quick_sight_id(self, quick_sight_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_id = quick_sight_id
+
+    @property
+    def quick_sight_sheet_id(self) -> Optional[str]:
+        return self.attributes.quick_sight_sheet_id
+
+    @quick_sight_sheet_id.setter
+    def quick_sight_sheet_id(self, quick_sight_sheet_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_sheet_id = quick_sight_sheet_id
+
+    @property
+    def quick_sight_sheet_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_sheet_name
+
+    @quick_sight_sheet_name.setter
+    def quick_sight_sheet_name(self, quick_sight_sheet_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
+
+    type_name: str = Field("QuickSight", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSight":
+            raise ValueError("must be QuickSight")
+        return v
+
+    class Attributes(BI.Attributes):
+        quick_sight_id: Optional[str] = Field(
+            None, description="", alias="quickSightId"
+        )
+        quick_sight_sheet_id: Optional[str] = Field(
+            None, description="", alias="quickSightSheetId"
+        )
+        quick_sight_sheet_name: Optional[str] = Field(
+            None, description="", alias="quickSightSheetName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSight.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -6779,6 +6914,9 @@ class DbtModelColumn(Dbt):
         dbt_model_column_order: Optional[int] = Field(
             None, description="", alias="dbtModelColumnOrder"
         )
+        dbt_model_column_sql_columns: Optional[list[Column]] = Field(
+            None, description="", alias="dbtModelColumnSqlColumns"
+        )  # relationship
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
@@ -7020,6 +7158,9 @@ class DbtModel(Dbt):
         )  # relationship
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
+        )  # relationship
+        dbt_model_sql_assets: Optional[list[SQL]] = Field(
+            None, description="", alias="dbtModelSqlAssets"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -8592,6 +8733,9 @@ class TablePartition(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
@@ -8833,6 +8977,9 @@ class Table(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
         )  # relationship
@@ -9069,6 +9216,9 @@ class Query(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
@@ -9754,6 +9904,9 @@ class Column(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
         )  # relationship
@@ -9784,6 +9937,9 @@ class Column(SQL):
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
+        )  # relationship
+        column_dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+            None, description="", alias="columnDbtModelColumns"
         )  # relationship
 
     attributes: "Column.Attributes" = Field(
@@ -9851,6 +10007,9 @@ class Schema(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
@@ -10042,6 +10201,9 @@ class SnowflakeStream(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
@@ -10148,6 +10310,9 @@ class SnowflakePipe(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
@@ -10217,6 +10382,9 @@ class Database(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -10334,6 +10502,9 @@ class Procedure(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -10472,23 +10643,11 @@ class View(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -10499,11 +10658,26 @@ class View(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -10744,6 +10918,9 @@ class MaterialisedView(SQL):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -12184,6 +12361,295 @@ class S3Object(S3):
         return cls(attributes=attributes)
 
 
+class KafkaTopic(Kafka):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in KafkaTopic._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "kafka_topic_is_internal",
+        "kafka_topic_compression_type",
+        "kafka_topic_replication_factor",
+        "kafka_topic_segment_bytes",
+        "kafka_topic_partitions_count",
+        "kafka_topic_size_in_bytes",
+        "kafka_topic_record_count",
+        "kafka_topic_cleanup_policy",
+    ]
+
+    @property
+    def kafka_topic_is_internal(self) -> Optional[bool]:
+        return self.attributes.kafka_topic_is_internal
+
+    @kafka_topic_is_internal.setter
+    def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
+
+    @property
+    def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
+        return self.attributes.kafka_topic_compression_type
+
+    @kafka_topic_compression_type.setter
+    def kafka_topic_compression_type(
+        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
+
+    @property
+    def kafka_topic_replication_factor(self) -> Optional[int]:
+        return self.attributes.kafka_topic_replication_factor
+
+    @kafka_topic_replication_factor.setter
+    def kafka_topic_replication_factor(
+        self, kafka_topic_replication_factor: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
+
+    @property
+    def kafka_topic_segment_bytes(self) -> Optional[int]:
+        return self.attributes.kafka_topic_segment_bytes
+
+    @kafka_topic_segment_bytes.setter
+    def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
+
+    @property
+    def kafka_topic_partitions_count(self) -> Optional[int]:
+        return self.attributes.kafka_topic_partitions_count
+
+    @kafka_topic_partitions_count.setter
+    def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
+
+    @property
+    def kafka_topic_size_in_bytes(self) -> Optional[int]:
+        return self.attributes.kafka_topic_size_in_bytes
+
+    @kafka_topic_size_in_bytes.setter
+    def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
+
+    @property
+    def kafka_topic_record_count(self) -> Optional[int]:
+        return self.attributes.kafka_topic_record_count
+
+    @kafka_topic_record_count.setter
+    def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_record_count = kafka_topic_record_count
+
+    @property
+    def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
+        return self.attributes.kafka_topic_cleanup_policy
+
+    @kafka_topic_cleanup_policy.setter
+    def kafka_topic_cleanup_policy(
+        self, kafka_topic_cleanup_policy: Optional[PowerbiEndorsement]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
+
+    type_name: str = Field("KafkaTopic", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaTopic":
+            raise ValueError("must be KafkaTopic")
+        return v
+
+    class Attributes(Kafka.Attributes):
+        kafka_topic_is_internal: Optional[bool] = Field(
+            None, description="", alias="kafkaTopicIsInternal"
+        )
+        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
+            None, description="", alias="kafkaTopicCompressionType"
+        )
+        kafka_topic_replication_factor: Optional[int] = Field(
+            None, description="", alias="kafkaTopicReplicationFactor"
+        )
+        kafka_topic_segment_bytes: Optional[int] = Field(
+            None, description="", alias="kafkaTopicSegmentBytes"
+        )
+        kafka_topic_partitions_count: Optional[int] = Field(
+            None, description="", alias="kafkaTopicPartitionsCount"
+        )
+        kafka_topic_size_in_bytes: Optional[int] = Field(
+            None, description="", alias="kafkaTopicSizeInBytes"
+        )
+        kafka_topic_record_count: Optional[int] = Field(
+            None, description="", alias="kafkaTopicRecordCount"
+        )
+        kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
+            None, description="", alias="kafkaTopicCleanupPolicy"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
+            None, description="", alias="kafkaConsumerGroups"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "KafkaTopic.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class KafkaConsumerGroup(Kafka):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in KafkaConsumerGroup._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "kafka_consumer_group_topic_consumption_properties",
+        "kafka_consumer_group_member_count",
+        "kafka_topic_names",
+        "kafka_topic_qualified_names",
+    ]
+
+    @property
+    def kafka_consumer_group_topic_consumption_properties(
+        self,
+    ) -> Optional[list[KafkaTopicConsumption]]:
+        return self.attributes.kafka_consumer_group_topic_consumption_properties
+
+    @kafka_consumer_group_topic_consumption_properties.setter
+    def kafka_consumer_group_topic_consumption_properties(
+        self,
+        kafka_consumer_group_topic_consumption_properties: Optional[
+            list[KafkaTopicConsumption]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_topic_consumption_properties = (
+            kafka_consumer_group_topic_consumption_properties
+        )
+
+    @property
+    def kafka_consumer_group_member_count(self) -> Optional[int]:
+        return self.attributes.kafka_consumer_group_member_count
+
+    @kafka_consumer_group_member_count.setter
+    def kafka_consumer_group_member_count(
+        self, kafka_consumer_group_member_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_member_count = (
+            kafka_consumer_group_member_count
+        )
+
+    @property
+    def kafka_topic_names(self) -> Optional[set[str]]:
+        return self.attributes.kafka_topic_names
+
+    @kafka_topic_names.setter
+    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_names = kafka_topic_names
+
+    @property
+    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.kafka_topic_qualified_names
+
+    @kafka_topic_qualified_names.setter
+    def kafka_topic_qualified_names(
+        self, kafka_topic_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
+
+    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaConsumerGroup":
+            raise ValueError("must be KafkaConsumerGroup")
+        return v
+
+    class Attributes(Kafka.Attributes):
+        kafka_consumer_group_topic_consumption_properties: Optional[
+            list[KafkaTopicConsumption]
+        ] = Field(
+            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
+        )
+        kafka_consumer_group_member_count: Optional[int] = Field(
+            None, description="", alias="kafkaConsumerGroupMemberCount"
+        )
+        kafka_topic_names: Optional[set[str]] = Field(
+            None, description="", alias="kafkaTopicNames"
+        )
+        kafka_topic_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="kafkaTopicQualifiedNames"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        kafka_topics: Optional[list[KafkaTopic]] = Field(
+            None, description="", alias="kafkaTopics"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "KafkaConsumerGroup.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class MetabaseQuestion(Metabase):
     """Description"""
 
@@ -12448,6 +12914,610 @@ class MetabaseDashboard(Metabase):
         )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightFolder(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightFolder._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_folder_type",
+        "quick_sight_folder_hierarchy",
+    ]
+
+    @property
+    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
+        return self.attributes.quick_sight_folder_type
+
+    @quick_sight_folder_type.setter
+    def quick_sight_folder_type(
+        self, quick_sight_folder_type: Optional[QuickSightFolderType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_folder_type = quick_sight_folder_type
+
+    @property
+    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return self.attributes.quick_sight_folder_hierarchy
+
+    @quick_sight_folder_hierarchy.setter
+    def quick_sight_folder_hierarchy(
+        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
+
+    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightFolder":
+            raise ValueError("must be QuickSightFolder")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
+            None, description="", alias="quickSightFolderType"
+        )
+        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="quickSightFolderHierarchy"
+        )
+        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
+            None, description="", alias="quickSightDashboards"
+        )  # relationship
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
+            None, description="", alias="quickSightAnalyses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
+            None, description="", alias="quickSightDatasets"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightFolder.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDashboardVisual(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDashboardVisual._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dashboard_qualified_name",
+    ]
+
+    @property
+    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_dashboard_qualified_name
+
+    @quick_sight_dashboard_qualified_name.setter
+    def quick_sight_dashboard_qualified_name(
+        self, quick_sight_dashboard_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_qualified_name = (
+            quick_sight_dashboard_qualified_name
+        )
+
+    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboardVisual":
+            raise ValueError("must be QuickSightDashboardVisual")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDashboardQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
+            None, description="", alias="quickSightDashboard"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightDashboardVisual.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightAnalysisVisual(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysisVisual._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_qualified_name",
+    ]
+
+    @property
+    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_analysis_qualified_name
+
+    @quick_sight_analysis_qualified_name.setter
+    def quick_sight_analysis_qualified_name(
+        self, quick_sight_analysis_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_qualified_name = (
+            quick_sight_analysis_qualified_name
+        )
+
+    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysisVisual":
+            raise ValueError("must be QuickSightAnalysisVisual")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightAnalysisQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
+            None, description="", alias="quickSightAnalysis"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDatasetField(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDatasetField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dataset_field_type",
+        "quick_sight_dataset_qualified_name",
+    ]
+
+    @property
+    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
+        return self.attributes.quick_sight_dataset_field_type
+
+    @quick_sight_dataset_field_type.setter
+    def quick_sight_dataset_field_type(
+        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
+
+    @property
+    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_dataset_qualified_name
+
+    @quick_sight_dataset_qualified_name.setter
+    def quick_sight_dataset_qualified_name(
+        self, quick_sight_dataset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_qualified_name = (
+            quick_sight_dataset_qualified_name
+        )
+
+    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDatasetField":
+            raise ValueError("must be QuickSightDatasetField")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
+            None, description="", alias="quickSightDatasetFieldType"
+        )
+        quick_sight_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDatasetQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        quick_sight_dataset: Optional[QuickSightDataset] = Field(
+            None, description="", alias="quickSightDataset"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightDatasetField.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightAnalysis(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysis._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_status",
+        "quick_sight_analysis_calculated_fields",
+        "quick_sight_analysis_parameter_declarations",
+        "quick_sight_analysis_filter_groups",
+    ]
+
+    @property
+    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
+        return self.attributes.quick_sight_analysis_status
+
+    @quick_sight_analysis_status.setter
+    def quick_sight_analysis_status(
+        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
+
+    @property
+    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_calculated_fields
+
+    @quick_sight_analysis_calculated_fields.setter
+    def quick_sight_analysis_calculated_fields(
+        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_calculated_fields = (
+            quick_sight_analysis_calculated_fields
+        )
+
+    @property
+    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_parameter_declarations
+
+    @quick_sight_analysis_parameter_declarations.setter
+    def quick_sight_analysis_parameter_declarations(
+        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_parameter_declarations = (
+            quick_sight_analysis_parameter_declarations
+        )
+
+    @property
+    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_filter_groups
+
+    @quick_sight_analysis_filter_groups.setter
+    def quick_sight_analysis_filter_groups(
+        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_filter_groups = (
+            quick_sight_analysis_filter_groups
+        )
+
+    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysis":
+            raise ValueError("must be QuickSightAnalysis")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
+            None, description="", alias="quickSightAnalysisStatus"
+        )
+        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisCalculatedFields"
+        )
+        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisParameterDeclarations"
+        )
+        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisFilterGroups"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
+            None, description="", alias="quickSightAnalysisVisuals"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightAnalysisFolders"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightAnalysis.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDashboard(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dashboard_published_version_number",
+        "quick_sight_dashboard_last_published_time",
+    ]
+
+    @property
+    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
+        return self.attributes.quick_sight_dashboard_published_version_number
+
+    @quick_sight_dashboard_published_version_number.setter
+    def quick_sight_dashboard_published_version_number(
+        self, quick_sight_dashboard_published_version_number: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_published_version_number = (
+            quick_sight_dashboard_published_version_number
+        )
+
+    @property
+    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+        return self.attributes.quick_sight_dashboard_last_published_time
+
+    @quick_sight_dashboard_last_published_time.setter
+    def quick_sight_dashboard_last_published_time(
+        self, quick_sight_dashboard_last_published_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_last_published_time = (
+            quick_sight_dashboard_last_published_time
+        )
+
+    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboard":
+            raise ValueError("must be QuickSightDashboard")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_published_version_number: Optional[int] = Field(
+            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+        )
+        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
+            None, description="", alias="quickSightDashboardLastPublishedTime"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDashboardFolders"
+        )  # relationship
+        quick_sight_dashboard_visuals: Optional[
+            list[QuickSightDashboardVisual]
+        ] = Field(
+            None, description="", alias="quickSightDashboardVisuals"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightDashboard.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDataset(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dataset_import_mode",
+        "quick_sight_dataset_column_count",
+    ]
+
+    @property
+    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
+        return self.attributes.quick_sight_dataset_import_mode
+
+    @quick_sight_dataset_import_mode.setter
+    def quick_sight_dataset_import_mode(
+        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_import_mode = (
+            quick_sight_dataset_import_mode
+        )
+
+    @property
+    def quick_sight_dataset_column_count(self) -> Optional[int]:
+        return self.attributes.quick_sight_dataset_column_count
+
+    @quick_sight_dataset_column_count.setter
+    def quick_sight_dataset_column_count(
+        self, quick_sight_dataset_column_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_column_count = (
+            quick_sight_dataset_column_count
+        )
+
+    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDataset":
+            raise ValueError("must be QuickSightDataset")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
+            None, description="", alias="quickSightDatasetImportMode"
+        )
+        quick_sight_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="quickSightDatasetColumnCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDatasetFolders"
+        )  # relationship
+        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
+            None, description="", alias="quickSightDatasetFields"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QuickSightDataset.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -18681,6 +19751,25 @@ class SalesforceReport(Salesforce):
     )
 
 
+class QlikStream(QlikSpace):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikStream._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("QlikStream", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikStream":
+            raise ValueError("must be QlikStream")
+        return v
+
+
 Referenceable.update_forward_refs()
 AtlasGlossary.update_forward_refs()
 
@@ -18726,6 +19815,8 @@ Collection.Attributes.update_forward_refs()
 
 Folder.Attributes.update_forward_refs()
 
+EventStore.Attributes.update_forward_refs()
+
 ObjectStore.Attributes.update_forward_refs()
 
 DataQuality.Attributes.update_forward_refs()
@@ -18756,9 +19847,13 @@ S3.Attributes.update_forward_refs()
 
 DbtColumnProcess.Attributes.update_forward_refs()
 
+Kafka.Attributes.update_forward_refs()
+
 Metric.Attributes.update_forward_refs()
 
 Metabase.Attributes.update_forward_refs()
+
+QuickSight.Attributes.update_forward_refs()
 
 PowerBI.Attributes.update_forward_refs()
 
@@ -18832,11 +19927,29 @@ S3Bucket.Attributes.update_forward_refs()
 
 S3Object.Attributes.update_forward_refs()
 
+KafkaTopic.Attributes.update_forward_refs()
+
+KafkaConsumerGroup.Attributes.update_forward_refs()
+
 MetabaseQuestion.Attributes.update_forward_refs()
 
 MetabaseCollection.Attributes.update_forward_refs()
 
 MetabaseDashboard.Attributes.update_forward_refs()
+
+QuickSightFolder.Attributes.update_forward_refs()
+
+QuickSightDashboardVisual.Attributes.update_forward_refs()
+
+QuickSightAnalysisVisual.Attributes.update_forward_refs()
+
+QuickSightDatasetField.Attributes.update_forward_refs()
+
+QuickSightAnalysis.Attributes.update_forward_refs()
+
+QuickSightDashboard.Attributes.update_forward_refs()
+
+QuickSightDataset.Attributes.update_forward_refs()
 
 PowerBIReport.Attributes.update_forward_refs()
 
@@ -18949,3 +20062,5 @@ SalesforceOrganization.Attributes.update_forward_refs()
 SalesforceDashboard.Attributes.update_forward_refs()
 
 SalesforceReport.Attributes.update_forward_refs()
+
+QlikStream.Attributes.update_forward_refs()
