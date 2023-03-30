@@ -1484,8 +1484,12 @@ class Asset(Referenceable):
 
     @classmethod
     def create_for_modification(
-        cls: type[SelfAsset], qualified_name: str, name: str
+        cls: type[SelfAsset], qualified_name: str = "", name: str = ""
     ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name"],
+            [name, qualified_name],
+        )
         return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
 
     @classmethod
@@ -2244,6 +2248,25 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         return cls(
             attributes=AtlasGlossaryTerm.Attributes.create(
                 name=name, anchor=anchor, categories=categories
+            )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
             )
         )
 

@@ -62,7 +62,7 @@ def announcement() -> Announcement:
 
 @pytest.fixture(scope="session")
 def atlan_host() -> str:
-    return get_environment_variable("ATLAN_HOST")
+    return get_environment_variable("ATLAN_BASE_URL")
 
 
 @pytest.fixture(scope="session")
@@ -376,6 +376,15 @@ def test_create_glossary_term(client: AtlanClient, increment_counter):
     term = client.get_asset_by_guid(guid, AtlasGlossaryTerm)
     assert isinstance(term, AtlasGlossaryTerm)
     assert term.guid == guid
+
+    term = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=term.qualified_name,
+        name=term.name,
+        glossary_guid=glossary.guid,
+    )
+    term.user_description = "This is an important term"
+    response = client.upsert(term)
+    assert 1 == len(response.assets_updated(AtlasGlossaryTerm))
 
 
 def test_create_hierarchy(client: AtlanClient, increment_counter):
