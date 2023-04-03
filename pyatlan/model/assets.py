@@ -59,6 +59,19 @@ from pyatlan.model.structs import (
 from pyatlan.utils import next_id
 
 
+def validate_single_required_field(field_names: list[str], values: list[Any]):
+    indexes = [idx for idx, value in enumerate(values) if value is not None]
+    if not indexes:
+        raise ValueError(
+            f"One of the following parameters are required: {', '.join(field_names)}"
+        )
+    if len(indexes) > 1:
+        names = [field_names[idx] for idx in indexes]
+        raise ValueError(
+            f"Only one of the following parameters are allowed: {', '.join(names)}"
+        )
+
+
 def validate_required_fields(field_names: list[str], values: list[Any]):
     for field_name, value in zip(field_names, values):
         if value is None:
@@ -2210,10 +2223,22 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             cls,
             *,
             name: StrictStr,
-            anchor: AtlasGlossary,
+            anchor: Optional[AtlasGlossary] = None,
+            glossary_qualified_name: Optional[StrictStr] = None,
+            glossary_guid: Optional[StrictStr] = None,
             categories: Optional[list[AtlasGlossaryCategory]] = None,
         ) -> AtlasGlossaryTerm.Attributes:
-            validate_required_fields(["name", "anchor"], [name, anchor])
+            validate_required_fields(["name"], [name])
+            validate_single_required_field(
+                ["anchor", "glossary_qualified_name", "glossary_guid"],
+                [anchor, glossary_qualified_name, glossary_guid],
+            )
+            if glossary_qualified_name:
+                anchor = AtlasGlossary()
+                anchor.qualified_name = glossary_qualified_name
+            if glossary_guid:
+                anchor = AtlasGlossary()
+                anchor.guid = glossary_guid
             return AtlasGlossaryTerm.Attributes(
                 name=name,
                 anchor=anchor,

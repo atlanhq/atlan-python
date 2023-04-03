@@ -37,6 +37,7 @@ from pyatlan.model.assets import (
     Schema,
     Table,
     View,
+    validate_single_required_field,
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import (
@@ -1320,3 +1321,34 @@ def test_attributes(clazz, property_name, attribute_value):
         local_ns,
     )
     assert attribute_value == local_ns["ret_value"]
+
+
+@pytest.mark.parametrize(
+    "names, values, message",
+    [
+        (
+            ("one", "two"),
+            (None, None),
+            "One of the following parameters are required: one, two",
+        ),
+        (
+            ("one", "two"),
+            (1, 2),
+            "Only one of the following parameters are allowed: one, two",
+        ),
+        (
+            ("one", "two", "three"),
+            (1, None, 3),
+            "Only one of the following parameters are allowed: one, three",
+        ),
+    ],
+)
+def test_validate_single_required_field_with_bad_values_raises_value_error(
+    names, values, message
+):
+    with pytest.raises(ValueError, match=message):
+        validate_single_required_field(names, values)
+
+
+def test_validate_single_required_field_with_only_one_field_does_not_raise_value_error():
+    validate_single_required_field(["One", "Two", "Three"], [None, None, 3])
