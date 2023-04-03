@@ -1980,7 +1980,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: StrictStr) -> AtlasGlossary.Attributes:
+        def create(cls, *, name: StrictStr) -> AtlasGlossary.Attributes:
             validate_required_fields(["name"], [name])
             return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
 
@@ -2002,9 +2002,9 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: StrictStr) -> AtlasGlossary:
+    def create(cls, *, name: StrictStr) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
 
 
 class DataSet(Asset, type_name="DataSet"):
@@ -2208,6 +2208,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: StrictStr,
             anchor: AtlasGlossary,
             categories: Optional[list[AtlasGlossaryCategory]] = None,
@@ -2240,6 +2241,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: StrictStr,
         anchor: AtlasGlossary,
         categories: Optional[list[AtlasGlossaryCategory]] = None,
@@ -2646,6 +2648,7 @@ class Connection(Asset, type_name="Connection"):
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: str,
             connector_type: AtlanConnectorType,
             admin_users: Optional[list[str]] = None,
@@ -2680,6 +2683,7 @@ class Connection(Asset, type_name="Connection"):
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: str,
         connector_type: AtlanConnectorType,
         admin_users: Optional[list[str]] = None,
@@ -2900,6 +2904,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: StrictStr,
             anchor: AtlasGlossary,
             parent_category: Optional[AtlasGlossaryCategory] = None,
@@ -2932,6 +2937,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: StrictStr,
         anchor: AtlasGlossary,
         parent_category: Optional[AtlasGlossaryCategory] = None,
@@ -9024,7 +9030,7 @@ class Table(SQL):
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, schema_qualified_name: str) -> Table.Attributes:
+        def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
             validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
@@ -9054,11 +9060,13 @@ class Table(SQL):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, schema_qualified_name: str) -> Table:
+    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
-        attributes = Table.Attributes.create(name, schema_qualified_name)
+        attributes = Table.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
         return cls(attributes=attributes)
 
 
@@ -10070,7 +10078,9 @@ class Schema(SQL):
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, database_qualified_name: str) -> Schema.Attributes:
+        def create(
+            cls, *, name: str, database_qualified_name: str
+        ) -> Schema.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
             validate_required_fields(
@@ -10100,11 +10110,13 @@ class Schema(SQL):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, database_qualified_name: str) -> Schema:
+    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
         validate_required_fields(
             ["name", "database_qualified_name"], [name, database_qualified_name]
         )
-        attributes = Schema.Attributes.create(name, database_qualified_name)
+        attributes = Schema.Attributes.create(
+            name=name, database_qualified_name=database_qualified_name
+        )
         return cls(attributes=attributes)
 
 
@@ -10448,7 +10460,7 @@ class Database(SQL):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, connection_qualified_name: str) -> Database:
+    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
         if not name:
             raise ValueError("name cannot be blank")
         validate_required_fields(
@@ -10705,7 +10717,7 @@ class View(SQL):
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, schema_qualified_name: str) -> View.Attributes:
+        def create(cls, *, name: str, schema_qualified_name: str) -> View.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
             validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
@@ -10735,11 +10747,13 @@ class View(SQL):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, schema_qualified_name: str) -> View:
+    def create(cls, *, name: str, schema_qualified_name: str) -> View:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
-        attributes = View.Attributes.create(name, schema_qualified_name)
+        attributes = View.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
         return cls(attributes=attributes)
 
 
@@ -12110,7 +12124,7 @@ class S3Bucket(S3):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: str, connection_qualified_name: str, aws_arn: str
+            cls, *, name: str, connection_qualified_name: str, aws_arn: str
         ) -> S3Bucket.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "aws_arn"],
@@ -12144,14 +12158,16 @@ class S3Bucket(S3):
     @classmethod
     # @validate_arguments()
     def create(
-        cls, name: str, connection_qualified_name: str, aws_arn: str
+        cls, *, name: str, connection_qualified_name: str, aws_arn: str
     ) -> S3Bucket:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
             [name, connection_qualified_name, aws_arn],
         )
         attributes = S3Bucket.Attributes.create(
-            name, connection_qualified_name, aws_arn
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
         )
         return cls(attributes=attributes)
 
@@ -12330,6 +12346,7 @@ class S3Object(S3):
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: str,
             connection_qualified_name: str,
             aws_arn: str,
@@ -12369,6 +12386,7 @@ class S3Object(S3):
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
@@ -12379,7 +12397,10 @@ class S3Object(S3):
             [name, connection_qualified_name, aws_arn],
         )
         attributes = S3Object.Attributes.create(
-            name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
 

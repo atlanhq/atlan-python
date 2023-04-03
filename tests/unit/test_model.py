@@ -166,7 +166,8 @@ def announcement():
 @pytest.fixture()
 def table():
     return Table.create(
-        "MKT_EXPENSES", "efault/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
+        name="MKT_EXPENSES",
+        schema_qualified_name="default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE",
     )
 
 
@@ -982,12 +983,13 @@ def test_glossary_attributes_create_when_missing_name_raises_validation_error():
 
 
 def test_glossary_attributes_create_sets_name():
-    sut = AtlasGlossary.Attributes.create("Bob")
+    sut = AtlasGlossary.Attributes.create(name="Bob")
     assert sut.name == "Bob"
 
 
 @pytest.mark.parametrize(
-    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+    "name, anchor",
+    [("A Category", None), (None, AtlasGlossary.create(name="glossary"))],
 )
 def test_glossary_category_attributes_create_when_missing_name_raises_validation_error(
     name, anchor
@@ -997,14 +999,15 @@ def test_glossary_category_attributes_create_when_missing_name_raises_validation
 
 
 def test_glossary_category_attributes_create_sets_name_anchor():
-    glossary = AtlasGlossary.create("Glossary")
-    sut = AtlasGlossaryCategory.Attributes.create("Bob", anchor=glossary)
+    glossary = AtlasGlossary.create(name="Glossary")
+    sut = AtlasGlossaryCategory.Attributes.create(name="Bob", anchor=glossary)
     assert sut.name == "Bob"
     assert sut.anchor == glossary
 
 
 @pytest.mark.parametrize(
-    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+    "name, anchor",
+    [("A Category", None), (None, AtlasGlossary.create(name="glossary"))],
 )
 def test_glossary_term_attributes_create_when_missing_name_raises_validation_error(
     name, anchor
@@ -1015,8 +1018,8 @@ def test_glossary_term_attributes_create_when_missing_name_raises_validation_err
 
 
 def test_glossary_term_attributes_create_sets_name_anchor():
-    glossary = AtlasGlossary.create("Glossary")
-    sut = AtlasGlossaryTerm.Attributes.create("Bob", anchor=glossary)
+    glossary = AtlasGlossary.create(name="Glossary")
+    sut = AtlasGlossaryTerm.Attributes.create(name="Bob", anchor=glossary)
     assert sut.name == "Bob"
     assert sut.anchor == glossary
 

@@ -368,6 +368,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: str,
             connector_type: AtlanConnectorType,
             admin_users: Optional[list[str]] = None,
@@ -414,7 +415,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%-  elif entity_def.name == "Schema" %}
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, database_qualified_name: str)->{{ entity_def.name }}.Attributes:
+        def create(cls, *, name: str, database_qualified_name: str)->{{ entity_def.name }}.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
             validate_required_fields(["database_qualified_name"], [database_qualified_name])
@@ -436,7 +437,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%- elif entity_def.name == "Table" or entity_def.name == "View" %}
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, schema_qualified_name: str)->{{ entity_def.name }}.Attributes:
+        def create(cls, *, name: str, schema_qualified_name: str)->{{ entity_def.name }}.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
             validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
@@ -461,7 +462,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         @classmethod
         # @validate_arguments()
         def create(
-            cls, name: str, connection_qualified_name: str, aws_arn: str
+            cls, *, name: str, connection_qualified_name: str, aws_arn: str
         ) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "aws_arn"],
@@ -490,6 +491,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: str,
             connection_qualified_name: str,
             aws_arn: str,
@@ -521,7 +523,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%- elif entity_def.name == "AtlasGlossary" %}
         @classmethod
         # @validate_arguments()
-        def create(cls, name: StrictStr)->{{ entity_def.name }}.Attributes:
+        def create(cls, *, name: StrictStr)->{{ entity_def.name }}.Attributes:
             validate_required_fields(["name"], [name])
             return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
         {%- elif entity_def.name == "AtlasGlossaryCategory" %}
@@ -529,6 +531,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: StrictStr,
             anchor: AtlasGlossary,
             parent_category: Optional[AtlasGlossaryCategory] = None,
@@ -542,6 +545,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         # @validate_arguments()
         def create(
             cls,
+            *,
             name: StrictStr,
             anchor: AtlasGlossary,
             categories: Optional[list[AtlasGlossaryCategory]] = None,
@@ -561,6 +565,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: str,
         connector_type: AtlanConnectorType,
         admin_users: Optional[list[str]] = None,
@@ -588,7 +593,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- elif entity_def.name == "Database" %}
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, connection_qualified_name: str)->{{ entity_def.name }}:
+    def create(cls, *, name: str, connection_qualified_name: str)->{{ entity_def.name }}:
         if not name:
             raise ValueError("name cannot be blank")
         validate_required_fields(["connection_qualified_name"], [connection_qualified_name])
@@ -609,29 +614,29 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- elif entity_def.name == "Schema" %}
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, database_qualified_name: str)->{{ entity_def.name }}:
+    def create(cls, *, name: str, database_qualified_name: str)->{{ entity_def.name }}:
         validate_required_fields(["name", "database_qualified_name"], [name, database_qualified_name])
-        attributes = Schema.Attributes.create(name, database_qualified_name)
+        attributes = Schema.Attributes.create(name=name, database_qualified_name=database_qualified_name)
         return cls(attributes=attributes)
     {%- elif entity_def.name == "Table" or entity_def.name == "View" %}
     @classmethod
     # @validate_arguments()
-    def create(cls, name: str, schema_qualified_name: str)->{{ entity_def.name }}:
+    def create(cls, *, name: str, schema_qualified_name: str)->{{ entity_def.name }}:
         validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
-        attributes = {{ entity_def.name }}.Attributes.create(name, schema_qualified_name)
+        attributes = {{ entity_def.name }}.Attributes.create(name=name, schema_qualified_name=schema_qualified_name)
         return cls(attributes=attributes)
     {%- elif entity_def.name == "S3Bucket" %}
     @classmethod
     # @validate_arguments()
     def create(
-        cls, name: str, connection_qualified_name: str, aws_arn: str
+        cls, *, name: str, connection_qualified_name: str, aws_arn: str
     ) -> {{ entity_def.name }}:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
             [name, connection_qualified_name, aws_arn],
         )
         attributes = {{ entity_def.name }}.Attributes.create(
-            name, connection_qualified_name, aws_arn
+            name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
         )
         return cls(attributes=attributes)
     {%- elif entity_def.name == "S3Object" %}
@@ -639,6 +644,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
@@ -649,7 +655,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             [name, connection_qualified_name, aws_arn],
         )
         attributes = S3Object.Attributes.create(
-            name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name
         )
         return cls(attributes=attributes)
     {%- endif %}
@@ -662,14 +671,15 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- if entity_def.name == "AtlasGlossary" %}
     @classmethod
     # @validate_arguments()
-    def create(cls, name: StrictStr)->{{ entity_def.name }}:
+    def create(cls, *, name: StrictStr)->{{ entity_def.name }}:
         validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name))
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
     {% elif entity_def.name == "AtlasGlossaryCategory" %}
     @classmethod
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: StrictStr,
         anchor: AtlasGlossary,
         parent_category: Optional[AtlasGlossaryCategory] = None,
@@ -685,6 +695,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     # @validate_arguments()
     def create(
         cls,
+        *,
         name: StrictStr,
         anchor: AtlasGlossary,
         categories: Optional[list[AtlasGlossaryCategory]] = None,
