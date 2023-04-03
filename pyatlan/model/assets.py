@@ -240,6 +240,8 @@ class Referenceable(AtlanObject):
     )
     pending_tasks: Optional[list[str]] = Field(None)
 
+    unique_attributes: Optional[dict[str, Any]] = Field(None)
+
     def validate_required(self):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
@@ -2235,7 +2237,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
             if glossary_qualified_name:
                 anchor = AtlasGlossary()
-                anchor.qualified_name = glossary_qualified_name
+                anchor.unique_attributes = {"qualifiedName": glossary_qualified_name}
             if glossary_guid:
                 anchor = AtlasGlossary()
                 anchor.guid = glossary_guid
@@ -2268,13 +2270,19 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         cls,
         *,
         name: StrictStr,
-        anchor: AtlasGlossary,
+        anchor: Optional[AtlasGlossary] = None,
+        glossary_qualified_name: Optional[StrictStr] = None,
+        glossary_guid: Optional[StrictStr] = None,
         categories: Optional[list[AtlasGlossaryCategory]] = None,
     ) -> AtlasGlossaryTerm:
-        validate_required_fields(["name", "anchor"], [name, anchor])
+        validate_required_fields(["name"], [name])
         return cls(
             attributes=AtlasGlossaryTerm.Attributes.create(
-                name=name, anchor=anchor, categories=categories
+                name=name,
+                anchor=anchor,
+                glossary_qualified_name=glossary_qualified_name,
+                glossary_guid=glossary_guid,
+                categories=categories,
             )
         )
 

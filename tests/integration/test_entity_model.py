@@ -389,6 +389,67 @@ def test_create_glossary_term(client: AtlanClient, increment_counter):
     assert 1 == len(response.assets_updated(AtlasGlossaryTerm))
 
 
+def test_create_glossary_term_with_glossary_guid(
+    client: AtlanClient, increment_counter
+):
+    suffix = increment_counter()
+    glossary = AtlasGlossary.create(name=f"Integration Test Glossary {suffix}")
+    response = client.upsert(glossary)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
+    glossary = response.mutated_entities.CREATE[0]
+    term = AtlasGlossaryTerm.create(
+        name=f"Integration Test Glossary Term {suffix}", glossary_guid=glossary.guid
+    )
+    response = client.upsert(term)
+    assert response.mutated_entities
+    assert response.mutated_entities.UPDATE
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = list(response.guid_assignments.values())[0]
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
+    term = response.mutated_entities.CREATE[0]
+    assert guid == term.guid
+    term = client.get_asset_by_guid(guid, AtlasGlossaryTerm)
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert term.guid == guid
+
+
+def test_create_glossary_term_with_glossary_qualified_name(
+    client: AtlanClient, increment_counter
+):
+    suffix = increment_counter()
+    glossary = AtlasGlossary.create(name=f"Integration Test Glossary {suffix}")
+    response = client.upsert(glossary)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
+    glossary = response.mutated_entities.CREATE[0]
+    term = AtlasGlossaryTerm.create(
+        name=f"Integration Test Glossary Term {suffix}",
+        glossary_qualified_name=glossary.qualified_name,
+    )
+    response = client.upsert(term)
+    assert response.mutated_entities
+    assert response.mutated_entities.UPDATE
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = list(response.guid_assignments.values())[0]
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
+    term = response.mutated_entities.CREATE[0]
+    assert guid == term.guid
+    term = client.get_asset_by_guid(guid, AtlasGlossaryTerm)
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert term.guid == guid
+
+
 def test_create_hierarchy(client: AtlanClient, increment_counter):
     suffix = increment_counter()
     glossary = AtlasGlossary(
