@@ -341,9 +341,13 @@ class AtlanClient(BaseSettings):
                 GET_ENTITY_BY_GUID.format_path_with_params(guid),
                 query_params,
             )
-            raw_json["entity"]["attributes"].update(
-                raw_json["entity"]["relationshipAttributes"]
-            )
+            if (
+                "relationshipAttributes" in raw_json["entity"]
+                and raw_json["entity"]["relationshipAttributes"]
+            ):
+                raw_json["entity"]["attributes"].update(
+                    raw_json["entity"]["relationshipAttributes"]
+                )
             raw_json["entity"]["relationshipAttributes"] = {}
             asset = AssetResponse[A](**raw_json).entity
             asset.is_incomplete = False
