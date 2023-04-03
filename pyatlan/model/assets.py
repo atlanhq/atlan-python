@@ -262,15 +262,16 @@ class Referenceable(AtlanObject):
             raise ValueError(
                 f"Business attributes {name} are not applicable to {self.type_name}"
             )
-        ba_type = CustomMetadataCache.get_type_for_id(ba_id)
-        if not ba_type:
+        if ba_type := CustomMetadataCache.get_type_for_id(ba_id):
+            return (
+                ba_type(self.business_attributes[ba_id])
+                if self.business_attributes and ba_id in self.business_attributes
+                else ba_type()
+            )
+        else:
             raise ValueError(
                 f"Business attributes {name} are not applicable to {self.type_name}"
             )
-        if self.business_attributes and ba_id in self.business_attributes:
-            return ba_type(self.business_attributes[ba_id])
-        else:
-            return ba_type()
 
     def set_business_attribute(self, business_attributes: BusinessAttributes) -> None:
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
