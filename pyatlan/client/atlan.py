@@ -400,6 +400,13 @@ class AtlanClient(BaseSettings):
         )
         return AssetMutationResponse(**raw_json)
 
+    def delete_entity_by_guid(self, guid) -> AssetMutationResponse:
+        raw_json = self._call_api(
+            DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
+            {"deleteType": AtlanDeleteType.SOFT.value},
+        )
+        return AssetMutationResponse(**raw_json)
+
     def search(self, criteria: IndexSearchRequest) -> SearchResults:
         raw_json = self._call_api(
             INDEX_SEARCH,
