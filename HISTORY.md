@@ -1,6 +1,7 @@
 ## 0.0.20 (Apr 5, 2023)
 
 * Corrected issue with from, size and track_total_hits in DSL object not being sent to server if the defaults weren't changed
+* Added relation_attributes parameter to IndexSearchRequest to specify the attributes to be included in each relationship that is included in the results of the search
 
 ## 0.0.19 (Mar 30, 2023)
 
