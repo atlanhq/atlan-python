@@ -156,6 +156,7 @@ class AtlanClient(BaseSettings):
                 request_obj=self._criteria,
             )
             if "entities" not in raw_json:
+                self._assets = []
                 return False
             self._assets = parse_obj_as(list[Asset], raw_json["entities"])
             return True
