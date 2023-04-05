@@ -1,3 +1,7 @@
+## 0.0.20 (Apr 5, 2023)
+
+* Corrected issue with from, size and track_total_hits in DSL object not being sent to server if the defaults weren't changed
+
 ## 0.0.19 (Mar 30, 2023)
 
 * Renamed environment variable used to specify the Atlan URL from ATLAN_HOST to ATLAN_BASE_URL

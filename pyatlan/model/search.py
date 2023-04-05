@@ -1735,6 +1735,10 @@ class DSL(AtlanObject):
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
+    def __init__(__pydantic_self__, **data: Any) -> None:
+        super().__init__(**data)
+        __pydantic_self__.__fields_set__.update(["from_", "size", "track_total_hits"])
+
     @validator("query", always=True)
     def validate_query(cls, v, values):
         if not v and ("post_filter" not in values or not values["post_filter"]):
