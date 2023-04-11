@@ -1,3 +1,9 @@
+## 0.0.21 (Apr 11, 2023)
+
+* Added relation_attributes parameter to IndexSearchRequest to specify the attributes to be included in each relationship that is included in the results of the search
+* Set assets to empty list when no entities are returned by search
+* Add classmethod ref_by_guid to Referencable
+
 ## 0.0.20 (Apr 5, 2023)
 
 * Corrected issue with from, size and track_total_hits in DSL object not being sent to server if the defaults weren't changed
