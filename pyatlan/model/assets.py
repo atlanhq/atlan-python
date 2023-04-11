@@ -1509,6 +1509,12 @@ class Asset(Referenceable):
         return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
 
     @classmethod
+    def ref_by_guid(cls: type[SelfAsset], guid: str) -> SelfAsset:
+        retval: SelfAsset = cls(attributes=cls.Attributes())
+        retval.guid = guid
+        return retval
+
+    @classmethod
     def __get_validators__(cls):
         yield cls._convert_to_real_type_
 
