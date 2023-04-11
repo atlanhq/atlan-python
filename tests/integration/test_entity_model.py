@@ -256,7 +256,9 @@ def test_purge_glossary(create_glossary, client: AtlanClient):
 
 
 def test_create_glossary(client: AtlanClient, increment_counter):
-    glossary = AtlasGlossary.create(f"Integration Test Glossary {increment_counter()}")
+    glossary = AtlasGlossary.create(
+        name=f"Integration Test Glossary {increment_counter()}"
+    )
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert not response.mutated_entities.UPDATE
@@ -322,7 +324,7 @@ def test_create_multiple_glossaries(client: AtlanClient, increment_counter):
 
 def test_create_glossary_category(client: AtlanClient, increment_counter):
     suffix = increment_counter()
-    glossary = AtlasGlossary.create(f"Integration Test Glossary {suffix}")
+    glossary = AtlasGlossary.create(name=f"Integration Test Glossary {suffix}")
     glossary.attributes.user_description = "This a test glossary"
     response = client.upsert(glossary)
     assert response.mutated_entities
@@ -330,7 +332,7 @@ def test_create_glossary_category(client: AtlanClient, increment_counter):
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
     category = AtlasGlossaryCategory.create(
-        f"Integration Test Glossary Category {suffix}", anchor=glossary
+        name=f"Integration Test Glossary Category {suffix}", anchor=glossary
     )
     category.attributes.user_description = "This is a test glossary category"
     response = client.upsert(category)
@@ -352,14 +354,14 @@ def test_create_glossary_category(client: AtlanClient, increment_counter):
 
 def test_create_glossary_term(client: AtlanClient, increment_counter):
     suffix = increment_counter()
-    glossary = AtlasGlossary.create(f"Integration Test Glossary {suffix}")
+    glossary = AtlasGlossary.create(name=f"Integration Test Glossary {suffix}")
     response = client.upsert(glossary)
     assert response.mutated_entities
     assert response.mutated_entities.CREATE
     assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
     glossary = response.mutated_entities.CREATE[0]
     term = AtlasGlossaryTerm.create(
-        f"Integration Test Glossary Term {suffix}", anchor=glossary
+        name=f"Integration Test Glossary Term {suffix}", anchor=glossary
     )
     response = client.upsert(term)
     assert response.mutated_entities
@@ -385,6 +387,67 @@ def test_create_glossary_term(client: AtlanClient, increment_counter):
     term.user_description = "This is an important term"
     response = client.upsert(term)
     assert 1 == len(response.assets_updated(AtlasGlossaryTerm))
+
+
+def test_create_glossary_term_with_glossary_guid(
+    client: AtlanClient, increment_counter
+):
+    suffix = increment_counter()
+    glossary = AtlasGlossary.create(name=f"Integration Test Glossary {suffix}")
+    response = client.upsert(glossary)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
+    glossary = response.mutated_entities.CREATE[0]
+    term = AtlasGlossaryTerm.create(
+        name=f"Integration Test Glossary Term {suffix}", glossary_guid=glossary.guid
+    )
+    response = client.upsert(term)
+    assert response.mutated_entities
+    assert response.mutated_entities.UPDATE
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = list(response.guid_assignments.values())[0]
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
+    term = response.mutated_entities.CREATE[0]
+    assert guid == term.guid
+    term = client.get_asset_by_guid(guid, AtlasGlossaryTerm)
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert term.guid == guid
+
+
+def test_create_glossary_term_with_glossary_qualified_name(
+    client: AtlanClient, increment_counter
+):
+    suffix = increment_counter()
+    glossary = AtlasGlossary.create(name=f"Integration Test Glossary {suffix}")
+    response = client.upsert(glossary)
+    assert response.mutated_entities
+    assert response.mutated_entities.CREATE
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossary)
+    glossary = response.mutated_entities.CREATE[0]
+    term = AtlasGlossaryTerm.create(
+        name=f"Integration Test Glossary Term {suffix}",
+        glossary_qualified_name=glossary.qualified_name,
+    )
+    response = client.upsert(term)
+    assert response.mutated_entities
+    assert response.mutated_entities.UPDATE
+    assert response.mutated_entities.UPDATE
+    assert len(response.mutated_entities.UPDATE) == 1
+    assert isinstance(response.mutated_entities.UPDATE[0], AtlasGlossary)
+    assert response.mutated_entities.CREATE
+    assert len(response.mutated_entities.CREATE) == 1
+    guid = list(response.guid_assignments.values())[0]
+    assert isinstance(response.mutated_entities.CREATE[0], AtlasGlossaryTerm)
+    term = response.mutated_entities.CREATE[0]
+    assert guid == term.guid
+    term = client.get_asset_by_guid(guid, AtlasGlossaryTerm)
+    assert isinstance(term, AtlasGlossaryTerm)
+    assert term.guid == guid
 
 
 def test_create_hierarchy(client: AtlanClient, increment_counter):
@@ -616,7 +679,7 @@ def test_get_by_qualified_name(client: AtlanClient):
 @pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_view(client: AtlanClient, increment_counter):
     view = View.create(
-        f"Integration {increment_counter()}",
+        name=f"Integration {increment_counter()}",
         schema_qualified_name="default/snowflake/1658945299/ATLAN_SAMPLE_DATA/US_ECONOMIC_DATA",
     )
     response = client.upsert(view)
@@ -632,11 +695,11 @@ def test_create_view(client: AtlanClient, increment_counter):
 
 
 def test_add_and_remove_classifications(client: AtlanClient):
-    glossary = AtlasGlossary.create("Integration Classification Test")
+    glossary = AtlasGlossary.create(name="Integration Classification Test")
     glossary.attributes.user_description = "This is a description of the glossary"
     glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
     glossary_term = AtlasGlossaryTerm.create(
-        "Integration Classification Term", anchor=glossary
+        name="Integration Classification Term", anchor=glossary
     )
     glossary_term = client.upsert(glossary_term).assets_created(AtlasGlossaryTerm)[0]
     qualified_name = glossary_term.attributes.qualified_name
@@ -666,13 +729,14 @@ def test_create_for_modification(client: AtlanClient):
         qualified_name=qualified_name, name="CONTRACT_STATUS"
     )
     response = client.upsert(table, replace_classifications=True)
-    tables = response.assets_updated(asset_type=Table)
+    assert (tables := response.assets_updated(asset_type=Table))
     assert 1 == len(tables)
+    assert tables[0].classifications is not None
     assert 0 == len(tables[0].classifications)
 
 
 def test_update_remove_certificate(client: AtlanClient):
-    glossary = AtlasGlossary.create("Integration Certificate Test")
+    glossary = AtlasGlossary.create(name="Integration Certificate Test")
     glossary.attributes.user_description = "This is a description of the glossary"
     glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
     message = "An important message"
@@ -697,7 +761,7 @@ def test_update_remove_certificate(client: AtlanClient):
 
 
 def test_update_remove_announcement(client: AtlanClient, announcement: Announcement):
-    glossary = AtlasGlossary.create("Integration Announcement Test")
+    glossary = AtlasGlossary.create(name="Integration Announcement Test")
     glossary.attributes.user_description = "This is a description of the glossary"
     glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
     asset = client.update_announcement(

@@ -1748,7 +1748,10 @@ class DSL(AtlanObject):
 
 class IndexSearchRequest(AtlanObject):
     dsl: DSL
-    attributes: list = Field(default_factory=list)
+    attributes: list[str] = Field(default_factory=list)
+    relation_attributes: list[str] = Field(
+        default_factory=list, alias="relationAttributes"
+    )
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}

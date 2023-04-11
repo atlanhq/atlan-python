@@ -37,6 +37,7 @@ from pyatlan.model.assets import (
     Schema,
     Table,
     View,
+    validate_single_required_field,
 )
 from pyatlan.model.core import Announcement, AssetResponse
 from pyatlan.model.enums import (
@@ -166,7 +167,8 @@ def announcement():
 @pytest.fixture()
 def table():
     return Table.create(
-        "MKT_EXPENSES", "efault/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
+        name="MKT_EXPENSES",
+        schema_qualified_name="default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE",
     )
 
 
@@ -982,12 +984,13 @@ def test_glossary_attributes_create_when_missing_name_raises_validation_error():
 
 
 def test_glossary_attributes_create_sets_name():
-    sut = AtlasGlossary.Attributes.create("Bob")
+    sut = AtlasGlossary.Attributes.create(name="Bob")
     assert sut.name == "Bob"
 
 
 @pytest.mark.parametrize(
-    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+    "name, anchor",
+    [("A Category", None), (None, AtlasGlossary.create(name="glossary"))],
 )
 def test_glossary_category_attributes_create_when_missing_name_raises_validation_error(
     name, anchor
@@ -997,14 +1000,15 @@ def test_glossary_category_attributes_create_when_missing_name_raises_validation
 
 
 def test_glossary_category_attributes_create_sets_name_anchor():
-    glossary = AtlasGlossary.create("Glossary")
-    sut = AtlasGlossaryCategory.Attributes.create("Bob", anchor=glossary)
+    glossary = AtlasGlossary.create(name="Glossary")
+    sut = AtlasGlossaryCategory.Attributes.create(name="Bob", anchor=glossary)
     assert sut.name == "Bob"
     assert sut.anchor == glossary
 
 
 @pytest.mark.parametrize(
-    "name, anchor", [("A Category", None), (None, AtlasGlossary.create("glossary"))]
+    "name, anchor",
+    [("A Category", None), (None, AtlasGlossary.create(name="glossary"))],
 )
 def test_glossary_term_attributes_create_when_missing_name_raises_validation_error(
     name, anchor
@@ -1015,8 +1019,8 @@ def test_glossary_term_attributes_create_when_missing_name_raises_validation_err
 
 
 def test_glossary_term_attributes_create_sets_name_anchor():
-    glossary = AtlasGlossary.create("Glossary")
-    sut = AtlasGlossaryTerm.Attributes.create("Bob", anchor=glossary)
+    glossary = AtlasGlossary.create(name="Glossary")
+    sut = AtlasGlossaryTerm.Attributes.create(name="Bob", anchor=glossary)
     assert sut.name == "Bob"
     assert sut.anchor == glossary
 
@@ -1317,3 +1321,34 @@ def test_attributes(clazz, property_name, attribute_value):
         local_ns,
     )
     assert attribute_value == local_ns["ret_value"]
+
+
+@pytest.mark.parametrize(
+    "names, values, message",
+    [
+        (
+            ("one", "two"),
+            (None, None),
+            "One of the following parameters are required: one, two",
+        ),
+        (
+            ("one", "two"),
+            (1, 2),
+            "Only one of the following parameters are allowed: one, two",
+        ),
+        (
+            ("one", "two", "three"),
+            (1, None, 3),
+            "Only one of the following parameters are allowed: one, three",
+        ),
+    ],
+)
+def test_validate_single_required_field_with_bad_values_raises_value_error(
+    names, values, message
+):
+    with pytest.raises(ValueError, match=message):
+        validate_single_required_field(names, values)
+
+
+def test_validate_single_required_field_with_only_one_field_does_not_raise_value_error():
+    validate_single_required_field(["One", "Two", "Three"], [None, None, 3])

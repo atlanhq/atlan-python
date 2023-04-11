@@ -156,6 +156,7 @@ class AtlanClient(BaseSettings):
                 request_obj=self._criteria,
             )
             if "entities" not in raw_json:
+                self._assets = []
                 return False
             self._assets = parse_obj_as(list[Asset], raw_json["entities"])
             return True
@@ -320,7 +321,7 @@ class AtlanClient(BaseSettings):
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code)
+                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
 
     @validate_arguments()
@@ -341,9 +342,13 @@ class AtlanClient(BaseSettings):
                 GET_ENTITY_BY_GUID.format_path_with_params(guid),
                 query_params,
             )
-            raw_json["entity"]["attributes"].update(
-                raw_json["entity"]["relationshipAttributes"]
-            )
+            if (
+                "relationshipAttributes" in raw_json["entity"]
+                and raw_json["entity"]["relationshipAttributes"]
+            ):
+                raw_json["entity"]["attributes"].update(
+                    raw_json["entity"]["relationshipAttributes"]
+                )
             raw_json["entity"]["relationshipAttributes"] = {}
             asset = AssetResponse[A](**raw_json).entity
             asset.is_incomplete = False
@@ -355,8 +360,17 @@ class AtlanClient(BaseSettings):
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code)
+                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
+
+    @validate_arguments()
+    def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
+        return self.get_asset_by_guid(
+            guid=guid,
+            asset_type=asset_type,
+            min_ext_info=True,
+            ignore_relationships=True,
+        )
 
     def upsert(
         self,
@@ -384,6 +398,13 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(
             DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
             {"deleteType": AtlanDeleteType.HARD.value},
+        )
+        return AssetMutationResponse(**raw_json)
+
+    def delete_entity_by_guid(self, guid) -> AssetMutationResponse:
+        raw_json = self._call_api(
+            DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
+            {"deleteType": AtlanDeleteType.SOFT.value},
         )
         return AssetMutationResponse(**raw_json)
 
@@ -419,7 +440,6 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        payload = None
         if isinstance(typedef, ClassificationDef):
             # Set up the request payload...
             payload = TypeDefResponse(
@@ -463,7 +483,7 @@ class AtlanClient(BaseSettings):
         classification_names: list[str],
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
-        restrict_lineage_propogation: bool = True,
+        restrict_lineage_propagation: bool = True,
     ) -> None:
         classifications = Classifications(
             __root__=[
@@ -471,7 +491,7 @@ class AtlanClient(BaseSettings):
                     type_name=ClassificationName(display_text=name),
                     propagate=propagate,
                     remove_propagations_on_entity_delete=remove_propagation_on_delete,
-                    restrict_propagation_through_lineage=restrict_lineage_propogation,
+                    restrict_propagation_through_lineage=restrict_lineage_propagation,
                 )
                 for name in classification_names
             ]
@@ -528,11 +548,9 @@ class AtlanClient(BaseSettings):
             AssetRequest[Asset](entity=asset),
         )
         response = AssetMutationResponse(**raw_json)
-        assets = response.assets_partially_updated(asset_type=asset_type)
-        if assets:
+        if assets := response.assets_partially_updated(asset_type=asset_type):
             return assets[0]
-        assets = response.assets_updated(asset_type=asset_type)
-        if assets:
+        if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return None
 
