@@ -3,6 +3,7 @@
 * Added relation_attributes parameter to IndexSearchRequest to specify the attributes to be included in each relationship that is included in the results of the search
 * Set assets to empty list when no entities are returned by search
 * Add classmethod ref_by_guid to Referencable
+* Add classmethod ref_by_qualified_name to Referencable
 
 ## 0.0.20 (Apr 5, 2023)
 
