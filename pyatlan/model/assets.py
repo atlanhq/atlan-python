@@ -10022,6 +10022,63 @@ class Column(SQL):
             None, description="", alias="columnDbtModelColumns"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+        ) -> Column.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["parent_qualified_name"], [parent_qualified_name])
+            fields = parent_qualified_name.split("/")
+            if len(fields) != 6:
+                raise ValueError("Invalid parent_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid parent_qualified_name") from e
+            ret_value = Column.Attributes(
+                name=name,
+                qualified_name=f"{parent_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                schema_name=fields[4],
+                schema_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
+                database_name=fields[3],
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                order=order,
+            )
+            if parent_type == Table:
+                ret_value.table_qualified_name = parent_qualified_name
+                ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
+            elif parent_type == View:
+                ret_value.view_qualified_name = parent_qualified_name
+                ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
+            elif parent_type == MaterialisedView:
+                ret_value.view_qualified_name = parent_qualified_name
+                ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
+                    parent_qualified_name
+                )
+            else:
+                raise ValueError(
+                    "parent_type must be either Table, View or MaterializeView"
+                )
+            return ret_value
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
+        return Column(
+            attributes=Column.Attributes.create(
+                name=name,
+                parent_qualified_name=parent_qualified_name,
+                parent_type=parent_type,
+                order=order,
+            )
+        )
+
     attributes: "Column.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "

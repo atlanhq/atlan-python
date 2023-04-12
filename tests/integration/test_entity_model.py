@@ -187,6 +187,7 @@ def cleanup(atlan_host, headers, atlan_api_key):
         "Database",
         "Connection",
         "View",
+        "Column",
     ]
     for type_name in type_names:
         print()
@@ -668,6 +669,61 @@ def test_create_view(client: AtlanClient, increment_counter):
     guid = response.guid_assignments[view.guid]
     view = response.mutated_entities.CREATE[0]
     assert guid == view.guid
+
+
+def test_create_column(client: AtlanClient, increment_counter):
+    role = RoleCache.get_id_for_name("$admin")
+    assert role
+    suffix = increment_counter()
+    # connection = Connection.create(
+    #     name=f"Integration {suffix}",
+    #     connector_type=AtlanConnectorType.SNOWFLAKE,
+    #     admin_roles=[role],
+    #     admin_groups=["admin"],
+    # )
+    # response = client.upsert(connection)
+    # assert response.mutated_entities
+    # assert response.mutated_entities.CREATE
+    # assert isinstance(response.mutated_entities.CREATE[0], Connection)
+    # connection = response.mutated_entities.CREATE[0]
+    # time.sleep(30)
+    connection = client.get_asset_by_guid(TEMP_CONNECTION_GUID, Connection)
+    database = Database.create(
+        name=f"Integration_{suffix}",
+        connection_qualified_name=connection.attributes.qualified_name,
+    )
+    response = client.upsert(database)
+    assert (databases := response.assets_created(asset_type=Database))
+    database = client.get_asset_by_guid(databases[0].guid, Database)
+    schema = Schema.create(
+        name=f"Integration_{suffix}",
+        database_qualified_name=database.attributes.qualified_name,
+    )
+    response = client.upsert(schema)
+    assert (schemas := response.assets_created(asset_type=Schema))
+    schema = client.get_asset_by_guid(schemas[0].guid, Schema)
+    table = Table.create(
+        name=f"Integration_{suffix}",
+        schema_qualified_name=schema.attributes.qualified_name,
+    )
+    response = client.upsert(table)
+    assert (tables := response.assets_created(asset_type=Table))
+    table = client.get_asset_by_guid(guid=tables[0].guid, asset_type=Table)
+    column = Column.create(
+        name=f"Integration_{suffix}_column",
+        parent_qualified_name=table.qualified_name,
+        parent_type=Table,
+        order=1,
+    )
+    response = client.upsert(column)
+    assert (columns := response.assets_created(asset_type=Column))
+    assert len(columns) == 1
+    column = client.get_asset_by_guid(asset_type=Column, guid=columns[0].guid)
+    table = client.get_asset_by_guid(asset_type=Table, guid=table.guid)
+    assert table.attributes.columns
+    columns = table.attributes.columns
+    assert len(columns) == 1
+    assert columns[0].guid == column.guid
 
 
 def test_add_and_remove_classifications(client: AtlanClient):
