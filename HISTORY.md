@@ -1,3 +1,9 @@
+## 0.0.22 (Apr 12, 2023)
+
+* Added create method to Column
+* Updated Schema.create method to add schema to Database schemas collection
+* Updated Table.create method to add table to Schema tables collection
+
 ## 0.0.21 (Apr 11, 2023)
 
 * Added relation_attributes parameter to IndexSearchRequest to specify the attributes to be included in each relationship that is included in the results of the search
