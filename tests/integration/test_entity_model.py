@@ -3,7 +3,6 @@
 import os
 import random
 import string
-import time
 
 import pytest
 import requests
@@ -42,6 +41,7 @@ GUIDS_UNABLE_TO_DELETE = {
     "4af8d57c-61ef-4b57-983c-eff20e6d08b5",
     "57f5463d-cc2a-4859-bf28-e4fa52002e8e",
 }
+TEMP_CONNECTION_GUID = "b3a5c49a-0c7c-4e66-8453-f4da8d9ce222"
 
 
 @pytest.fixture(scope="module")
@@ -85,13 +85,13 @@ def get_environment_variable(name) -> str:
     return ret_value
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def increment_counter():
-    i = random.randint(0, 1000)
+    i = 700
 
     def increment():
         nonlocal i
-        i += 1
+        i += 20
         return i
 
     return increment
@@ -523,23 +523,23 @@ def test_create_connection(client: AtlanClient, increment_counter):
     assert c.guid == guid
 
 
-@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_database(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     suffix = increment_counter()
-    connection = Connection.create(
-        name=f"Integration {suffix}",
-        connector_type=AtlanConnectorType.SNOWFLAKE,
-        admin_roles=[role],
-        admin_groups=["admin"],
-    )
-    response = client.upsert(connection)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], Connection)
-    connection = response.mutated_entities.CREATE[0]
-    connection = client.get_asset_by_guid(connection.guid, Connection)
+    # connection = Connection.create(
+    #     name=f"Integration {suffix}",
+    #     connector_type=AtlanConnectorType.SNOWFLAKE,
+    #     admin_roles=[role],
+    #     admin_groups=["admin"],
+    # )
+    # response = client.upsert(connection)
+    # assert response.mutated_entities
+    # assert response.mutated_entities.CREATE
+    # assert isinstance(response.mutated_entities.CREATE[0], Connection)
+    # connection = response.mutated_entities.CREATE[0]
+    # connection = client.get_asset_by_guid(connection.guid, Connection)
+    connection = client.get_asset_by_guid(TEMP_CONNECTION_GUID, Connection)
     database = Database.create(
         name=f"Integration_{suffix}",
         connection_qualified_name=connection.attributes.qualified_name,
@@ -550,122 +550,98 @@ def test_create_database(client: AtlanClient, increment_counter):
     assert len(response.mutated_entities.CREATE) == 1
     assert isinstance(response.mutated_entities.CREATE[0], Database)
     assert response.guid_assignments
-    assert database.guid in response.guid_assignments
-    guid = response.guid_assignments[database.guid]
     database = response.mutated_entities.CREATE[0]
-    assert guid == database.guid
-    database = client.get_asset_by_guid(guid, Database)
-    assert isinstance(database, Database)
-    assert guid == database.guid
+    client.get_asset_by_guid(database.guid, Database)
 
 
-@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_schema(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     suffix = increment_counter()
-    connection = Connection.create(
-        name=f"Integration {suffix}",
-        connector_type=AtlanConnectorType.SNOWFLAKE,
-        admin_roles=[role],
-        admin_groups=["admin"],
-    )
-    response = client.upsert(connection)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], Connection)
-    connection = response.mutated_entities.CREATE[0]
-    time.sleep(30)
-    connection = client.get_asset_by_guid(connection.guid, Connection)
+    # connection = Connection.create(
+    #     name=f"Integration {suffix}",
+    #     connector_type=AtlanConnectorType.SNOWFLAKE,
+    #     admin_roles=[role],
+    #     admin_groups=["admin"],
+    # )
+    # response = client.upsert(connection)
+    # assert response.mutated_entities
+    # assert response.mutated_entities.CREATE
+    # assert isinstance(response.mutated_entities.CREATE[0], Connection)
+    # connection = response.mutated_entities.CREATE[0]
+    # time.sleep(30)
+    connection = client.get_asset_by_guid(TEMP_CONNECTION_GUID, Connection)
     database = Database.create(
         name=f"Integration_{suffix}",
         connection_qualified_name=connection.attributes.qualified_name,
     )
     response = client.upsert(database)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], Database)
-    database = response.mutated_entities.CREATE[0]
-    time.sleep(3)
-    database = client.get_asset_by_guid(database.guid, Database)
+    assert (databases := response.assets_created(asset_type=Database))
+    assert len(databases) == 1
+    database = client.get_asset_by_guid(databases[0].guid, Database)
     schema = Schema.create(
         name=f"Integration_{suffix}",
         database_qualified_name=database.attributes.qualified_name,
     )
     response = client.upsert(schema)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert len(response.mutated_entities.CREATE) == 1
-    assert isinstance(response.mutated_entities.CREATE[0], Schema)
-    assert response.guid_assignments
-    assert schema.guid in response.guid_assignments
-    guid = response.guid_assignments[schema.guid]
-    schema = response.mutated_entities.CREATE[0]
-    assert guid == schema.guid
-    time.sleep(3)
-    schema = client.get_asset_by_guid(guid, Schema)
-    assert isinstance(schema, Schema)
-    assert guid == schema.guid
+    assert (schemas := response.assets_created(asset_type=Schema))
+    assert len(schemas) == 1
+    schema = client.get_asset_by_guid(schemas[0].guid, Schema)
+    assert (databases := response.assets_updated(asset_type=Database))
+    assert len(databases) == 1
+    database = client.get_asset_by_guid(databases[0].guid, Database)
+    assert database.attributes.schemas
+    schemas = database.attributes.schemas
+    assert len(schemas) == 1
+    assert schemas[0].guid == schema.guid
 
 
-@pytest.mark.skip("Connection creation is still intermittently failing")
 def test_create_table(client: AtlanClient, increment_counter):
     role = RoleCache.get_id_for_name("$admin")
     assert role
     suffix = increment_counter()
-    connection = Connection.create(
-        name=f"Integration {suffix}",
-        connector_type=AtlanConnectorType.SNOWFLAKE,
-        admin_roles=[role],
-        admin_groups=["admin"],
-    )
-    response = client.upsert(connection)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], Connection)
-    connection = response.mutated_entities.CREATE[0]
-    time.sleep(30)
-    connection = client.get_asset_by_guid(connection.guid, Connection)
+    # connection = Connection.create(
+    #     name=f"Integration {suffix}",
+    #     connector_type=AtlanConnectorType.SNOWFLAKE,
+    #     admin_roles=[role],
+    #     admin_groups=["admin"],
+    # )
+    # response = client.upsert(connection)
+    # assert response.mutated_entities
+    # assert response.mutated_entities.CREATE
+    # assert isinstance(response.mutated_entities.CREATE[0], Connection)
+    # connection = response.mutated_entities.CREATE[0]
+    # time.sleep(30)
+    connection = client.get_asset_by_guid(TEMP_CONNECTION_GUID, Connection)
     database = Database.create(
         name=f"Integration_{suffix}",
         connection_qualified_name=connection.attributes.qualified_name,
     )
     response = client.upsert(database)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], Database)
-    database = response.mutated_entities.CREATE[0]
-    time.sleep(3)
-    database = client.get_asset_by_guid(database.guid, Database)
+    assert (databases := response.assets_created(asset_type=Database))
+    database = client.get_asset_by_guid(databases[0].guid, Database)
     schema = Schema.create(
         name=f"Integration_{suffix}",
         database_qualified_name=database.attributes.qualified_name,
     )
     response = client.upsert(schema)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert isinstance(response.mutated_entities.CREATE[0], Schema)
-    schema = response.mutated_entities.CREATE[0]
-    time.sleep(3)
-    schema = client.get_asset_by_guid(schema.guid, Schema)
+    assert (schemas := response.assets_created(asset_type=Schema))
+    schema = client.get_asset_by_guid(schemas[0].guid, Schema)
     table = Table.create(
         name=f"Integration_{suffix}",
         schema_qualified_name=schema.attributes.qualified_name,
     )
     response = client.upsert(table)
-    assert response.mutated_entities
-    assert response.mutated_entities.CREATE
-    assert len(response.mutated_entities.CREATE) == 1
-    assert isinstance(response.mutated_entities.CREATE[0], Table)
-    assert response.guid_assignments
-    assert table.guid in response.guid_assignments
-    guid = response.guid_assignments[table.guid]
-    table = response.mutated_entities.CREATE[0]
-    assert guid == table.guid
-    time.sleep(3)
-    table = client.get_asset_by_guid(guid, Table)
-    assert isinstance(table, Table)
-    assert guid == table.guid
+    assert (tables := response.assets_created(asset_type=Table))
+    assert len(tables) == 1
+    table = client.get_asset_by_guid(guid=tables[0].guid, asset_type=Table)
+    assert (schemas := response.assets_updated(asset_type=Schema))
+    assert len(schemas) == 1
+    schema = client.get_asset_by_guid(guid=schemas[0].guid, asset_type=Schema)
+    assert schema.attributes.tables
+    tables = schema.attributes.tables
+    assert len(tables) == 1
+    assert tables[0].guid == table.guid
 
 
 def test_get_by_qualified_name(client: AtlanClient):

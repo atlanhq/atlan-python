@@ -198,6 +198,17 @@ class AtlanConnectionCategory(Enum):
 class AtlanConnectorType(str, Enum):
     category: AtlanConnectionCategory
 
+    @classmethod
+    def _get_connector_type_from_qualified_name(
+        cls, qualified_name: str
+    ) -> "AtlanConnectorType":
+        tokens = qualified_name.split("/")
+        if len(tokens) > 1:
+            return AtlanConnectorType[tokens[1].upper()]
+        raise ValueError(
+            f"Could not determine AtlanConnectorType from {qualified_name}"
+        )
+
     def __new__(
         cls, value: str, category: AtlanConnectionCategory
     ) -> "AtlanConnectorType":

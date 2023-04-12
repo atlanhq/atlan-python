@@ -9098,6 +9098,7 @@ class Table(SQL):
                 schema_qualified_name=schema_qualified_name,
                 schema_name=fields[4],
                 connector_name=connector_type.value,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
             )
 
     attributes: "Table.Attributes" = Field(
@@ -10148,6 +10149,7 @@ class Schema(SQL):
                 database_qualified_name=database_qualified_name,
                 qualified_name=f"{database_qualified_name}/{name}",
                 connector_name=connector_type.value,
+                database=Database.ref_by_qualified_name(database_qualified_name),
             )
 
     attributes: "Schema.Attributes" = Field(
@@ -10785,6 +10787,7 @@ class View(SQL):
                 schema_qualified_name=schema_qualified_name,
                 schema_name=fields[4],
                 connector_name=connector_type.value,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
             )
 
     attributes: "View.Attributes" = Field(
