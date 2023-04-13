@@ -116,3 +116,17 @@ def test_custom_metadata_has_human_readable_properties(client: AtlanClient):
     assert anomalo.validation_rules_details is None
     monte_carlo = table.get_business_attributes("Monte Carlo")
     assert monte_carlo is not None
+
+
+def test_get_custom_metadata():
+    custom_metadata = CustomMetadataCache.get_custom_metadata(
+        name="RACI", asset_type=Table
+    )
+    assert custom_metadata is not None
+
+
+def test_get_custom_metadata_when_name_is_invalid_then_raises_value_error():
+    with pytest.raises(
+        ValueError, match="No custom metadata with the name: Bogs exist"
+    ):
+        CustomMetadataCache.get_custom_metadata(name="Bogs", asset_type=Table)
