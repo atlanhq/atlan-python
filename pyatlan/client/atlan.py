@@ -377,11 +377,12 @@ class AtlanClient(BaseSettings):
         entity: Union[Asset, list[Asset]],
         replace_classifications: bool = False,
         replace_custom_metadata: bool = False,
+        overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
         query_params = {
             "replaceClassifications": replace_classifications,
             "replaceBusinessAttributes": replace_custom_metadata,
-            "overwriteBusinessAttribute": replace_custom_metadata,
+            "overwriteBusinessAttributes": overwrite_custom_metadata,
         }
         entities: list[Asset] = []
         if isinstance(entity, list):
