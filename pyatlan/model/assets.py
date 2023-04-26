@@ -12,8 +12,8 @@ from pydantic import Field, StrictStr, root_validator, validator
 from pyatlan.model.core import (
     Announcement,
     AtlanObject,
-    BusinessAttributes,
     Classification,
+    CustomMetadata,
     Meaning,
 )
 from pyatlan.model.enums import (
@@ -246,12 +246,12 @@ class Referenceable(AtlanObject):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
 
-    def get_business_attributes(self, name: str) -> BusinessAttributes:
+    def get_custom_metadata(self, name: str) -> CustomMetadata:
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
         ba_id = CustomMetadataCache.get_id_for_name(name)
         if ba_id is None:
-            raise ValueError(f"No business attributes with the name: {name} exist")
+            raise ValueError(f"No custom metadata with the name: {name} exist")
         for a_type in CustomMetadataCache.types_by_asset[self.type_name]:
             if (
                 hasattr(a_type, "_meta_data_type_name")
@@ -260,7 +260,7 @@ class Referenceable(AtlanObject):
                 break
         else:
             raise ValueError(
-                f"Business attributes {name} are not applicable to {self.type_name}"
+                f"Custom metadata attributes {name} are not applicable to {self.type_name}"
             )
         if ba_type := CustomMetadataCache.get_type_for_id(ba_id):
             return (
@@ -270,27 +270,27 @@ class Referenceable(AtlanObject):
             )
         else:
             raise ValueError(
-                f"Business attributes {name} are not applicable to {self.type_name}"
+                f"Custom metadata attributes {name} are not applicable to {self.type_name}"
             )
 
-    def set_business_attribute(self, business_attributes: BusinessAttributes) -> None:
+    def set_custom_metadata(self, custom_metadata: CustomMetadata) -> None:
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
-        if not isinstance(business_attributes, BusinessAttributes):
+        if not isinstance(custom_metadata, CustomMetadata):
             raise ValueError(
-                "business_attributes must be an instance of BusinessAttributes"
+                "business_attributes must be an instance of CustomMetadata"
             )
         if (
-            type(business_attributes)
+            type(custom_metadata)
             not in CustomMetadataCache.types_by_asset[self.type_name]
         ):
             raise ValueError(
-                f"Business attributes {business_attributes._meta_data_type_name} are not applicable to {self.type_name}"
+                f"Business attributes {custom_metadata._meta_data_type_name} are not applicable to {self.type_name}"
             )
-        ba_dict = dict(business_attributes)
+        ba_dict = dict(custom_metadata)
         if not self.business_attributes:
             self.business_attributes = {}
-        self.business_attributes[business_attributes._meta_data_type_id] = ba_dict
+        self.business_attributes[custom_metadata._meta_data_type_id] = ba_dict
 
 
 class Asset(Referenceable):

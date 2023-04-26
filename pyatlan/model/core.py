@@ -189,7 +189,7 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
 
 
-class BusinessAttributes(dict):
+class CustomMetadata(dict):
     _meta_data_type_name = ""
     _meta_data_type_id = ""
 

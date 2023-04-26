@@ -1031,9 +1031,9 @@ def test_get_business_attributes_when_name_not_valid_raises_value_error(
 ):
     mock_client.return_value.get_typedefs.return_value = type_def_response
     with pytest.raises(
-        ValueError, match="No business attributes with the name: Zoro exist"
+        ValueError, match="No custom metadata with the name: Zoro exist"
     ):
-        table.get_business_attributes("Zoro")
+        table.get_custom_metadata("Zoro")
 
 
 @patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
@@ -1043,9 +1043,9 @@ def test_get_business_attributes_when_name_not_appropriate_for_asset_raises_valu
     mock_client.get_default_client.return_value = mock_client
     mock_client.get_typedefs.return_value = type_def_response
     with pytest.raises(
-        ValueError, match="Business attributes Moon are not applicable to Table"
+        ValueError, match="Custom metadata attributes Moon are not applicable to Table"
     ):
-        table.get_business_attributes("Moon")
+        table.get_custom_metadata("Moon")
 
 
 @patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
@@ -1054,7 +1054,7 @@ def test_get_business_attributes_with_valid_name_returns_empty_attribute_when_ta
 ):
     mock_client.return_value.get_typedefs.return_value = type_def_response
 
-    monte_carlo = table.get_business_attributes("Monte Carlo")
+    monte_carlo = table.get_custom_metadata("Monte Carlo")
 
     assert monte_carlo is not None
     assert monte_carlo.freshness is None
@@ -1074,7 +1074,7 @@ def test_get_business_attributes_with_valid_name_returns_attribute_when_table_ha
         }
     }
 
-    monte_carlo = table.get_business_attributes("Monte Carlo")
+    monte_carlo = table.get_custom_metadata("Monte Carlo")
 
     assert monte_carlo is not None
     assert monte_carlo.freshness == "pass"
@@ -1086,9 +1086,9 @@ def test_set_busines_attributes_with_non_business_attributes_object_raises_value
 ):
     with pytest.raises(
         ValueError,
-        match="business_attributes must be an instance of BusinessAttributes",
+        match="business_attributes must be an instance of CustomMetadata",
     ):
-        table.set_business_attribute({})
+        table.set_custom_metadata({})
 
 
 def test_set_business_attributes_with_non_appropriate_meta_data_type_name_raises_value_error(
@@ -1097,9 +1097,9 @@ def test_set_business_attributes_with_non_appropriate_meta_data_type_name_raises
 
     with pytest.raises(
         ValueError,
-        match="business_attributes must be an instance of BusinessAttributes",
+        match="business_attributes must be an instance of CustomMetadata",
     ):
-        table.set_business_attribute({})
+        table.set_custom_metadata({})
 
 
 @patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
@@ -1113,7 +1113,7 @@ def test_assigning_to_invalid_business_attribute_raises_attribute_error(
             TABLE_URL: "https://getmontecarlo.com/catalog/",
         }
     }
-    business_attributes = table.get_business_attributes("Monte Carlo")
+    business_attributes = table.get_custom_metadata("Monte Carlo")
     with pytest.raises(AttributeError, match="Attribute bogus does not exist"):
         business_attributes.bogus = "123"
 
@@ -1130,7 +1130,7 @@ def test_set_business_attributes_with_business_attribute_not_appropriate_to_asse
         ValueError,
         match="Business attributes Moon are not applicable to Table",
     ):
-        table.set_business_attribute(moon)
+        table.set_custom_metadata(moon)
 
 
 @patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
@@ -1145,11 +1145,11 @@ def test_set_business_attributes_with_appropriate_business_attribute_updates_dic
             TABLE_URL: "https://getmontecarlo.com/catalog/",
         }
     }
-    monte_carlo = table.get_business_attributes("Monte Carlo")
+    monte_carlo = table.get_custom_metadata("Monte Carlo")
 
     monte_carlo.freshness = "fail"
     monte_carlo.table_url = "http://anywhere.com"
-    table.set_business_attribute(monte_carlo)
+    table.set_custom_metadata(monte_carlo)
 
     monte_carlo_dict = table.business_attributes[MONTE_CARLO]
     assert monte_carlo_dict[FRESHNESS] == monte_carlo.freshness

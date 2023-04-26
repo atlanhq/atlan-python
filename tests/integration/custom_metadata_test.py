@@ -87,7 +87,7 @@ def test_003_purge_custom_metadata(client: AtlanClient):
 
 def test_custom_metadata_has_human_readable_properties(client: AtlanClient):
     table = client.get_asset_by_guid("5f47cfb9-1313-4f03-9213-9913fff3c878", Table)
-    anomalo = table.get_business_attributes("Anomalo")
+    anomalo = table.get_custom_metadata("Anomalo")
     assert hasattr(anomalo, "data_volume")
     assert anomalo.data_volume is None
     assert hasattr(anomalo, "data_volume_details")
@@ -114,7 +114,7 @@ def test_custom_metadata_has_human_readable_properties(client: AtlanClient):
     assert anomalo.validation_rules is None
     assert hasattr(anomalo, "validation_rules_details")
     assert anomalo.validation_rules_details is None
-    monte_carlo = table.get_business_attributes("Monte Carlo")
+    monte_carlo = table.get_custom_metadata("Monte Carlo")
     assert monte_carlo is not None
 
 
