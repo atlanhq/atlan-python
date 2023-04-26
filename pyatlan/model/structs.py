@@ -29,6 +29,14 @@ class AwsCloudWatchMetric(AtlanObject):
         )
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    class Attributes(AtlanObject):
+        boundaries: set[float] = Field(None, description="", alias="boundaries")
+        frequencies: set[float] = Field(None, description="", alias="frequencies")
+
+
 class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
@@ -41,14 +49,6 @@ class KafkaTopicConsumption(AtlanObject):
         topic_current_offset: Optional[int] = Field(
             None, description="", alias="topicCurrentOffset"
         )
-
-
-class Histogram(AtlanObject):
-    """Description"""
-
-    class Attributes(AtlanObject):
-        boundaries: set[float] = Field(None, description="", alias="boundaries")
-        frequencies: set[float] = Field(None, description="", alias="frequencies")
 
 
 class DbtMetricFilter(AtlanObject):

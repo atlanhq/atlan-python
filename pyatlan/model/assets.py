@@ -398,6 +398,7 @@ class Asset(Referenceable):
         "asset_dbt_semantic_layer_proxy_url",
         "asset_dbt_source_freshness_criteria",
         "sample_data_url",
+        "asset_tags",
     ]
 
     @property
@@ -1493,6 +1494,16 @@ class Asset(Referenceable):
             self.attributes = self.Attributes()
         self.attributes.sample_data_url = sample_data_url
 
+    @property
+    def asset_tags(self) -> Optional[set[str]]:
+        return self.attributes.asset_tags
+
+    @asset_tags.setter
+    def asset_tags(self, asset_tags: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_tags = asset_tags
+
     _subtypes_: dict[str, type] = dict()
 
     def __init_subclass__(cls, type_name=None):
@@ -1825,6 +1836,7 @@ class Asset(Referenceable):
         sample_data_url: Optional[str] = Field(
             None, description="", alias="sampleDataUrl"
         )
+        asset_tags: Optional[set[str]] = Field(None, description="", alias="assetTags")
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -6149,6 +6161,80 @@ class QuickSight(BI):
     )
 
 
+class Thoughtspot(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Thoughtspot._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "thoughtspot_chart_type",
+        "thoughtspot_question_text",
+    ]
+
+    @property
+    def thoughtspot_chart_type(self) -> Optional[str]:
+        return self.attributes.thoughtspot_chart_type
+
+    @thoughtspot_chart_type.setter
+    def thoughtspot_chart_type(self, thoughtspot_chart_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_chart_type = thoughtspot_chart_type
+
+    @property
+    def thoughtspot_question_text(self) -> Optional[str]:
+        return self.attributes.thoughtspot_question_text
+
+    @thoughtspot_question_text.setter
+    def thoughtspot_question_text(self, thoughtspot_question_text: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_question_text = thoughtspot_question_text
+
+    type_name: str = Field("Thoughtspot", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Thoughtspot":
+            raise ValueError("must be Thoughtspot")
+        return v
+
+    class Attributes(BI.Attributes):
+        thoughtspot_chart_type: Optional[str] = Field(
+            None, description="", alias="thoughtspotChartType"
+        )
+        thoughtspot_question_text: Optional[str] = Field(
+            None, description="", alias="thoughtspotQuestionText"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Thoughtspot.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PowerBI(BI):
     """Description"""
 
@@ -9987,8 +10073,14 @@ class Column(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
+        foreign_key_to: Optional[list[Column]] = Field(
+            None, description="", alias="foreignKeyTo"
+        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        foreign_key_from: Optional[Column] = Field(
+            None, description="", alias="foreignKeyFrom"
         )  # relationship
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
@@ -13674,6 +13766,125 @@ class QuickSightDataset(QuickSight):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+
+class ThoughtspotLiveboard(Thoughtspot):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ThoughtspotLiveboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotLiveboard":
+            raise ValueError("must be ThoughtspotLiveboard")
+        return v
+
+
+class ThoughtspotDashlet(Thoughtspot):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ThoughtspotDashlet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "thoughtspot_liveboard_name",
+        "thoughtspot_liveboard_qualified_name",
+    ]
+
+    @property
+    def thoughtspot_liveboard_name(self) -> Optional[str]:
+        return self.attributes.thoughtspot_liveboard_name
+
+    @thoughtspot_liveboard_name.setter
+    def thoughtspot_liveboard_name(self, thoughtspot_liveboard_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_liveboard_name = thoughtspot_liveboard_name
+
+    @property
+    def thoughtspot_liveboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.thoughtspot_liveboard_qualified_name
+
+    @thoughtspot_liveboard_qualified_name.setter
+    def thoughtspot_liveboard_qualified_name(
+        self, thoughtspot_liveboard_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_liveboard_qualified_name = (
+            thoughtspot_liveboard_qualified_name
+        )
+
+    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotDashlet":
+            raise ValueError("must be ThoughtspotDashlet")
+        return v
+
+    class Attributes(Thoughtspot.Attributes):
+        thoughtspot_liveboard_name: Optional[str] = Field(
+            None, description="", alias="thoughtspotLiveboardName"
+        )
+        thoughtspot_liveboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="thoughtspotLiveboardQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
+            None, description="", alias="thoughtspotLiveboard"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ThoughtspotDashlet.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ThoughtspotAnswer(Thoughtspot):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ThoughtspotAnswer._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotAnswer":
+            raise ValueError("must be ThoughtspotAnswer")
+        return v
 
 
 class PowerBIReport(PowerBI):
@@ -20007,6 +20218,8 @@ Metabase.Attributes.update_forward_refs()
 
 QuickSight.Attributes.update_forward_refs()
 
+Thoughtspot.Attributes.update_forward_refs()
+
 PowerBI.Attributes.update_forward_refs()
 
 Preset.Attributes.update_forward_refs()
@@ -20102,6 +20315,12 @@ QuickSightAnalysis.Attributes.update_forward_refs()
 QuickSightDashboard.Attributes.update_forward_refs()
 
 QuickSightDataset.Attributes.update_forward_refs()
+
+ThoughtspotLiveboard.Attributes.update_forward_refs()
+
+ThoughtspotDashlet.Attributes.update_forward_refs()
+
+ThoughtspotAnswer.Attributes.update_forward_refs()
 
 PowerBIReport.Attributes.update_forward_refs()
 

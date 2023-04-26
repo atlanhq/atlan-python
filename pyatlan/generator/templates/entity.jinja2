@@ -536,7 +536,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 )
             else:
                 raise ValueError(
-                    f"parent_type must be either Table, View or MaterializeView"
+                    "parent_type must be either Table, View or MaterializeView"
                 )
             return ret_value
 
