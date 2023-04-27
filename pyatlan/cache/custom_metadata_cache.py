@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import json
-from typing import Optional
+from typing import Any, Optional
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import LogicError, NotFoundError
+from pyatlan.model.core import CustomMetadata
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
@@ -35,7 +36,7 @@ class CustomMetadataCache:
 
     @classmethod
     def _refresh_cache(cls) -> None:
-        from pyatlan.model.core import BusinessAttributes, to_snake_case
+        from pyatlan.model.core import CustomMetadata, to_snake_case
 
         client = AtlanClient.get_default_client()
         if client is None:
@@ -58,7 +59,7 @@ class CustomMetadataCache:
                 cls.map_attr_name_to_id[type_id] = {}
                 meta_name = cm.display_name.replace(" ", "")
                 attribute_class_name = f"Attributes_{meta_name}"
-                attrib_type = type(attribute_class_name, (BusinessAttributes,), {})
+                attrib_type = type(attribute_class_name, (CustomMetadata,), {})
                 attrib_type._meta_data_type_id = type_id  # type: ignore
                 attrib_type._meta_data_type_name = type_name  # type: ignore
                 cls.map_id_to_type[type_id] = attrib_type
@@ -202,3 +203,30 @@ class CustomMetadataCache:
             cls._refresh_cache()
             return cls._get_attributes_for_search_results(set_id)
         return None
+
+    @classmethod
+    def get_custom_metadata(
+        cls,
+        name: str,
+        asset_type: type,
+        business_attributes: Optional[dict[str, Any]] = None,
+    ) -> CustomMetadata:
+        type_name = asset_type.__name__
+        ba_id = cls.get_id_for_name(name)
+        if ba_id is None:
+            raise ValueError(f"No custom metadata with the name: {name} exist")
+        for a_type in CustomMetadataCache.types_by_asset[type_name]:
+            if (
+                hasattr(a_type, "_meta_data_type_name")
+                and a_type._meta_data_type_name == name
+            ):
+                break
+        else:
+            raise ValueError(f"Custom metadata {name} is not applicable to {type_name}")
+        if ba_type := CustomMetadataCache.get_type_for_id(ba_id):
+            return (
+                ba_type(business_attributes[ba_id])
+                if business_attributes and ba_id in business_attributes
+                else ba_type()
+            )
+        raise ValueError(f"Custom metadata {name} is not applicable to {type_name}")

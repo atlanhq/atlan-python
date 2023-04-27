@@ -189,7 +189,7 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
 
 
-class BusinessAttributes(dict):
+class CustomMetadata(dict):
     _meta_data_type_name = ""
     _meta_data_type_id = ""
 
@@ -197,3 +197,7 @@ class BusinessAttributes(dict):
         if not hasattr(self, key):
             raise AttributeError(f"Attribute {key} does not exist")
         super().__setattr__(key, value)
+
+
+class CustomMetadataReqest(AtlanObject):
+    __root__: CustomMetadata

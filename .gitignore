@@ -50,3 +50,4 @@ wheels/
 .installed.cfg
 *.egg
 *.DS_Store
+examples/
