@@ -1,3 +1,7 @@
+## 0.0.24 (Apr 27, 2023)
+
+* Fix broken link in README.md
+
 ## 0.0.23 (Apr 27, 2023)
 
 * Renamed get_business_attributes method get_custom_metadata in Referenceable.Attributes

@@ -4,9 +4,9 @@
 
 This repository houses the code for a Python SDK to interact with [Atlan](https://atlan.com).
 
-## [Documentation](https://developer.atlan.com/sdks/python/)
+## [Documentation](https://developer.atlan.com/getting-started/python-sdk/)
 
-[https://developer.atlan.com/sdks/python/](https://developer.atlan.com/sdks/python/)
+[https://developer.atlan.com/getting-started/python-sdk/](https://developer.atlan.com/getting-started/python-sdk/)
 
 ## Attribution
 
