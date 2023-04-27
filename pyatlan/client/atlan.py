@@ -20,6 +20,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from pyatlan.client.constants import (
+    ADD_BUSINESS_ATTRIBUTE_BY_ID,
     BULK_UPDATE,
     CREATE_TYPE_DEFS,
     DELETE_ENTITY_BY_ATTRIBUTE,
@@ -57,6 +58,8 @@ from pyatlan.model.core import (
     Classification,
     ClassificationName,
     Classifications,
+    CustomMetadata,
+    CustomMetadataReqest,
 )
 from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory, CertificateStatus
 from pyatlan.model.response import AssetMutationResponse
@@ -588,3 +591,14 @@ class AtlanClient(BaseSettings):
         asset.name = name
         asset.remove_announcement()
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
+
+    def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadata):
+        # TODO: This endpoint is not currently functioning correctly on the server
+        custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
+        self._call_api(
+            ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
+                {"entity_guid": guid, "bm_id": custom_metadata._meta_data_type_id}
+            ),
+            None,
+            custom_metadata_request,
+        )

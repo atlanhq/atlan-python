@@ -122,7 +122,12 @@ GET_BULK_HEADERS = API(ENTITY_API + BULK_HEADERS, HTTPMethod.GET, HTTPStatus.OK)
 
 # Business Attributes APIs
 ADD_BUSINESS_ATTRIBUTE = API(
-    ENTITY_API + "guid/{entity_guid}/businessmetadata",
+    ENTITY_API + "guid/{entity_guid}/businessmetadata/",
+    HTTPMethod.POST,
+    HTTPStatus.NO_CONTENT,
+)
+ADD_BUSINESS_ATTRIBUTE_BY_ID = API(
+    ENTITY_API + "guid/{entity_guid}/businessmetadata/{bm_id}",
     HTTPMethod.POST,
     HTTPStatus.NO_CONTENT,
 )

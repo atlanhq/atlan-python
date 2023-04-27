@@ -197,3 +197,7 @@ class CustomMetadata(dict):
         if not hasattr(self, key):
             raise AttributeError(f"Attribute {key} does not exist")
         super().__setattr__(key, value)
+
+
+class CustomMetadataReqest(AtlanObject):
+    __root__: CustomMetadata
