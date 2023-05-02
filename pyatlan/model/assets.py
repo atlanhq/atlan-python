@@ -6,6 +6,7 @@ from __future__ import annotations
 import sys
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional, TypeVar
+from urllib.parse import quote, unquote
 
 from pydantic import Field, StrictStr, root_validator, validator
 
@@ -2067,6 +2068,26 @@ class DataSet(Asset, type_name="DataSet"):
             raise ValueError("must be DataSet")
         return v
 
+    class Attributes(Asset.Attributes):
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "DataSet.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
@@ -2085,6 +2106,26 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
         if v != "ProcessExecution":
             raise ValueError("must be ProcessExecution")
         return v
+
+    class Attributes(Asset.Attributes):
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "ProcessExecution.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
@@ -2351,6 +2392,26 @@ class Cloud(Asset, type_name="Cloud"):
             raise ValueError("must be Cloud")
         return v
 
+    class Attributes(Asset.Attributes):
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "Cloud.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
@@ -2369,6 +2430,26 @@ class Infrastructure(Asset, type_name="Infrastructure"):
         if v != "Infrastructure":
             raise ValueError("must be Infrastructure")
         return v
+
+    class Attributes(Asset.Attributes):
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "Infrastructure.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class Connection(Asset, type_name="Connection"):
@@ -3096,6 +3177,32 @@ class Namespace(Asset, type_name="Namespace"):
             raise ValueError("must be Namespace")
         return v
 
+    class Attributes(Asset.Attributes):
+        children_queries: Optional[list[Query]] = Field(
+            None, description="", alias="childrenQueries"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        children_folders: Optional[list[Folder]] = Field(
+            None, description="", alias="childrenFolders"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "Namespace.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class Catalog(Asset, type_name="Catalog"):
     """Description"""
@@ -3114,6 +3221,32 @@ class Catalog(Asset, type_name="Catalog"):
         if v != "Catalog":
             raise ValueError("must be Catalog")
         return v
+
+    class Attributes(Asset.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Catalog.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class Google(Cloud):
@@ -3540,6 +3673,35 @@ class BIProcess(Process):
             raise ValueError("must be BIProcess")
         return v
 
+    class Attributes(Process.Attributes):
+        outputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="outputs"
+        )  # relationship
+        inputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="inputs"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        column_processes: Optional[list[ColumnProcess]] = Field(
+            None, description="", alias="columnProcesses"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "BIProcess.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class ColumnProcess(Process):
     """Description"""
@@ -3558,6 +3720,38 @@ class ColumnProcess(Process):
         if v != "ColumnProcess":
             raise ValueError("must be ColumnProcess")
         return v
+
+    class Attributes(Process.Attributes):
+        outputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="outputs"
+        )  # relationship
+        process: Optional[Process] = Field(
+            None, description="", alias="process"
+        )  # relationship
+        inputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="inputs"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        column_processes: Optional[list[ColumnProcess]] = Field(
+            None, description="", alias="columnProcesses"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+
+    attributes: "ColumnProcess.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class Collection(Namespace):
@@ -3723,6 +3917,32 @@ class EventStore(Catalog):
             raise ValueError("must be EventStore")
         return v
 
+    class Attributes(Catalog.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "EventStore.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class ObjectStore(Catalog):
     """Description"""
@@ -3741,6 +3961,32 @@ class ObjectStore(Catalog):
         if v != "ObjectStore":
             raise ValueError("must be ObjectStore")
         return v
+
+    class Attributes(Catalog.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ObjectStore.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class DataQuality(Catalog):
@@ -3761,6 +4007,32 @@ class DataQuality(Catalog):
             raise ValueError("must be DataQuality")
         return v
 
+    class Attributes(Catalog.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "DataQuality.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class BI(Catalog):
     """Description"""
@@ -3780,6 +4052,32 @@ class BI(Catalog):
             raise ValueError("must be BI")
         return v
 
+    class Attributes(Catalog.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "BI.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class SaaS(Catalog):
     """Description"""
@@ -3798,6 +4096,32 @@ class SaaS(Catalog):
         if v != "SaaS":
             raise ValueError("must be SaaS")
         return v
+
+    class Attributes(Catalog.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SaaS.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class Dbt(Catalog):
@@ -4205,6 +4529,32 @@ class Insight(Catalog):
         if v != "Insight":
             raise ValueError("must be Insight")
         return v
+
+    class Attributes(Catalog.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Insight.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class API(Catalog):
@@ -5887,6 +6237,32 @@ class Kafka(EventStore):
             raise ValueError("must be Kafka")
         return v
 
+    class Attributes(EventStore.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Kafka.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class Metric(DataQuality):
     """Description"""
@@ -6923,6 +7299,32 @@ class Tableau(BI):
             raise ValueError("must be Tableau")
         return v
 
+    class Attributes(BI.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Tableau.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class Looker(BI):
     """Description"""
@@ -6941,6 +7343,32 @@ class Looker(BI):
         if v != "Looker":
             raise ValueError("must be Looker")
         return v
+
+    class Attributes(BI.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Looker.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class Salesforce(SaaS):
@@ -8264,13 +8692,86 @@ class Readme(Resource):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, asset: Asset) -> Readme:
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
         return Readme(
-            attributes=Readme.Attributes(
-                qualified_name=f"{asset.guid}/readme",
-                name=f"{asset.attributes.name} Readme",
-            ),
+            attributes=Readme.Attributes.create(
+                asset=asset, content=content, asset_name=asset_name
+            )
         )
+
+    @property
+    def description(self) -> Optional[str]:
+        ret_value = self.attributes.description
+        return unquote(ret_value) if ret_value is not None else ret_value
+
+    @description.setter
+    def description(self, description: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.description = (
+            quote(description) if description is not None else description
+        )
+
+    class Attributes(Resource.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        internal: Optional[Internal] = Field(
+            None, description="", alias="__internal"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        asset: Optional[Asset] = Field(
+            None, description="", alias="asset"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        see_also: Optional[list[Readme]] = Field(
+            None, description="", alias="seeAlso"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+        ) -> Readme.Attributes:
+            validate_required_fields(["asset", "content"], [asset, content])
+            if not asset.name:
+                if not asset_name:
+                    raise ValueError(
+                        "asset_name is required when name is not available from asset"
+                    )
+            elif asset_name:
+                raise ValueError(
+                    "asset_name can not be given when name is available from asset"
+                )
+            else:
+                asset_name = asset.name
+            return Readme.Attributes(
+                qualified_name=f"{asset.guid}/readme",
+                name=f"{asset_name} Readme",
+                asset=asset,
+                description=quote(content),
+            )
+
+    attributes: "Readme.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class Link(Resource):
@@ -13786,6 +14287,35 @@ class ThoughtspotLiveboard(Thoughtspot):
             raise ValueError("must be ThoughtspotLiveboard")
         return v
 
+    class Attributes(Thoughtspot.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
+            None, description="", alias="thoughtspotDashlets"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ThoughtspotLiveboard.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class ThoughtspotDashlet(Thoughtspot):
     """Description"""
@@ -13885,6 +14415,32 @@ class ThoughtspotAnswer(Thoughtspot):
         if v != "ThoughtspotAnswer":
             raise ValueError("must be ThoughtspotAnswer")
         return v
+
+    class Attributes(Thoughtspot.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "ThoughtspotAnswer.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class PowerBIReport(PowerBI):
@@ -17730,6 +18286,35 @@ class TableauSite(Tableau):
             raise ValueError("must be TableauSite")
         return v
 
+    class Attributes(Tableau.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="projects"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "TableauSite.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class TableauDatasource(Tableau):
     """Description"""
@@ -19174,6 +19759,44 @@ class LookerProject(Looker):
             raise ValueError("must be LookerProject")
         return v
 
+    class Attributes(Looker.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        models: Optional[list[LookerModel]] = Field(
+            None, description="", alias="models"
+        )  # relationship
+        explores: Optional[list[LookerExplore]] = Field(
+            None, description="", alias="explores"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        fields: Optional[list[LookerField]] = Field(
+            None, description="", alias="fields"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        views: Optional[list[LookerView]] = Field(
+            None, description="", alias="views"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "LookerProject.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
 
 class LookerQuery(Looker):
     """Description"""
@@ -20131,6 +20754,38 @@ class QlikStream(QlikSpace):
         if v != "QlikStream":
             raise ValueError("must be QlikStream")
         return v
+
+    class Attributes(QlikSpace.Attributes):
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        qlik_datasets: Optional[list[QlikDataset]] = Field(
+            None, description="", alias="qlikDatasets"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        qlik_apps: Optional[list[QlikApp]] = Field(
+            None, description="", alias="qlikApps"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "QlikStream.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 Referenceable.update_forward_refs()
