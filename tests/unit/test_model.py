@@ -32,6 +32,7 @@ from pyatlan.model.assets import (
     GoogleTag,
     Histogram,
     PopularityInsights,
+    Readme,
     S3Bucket,
     S3Object,
     Schema,
@@ -66,6 +67,10 @@ from pyatlan.model.enums import (
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.structs import KafkaTopicConsumption
 from pyatlan.model.typedef import TypeDefResponse
+
+SCHEMA_QUALIFIED_NAME = "default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
+
+TABLE_NAME = "MKT_EXPENSES"
 
 TABLE_URL = "POsWut55wIYsXZ5v4z3K98"
 
@@ -167,8 +172,8 @@ def announcement():
 @pytest.fixture()
 def table():
     return Table.create(
-        name="MKT_EXPENSES",
-        schema_qualified_name="default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE",
+        name=TABLE_NAME,
+        schema_qualified_name=SCHEMA_QUALIFIED_NAME,
     )
 
 
@@ -1352,3 +1357,98 @@ def test_validate_single_required_field_with_bad_values_raises_value_error(
 
 def test_validate_single_required_field_with_only_one_field_does_not_raise_value_error():
     validate_single_required_field(["One", "Two", "Three"], [None, None, 3])
+
+
+@pytest.mark.parametrize(
+    "asset, content, asset_name, error, message",
+    [
+        (None, "stuff", None, ValueError, "asset is required"),
+        (table, None, None, ValueError, "content is required"),
+        (
+            Table(),
+            "stuff",
+            None,
+            AttributeError,
+            "'NoneType' object has no attribute 'name'",
+        ),
+        (
+            Table(attributes=Table.Attributes()),
+            "stuff",
+            None,
+            ValueError,
+            "asset_name is required when name is not available from asset",
+        ),
+    ],
+)
+def test_create_readme_attributes_without_required_parameters_raises_exception(
+    asset, content, asset_name, error, message
+):
+
+    with pytest.raises(error, match=message):
+        Readme.Attributes.create(asset=asset, content=content, asset_name=asset_name)
+
+
+@pytest.mark.parametrize(
+    "asset, content, asset_name, error, message",
+    [
+        (None, "stuff", None, ValueError, "asset is required"),
+        (
+            Table.create(
+                name=TABLE_NAME,
+                schema_qualified_name=SCHEMA_QUALIFIED_NAME,
+            ),
+            None,
+            None,
+            ValueError,
+            "content is required",
+        ),
+        (
+            Table(),
+            "stuff",
+            None,
+            AttributeError,
+            "'NoneType' object has no attribute 'name'",
+        ),
+        (
+            Table(attributes=Table.Attributes()),
+            "stuff",
+            None,
+            ValueError,
+            "asset_name is required when name is not available from asset",
+        ),
+    ],
+)
+def test_create_readme_without_required_parameters_raises_exception(
+    asset, content, asset_name, error, message
+):
+
+    with pytest.raises(error, match=message):
+        Readme.create(asset=asset, content=content, asset_name=asset_name)
+
+
+@pytest.mark.parametrize(
+    "asset, content, asset_name, expected_name",
+    [
+        (
+            Table.create(
+                name=TABLE_NAME,
+                schema_qualified_name=SCHEMA_QUALIFIED_NAME,
+            ),
+            "<h1>stuff</h1>",
+            None,
+            TABLE_NAME,
+        ),
+        (
+            Table(attributes=Table.Attributes()),
+            "<h1>stuff</h1>",
+            TABLE_NAME,
+            TABLE_NAME,
+        ),
+    ],
+)
+def test_create_readme(asset, content, asset_name, expected_name):
+    readme = Readme.create(asset=asset, content=content, asset_name=asset_name)
+    assert readme.qualified_name == f"{asset.guid}/readme"
+    assert readme.name == f"{expected_name} Readme"
+    assert readme.attributes.asset == asset
+    assert readme.description == content

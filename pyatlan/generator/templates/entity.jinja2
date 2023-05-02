@@ -51,6 +51,7 @@ from pyatlan.model.structs import (
     PopularityInsights,
 )
 from pyatlan.utils import next_id
+from urllib.parse import quote, unquote
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
     indexes = [idx for idx, value in enumerate(values) if value is not None]
@@ -231,7 +232,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
         ba_id = CustomMetadataCache.get_id_for_name(name)
         if ba_id is None:
-            raise ValueError(f"No business attributes with the name: {name} exist")
+            raise ValueError(f"No custom metadata with the name: {name} exist")
         for a_type in CustomMetadataCache.types_by_asset[self.type_name]:
             if (
                 hasattr(a_type, "_meta_data_type_name")
@@ -343,15 +344,29 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- if entity_def.name == "Readme" %}
     @classmethod
     # @validate_arguments()
-    def create(cls, asset: Asset) -> Readme:
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
         return Readme(
-            attributes=Readme.Attributes(
-                qualified_name=f"{asset.guid}/readme",
-                name=f"{asset.attributes.name} Readme",
-            ),
+            attributes=Readme.Attributes.create(
+                asset=asset, content=content, asset_name=asset_name
+            )
+        )
+
+    @property
+    def description(self) -> Optional[str]:
+        ret_value = self.attributes.description
+        return unquote(ret_value) if ret_value is not None else ret_value
+
+    @description.setter
+    def description(self, description: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.description = (
+            quote(description) if description is not None else description
         )
     {%- endif %}
-    {%- if entity_def.attribute_defs %}
+    {%- if entity_def.attribute_defs or entity_def.relationship_attribute_defs %}
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
@@ -424,6 +439,30 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 raise ValueError(
                     "One of admin_user, admin_groups or admin_roles is required"
                 )
+        {%- elif entity_def.name == "Readme"  %}
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+        ) -> Readme.Attributes:
+            validate_required_fields(["asset", "content"], [asset, content])
+            if not asset.name:
+                if not asset_name:
+                    raise ValueError(
+                        "asset_name is required when name is not available from asset"
+                    )
+            elif asset_name:
+                raise ValueError(
+                    "asset_name can not be given when name is available from asset"
+                )
+            else:
+                asset_name = asset.name
+            return Readme.Attributes(
+                qualified_name=f"{asset.guid}/readme",
+                name=f"{asset_name} Readme",
+                asset=asset,
+                description=quote(content),
+            )
         {%- elif entity_def.name == "Database"  %}
         @classmethod
         # @validate_arguments()
