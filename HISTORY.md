@@ -1,3 +1,7 @@
+## 0.0.25 (May 2, 2023)
+
+* Update create method for Readme asset
+
 ## 0.0.24 (Apr 27, 2023)
 
 * Fix broken link in README.md

@@ -18,6 +18,7 @@ from pyatlan.model.assets import (
     Column,
     Connection,
     Database,
+    Readme,
     Schema,
     Table,
     View,
@@ -188,6 +189,7 @@ def cleanup(atlan_host, headers, atlan_api_key):
         "Connection",
         "View",
         "Column",
+        "Readme",
     ]
     for type_name in type_names:
         print()
@@ -748,7 +750,7 @@ def test_add_and_remove_classifications(client: AtlanClient):
     glossary_term = client.get_asset_by_guid(
         glossary_term.guid, asset_type=AtlasGlossaryTerm
     )
-    assert glossary_term.classifications is None
+    assert not glossary_term.classifications
 
 
 def test_create_for_modification(client: AtlanClient):
@@ -811,3 +813,15 @@ def test_update_remove_announcement(client: AtlanClient, announcement: Announcem
     )
     assert asset is not None
     assert asset.get_announcment() is None
+
+
+def test_create_readme(client: AtlanClient):
+    glossary = AtlasGlossary.create(name="Integration Readme Test")
+    glossary.attributes.user_description = "This is a description of the glossary"
+    glossary = client.upsert(glossary).assets_created(AtlasGlossary)[0]
+    readme = Readme.create(asset=glossary, content="<h1>Important</h1>")
+    response = client.upsert(readme)
+    assert (reaadmes := response.assets_created(asset_type=Readme))
+    assert len(reaadmes) == 1
+    assert (glossaries := response.assets_updated(asset_type=AtlasGlossary))
+    assert len(glossaries) == 1
