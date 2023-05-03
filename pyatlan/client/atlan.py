@@ -603,22 +603,21 @@ class AtlanClient(BaseSettings):
             custom_metadata_request,
         )
 
+    @validate_arguments()
     def append_terms(
         self, guid: str, asset_type: Type[A], terms: list[AtlasGlossaryTerm]
-    ) -> Optional[A]:
+    ) -> A:
         asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         if not terms:
             return asset
-        existing_terms = asset.attributes.meanings
         replacement_terms: list[AtlasGlossaryTerm] = []
-        if existing_terms:
-            for term in existing_terms:
-                if term.relationship_status != "DELETED":
-                    replacement_terms.append(term)
+        if existing_terms := asset.terms:
+            replacement_terms.extend(
+                term for term in existing_terms if term.relationship_status != "DELETED"
+            )
         replacement_terms.extend(terms)
         asset.attributes.meanings = replacement_terms
         response = self.upsert(entity=asset)
-        assets = response.assets_updated(asset_type=asset_type)
-        if assets:
+        if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
-        return None
+        return asset

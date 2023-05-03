@@ -100,6 +100,7 @@ class Referenceable(AtlanObject):
         "qualified_name",
         "replicated_from",
         "replicated_to",
+        "terms",
     ]
 
     @property
@@ -131,6 +132,18 @@ class Referenceable(AtlanObject):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.replicated_to = replicated_to
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     class Attributes(AtlanObject):
         qualified_name: str = Field("", description="", alias="qualifiedName")
@@ -400,6 +413,7 @@ class Asset(Referenceable):
         "asset_dbt_source_freshness_criteria",
         "sample_data_url",
         "asset_tags",
+        "terms",
     ]
 
     @property
@@ -1505,6 +1519,18 @@ class Asset(Referenceable):
             self.attributes = self.Attributes()
         self.attributes.asset_tags = asset_tags
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     _subtypes_: dict[str, type] = dict()
 
     def __init_subclass__(cls, type_name=None):
@@ -1930,6 +1956,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "language",
         "usage",
         "additional_attributes",
+        "terms",
     ]
 
     @property
@@ -1981,6 +2008,18 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("AtlasGlossary", allow_mutation=False)
 
@@ -2058,7 +2097,21 @@ class DataSet(Asset, type_name="DataSet"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("DataSet", allow_mutation=False)
 
@@ -2097,7 +2150,21 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ProcessExecution", allow_mutation=False)
 
@@ -2143,6 +2210,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "abbreviation",
         "usage",
         "additional_attributes",
+        "terms",
     ]
 
     @property
@@ -2204,6 +2272,18 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
 
@@ -2382,7 +2462,21 @@ class Cloud(Asset, type_name="Cloud"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Cloud", allow_mutation=False)
 
@@ -2421,7 +2515,21 @@ class Infrastructure(Asset, type_name="Infrastructure"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Infrastructure", allow_mutation=False)
 
@@ -2482,6 +2590,7 @@ class Connection(Asset, type_name="Connection"):
         "popularity_insights_timeframe",
         "has_popularity_insights",
         "connection_dbt_environments",
+        "terms",
     ]
 
     @property
@@ -2702,6 +2811,18 @@ class Connection(Asset, type_name="Connection"):
             self.attributes = self.Attributes()
         self.attributes.connection_dbt_environments = connection_dbt_environments
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Connection", allow_mutation=False)
 
     @validator("type_name")
@@ -2865,6 +2986,7 @@ class Process(Asset, type_name="Process"):
         "code",
         "sql",
         "ast",
+        "terms",
     ]
 
     @property
@@ -2917,6 +3039,18 @@ class Process(Asset, type_name="Process"):
             self.attributes = self.Attributes()
         self.attributes.ast = ast
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Process", allow_mutation=False)
 
     @validator("type_name")
@@ -2966,6 +3100,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "short_description",
         "long_description",
         "additional_attributes",
+        "terms",
     ]
 
     @property
@@ -2997,6 +3132,18 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
 
@@ -3102,6 +3249,7 @@ class Badge(Asset, type_name="Badge"):
     _convience_properties: ClassVar[list[str]] = [
         "badge_conditions",
         "badge_metadata_attribute",
+        "terms",
     ]
 
     @property
@@ -3123,6 +3271,18 @@ class Badge(Asset, type_name="Badge"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.badge_metadata_attribute = badge_metadata_attribute
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Badge", allow_mutation=False)
 
@@ -3167,7 +3327,21 @@ class Namespace(Asset, type_name="Namespace"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Namespace", allow_mutation=False)
 
@@ -3212,7 +3386,21 @@ class Catalog(Asset, type_name="Catalog"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Catalog", allow_mutation=False)
 
@@ -3266,6 +3454,7 @@ class Google(Cloud):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "terms",
     ]
 
     @property
@@ -3348,6 +3537,18 @@ class Google(Cloud):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Google", allow_mutation=False)
 
     @validator("type_name")
@@ -3414,6 +3615,7 @@ class Azure(Cloud):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
+        "terms",
     ]
 
     @property
@@ -3459,6 +3661,18 @@ class Azure(Cloud):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Azure", allow_mutation=False)
 
@@ -3519,6 +3733,7 @@ class AWS(Cloud):
         "aws_owner_name",
         "aws_owner_id",
         "aws_tags",
+        "terms",
     ]
 
     @property
@@ -3611,6 +3826,18 @@ class AWS(Cloud):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("AWS", allow_mutation=False)
 
     @validator("type_name")
@@ -3663,7 +3890,21 @@ class BIProcess(Process):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("BIProcess", allow_mutation=False)
 
@@ -3711,7 +3952,21 @@ class ColumnProcess(Process):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ColumnProcess", allow_mutation=False)
 
@@ -3765,6 +4020,7 @@ class Collection(Namespace):
     _convience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
+        "terms",
     ]
 
     @property
@@ -3786,6 +4042,18 @@ class Collection(Namespace):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Collection", allow_mutation=False)
 
@@ -3835,6 +4103,7 @@ class Folder(Namespace):
     _convience_properties: ClassVar[list[str]] = [
         "parent_qualified_name",
         "collection_qualified_name",
+        "terms",
     ]
 
     @property
@@ -3856,6 +4125,18 @@ class Folder(Namespace):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.collection_qualified_name = collection_qualified_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Folder", allow_mutation=False)
 
@@ -3907,7 +4188,21 @@ class EventStore(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("EventStore", allow_mutation=False)
 
@@ -3952,7 +4247,21 @@ class ObjectStore(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ObjectStore", allow_mutation=False)
 
@@ -3997,7 +4306,21 @@ class DataQuality(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("DataQuality", allow_mutation=False)
 
@@ -4042,7 +4365,21 @@ class BI(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("BI", allow_mutation=False)
 
@@ -4087,7 +4424,21 @@ class SaaS(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SaaS", allow_mutation=False)
 
@@ -4151,6 +4502,7 @@ class Dbt(Catalog):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
+        "terms",
     ]
 
     @property
@@ -4337,6 +4689,18 @@ class Dbt(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Dbt", allow_mutation=False)
 
     @validator("type_name")
@@ -4429,6 +4793,7 @@ class Resource(Catalog):
         "is_global",
         "reference",
         "resource_metadata",
+        "terms",
     ]
 
     @property
@@ -4470,6 +4835,18 @@ class Resource(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.resource_metadata = resource_metadata
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Resource", allow_mutation=False)
 
@@ -4520,7 +4897,21 @@ class Insight(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Insight", allow_mutation=False)
 
@@ -4572,6 +4963,7 @@ class API(Catalog):
         "api_spec_qualified_name",
         "api_external_docs",
         "api_is_auth_optional",
+        "terms",
     ]
 
     @property
@@ -4633,6 +5025,18 @@ class API(Catalog):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_is_auth_optional = api_is_auth_optional
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("API", allow_mutation=False)
 
@@ -4706,6 +5110,7 @@ class SQL(Catalog):
         "view_qualified_name",
         "is_profiled",
         "last_profiled_at",
+        "terms",
     ]
 
     @property
@@ -4848,6 +5253,18 @@ class SQL(Catalog):
             self.attributes = self.Attributes()
         self.attributes.last_profiled_at = last_profiled_at
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("SQL", allow_mutation=False)
 
     @validator("type_name")
@@ -4942,6 +5359,7 @@ class DataStudio(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "terms",
     ]
 
     @property
@@ -5023,6 +5441,18 @@ class DataStudio(Google):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("DataStudio", allow_mutation=False)
 
@@ -5106,6 +5536,7 @@ class GCS(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "terms",
     ]
 
     @property
@@ -5248,6 +5679,18 @@ class GCS(Google):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("GCS", allow_mutation=False)
 
     @validator("type_name")
@@ -5344,6 +5787,7 @@ class DataStudioAsset(DataStudio):
         "google_location_type",
         "google_labels",
         "google_tags",
+        "terms",
     ]
 
     @property
@@ -5470,6 +5914,18 @@ class DataStudioAsset(DataStudio):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("DataStudioAsset", allow_mutation=False)
 
     @validator("type_name")
@@ -5555,6 +6011,7 @@ class ADLS(ObjectStore):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
+        "terms",
     ]
 
     @property
@@ -5610,6 +6067,18 @@ class ADLS(ObjectStore):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ADLS", allow_mutation=False)
 
@@ -5681,6 +6150,7 @@ class S3(ObjectStore):
         "aws_owner_name",
         "aws_owner_id",
         "aws_tags",
+        "terms",
     ]
 
     @property
@@ -5793,6 +6263,18 @@ class S3(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("S3", allow_mutation=False)
 
     @validator("type_name")
@@ -5878,6 +6360,7 @@ class DbtColumnProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "terms",
     ]
 
     @property
@@ -6126,6 +6609,18 @@ class DbtColumnProcess(Dbt):
             self.attributes = self.Attributes()
         self.attributes.ast = ast
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("DbtColumnProcess", allow_mutation=False)
 
     @validator("type_name")
@@ -6227,7 +6722,21 @@ class Kafka(EventStore):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Kafka", allow_mutation=False)
 
@@ -6277,6 +6786,7 @@ class Metric(DataQuality):
         "metric_s_q_l",
         "metric_filters",
         "metric_time_grains",
+        "terms",
     ]
 
     @property
@@ -6318,6 +6828,18 @@ class Metric(DataQuality):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metric_time_grains = metric_time_grains
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Metric", allow_mutation=False)
 
@@ -6382,6 +6904,7 @@ class Metabase(BI):
     _convience_properties: ClassVar[list[str]] = [
         "metabase_collection_name",
         "metabase_collection_qualified_name",
+        "terms",
     ]
 
     @property
@@ -6407,6 +6930,18 @@ class Metabase(BI):
         self.attributes.metabase_collection_qualified_name = (
             metabase_collection_qualified_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Metabase", allow_mutation=False)
 
@@ -6461,6 +6996,7 @@ class QuickSight(BI):
         "quick_sight_id",
         "quick_sight_sheet_id",
         "quick_sight_sheet_name",
+        "terms",
     ]
 
     @property
@@ -6492,6 +7028,18 @@ class QuickSight(BI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSight", allow_mutation=False)
 
@@ -6548,6 +7096,7 @@ class Thoughtspot(BI):
     _convience_properties: ClassVar[list[str]] = [
         "thoughtspot_chart_type",
         "thoughtspot_question_text",
+        "terms",
     ]
 
     @property
@@ -6569,6 +7118,18 @@ class Thoughtspot(BI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_question_text = thoughtspot_question_text
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Thoughtspot", allow_mutation=False)
 
@@ -6624,6 +7185,7 @@ class PowerBI(BI):
         "power_b_i_table_qualified_name",
         "power_b_i_format_string",
         "power_b_i_endorsement",
+        "terms",
     ]
 
     @property
@@ -6669,6 +7231,18 @@ class PowerBI(BI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBI", allow_mutation=False)
 
@@ -6730,6 +7304,7 @@ class Preset(BI):
         "preset_workspace_qualified_name",
         "preset_dashboard_id",
         "preset_dashboard_qualified_name",
+        "terms",
     ]
 
     @property
@@ -6779,6 +7354,18 @@ class Preset(BI):
         self.attributes.preset_dashboard_qualified_name = (
             preset_dashboard_qualified_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Preset", allow_mutation=False)
 
@@ -6845,6 +7432,7 @@ class Mode(BI):
         "mode_report_qualified_name",
         "mode_query_name",
         "mode_query_qualified_name",
+        "terms",
     ]
 
     @property
@@ -6939,6 +7527,18 @@ class Mode(BI):
             self.attributes = self.Attributes()
         self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Mode", allow_mutation=False)
 
     @validator("type_name")
@@ -7012,6 +7612,7 @@ class Sigma(BI):
         "sigma_page_name",
         "sigma_data_element_qualified_name",
         "sigma_data_element_name",
+        "terms",
     ]
 
     @property
@@ -7079,6 +7680,18 @@ class Sigma(BI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_name = sigma_data_element_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Sigma", allow_mutation=False)
 
@@ -7150,6 +7763,7 @@ class Qlik(BI):
         "qlik_app_qualified_name",
         "qlik_owner_id",
         "qlik_is_published",
+        "terms",
     ]
 
     @property
@@ -7232,6 +7846,18 @@ class Qlik(BI):
             self.attributes = self.Attributes()
         self.attributes.qlik_is_published = qlik_is_published
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Qlik", allow_mutation=False)
 
     @validator("type_name")
@@ -7289,7 +7915,21 @@ class Tableau(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Tableau", allow_mutation=False)
 
@@ -7334,7 +7974,21 @@ class Looker(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Looker", allow_mutation=False)
 
@@ -7371,6 +8025,79 @@ class Looker(BI):
     )
 
 
+class Redash(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Redash._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "redash_is_published",
+        "terms",
+    ]
+
+    @property
+    def redash_is_published(self) -> Optional[bool]:
+        return self.attributes.redash_is_published
+
+    @redash_is_published.setter
+    def redash_is_published(self, redash_is_published: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_is_published = redash_is_published
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("Redash", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Redash":
+            raise ValueError("must be Redash")
+        return v
+
+    class Attributes(BI.Attributes):
+        redash_is_published: Optional[bool] = Field(
+            None, description="", alias="redashIsPublished"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Redash.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Salesforce(SaaS):
     """Description"""
 
@@ -7382,6 +8109,7 @@ class Salesforce(SaaS):
     _convience_properties: ClassVar[list[str]] = [
         "organization_qualified_name",
         "api_name",
+        "terms",
     ]
 
     @property
@@ -7403,6 +8131,18 @@ class Salesforce(SaaS):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_name = api_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Salesforce", allow_mutation=False)
 
@@ -7455,6 +8195,7 @@ class DbtModelColumn(Dbt):
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
+        "terms",
     ]
 
     @property
@@ -7486,6 +8227,18 @@ class DbtModelColumn(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_model_column_order = dbt_model_column_order
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("DbtModelColumn", allow_mutation=False)
 
@@ -7562,6 +8315,7 @@ class DbtModel(Dbt):
         "dbt_model_execution_time",
         "dbt_model_run_generated_at",
         "dbt_model_run_elapsed_time",
+        "terms",
     ]
 
     @property
@@ -7704,6 +8458,18 @@ class DbtModel(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_model_run_elapsed_time = dbt_model_run_elapsed_time
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("DbtModel", allow_mutation=False)
 
     @validator("type_name")
@@ -7814,6 +8580,7 @@ class DbtMetric(Dbt):
         "metric_s_q_l",
         "metric_filters",
         "metric_time_grains",
+        "terms",
     ]
 
     @property
@@ -8050,6 +8817,18 @@ class DbtMetric(Dbt):
             self.attributes = self.Attributes()
         self.attributes.metric_time_grains = metric_time_grains
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("DbtMetric", allow_mutation=False)
 
     @validator("type_name")
@@ -8166,6 +8945,7 @@ class DbtSource(Dbt):
     _convience_properties: ClassVar[list[str]] = [
         "dbt_state",
         "dbt_freshness_criteria",
+        "terms",
     ]
 
     @property
@@ -8187,6 +8967,18 @@ class DbtSource(Dbt):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dbt_freshness_criteria = dbt_freshness_criteria
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("DbtSource", allow_mutation=False)
 
@@ -8266,6 +9058,7 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "terms",
     ]
 
     @property
@@ -8512,6 +9305,18 @@ class DbtProcess(Dbt):
             self.attributes = self.Attributes()
         self.attributes.ast = ast
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("DbtProcess", allow_mutation=False)
 
     @validator("type_name")
@@ -8613,6 +9418,7 @@ class ReadmeTemplate(Resource):
     _convience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
+        "terms",
     ]
 
     @property
@@ -8634,6 +9440,18 @@ class ReadmeTemplate(Resource):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ReadmeTemplate", allow_mutation=False)
 
@@ -8680,7 +9498,21 @@ class Readme(Resource):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Readme", allow_mutation=False)
 
@@ -8785,6 +9617,7 @@ class Link(Resource):
     _convience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
+        "terms",
     ]
 
     @property
@@ -8806,6 +9639,18 @@ class Link(Resource):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Link", allow_mutation=False)
 
@@ -8867,6 +9712,7 @@ class APISpec(API):
         "api_spec_license_url",
         "api_spec_contract_version",
         "api_spec_service_alias",
+        "terms",
     ]
 
     @property
@@ -8951,6 +9797,18 @@ class APISpec(API):
             self.attributes = self.Attributes()
         self.attributes.api_spec_service_alias = api_spec_service_alias
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("APISpec", allow_mutation=False)
 
     @validator("type_name")
@@ -9028,6 +9886,7 @@ class APIPath(API):
         "api_path_available_operations",
         "api_path_available_response_codes",
         "api_path_is_ingress_exposed",
+        "terms",
     ]
 
     @property
@@ -9095,6 +9954,18 @@ class APIPath(API):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.api_path_is_ingress_exposed = api_path_is_ingress_exposed
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("APIPath", allow_mutation=False)
 
@@ -9176,6 +10047,7 @@ class TablePartition(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "terms",
     ]
 
     @property
@@ -9328,6 +10200,18 @@ class TablePartition(SQL):
             self.attributes = self.Attributes()
         self.attributes.partition_list = partition_list
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("TablePartition", allow_mutation=False)
 
     @validator("type_name")
@@ -9437,6 +10321,7 @@ class Table(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "terms",
     ]
 
     @property
@@ -9578,6 +10463,18 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.partition_list = partition_list
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Table", allow_mutation=False)
 
@@ -9725,6 +10622,7 @@ class Query(SQL):
         "collection_qualified_name",
         "is_visual_query",
         "visual_builder_schema_base64",
+        "terms",
     ]
 
     @property
@@ -9832,6 +10730,18 @@ class Query(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Query", allow_mutation=False)
 
@@ -9970,6 +10880,7 @@ class Column(SQL):
         "column_uniqueness_percentage",
         "column_variance",
         "column_top_values",
+        "terms",
     ]
 
     @property
@@ -10448,6 +11359,18 @@ class Column(SQL):
             self.attributes = self.Attributes()
         self.attributes.column_top_values = column_top_values
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("Column", allow_mutation=False)
 
     @validator("type_name")
@@ -10690,6 +11613,7 @@ class Schema(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "table_count",
         "views_count",
+        "terms",
     ]
 
     @property
@@ -10711,6 +11635,18 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.views_count = views_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Schema", allow_mutation=False)
 
@@ -10834,6 +11770,7 @@ class SnowflakeStream(SQL):
         "snowflake_stream_mode",
         "snowflake_stream_is_stale",
         "snowflake_stream_stale_after",
+        "terms",
     ]
 
     @property
@@ -10887,6 +11824,18 @@ class SnowflakeStream(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_stream_stale_after = snowflake_stream_stale_after
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SnowflakeStream", allow_mutation=False)
 
@@ -10965,6 +11914,7 @@ class SnowflakePipe(SQL):
         "definition",
         "snowflake_pipe_is_auto_ingest_enabled",
         "snowflake_pipe_notification_channel_name",
+        "terms",
     ]
 
     @property
@@ -11004,6 +11954,18 @@ class SnowflakePipe(SQL):
         self.attributes.snowflake_pipe_notification_channel_name = (
             snowflake_pipe_notification_channel_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SnowflakePipe", allow_mutation=False)
 
@@ -11072,6 +12034,7 @@ class Database(SQL):
 
     _convience_properties: ClassVar[list[str]] = [
         "schema_count",
+        "terms",
     ]
 
     @property
@@ -11083,6 +12046,18 @@ class Database(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.schema_count = schema_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Database", allow_mutation=False)
 
@@ -11192,6 +12167,7 @@ class Procedure(SQL):
 
     _convience_properties: ClassVar[list[str]] = [
         "definition",
+        "terms",
     ]
 
     @property
@@ -11203,6 +12179,18 @@ class Procedure(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.definition = definition
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("Procedure", allow_mutation=False)
 
@@ -11272,6 +12260,7 @@ class View(SQL):
         "alias",
         "is_temporary",
         "definition",
+        "terms",
     ]
 
     @property
@@ -11353,6 +12342,18 @@ class View(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.definition = definition
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("View", allow_mutation=False)
 
@@ -11479,6 +12480,7 @@ class MaterialisedView(SQL):
         "alias",
         "is_temporary",
         "definition",
+        "terms",
     ]
 
     @property
@@ -11601,6 +12603,18 @@ class MaterialisedView(SQL):
             self.attributes = self.Attributes()
         self.attributes.definition = definition
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("MaterialisedView", allow_mutation=False)
 
     @validator("type_name")
@@ -11698,6 +12712,7 @@ class GCSObject(GCS):
         "gcs_object_content_disposition",
         "gcs_object_content_language",
         "gcs_object_retention_expiration_date",
+        "terms",
     ]
 
     @property
@@ -11860,6 +12875,18 @@ class GCSObject(GCS):
             gcs_object_retention_expiration_date
         )
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("GCSObject", allow_mutation=False)
 
     @validator("type_name")
@@ -11959,6 +12986,7 @@ class GCSBucket(GCS):
         "gcs_bucket_retention_effective_time",
         "gcs_bucket_lifecycle_rules",
         "gcs_bucket_retention_policy",
+        "terms",
     ]
 
     @property
@@ -12036,6 +13064,18 @@ class GCSBucket(GCS):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("GCSBucket", allow_mutation=False)
 
@@ -12115,6 +13155,7 @@ class ADLSAccount(ADLS):
         "adls_primary_disk_state",
         "adls_account_provision_state",
         "adls_account_access_tier",
+        "terms",
     ]
 
     @property
@@ -12227,6 +13268,18 @@ class ADLSAccount(ADLS):
             self.attributes = self.Attributes()
         self.attributes.adls_account_access_tier = adls_account_access_tier
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("ADLSAccount", allow_mutation=False)
 
     @validator("type_name")
@@ -12308,6 +13361,7 @@ class ADLSContainer(ADLS):
         "adls_container_encryption_scope",
         "adls_container_version_level_immutability_support",
         "adls_object_count",
+        "terms",
     ]
 
     @property
@@ -12381,6 +13435,18 @@ class ADLSContainer(ADLS):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.adls_object_count = adls_object_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ADLSContainer", allow_mutation=False)
 
@@ -12467,6 +13533,7 @@ class ADLSObject(ADLS):
         "adls_object_lease_state",
         "adls_object_metadata",
         "adls_container_qualified_name",
+        "terms",
     ]
 
     @property
@@ -12661,6 +13728,18 @@ class ADLSObject(ADLS):
             self.attributes = self.Attributes()
         self.attributes.adls_container_qualified_name = adls_container_qualified_name
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("ADLSObject", allow_mutation=False)
 
     @validator("type_name")
@@ -12761,6 +13840,7 @@ class S3Bucket(S3):
     _convience_properties: ClassVar[list[str]] = [
         "s3_object_count",
         "s3_bucket_versioning_enabled",
+        "terms",
     ]
 
     @property
@@ -12784,6 +13864,18 @@ class S3Bucket(S3):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("S3Bucket", allow_mutation=False)
 
@@ -12891,6 +13983,7 @@ class S3Object(S3):
         "s3_object_content_type",
         "s3_object_content_disposition",
         "s3_object_version_id",
+        "terms",
     ]
 
     @property
@@ -12986,6 +14079,18 @@ class S3Object(S3):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.s3_object_version_id = s3_object_version_id
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("S3Object", allow_mutation=False)
 
@@ -13123,6 +14228,7 @@ class KafkaTopic(Kafka):
         "kafka_topic_size_in_bytes",
         "kafka_topic_record_count",
         "kafka_topic_cleanup_policy",
+        "terms",
     ]
 
     @property
@@ -13211,6 +14317,18 @@ class KafkaTopic(Kafka):
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("KafkaTopic", allow_mutation=False)
 
     @validator("type_name")
@@ -13286,6 +14404,7 @@ class KafkaConsumerGroup(Kafka):
         "kafka_consumer_group_member_count",
         "kafka_topic_names",
         "kafka_topic_qualified_names",
+        "terms",
     ]
 
     @property
@@ -13342,6 +14461,18 @@ class KafkaConsumerGroup(Kafka):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
 
@@ -13407,6 +14538,7 @@ class MetabaseQuestion(Metabase):
         "metabase_dashboard_count",
         "metabase_query_type",
         "metabase_query",
+        "terms",
     ]
 
     @property
@@ -13438,6 +14570,18 @@ class MetabaseQuestion(Metabase):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_query = metabase_query
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("MetabaseQuestion", allow_mutation=False)
 
@@ -13502,6 +14646,7 @@ class MetabaseCollection(Metabase):
         "metabase_color",
         "metabase_namespace",
         "metabase_is_personal_collection",
+        "terms",
     ]
 
     @property
@@ -13547,6 +14692,18 @@ class MetabaseCollection(Metabase):
         self.attributes.metabase_is_personal_collection = (
             metabase_is_personal_collection
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("MetabaseCollection", allow_mutation=False)
 
@@ -13609,6 +14766,7 @@ class MetabaseDashboard(Metabase):
 
     _convience_properties: ClassVar[list[str]] = [
         "metabase_question_count",
+        "terms",
     ]
 
     @property
@@ -13620,6 +14778,18 @@ class MetabaseDashboard(Metabase):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.metabase_question_count = metabase_question_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("MetabaseDashboard", allow_mutation=False)
 
@@ -13676,6 +14846,7 @@ class QuickSightFolder(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_folder_type",
         "quick_sight_folder_hierarchy",
+        "terms",
     ]
 
     @property
@@ -13701,6 +14872,18 @@ class QuickSightFolder(QuickSight):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightFolder", allow_mutation=False)
 
@@ -13762,6 +14945,7 @@ class QuickSightDashboardVisual(QuickSight):
 
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dashboard_qualified_name",
+        "terms",
     ]
 
     @property
@@ -13777,6 +14961,18 @@ class QuickSightDashboardVisual(QuickSight):
         self.attributes.quick_sight_dashboard_qualified_name = (
             quick_sight_dashboard_qualified_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
 
@@ -13829,6 +15025,7 @@ class QuickSightAnalysisVisual(QuickSight):
 
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_analysis_qualified_name",
+        "terms",
     ]
 
     @property
@@ -13844,6 +15041,18 @@ class QuickSightAnalysisVisual(QuickSight):
         self.attributes.quick_sight_analysis_qualified_name = (
             quick_sight_analysis_qualified_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
 
@@ -13897,6 +15106,7 @@ class QuickSightDatasetField(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dataset_field_type",
         "quick_sight_dataset_qualified_name",
+        "terms",
     ]
 
     @property
@@ -13924,6 +15134,18 @@ class QuickSightDatasetField(QuickSight):
         self.attributes.quick_sight_dataset_qualified_name = (
             quick_sight_dataset_qualified_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
 
@@ -13982,6 +15204,7 @@ class QuickSightAnalysis(QuickSight):
         "quick_sight_analysis_calculated_fields",
         "quick_sight_analysis_parameter_declarations",
         "quick_sight_analysis_filter_groups",
+        "terms",
     ]
 
     @property
@@ -14037,6 +15260,18 @@ class QuickSightAnalysis(QuickSight):
         self.attributes.quick_sight_analysis_filter_groups = (
             quick_sight_analysis_filter_groups
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
 
@@ -14102,6 +15337,7 @@ class QuickSightDashboard(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dashboard_published_version_number",
         "quick_sight_dashboard_last_published_time",
+        "terms",
     ]
 
     @property
@@ -14131,6 +15367,18 @@ class QuickSightDashboard(QuickSight):
         self.attributes.quick_sight_dashboard_last_published_time = (
             quick_sight_dashboard_last_published_time
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightDashboard", allow_mutation=False)
 
@@ -14192,6 +15440,7 @@ class QuickSightDataset(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dataset_import_mode",
         "quick_sight_dataset_column_count",
+        "terms",
     ]
 
     @property
@@ -14221,6 +15470,18 @@ class QuickSightDataset(QuickSight):
         self.attributes.quick_sight_dataset_column_count = (
             quick_sight_dataset_column_count
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QuickSightDataset", allow_mutation=False)
 
@@ -14277,7 +15538,21 @@ class ThoughtspotLiveboard(Thoughtspot):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
 
@@ -14328,6 +15603,7 @@ class ThoughtspotDashlet(Thoughtspot):
     _convience_properties: ClassVar[list[str]] = [
         "thoughtspot_liveboard_name",
         "thoughtspot_liveboard_qualified_name",
+        "terms",
     ]
 
     @property
@@ -14353,6 +15629,18 @@ class ThoughtspotDashlet(Thoughtspot):
         self.attributes.thoughtspot_liveboard_qualified_name = (
             thoughtspot_liveboard_qualified_name
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
 
@@ -14406,7 +15694,21 @@ class ThoughtspotAnswer(Thoughtspot):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
 
@@ -14456,6 +15758,7 @@ class PowerBIReport(PowerBI):
         "dataset_qualified_name",
         "web_url",
         "page_count",
+        "terms",
     ]
 
     @property
@@ -14497,6 +15800,18 @@ class PowerBIReport(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.page_count = page_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIReport", allow_mutation=False)
 
@@ -14566,6 +15881,7 @@ class PowerBIMeasure(PowerBI):
         "dataset_qualified_name",
         "power_b_i_measure_expression",
         "power_b_i_is_external_measure",
+        "terms",
     ]
 
     @property
@@ -14609,6 +15925,18 @@ class PowerBIMeasure(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIMeasure", allow_mutation=False)
 
@@ -14675,6 +16003,7 @@ class PowerBIColumn(PowerBI):
         "power_b_i_column_data_type",
         "power_b_i_sort_by_column",
         "power_b_i_column_summarize_by",
+        "terms",
     ]
 
     @property
@@ -14740,6 +16069,18 @@ class PowerBIColumn(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIColumn", allow_mutation=False)
 
@@ -14811,6 +16152,7 @@ class PowerBITable(PowerBI):
         "power_b_i_table_source_expressions",
         "power_b_i_table_column_count",
         "power_b_i_table_measure_count",
+        "terms",
     ]
 
     @property
@@ -14868,6 +16210,18 @@ class PowerBITable(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBITable", allow_mutation=False)
 
@@ -14939,6 +16293,7 @@ class PowerBITile(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dashboard_qualified_name",
+        "terms",
     ]
 
     @property
@@ -14960,6 +16315,18 @@ class PowerBITile(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboard_qualified_name = dashboard_qualified_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBITile", allow_mutation=False)
 
@@ -15021,6 +16388,7 @@ class PowerBIDatasource(PowerBI):
 
     _convience_properties: ClassVar[list[str]] = [
         "connection_details",
+        "terms",
     ]
 
     @property
@@ -15032,6 +16400,18 @@ class PowerBIDatasource(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.connection_details = connection_details
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIDatasource", allow_mutation=False)
 
@@ -15088,6 +16468,7 @@ class PowerBIWorkspace(PowerBI):
         "dashboard_count",
         "dataset_count",
         "dataflow_count",
+        "terms",
     ]
 
     @property
@@ -15139,6 +16520,18 @@ class PowerBIWorkspace(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dataflow_count = dataflow_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
 
@@ -15207,6 +16600,7 @@ class PowerBIDataset(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
+        "terms",
     ]
 
     @property
@@ -15228,6 +16622,18 @@ class PowerBIDataset(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.web_url = web_url
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIDataset", allow_mutation=False)
 
@@ -15298,6 +16704,7 @@ class PowerBIDashboard(PowerBI):
         "workspace_qualified_name",
         "web_url",
         "tile_count",
+        "terms",
     ]
 
     @property
@@ -15329,6 +16736,18 @@ class PowerBIDashboard(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.tile_count = tile_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIDashboard", allow_mutation=False)
 
@@ -15387,6 +16806,7 @@ class PowerBIDataflow(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
+        "terms",
     ]
 
     @property
@@ -15408,6 +16828,18 @@ class PowerBIDataflow(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.web_url = web_url
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIDataflow", allow_mutation=False)
 
@@ -15465,6 +16897,7 @@ class PowerBIPage(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "report_qualified_name",
+        "terms",
     ]
 
     @property
@@ -15486,6 +16919,18 @@ class PowerBIPage(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.report_qualified_name = report_qualified_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PowerBIPage", allow_mutation=False)
 
@@ -15542,6 +16987,7 @@ class PresetChart(Preset):
     _convience_properties: ClassVar[list[str]] = [
         "preset_chart_description_markdown",
         "preset_chart_form_data",
+        "terms",
     ]
 
     @property
@@ -15567,6 +17013,18 @@ class PresetChart(Preset):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_chart_form_data = preset_chart_form_data
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PresetChart", allow_mutation=False)
 
@@ -15624,6 +17082,7 @@ class PresetDataset(Preset):
         "preset_dataset_datasource_name",
         "preset_dataset_id",
         "preset_dataset_type",
+        "terms",
     ]
 
     @property
@@ -15657,6 +17116,18 @@ class PresetDataset(Preset):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_dataset_type = preset_dataset_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PresetDataset", allow_mutation=False)
 
@@ -15720,6 +17191,7 @@ class PresetDashboard(Preset):
         "preset_dashboard_is_published",
         "preset_dashboard_thumbnail_url",
         "preset_dashboard_chart_count",
+        "terms",
     ]
 
     @property
@@ -15797,6 +17269,18 @@ class PresetDashboard(Preset):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("PresetDashboard", allow_mutation=False)
 
@@ -15878,6 +17362,7 @@ class PresetWorkspace(Preset):
         "preset_workspace_deployment_id",
         "preset_workspace_dashboard_count",
         "preset_workspace_dataset_count",
+        "terms",
     ]
 
     @property
@@ -15986,6 +17471,18 @@ class PresetWorkspace(Preset):
             self.attributes = self.Attributes()
         self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("PresetWorkspace", allow_mutation=False)
 
     @validator("type_name")
@@ -16067,6 +17564,7 @@ class ModeReport(Mode):
         "mode_query_preview",
         "mode_is_public",
         "mode_is_shared",
+        "terms",
     ]
 
     @property
@@ -16138,6 +17636,18 @@ class ModeReport(Mode):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_is_shared = mode_is_shared
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ModeReport", allow_mutation=False)
 
@@ -16212,6 +17722,7 @@ class ModeQuery(Mode):
     _convience_properties: ClassVar[list[str]] = [
         "mode_raw_query",
         "mode_report_import_count",
+        "terms",
     ]
 
     @property
@@ -16233,6 +17744,18 @@ class ModeQuery(Mode):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_report_import_count = mode_report_import_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ModeQuery", allow_mutation=False)
 
@@ -16291,6 +17814,7 @@ class ModeChart(Mode):
 
     _convience_properties: ClassVar[list[str]] = [
         "mode_chart_type",
+        "terms",
     ]
 
     @property
@@ -16302,6 +17826,18 @@ class ModeChart(Mode):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_chart_type = mode_chart_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ModeChart", allow_mutation=False)
 
@@ -16354,6 +17890,7 @@ class ModeWorkspace(Mode):
 
     _convience_properties: ClassVar[list[str]] = [
         "mode_collection_count",
+        "terms",
     ]
 
     @property
@@ -16365,6 +17902,18 @@ class ModeWorkspace(Mode):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_collection_count = mode_collection_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ModeWorkspace", allow_mutation=False)
 
@@ -16418,6 +17967,7 @@ class ModeCollection(Mode):
     _convience_properties: ClassVar[list[str]] = [
         "mode_collection_type",
         "mode_collection_state",
+        "terms",
     ]
 
     @property
@@ -16439,6 +17989,18 @@ class ModeCollection(Mode):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_collection_state = mode_collection_state
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("ModeCollection", allow_mutation=False)
 
@@ -16498,6 +18060,7 @@ class SigmaDatasetColumn(Sigma):
     _convience_properties: ClassVar[list[str]] = [
         "sigma_dataset_qualified_name",
         "sigma_dataset_name",
+        "terms",
     ]
 
     @property
@@ -16519,6 +18082,18 @@ class SigmaDatasetColumn(Sigma):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_name = sigma_dataset_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
 
@@ -16574,6 +18149,7 @@ class SigmaDataset(Sigma):
 
     _convience_properties: ClassVar[list[str]] = [
         "sigma_dataset_column_count",
+        "terms",
     ]
 
     @property
@@ -16585,6 +18161,18 @@ class SigmaDataset(Sigma):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SigmaDataset", allow_mutation=False)
 
@@ -16637,6 +18225,7 @@ class SigmaWorkbook(Sigma):
 
     _convience_properties: ClassVar[list[str]] = [
         "sigma_page_count",
+        "terms",
     ]
 
     @property
@@ -16648,6 +18237,18 @@ class SigmaWorkbook(Sigma):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_page_count = sigma_page_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SigmaWorkbook", allow_mutation=False)
 
@@ -16701,6 +18302,7 @@ class SigmaDataElementField(Sigma):
     _convience_properties: ClassVar[list[str]] = [
         "sigma_data_element_field_is_hidden",
         "sigma_data_element_field_formula",
+        "terms",
     ]
 
     @property
@@ -16730,6 +18332,18 @@ class SigmaDataElementField(Sigma):
         self.attributes.sigma_data_element_field_formula = (
             sigma_data_element_field_formula
         )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SigmaDataElementField", allow_mutation=False)
 
@@ -16785,6 +18399,7 @@ class SigmaPage(Sigma):
 
     _convience_properties: ClassVar[list[str]] = [
         "sigma_data_element_count",
+        "terms",
     ]
 
     @property
@@ -16796,6 +18411,18 @@ class SigmaPage(Sigma):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_count = sigma_data_element_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SigmaPage", allow_mutation=False)
 
@@ -16853,6 +18480,7 @@ class SigmaDataElement(Sigma):
         "sigma_data_element_query",
         "sigma_data_element_type",
         "sigma_data_element_field_count",
+        "terms",
     ]
 
     @property
@@ -16886,6 +18514,18 @@ class SigmaDataElement(Sigma):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SigmaDataElement", allow_mutation=False)
 
@@ -16947,6 +18587,7 @@ class QlikSpace(Qlik):
 
     _convience_properties: ClassVar[list[str]] = [
         "qlik_space_type",
+        "terms",
     ]
 
     @property
@@ -16958,6 +18599,18 @@ class QlikSpace(Qlik):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_space_type = qlik_space_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QlikSpace", allow_mutation=False)
 
@@ -17017,6 +18670,7 @@ class QlikApp(Qlik):
         "qlik_is_encrypted",
         "qlik_is_direct_query_mode",
         "qlik_app_static_byte_size",
+        "terms",
     ]
 
     @property
@@ -17068,6 +18722,18 @@ class QlikApp(Qlik):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QlikApp", allow_mutation=False)
 
@@ -17138,6 +18804,7 @@ class QlikChart(Qlik):
         "qlik_chart_footnote",
         "qlik_chart_orientation",
         "qlik_chart_type",
+        "terms",
     ]
 
     @property
@@ -17179,6 +18846,18 @@ class QlikChart(Qlik):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_chart_type = qlik_chart_type
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QlikChart", allow_mutation=False)
 
@@ -17243,6 +18922,7 @@ class QlikDataset(Qlik):
         "qlik_dataset_type",
         "qlik_dataset_uri",
         "qlik_dataset_subtype",
+        "terms",
     ]
 
     @property
@@ -17284,6 +18964,18 @@ class QlikDataset(Qlik):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QlikDataset", allow_mutation=False)
 
@@ -17345,6 +19037,7 @@ class QlikSheet(Qlik):
 
     _convience_properties: ClassVar[list[str]] = [
         "qlik_sheet_is_approved",
+        "terms",
     ]
 
     @property
@@ -17356,6 +19049,18 @@ class QlikSheet(Qlik):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QlikSheet", allow_mutation=False)
 
@@ -17415,6 +19120,7 @@ class TableauWorkbook(Tableau):
         "top_level_project_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
+        "terms",
     ]
 
     @property
@@ -17470,6 +19176,18 @@ class TableauWorkbook(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("TableauWorkbook", allow_mutation=False)
 
@@ -17558,6 +19276,7 @@ class TableauDatasourceField(Tableau):
         "upstream_columns",
         "upstream_fields",
         "datasource_field_type",
+        "terms",
     ]
 
     @property
@@ -17742,6 +19461,18 @@ class TableauDatasourceField(Tableau):
             self.attributes = self.Attributes()
         self.attributes.datasource_field_type = datasource_field_type
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("TableauDatasourceField", allow_mutation=False)
 
     @validator("type_name")
@@ -17851,6 +19582,7 @@ class TableauCalculatedField(Tableau):
         "tableau_data_type",
         "formula",
         "upstream_fields",
+        "terms",
     ]
 
     @property
@@ -17967,6 +19699,18 @@ class TableauCalculatedField(Tableau):
             self.attributes = self.Attributes()
         self.attributes.upstream_fields = upstream_fields
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("TableauCalculatedField", allow_mutation=False)
 
     @validator("type_name")
@@ -18048,6 +19792,7 @@ class TableauProject(Tableau):
         "top_level_project_qualified_name",
         "is_top_level_project",
         "project_hierarchy",
+        "terms",
     ]
 
     @property
@@ -18093,6 +19838,18 @@ class TableauProject(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("TableauProject", allow_mutation=False)
 
@@ -18172,6 +19929,7 @@ class TableauMetric(Tableau):
         "project_qualified_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
+        "terms",
     ]
 
     @property
@@ -18217,6 +19975,18 @@ class TableauMetric(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("TableauMetric", allow_mutation=False)
 
@@ -18276,7 +20046,21 @@ class TableauSite(Tableau):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("TableauSite", allow_mutation=False)
 
@@ -18338,6 +20122,7 @@ class TableauDatasource(Tableau):
         "certifier_display_name",
         "upstream_tables",
         "upstream_datasources",
+        "terms",
     ]
 
     @property
@@ -18476,6 +20261,18 @@ class TableauDatasource(Tableau):
             self.attributes = self.Attributes()
         self.attributes.upstream_datasources = upstream_datasources
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("TableauDatasource", allow_mutation=False)
 
     @validator("type_name")
@@ -18567,6 +20364,7 @@ class TableauDashboard(Tableau):
         "workbook_qualified_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
+        "terms",
     ]
 
     @property
@@ -18622,6 +20420,18 @@ class TableauDashboard(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("TableauDashboard", allow_mutation=False)
 
@@ -18695,6 +20505,7 @@ class TableauFlow(Tableau):
         "input_fields",
         "output_fields",
         "output_steps",
+        "terms",
     ]
 
     @property
@@ -18771,6 +20582,18 @@ class TableauFlow(Tableau):
             self.attributes = self.Attributes()
         self.attributes.output_steps = output_steps
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("TableauFlow", allow_mutation=False)
 
     @validator("type_name")
@@ -18844,6 +20667,7 @@ class TableauWorksheet(Tableau):
         "top_level_project_qualified_name",
         "project_hierarchy",
         "workbook_qualified_name",
+        "terms",
     ]
 
     @property
@@ -18899,6 +20723,18 @@ class TableauWorksheet(Tableau):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.workbook_qualified_name = workbook_qualified_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("TableauWorksheet", allow_mutation=False)
 
@@ -18980,6 +20816,7 @@ class LookerLook(Looker):
         "source_content_metadata_id",
         "source_query_id",
         "model_name",
+        "terms",
     ]
 
     @property
@@ -19072,6 +20909,18 @@ class LookerLook(Looker):
             self.attributes = self.Attributes()
         self.attributes.model_name = model_name
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("LookerLook", allow_mutation=False)
 
     @validator("type_name")
@@ -19161,6 +21010,7 @@ class LookerDashboard(Looker):
         "sourcelast_updater_id",
         "source_last_accessed_at",
         "source_last_viewed_at",
+        "terms",
     ]
 
     @property
@@ -19232,6 +21082,18 @@ class LookerDashboard(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_last_viewed_at = source_last_viewed_at
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerDashboard", allow_mutation=False)
 
@@ -19309,6 +21171,7 @@ class LookerFolder(Looker):
         "source_creator_id",
         "source_child_count",
         "source_parent_i_d",
+        "terms",
     ]
 
     @property
@@ -19350,6 +21213,18 @@ class LookerFolder(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_parent_i_d = source_parent_i_d
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerFolder", allow_mutation=False)
 
@@ -19420,6 +21295,7 @@ class LookerTile(Looker):
         "result_maker_i_d",
         "subtitle_text",
         "look_id",
+        "terms",
     ]
 
     @property
@@ -19492,6 +21368,18 @@ class LookerTile(Looker):
             self.attributes = self.Attributes()
         self.attributes.look_id = look_id
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("LookerTile", allow_mutation=False)
 
     @validator("type_name")
@@ -19559,6 +21447,7 @@ class LookerModel(Looker):
 
     _convience_properties: ClassVar[list[str]] = [
         "project_name",
+        "terms",
     ]
 
     @property
@@ -19570,6 +21459,18 @@ class LookerModel(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_name = project_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerModel", allow_mutation=False)
 
@@ -19636,6 +21537,7 @@ class LookerExplore(Looker):
         "source_connection_name",
         "view_name",
         "sql_table_name",
+        "terms",
     ]
 
     @property
@@ -19687,6 +21589,18 @@ class LookerExplore(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sql_table_name = sql_table_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerExplore", allow_mutation=False)
 
@@ -19749,7 +21663,21 @@ class LookerProject(Looker):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerProject", allow_mutation=False)
 
@@ -19811,6 +21739,7 @@ class LookerQuery(Looker):
         "source_definition_database",
         "source_definition_schema",
         "fields",
+        "terms",
     ]
 
     @property
@@ -19852,6 +21781,18 @@ class LookerQuery(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.fields = fields
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerQuery", allow_mutation=False)
 
@@ -19923,6 +21864,7 @@ class LookerField(Looker):
         "source_definition",
         "looker_field_data_type",
         "looker_times_used",
+        "terms",
     ]
 
     @property
@@ -19996,6 +21938,18 @@ class LookerField(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.looker_times_used = looker_times_used
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerField", allow_mutation=False)
 
@@ -20071,6 +22025,7 @@ class LookerView(Looker):
 
     _convience_properties: ClassVar[list[str]] = [
         "project_name",
+        "terms",
     ]
 
     @property
@@ -20082,6 +22037,18 @@ class LookerView(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.project_name = project_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("LookerView", allow_mutation=False)
 
@@ -20125,6 +22092,341 @@ class LookerView(Looker):
     )
 
 
+class RedashDashboard(Redash):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in RedashDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "redash_dashboard_widget_count",
+        "terms",
+    ]
+
+    @property
+    def redash_dashboard_widget_count(self) -> Optional[int]:
+        return self.attributes.redash_dashboard_widget_count
+
+    @redash_dashboard_widget_count.setter
+    def redash_dashboard_widget_count(
+        self, redash_dashboard_widget_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_dashboard_widget_count = redash_dashboard_widget_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("RedashDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "RedashDashboard":
+            raise ValueError("must be RedashDashboard")
+        return v
+
+    class Attributes(Redash.Attributes):
+        redash_dashboard_widget_count: Optional[int] = Field(
+            None, description="", alias="redashDashboardWidgetCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "RedashDashboard.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class RedashQuery(Redash):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in RedashQuery._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "redash_query_s_q_l",
+        "redash_query_parameters",
+        "redash_query_schedule",
+        "redash_query_last_execution_runtime",
+        "redash_query_last_executed_at",
+        "redash_query_schedule_humanized",
+        "terms",
+    ]
+
+    @property
+    def redash_query_s_q_l(self) -> Optional[str]:
+        return self.attributes.redash_query_s_q_l
+
+    @redash_query_s_q_l.setter
+    def redash_query_s_q_l(self, redash_query_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_s_q_l = redash_query_s_q_l
+
+    @property
+    def redash_query_parameters(self) -> Optional[str]:
+        return self.attributes.redash_query_parameters
+
+    @redash_query_parameters.setter
+    def redash_query_parameters(self, redash_query_parameters: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_parameters = redash_query_parameters
+
+    @property
+    def redash_query_schedule(self) -> Optional[dict[str, str]]:
+        return self.attributes.redash_query_schedule
+
+    @redash_query_schedule.setter
+    def redash_query_schedule(self, redash_query_schedule: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_schedule = redash_query_schedule
+
+    @property
+    def redash_query_last_execution_runtime(self) -> Optional[float]:
+        return self.attributes.redash_query_last_execution_runtime
+
+    @redash_query_last_execution_runtime.setter
+    def redash_query_last_execution_runtime(
+        self, redash_query_last_execution_runtime: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_last_execution_runtime = (
+            redash_query_last_execution_runtime
+        )
+
+    @property
+    def redash_query_last_executed_at(self) -> Optional[datetime]:
+        return self.attributes.redash_query_last_executed_at
+
+    @redash_query_last_executed_at.setter
+    def redash_query_last_executed_at(
+        self, redash_query_last_executed_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_last_executed_at = redash_query_last_executed_at
+
+    @property
+    def redash_query_schedule_humanized(self) -> Optional[str]:
+        return self.attributes.redash_query_schedule_humanized
+
+    @redash_query_schedule_humanized.setter
+    def redash_query_schedule_humanized(
+        self, redash_query_schedule_humanized: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_schedule_humanized = (
+            redash_query_schedule_humanized
+        )
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("RedashQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "RedashQuery":
+            raise ValueError("must be RedashQuery")
+        return v
+
+    class Attributes(Redash.Attributes):
+        redash_query_s_q_l: Optional[str] = Field(
+            None, description="", alias="redashQuerySQL"
+        )
+        redash_query_parameters: Optional[str] = Field(
+            None, description="", alias="redashQueryParameters"
+        )
+        redash_query_schedule: Optional[dict[str, str]] = Field(
+            None, description="", alias="redashQuerySchedule"
+        )
+        redash_query_last_execution_runtime: Optional[float] = Field(
+            None, description="", alias="redashQueryLastExecutionRuntime"
+        )
+        redash_query_last_executed_at: Optional[datetime] = Field(
+            None, description="", alias="redashQueryLastExecutedAt"
+        )
+        redash_query_schedule_humanized: Optional[str] = Field(
+            None, description="", alias="redashQueryScheduleHumanized"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        redash_visualizations: Optional[list[RedashVisualization]] = Field(
+            None, description="", alias="redashVisualizations"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "RedashQuery.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class RedashVisualization(Redash):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in RedashVisualization._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "redash_visualization_type",
+        "redash_query_name",
+        "redash_query_qualified_name",
+        "terms",
+    ]
+
+    @property
+    def redash_visualization_type(self) -> Optional[str]:
+        return self.attributes.redash_visualization_type
+
+    @redash_visualization_type.setter
+    def redash_visualization_type(self, redash_visualization_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_visualization_type = redash_visualization_type
+
+    @property
+    def redash_query_name(self) -> Optional[str]:
+        return self.attributes.redash_query_name
+
+    @redash_query_name.setter
+    def redash_query_name(self, redash_query_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_name = redash_query_name
+
+    @property
+    def redash_query_qualified_name(self) -> Optional[str]:
+        return self.attributes.redash_query_qualified_name
+
+    @redash_query_qualified_name.setter
+    def redash_query_qualified_name(self, redash_query_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_query_qualified_name = redash_query_qualified_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("RedashVisualization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "RedashVisualization":
+            raise ValueError("must be RedashVisualization")
+        return v
+
+    class Attributes(Redash.Attributes):
+        redash_visualization_type: Optional[str] = Field(
+            None, description="", alias="redashVisualizationType"
+        )
+        redash_query_name: Optional[str] = Field(
+            None, description="", alias="redashQueryName"
+        )
+        redash_query_qualified_name: Optional[str] = Field(
+            None, description="", alias="redashQueryQualifiedName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        redash_query: Optional[RedashQuery] = Field(
+            None, description="", alias="redashQuery"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "RedashVisualization.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class SalesforceObject(Salesforce):
     """Description"""
 
@@ -20138,6 +22440,7 @@ class SalesforceObject(Salesforce):
         "is_mergable",
         "is_queryable",
         "field_count",
+        "terms",
     ]
 
     @property
@@ -20179,6 +22482,18 @@ class SalesforceObject(Salesforce):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.field_count = field_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SalesforceObject", allow_mutation=False)
 
@@ -20253,6 +22568,7 @@ class SalesforceField(Salesforce):
         "picklist_values",
         "is_polymorphic_foreign_key",
         "default_value_formula",
+        "terms",
     ]
 
     @property
@@ -20415,6 +22731,18 @@ class SalesforceField(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.default_value_formula = default_value_formula
 
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
     type_name: str = Field("SalesforceField", allow_mutation=False)
 
     @validator("type_name")
@@ -20498,6 +22826,7 @@ class SalesforceOrganization(Salesforce):
 
     _convience_properties: ClassVar[list[str]] = [
         "source_id",
+        "terms",
     ]
 
     @property
@@ -20509,6 +22838,18 @@ class SalesforceOrganization(Salesforce):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_id = source_id
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SalesforceOrganization", allow_mutation=False)
 
@@ -20567,6 +22908,7 @@ class SalesforceDashboard(Salesforce):
         "source_id",
         "dashboard_type",
         "report_count",
+        "terms",
     ]
 
     @property
@@ -20598,6 +22940,18 @@ class SalesforceDashboard(Salesforce):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.report_count = report_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SalesforceDashboard", allow_mutation=False)
 
@@ -20657,6 +23011,7 @@ class SalesforceReport(Salesforce):
         "source_id",
         "report_type",
         "detail_columns",
+        "terms",
     ]
 
     @property
@@ -20688,6 +23043,18 @@ class SalesforceReport(Salesforce):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.detail_columns = detail_columns
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("SalesforceReport", allow_mutation=False)
 
@@ -20745,7 +23112,21 @@ class QlikStream(QlikSpace):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "terms",
+    ]
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
     type_name: str = Field("QlikStream", allow_mutation=False)
 
@@ -20888,6 +23269,8 @@ Qlik.Attributes.update_forward_refs()
 Tableau.Attributes.update_forward_refs()
 
 Looker.Attributes.update_forward_refs()
+
+Redash.Attributes.update_forward_refs()
 
 Salesforce.Attributes.update_forward_refs()
 
@@ -21078,6 +23461,12 @@ LookerQuery.Attributes.update_forward_refs()
 LookerField.Attributes.update_forward_refs()
 
 LookerView.Attributes.update_forward_refs()
+
+RedashDashboard.Attributes.update_forward_refs()
+
+RedashQuery.Attributes.update_forward_refs()
+
+RedashVisualization.Attributes.update_forward_refs()
 
 SalesforceObject.Attributes.update_forward_refs()
 
