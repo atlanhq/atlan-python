@@ -634,7 +634,33 @@ class AtlanClient(BaseSettings):
                 term for term in existing_terms if term.relationship_status != "DELETED"
             )
         replacement_terms.extend(terms)
-        asset.attributes.meanings = replacement_terms
+        asset.terms = replacement_terms
+        response = self.upsert(entity=asset)
+        if assets := response.assets_updated(asset_type=asset_type):
+            return assets[0]
+        return asset
+
+    @validate_arguments()
+    def replace_terms(
+        self,
+        asset_type: Type[A],
+        terms: list[AtlasGlossaryTerm],
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        if guid:
+            if qualified_name:
+                raise ValueError(
+                    "Either guid or qualified_name can be be specified not both"
+                )
+            asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+        elif qualified_name:
+            asset = self.get_asset_by_qualified_name(
+                qualified_name=qualified_name, asset_type=asset_type
+            )
+        else:
+            raise ValueError("Either guid or qualified name must be specified")
+        asset.terms = terms
         response = self.upsert(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]

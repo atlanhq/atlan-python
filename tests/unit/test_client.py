@@ -152,3 +152,76 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
         assert len(updated_terms) == 2
         assert exisiting_term in updated_terms
         assert new_term in updated_terms
+
+
+@pytest.mark.parametrize(
+    "guid, qualified_name, asset_type, terms, message",
+    [
+        (
+            None,
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            "Either guid or qualified name must be specified",
+        ),
+        (
+            "123",
+            None,
+            None,
+            [AtlasGlossaryTerm()],
+            "1 validation error for ReplaceTerms\\nasset_type\\n  none is not an allowed value ",
+        ),
+        (
+            "123",
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            "Either guid or qualified_name can be be specified not both",
+        ),
+        (
+            "123",
+            None,
+            Table,
+            None,
+            "1 validation error for ReplaceTerms\\nterms\\n  none is not an allowed value ",
+        ),
+    ],
+)
+def test_replace_terms_with_invalid_parameter_raises_valueerror(
+    guid,
+    qualified_name,
+    asset_type,
+    terms,
+    message,
+    monkeypatch,
+):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+    client = AtlanClient()
+
+    with pytest.raises(ValueError, match=message):
+        client.replace_terms(
+            guid=guid, qualified_name=qualified_name, asset_type=asset_type, terms=terms
+        )
+
+
+def test_replace_terms(
+    monkeypatch,
+):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+    asset_type = Table
+    with patch.multiple(
+        AtlanClient, get_asset_by_guid=DEFAULT, upsert=DEFAULT
+    ) as mock_methods:
+        table = Table()
+        mock_methods["get_asset_by_guid"].return_value = table
+        mock_methods["upsert"].return_value.assets_updated.return_value = [table]
+        client = AtlanClient()
+        guid = "123"
+        terms = [AtlasGlossaryTerm()]
+
+        assert (
+            asset := client.replace_terms(guid=guid, asset_type=asset_type, terms=terms)
+        )
+        assert asset.terms == terms

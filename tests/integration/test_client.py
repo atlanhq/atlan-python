@@ -126,3 +126,61 @@ def test_append_terms_using_ref_by_guid_for_term(
     database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 1
     assert database.terms[0].guid == term.guid
+
+
+def test_replace_a_term(
+    client: AtlanClient,
+    make_term: Callable[[str], AtlasGlossaryTerm],
+    database: Database,
+):
+    original_term = make_term("Term1")
+    assert (
+        database := client.append_terms(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            terms=[AtlasGlossaryTerm.ref_by_guid(guid=original_term.guid)],
+        )
+    )
+
+    replacemant_term = make_term("Term2")
+    assert (
+        database := client.replace_terms(
+            guid=database.guid, asset_type=Database, terms=[replacemant_term]
+        )
+    )
+
+    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert len(database.terms) == 2
+    deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
+    assert len(deleted_terms) == 1
+    assert deleted_terms[0].guid == original_term.guid
+    active_terms = [t for t in database.terms if t.relationship_status != "DELETED"]
+    assert len(active_terms) == 1
+    assert active_terms[0].guid == replacemant_term.guid
+
+
+def test_replace_all_term(
+    client: AtlanClient,
+    make_term: Callable[[str], AtlasGlossaryTerm],
+    database: Database,
+):
+    original_term = make_term("Term1")
+    assert (
+        database := client.append_terms(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            terms=[AtlasGlossaryTerm.ref_by_guid(guid=original_term.guid)],
+        )
+    )
+
+    assert (
+        database := client.replace_terms(
+            guid=database.guid, asset_type=Database, terms=[]
+        )
+    )
+
+    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert len(database.terms) == 1
+    deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
+    assert len(deleted_terms) == 1
+    assert deleted_terms[0].guid == original_term.guid
