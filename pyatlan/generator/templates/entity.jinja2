@@ -71,11 +71,15 @@ def validate_required_fields(field_names:list[str], values:list[Any]):
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
-{%- macro gen_properties(attribute_defs) %}
+{%- macro gen_properties(attribute_defs, additional_names=[]) %}
     _convience_properties: ClassVar[list[str]] = [
         {%- for attribute_def in attribute_defs %}
         "{{ attribute_def.name | to_snake_case }}",
-        {%- endfor %}]
+        {%- endfor %}
+        {%- for name in additional_names  %}
+        "{{ name }}",
+         {%- endfor %}]
+
     {%- for attribute_def in attribute_defs %}
     {%- set type = attribute_def.typeName | get_type %}
     {%- set property_type %}{% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %}{% endset %}
@@ -107,7 +111,19 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 return object.__setattr__(self, name, value)
             super().__setattr__( name, value)
 
-    {{ gen_properties(entity_def.attribute_defs) }}
+    {{ gen_properties(entity_def.attribute_defs, ["terms"]) }}
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
 
 {%- if entity_def.name == "Referenceable"  %}
 
