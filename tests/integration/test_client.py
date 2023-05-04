@@ -107,3 +107,22 @@ def test_append_terms_with_qualified_name(
     database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 1
     assert database.terms[0].guid == term.guid
+
+
+def test_append_terms_using_ref_by_guid_for_term(
+    client: AtlanClient,
+    make_term: Callable[[str], AtlasGlossaryTerm],
+    database: Database,
+):
+    term = make_term("Term1")
+
+    assert (
+        database := client.append_terms(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            terms=[AtlasGlossaryTerm.ref_by_guid(guid=term.guid)],
+        )
+    )
+    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert len(database.terms) == 1
+    assert database.terms[0].guid == term.guid
