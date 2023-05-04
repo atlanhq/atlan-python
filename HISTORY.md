@@ -2,7 +2,7 @@
 
 * Add remove_terms method to AtlanClient
 * Add append_terms method to AtlanClient
-* Add remove_terms method to AtlanClient
+* Add replace_terms method to AtlanClient
 
 ## 0.0.25 (May 2, 2023)
 
