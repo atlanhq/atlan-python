@@ -665,3 +665,40 @@ class AtlanClient(BaseSettings):
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return asset
+
+    @validate_arguments()
+    def remove_terms(
+        self,
+        asset_type: Type[A],
+        terms: list[AtlasGlossaryTerm],
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
+    ) -> A:
+        if not terms:
+            raise ValueError("A list of terms to remove must be specified")
+        if guid:
+            if qualified_name:
+                raise ValueError(
+                    "Either guid or qualified_name can be be specified not both"
+                )
+            asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+        elif qualified_name:
+            asset = self.get_asset_by_qualified_name(
+                qualified_name=qualified_name, asset_type=asset_type
+            )
+        else:
+            raise ValueError("Either guid or qualified name must be specified")
+        replacement_terms: list[AtlasGlossaryTerm] = []
+        guids_to_be_removed = {t.guid for t in terms}
+        if existing_terms := asset.terms:
+            replacement_terms.extend(
+                term
+                for term in existing_terms
+                if term.relationship_status != "DELETED"
+                and term.guid not in guids_to_be_removed
+            )
+        asset.terms = replacement_terms
+        response = self.upsert(entity=asset)
+        if assets := response.assets_updated(asset_type=asset_type):
+            return assets[0]
+        return asset

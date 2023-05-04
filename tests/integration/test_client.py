@@ -184,3 +184,38 @@ def test_replace_all_term(
     deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
     assert len(deleted_terms) == 1
     assert deleted_terms[0].guid == original_term.guid
+
+
+def test_remove_term(
+    client: AtlanClient,
+    make_term: Callable[[str], AtlasGlossaryTerm],
+    database: Database,
+):
+    original_term = make_term("Term1")
+    another_term = make_term("Term2")
+    assert (
+        database := client.append_terms(
+            qualified_name=database.qualified_name,
+            asset_type=Database,
+            terms=[
+                AtlasGlossaryTerm.ref_by_guid(guid=original_term.guid),
+                AtlasGlossaryTerm.ref_by_guid(guid=another_term.guid),
+            ],
+        )
+    )
+
+    assert (
+        database := client.remove_terms(
+            guid=database.guid,
+            asset_type=Database,
+            terms=[AtlasGlossaryTerm.ref_by_guid(original_term.guid)],
+        )
+    )
+
+    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert len(database.terms) == 2
+    deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
+    assert len(deleted_terms) == 1
+    assert deleted_terms[0].guid == original_term.guid
+    active_terms = [t for t in database.terms if t.relationship_status != "DELETED"]
+    assert active_terms[0].guid == another_term.guid
