@@ -1,3 +1,9 @@
+## 0.0.26 (May 4, 2023)
+
+* Add remove_terms method to AtlanClient
+* Add append_terms method to AtlanClient
+* Add remove_terms method to AtlanClient
+
 ## 0.0.25 (May 2, 2023)
 
 * Update create method for Readme asset
