@@ -33,7 +33,7 @@ def database(
 ) -> Generator[Database, None, None]:
 
     database = Database.create(
-        name="Integration_Test_Entity_DB",
+        name=f"Integration_Test_Entity_DB{next(iter_count)}",
         connection_qualified_name=connection.attributes.qualified_name,
     )
     database = client.upsert(database).assets_created(Database)[0]
@@ -75,7 +75,7 @@ def test_register_client():
     assert AtlanClient.get_default_client() == client
 
 
-def test_append_terms(
+def test_append_terms_with_guid(
     client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
@@ -85,6 +85,23 @@ def test_append_terms(
     assert (
         database := client.append_terms(
             guid=database.guid, asset_type=Database, terms=[term]
+        )
+    )
+    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert len(database.terms) == 1
+    assert database.terms[0].guid == term.guid
+
+
+def test_append_terms_with_qualified_name(
+    client: AtlanClient,
+    make_term: Callable[[str], AtlasGlossaryTerm],
+    database: Database,
+):
+    term = make_term("Term1")
+
+    assert (
+        database := client.append_terms(
+            qualified_name=database.qualified_name, asset_type=Database, terms=[term]
         )
     )
     database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)

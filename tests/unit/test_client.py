@@ -9,33 +9,41 @@ from pyatlan.model.assets import AtlasGlossaryTerm, Table
 
 
 @pytest.mark.parametrize(
-    "guid, asset_type, terms, message",
+    "guid, qualified_name, asset_type, terms, message",
     [
         (
             "123",
+            None,
             Table,
             None,
-            "1 validation error for AppendTerms\\nterms\\n  none is not an allowed value "
-            "\(type=type_error.none.not_allowed\)",  # noqa: W605
+            "1 validation error for AppendTerms\\nterms\\n  none is not an allowed value ",
         ),
         (
             None,
+            None,
             Table,
             [AtlasGlossaryTerm()],
-            "1 validation error for AppendTerms\\nguid\\n  none is not an allowed value "
-            "\(type=type_error.none.not_allowed\)",  # noqa: W605
+            "Either guid or qualified name must be specified",
         ),
         (
             "123",
             None,
+            None,
             [AtlasGlossaryTerm()],
-            "1 validation error for AppendTerms\\nasset_type\\n  none is not an allowed value "
-            "\(type=type_error.none.not_allowed\)",  # noqa: W605
+            "1 validation error for AppendTerms\\nasset_type\\n  none is not an allowed value ",
+        ),
+        (
+            "123",
+            "default/abc",
+            Table,
+            [AtlasGlossaryTerm()],
+            "Either guid or qualified_name can be be specified not both",
         ),
     ],
 )
 def test_append_terms_with_invalid_parameter_raises_valueerror(
     guid,
+    qualified_name,
     asset_type,
     terms,
     message,
@@ -46,7 +54,9 @@ def test_append_terms_with_invalid_parameter_raises_valueerror(
     client = AtlanClient()
 
     with pytest.raises(ValueError, match=message):
-        client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+        client.append_terms(
+            guid=guid, qualified_name=qualified_name, asset_type=asset_type, terms=terms
+        )
 
 
 def test_append_with_valid_guid_and_no_terms_returns_asset(monkeypatch):

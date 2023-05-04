@@ -313,8 +313,7 @@ class AtlanClient(BaseSettings):
             raw_json["entity"]["attributes"].update(
                 raw_json["entity"]["relationshipAttributes"]
             )
-            asset = AssetResponse[A](**raw_json).entity
-            asset.is_incomplete = False
+            asset = self.handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
                     message=f"Asset with qualifiedName {qualified_name} "
@@ -345,16 +344,7 @@ class AtlanClient(BaseSettings):
                 GET_ENTITY_BY_GUID.format_path_with_params(guid),
                 query_params,
             )
-            if (
-                "relationshipAttributes" in raw_json["entity"]
-                and raw_json["entity"]["relationshipAttributes"]
-            ):
-                raw_json["entity"]["attributes"].update(
-                    raw_json["entity"]["relationshipAttributes"]
-                )
-            raw_json["entity"]["relationshipAttributes"] = {}
-            asset = AssetResponse[A](**raw_json).entity
-            asset.is_incomplete = False
+            asset = self.handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
                     message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
@@ -365,6 +355,19 @@ class AtlanClient(BaseSettings):
             if ae.status_code == HTTPStatus.NOT_FOUND:
                 raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
+
+    def handle_relationships(self, raw_json):
+        if (
+            "relationshipAttributes" in raw_json["entity"]
+            and raw_json["entity"]["relationshipAttributes"]
+        ):
+            raw_json["entity"]["attributes"].update(
+                raw_json["entity"]["relationshipAttributes"]
+            )
+        raw_json["entity"]["relationshipAttributes"] = {}
+        asset = AssetResponse[A](**raw_json).entity
+        asset.is_incomplete = False
+        return asset
 
     @validate_arguments()
     def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
@@ -605,9 +608,24 @@ class AtlanClient(BaseSettings):
 
     @validate_arguments()
     def append_terms(
-        self, guid: str, asset_type: Type[A], terms: list[AtlasGlossaryTerm]
+        self,
+        asset_type: Type[A],
+        terms: list[AtlasGlossaryTerm],
+        guid: Optional[str] = None,
+        qualified_name: Optional[str] = None,
     ) -> A:
-        asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+        if guid:
+            if qualified_name:
+                raise ValueError(
+                    "Either guid or qualified_name can be be specified not both"
+                )
+            asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+        elif qualified_name:
+            asset = self.get_asset_by_qualified_name(
+                qualified_name=qualified_name, asset_type=asset_type
+            )
+        else:
+            raise ValueError("Either guid or qualified name must be specified")
         if not terms:
             return asset
         replacement_terms: list[AtlasGlossaryTerm] = []
