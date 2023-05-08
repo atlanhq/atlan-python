@@ -3,8 +3,10 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
+import hashlib
 import sys
 from datetime import datetime
+from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, TypeVar
 from urllib.parse import quote, unquote
 
@@ -79,6 +81,8 @@ def validate_required_fields(field_names: list[str], values: list[Any]):
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
+        if isinstance(value, list) and len(value) == 0:
+            raise ValueError(f"{field_name} cannot be an empty list")
 
 
 SelfAsset = TypeVar("SelfAsset", bound="Asset")
@@ -3081,11 +3085,96 @@ class Process(Asset, type_name="Process"):
             None, description="", alias="meanings"
         )  # relationship
 
+        @staticmethod
+        def generate_qualified_name(
+            name: str,
+            connection_qualified_name: str,
+            inputs: list["Catalog"],
+            outputs: list["Catalog"],
+            parent: Optional["Process"] = None,
+            process_id: Optional[str] = None,
+        ) -> str:
+            def append_relationship(output: StringIO, relationship: Asset):
+                if relationship.guid:
+                    output.write(relationship.guid)
+
+            def append_relationships(output: StringIO, relationships: list["Catalog"]):
+                for catalog in relationships:
+                    append_relationship(output, catalog)
+
+            validate_required_fields(
+                ["name", "connection_qualified_name", "inputs", "outputs"],
+                [name, connection_qualified_name, inputs, outputs],
+            )
+            if process_id and process_id.strip():
+                return f"{connection_qualified_name}/{process_id}"
+            buffer = StringIO()
+            buffer.write(name)
+            buffer.write(connection_qualified_name)
+            if parent:
+                append_relationship(buffer, parent)
+            append_relationships(buffer, inputs)
+            append_relationships(buffer, outputs)
+            ret_value = hashlib.md5(
+                buffer.getvalue().encode(), usedforsecurity=False
+            ).hexdigest()
+            buffer.close()
+            return ret_value
+
+        @classmethod
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            process_id: str,
+            inputs: list["Catalog"],
+            outputs: list["Catalog"],
+            parent: Optional[Process],
+        ) -> Process.Attributes:
+            qualified_name = Process.Attributes.generate_qualified_name(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+            connector_name = connection_qualified_name.split("/")[1]
+            return Process.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                inputs=inputs,
+                outputs=outputs,
+            )
+
     attributes: "Process.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        process_id: str,
+        inputs: list["Catalog"],
+        outputs: list["Catalog"],
+        parent: Optional[Process],
+    ) -> Process:
+        return Process(
+            attributes=Process.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+        )
 
 
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
