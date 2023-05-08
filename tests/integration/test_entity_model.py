@@ -3,6 +3,7 @@
 import os
 import random
 import string
+from typing import Callable, Generator
 
 import pytest
 import requests
@@ -18,7 +19,9 @@ from pyatlan.model.assets import (
     Column,
     Connection,
     Database,
+    Process,
     Readme,
+    S3Object,
     Schema,
     Table,
     View,
@@ -43,6 +46,7 @@ GUIDS_UNABLE_TO_DELETE = {
     "57f5463d-cc2a-4859-bf28-e4fa52002e8e",
 }
 TEMP_CONNECTION_GUID = "b3a5c49a-0c7c-4e66-8453-f4da8d9ce222"
+S3_CONNECTION_GUID = "25f2dc21-cd53-47fe-bbed-be10759d087a"
 
 
 @pytest.fixture(scope="module")
@@ -189,6 +193,7 @@ def cleanup(atlan_host, headers, atlan_api_key):
         "Connection",
         "View",
         "Column",
+        "Process",
         "Readme",
     ]
     for type_name in type_names:
@@ -825,3 +830,48 @@ def test_create_readme(client: AtlanClient):
     assert len(reaadmes) == 1
     assert (glossaries := response.assets_updated(asset_type=AtlasGlossary))
     assert len(glossaries) == 1
+
+
+@pytest.fixture()
+def make_s3_object(
+    client: AtlanClient,
+) -> Generator[Callable[[str], S3Object], None, None]:
+    created_guids = []
+    connection = client.get_asset_by_guid(S3_CONNECTION_GUID, Connection)
+
+    def _make_s3_object(name: str) -> S3Object:
+        s3_object = S3Object.create(
+            connection_qualified_name=connection.qualified_name,
+            name=name,
+            aws_arn=f"arn:aws:s3:::{name}",
+        )
+        s3_object = client.upsert(s3_object).assets_created(S3Object)[0]
+        created_guids.append(s3_object.guid)
+        return s3_object
+
+    yield _make_s3_object
+
+    for guid in created_guids:
+        client.purge_entity_by_guid(guid=guid)
+
+
+def test_process_create(client: AtlanClient, make_s3_object: Callable[[str], S3Object]):
+    connection = client.get_asset_by_guid(S3_CONNECTION_GUID, Connection)
+
+    input_object = make_s3_object("Integration Source")
+
+    output_object = make_s3_object("Integration Target")
+
+    process = Process.create(
+        name="Integration Process Test",
+        connection_qualified_name=connection.qualified_name,
+        process_id="doit",
+        inputs=[input_object],
+        outputs=[output_object],
+    )
+
+    response = client.upsert(process)
+    assert (processes := response.assets_created(Process))
+    assert len(processes) == 1
+    assert (assets := response.assets_updated(S3Object))
+    assert len(assets) == 2

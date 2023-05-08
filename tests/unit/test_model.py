@@ -2,6 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import json
 from datetime import datetime
+from hashlib import md5
 from inspect import signature
 from pathlib import Path
 from unittest.mock import create_autospec, patch
@@ -24,6 +25,7 @@ from pyatlan.model.assets import (
     AwsTag,
     AzureTag,
     BadgeCondition,
+    Catalog,
     ColumnValueFrequencyMap,
     Connection,
     Database,
@@ -32,6 +34,7 @@ from pyatlan.model.assets import (
     GoogleTag,
     Histogram,
     PopularityInsights,
+    Process,
     Readme,
     S3Bucket,
     S3Object,
@@ -1453,3 +1456,207 @@ def test_create_readme(asset, content, asset_name, expected_name):
     assert readme.name == f"{expected_name} Readme"
     assert readme.attributes.asset == asset
     assert readme.description == content
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, process_id, inputs,outputs, parent, message",
+    [
+        (None, "133/s3", None, [Catalog()], [Catalog()], None, "name is required"),
+        (
+            "bob",
+            None,
+            None,
+            [Catalog()],
+            [Catalog()],
+            None,
+            "connection_qualified_name is required",
+        ),
+        ("bob", "133/s3", None, None, [Catalog()], None, "inputs is required"),
+        (
+            "bob",
+            "133/s3",
+            None,
+            [],
+            [Catalog()],
+            None,
+            "inputs cannot be an empty list",
+        ),
+        ("bob", "133/s3", None, [Catalog()], None, None, "outputs is required"),
+        (
+            "bob",
+            "133/s3",
+            None,
+            [Catalog()],
+            [],
+            None,
+            "outputs cannot be an empty list",
+        ),
+    ],
+)
+def test_process_attributes_generate_qualified_name_without_required_parameter_raises_value_error(
+    name, connection_qualified_name, process_id, inputs, outputs, parent, message
+):
+    with pytest.raises(ValueError, match=message):
+        Process.Attributes.generate_qualified_name(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            process_id=process_id,
+            inputs=inputs,
+            outputs=outputs,
+            parent=parent,
+        )
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, process_id, inputs,outputs, parent, expected_value",
+    [
+        (
+            "doit",
+            "default/s3/1678379436102",
+            "123",
+            [Catalog()],
+            [Catalog()],
+            None,
+            "default/s3/1678379436102/123",
+        ),
+        (
+            "doit",
+            "default/s3/1678379436102",
+            None,
+            [Catalog(guid="123")],
+            [Catalog(guid="456")],
+            None,
+            "doitdefault/s3/1678379436102123456",
+        ),
+        (
+            "doit",
+            "default/s3/1678379436102",
+            None,
+            [Catalog(guid="456")],
+            [Catalog(guid="789")],
+            Catalog(guid="123"),
+            "doitdefault/s3/1678379436102123456789",
+        ),
+    ],
+)
+def test_process_attributes_generate_qualified_name(
+    name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
+):
+    if not process_id:
+        expected_value = md5(expected_value.encode()).hexdigest()
+
+    assert (
+        Process.Attributes.generate_qualified_name(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            process_id=process_id,
+            inputs=inputs,
+            outputs=outputs,
+            parent=parent,
+        )
+        == expected_value
+    )
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, process_id, inputs,outputs, parent, message",
+    [
+        (None, "133/s3", None, [Catalog()], [Catalog()], None, "name is required"),
+        (
+            "bob",
+            None,
+            None,
+            [Catalog()],
+            [Catalog()],
+            None,
+            "connection_qualified_name is required",
+        ),
+        ("bob", "133/s3", None, None, [Catalog()], None, "inputs is required"),
+        (
+            "bob",
+            "133/s3",
+            None,
+            [],
+            [Catalog()],
+            None,
+            "inputs cannot be an empty list",
+        ),
+        ("bob", "133/s3", None, [Catalog()], None, None, "outputs is required"),
+        (
+            "bob",
+            "133/s3",
+            None,
+            [Catalog()],
+            [],
+            None,
+            "outputs cannot be an empty list",
+        ),
+    ],
+)
+def test_process_attributes_create_without_required_parameter_raises_value_error(
+    name, connection_qualified_name, process_id, inputs, outputs, parent, message
+):
+    with pytest.raises(ValueError, match=message):
+        Process.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            process_id=process_id,
+            inputs=inputs,
+            outputs=outputs,
+            parent=parent,
+        )
+
+
+@pytest.mark.parametrize(
+    "name, connection_qualified_name, process_id, inputs,outputs, parent, expected_value",
+    [
+        (
+            "doit",
+            "default/s3/1678379436102",
+            "123",
+            [Catalog()],
+            [Catalog()],
+            None,
+            "default/s3/1678379436102/123",
+        ),
+        (
+            "doit",
+            "default/s3/1678379436102",
+            None,
+            [Catalog(guid="123")],
+            [Catalog(guid="456")],
+            None,
+            "doitdefault/s3/1678379436102123456",
+        ),
+        (
+            "doit",
+            "default/s3/1678379436102",
+            None,
+            [Catalog(guid="456")],
+            [Catalog(guid="789")],
+            Catalog(guid="123"),
+            "doitdefault/s3/1678379436102123456789",
+        ),
+    ],
+)
+def test_process_attributes_create(
+    name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
+):
+    if not process_id:
+        expected_value = md5(expected_value.encode()).hexdigest()
+
+    process = Process.create(
+        name=name,
+        connection_qualified_name=connection_qualified_name,
+        process_id=process_id,
+        inputs=inputs,
+        outputs=outputs,
+        parent=parent,
+    )
+
+    assert process.name == name
+    assert process.connection_qualified_name == connection_qualified_name
+    assert process.qualified_name == expected_value
+    assert process_id == process_id
+    assert process.inputs == inputs
+    assert process.outputs == outputs

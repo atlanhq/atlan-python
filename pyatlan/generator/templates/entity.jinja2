@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import sys
+from io import StringIO
+import hashlib
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional, TypeVar
 
@@ -65,12 +67,14 @@ def validate_single_required_field(field_names: list[str], values: list[Any]):
             f"Only one of the following parameters are allowed: {', '.join(names)}"
         )
 
-def validate_required_fields(field_names:list[str], values:list[Any]):
-    for field_name, value in  zip(field_names, values):
+def validate_required_fields(field_names: list[str], values: list[Any]):
+    for field_name, value in zip(field_names, values):
         if value is None:
             raise ValueError(f"{field_name} is required")
         if isinstance(value, str) and not value.strip():
             raise ValueError(f"{field_name} cannot be blank")
+        if isinstance(value, list) and len(value) == 0:
+            raise ValueError(f"{field_name} cannot be an empty list")
 {%- macro gen_properties(attribute_defs, additional_names=[]) %}
     _convience_properties: ClassVar[list[str]] = [
         {%- for attribute_def in attribute_defs %}
@@ -455,6 +459,70 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 raise ValueError(
                     "One of admin_user, admin_groups or admin_roles is required"
                 )
+        {%- elif entity_def.name == "Process" %}
+        @staticmethod
+        def generate_qualified_name(
+            name: str,
+            connection_qualified_name: str,
+            inputs: list["Catalog"],
+            outputs: list["Catalog"],
+            parent: Optional["Process"] = None,
+            process_id: Optional[str] = None,
+        ) -> str:
+            def append_relationship(output: StringIO, relationship: Asset):
+                if relationship.guid:
+                    output.write(relationship.guid)
+
+            def append_relationships(output: StringIO, relationships: list["Catalog"]):
+                for catalog in relationships:
+                    append_relationship(output, catalog)
+
+            validate_required_fields(
+                ["name", "connection_qualified_name", "inputs", "outputs"],
+                [name, connection_qualified_name, inputs, outputs],
+            )
+            if process_id and process_id.strip():
+                return f"{connection_qualified_name}/{process_id}"
+            buffer = StringIO()
+            buffer.write(name)
+            buffer.write(connection_qualified_name)
+            if parent:
+                append_relationship(buffer, parent)
+            append_relationships(buffer, inputs)
+            append_relationships(buffer, outputs)
+            ret_value = hashlib.md5(
+                buffer.getvalue().encode(), usedforsecurity=False
+            ).hexdigest()
+            buffer.close()
+            return ret_value
+
+        @classmethod
+        def create(
+            cls,
+            name: str,
+            connection_qualified_name: str,
+            inputs: list["Catalog"],
+            outputs: list["Catalog"],
+            process_id: Optional[str] = None,
+            parent: Optional[Process] = None,
+        ) -> Process.Attributes:
+            qualified_name = Process.Attributes.generate_qualified_name(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+            connector_name = connection_qualified_name.split("/")[1]
+            return Process.Attributes(
+                name=name,
+                qualified_name=qualified_name,
+                connector_name=connector_name,
+                connection_qualified_name=connection_qualified_name,
+                inputs=inputs,
+                outputs=outputs,
+            )
         {%- elif entity_def.name == "Readme"  %}
         @classmethod
         # @validate_arguments()
@@ -755,6 +823,27 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
+    {%- elif entity_def.name == "Process" %}
+    @classmethod
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: list["Catalog"],
+        outputs: list["Catalog"],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
+    ) -> Process:
+        return Process(
+            attributes=Process.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+        )
     {%- elif entity_def.name == "Database" %}
     @classmethod
     # @validate_arguments()
