@@ -1,3 +1,7 @@
+## 0.0.27 (May 8, 2023)
+
+* Add a create method to Process
+
 ## 0.0.26 (May 4, 2023)
 
 * Add remove_terms method to AtlanClient
