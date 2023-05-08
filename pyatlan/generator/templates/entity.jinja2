@@ -501,10 +501,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             cls,
             name: str,
             connection_qualified_name: str,
-            process_id: str,
             inputs: list["Catalog"],
             outputs: list["Catalog"],
-            parent: Optional[Process],
+            process_id: Optional[str] = None,
+            parent: Optional[Process] = None,
         ) -> Process.Attributes:
             qualified_name = Process.Attributes.generate_qualified_name(
                 name=name,
@@ -829,10 +829,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         cls,
         name: str,
         connection_qualified_name: str,
-        process_id: str,
         inputs: list["Catalog"],
         outputs: list["Catalog"],
-        parent: Optional[Process],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
     ) -> Process:
         return Process(
             attributes=Process.Attributes.create(

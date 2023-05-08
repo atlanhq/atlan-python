@@ -3126,10 +3126,10 @@ class Process(Asset, type_name="Process"):
             cls,
             name: str,
             connection_qualified_name: str,
-            process_id: str,
             inputs: list["Catalog"],
             outputs: list["Catalog"],
-            parent: Optional[Process],
+            process_id: Optional[str] = None,
+            parent: Optional[Process] = None,
         ) -> Process.Attributes:
             qualified_name = Process.Attributes.generate_qualified_name(
                 name=name,
@@ -3160,10 +3160,10 @@ class Process(Asset, type_name="Process"):
         cls,
         name: str,
         connection_qualified_name: str,
-        process_id: str,
         inputs: list["Catalog"],
         outputs: list["Catalog"],
-        parent: Optional[Process],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
     ) -> Process:
         return Process(
             attributes=Process.Attributes.create(
