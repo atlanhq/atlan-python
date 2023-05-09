@@ -1,3 +1,7 @@
+## 0.0.28 (May 9, 2023)
+
+* Add find_connections_by_name to AtlanClient
+
 ## 0.0.27 (May 8, 2023)
 
 * Add a create method to Process
