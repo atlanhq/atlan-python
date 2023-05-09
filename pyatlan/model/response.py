@@ -7,6 +7,7 @@ from pydantic import Field
 
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject
+from pyatlan.model.enums import LineageDirection
 
 
 class MutatedEntities(AtlanObject):
@@ -85,3 +86,31 @@ class AssetMutationResponse(AtlanObject):
                 if isinstance(asset, asset_type)
             ]
         return []
+
+
+class LineageRelation(AtlanObject):
+    from_entity_id: Optional[str]
+    to_entity_id: Optional[str]
+    process_id: Optional[str]
+    relationship_id: Optional[str]
+
+
+class LineageResponse(AtlanObject):
+    base_entity_guid: str
+    lineage_direction: LineageDirection
+    lineage_depth: int
+    limit: int
+    offset: int
+    has_more_upstream_vertices: bool
+    has_more_downstream_vertices: bool
+    guid_entity_map: dict[str, Asset]
+    relations: list[LineageRelation]
+    vertex_children_info: Optional[dict[str, Any]]
+
+
+class LineageRequest(AtlanObject):
+    guid: str
+    depth: int = Field(default=0)
+    direction: LineageDirection = Field(default=LineageDirection.BOTH)
+    hide_process: bool = Field(default=True)
+    allow_deleted_process: bool = Field(default=False)

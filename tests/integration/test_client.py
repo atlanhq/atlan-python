@@ -6,6 +6,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Connection, Database
 from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.response import LineageRequest
 
 iter_count = count(1)
 
@@ -230,3 +231,11 @@ def test_find_connections_by_name(client: AtlanClient):
     )
     assert len(connections) == 1
     assert connections[0].connector_name == AtlanConnectorType.SNOWFLAKE.value
+
+
+def test_get_lineage(client: AtlanClient):
+    response = client.get_lineage(
+        LineageRequest(guid="75474eab-3105-4ef9-9f84-709e386a7d3e")
+    )
+    for guid, asset in response.guid_entity_map.items():
+        assert guid == asset.guid

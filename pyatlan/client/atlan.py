@@ -29,6 +29,7 @@ from pyatlan.client.constants import (
     GET_ALL_TYPE_DEFS,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
+    GET_LINEAGE,
     GET_ROLES,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
@@ -67,7 +68,11 @@ from pyatlan.model.enums import (
     AtlanTypeCategory,
     CertificateStatus,
 )
-from pyatlan.model.response import AssetMutationResponse
+from pyatlan.model.response import (
+    AssetMutationResponse,
+    LineageRequest,
+    LineageResponse,
+)
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (
@@ -713,8 +718,10 @@ class AtlanClient(BaseSettings):
         self,
         name: str,
         connector_type: AtlanConnectorType,
-        attributes: list[str] = None,
+        attributes: Optional[list[str]] = None,
     ) -> list[Connection]:
+        if attributes is None:
+            attributes = []
         query = (
             Term.with_state("ACTIVE")
             + Term.with_type_name("CONNECTION")
@@ -728,3 +735,9 @@ class AtlanClient(BaseSettings):
         )
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Connection)]
+
+    def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
+        raw_json = self._call_api(
+            GET_LINEAGE, None, lineage_request, exclude_unset=False
+        )
+        return LineageResponse(**raw_json)
