@@ -61,10 +61,15 @@ from pyatlan.model.core import (
     CustomMetadata,
     CustomMetadataReqest,
 )
-from pyatlan.model.enums import AtlanDeleteType, AtlanTypeCategory, CertificateStatus
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    AtlanDeleteType,
+    AtlanTypeCategory,
+    CertificateStatus,
+)
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
-from pyatlan.model.search import IndexSearchRequest
+from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (
     ClassificationDef,
     CustomMetadataDef,
@@ -702,3 +707,24 @@ class AtlanClient(BaseSettings):
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return asset
+
+    @validate_arguments()
+    def find_connections_by_name(
+        self,
+        name: str,
+        connector_type: AtlanConnectorType,
+        attributes: list[str] = None,
+    ) -> list[Connection]:
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("CONNECTION")
+            + Term.with_name(name)
+            + Term(field="connectorName", value=connector_type.value)
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        return [asset for asset in results if isinstance(asset, Connection)]

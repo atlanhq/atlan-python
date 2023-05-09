@@ -5,6 +5,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Connection, Database
+from pyatlan.model.enums import AtlanConnectorType
 
 iter_count = count(1)
 
@@ -219,3 +220,13 @@ def test_remove_term(
     assert deleted_terms[0].guid == original_term.guid
     active_terms = [t for t in database.terms if t.relationship_status != "DELETED"]
     assert active_terms[0].guid == another_term.guid
+
+
+def test_find_connections_by_name(client: AtlanClient):
+    connections = client.find_connections_by_name(
+        name="Test Connection",
+        connector_type=AtlanConnectorType.SNOWFLAKE,
+        attributes=["connectorName"],
+    )
+    assert len(connections) == 1
+    assert connections[0].connector_name == AtlanConnectorType.SNOWFLAKE.value
