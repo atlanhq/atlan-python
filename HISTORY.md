@@ -1,3 +1,12 @@
+## 0.0.29 (May 10, 2023)
+
+* Added the following classes to support lineage retrieval
+  * LineageRelation
+  * DirectedPair
+  * LineageGraph
+  * LineageResponse
+* Added the get_lineage method to AtlanClient
+
 ## 0.0.28 (May 9, 2023)
 
 * Add find_connections_by_name to AtlanClient

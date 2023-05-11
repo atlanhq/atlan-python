@@ -68,11 +68,8 @@ from pyatlan.model.enums import (
     AtlanTypeCategory,
     CertificateStatus,
 )
-from pyatlan.model.response import (
-    AssetMutationResponse,
-    LineageRequest,
-    LineageResponse,
-)
+from pyatlan.model.lineage import LineageRequest, LineageResponse
+from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (

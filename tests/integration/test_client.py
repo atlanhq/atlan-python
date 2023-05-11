@@ -6,7 +6,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Connection, Database
 from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.model.response import LineageRequest
+from pyatlan.model.lineage import LineageRequest
 
 iter_count = count(1)
 
