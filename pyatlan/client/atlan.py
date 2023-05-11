@@ -77,7 +77,6 @@ from pyatlan.model.typedef import (
     TypeDefResponse,
 )
 from pyatlan.utils import HTTPStatus, get_logger
-from pyatlan.cache import CustomMetadataCache, ClassificationCache
 
 LOGGER = get_logger()
 T = TypeVar("T", bound=Referenceable)
@@ -484,8 +483,10 @@ class AtlanClient(BaseSettings):
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=False
         )
         if isinstance(typedef, ClassificationDef):
+            from pyatlan.cache.classification_cache import ClassificationCache
             ClassificationCache.refresh_cache()
         if isinstance(typedef, CustomMetadataDef):
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
             CustomMetadataCache.refresh_cache()
         return TypeDefResponse(**raw_json)
 
@@ -493,6 +494,8 @@ class AtlanClient(BaseSettings):
         self._call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
         # TODO: if we know which kind of typedef is being purged, we only need
         #  to refresh that particular cache
+        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
         ClassificationCache.refresh_cache()
         CustomMetadataCache.refresh_cache()
 
