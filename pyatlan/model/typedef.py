@@ -117,7 +117,7 @@ class AttributeDef(AtlanObject):
             description="Whether the attribute is deprecated ('true') or not (None or 'false').\n",
         )
         is_enum: Optional[bool] = Field(
-            None,
+            False,
             description="Whether the attribute is an enumeration (true) or not (None or false).\n",
         )
         enum_type: Optional[str] = Field(
@@ -128,9 +128,10 @@ class AttributeDef(AtlanObject):
             None,
             description="Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.\n",
         )
-        is_archived: bool = Field(
-            False,
+        is_archived: Optional[bool] = Field(
+            None,
             description="Whether the attribute has been deleted (true) or is still active (false).\n",
+            example=True
         )
         archived_at: Optional[int] = Field(
             None, description="When the attribute was deleted.\n"
@@ -144,6 +145,11 @@ class AttributeDef(AtlanObject):
             None, description="The type of the option"
         )
 
+    is_new: Optional[bool] = Field(
+        True,
+        description="Whether the attribute is being newly created (true) or not (false).",
+        example=True
+    )
     cardinality: Optional[Cardinality] = Field(
         "SINGLE",
         description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
@@ -154,8 +160,8 @@ class AttributeDef(AtlanObject):
     constraints: Optional[List[Dict[str, Any]]] = Field(
         None, description="Internal use only."
     )
-    description: Optional[str] = Field(
-        None,
+    description: str = Field(
+        "",
         description="Description of the attribute definition.\n",
         example="Our first custom metadata field.",
     )
@@ -173,7 +179,7 @@ class AttributeDef(AtlanObject):
         example="Custom Field 1",
     )
     name: str = Field(
-        None,
+        "",
         description="Unique name of this attribute definition. When provided during creation, this should be the "
         "human-readable name for the attribute. When returned (or provided for an update) this will be "
         "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
