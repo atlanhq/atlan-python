@@ -1,3 +1,7 @@
+## 0.0.30 (May 11, 2023)
+
+* Fix problem where custom metadata created via the SDK failed to show up in the UI
+
 ## 0.0.29 (May 11, 2023)
 
 * Fix problem where custom metadata created via the SDK failed to show up in the UI
