@@ -157,6 +157,11 @@ class AttributeDef(AtlanObject):
         primitive_type: Optional[str] = Field(
             None, description="The type of the option"
         )
+        is_new: Optional[bool] = Field(
+            True,
+            description="Whether the attribute is being newly created (true) or not (false).",
+            example=True
+        )
 
         @classmethod
         def create(
@@ -188,8 +193,8 @@ class AttributeDef(AtlanObject):
     enum_values: Optional[List[str]] = Field(
         None, description="List of values for an enumeration."
     )
-    description: Optional[str] = Field(
-        None,
+    description: str = Field(
+        "",
         description="Description of the attribute definition.\n",
         example="Our first custom metadata field.",
     )
