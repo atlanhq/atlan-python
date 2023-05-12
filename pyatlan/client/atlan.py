@@ -713,7 +713,7 @@ class AtlanClient(BaseSettings):
         self,
         name: str,
         connector_type: AtlanConnectorType,
-        attributes: list[str] = None,
+        attributes: list[str] = [],
     ) -> list[Connection]:
         query = (
             Term.with_state("ACTIVE")
