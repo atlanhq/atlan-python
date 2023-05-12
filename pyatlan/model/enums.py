@@ -253,6 +253,27 @@ class AtlanConnectorType(str, Enum):
     EMPTY = ("empty", None)
 
 
+class AtlanCustomAttributePrimitiveType(str, Enum):
+
+    def __new__(
+        cls, value: str
+    ) -> "AtlanCustomAttributePrimitiveType":
+        obj = str.__new__(cls, value)
+        obj._value_ = value
+        return obj
+
+    STRING = "string"
+    INTEGER = "int"
+    DECIMAL = "float"
+    BOOLEAN = "boolean"
+    DATE = "date"
+    OPTIONS = "enum"
+    USERS = "users"
+    GROUPS = "groups"
+    URL = "url"
+    SQL = "SQL"
+
+
 class SortOrder(str, Enum):
     ASCENDING = "asc"
     DESCENDING = "desc"

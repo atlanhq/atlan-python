@@ -4,8 +4,9 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 
+from pyatlan.cache.enum_cache import EnumCache
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import AtlanTypeCategory, Cardinality, IndexType
+from pyatlan.model.enums import AtlanTypeCategory, Cardinality, IndexType, AtlanCustomAttributePrimitiveType
 
 
 class TypeDef(AtlanObject):
@@ -63,6 +64,19 @@ class EnumDef(TypeDef):
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
     )
+
+    @classmethod
+    def get_valid_values(cls) -> Optional[List[str]]:
+        """
+        Translate the element definitions in this enumeration int o simple list of strings.
+        """
+        if cls.element_defs:
+            values = []
+            for one in cls.element_defs:
+                values.append(one.value)
+            return values
+        else:
+            return []
 
 
 class AttributeDef(AtlanObject):
@@ -144,6 +158,23 @@ class AttributeDef(AtlanObject):
             None, description="The type of the option"
         )
 
+        @classmethod
+        def create(
+                cls: type[AttributeDef.Options], type: AtlanCustomAttributePrimitiveType, options_name: str
+        ) -> AttributeDef.Options:
+            from pyatlan.model.assets import validate_required_fields
+            validate_required_fields(
+                ["type"],
+                [type],
+            )
+            builder = cls(primitive_type=type.value)
+            if type == AtlanCustomAttributePrimitiveType.USERS or AtlanCustomAttributePrimitiveType.GROUPS or AtlanCustomAttributePrimitiveType.URL or AtlanCustomAttributePrimitiveType.SQL:
+                builder.custom_type = type.value
+            elif type == AtlanCustomAttributePrimitiveType.OPTIONS:
+                builder.is_enum = True
+                builder.enum_type = options_name
+            return builder
+
     cardinality: Optional[Cardinality] = Field(
         "SINGLE",
         description="Whether the attribute allows a single or multiple values. In the case of multiple values, "
@@ -153,6 +184,9 @@ class AttributeDef(AtlanObject):
     )
     constraints: Optional[List[Dict[str, Any]]] = Field(
         None, description="Internal use only."
+    )
+    enum_values: Optional[List[str]] = Field(
+        None, description="List of values for an enumeration."
     )
     description: Optional[str] = Field(
         None,
@@ -230,6 +264,35 @@ class AttributeDef(AtlanObject):
         None, description="", alias="indexTypeESFields"
     )
     is_default_value_null: Optional[bool] = Field(None, description="TBC")
+
+    @classmethod
+    def create(
+            cls: type[AttributeDef], display_name: str, type: AtlanCustomAttributePrimitiveType, options_name: str, multi_valued: bool
+    ) -> AttributeDef:
+        from pyatlan.model.assets import validate_required_fields
+        validate_required_fields(
+            ["display_name", "type"],
+            [display_name, type],
+        )
+        builder = cls(display_name=display_name)
+        base_type = None
+        add_enum_values = (type == AtlanCustomAttributePrimitiveType.OPTIONS)
+        if type == AtlanCustomAttributePrimitiveType.OPTIONS:
+            base_type = options_name
+        elif type == AtlanCustomAttributePrimitiveType.USERS or AtlanCustomAttributePrimitiveType.GROUPS or AtlanCustomAttributePrimitiveType.URL or AtlanCustomAttributePrimitiveType.SQL:
+            base_type = AtlanCustomAttributePrimitiveType.STRING.value
+        else:
+            base_type = type.value
+        if multi_valued:
+            builder.type_name = "array<" + base_type + ">"
+            builder.options = AttributeDef.Options.create(type=type, options_name=options_name)
+            builder.options.multi_value_select = True
+        else:
+            builder.type_name = base_type
+            builder.options = AttributeDef.Options.create(type=type, options_name=options_name)
+        if add_enum_values:
+            builder.enum_values = EnumCache.get_by_name(options_name).get_valid_values()
+        return builder
 
 
 class StructDef(TypeDef):
