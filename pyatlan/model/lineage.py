@@ -151,47 +151,69 @@ class LineageResponse(AtlanObject):
             self.graph = LineageGraph.create(self.relations)
         return self.graph
 
-    def get_all_downstream_asset_guids_dfs(self, guid: str) -> list[str]:
-        return self.get_graph().get_all_downstream_asset_guids_dfs(guid)
+    def get_all_downstream_asset_guids_dfs(
+        self, guid: Optional[str] = None
+    ) -> list[str]:
+        return self.get_graph().get_all_downstream_asset_guids_dfs(
+            guid if guid else self.base_entity_guid
+        )
 
-    def get_all_downstream_assets_dfs(self, guid: str) -> list[Asset]:
+    def get_all_downstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_all_downstream_asset_guids_dfs(guid)
+            for guid in self.get_graph().get_all_downstream_asset_guids_dfs(
+                guid if guid else self.base_entity_guid
+            )
         ]
 
-    def get_all_upstream_asset_guids_dfs(self, guid: str) -> list[str]:
-        return self.get_graph().get_all_upstream_asset_guids_dfs(guid)
+    def get_all_upstream_asset_guids_dfs(self, guid: Optional[str] = None) -> list[str]:
+        return self.get_graph().get_all_upstream_asset_guids_dfs(
+            guid if guid else self.base_entity_guid
+        )
 
-    def get_all_upstream_assets_dfs(self, guid: str) -> list[Asset]:
+    def get_all_upstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_all_upstream_asset_guids_dfs(guid)
+            for guid in self.get_graph().get_all_upstream_asset_guids_dfs(
+                guid if guid else self.base_entity_guid
+            )
         ]
 
-    def get_downstream_asset_guids(self, guid: str) -> list[str]:
-        return self.get_graph().get_downstream_asset_guids(guid)
+    def get_downstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
+        return self.get_graph().get_downstream_asset_guids(
+            guid if guid else self.base_entity_guid
+        )
 
-    def get_downstream_assets(self, guid: str) -> list[Asset]:
+    def get_downstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_downstream_asset_guids(guid)
+            for guid in self.get_graph().get_downstream_asset_guids(
+                guid if guid else self.base_entity_guid
+            )
         ]
 
-    def get_downstream_process_guids(self, guid: str) -> list[str]:
-        return self.get_graph().get_downstream_process_guids(guid)
+    def get_downstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
+        return self.get_graph().get_downstream_process_guids(
+            guid if guid else self.base_entity_guid
+        )
 
-    def get_upstream_asset_guids(self, guid: str) -> list[str]:
-        return self.get_graph().get_upstream_asset_guids(guid)
+    def get_upstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
+        return self.get_graph().get_upstream_asset_guids(
+            guid if guid else self.base_entity_guid
+        )
 
-    def get_upstream_assets(self, guid: str) -> list[Asset]:
+    def get_upstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
-            for guid in self.get_graph().get_upstream_asset_guids(guid)
+            for guid in self.get_graph().get_upstream_asset_guids(
+                guid if guid else self.base_entity_guid
+            )
         ]
 
-    def get_upstream_process_guids(self, guid: str) -> list[str]:
-        return self.get_graph().get_upstream_process_guids(guid)
+    def get_upstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
+        return self.get_graph().get_upstream_process_guids(
+            guid if guid else self.base_entity_guid
+        )
 
 
 class LineageRequest(AtlanObject):
