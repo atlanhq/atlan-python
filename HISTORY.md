@@ -6,6 +6,7 @@
   * LineageGraph
   * LineageResponse
 * Added the get_lineage method to AtlanClient
+* Modify create_typdef in client to handle creating EnumDef
 
 ## 0.0.30 (May 11, 2023)
 
