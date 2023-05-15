@@ -234,7 +234,7 @@ class AtlanClient(BaseSettings):
 
             return None
         else:
-            with contextlib.suppress(ValueError):
+            with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                 error_info = json.loads(response.text)
                 error_code = error_info.get("errorCode", 0)
                 error_message = error_info.get("errorMessage", "")
@@ -497,9 +497,11 @@ class AtlanClient(BaseSettings):
         )
         if isinstance(typedef, ClassificationDef):
             from pyatlan.cache.classification_cache import ClassificationCache
+
             ClassificationCache.refresh_cache()
         if isinstance(typedef, CustomMetadataDef):
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
             CustomMetadataCache.refresh_cache()
         return TypeDefResponse(**raw_json)
 
@@ -509,6 +511,7 @@ class AtlanClient(BaseSettings):
         #  to refresh that particular cache
         from pyatlan.cache.classification_cache import ClassificationCache
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
         ClassificationCache.refresh_cache()
         CustomMetadataCache.refresh_cache()
 
