@@ -131,7 +131,7 @@ class AttributeDef(AtlanObject):
         is_archived: Optional[bool] = Field(
             None,
             description="Whether the attribute has been deleted (true) or is still active (false).\n",
-            example=True
+            example=True,
         )
         archived_at: Optional[int] = Field(
             None, description="When the attribute was deleted.\n"
@@ -148,7 +148,7 @@ class AttributeDef(AtlanObject):
     is_new: Optional[bool] = Field(
         True,
         description="Whether the attribute is being newly created (true) or not (false).",
-        example=True
+        example=True,
     )
     cardinality: Optional[Cardinality] = Field(
         "SINGLE",
