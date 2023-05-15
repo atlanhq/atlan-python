@@ -29,6 +29,7 @@ from pyatlan.client.constants import (
     GET_ALL_TYPE_DEFS,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
+    GET_LINEAGE,
     GET_ROLES,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
@@ -67,12 +68,14 @@ from pyatlan.model.enums import (
     AtlanTypeCategory,
     CertificateStatus,
 )
+from pyatlan.model.lineage import LineageRequest, LineageResponse
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (
     ClassificationDef,
     CustomMetadataDef,
+    EnumDef,
     TypeDef,
     TypeDefResponse,
 )
@@ -231,7 +234,7 @@ class AtlanClient(BaseSettings):
 
             return None
         else:
-            with contextlib.suppress(ValueError):
+            with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                 error_info = json.loads(response.text)
                 error_code = error_info.get("errorCode", 0)
                 error_message = error_info.get("errorMessage", "")
@@ -472,6 +475,16 @@ class AtlanClient(BaseSettings):
                 relationship_defs=[],
                 custom_metadata_defs=[typedef],
             )
+        elif isinstance(typedef, EnumDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[typedef],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                custom_metadata_defs=[],
+            )
         else:
             raise InvalidRequestException(
                 "Unable to create new type definitions of category: "
@@ -482,10 +495,25 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=False
         )
+        if isinstance(typedef, ClassificationDef):
+            from pyatlan.cache.classification_cache import ClassificationCache
+
+            ClassificationCache.refresh_cache()
+        if isinstance(typedef, CustomMetadataDef):
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            CustomMetadataCache.refresh_cache()
         return TypeDefResponse(**raw_json)
 
     def purge_typedef(self, internal_name: str) -> None:
         self._call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
+        # TODO: if we know which kind of typedef is being purged, we only need
+        #  to refresh that particular cache
+        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        ClassificationCache.refresh_cache()
+        CustomMetadataCache.refresh_cache()
 
     @validate_arguments()
     def add_classifications(
@@ -713,8 +741,10 @@ class AtlanClient(BaseSettings):
         self,
         name: str,
         connector_type: AtlanConnectorType,
-        attributes: list[str] = None,
+        attributes: Optional[list[str]] = None,
     ) -> list[Connection]:
+        if attributes is None:
+            attributes = []
         query = (
             Term.with_state("ACTIVE")
             + Term.with_type_name("CONNECTION")
@@ -728,3 +758,9 @@ class AtlanClient(BaseSettings):
         )
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Connection)]
+
+    def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
+        raw_json = self._call_api(
+            GET_LINEAGE, None, lineage_request, exclude_unset=False
+        )
+        return LineageResponse(**raw_json)

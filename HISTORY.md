@@ -1,3 +1,14 @@
+## 0.0.31 (May 15, 2023)
+
+* Added the following classes to support lineage retrieval
+  * LineageRelation
+  * DirectedPair
+  * LineageGraph
+  * LineageResponse
+* Added the get_lineage method to AtlanClient
+* Modify create_typdef in client to handle creating EnumDef
+* Refresh caches on any SDK-driven creates or deletes
+
 ## 0.0.30 (May 11, 2023)
 
 * Fix problem where custom metadata created via the SDK failed to show up in the UI

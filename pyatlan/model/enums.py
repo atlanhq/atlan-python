@@ -277,3 +277,9 @@ class AtlanCustomAttributePrimitiveType(str, Enum):
 class SortOrder(str, Enum):
     ASCENDING = "asc"
     DESCENDING = "desc"
+
+
+class LineageDirection(str, Enum):
+    UPSTREAM = "INPUT"
+    DOWNSTREAM = "OUTPUT"
+    BOTH = "BOTH"

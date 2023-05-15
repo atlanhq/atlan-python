@@ -35,7 +35,7 @@ class CustomMetadataCache:
     types_by_asset: dict[str, set[type]] = dict()
 
     @classmethod
-    def _refresh_cache(cls) -> None:
+    def refresh_cache(cls) -> None:
         from pyatlan.model.core import CustomMetadata, to_snake_case
 
         client = AtlanClient.get_default_client()
@@ -98,7 +98,7 @@ class CustomMetadataCache:
         if cm_id := cls.map_name_to_id.get(name):
             return cm_id
         # If not found, refresh the cache and look again (could be stale)
-        cls._refresh_cache()
+        cls.refresh_cache()
         return cls.map_name_to_id.get(name)
 
     @classmethod
@@ -109,14 +109,14 @@ class CustomMetadataCache:
         if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
         # If not found, refresh the cache and look again (could be stale)
-        cls._refresh_cache()
+        cls.refresh_cache()
         return cls.map_id_to_name.get(idstr)
 
     @classmethod
     def get_type_for_id(cls, idstr: str) -> Optional[type]:
         if cm_type := cls.map_id_to_type.get(idstr):
             return cm_type
-        cls._refresh_cache()
+        cls.refresh_cache()
         return cls.map_id_to_type.get(idstr)
 
     @classmethod
@@ -129,7 +129,7 @@ class CustomMetadataCache:
         of each of those attributes).
         """
         if len(cls.cache_by_id) == 0 or force_refresh:
-            cls._refresh_cache()
+            cls.refresh_cache()
         m = {}
         for type_id, cm in cls.cache_by_id.items():
             type_name = cls.get_name_for_id(type_id)
@@ -165,7 +165,7 @@ class CustomMetadataCache:
                 # If found, return straight away
                 return attr_id
             # Otherwise, refresh the cache and look again (could be stale)
-            cls._refresh_cache()
+            cls.refresh_cache()
             if sub_map := cls.map_attr_name_to_id.get(set_id):
                 return sub_map.get(attr_name)
         return None
@@ -180,7 +180,7 @@ class CustomMetadataCache:
             attr_name = sub_map.get(attr_id)
             if attr_name:
                 return attr_name
-            cls._refresh_cache()
+            cls.refresh_cache()
             if sub_map := cls.map_attr_id_to_name.get(set_id):
                 return sub_map.get(attr_id)
         return None
@@ -200,7 +200,7 @@ class CustomMetadataCache:
         if set_id := cls.get_id_for_name(set_name):
             if dot_names := cls._get_attributes_for_search_results(set_id):
                 return dot_names
-            cls._refresh_cache()
+            cls.refresh_cache()
             return cls._get_attributes_for_search_results(set_id)
         return None
 
