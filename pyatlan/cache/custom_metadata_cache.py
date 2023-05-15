@@ -230,3 +230,13 @@ class CustomMetadataCache:
                 else ba_type()
             )
         raise ValueError(f"Custom metadata {name} is not applicable to {type_name}")
+
+    @classmethod
+    def get_custom_metadata_def(
+            cls,
+            name: str
+    ) -> CustomMetadataDef:
+        ba_id = cls.get_id_for_name(name)
+        if ba_id is None:
+            raise ValueError(f"No custom metadata with the name: {name} exist")
+        return cls.cache_by_id.get(ba_id)

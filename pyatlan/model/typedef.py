@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from typing import Any, Dict, List, Optional
 
 from pydantic import Field
@@ -56,6 +57,33 @@ class EnumDef(TypeDef):
         description: Optional[str] = Field(None, description="Unused.")
         ordinal: Optional[int] = Field(None, description="Unused.")
 
+        @classmethod
+        def of(
+                cls: type[EnumDef.ElementDef], ordinal: int, value: str
+        ) -> EnumDef.ElementDef:
+            from pyatlan.model.assets import validate_required_fields
+            validate_required_fields(
+                ["ordinal", "value"],
+                [ordinal, value],
+            )
+            elements = []
+            return cls(ordinal=ordinal, value=value)
+
+        @classmethod
+        def list_from(
+                cls: type[EnumDef.ElementDef], values: List[str]
+        ) -> List[EnumDef.ElementDef]:
+            from pyatlan.model.assets import validate_required_fields
+            validate_required_fields(
+                ["values"],
+                [values],
+            )
+            elements = []
+            if values:
+                for i in range(0, len(values), 1):
+                    elements.append(EnumDef.ElementDef.of(ordinal=i, value=values[i]))
+            return elements
+
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
     element_defs: List["EnumDef.ElementDef"] = Field(None, description="Unused.")
     options: Optional[Dict[str, Any]] = Field(
@@ -64,6 +92,17 @@ class EnumDef(TypeDef):
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
     )
+
+    @classmethod
+    def create(
+            cls: type[EnumDef], name: str, values: List[str]
+    ) -> EnumDef:
+        from pyatlan.model.assets import validate_required_fields
+        validate_required_fields(
+            ["name", "values"],
+            [name, values],
+        )
+        return cls(name=name, element_defs=EnumDef.ElementDef.list_from(values))
 
     @classmethod
     def get_valid_values(cls) -> Optional[List[str]]:
@@ -161,17 +200,19 @@ class AttributeDef(AtlanObject):
 
         @classmethod
         def create(
-                cls: type[AttributeDef.Options], type: AtlanCustomAttributePrimitiveType, options_name: str
+                cls: type[AttributeDef.Options],
+                attribute_type: AtlanCustomAttributePrimitiveType,
+                options_name: str = None
         ) -> AttributeDef.Options:
             from pyatlan.model.assets import validate_required_fields
             validate_required_fields(
                 ["type"],
                 [type],
             )
-            builder = cls(primitive_type=type.value)
-            if type == AtlanCustomAttributePrimitiveType.USERS or AtlanCustomAttributePrimitiveType.GROUPS or AtlanCustomAttributePrimitiveType.URL or AtlanCustomAttributePrimitiveType.SQL:
-                builder.custom_type = type.value
-            elif type == AtlanCustomAttributePrimitiveType.OPTIONS:
+            builder = cls(primitive_type=attribute_type.value)
+            if attribute_type in (AtlanCustomAttributePrimitiveType.USERS, AtlanCustomAttributePrimitiveType.GROUPS, AtlanCustomAttributePrimitiveType.URL, AtlanCustomAttributePrimitiveType.SQL):
+                builder.custom_type = attribute_type.value
+            elif attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS:
                 builder.is_enum = True
                 builder.enum_type = options_name
             return builder
@@ -273,32 +314,48 @@ class AttributeDef(AtlanObject):
 
     @classmethod
     def create(
-            cls: type[AttributeDef], display_name: str, type: AtlanCustomAttributePrimitiveType, options_name: str, multi_valued: bool
+            cls: type[AttributeDef],
+            display_name: str,
+            attribute_type: AtlanCustomAttributePrimitiveType,
+            multi_valued: bool = False,
+            options_name: str = None
     ) -> AttributeDef:
         from pyatlan.model.assets import validate_required_fields
         validate_required_fields(
-            ["display_name", "type"],
-            [display_name, type],
+            ["display_name", "attribute_type"],
+            [display_name, attribute_type],
         )
         builder = cls(display_name=display_name)
         base_type = None
-        add_enum_values = (type == AtlanCustomAttributePrimitiveType.OPTIONS)
-        if type == AtlanCustomAttributePrimitiveType.OPTIONS:
+        add_enum_values = (attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS)
+        if attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS:
             base_type = options_name
-        elif type == AtlanCustomAttributePrimitiveType.USERS or AtlanCustomAttributePrimitiveType.GROUPS or AtlanCustomAttributePrimitiveType.URL or AtlanCustomAttributePrimitiveType.SQL:
+        elif attribute_type in (AtlanCustomAttributePrimitiveType.USERS, AtlanCustomAttributePrimitiveType.GROUPS, AtlanCustomAttributePrimitiveType.URL, AtlanCustomAttributePrimitiveType.SQL):
             base_type = AtlanCustomAttributePrimitiveType.STRING.value
         else:
-            base_type = type.value
+            base_type = attribute_type.value
         if multi_valued:
             builder.type_name = "array<" + base_type + ">"
-            builder.options = AttributeDef.Options.create(type=type, options_name=options_name)
+            builder.options = AttributeDef.Options.create(attribute_type=attribute_type, options_name=options_name)
             builder.options.multi_value_select = True
         else:
             builder.type_name = base_type
-            builder.options = AttributeDef.Options.create(type=type, options_name=options_name)
+            builder.options = AttributeDef.Options.create(attribute_type=attribute_type, options_name=options_name)
         if add_enum_values:
             builder.enum_values = EnumCache.get_by_name(options_name).get_valid_values()
         return builder
+
+    def is_archived(self) -> bool:
+        return self.options and self.options.is_archived
+
+    def archive(self, by: str) -> AttributeDef:
+        if self.options:
+            removal_epoch = int(time.time() * 1000)
+            self.options.is_archived = True
+            self.options.archived_by = by
+            self.options.archived_at = removal_epoch
+            self.display_name = self.display_name + "-archived-" + str(removal_epoch)
+        return self
 
 
 class StructDef(TypeDef):
@@ -416,10 +473,32 @@ class CustomMetadataDef(TypeDef):
         logo_type: Optional[str] = Field(
             None, description="Type of logo used for the custom metadata.\n"
         )
-        logo_Url: Optional[str] = Field(
+        logo_url: Optional[str] = Field(
             None,
             description="If the logoType is image, this should hold a URL to the image.\n",
         )
+
+        @classmethod
+        def with_logo_as_emoji(
+                cls: type[CustomMetadataDef.Options], emoji: str, locked: bool = False
+        ) -> CustomMetadataDef.Options:
+            from pyatlan.model.assets import validate_required_fields
+            validate_required_fields(
+                ["emoji"],
+                [emoji],
+            )
+            return cls(emoji=emoji, logo_type="emoji", is_locked=locked)
+
+        @classmethod
+        def with_logo_from_url(
+                cls: type[CustomMetadataDef.Options], url: str, locked: bool = False
+        ) -> CustomMetadataDef.Options:
+            from pyatlan.model.assets import validate_required_fields
+            validate_required_fields(
+                ["url"],
+                [url],
+            )
+            return cls(logo_url=url, logo_type="image", is_locked=locked)
 
     attribute_defs: List[AttributeDef] = Field(
         [],
@@ -433,6 +512,17 @@ class CustomMetadataDef(TypeDef):
     options: Optional[CustomMetadataDef.Options] = Field(
         None, description="Optional properties of the type_ definition."
     )
+
+    @classmethod
+    def create(
+            cls: type[CustomMetadataDef], display_name: str
+    ) -> CustomMetadataDef:
+        from pyatlan.model.assets import validate_required_fields
+        validate_required_fields(
+            ["display_name"],
+            [display_name],
+        )
+        return cls(display_name=display_name, name=display_name)
 
 
 class TypeDefResponse(AtlanObject):
