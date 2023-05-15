@@ -75,6 +75,7 @@ from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (
     ClassificationDef,
     CustomMetadataDef,
+    EnumDef,
     TypeDef,
     TypeDefResponse,
 )
@@ -473,6 +474,16 @@ class AtlanClient(BaseSettings):
                 entity_defs=[],
                 relationship_defs=[],
                 custom_metadata_defs=[typedef],
+            )
+        elif isinstance(typedef, EnumDef):
+            # Set up the request payload...
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[typedef],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[],
+                custom_metadata_defs=[],
             )
         else:
             raise InvalidRequestException(
