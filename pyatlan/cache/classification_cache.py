@@ -15,7 +15,7 @@ class ClassificationCache:
     deleted_names: set[str] = set()
 
     @classmethod
-    def _refresh_cache(cls) -> None:
+    def refresh_cache(cls) -> None:
         from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_default_client()
@@ -41,7 +41,7 @@ class ClassificationCache:
         cls_id = cls.map_name_to_id.get(name)
         if not cls_id and name not in cls.deleted_names:
             # If not found, refresh the cache and look again (could be stale)
-            cls._refresh_cache()
+            cls.refresh_cache()
             cls_id = cls.map_name_to_id.get(name)
             if not cls_id:
                 # If still not found after refresh, mark it as deleted (could be
@@ -58,7 +58,7 @@ class ClassificationCache:
         cls_name = cls.map_id_to_name.get(idstr)
         if not cls_name and idstr not in cls.deleted_ids:
             # If not found, refresh the cache and look again (could be stale)
-            cls._refresh_cache()
+            cls.refresh_cache()
             cls_name = cls.map_id_to_name.get(idstr)
             if not cls_name:
                 # If still not found after refresh, mark it as deleted (could be
