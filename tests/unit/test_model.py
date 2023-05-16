@@ -57,6 +57,8 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    BadgeComparisonOperator,
+    BadgeConditionColor,
     CertificateStatus,
     GoogleDatastudioAssetType,
     IconType,
@@ -94,6 +96,11 @@ MONTE_CARLO = "AFq4ctARP76ctapiTbuT92"
 
 MOON = "FAq4ctARP76ctapiTbuT92"
 
+BADGE_CONDITION = BadgeCondition.create(
+    badge_condition_operator=BadgeComparisonOperator.EQ,
+    badge_condition_value="1",
+    badge_condition_colorhex=BadgeConditionColor.RED,
+)
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"
 GLOSSARY_TERM_JSON = "glossary_term.json"
@@ -1678,21 +1685,26 @@ def test_process_attributes_create(
 
 class Test_Badge_Attributes:
     @pytest.mark.parametrize(
-        "name, cm_name, cm_attribute, message",
+        "name, cm_name, cm_attribute, badge_conditions, message",
         [
-            (None, "Bob", "Dave", "name is required"),
-            ("Bob", None, "Dave", "cm_name is required"),
-            ("Bob", "", "Dave", "cm_name cannot be blank"),
-            ("Bob", "Dave", None, "cm_attribute is required"),
-            ("Bob", "Dave", "", "cm_attribute cannot be blank"),
+            (None, "Bob", "Dave", [BADGE_CONDITION], "name is required"),
+            ("Bob", None, "Dave", [BADGE_CONDITION], "cm_name is required"),
+            ("Bob", "", "Dave", [BADGE_CONDITION], "cm_name cannot be blank"),
+            ("Bob", "Dave", None, [BADGE_CONDITION], "cm_attribute is required"),
+            ("Bob", "Dave", "", [BADGE_CONDITION], "cm_attribute cannot be blank"),
+            ("Bob", "tom", "Dave", None, "badge_conditions is required"),
+            ("Bob", "tom", "Dave", [], "badge_conditions cannot be an empty list"),
         ],
     )
     def test_create_when_required_parameters_are_missing_raises_value_error(
-        self, name, cm_name, cm_attribute, message
+        self, name, cm_name, cm_attribute, badge_conditions, message
     ):
         with pytest.raises(ValueError, match=message):
             Badge.Attributes.create(
-                name=name, cm_name=cm_name, cm_attribute=cm_attribute
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
             )
 
     def test_create(self, monkeypatch):
@@ -1715,29 +1727,40 @@ class Test_Badge_Attributes:
         )
 
         badge = Badge.Attributes.create(
-            name="bob", cm_name="Monte Carlo", cm_attribute="dummy"
+            name="bob",
+            cm_name="Monte Carlo",
+            cm_attribute="dummy",
+            badge_conditions=[BADGE_CONDITION],
         )
         assert badge.name == "bob"
         assert badge.qualified_name == f"badges/global/{CM_ID}.{CM_ATTR_ID}"
         assert badge.badge_metadata_attribute == f"{CM_ID}.{CM_ATTR_ID}"
+        assert badge.badge_conditions == [BADGE_CONDITION]
 
 
 class Test_Badge:
     @pytest.mark.parametrize(
-        "name, cm_name, cm_attribute, message",
+        "name, cm_name, cm_attribute, badge_conditions, message",
         [
-            (None, "Bob", "Dave", "name is required"),
-            ("Bob", None, "Dave", "cm_name is required"),
-            ("Bob", "", "Dave", "cm_name cannot be blank"),
-            ("Bob", "Dave", None, "cm_attribute is required"),
-            ("Bob", "Dave", "", "cm_attribute cannot be blank"),
+            (None, "Bob", "Dave", [BADGE_CONDITION], "name is required"),
+            ("Bob", None, "Dave", [BADGE_CONDITION], "cm_name is required"),
+            ("Bob", "", "Dave", [BADGE_CONDITION], "cm_name cannot be blank"),
+            ("Bob", "Dave", None, [BADGE_CONDITION], "cm_attribute is required"),
+            ("Bob", "Dave", "", [BADGE_CONDITION], "cm_attribute cannot be blank"),
+            ("Bob", "tom", "Dave", None, "badge_conditions is required"),
+            ("Bob", "tom", "Dave", [], "badge_conditions cannot be an empty list"),
         ],
     )
     def test_create_when_required_parameters_are_missing_raises_value_error(
-        self, name, cm_name, cm_attribute, message
+        self, name, cm_name, cm_attribute, badge_conditions, message
     ):
         with pytest.raises(ValueError, match=message):
-            Badge.create(name=name, cm_name=cm_name, cm_attribute=cm_attribute)
+            Badge.create(
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            )
 
     def test_create(self, monkeypatch):
         def get_attr_id_for_name(set_name: str, attr_name: str):
@@ -1758,7 +1781,78 @@ class Test_Badge:
             get_attr_id_for_name,
         )
 
-        badge = Badge.create(name="bob", cm_name="Monte Carlo", cm_attribute="dummy")
+        badge = Badge.create(
+            name="bob",
+            cm_name="Monte Carlo",
+            cm_attribute="dummy",
+            badge_conditions=[BADGE_CONDITION],
+        )
         assert badge.name == "bob"
         assert badge.qualified_name == f"badges/global/{CM_ID}.{CM_ATTR_ID}"
         assert badge.badge_metadata_attribute == f"{CM_ID}.{CM_ATTR_ID}"
+        assert badge.badge_conditions == [BADGE_CONDITION]
+
+
+class Test_BadgeCondition:
+    @pytest.mark.parametrize(
+        "condition_operator, condition_value, condition_colorhex, message",
+        [
+            (
+                None,
+                "1",
+                BadgeConditionColor.RED,
+                "badge_condition_operator is required",
+            ),
+            (
+                BadgeComparisonOperator.EQ,
+                None,
+                BadgeConditionColor.RED,
+                "badge_condition_value is required",
+            ),
+            (
+                BadgeComparisonOperator.EQ,
+                "1",
+                None,
+                "badge_condition_colorhex is required",
+            ),
+        ],
+    )
+    def test_create_when_required_parameter_is_missing_then_raises_value_error(
+        self, condition_operator, condition_value, condition_colorhex, message
+    ):
+        with pytest.raises(ValueError, match=message):
+            BadgeCondition.create(
+                badge_condition_operator=condition_operator,
+                badge_condition_value=condition_value,
+                badge_condition_colorhex=condition_colorhex,
+            )
+
+    def test_create_with_badge_condition_color(self):
+        condition_operator = BadgeComparisonOperator.EQ
+        condition_value = "1"
+        condition_colorhex = BadgeConditionColor.RED
+
+        sut = BadgeCondition.create(
+            badge_condition_operator=condition_operator,
+            badge_condition_value=condition_value,
+            badge_condition_colorhex=condition_colorhex,
+        )
+
+        assert sut.badge_condition_operator == condition_operator.value
+        assert sut.badge_condition_value == condition_value
+        assert sut.badge_condition_colorhex == condition_colorhex.value
+
+    def test_create_with_badge_condition_color_as_str(self):
+        condition_operator = BadgeComparisonOperator.EQ
+        condition_value = "1"
+        condition_colorhex = "#BF1B1B"
+
+        sut = BadgeCondition.create(
+            badge_condition_operator=condition_operator,
+            badge_condition_value=condition_value,
+            badge_condition_colorhex=condition_colorhex,
+        )
+
+        assert sut.badge_condition_operator == condition_operator.value
+        assert sut.badge_condition_value == condition_value
+        assert sut.badge_condition_colorhex == condition_colorhex

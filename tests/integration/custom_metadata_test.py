@@ -4,6 +4,7 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.error import NotFoundError
 from pyatlan.model.assets import Table
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
@@ -125,8 +126,8 @@ def test_get_custom_metadata():
     assert custom_metadata is not None
 
 
-def test_get_custom_metadata_when_name_is_invalid_then_raises_value_error():
+def test_get_custom_metadata_when_name_is_invalid_then_raises_not_found_error():
     with pytest.raises(
-        ValueError, match="No custom metadata with the name: Bogs exist"
+        NotFoundError, match="Custom metadata with name Bogs does not exist"
     ):
         CustomMetadataCache.get_custom_metadata(name="Bogs", asset_type=Table)

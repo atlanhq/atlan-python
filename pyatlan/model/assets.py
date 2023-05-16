@@ -62,7 +62,7 @@ from pyatlan.model.structs import (
     PopularityInsights,
     SourceTagAttribute,
 )
-from pyatlan.utils import next_id
+from pyatlan.utils import next_id, validate_required_fields
 
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
@@ -76,16 +76,6 @@ def validate_single_required_field(field_names: list[str], values: list[Any]):
         raise ValueError(
             f"Only one of the following parameters are allowed: {', '.join(names)}"
         )
-
-
-def validate_required_fields(field_names: list[str], values: list[Any]):
-    for field_name, value in zip(field_names, values):
-        if value is None:
-            raise ValueError(f"{field_name} is required")
-        if isinstance(value, str) and not value.strip():
-            raise ValueError(f"{field_name} cannot be blank")
-        if isinstance(value, list) and len(value) == 0:
-            raise ValueError(f"{field_name} cannot be an empty list")
 
 
 SelfAsset = TypeVar("SelfAsset", bound="Asset")
@@ -3630,11 +3620,20 @@ class Badge(Asset, type_name="Badge"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: StrictStr, cm_name: str, cm_attribute: str) -> Badge:
-        validate_required_fields(["name", "cm_name", "cm_attribute"], [name])
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: list[BadgeCondition],
+    ) -> Badge:
         return cls(
             attributes=Badge.Attributes.create(
-                name=name, cm_name=cm_name, cm_attribute=cm_attribute
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
             )
         )
 
@@ -3667,10 +3666,16 @@ class Badge(Asset, type_name="Badge"):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, *, name: StrictStr, cm_name: str, cm_attribute: str
+            cls,
+            *,
+            name: StrictStr,
+            cm_name: str,
+            cm_attribute: str,
+            badge_conditions: list[BadgeCondition],
         ) -> Badge.Attributes:
             validate_required_fields(
-                ["name", "cm_name", "cm_attribute"], [name, cm_name, cm_attribute]
+                ["name", "cm_name", "cm_attribute", "badge_conditions"],
+                [name, cm_name, cm_attribute, badge_conditions],
             )
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
@@ -3682,6 +3687,7 @@ class Badge(Asset, type_name="Badge"):
                 name=name,
                 qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",
                 badge_metadata_attribute=f"{cm_id}.{cm_attr_id}",
+                badge_conditions=badge_conditions,
             )
 
     attributes: "Badge.Attributes" = Field(
