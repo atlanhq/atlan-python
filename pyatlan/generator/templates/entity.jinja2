@@ -50,7 +50,10 @@ from pyatlan.model.structs import (
     GoogleTag,
     Histogram,
     KafkaTopicConsumption,
+    MCRuleComparison,
+    MCRuleSchedule,
     PopularityInsights,
+    SourceTagAttribute,
 )
 from pyatlan.utils import next_id
 from urllib.parse import quote, unquote
@@ -361,7 +364,17 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             raise ValueError('must be {{ entity_def.name }}')
         return v
 
-    {%- if entity_def.name == "Readme" %}
+    {%- if entity_def.name == "Badge" %}
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: StrictStr, cm_name: str, cm_attribute: str) -> Badge:
+        validate_required_fields(["name", "cm_name", "cm_attribute"], [name])
+        return cls(
+            attributes=Badge.Attributes.create(
+                name=name, cm_name=cm_name, cm_attribute=cm_attribute
+            )
+        )
+    {%- elif entity_def.name == "Readme" %}
     @classmethod
     # @validate_arguments()
     def create(
@@ -522,6 +535,26 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 connection_qualified_name=connection_qualified_name,
                 inputs=inputs,
                 outputs=outputs,
+            )
+        {%- elif entity_def.name == "Badge"  %}
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: StrictStr, cm_name: str, cm_attribute: str
+        ) -> Badge.Attributes:
+            validate_required_fields(
+                ["name", "cm_name", "cm_attribute"], [name, cm_name, cm_attribute]
+            )
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            cm_id = CustomMetadataCache.get_id_for_name(cm_name)
+            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
+                set_name=cm_name, attr_name=cm_attribute
+            )
+            return Badge.Attributes(
+                name=name,
+                qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",
+                badge_metadata_attribute=f"{cm_id}.{cm_attr_id}",
             )
         {%- elif entity_def.name == "Readme"  %}
         @classmethod

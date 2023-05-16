@@ -48,6 +48,7 @@ class AtlanException(Exception):
         code: Optional[str],
         cause: Optional[Exception] = None,
     ):
+        super().__init__(message)
         self.message = message
         self.code = code
         self.status_code = status_code

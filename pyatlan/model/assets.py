@@ -57,7 +57,10 @@ from pyatlan.model.structs import (
     GoogleTag,
     Histogram,
     KafkaTopicConsumption,
+    MCRuleComparison,
+    MCRuleSchedule,
     PopularityInsights,
+    SourceTagAttribute,
 )
 from pyatlan.utils import next_id
 
@@ -417,6 +420,18 @@ class Asset(Referenceable):
         "asset_dbt_source_freshness_criteria",
         "sample_data_url",
         "asset_tags",
+        "asset_mc_incident_names",
+        "asset_mc_incident_qualified_names",
+        "asset_mc_monitor_names",
+        "asset_mc_monitor_qualified_names",
+        "asset_mc_monitor_statuses",
+        "asset_mc_monitor_types",
+        "asset_mc_monitor_schedule_types",
+        "asset_mc_incident_types",
+        "asset_mc_incident_sub_types",
+        "asset_mc_incident_severities",
+        "asset_mc_incident_states",
+        "asset_mc_last_sync_run_at",
         "terms",
     ]
 
@@ -1524,6 +1539,142 @@ class Asset(Referenceable):
         self.attributes.asset_tags = asset_tags
 
     @property
+    def asset_mc_incident_names(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_incident_names
+
+    @asset_mc_incident_names.setter
+    def asset_mc_incident_names(self, asset_mc_incident_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_names = asset_mc_incident_names
+
+    @property
+    def asset_mc_incident_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_incident_qualified_names
+
+    @asset_mc_incident_qualified_names.setter
+    def asset_mc_incident_qualified_names(
+        self, asset_mc_incident_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_qualified_names = (
+            asset_mc_incident_qualified_names
+        )
+
+    @property
+    def asset_mc_monitor_names(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_monitor_names
+
+    @asset_mc_monitor_names.setter
+    def asset_mc_monitor_names(self, asset_mc_monitor_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_monitor_names = asset_mc_monitor_names
+
+    @property
+    def asset_mc_monitor_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_monitor_qualified_names
+
+    @asset_mc_monitor_qualified_names.setter
+    def asset_mc_monitor_qualified_names(
+        self, asset_mc_monitor_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_monitor_qualified_names = (
+            asset_mc_monitor_qualified_names
+        )
+
+    @property
+    def asset_mc_monitor_statuses(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_monitor_statuses
+
+    @asset_mc_monitor_statuses.setter
+    def asset_mc_monitor_statuses(self, asset_mc_monitor_statuses: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_monitor_statuses = asset_mc_monitor_statuses
+
+    @property
+    def asset_mc_monitor_types(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_monitor_types
+
+    @asset_mc_monitor_types.setter
+    def asset_mc_monitor_types(self, asset_mc_monitor_types: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_monitor_types = asset_mc_monitor_types
+
+    @property
+    def asset_mc_monitor_schedule_types(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_monitor_schedule_types
+
+    @asset_mc_monitor_schedule_types.setter
+    def asset_mc_monitor_schedule_types(
+        self, asset_mc_monitor_schedule_types: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_monitor_schedule_types = (
+            asset_mc_monitor_schedule_types
+        )
+
+    @property
+    def asset_mc_incident_types(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_incident_types
+
+    @asset_mc_incident_types.setter
+    def asset_mc_incident_types(self, asset_mc_incident_types: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_types = asset_mc_incident_types
+
+    @property
+    def asset_mc_incident_sub_types(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_incident_sub_types
+
+    @asset_mc_incident_sub_types.setter
+    def asset_mc_incident_sub_types(
+        self, asset_mc_incident_sub_types: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_sub_types = asset_mc_incident_sub_types
+
+    @property
+    def asset_mc_incident_severities(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_incident_severities
+
+    @asset_mc_incident_severities.setter
+    def asset_mc_incident_severities(
+        self, asset_mc_incident_severities: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
+
+    @property
+    def asset_mc_incident_states(self) -> Optional[set[str]]:
+        return self.attributes.asset_mc_incident_states
+
+    @asset_mc_incident_states.setter
+    def asset_mc_incident_states(self, asset_mc_incident_states: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_incident_states = asset_mc_incident_states
+
+    @property
+    def asset_mc_last_sync_run_at(self) -> Optional[datetime]:
+        return self.attributes.asset_mc_last_sync_run_at
+
+    @asset_mc_last_sync_run_at.setter
+    def asset_mc_last_sync_run_at(self, asset_mc_last_sync_run_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
+
+    @property
     def terms(self) -> list[AtlasGlossaryTerm]:
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -1868,6 +2019,48 @@ class Asset(Referenceable):
             None, description="", alias="sampleDataUrl"
         )
         asset_tags: Optional[set[str]] = Field(None, description="", alias="assetTags")
+        asset_mc_incident_names: Optional[set[str]] = Field(
+            None, description="", alias="assetMcIncidentNames"
+        )
+        asset_mc_incident_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="assetMcIncidentQualifiedNames"
+        )
+        asset_mc_monitor_names: Optional[set[str]] = Field(
+            None, description="", alias="assetMcMonitorNames"
+        )
+        asset_mc_monitor_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="assetMcMonitorQualifiedNames"
+        )
+        asset_mc_monitor_statuses: Optional[set[str]] = Field(
+            None, description="", alias="assetMcMonitorStatuses"
+        )
+        asset_mc_monitor_types: Optional[set[str]] = Field(
+            None, description="", alias="assetMcMonitorTypes"
+        )
+        asset_mc_monitor_schedule_types: Optional[set[str]] = Field(
+            None, description="", alias="assetMcMonitorScheduleTypes"
+        )
+        asset_mc_incident_types: Optional[set[str]] = Field(
+            None, description="", alias="assetMcIncidentTypes"
+        )
+        asset_mc_incident_sub_types: Optional[set[str]] = Field(
+            None, description="", alias="assetMcIncidentSubTypes"
+        )
+        asset_mc_incident_severities: Optional[set[str]] = Field(
+            None, description="", alias="assetMcIncidentSeverities"
+        )
+        asset_mc_incident_states: Optional[set[str]] = Field(
+            None, description="", alias="assetMcIncidentStates"
+        )
+        asset_mc_last_sync_run_at: Optional[datetime] = Field(
+            None, description="", alias="assetMcLastSyncRunAt"
+        )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -2045,8 +2238,14 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -2126,6 +2325,12 @@ class DataSet(Asset, type_name="DataSet"):
         return v
 
     class Attributes(Asset.Attributes):
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -2179,6 +2384,12 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
         return v
 
     class Attributes(Asset.Attributes):
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -2337,6 +2548,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         see_also: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="seeAlso"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="translatedTerms"
         )  # relationship
@@ -2351,6 +2565,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )  # relationship
         assigned_entities: Optional[list[Referenceable]] = Field(
             None, description="", alias="assignedEntities"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -2491,6 +2708,12 @@ class Cloud(Asset, type_name="Cloud"):
         return v
 
     class Attributes(Asset.Attributes):
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -2544,6 +2767,12 @@ class Infrastructure(Asset, type_name="Infrastructure"):
         return v
 
     class Attributes(Asset.Attributes):
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -2883,6 +3112,12 @@ class Connection(Asset, type_name="Connection"):
         connection_dbt_environments: Optional[set[str]] = Field(
             None, description="", alias="connectionDbtEnvironments"
         )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -3069,6 +3304,12 @@ class Process(Asset, type_name="Process"):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -3252,6 +3493,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
@@ -3260,6 +3504,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )  # relationship
         parent_category: Optional[AtlasGlossaryCategory] = Field(
             None, description="", alias="parentCategory"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         children_categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="childrenCategories"
@@ -3381,6 +3628,16 @@ class Badge(Asset, type_name="Badge"):
             raise ValueError("must be Badge")
         return v
 
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: StrictStr, cm_name: str, cm_attribute: str) -> Badge:
+        validate_required_fields(["name", "cm_name", "cm_attribute"], [name])
+        return cls(
+            attributes=Badge.Attributes.create(
+                name=name, cm_name=cm_name, cm_attribute=cm_attribute
+            )
+        )
+
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
             None, description="", alias="badgeConditions"
@@ -3388,6 +3645,12 @@ class Badge(Asset, type_name="Badge"):
         badge_metadata_attribute: Optional[str] = Field(
             None, description="", alias="badgeMetadataAttribute"
         )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -3400,6 +3663,26 @@ class Badge(Asset, type_name="Badge"):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: StrictStr, cm_name: str, cm_attribute: str
+        ) -> Badge.Attributes:
+            validate_required_fields(
+                ["name", "cm_name", "cm_attribute"], [name, cm_name, cm_attribute]
+            )
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            cm_id = CustomMetadataCache.get_id_for_name(cm_name)
+            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
+                set_name=cm_name, attr_name=cm_attribute
+            )
+            return Badge.Attributes(
+                name=name,
+                qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",
+                badge_metadata_attribute=f"{cm_id}.{cm_attr_id}",
+            )
 
     attributes: "Badge.Attributes" = Field(
         None,
@@ -3441,8 +3724,14 @@ class Namespace(Asset, type_name="Namespace"):
         return v
 
     class Attributes(Asset.Attributes):
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -3502,6 +3791,12 @@ class Catalog(Asset, type_name="Catalog"):
     class Attributes(Asset.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -3671,6 +3966,12 @@ class Google(Cloud):
         google_tags: Optional[list[GoogleTag]] = Field(
             None, description="", alias="googleTags"
         )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -3784,6 +4085,12 @@ class Azure(Cloud):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -3951,6 +4258,12 @@ class AWS(Cloud):
         )
         aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -4007,8 +4320,14 @@ class BIProcess(Process):
         outputs: Optional[list[Catalog]] = Field(
             None, description="", alias="outputs"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         inputs: Optional[list[Catalog]] = Field(
             None, description="", alias="inputs"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -4072,8 +4391,14 @@ class ColumnProcess(Process):
         process: Optional[Process] = Field(
             None, description="", alias="process"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         inputs: Optional[list[Catalog]] = Field(
             None, description="", alias="inputs"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -4155,8 +4480,14 @@ class Collection(Namespace):
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -4243,8 +4574,14 @@ class Folder(Namespace):
             None, description="", alias="collectionQualifiedName"
         )
         parent: Namespace = Field(None, description="", alias="parent")  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -4305,6 +4642,12 @@ class EventStore(Catalog):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -4363,6 +4706,12 @@ class ObjectStore(Catalog):
     class Attributes(Catalog.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -4423,6 +4772,12 @@ class DataQuality(Catalog):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -4482,6 +4837,12 @@ class BI(Catalog):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -4540,6 +4901,12 @@ class SaaS(Catalog):
     class Attributes(Catalog.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -4846,6 +5213,12 @@ class Dbt(Catalog):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -4955,6 +5328,12 @@ class Resource(Catalog):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -5013,6 +5392,12 @@ class Insight(Catalog):
     class Attributes(Catalog.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -5153,6 +5538,12 @@ class API(Catalog):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -5170,6 +5561,125 @@ class API(Catalog):
         )  # relationship
 
     attributes: "API.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Tag(Catalog):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Tag._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "tag_id",
+        "tag_attributes",
+        "tag_allowed_values",
+        "mapped_classification_name",
+        "terms",
+    ]
+
+    @property
+    def tag_id(self) -> Optional[str]:
+        return self.attributes.tag_id
+
+    @tag_id.setter
+    def tag_id(self, tag_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_id = tag_id
+
+    @property
+    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        return self.attributes.tag_attributes
+
+    @tag_attributes.setter
+    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_attributes = tag_attributes
+
+    @property
+    def tag_allowed_values(self) -> Optional[set[str]]:
+        return self.attributes.tag_allowed_values
+
+    @tag_allowed_values.setter
+    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_allowed_values = tag_allowed_values
+
+    @property
+    def mapped_classification_name(self) -> Optional[str]:
+        return self.attributes.mapped_classification_name
+
+    @mapped_classification_name.setter
+    def mapped_classification_name(self, mapped_classification_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_classification_name = mapped_classification_name
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("Tag", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Tag":
+            raise ValueError("must be Tag")
+        return v
+
+    class Attributes(Catalog.Attributes):
+        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+            None, description="", alias="tagAttributes"
+        )
+        tag_allowed_values: Optional[set[str]] = Field(
+            None, description="", alias="tagAllowedValues"
+        )
+        mapped_classification_name: Optional[str] = Field(
+            None, description="", alias="mappedClassificationName"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "Tag.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -5402,6 +5912,12 @@ class SQL(Catalog):
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -5578,6 +6094,12 @@ class DataStudio(Google):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -5832,6 +6354,12 @@ class GCS(Google):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -6063,6 +6591,12 @@ class DataStudioAsset(DataStudio):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -6195,6 +6729,12 @@ class ADLS(ObjectStore):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -6392,6 +6932,12 @@ class S3(ObjectStore):
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -6774,8 +7320,14 @@ class DbtColumnProcess(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         process: Optional[Process] = Field(
             None, description="", alias="process"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -6839,6 +7391,12 @@ class Kafka(EventStore):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -6856,6 +7414,97 @@ class Kafka(EventStore):
         )  # relationship
 
     attributes: "Kafka.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MonteCarlo(DataQuality):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MonteCarlo._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mc_labels",
+        "mc_asset_qualified_names",
+        "terms",
+    ]
+
+    @property
+    def mc_labels(self) -> Optional[set[str]]:
+        return self.attributes.mc_labels
+
+    @mc_labels.setter
+    def mc_labels(self, mc_labels: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_labels = mc_labels
+
+    @property
+    def mc_asset_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.mc_asset_qualified_names
+
+    @mc_asset_qualified_names.setter
+    def mc_asset_qualified_names(self, mc_asset_qualified_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_asset_qualified_names = mc_asset_qualified_names
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("MonteCarlo", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MonteCarlo":
+            raise ValueError("must be MonteCarlo")
+        return v
+
+    class Attributes(DataQuality.Attributes):
+        mc_labels: Optional[set[str]] = Field(None, description="", alias="mcLabels")
+        mc_asset_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="mcAssetQualifiedNames"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "MonteCarlo.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -6950,6 +7599,9 @@ class Metric(DataQuality):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         assets: Optional[list[Asset]] = Field(
             None, description="", alias="assets"
         )  # relationship
@@ -6958,6 +7610,9 @@ class Metric(DataQuality):
         )  # relationship
         metric_timestamp_column: Optional[Column] = Field(
             None, description="", alias="metricTimestampColumn"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -7049,6 +7704,12 @@ class Metabase(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -7151,6 +7812,12 @@ class QuickSight(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -7237,6 +7904,12 @@ class Thoughtspot(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -7356,6 +8029,12 @@ class PowerBI(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -7479,6 +8158,12 @@ class Preset(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -7663,6 +8348,12 @@ class Mode(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -7811,6 +8502,12 @@ class Sigma(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -7973,6 +8670,12 @@ class Qlik(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -8032,6 +8735,12 @@ class Tableau(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -8090,6 +8799,12 @@ class Looker(BI):
     class Attributes(BI.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -8163,6 +8878,12 @@ class Redash(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -8248,6 +8969,12 @@ class Salesforce(SaaS):
         api_name: Optional[str] = Field(None, description="", alias="apiName")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -8353,11 +9080,17 @@ class DbtModelColumn(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         sql_column: Optional[Column] = Field(
             None, description="", alias="sqlColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -8605,8 +9338,14 @@ class DbtModel(Dbt):
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         dbt_model_sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="dbtModelSqlAssets"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -8985,32 +9724,38 @@ class DbtMetric(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        assets: Optional[list[Asset]] = Field(
-            None, description="", alias="assets"
-        )  # relationship
-        metric_dimension_columns: Optional[list[Column]] = Field(
-            None, description="", alias="metricDimensionColumns"
-        )  # relationship
         metric_timestamp_column: Optional[Column] = Field(
             None, description="", alias="metricTimestampColumn"
         )  # relationship
-        dbt_metric_filter_columns: Optional[list[Column]] = Field(
-            None, description="", alias="dbtMetricFilterColumns"
-        )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        assets: Optional[list[Asset]] = Field(
+            None, description="", alias="assets"
+        )  # relationship
+        metric_dimension_columns: Optional[list[Column]] = Field(
+            None, description="", alias="metricDimensionColumns"
+        )  # relationship
+        dbt_metric_filter_columns: Optional[list[Column]] = Field(
+            None, description="", alias="dbtMetricFilterColumns"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -9085,8 +9830,14 @@ class DbtSource(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="sqlAssets"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -9470,6 +10221,12 @@ class DbtProcess(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -9556,6 +10313,12 @@ class ReadmeTemplate(Resource):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -9639,8 +10402,14 @@ class Readme(Resource):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         internal: Optional[Internal] = Field(
             None, description="", alias="__internal"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -9757,6 +10526,12 @@ class Link(Resource):
         )  # relationship
         internal: Optional[Internal] = Field(
             None, description="", alias="internal"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -9934,8 +10709,14 @@ class APISpec(API):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         api_paths: Optional[list[APIPath]] = Field(
             None, description="", alias="apiPaths"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -10086,6 +10867,12 @@ class APIPath(API):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -10106,6 +10893,324 @@ class APIPath(API):
         )  # relationship
 
     attributes: "APIPath.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakeTag(Tag):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SnowflakeTag._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "tag_id",
+        "tag_attributes",
+        "tag_allowed_values",
+        "mapped_classification_name",
+        "query_count",
+        "query_user_count",
+        "query_user_map",
+        "query_count_updated_at",
+        "database_name",
+        "database_qualified_name",
+        "schema_name",
+        "schema_qualified_name",
+        "table_name",
+        "table_qualified_name",
+        "view_name",
+        "view_qualified_name",
+        "is_profiled",
+        "last_profiled_at",
+        "terms",
+    ]
+
+    @property
+    def tag_id(self) -> Optional[str]:
+        return self.attributes.tag_id
+
+    @tag_id.setter
+    def tag_id(self, tag_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_id = tag_id
+
+    @property
+    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        return self.attributes.tag_attributes
+
+    @tag_attributes.setter
+    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_attributes = tag_attributes
+
+    @property
+    def tag_allowed_values(self) -> Optional[set[str]]:
+        return self.attributes.tag_allowed_values
+
+    @tag_allowed_values.setter
+    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_allowed_values = tag_allowed_values
+
+    @property
+    def mapped_classification_name(self) -> Optional[str]:
+        return self.attributes.mapped_classification_name
+
+    @mapped_classification_name.setter
+    def mapped_classification_name(self, mapped_classification_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_classification_name = mapped_classification_name
+
+    @property
+    def query_count(self) -> Optional[int]:
+        return self.attributes.query_count
+
+    @query_count.setter
+    def query_count(self, query_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count = query_count
+
+    @property
+    def query_user_count(self) -> Optional[int]:
+        return self.attributes.query_user_count
+
+    @query_user_count.setter
+    def query_user_count(self, query_user_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_count = query_user_count
+
+    @property
+    def query_user_map(self) -> Optional[dict[str, int]]:
+        return self.attributes.query_user_map
+
+    @query_user_map.setter
+    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_map = query_user_map
+
+    @property
+    def query_count_updated_at(self) -> Optional[datetime]:
+        return self.attributes.query_count_updated_at
+
+    @query_count_updated_at.setter
+    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count_updated_at = query_count_updated_at
+
+    @property
+    def database_name(self) -> Optional[str]:
+        return self.attributes.database_name
+
+    @database_name.setter
+    def database_name(self, database_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database_name = database_name
+
+    @property
+    def database_qualified_name(self) -> Optional[str]:
+        return self.attributes.database_qualified_name
+
+    @database_qualified_name.setter
+    def database_qualified_name(self, database_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database_qualified_name = database_qualified_name
+
+    @property
+    def schema_name(self) -> Optional[str]:
+        return self.attributes.schema_name
+
+    @schema_name.setter
+    def schema_name(self, schema_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_name = schema_name
+
+    @property
+    def schema_qualified_name(self) -> Optional[str]:
+        return self.attributes.schema_qualified_name
+
+    @schema_qualified_name.setter
+    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_qualified_name = schema_qualified_name
+
+    @property
+    def table_name(self) -> Optional[str]:
+        return self.attributes.table_name
+
+    @table_name.setter
+    def table_name(self, table_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_name = table_name
+
+    @property
+    def table_qualified_name(self) -> Optional[str]:
+        return self.attributes.table_qualified_name
+
+    @table_qualified_name.setter
+    def table_qualified_name(self, table_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_qualified_name = table_qualified_name
+
+    @property
+    def view_name(self) -> Optional[str]:
+        return self.attributes.view_name
+
+    @view_name.setter
+    def view_name(self, view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view_name = view_name
+
+    @property
+    def view_qualified_name(self) -> Optional[str]:
+        return self.attributes.view_qualified_name
+
+    @view_qualified_name.setter
+    def view_qualified_name(self, view_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view_qualified_name = view_qualified_name
+
+    @property
+    def is_profiled(self) -> Optional[bool]:
+        return self.attributes.is_profiled
+
+    @is_profiled.setter
+    def is_profiled(self, is_profiled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_profiled = is_profiled
+
+    @property
+    def last_profiled_at(self) -> Optional[datetime]:
+        return self.attributes.last_profiled_at
+
+    @last_profiled_at.setter
+    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.last_profiled_at = last_profiled_at
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("SnowflakeTag", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeTag":
+            raise ValueError("must be SnowflakeTag")
+        return v
+
+    class Attributes(Tag.Attributes):
+        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+            None, description="", alias="tagAttributes"
+        )
+        tag_allowed_values: Optional[set[str]] = Field(
+            None, description="", alias="tagAllowedValues"
+        )
+        mapped_classification_name: Optional[str] = Field(
+            None, description="", alias="mappedClassificationName"
+        )
+        query_count: Optional[int] = Field(None, description="", alias="queryCount")
+        query_user_count: Optional[int] = Field(
+            None, description="", alias="queryUserCount"
+        )
+        query_user_map: Optional[dict[str, int]] = Field(
+            None, description="", alias="queryUserMap"
+        )
+        query_count_updated_at: Optional[datetime] = Field(
+            None, description="", alias="queryCountUpdatedAt"
+        )
+        database_name: Optional[str] = Field(None, description="", alias="databaseName")
+        database_qualified_name: Optional[str] = Field(
+            None, description="", alias="databaseQualifiedName"
+        )
+        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
+        schema_qualified_name: Optional[str] = Field(
+            None, description="", alias="schemaQualifiedName"
+        )
+        table_name: Optional[str] = Field(None, description="", alias="tableName")
+        table_qualified_name: Optional[str] = Field(
+            None, description="", alias="tableQualifiedName"
+        )
+        view_name: Optional[str] = Field(None, description="", alias="viewName")
+        view_qualified_name: Optional[str] = Field(
+            None, description="", alias="viewQualifiedName"
+        )
+        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+        last_profiled_at: Optional[datetime] = Field(
+            None, description="", alias="lastProfiledAt"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "SnowflakeTag.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -10346,23 +11451,11 @@ class TablePartition(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        parent_table: Optional[Table] = Field(
-            None, description="", alias="parentTable"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -10373,11 +11466,29 @@ class TablePartition(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        parent_table: Optional[Table] = Field(
+            None, description="", alias="parentTable"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
@@ -10636,8 +11747,14 @@ class Table(SQL):
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -10894,6 +12011,12 @@ class Query(SQL):
         )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -11602,6 +12725,12 @@ class Column(SQL):
             None, description="", alias="dbtModels"
         )  # relationship
         view: Optional[View] = Field(None, description="", alias="view")  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         table_partition: Optional[TablePartition] = Field(
             None, description="", alias="tablePartition"
         )  # relationship
@@ -11748,6 +12877,9 @@ class Schema(SQL):
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
         views_count: Optional[int] = Field(None, description="", alias="viewsCount")
+        snowflake_tags: Optional[list[SnowflakeTag]] = Field(
+            None, description="", alias="snowflakeTags"
+        )  # relationship
         materialised_views: Optional[list[MaterialisedView]] = Field(
             None, description="", alias="materialisedViews"
         )  # relationship
@@ -11778,6 +12910,9 @@ class Schema(SQL):
         database: Optional[Database] = Field(
             None, description="", alias="database"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
             None, description="", alias="snowflakePipes"
         )  # relationship
@@ -11786,6 +12921,9 @@ class Schema(SQL):
         )  # relationship
         procedures: Optional[list[Procedure]] = Field(
             None, description="", alias="procedures"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -11953,20 +13091,8 @@ class SnowflakeStream(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -11977,11 +13103,29 @@ class SnowflakeStream(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SnowflakeStream.Attributes" = Field(
@@ -12075,20 +13219,8 @@ class SnowflakePipe(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -12099,11 +13231,29 @@ class SnowflakePipe(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SnowflakePipe.Attributes" = Field(
@@ -12161,20 +13311,8 @@ class Database(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
-        )  # relationship
-        schemas: Optional[list[Schema]] = Field(
-            None, description="", alias="schemas"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -12185,11 +13323,29 @@ class Database(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        schemas: Optional[list[Schema]] = Field(
+            None, description="", alias="schemas"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -12294,20 +13450,8 @@ class Procedure(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -12318,11 +13462,29 @@ class Procedure(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
@@ -12492,8 +13654,14 @@ class View(SQL):
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -12736,23 +13904,11 @@ class MaterialisedView(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -12763,11 +13919,29 @@ class MaterialisedView(SQL):
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "MaterialisedView.Attributes" = Field(
@@ -13033,8 +14207,14 @@ class GCSObject(GCS):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         gcs_bucket: Optional[GCSBucket] = Field(
             None, description="", alias="gcsBucket"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -13198,6 +14378,12 @@ class GCSBucket(GCS):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -13409,6 +14595,12 @@ class ADLSAccount(ADLS):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -13570,8 +14762,14 @@ class ADLSContainer(ADLS):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         adls_account: Optional[ADLSAccount] = Field(
             None, description="", alias="adlsAccount"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -13895,6 +15093,12 @@ class ADLSObject(ADLS):
         adls_container: Optional[ADLSContainer] = Field(
             None, description="", alias="adlsContainer"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -13984,8 +15188,14 @@ class S3Bucket(S3):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         objects: Optional[list[S3Object]] = Field(
             None, description="", alias="objects"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -14221,6 +15431,12 @@ class S3Object(S3):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -14454,8 +15670,14 @@ class KafkaTopic(Kafka):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
             None, description="", alias="kafkaConsumerGroups"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -14589,6 +15811,12 @@ class KafkaConsumerGroup(Kafka):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         kafka_topics: Optional[list[KafkaTopic]] = Field(
             None, description="", alias="kafkaTopics"
         )  # relationship
@@ -14609,6 +15837,483 @@ class KafkaConsumerGroup(Kafka):
         )  # relationship
 
     attributes: "KafkaConsumerGroup.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MCIncident(MonteCarlo):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MCIncident._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mc_incident_id",
+        "mc_incident_type",
+        "mc_incident_sub_types",
+        "mc_incident_severity",
+        "mc_incident_state",
+        "mc_incident_warehouse",
+        "terms",
+    ]
+
+    @property
+    def mc_incident_id(self) -> Optional[str]:
+        return self.attributes.mc_incident_id
+
+    @mc_incident_id.setter
+    def mc_incident_id(self, mc_incident_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_id = mc_incident_id
+
+    @property
+    def mc_incident_type(self) -> Optional[str]:
+        return self.attributes.mc_incident_type
+
+    @mc_incident_type.setter
+    def mc_incident_type(self, mc_incident_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_type = mc_incident_type
+
+    @property
+    def mc_incident_sub_types(self) -> Optional[set[str]]:
+        return self.attributes.mc_incident_sub_types
+
+    @mc_incident_sub_types.setter
+    def mc_incident_sub_types(self, mc_incident_sub_types: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_sub_types = mc_incident_sub_types
+
+    @property
+    def mc_incident_severity(self) -> Optional[str]:
+        return self.attributes.mc_incident_severity
+
+    @mc_incident_severity.setter
+    def mc_incident_severity(self, mc_incident_severity: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_severity = mc_incident_severity
+
+    @property
+    def mc_incident_state(self) -> Optional[str]:
+        return self.attributes.mc_incident_state
+
+    @mc_incident_state.setter
+    def mc_incident_state(self, mc_incident_state: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_state = mc_incident_state
+
+    @property
+    def mc_incident_warehouse(self) -> Optional[str]:
+        return self.attributes.mc_incident_warehouse
+
+    @mc_incident_warehouse.setter
+    def mc_incident_warehouse(self, mc_incident_warehouse: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_warehouse = mc_incident_warehouse
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("MCIncident", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MCIncident":
+            raise ValueError("must be MCIncident")
+        return v
+
+    class Attributes(MonteCarlo.Attributes):
+        mc_incident_id: Optional[str] = Field(
+            None, description="", alias="mcIncidentId"
+        )
+        mc_incident_type: Optional[str] = Field(
+            None, description="", alias="mcIncidentType"
+        )
+        mc_incident_sub_types: Optional[set[str]] = Field(
+            None, description="", alias="mcIncidentSubTypes"
+        )
+        mc_incident_severity: Optional[str] = Field(
+            None, description="", alias="mcIncidentSeverity"
+        )
+        mc_incident_state: Optional[str] = Field(
+            None, description="", alias="mcIncidentState"
+        )
+        mc_incident_warehouse: Optional[str] = Field(
+            None, description="", alias="mcIncidentWarehouse"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_incident_assets: Optional[list[Asset]] = Field(
+            None, description="", alias="mcIncidentAssets"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_monitor: Optional[MCMonitor] = Field(
+            None, description="", alias="mcMonitor"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "MCIncident.Attributes" = Field(
+        None,
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MCMonitor(MonteCarlo):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MCMonitor._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mc_monitor_id",
+        "mc_monitor_status",
+        "mc_monitor_type",
+        "mc_monitor_warehouse",
+        "mc_monitor_schedule_type",
+        "mc_monitor_namespace",
+        "mc_monitor_rule_type",
+        "mc_monitor_rule_custom_sql",
+        "mc_monitor_rule_schedule_config",
+        "mc_monitor_rule_schedule_config_humanized",
+        "mc_monitor_alert_condition",
+        "mc_monitor_rule_next_execution_time",
+        "mc_monitor_rule_previous_execution_time",
+        "mc_monitor_rule_comparisons",
+        "mc_monitor_rule_is_snoozed",
+        "mc_monitor_breach_rate",
+        "mc_monitor_incident_count",
+        "terms",
+    ]
+
+    @property
+    def mc_monitor_id(self) -> Optional[str]:
+        return self.attributes.mc_monitor_id
+
+    @mc_monitor_id.setter
+    def mc_monitor_id(self, mc_monitor_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_id = mc_monitor_id
+
+    @property
+    def mc_monitor_status(self) -> Optional[str]:
+        return self.attributes.mc_monitor_status
+
+    @mc_monitor_status.setter
+    def mc_monitor_status(self, mc_monitor_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_status = mc_monitor_status
+
+    @property
+    def mc_monitor_type(self) -> Optional[str]:
+        return self.attributes.mc_monitor_type
+
+    @mc_monitor_type.setter
+    def mc_monitor_type(self, mc_monitor_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_type = mc_monitor_type
+
+    @property
+    def mc_monitor_warehouse(self) -> Optional[str]:
+        return self.attributes.mc_monitor_warehouse
+
+    @mc_monitor_warehouse.setter
+    def mc_monitor_warehouse(self, mc_monitor_warehouse: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_warehouse = mc_monitor_warehouse
+
+    @property
+    def mc_monitor_schedule_type(self) -> Optional[str]:
+        return self.attributes.mc_monitor_schedule_type
+
+    @mc_monitor_schedule_type.setter
+    def mc_monitor_schedule_type(self, mc_monitor_schedule_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_schedule_type = mc_monitor_schedule_type
+
+    @property
+    def mc_monitor_namespace(self) -> Optional[str]:
+        return self.attributes.mc_monitor_namespace
+
+    @mc_monitor_namespace.setter
+    def mc_monitor_namespace(self, mc_monitor_namespace: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_namespace = mc_monitor_namespace
+
+    @property
+    def mc_monitor_rule_type(self) -> Optional[str]:
+        return self.attributes.mc_monitor_rule_type
+
+    @mc_monitor_rule_type.setter
+    def mc_monitor_rule_type(self, mc_monitor_rule_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_type = mc_monitor_rule_type
+
+    @property
+    def mc_monitor_rule_custom_sql(self) -> Optional[str]:
+        return self.attributes.mc_monitor_rule_custom_sql
+
+    @mc_monitor_rule_custom_sql.setter
+    def mc_monitor_rule_custom_sql(self, mc_monitor_rule_custom_sql: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_custom_sql = mc_monitor_rule_custom_sql
+
+    @property
+    def mc_monitor_rule_schedule_config(self) -> Optional[MCRuleSchedule]:
+        return self.attributes.mc_monitor_rule_schedule_config
+
+    @mc_monitor_rule_schedule_config.setter
+    def mc_monitor_rule_schedule_config(
+        self, mc_monitor_rule_schedule_config: Optional[MCRuleSchedule]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_schedule_config = (
+            mc_monitor_rule_schedule_config
+        )
+
+    @property
+    def mc_monitor_rule_schedule_config_humanized(self) -> Optional[str]:
+        return self.attributes.mc_monitor_rule_schedule_config_humanized
+
+    @mc_monitor_rule_schedule_config_humanized.setter
+    def mc_monitor_rule_schedule_config_humanized(
+        self, mc_monitor_rule_schedule_config_humanized: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_schedule_config_humanized = (
+            mc_monitor_rule_schedule_config_humanized
+        )
+
+    @property
+    def mc_monitor_alert_condition(self) -> Optional[str]:
+        return self.attributes.mc_monitor_alert_condition
+
+    @mc_monitor_alert_condition.setter
+    def mc_monitor_alert_condition(self, mc_monitor_alert_condition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_alert_condition = mc_monitor_alert_condition
+
+    @property
+    def mc_monitor_rule_next_execution_time(self) -> Optional[datetime]:
+        return self.attributes.mc_monitor_rule_next_execution_time
+
+    @mc_monitor_rule_next_execution_time.setter
+    def mc_monitor_rule_next_execution_time(
+        self, mc_monitor_rule_next_execution_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_next_execution_time = (
+            mc_monitor_rule_next_execution_time
+        )
+
+    @property
+    def mc_monitor_rule_previous_execution_time(self) -> Optional[datetime]:
+        return self.attributes.mc_monitor_rule_previous_execution_time
+
+    @mc_monitor_rule_previous_execution_time.setter
+    def mc_monitor_rule_previous_execution_time(
+        self, mc_monitor_rule_previous_execution_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_previous_execution_time = (
+            mc_monitor_rule_previous_execution_time
+        )
+
+    @property
+    def mc_monitor_rule_comparisons(self) -> Optional[list[MCRuleComparison]]:
+        return self.attributes.mc_monitor_rule_comparisons
+
+    @mc_monitor_rule_comparisons.setter
+    def mc_monitor_rule_comparisons(
+        self, mc_monitor_rule_comparisons: Optional[list[MCRuleComparison]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_comparisons = mc_monitor_rule_comparisons
+
+    @property
+    def mc_monitor_rule_is_snoozed(self) -> Optional[bool]:
+        return self.attributes.mc_monitor_rule_is_snoozed
+
+    @mc_monitor_rule_is_snoozed.setter
+    def mc_monitor_rule_is_snoozed(self, mc_monitor_rule_is_snoozed: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_rule_is_snoozed = mc_monitor_rule_is_snoozed
+
+    @property
+    def mc_monitor_breach_rate(self) -> Optional[float]:
+        return self.attributes.mc_monitor_breach_rate
+
+    @mc_monitor_breach_rate.setter
+    def mc_monitor_breach_rate(self, mc_monitor_breach_rate: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_breach_rate = mc_monitor_breach_rate
+
+    @property
+    def mc_monitor_incident_count(self) -> Optional[int]:
+        return self.attributes.mc_monitor_incident_count
+
+    @mc_monitor_incident_count.setter
+    def mc_monitor_incident_count(self, mc_monitor_incident_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor_incident_count = mc_monitor_incident_count
+
+    @property
+    def terms(self) -> list[AtlasGlossaryTerm]:
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        return [] if self.attributes.meanings is None else self.attributes.meanings
+
+    @terms.setter
+    def terms(self, terms: list[AtlasGlossaryTerm]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = terms
+
+    type_name: str = Field("MCMonitor", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MCMonitor":
+            raise ValueError("must be MCMonitor")
+        return v
+
+    class Attributes(MonteCarlo.Attributes):
+        mc_monitor_id: Optional[str] = Field(None, description="", alias="mcMonitorId")
+        mc_monitor_status: Optional[str] = Field(
+            None, description="", alias="mcMonitorStatus"
+        )
+        mc_monitor_type: Optional[str] = Field(
+            None, description="", alias="mcMonitorType"
+        )
+        mc_monitor_warehouse: Optional[str] = Field(
+            None, description="", alias="mcMonitorWarehouse"
+        )
+        mc_monitor_schedule_type: Optional[str] = Field(
+            None, description="", alias="mcMonitorScheduleType"
+        )
+        mc_monitor_namespace: Optional[str] = Field(
+            None, description="", alias="mcMonitorNamespace"
+        )
+        mc_monitor_rule_type: Optional[str] = Field(
+            None, description="", alias="mcMonitorRuleType"
+        )
+        mc_monitor_rule_custom_sql: Optional[str] = Field(
+            None, description="", alias="mcMonitorRuleCustomSql"
+        )
+        mc_monitor_rule_schedule_config: Optional[MCRuleSchedule] = Field(
+            None, description="", alias="mcMonitorRuleScheduleConfig"
+        )
+        mc_monitor_rule_schedule_config_humanized: Optional[str] = Field(
+            None, description="", alias="mcMonitorRuleScheduleConfigHumanized"
+        )
+        mc_monitor_alert_condition: Optional[str] = Field(
+            None, description="", alias="mcMonitorAlertCondition"
+        )
+        mc_monitor_rule_next_execution_time: Optional[datetime] = Field(
+            None, description="", alias="mcMonitorRuleNextExecutionTime"
+        )
+        mc_monitor_rule_previous_execution_time: Optional[datetime] = Field(
+            None, description="", alias="mcMonitorRulePreviousExecutionTime"
+        )
+        mc_monitor_rule_comparisons: Optional[list[MCRuleComparison]] = Field(
+            None, description="", alias="mcMonitorRuleComparisons"
+        )
+        mc_monitor_rule_is_snoozed: Optional[bool] = Field(
+            None, description="", alias="mcMonitorRuleIsSnoozed"
+        )
+        mc_monitor_breach_rate: Optional[float] = Field(
+            None, description="", alias="mcMonitorBreachRate"
+        )
+        mc_monitor_incident_count: Optional[int] = Field(
+            None, description="", alias="mcMonitorIncidentCount"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitor_assets: Optional[list[Asset]] = Field(
+            None, description="", alias="mcMonitorAssets"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "MCMonitor.Attributes" = Field(
         None,
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
@@ -14693,8 +16398,14 @@ class MetabaseQuestion(Metabase):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
             None, description="", alias="metabaseDashboards"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -14816,8 +16527,14 @@ class MetabaseCollection(Metabase):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
             None, description="", alias="metabaseDashboards"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -14894,6 +16611,12 @@ class MetabaseDashboard(Metabase):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -14995,8 +16718,14 @@ class QuickSightFolder(QuickSight):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
             None, description="", alias="quickSightAnalyses"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -15078,6 +16807,12 @@ class QuickSightDashboardVisual(QuickSight):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -15157,6 +16892,12 @@ class QuickSightAnalysisVisual(QuickSight):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -15253,6 +16994,12 @@ class QuickSightDatasetField(QuickSight):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         quick_sight_dataset: Optional[QuickSightDataset] = Field(
             None, description="", alias="quickSightDataset"
@@ -15389,6 +17136,12 @@ class QuickSightAnalysis(QuickSight):
         quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
             None, description="", alias="quickSightAnalysisVisuals"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -15487,6 +17240,9 @@ class QuickSightDashboard(QuickSight):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
             None, description="", alias="quickSightDashboardFolders"
         )  # relationship
@@ -15494,6 +17250,9 @@ class QuickSightDashboard(QuickSight):
             list[QuickSightDashboardVisual]
         ] = Field(
             None, description="", alias="quickSightDashboardVisuals"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -15590,8 +17349,14 @@ class QuickSightDataset(QuickSight):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
             None, description="", alias="quickSightDatasetFolders"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
             None, description="", alias="quickSightDatasetFields"
@@ -15655,8 +17420,14 @@ class ThoughtspotLiveboard(Thoughtspot):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
             None, description="", alias="thoughtspotDashlets"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -15749,8 +17520,14 @@ class ThoughtspotDashlet(Thoughtspot):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
             None, description="", alias="thoughtspotLiveboard"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -15810,6 +17587,12 @@ class ThoughtspotAnswer(Thoughtspot):
     class Attributes(Thoughtspot.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -15928,8 +17711,14 @@ class PowerBIReport(PowerBI):
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         pages: Optional[list[PowerBIPage]] = Field(
             None, description="", alias="pages"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -16050,6 +17839,12 @@ class PowerBIMeasure(PowerBI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -16201,6 +17996,12 @@ class PowerBIColumn(PowerBI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -16342,8 +18143,14 @@ class PowerBITable(PowerBI):
         measures: Optional[list[PowerBIMeasure]] = Field(
             None, description="", alias="measures"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         columns: Optional[list[PowerBIColumn]] = Field(
             None, description="", alias="columns"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -16435,8 +18242,14 @@ class PowerBITile(PowerBI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         report: Optional[PowerBIReport] = Field(
             None, description="", alias="report"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -16516,6 +18329,12 @@ class PowerBIDatasource(PowerBI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -16646,6 +18465,12 @@ class PowerBIWorkspace(PowerBI):
         reports: Optional[list[PowerBIReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -16740,26 +18565,11 @@ class PowerBIDataset(PowerBI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
         reports: Optional[list[PowerBIReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
-        )  # relationship
-        tables: Optional[list[PowerBITable]] = Field(
-            None, description="", alias="tables"
-        )  # relationship
-        datasources: Optional[list[PowerBIDatasource]] = Field(
-            None, description="", alias="datasources"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
@@ -16769,6 +18579,27 @@ class PowerBIDataset(PowerBI):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        tables: Optional[list[PowerBITable]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        datasources: Optional[list[PowerBIDatasource]] = Field(
+            None, description="", alias="datasources"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -16861,6 +18692,12 @@ class PowerBIDashboard(PowerBI):
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -16948,6 +18785,12 @@ class PowerBIDataflow(PowerBI):
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -17039,8 +18882,14 @@ class PowerBIPage(PowerBI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         report: Optional[PowerBIReport] = Field(
             None, description="", alias="report"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -17132,6 +18981,12 @@ class PresetChart(Preset):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         preset_dashboard: Optional[PresetDashboard] = Field(
             None, description="", alias="presetDashboard"
@@ -17238,6 +19093,12 @@ class PresetDataset(Preset):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         preset_dashboard: Optional[PresetDashboard] = Field(
             None, description="", alias="presetDashboard"
@@ -17404,8 +19265,14 @@ class PresetDashboard(Preset):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         preset_charts: Optional[list[PresetChart]] = Field(
             None, description="", alias="presetCharts"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         preset_workspace: Optional[PresetWorkspace] = Field(
             None, description="", alias="presetWorkspace"
@@ -17614,6 +19481,12 @@ class PresetWorkspace(Preset):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -17771,8 +19644,14 @@ class ModeReport(Mode):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         mode_collections: Optional[list[ModeCollection]] = Field(
             None, description="", alias="modeCollections"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -17867,6 +19746,12 @@ class ModeQuery(Mode):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         mode_report: Optional[ModeReport] = Field(
             None, description="", alias="modeReport"
         )  # relationship
@@ -17942,6 +19827,12 @@ class ModeChart(Mode):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18019,8 +19910,14 @@ class ModeWorkspace(Mode):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         mode_collections: Optional[list[ModeCollection]] = Field(
             None, description="", alias="modeCollections"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18108,6 +20005,12 @@ class ModeCollection(Mode):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18202,8 +20105,14 @@ class SigmaDatasetColumn(Sigma):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         sigma_dataset: Optional[SigmaDataset] = Field(
             None, description="", alias="sigmaDataset"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18277,6 +20186,12 @@ class SigmaDataset(Sigma):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18354,8 +20269,14 @@ class SigmaWorkbook(Sigma):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         sigma_pages: Optional[list[SigmaPage]] = Field(
             None, description="", alias="sigmaPages"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18452,8 +20373,14 @@ class SigmaDataElementField(Sigma):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         sigma_data_element: Optional[SigmaDataElement] = Field(
             None, description="", alias="sigmaDataElement"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18530,6 +20457,12 @@ class SigmaPage(Sigma):
         )  # relationship
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -18637,6 +20570,12 @@ class SigmaDataElement(Sigma):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
@@ -18718,6 +20657,12 @@ class QlikSpace(Qlik):
         )  # relationship
         qlik_datasets: Optional[list[QlikDataset]] = Field(
             None, description="", alias="qlikDatasets"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         qlik_apps: Optional[list[QlikApp]] = Field(
             None, description="", alias="qlikApps"
@@ -18851,8 +20796,14 @@ class QlikApp(Qlik):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         qlik_space: Optional[QlikSpace] = Field(
             None, description="", alias="qlikSpace"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         qlik_sheets: Optional[list[QlikSheet]] = Field(
             None, description="", alias="qlikSheets"
@@ -18972,8 +20923,14 @@ class QlikChart(Qlik):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         qlik_sheet: Optional[QlikSheet] = Field(
             None, description="", alias="qlikSheet"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -19090,8 +21047,14 @@ class QlikDataset(Qlik):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         qlik_space: Optional[QlikSpace] = Field(
             None, description="", alias="qlikSpace"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -19169,8 +21132,14 @@ class QlikSheet(Qlik):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         qlik_charts: Optional[list[QlikChart]] = Field(
             None, description="", alias="qlikCharts"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -19305,6 +21274,9 @@ class TableauWorkbook(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
         )  # relationship
@@ -19313,6 +21285,9 @@ class TableauWorkbook(Tableau):
         )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -19622,11 +21597,17 @@ class TableauDatasourceField(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(
             None, description="", alias="datasource"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -19839,11 +21820,17 @@ class TableauCalculatedField(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(
             None, description="", alias="datasource"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -19964,14 +21951,23 @@ class TableauProject(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        parent_project: Optional[TableauProject] = Field(
+            None, description="", alias="parentProject"
+        )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
         workbooks: Optional[list[TableauWorkbook]] = Field(
             None, description="", alias="workbooks"
         )  # relationship
         site: Optional[TableauSite] = Field(
             None, description="", alias="site"
         )  # relationship
-        parent_project: Optional[TableauProject] = Field(
-            None, description="", alias="parentProject"
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
         )  # relationship
         datasources: Optional[list[TableauDatasource]] = Field(
             None, description="", alias="datasources"
@@ -19982,17 +21978,14 @@ class TableauProject(Tableau):
         child_projects: Optional[list[TableauProject]] = Field(
             None, description="", alias="childProjects"
         )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -20101,8 +22094,14 @@ class TableauMetric(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -20163,8 +22162,14 @@ class TableauSite(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         projects: Optional[list[TableauProject]] = Field(
             None, description="", alias="projects"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -20410,8 +22415,14 @@ class TableauDatasource(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -20552,8 +22563,14 @@ class TableauDashboard(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -20716,8 +22733,14 @@ class TableauFlow(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -20855,8 +22878,14 @@ class TableauWorksheet(Tableau):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         datasource_fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="datasourceFields"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -21045,14 +23074,26 @@ class LookerLook(Looker):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        folder: Optional[LookerFolder] = Field(
-            None, description="", alias="folder"
-        )  # relationship
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
         )  # relationship
+        readme: Optional[Readme] = Field(
+            None, description="", alias="readme"
+        )  # relationship
+        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="meanings"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        folder: Optional[LookerFolder] = Field(
+            None, description="", alias="folder"
+        )  # relationship
         tile: Optional[LookerTile] = Field(
             None, description="", alias="tile"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
@@ -21062,12 +23103,6 @@ class LookerLook(Looker):
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
             None, description="", alias="dashboard"
@@ -21221,8 +23256,14 @@ class LookerDashboard(Looker):
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         folder: Optional[LookerFolder] = Field(
             None, description="", alias="folder"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -21341,6 +23382,12 @@ class LookerFolder(Looker):
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -21494,8 +23541,14 @@ class LookerTile(Looker):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -21580,17 +23633,8 @@ class LookerModel(Looker):
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        fields: Optional[list[LookerField]] = Field(
-            None, description="", alias="fields"
         )  # relationship
         look: Optional[LookerLook] = Field(
             None, description="", alias="look"
@@ -21600,6 +23644,21 @@ class LookerModel(Looker):
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
+        )  # relationship
+        links: Optional[list[Link]] = Field(
+            None, description="", alias="links"
+        )  # relationship
+        metrics: Optional[list[Metric]] = Field(
+            None, description="", alias="metrics"
+        )  # relationship
+        fields: Optional[list[LookerField]] = Field(
+            None, description="", alias="fields"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -21712,8 +23771,14 @@ class LookerExplore(Looker):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
@@ -21783,8 +23848,14 @@ class LookerProject(Looker):
         models: Optional[list[LookerModel]] = Field(
             None, description="", alias="models"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         explores: Optional[list[LookerExplore]] = Field(
             None, description="", alias="explores"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -21910,6 +23981,12 @@ class LookerQuery(Looker):
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
@@ -22072,11 +24149,17 @@ class LookerField(Looker):
         view: Optional[LookerView] = Field(
             None, description="", alias="view"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         explore: Optional[LookerExplore] = Field(
             None, description="", alias="explore"
         )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
@@ -22152,8 +24235,14 @@ class LookerView(Looker):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -22232,6 +24321,12 @@ class RedashDashboard(Redash):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -22386,8 +24481,14 @@ class RedashQuery(Redash):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         redash_visualizations: Optional[list[RedashVisualization]] = Field(
             None, description="", alias="redashVisualizations"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -22489,6 +24590,12 @@ class RedashVisualization(Redash):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -22600,11 +24707,17 @@ class SalesforceObject(Salesforce):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             None, description="", alias="organization"
         )  # relationship
         lookup_fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="lookupFields"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -22876,8 +24989,14 @@ class SalesforceField(Salesforce):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         lookup_objects: Optional[list[SalesforceObject]] = Field(
             None, description="", alias="lookupObjects"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -22956,8 +25075,14 @@ class SalesforceOrganization(Salesforce):
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         objects: Optional[list[SalesforceObject]] = Field(
             None, description="", alias="objects"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -23062,8 +25187,14 @@ class SalesforceDashboard(Salesforce):
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             None, description="", alias="organization"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -23164,8 +25295,14 @@ class SalesforceReport(Salesforce):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             None, description="", alias="organization"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -23229,8 +25366,14 @@ class QlikStream(QlikSpace):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
+        mc_monitors: Optional[list[MCMonitor]] = Field(
+            None, description="", alias="mcMonitors"
+        )  # relationship
         qlik_datasets: Optional[list[QlikDataset]] = Field(
             None, description="", alias="qlikDatasets"
+        )  # relationship
+        mc_incidents: Optional[list[MCIncident]] = Field(
+            None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
             None, description="", alias="links"
@@ -23321,6 +25464,8 @@ Insight.Attributes.update_forward_refs()
 
 API.Attributes.update_forward_refs()
 
+Tag.Attributes.update_forward_refs()
+
 SQL.Attributes.update_forward_refs()
 
 DataStudio.Attributes.update_forward_refs()
@@ -23336,6 +25481,8 @@ S3.Attributes.update_forward_refs()
 DbtColumnProcess.Attributes.update_forward_refs()
 
 Kafka.Attributes.update_forward_refs()
+
+MonteCarlo.Attributes.update_forward_refs()
 
 Metric.Attributes.update_forward_refs()
 
@@ -23383,6 +25530,8 @@ APISpec.Attributes.update_forward_refs()
 
 APIPath.Attributes.update_forward_refs()
 
+SnowflakeTag.Attributes.update_forward_refs()
+
 TablePartition.Attributes.update_forward_refs()
 
 Table.Attributes.update_forward_refs()
@@ -23422,6 +25571,10 @@ S3Object.Attributes.update_forward_refs()
 KafkaTopic.Attributes.update_forward_refs()
 
 KafkaConsumerGroup.Attributes.update_forward_refs()
+
+MCIncident.Attributes.update_forward_refs()
+
+MCMonitor.Attributes.update_forward_refs()
 
 MetabaseQuestion.Attributes.update_forward_refs()
 

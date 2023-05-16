@@ -4,7 +4,7 @@ import json
 from typing import Any, Optional
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import LogicError, NotFoundError
+from pyatlan.error import InvalidRequestError, LogicError, NotFoundError
 from pyatlan.model.core import CustomMetadata
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
@@ -95,22 +95,44 @@ class CustomMetadataCache:
         """
         Translate the provided human-readable custom metadata set name to its Atlan-internal ID string.
         """
+        if name is None or not name.strip():
+            raise InvalidRequestError(
+                message="No name was provided when attempting to retrieve custom metadata.",
+                code="ATLAN-PYTHON-404-008",
+                param="",
+            )
         if cm_id := cls.map_name_to_id.get(name):
             return cm_id
         # If not found, refresh the cache and look again (could be stale)
         cls.refresh_cache()
-        return cls.map_name_to_id.get(name)
+        if cm_id := cls.map_name_to_id.get(name):
+            return cm_id
+        raise NotFoundError(
+            message=f"Custom metadata with name {name} does not exist.",
+            code="ATLAN-PYTHON-404-009",
+        )
 
     @classmethod
     def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.
         """
+        if idstr is None or not idstr.strip():
+            raise InvalidRequestError(
+                message="No ID was provided when attempting to retrieve custom metadata.",
+                code="ATLAN-PYTHON-404-008",
+                param="",
+            )
         if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
         # If not found, refresh the cache and look again (could be stale)
         cls.refresh_cache()
-        return cls.map_id_to_name.get(idstr)
+        if cm_name := cls.map_id_to_name.get(idstr):
+            return cm_name
+        raise NotFoundError(
+            message=f"Custom metadata with ID {idstr} does not exist.",
+            code="ATLAN-PYTHON-404-009",
+        )
 
     @classmethod
     def get_type_for_id(cls, idstr: str) -> Optional[type]:
