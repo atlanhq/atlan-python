@@ -555,6 +555,7 @@ def test_remove_attribute(client: AtlanClient):
 @pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_remove_attribute")
 def test_retrieve_structures(client: AtlanClient):
+    global _removal_epoch
     custom_attributes = CustomMetadataCache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
@@ -797,6 +798,7 @@ def _validate_dq_empty(dq_attrs: CustomMetadata):
 def _validate_raci_structure(
     attributes: Optional[List[AttributeDef]], total_expected: int
 ):
+    global _removal_epoch
     assert attributes
     assert len(attributes) == total_expected
     one = attributes[0]
