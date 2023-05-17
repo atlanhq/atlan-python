@@ -191,10 +191,11 @@ class EnumDef(TypeDef):
                 ["values"],
                 [values],
             )
-            elements = []
-            if values:
-                for i in range(0, len(values), 1):
-                    elements.append(EnumDef.ElementDef.of(ordinal=i, value=values[i]))
+            elements: List[EnumDef.ElementDef] = []
+            elements.extend(
+                EnumDef.ElementDef.of(ordinal=i, value=values[i])
+                for i in range(len(values))
+            )
             return elements
 
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
@@ -293,7 +294,7 @@ class AttributeDef(AtlanObject):
                 [type],
             )
             # Explicitly set all defaults to ensure inclusion during pydantic serialization
-            builder = AttributeDef.Options(
+            options = AttributeDef.Options(
                 primitive_type=attribute_type.value,
                 applicable_entity_types='["Asset"]',
                 custom_applicable_entity_types=_complete_type_list,
@@ -310,11 +311,11 @@ class AttributeDef(AtlanObject):
                 AtlanCustomAttributePrimitiveType.URL,
                 AtlanCustomAttributePrimitiveType.SQL,
             ):
-                builder.custom_type = attribute_type.value
+                options.custom_type = attribute_type.value
             elif attribute_type == AtlanCustomAttributePrimitiveType.OPTIONS:
-                builder.is_enum = True
-                builder.enum_type = options_name
-            return builder
+                options.is_enum = True
+                options.enum_type = options_name
+            return options
 
     is_new: Optional[bool] = Field(
         description="Whether the attribute is being newly created (true) or not (false).",
@@ -395,7 +396,7 @@ class AttributeDef(AtlanObject):
             [display_name, attribute_type],
         )
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
-        builder = AttributeDef(
+        attr_def = AttributeDef(
             display_name=display_name,
             options=AttributeDef.Options.create(
                 attribute_type=attribute_type, options_name=options_name
@@ -424,18 +425,18 @@ class AttributeDef(AtlanObject):
         else:
             base_type = attribute_type.value
         if multi_valued:
-            builder.type_name = f"array<{str(base_type)}>"
-            builder.options.multi_value_select = True
+            attr_def.type_name = f"array<{str(base_type)}>"
+            attr_def.options.multi_value_select = True
         else:
-            builder.type_name = base_type
+            attr_def.type_name = base_type
         if add_enum_values:
             from pyatlan.cache.enum_cache import EnumCache
 
             if enum_def := EnumCache.get_by_name(str(options_name)):
-                builder.enum_values = enum_def.get_valid_values()
+                attr_def.enum_values = enum_def.get_valid_values()
             else:
-                builder.enum_values = []
-        return builder
+                attr_def.enum_values = []
+        return attr_def
 
     def is_archived(self) -> bool:
         return bool(opt.is_archived) if (opt := self.options) else False
