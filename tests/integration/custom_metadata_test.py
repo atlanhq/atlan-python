@@ -197,9 +197,7 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
     assert one.display_name == CM_ATTR_RACI_RESPONSIBLE
     assert one.name
     assert one.name != CM_ATTR_RACI_RESPONSIBLE
-    assert (
-        one.type_name == "array<" + AtlanCustomAttributePrimitiveType.STRING.value + ">"
-    )
+    assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options
     assert one.options.multi_value_select
     one = attributes[1]
@@ -211,16 +209,12 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
     one = attributes[2]
     assert one.display_name == CM_ATTR_RACI_CONSULTED
     assert one.name != CM_ATTR_RACI_CONSULTED
-    assert (
-        one.type_name == "array<" + AtlanCustomAttributePrimitiveType.STRING.value + ">"
-    )
+    assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options.multi_value_select
     one = attributes[3]
     assert one.display_name == CM_ATTR_RACI_INFORMED
     assert one.name != CM_ATTR_RACI_INFORMED
-    assert (
-        one.type_name == "array<" + AtlanCustomAttributePrimitiveType.STRING.value + ">"
-    )
+    assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert one.options.multi_value_select
     one = attributes[4]
     assert one.display_name == CM_ATTR_RACI_EXTRA
@@ -543,8 +537,8 @@ def test_remove_attribute(client: AtlanClient):
     attributes = updated.attribute_defs
     archived = _validate_raci_structure(attributes, 5)
     assert archived
-    assert archived.display_name == CM_ATTR_RACI_EXTRA + "-archived-" + str(
-        _removal_epoch
+    assert (
+        archived.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
     )
     assert archived.name != CM_ATTR_RACI_EXTRA
     assert archived.type_name == AtlanCustomAttributePrimitiveType.STRING.value
@@ -573,7 +567,7 @@ def test_retrieve_structures(client: AtlanClient):
     assert CM_QUALITY in custom_attributes.keys()
     extra = _validate_raci_structure(custom_attributes.get(CM_RACI), 5)
     assert extra
-    assert extra.display_name == CM_ATTR_RACI_EXTRA + "-archived-" + str(_removal_epoch)
+    assert extra.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
     assert extra.name != CM_ATTR_RACI_EXTRA
     assert extra.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert "Database" in extra.options.custom_applicable_entity_types
@@ -804,9 +798,7 @@ def _validate_raci_structure(
     one = attributes[0]
     assert one.display_name == CM_ATTR_RACI_RESPONSIBLE
     assert one.name != CM_ATTR_RACI_RESPONSIBLE
-    assert (
-        one.type_name == "array<" + AtlanCustomAttributePrimitiveType.STRING.value + ">"
-    )
+    assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert "Database" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert one.options.multi_value_select
@@ -822,9 +814,7 @@ def _validate_raci_structure(
     one = attributes[2]
     assert one.display_name == CM_ATTR_RACI_CONSULTED
     assert one.name != CM_ATTR_RACI_CONSULTED
-    assert (
-        one.type_name == "array<" + AtlanCustomAttributePrimitiveType.STRING.value + ">"
-    )
+    assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert "Column" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert one.options.multi_value_select
@@ -832,9 +822,7 @@ def _validate_raci_structure(
     one = attributes[3]
     assert one.display_name == CM_ATTR_RACI_INFORMED
     assert not one.name == CM_ATTR_RACI_INFORMED
-    assert (
-        one.type_name == "array<" + AtlanCustomAttributePrimitiveType.STRING.value + ">"
-    )
+    assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
     assert "MaterialisedView" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert one.options.multi_value_select
@@ -842,8 +830,8 @@ def _validate_raci_structure(
     if total_expected > 5:
         # If we're expecting more than 5, then the penultimate must be an archived CM_ATTR_EXTRA
         one = attributes[4]
-        assert one.display_name == CM_ATTR_RACI_EXTRA + "-archived-" + str(
-            _removal_epoch
+        assert (
+            one.display_name == f"{CM_ATTR_RACI_EXTRA}-archived-{str(_removal_epoch)}"
         )
         assert one.name != CM_ATTR_RACI_EXTRA
         assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value

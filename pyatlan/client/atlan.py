@@ -20,7 +20,6 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from pyatlan.client.constants import (
-    ADD_BUSINESS_ATTRIBUTE,
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     BULK_UPDATE,
     CREATE_TYPE_DEFS,
@@ -122,6 +121,61 @@ def get_session():
     session.mount("https://", adapter)
     session.headers.update({"x-atlan-agent": "sdk", "x-atlan-agent-id": "python"})
     return session
+
+
+def _build_typdef_request(typedef: TypeDef) -> TypeDefResponse:
+    if isinstance(typedef, ClassificationDef):
+        # Set up the request payload...
+        payload = TypeDefResponse(
+            classification_defs=[typedef],
+            enum_defs=[],
+            struct_defs=[],
+            entity_defs=[],
+            relationship_defs=[],
+            custom_metadata_defs=[],
+        )
+    elif isinstance(typedef, CustomMetadataDef):
+        # Set up the request payload...
+        payload = TypeDefResponse(
+            classification_defs=[],
+            enum_defs=[],
+            struct_defs=[],
+            entity_defs=[],
+            relationship_defs=[],
+            custom_metadata_defs=[typedef],
+        )
+    elif isinstance(typedef, EnumDef):
+        # Set up the request payload...
+        payload = TypeDefResponse(
+            classification_defs=[],
+            enum_defs=[typedef],
+            struct_defs=[],
+            entity_defs=[],
+            relationship_defs=[],
+            custom_metadata_defs=[],
+        )
+    else:
+        raise InvalidRequestException(
+            "Unable to update type definitions of category: " + typedef.category.value,
+            param="category",
+        )
+        # Throw an invalid request exception
+    return payload
+
+
+def _refresh_caches(typedef: TypeDef) -> None:
+    if isinstance(typedef, ClassificationDef):
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        ClassificationCache.refresh_cache()
+    if isinstance(typedef, CustomMetadataDef):
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        CustomMetadataCache.refresh_cache()
+    if isinstance(typedef, EnumDef):
+        from pyatlan.cache.enum_cache import EnumCache
+
+        EnumCache.refresh_cache()
 
 
 class AtlanClient(BaseSettings):
@@ -495,113 +549,19 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        if isinstance(typedef, ClassificationDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[typedef],
-                enum_defs=[],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[],
-            )
-        elif isinstance(typedef, CustomMetadataDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[],
-                enum_defs=[],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[typedef],
-            )
-        elif isinstance(typedef, EnumDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[],
-                enum_defs=[typedef],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[],
-            )
-        else:
-            raise InvalidRequestException(
-                "Unable to create new type definitions of category: "
-                + typedef.category.value,
-                param="category",
-            )
-            # Throw an invalid request exception
+        payload = _build_typdef_request(typedef)
         raw_json = self._call_api(
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
-        if isinstance(typedef, ClassificationDef):
-            from pyatlan.cache.classification_cache import ClassificationCache
-
-            ClassificationCache.refresh_cache()
-        if isinstance(typedef, CustomMetadataDef):
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            CustomMetadataCache.refresh_cache()
-        if isinstance(typedef, EnumDef):
-            from pyatlan.cache.enum_cache import EnumCache
-
-            EnumCache.refresh_cache()
+        _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
     def update_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        if isinstance(typedef, ClassificationDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[typedef],
-                enum_defs=[],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[],
-            )
-        elif isinstance(typedef, CustomMetadataDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[],
-                enum_defs=[],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[typedef],
-            )
-        elif isinstance(typedef, EnumDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[],
-                enum_defs=[typedef],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[],
-            )
-        else:
-            raise InvalidRequestException(
-                "Unable to update type definitions of category: "
-                + typedef.category.value,
-                param="category",
-            )
-            # Throw an invalid request exception
+        payload = _build_typdef_request(typedef)
         raw_json = self._call_api(
             UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
-        if isinstance(typedef, ClassificationDef):
-            from pyatlan.cache.classification_cache import ClassificationCache
-
-            ClassificationCache.refresh_cache()
-        if isinstance(typedef, CustomMetadataDef):
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            CustomMetadataCache.refresh_cache()
-        if isinstance(typedef, EnumDef):
-            from pyatlan.cache.enum_cache import EnumCache
-
-            EnumCache.refresh_cache()
+        _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
     def purge_typedef(self, internal_name: str) -> None:

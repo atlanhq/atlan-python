@@ -225,13 +225,7 @@ class EnumDef(TypeDef):
         """
         Translate the element definitions in this enumeration into simple list of strings.
         """
-        if self.element_defs:
-            values = []
-            for one in self.element_defs:
-                values.append(one.value)
-            return values
-        else:
-            return []
+        return [one.value for one in self.element_defs] if self.element_defs else []
 
 
 class AttributeDef(AtlanObject):
@@ -430,7 +424,7 @@ class AttributeDef(AtlanObject):
         else:
             base_type = attribute_type.value
         if multi_valued:
-            builder.type_name = "array<" + str(base_type) + ">"
+            builder.type_name = f"array<{str(base_type)}>"
             builder.options.multi_value_select = True
         else:
             builder.type_name = base_type
@@ -444,10 +438,7 @@ class AttributeDef(AtlanObject):
         return builder
 
     def is_archived(self) -> bool:
-        if opt := self.options:
-            return bool(opt.is_archived)
-        else:
-            return False
+        return bool(opt.is_archived) if (opt := self.options) else False
 
     def archive(self, by: str) -> AttributeDef:
         if self.options:
@@ -455,7 +446,7 @@ class AttributeDef(AtlanObject):
             self.options.is_archived = True
             self.options.archived_by = by
             self.options.archived_at = removal_epoch
-            self.display_name = self.display_name + "-archived-" + str(removal_epoch)
+            self.display_name = f"{self.display_name}-archived-{str(removal_epoch)}"
         return self
 
 

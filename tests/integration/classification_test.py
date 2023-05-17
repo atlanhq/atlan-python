@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from typing import Generator
+
 import pytest
 
 from pyatlan.cache.classification_cache import ClassificationCache
@@ -38,13 +40,13 @@ def client() -> AtlanClient:
 
 
 @pytest.fixture(scope="module")
-def cls(client: AtlanClient):
+def classification_def(client: AtlanClient) -> Generator[ClassificationDef, None, None]:
     c = ClassificationTest.create_classification(client, CLS_NAME)
     yield c
     ClassificationTest.delete_classification(client, c)
 
 
-@pytest.mark.usefixtures("cls")
+@pytest.mark.usefixtures("classification_def")
 def test_classification_cache():
     cls_id = ClassificationCache.get_id_for_name(CLS_NAME)
     assert cls_id
