@@ -15,16 +15,26 @@ from pyatlan.model.assets import (
 from pyatlan.model.core import CustomMetadata, to_snake_case
 from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
 from pyatlan.model.search import Term, DSL, Bool, IndexSearchRequest, Exists
-from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
-from tests.integration.glossary_test import GlossaryTest
+from pyatlan.model.typedef import (
+    AttributeDef,
+    CustomMetadataDef,
+    EnumDef,
+)
 
-PREFIX = "psdk2-"
-CM_PREFIX = PREFIX + "CM"
+import logging
+
+from tests.integration.client import delete_asset
+from tests.integration.glossary_test import create_glossary, create_term
+
+LOGGER = logging.getLogger(__name__)
+
+PREFIX = "psdk-"
+CM_PREFIX = f"{PREFIX}CM"
 FIXED_USER = "ernest"
 
-CM_RACI = PREFIX + "RACI"
-CM_IPR = PREFIX + "IPR"
-CM_QUALITY = PREFIX + "DQ"
+CM_RACI = f"{PREFIX}RACI"
+CM_IPR = f"{PREFIX}IPR"
+CM_QUALITY = f"{PREFIX}DQ"
 
 CM_ATTR_RACI_RESPONSIBLE = "Responsible"
 CM_ATTR_RACI_ACCOUNTABLE = "Accountable"
@@ -53,7 +63,7 @@ CM_ATTR_IPR_URL_RENAMED = to_snake_case(CM_ATTR_IPR_URL)
 CM_ATTR_QUALITY_COUNT = "Count"
 CM_ATTR_QUALITY_SQL = "SQL"
 CM_ATTR_QUALITY_TYPE = "Type"
-CM_ENUM_DQ_TYPE = PREFIX.replace("-", "_") + "DataQualityType"
+CM_ENUM_DQ_TYPE = f"{PREFIX.replace('-', '_')}DataQualityType"
 DQ_TYPE_LIST = [
     "Accuracy",
     "Completeness",
@@ -67,21 +77,38 @@ CM_ATTR_QUALITY_COUNT_RENAMED = to_snake_case(CM_ATTR_QUALITY_COUNT)
 CM_ATTR_QUALITY_SQL_RENAMED = to_snake_case(CM_ATTR_QUALITY_SQL)
 CM_ATTR_QUALITY_TYPE_RENAMED = to_snake_case(CM_ATTR_QUALITY_TYPE)
 
-GROUP_NAME1 = PREFIX + "1"
-GROUP_NAME2 = PREFIX + "2"
+GROUP_NAME1 = f"{PREFIX}1"
+GROUP_NAME2 = f"{PREFIX}2"
 
 _removal_epoch: Optional[int]
 
 
-@pytest.fixture(scope="session")
-def client() -> AtlanClient:
-    return AtlanClient()
+def create_custom_metadata(
+    client: AtlanClient,
+    name: str,
+    attribute_defs: List[AttributeDef],
+    logo: str,
+    locked: bool,
+) -> CustomMetadataDef:
+    cm_def = CustomMetadataDef.create(display_name=name)
+    cm_def.attribute_defs = attribute_defs
+    if logo.startswith("http"):
+        cm_def.options = CustomMetadataDef.Options.with_logo_from_url(logo, locked)
+    else:
+        cm_def.options = CustomMetadataDef.Options.with_logo_as_emoji(logo, locked)
+    r = client.create_typedef(cm_def)
+    return r.custom_metadata_defs[0]
+
+
+def create_enum(client: AtlanClient, name: str, values: List[str]) -> EnumDef:
+    enum_def = EnumDef.create(name=name, values=values)
+    r = client.create_typedef(enum_def)
+    return r.enum_defs[0]
 
 
 @pytest.fixture(scope="module")
 def cm_ipr(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
-    cm = CustomMetadataDef.create(display_name=CM_IPR)
-    cm.attribute_defs = [
+    attribute_defs = [
         AttributeDef.create(
             display_name=CM_ATTR_IPR_LICENSE,
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
@@ -103,17 +130,19 @@ def cm_ipr(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
             attribute_type=AtlanCustomAttributePrimitiveType.URL,
         ),
     ]
-    cm.options = CustomMetadataDef.Options.with_logo_as_emoji(emoji="⚖️", locked=False)
-    response = client.create_typedef(cm)
-    assert response
-    assert len(response.custom_metadata_defs) == 1
-    cm_created = response.custom_metadata_defs[0]
-    assert cm_created.category == AtlanTypeCategory.CUSTOM_METADATA
-    assert cm_created.name
-    assert cm_created.guid
-    assert cm_created.name != CM_IPR
-    assert cm_created.display_name == CM_IPR
-    attributes = cm_created.attribute_defs
+    cm = create_custom_metadata(
+        client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=False
+    )
+    yield cm
+    client.purge_typedef(internal_name=cm.name)
+
+
+def test_cm_ipr(cm_ipr: CustomMetadataDef):
+    assert cm_ipr.category == AtlanTypeCategory.CUSTOM_METADATA
+    assert cm_ipr.guid
+    assert cm_ipr.name != CM_IPR
+    assert cm_ipr.display_name == CM_IPR
+    attributes = cm_ipr.attribute_defs
     assert attributes
     assert len(attributes) == 5
     one = attributes[0]
@@ -145,16 +174,11 @@ def cm_ipr(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
     assert one.name != CM_ATTR_IPR_URL
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert not one.options.multi_value_select
-    yield cm_created
-    # Purge the custom metadata, after a little wait for eventual consistency
-    time.sleep(5)
-    client.purge_typedef(cm_created.name)
 
 
 @pytest.fixture(scope="module")
 def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
-    cm = CustomMetadataDef.create(display_name=CM_RACI)
-    cm.attribute_defs = [
+    attribute_defs = [
         AttributeDef.create(
             display_name=CM_ATTR_RACI_RESPONSIBLE,
             attribute_type=AtlanCustomAttributePrimitiveType.USERS,
@@ -179,17 +203,20 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
             attribute_type=AtlanCustomAttributePrimitiveType.STRING,
         ),
     ]
-    cm.options = CustomMetadataDef.Options.with_logo_as_emoji(emoji="👪")
-    response = client.create_typedef(cm)
-    assert response
-    assert len(response.custom_metadata_defs) == 1
-    cm_created = response.custom_metadata_defs[0]
-    assert cm_created.category == AtlanTypeCategory.CUSTOM_METADATA
-    assert cm_created.name
-    assert cm_created.guid
-    assert cm_created.name != CM_RACI
-    assert cm_created.display_name == CM_RACI
-    attributes = cm_created.attribute_defs
+    cm = create_custom_metadata(
+        client, name=CM_RACI, attribute_defs=attribute_defs, logo="👪", locked=False
+    )
+    yield cm
+    client.purge_typedef(cm.name)
+
+
+def test_cm_raci(cm_raci: CustomMetadataDef):
+    assert cm_raci.category == AtlanTypeCategory.CUSTOM_METADATA
+    assert cm_raci.name
+    assert cm_raci.guid
+    assert cm_raci.name != CM_RACI
+    assert cm_raci.display_name == CM_RACI
+    attributes = cm_raci.attribute_defs
     assert attributes
     assert len(attributes) == 5
     one = attributes[0]
@@ -221,36 +248,29 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
     assert one.name != CM_ATTR_RACI_EXTRA
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
     assert not one.options.multi_value_select
-    yield cm_created
-    # Cleanup after completion, after a little wait for eventual consistency
-    time.sleep(5)
-    client.purge_typedef(cm_created.name)
 
 
 @pytest.fixture(scope="module")
 def cm_enum(client: AtlanClient) -> Generator[EnumDef, None, None]:
-    enum_def = EnumDef.create(name=CM_ENUM_DQ_TYPE, values=DQ_TYPE_LIST)
-    response = client.create_typedef(enum_def)
-    assert response
-    assert len(response.enum_defs) == 1
-    enum_created = response.enum_defs[0]
-    assert enum_created.category == AtlanTypeCategory.ENUM
-    assert enum_created.name == CM_ENUM_DQ_TYPE
-    assert enum_created.guid
-    assert enum_created.element_defs
-    assert len(enum_created.element_defs) == len(DQ_TYPE_LIST)
-    yield enum_created
-    # Cleanup after a little wait for eventual consistency
-    time.sleep(5)
-    client.purge_typedef(CM_ENUM_DQ_TYPE)
+    enum_def = create_enum(client, name=CM_ENUM_DQ_TYPE, values=DQ_TYPE_LIST)
+    yield enum_def
+    client.purge_typedef(enum_def.name)
+
+
+def test_cm_enum(cm_enum: EnumDef):
+    assert cm_enum.category == AtlanTypeCategory.ENUM
+    assert cm_enum.name == CM_ENUM_DQ_TYPE
+    assert cm_enum.guid
+    assert cm_enum.element_defs
+    assert len(cm_enum.element_defs) == len(DQ_TYPE_LIST)
 
 
 @pytest.fixture(scope="module")
 def cm_dq(
-    client: AtlanClient, cm_enum: EnumDef
+    client: AtlanClient,
+    cm_enum: EnumDef,
 ) -> Generator[CustomMetadataDef, None, None]:
-    cm = CustomMetadataDef.create(display_name=CM_QUALITY)
-    cm.attribute_defs = [
+    attribute_defs = [
         AttributeDef.create(
             display_name=CM_ATTR_QUALITY_COUNT,
             attribute_type=AtlanCustomAttributePrimitiveType.INTEGER,
@@ -265,20 +285,24 @@ def cm_dq(
             options_name=CM_ENUM_DQ_TYPE,
         ),
     ]
-    cm.options = CustomMetadataDef.Options.with_logo_from_url(
-        url="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
+    cm = create_custom_metadata(
+        client,
+        name=CM_QUALITY,
+        attribute_defs=attribute_defs,
+        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
         locked=False,
     )
-    response = client.create_typedef(cm)
-    assert response
-    assert len(response.custom_metadata_defs) == 1
-    cm_created = response.custom_metadata_defs[0]
-    assert cm_created.category == AtlanTypeCategory.CUSTOM_METADATA
-    assert cm_created.name
-    assert cm_created.guid
-    assert cm_created.name != CM_QUALITY
-    assert cm_created.display_name == CM_QUALITY
-    attributes = cm_created.attribute_defs
+    yield cm
+    client.purge_typedef(cm.name)
+
+
+def test_cm_dq(cm_dq: CustomMetadataDef):
+    assert cm_dq.category == AtlanTypeCategory.CUSTOM_METADATA
+    assert cm_dq.name
+    assert cm_dq.guid
+    assert cm_dq.name != CM_QUALITY
+    assert cm_dq.display_name == CM_QUALITY
+    attributes = cm_dq.attribute_defs
     assert attributes
     assert len(attributes) == 3
     one = attributes[0]
@@ -302,32 +326,26 @@ def cm_dq(
     assert one.type_name == CM_ENUM_DQ_TYPE
     assert not one.options.multi_value_select
     assert one.options.primitive_type == AtlanCustomAttributePrimitiveType.OPTIONS.value
-    yield cm_created
-    # Cleanup after a little wait for eventual consistency
-    time.sleep(5)
-    client.purge_typedef(cm_created.name)
 
 
 @pytest.fixture(scope="module")
 def glossary(client: AtlanClient) -> Generator[AtlasGlossary, None, None]:
-    g = GlossaryTest.create_glossary(client, CM_PREFIX)
-    assert g
-    assert g.guid
-    assert g.name == CM_PREFIX
+    g = create_glossary(client, name=CM_PREFIX)
     yield g
-    client.purge_entity_by_guid(g.guid)
+    delete_asset(client, guid=g.guid, asset_type=AtlasGlossary)
 
 
 @pytest.fixture(scope="module")
 def term(
-    client: AtlanClient, glossary: AtlasGlossary
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+    cm_raci: CustomMetadataDef,
+    cm_ipr: CustomMetadataDef,
+    cm_dq: CustomMetadataDef,
 ) -> Generator[AtlasGlossaryTerm, None, None]:
-    t = GlossaryTest.create_term(client, name=CM_PREFIX, glossary_guid=glossary.guid)
-    assert t
-    assert t.guid
-    assert t.name == CM_PREFIX
+    t = create_term(client, name=CM_PREFIX, glossary_guid=glossary.guid)
     yield t
-    client.purge_entity_by_guid(t.guid)
+    delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 
 
 # TODO: create the groups, once they're modeled in the SDK...
@@ -335,8 +353,9 @@ def term(
 # def groups(client: AtlanClient) -> Generator[List[], None, None]:
 
 
-@pytest.mark.usefixtures("cm_raci")
-def test_add_term_cm_raci(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_add_term_cm_raci(
+    client: AtlanClient, cm_raci: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     raci_attrs = term.get_custom_metadata(CM_RACI)
     _validate_raci_empty(raci_attrs)
     setattr(raci_attrs, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
@@ -348,8 +367,9 @@ def test_add_term_cm_raci(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_raci_attributes(t.get_custom_metadata(name=CM_RACI))
 
 
-@pytest.mark.usefixtures("cm_ipr")
-def test_add_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_add_term_cm_ipr(
+    client: AtlanClient, cm_ipr: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     ipr_attrs = term.get_custom_metadata(CM_IPR)
     _validate_ipr_empty(ipr_attrs)
     setattr(ipr_attrs, CM_ATTR_IPR_LICENSE_RENAMED, "CC BY")
@@ -367,8 +387,9 @@ def test_add_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_ipr_attributes(t.get_custom_metadata(name=CM_IPR))
 
 
-@pytest.mark.usefixtures("cm_dq")
-def test_add_term_cm_dq(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_add_term_cm_dq(
+    client: AtlanClient, cm_dq: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     dq_attrs = term.get_custom_metadata(CM_QUALITY)
     _validate_dq_empty(dq_attrs)
     setattr(dq_attrs, CM_ATTR_QUALITY_COUNT_RENAMED, 42)
@@ -380,9 +401,10 @@ def test_add_term_cm_dq(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
 
 
-@pytest.mark.usefixtures("cm_ipr")
 @pytest.mark.order(after="test_add_term_cm_dq")
-def test_update_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_update_term_cm_ipr(
+    client: AtlanClient, cm_ipr: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     ipr = term.get_custom_metadata(CM_IPR)
     # Note: MUST access the getter / setter, not the underlying store
     setattr(ipr, CM_ATTR_IPR_MANDATORY_RENAMED, False)
@@ -394,9 +416,10 @@ def test_update_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_update_term_cm_ipr")
-def test_replace_term_cm_raci(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_replace_term_cm_raci(
+    client: AtlanClient, cm_raci: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     raci = term.get_custom_metadata(CM_RACI)
     # Note: MUST access the getter / setter, not the underlying store
     setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, None)
@@ -410,9 +433,10 @@ def test_replace_term_cm_raci(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
 
 
-@pytest.mark.usefixtures("cm_ipr")
 @pytest.mark.order(after="test_replace_term_cm_raci")
-def test_replace_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_replace_term_cm_ipr(
+    client: AtlanClient, cm_ipr: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     client.replace_custom_metadata(term.guid, term.get_custom_metadata(CM_IPR))
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -421,10 +445,12 @@ def test_replace_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_replace_term_cm_ipr")
 def test_search_by_any_accountable(
-    client: AtlanClient, glossary: AtlasGlossary, term: AtlasGlossaryTerm
+    client: AtlanClient,
+    cm_raci: CustomMetadataDef,
+    glossary: AtlasGlossary,
+    term: AtlasGlossaryTerm,
 ):
     be_active = Term.with_state("ACTIVE")
     be_a_term = Term.with_type_name("AtlasGlossaryTerm")
@@ -454,10 +480,12 @@ def test_search_by_any_accountable(
         assert anchor.name == glossary.name
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_replace_term_cm_ipr")
 def test_search_by_specific_accountable(
-    client: AtlanClient, glossary: AtlasGlossary, term: AtlasGlossaryTerm
+    client: AtlanClient,
+    cm_raci: CustomMetadataDef,
+    glossary: AtlasGlossary,
+    term: AtlasGlossaryTerm,
 ):
     be_active = Term.with_state("ACTIVE")
     be_a_term = Term.with_type_name("AtlasGlossaryTerm")
@@ -488,11 +516,12 @@ def test_search_by_specific_accountable(
         return t
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(
     after=["test_search_by_any_accountable", "test_search_by_specific_accountable"]
 )
-def test_remove_term_cm_raci(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_remove_term_cm_raci(
+    client: AtlanClient, cm_raci: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     client.remove_custom_metadata(term.guid, cm_name=CM_RACI)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -501,9 +530,10 @@ def test_remove_term_cm_raci(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_raci_empty(t.get_custom_metadata(name=CM_RACI))
 
 
-@pytest.mark.usefixtures("cm_ipr")
 @pytest.mark.order(after="test_remove_term_cm_raci")
-def test_remove_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
+def test_remove_term_cm_ipr(
+    client: AtlanClient, cm_ipr: CustomMetadataDef, term: AtlasGlossaryTerm
+):
     client.remove_custom_metadata(term.guid, cm_name=CM_IPR)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -512,9 +542,8 @@ def test_remove_term_cm_ipr(client: AtlanClient, term: AtlasGlossaryTerm):
     _validate_raci_empty(t.get_custom_metadata(name=CM_RACI))
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_remove_term_cm_raci")
-def test_remove_attribute(client: AtlanClient):
+def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     global _removal_epoch
     existing = CustomMetadataCache.get_custom_metadata_def(name=CM_RACI)
     existing_attrs = existing.attribute_defs
@@ -546,9 +575,8 @@ def test_remove_attribute(client: AtlanClient):
     assert archived.is_archived()
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_remove_attribute")
-def test_retrieve_structures(client: AtlanClient):
+def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     global _removal_epoch
     custom_attributes = CustomMetadataCache.get_all_custom_attributes()
     assert custom_attributes
@@ -575,9 +603,8 @@ def test_retrieve_structures(client: AtlanClient):
     assert extra.is_archived()
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_retrieve_structures")
-def test_recreate_attribute(client: AtlanClient):
+def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     existing = CustomMetadataCache.get_custom_metadata_def(name=CM_RACI)
     existing_attrs = existing.attribute_defs
     updated_attrs = []
@@ -608,9 +635,10 @@ def test_recreate_attribute(client: AtlanClient):
     assert not extra.is_archived()
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_recreate_attribute")
-def test_retrieve_structure_without_archived(client: AtlanClient):
+def test_retrieve_structure_without_archived(
+    client: AtlanClient, cm_raci: CustomMetadataDef
+):
     custom_attributes = CustomMetadataCache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
@@ -626,9 +654,10 @@ def test_retrieve_structure_without_archived(client: AtlanClient):
     assert not extra.is_archived()
 
 
-@pytest.mark.usefixtures("cm_raci")
 @pytest.mark.order(after="test_recreate_attribute")
-def test_retrieve_structure_with_archived(client: AtlanClient):
+def test_retrieve_structure_with_archived(
+    client: AtlanClient, cm_raci: CustomMetadataDef
+):
     custom_attributes = CustomMetadataCache.get_all_custom_attributes(
         include_deleted=True
     )
@@ -646,10 +675,14 @@ def test_retrieve_structure_with_archived(client: AtlanClient):
     assert not extra.is_archived()
 
 
-@pytest.mark.usefixtures("cm_raci", "cm_ipr", "cm_dq")
 @pytest.mark.order(after="test_recreate_attribute")
 def test_update_replacing_cm(
-    client: AtlanClient, term: AtlasGlossaryTerm, glossary: AtlasGlossary
+    term: AtlasGlossaryTerm,
+    glossary: AtlasGlossary,
+    cm_raci: CustomMetadataDef,
+    cm_ipr: CustomMetadataDef,
+    cm_dq: CustomMetadataDef,
+    client: AtlanClient,
 ):
     raci = term.get_custom_metadata(CM_RACI)
     setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
