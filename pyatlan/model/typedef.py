@@ -7,13 +7,12 @@ from pydantic import Field
 
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
+    AtlanClassificationColor,
+    AtlanCustomAttributePrimitiveType,
     AtlanTypeCategory,
     Cardinality,
     IndexType,
-    AtlanCustomAttributePrimitiveType,
-    AtlanClassificationColor,
 )
-
 
 _complete_type_list = (
     '["ADLSAccount",'
@@ -331,17 +330,19 @@ class AttributeDef(AtlanObject):
     enum_values: Optional[List[str]] = Field(
         description="List of values for an enumeration."
     )
-    description: str = Field(description="Description of the attribute definition.")
+    description: Optional[str] = Field(
+        description="Description of the attribute definition."
+    )
     default_value: Optional[str] = Field(
         description="Default value for this attribute (if any)."
     )
-    display_name: str = Field(
+    display_name: Optional[str] = Field(
         description="Name to use within all user interactions through the user interface. Note that this may not "
         "be the same name used to update or interact with the attribute through API operations, for "
         "that see the `name` property. (This property can be used instead of `name` for the creation "
         "of an attribute definition as well.)"
     )
-    name: str = Field(
+    name: Optional[str] = Field(
         description="Unique name of this attribute definition. When provided during creation, this should be the "
         "human-readable name for the attribute. When returned (or provided for an update) this will be "
         "the static-hashed name that Atlan uses internally. (This is to allow the name to be changed "
@@ -358,7 +359,7 @@ class AttributeDef(AtlanObject):
     is_unique: Optional[bool] = Field(
         description="When true, this attribute must be unique across all assets.",
     )
-    options: AttributeDef.Options = Field(
+    options: Optional[AttributeDef.Options] = Field(
         description="Extensible options for the attribute."
     )
     search_weight: Optional[float] = Field(description="TBC")
