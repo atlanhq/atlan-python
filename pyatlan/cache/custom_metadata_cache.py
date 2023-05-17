@@ -243,18 +243,3 @@ class CustomMetadataCache:
             return typedef
         else:
             raise ValueError(f"No custom metadata with the name: {name} found")
-
-    @classmethod
-    def get_empty_attributes(cls, name: str) -> dict[str, Any]:
-        """
-        Construct a full set of attributes for the given custom metadata, but where all the
-        values are None (forced to be empty).
-        """
-        cm_id = cls.get_id_for_name(name)
-        if cm_id is None:
-            raise ValueError(f"No custom metadata with the name: {name} exist")
-        empty: dict[str, Any] = {}
-        if name_to_id := cls.map_attr_name_to_id.get(cm_id):
-            for attr_name in name_to_id.keys():
-                empty[attr_name] = None
-        return empty
