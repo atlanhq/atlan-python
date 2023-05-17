@@ -726,7 +726,6 @@ def test_database_attributes_create_without_required_parameters_raises_validatio
 def test_database_attributes_create_with_required_parameters(
     name, connection_qualified_name
 ):
-
     attributes = Database.Attributes.create(
         name=name, connection_qualified_name=connection_qualified_name
     )
@@ -762,7 +761,6 @@ def test_database_create_without_required_parameters_raises_validation_error(
     ],
 )
 def test_database_create_with_required_parameters(name, connection_qualified_name):
-
     database = Database.create(
         name=name, connection_qualified_name=connection_qualified_name
     )
@@ -1103,7 +1101,6 @@ def test_set_busines_attributes_with_non_business_attributes_object_raises_value
 def test_set_business_attributes_with_non_appropriate_meta_data_type_name_raises_value_error(
     table,
 ):
-
     with pytest.raises(
         ValueError,
         match="business_attributes must be an instance of CustomMetadata",
@@ -1387,7 +1384,6 @@ def test_validate_single_required_field_with_only_one_field_does_not_raise_value
 def test_create_readme_attributes_without_required_parameters_raises_exception(
     asset, content, asset_name, error, message
 ):
-
     with pytest.raises(error, match=message):
         Readme.Attributes.create(asset=asset, content=content, asset_name=asset_name)
 
@@ -1425,7 +1421,6 @@ def test_create_readme_attributes_without_required_parameters_raises_exception(
 def test_create_readme_without_required_parameters_raises_exception(
     asset, content, asset_name, error, message
 ):
-
     with pytest.raises(error, match=message):
         Readme.create(asset=asset, content=content, asset_name=asset_name)
 

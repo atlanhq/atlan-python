@@ -53,7 +53,7 @@ ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 def get_type(type_: str):
     ret_value = type_
 
-    for (field, replacement) in TYPE_REPLACEMENTS:
+    for field, replacement in TYPE_REPLACEMENTS:
         ret_value = ret_value.replace(field, replacement)
     return ret_value
 

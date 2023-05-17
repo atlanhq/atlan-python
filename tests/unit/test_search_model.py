@@ -222,7 +222,6 @@ def test_term_to_dict(parameters, expected):
 def test_bool_to_dict_without_optional_fields(
     must, should, must_not, filter, boost, minimum_should_match, expected
 ):
-
     assert (
         Bool(
             must=must,

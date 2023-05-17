@@ -7,11 +7,10 @@ from pyatlan.model.typedef import EnumDef
 
 
 class EnumCache:
-
     cache_by_name: dict[str, EnumDef] = dict()
 
     @classmethod
-    def _refresh_cache(cls) -> None:
+    def refresh_cache(cls) -> None:
         from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_default_client()
@@ -32,5 +31,6 @@ class EnumCache:
         if name:
             if enum_def := cls.cache_by_name.get(name):
                 return enum_def
-            cls._refresh_cache()
+            cls.refresh_cache()
             return cls.cache_by_name.get(name)
+        return None

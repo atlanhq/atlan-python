@@ -7,7 +7,6 @@ from pyatlan.model.role import AtlanRole
 
 
 class RoleCache:
-
     cache_by_id: dict[str, AtlanRole] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_name_to_id: dict[str, str] = dict()

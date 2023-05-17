@@ -33,7 +33,6 @@ def glossary(client: AtlanClient) -> Generator[AtlasGlossary, None, None]:
 def database(
     client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
-
     database = Database.create(
         name=f"Integration_Test_Entity_DB{next(iter_count)}",
         connection_qualified_name=connection.attributes.qualified_name,

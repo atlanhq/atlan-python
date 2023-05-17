@@ -254,10 +254,7 @@ class AtlanConnectorType(str, Enum):
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
-
-    def __new__(
-        cls, value: str
-    ) -> "AtlanCustomAttributePrimitiveType":
+    def __new__(cls, value: str) -> "AtlanCustomAttributePrimitiveType":
         obj = str.__new__(cls, value)
         obj._value_ = value
         return obj
@@ -283,3 +280,9 @@ class LineageDirection(str, Enum):
     UPSTREAM = "INPUT"
     DOWNSTREAM = "OUTPUT"
     BOTH = "BOTH"
+
+
+class AtlanClassificationColor(str, Enum):
+    GREEN = "Green"
+    YELLOW = "Yellow"
+    RED = "Red"

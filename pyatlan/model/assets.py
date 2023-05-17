@@ -1570,7 +1570,6 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
-
         if isinstance(data, Asset):
             return data
 
