@@ -13,9 +13,16 @@ from pyatlan.utils import (
 )
 
 ROLE_API = f"{ADMIN_URI}roles"
+GROUP_API = f"{ADMIN_URI}groups"
 
 # Role APIs
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK)
+
+# Group APIs
+GET_GROUPS = API(GROUP_API, HTTPMethod.GET, HTTPStatus.OK)
+CREATE_GROUP = API(GROUP_API, HTTPMethod.POST, HTTPStatus.OK)
+UPDATE_GROUP = API(GROUP_API, HTTPMethod.POST, HTTPStatus.OK)
+DELETE_GROUP = API(GROUP_API + "/{group_guid}/delete", HTTPMethod.POST, HTTPStatus.OK)
 
 ENTITY_API = f"{BASE_URI}entity/"
 PREFIX_ATTR = "attr:"

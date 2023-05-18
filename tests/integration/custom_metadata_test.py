@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-import logging
 import time
 from typing import Generator, List, Optional
 
@@ -16,6 +15,8 @@ from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.client import delete_asset
 from tests.integration.glossary_test import create_glossary, create_term
+
+import logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -125,7 +126,7 @@ def cm_ipr(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
         client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=False
     )
     yield cm
-    client.purge_typedef(internal_name=cm.name)
+    client.purge_typedef(CM_IPR, CustomMetadataDef)
 
 
 def test_cm_ipr(cm_ipr: CustomMetadataDef):
@@ -201,7 +202,7 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
         client, name=CM_RACI, attribute_defs=attribute_defs, logo="👪", locked=False
     )
     yield cm
-    client.purge_typedef(cm.name)
+    client.purge_typedef(CM_RACI, CustomMetadataDef)
 
 
 def test_cm_raci(cm_raci: CustomMetadataDef):
@@ -251,7 +252,7 @@ def test_cm_raci(cm_raci: CustomMetadataDef):
 def cm_enum(client: AtlanClient) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=CM_ENUM_DQ_TYPE, values=DQ_TYPE_LIST)
     yield enum_def
-    client.purge_typedef(enum_def.name)
+    client.purge_typedef(CM_ENUM_DQ_TYPE, EnumDef)
 
 
 def test_cm_enum(cm_enum: EnumDef):
@@ -286,12 +287,11 @@ def cm_dq(
         client,
         name=CM_QUALITY,
         attribute_defs=attribute_defs,
-        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/"
-        "gx-mark-160.png",
+        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
         locked=False,
     )
     yield cm
-    client.purge_typedef(cm.name)
+    client.purge_typedef(CM_QUALITY, CustomMetadataDef)
 
 
 def test_cm_dq(cm_dq: CustomMetadataDef):
