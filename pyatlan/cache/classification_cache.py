@@ -7,7 +7,6 @@ from pyatlan.model.typedef import ClassificationDef
 
 
 class ClassificationCache:
-
     cache_by_id: dict[str, ClassificationDef] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_name_to_id: dict[str, str] = dict()

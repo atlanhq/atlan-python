@@ -23,6 +23,7 @@ from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     BULK_UPDATE,
     CREATE_TYPE_DEFS,
+    UPDATE_TYPE_DEFS,
     DELETE_ENTITY_BY_ATTRIBUTE,
     DELETE_ENTITY_BY_GUID,
     DELETE_TYPE_DEF_BY_NAME,
@@ -120,6 +121,61 @@ def get_session():
     session.mount("https://", adapter)
     session.headers.update({"x-atlan-agent": "sdk", "x-atlan-agent-id": "python"})
     return session
+
+
+def _build_typdef_request(typedef: TypeDef) -> TypeDefResponse:
+    if isinstance(typedef, ClassificationDef):
+        # Set up the request payload...
+        payload = TypeDefResponse(
+            classification_defs=[typedef],
+            enum_defs=[],
+            struct_defs=[],
+            entity_defs=[],
+            relationship_defs=[],
+            custom_metadata_defs=[],
+        )
+    elif isinstance(typedef, CustomMetadataDef):
+        # Set up the request payload...
+        payload = TypeDefResponse(
+            classification_defs=[],
+            enum_defs=[],
+            struct_defs=[],
+            entity_defs=[],
+            relationship_defs=[],
+            custom_metadata_defs=[typedef],
+        )
+    elif isinstance(typedef, EnumDef):
+        # Set up the request payload...
+        payload = TypeDefResponse(
+            classification_defs=[],
+            enum_defs=[typedef],
+            struct_defs=[],
+            entity_defs=[],
+            relationship_defs=[],
+            custom_metadata_defs=[],
+        )
+    else:
+        raise InvalidRequestException(
+            "Unable to update type definitions of category: " + typedef.category.value,
+            param="category",
+        )
+        # Throw an invalid request exception
+    return payload
+
+
+def _refresh_caches(typedef: TypeDef) -> None:
+    if isinstance(typedef, ClassificationDef):
+        from pyatlan.cache.classification_cache import ClassificationCache
+
+        ClassificationCache.refresh_cache()
+    if isinstance(typedef, CustomMetadataDef):
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        CustomMetadataCache.refresh_cache()
+    if isinstance(typedef, EnumDef):
+        from pyatlan.cache.enum_cache import EnumCache
+
+        EnumCache.refresh_cache()
 
 
 class AtlanClient(BaseSettings):
@@ -409,6 +465,44 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
 
+    def upsert_merging_cm(
+        self, entity: Union[Asset, list[Asset]], replace_classifications: bool = False
+    ) -> AssetMutationResponse:
+        query_params = {
+            "replaceClassifications": replace_classifications,
+            "replaceBusinessAttributes": True,
+            "overwriteBusinessAttributes": False,
+        }
+        entities: list[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+        for asset in entities:
+            asset.validate_required()
+        request = BulkRequest[Asset](entities=entities)
+        raw_json = self._call_api(BULK_UPDATE, query_params, request)
+        return AssetMutationResponse(**raw_json)
+
+    def upsert_replacing_cm(
+        self, entity: Union[Asset, list[Asset]], replace_classifications: bool = False
+    ) -> AssetMutationResponse:
+        query_params = {
+            "replaceClassifications": replace_classifications,
+            "replaceBusinessAttributes": True,
+            "overwriteBusinessAttributes": True,
+        }
+        entities: list[Asset] = []
+        if isinstance(entity, list):
+            entities.extend(entity)
+        else:
+            entities.append(entity)
+        for asset in entities:
+            asset.validate_required()
+        request = BulkRequest[Asset](entities=entities)
+        raw_json = self._call_api(BULK_UPDATE, query_params, request)
+        return AssetMutationResponse(**raw_json)
+
     def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
         raw_json = self._call_api(
             DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
@@ -455,54 +549,19 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        if isinstance(typedef, ClassificationDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[typedef],
-                enum_defs=[],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[],
-            )
-        elif isinstance(typedef, CustomMetadataDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[],
-                enum_defs=[],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[typedef],
-            )
-        elif isinstance(typedef, EnumDef):
-            # Set up the request payload...
-            payload = TypeDefResponse(
-                classification_defs=[],
-                enum_defs=[typedef],
-                struct_defs=[],
-                entity_defs=[],
-                relationship_defs=[],
-                custom_metadata_defs=[],
-            )
-        else:
-            raise InvalidRequestException(
-                "Unable to create new type definitions of category: "
-                + typedef.category.value,
-                param="category",
-            )
-            # Throw an invalid request exception
+        payload = _build_typdef_request(typedef)
         raw_json = self._call_api(
-            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=False
+            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
-        if isinstance(typedef, ClassificationDef):
-            from pyatlan.cache.classification_cache import ClassificationCache
+        _refresh_caches(typedef)
+        return TypeDefResponse(**raw_json)
 
-            ClassificationCache.refresh_cache()
-        if isinstance(typedef, CustomMetadataDef):
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            CustomMetadataCache.refresh_cache()
+    def update_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        payload = _build_typdef_request(typedef)
+        raw_json = self._call_api(
+            UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        )
+        _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
     def purge_typedef(self, internal_name: str) -> None:
@@ -511,9 +570,11 @@ class AtlanClient(BaseSettings):
         #  to refresh that particular cache
         from pyatlan.cache.classification_cache import ClassificationCache
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+        from pyatlan.cache.enum_cache import EnumCache
 
         ClassificationCache.refresh_cache()
         CustomMetadataCache.refresh_cache()
+        EnumCache.refresh_cache()
 
     @validate_arguments()
     def add_classifications(
@@ -628,8 +689,9 @@ class AtlanClient(BaseSettings):
         asset.remove_announcement()
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
-    def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadata):
-        # TODO: This endpoint is not currently functioning correctly on the server
+    def update_custom_metadata_attributes(
+        self, guid: str, custom_metadata: CustomMetadata
+    ):
         custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
         self._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
@@ -638,6 +700,50 @@ class AtlanClient(BaseSettings):
             None,
             custom_metadata_request,
         )
+
+    def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadata):
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        # Iterate through the custom metadata provided and explicitly set every
+        # single attribute, so that they are all serialized out (forcing removal
+        # of any empty ones)
+        for k, v in custom_metadata.items():
+            # Need to translate the hashed-string key here back to an attribute name
+            attr_name = str(
+                CustomMetadataCache.get_attr_name_for_id(
+                    set_id=custom_metadata._meta_data_type_id, attr_id=k
+                )
+            )
+            if not v:
+                setattr(custom_metadata, attr_name, None)
+            else:
+                setattr(custom_metadata, attr_name, v)
+        custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
+        self._call_api(
+            ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
+                {"entity_guid": guid, "bm_id": custom_metadata._meta_data_type_id}
+            ),
+            None,
+            custom_metadata_request,
+        )
+
+    def remove_custom_metadata(self, guid: str, cm_name: str):
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        # Ensure the custom metadata exists first - let this throw an error if not
+        if cm_id := CustomMetadataCache.get_id_for_name(cm_name):
+            # Initialize a dict of empty attributes for the custom metadata, and then
+            # send that so that they are removed accordingly
+            if cm_type := CustomMetadataCache.get_type_for_id(cm_id):
+                custom_metadata = cm_type()
+                custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
+                self._call_api(
+                    ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
+                        {"entity_guid": guid, "bm_id": cm_id}
+                    ),
+                    None,
+                    custom_metadata_request,
+                )
 
     @validate_arguments()
     def append_terms(

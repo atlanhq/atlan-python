@@ -12,42 +12,49 @@ iter_count = count(1)
 
 
 @pytest.fixture(scope="module")
-def client() -> AtlanClient:
-    return AtlanClient()
+def m_client() -> AtlanClient:
+    from os import environ
+
+    client = AtlanClient(
+        base_url=environ["MARK_BASE_URL"], api_key=environ["MARK_API_KEY"]
+    )
+    AtlanClient.register_client(client)
+    return client
 
 
 @pytest.fixture(scope="module")
-def connection(client: AtlanClient) -> Connection:
-    return client.get_asset_by_guid("b3a5c49a-0c7c-4e66-8453-f4da8d9ce222", Connection)
+def connection(m_client) -> Connection:
+    return m_client.get_asset_by_guid(
+        "b3a5c49a-0c7c-4e66-8453-f4da8d9ce222", Connection
+    )
 
 
 @pytest.fixture(scope="module")
-def glossary(client: AtlanClient) -> Generator[AtlasGlossary, None, None]:
+def glossary(m_client: AtlanClient) -> Generator[AtlasGlossary, None, None]:
     glossary = AtlasGlossary.create(name="Integration Test Glossary")
-    glossary = client.upsert(glossary).assets_created(asset_type=AtlasGlossary)[0]
+    glossary = m_client.upsert(glossary).assets_created(asset_type=AtlasGlossary)[0]
     yield glossary
-    client.purge_entity_by_guid(guid=glossary.guid)
+    m_client.purge_entity_by_guid(guid=glossary.guid)
 
 
 @pytest.fixture()
 def database(
-    client: AtlanClient, connection: Connection
+    m_client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
-
     database = Database.create(
         name=f"Integration_Test_Entity_DB{next(iter_count)}",
         connection_qualified_name=connection.attributes.qualified_name,
     )
-    database = client.upsert(database).assets_created(Database)[0]
+    database = m_client.upsert(database).assets_created(Database)[0]
 
     yield database
 
-    client.purge_entity_by_guid(guid=database.guid)
+    m_client.purge_entity_by_guid(guid=database.guid)
 
 
 @pytest.fixture()
 def make_term(
-    client: AtlanClient, glossary
+    m_client: AtlanClient, glossary
 ) -> Generator[Callable[[str], AtlasGlossaryTerm], None, None]:
     created_term_guids = []
 
@@ -55,14 +62,14 @@ def make_term(
         term = AtlasGlossaryTerm.create(
             name=f"Integration Test Glossary Term {name}", anchor=glossary
         )
-        term = client.upsert(term).assets_created(AtlasGlossaryTerm)[0]
+        term = m_client.upsert(term).assets_created(AtlasGlossaryTerm)[0]
         created_term_guids.append(term.guid)
         return term
 
     yield _make_term
 
     for guid in created_term_guids:
-        client.purge_entity_by_guid(guid=guid)
+        m_client.purge_entity_by_guid(guid=guid)
 
 
 def test_register_client_with_bad_parameter_raises_valueerror():
@@ -78,66 +85,66 @@ def test_register_client():
 
 
 def test_append_terms_with_guid(
-    client: AtlanClient,
+    m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
 ):
     term = make_term("Term1")
 
     assert (
-        database := client.append_terms(
+        database := m_client.append_terms(
             guid=database.guid, asset_type=Database, terms=[term]
         )
     )
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 1
     assert database.terms[0].guid == term.guid
 
 
 def test_append_terms_with_qualified_name(
-    client: AtlanClient,
+    m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
 ):
     term = make_term("Term1")
 
     assert (
-        database := client.append_terms(
+        database := m_client.append_terms(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term]
         )
     )
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 1
     assert database.terms[0].guid == term.guid
 
 
 def test_append_terms_using_ref_by_guid_for_term(
-    client: AtlanClient,
+    m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
 ):
     term = make_term("Term1")
 
     assert (
-        database := client.append_terms(
+        database := m_client.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term.guid)],
         )
     )
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 1
     assert database.terms[0].guid == term.guid
 
 
 def test_replace_a_term(
-    client: AtlanClient,
+    m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
 ):
     original_term = make_term("Term1")
     assert (
-        database := client.append_terms(
+        database := m_client.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=original_term.guid)],
@@ -146,12 +153,12 @@ def test_replace_a_term(
 
     replacemant_term = make_term("Term2")
     assert (
-        database := client.replace_terms(
+        database := m_client.replace_terms(
             guid=database.guid, asset_type=Database, terms=[replacemant_term]
         )
     )
 
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 2
     deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
     assert len(deleted_terms) == 1
@@ -162,13 +169,13 @@ def test_replace_a_term(
 
 
 def test_replace_all_term(
-    client: AtlanClient,
+    m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
 ):
     original_term = make_term("Term1")
     assert (
-        database := client.append_terms(
+        database := m_client.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=original_term.guid)],
@@ -176,12 +183,12 @@ def test_replace_all_term(
     )
 
     assert (
-        database := client.replace_terms(
+        database := m_client.replace_terms(
             guid=database.guid, asset_type=Database, terms=[]
         )
     )
 
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 1
     deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
     assert len(deleted_terms) == 1
@@ -189,14 +196,14 @@ def test_replace_all_term(
 
 
 def test_remove_term(
-    client: AtlanClient,
+    m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
     database: Database,
 ):
     original_term = make_term("Term1")
     another_term = make_term("Term2")
     assert (
-        database := client.append_terms(
+        database := m_client.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[
@@ -207,14 +214,14 @@ def test_remove_term(
     )
 
     assert (
-        database := client.remove_terms(
+        database := m_client.remove_terms(
             guid=database.guid,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(original_term.guid)],
         )
     )
 
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
     assert len(database.terms) == 2
     deleted_terms = [t for t in database.terms if t.relationship_status == "DELETED"]
     assert len(deleted_terms) == 1
@@ -223,8 +230,8 @@ def test_remove_term(
     assert active_terms[0].guid == another_term.guid
 
 
-def test_find_connections_by_name(client: AtlanClient):
-    connections = client.find_connections_by_name(
+def test_find_connections_by_name(m_client: AtlanClient):
+    connections = m_client.find_connections_by_name(
         name="Test Connection",
         connector_type=AtlanConnectorType.SNOWFLAKE,
         attributes=["connectorName"],
@@ -233,8 +240,8 @@ def test_find_connections_by_name(client: AtlanClient):
     assert connections[0].connector_name == AtlanConnectorType.SNOWFLAKE.value
 
 
-def test_get_lineage(client: AtlanClient):
-    response = client.get_lineage(
+def test_get_lineage(m_client: AtlanClient):
+    response = m_client.get_lineage(
         LineageRequest(guid="75474eab-3105-4ef9-9f84-709e386a7d3e")
     )
     for guid, asset in response.guid_entity_map.items():
