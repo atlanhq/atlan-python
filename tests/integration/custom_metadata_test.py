@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import logging
 import time
 from typing import Generator, List, Optional
 
@@ -8,15 +9,24 @@ import pytest
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
-from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Table
+from pyatlan.model.assets import (
+    AtlasGlossary,
+    AtlasGlossaryTerm,
+    Badge,
+    BadgeCondition,
+    Table,
+)
 from pyatlan.model.core import CustomMetadata, to_snake_case
-from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
+from pyatlan.model.enums import (
+    AtlanCustomAttributePrimitiveType,
+    AtlanTypeCategory,
+    BadgeComparisonOperator,
+    BadgeConditionColor,
+)
 from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.client import delete_asset
 from tests.integration.glossary_test import create_glossary, create_term
-
-import logging
 
 LOGGER = logging.getLogger(__name__)
 
@@ -287,7 +297,8 @@ def cm_dq(
         client,
         name=CM_QUALITY,
         attribute_defs=attribute_defs,
-        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
+        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/"
+        "gx-mark-160.png",
         locked=False,
     )
     yield cm
@@ -512,7 +523,6 @@ def test_search_by_specific_accountable(
         anchor = t.attributes.anchor
         assert anchor
         assert anchor.name == glossary.name
-        return t
 
 
 @pytest.mark.order(
@@ -879,3 +889,36 @@ def _validate_raci_structure(
     if total_expected > 4:
         return attributes[total_expected - 1]
     return None
+
+
+def test_add_badge_cm_dq(
+    client: AtlanClient,
+    cm_dq: CustomMetadataDef,
+):
+    badge = Badge.create(
+        name=CM_ATTR_QUALITY_COUNT,
+        cm_name=CM_QUALITY,
+        cm_attribute=CM_ATTR_QUALITY_COUNT_RENAMED,
+        badge_conditions=[
+            BadgeCondition.create(
+                badge_condition_operator=BadgeComparisonOperator.GTE,
+                badge_condition_value="5",
+                badge_condition_colorhex=BadgeConditionColor.GREEN,
+            ),
+            BadgeCondition.create(
+                badge_condition_operator=BadgeComparisonOperator.LT,
+                badge_condition_value="5",
+                badge_condition_colorhex=BadgeConditionColor.YELLOW,
+            ),
+            BadgeCondition.create(
+                badge_condition_operator=BadgeComparisonOperator.LTE,
+                badge_condition_value="2",
+                badge_condition_colorhex=BadgeConditionColor.RED,
+            ),
+        ],
+    )
+    badge.user_description = "How many data quality checks ran against this asset."
+    response = client.upsert(badge)
+    assert (badges := response.assets_created(asset_type=Badge))
+    assert len(badges) == 1
+    client.purge_entity_by_guid(badges[0].guid)

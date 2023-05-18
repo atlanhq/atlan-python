@@ -49,7 +49,7 @@ def to_snake_case(value):
             res.append(c.lower())
         else:
             res.append(c)
-    return "".join(res)
+    return "".join(res).replace(" _", "_").replace(" ", "_")
 
 
 class ClassificationName:

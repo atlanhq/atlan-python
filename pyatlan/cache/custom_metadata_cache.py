@@ -72,7 +72,7 @@ class CustomMetadataCache:
                         attr_id = str(attr.name)
                         attr_name = str(attr.display_name)
                         # Use a renamed attribute everywhere
-                        attr_renamed = to_snake_case(attr_name.replace(" ", ""))
+                        attr_renamed = to_snake_case(attr_name)
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_renamed
                         if attr.options and attr.options.is_archived:
                             cls.archived_attr_ids[attr_id] = attr_renamed
