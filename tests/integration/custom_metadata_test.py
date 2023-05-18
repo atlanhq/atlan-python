@@ -134,7 +134,7 @@ def cm_ipr(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
         client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=False
     )
     yield cm
-    client.purge_typedef(internal_name=cm.name)
+    client.purge_typedef(CM_IPR, CustomMetadataDef)
 
 
 def test_cm_ipr(cm_ipr: CustomMetadataDef):
@@ -210,7 +210,7 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
         client, name=CM_RACI, attribute_defs=attribute_defs, logo="👪", locked=False
     )
     yield cm
-    client.purge_typedef(cm.name)
+    client.purge_typedef(CM_RACI, CustomMetadataDef)
 
 
 def test_cm_raci(cm_raci: CustomMetadataDef):
@@ -260,7 +260,7 @@ def test_cm_raci(cm_raci: CustomMetadataDef):
 def cm_enum(client: AtlanClient) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=CM_ENUM_DQ_TYPE, values=DQ_TYPE_LIST)
     yield enum_def
-    client.purge_typedef(enum_def.name)
+    client.purge_typedef(CM_ENUM_DQ_TYPE, EnumDef)
 
 
 def test_cm_enum(cm_enum: EnumDef):
@@ -299,7 +299,7 @@ def cm_dq(
         locked=False,
     )
     yield cm
-    client.purge_typedef(cm.name)
+    client.purge_typedef(CM_QUALITY, CustomMetadataDef)
 
 
 def test_cm_dq(cm_dq: CustomMetadataDef):
