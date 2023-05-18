@@ -1,28 +1,30 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import logging
 import time
-from typing import List, Generator, Optional
+from typing import Generator, List, Optional
 
 import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
-    Table,
-    AtlasGlossaryTerm,
     AtlasGlossary,
+    AtlasGlossaryTerm,
+    Badge,
+    BadgeCondition,
+    Table,
 )
 from pyatlan.model.core import CustomMetadata, to_snake_case
-from pyatlan.model.enums import AtlanCustomAttributePrimitiveType, AtlanTypeCategory
-from pyatlan.model.search import Term, DSL, Bool, IndexSearchRequest, Exists
-from pyatlan.model.typedef import (
-    AttributeDef,
-    CustomMetadataDef,
-    EnumDef,
+from pyatlan.model.enums import (
+    AtlanCustomAttributePrimitiveType,
+    AtlanTypeCategory,
+    BadgeComparisonOperator,
+    BadgeConditionColor,
 )
-
-import logging
-
+from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
+from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.client import delete_asset
 from tests.integration.glossary_test import create_glossary, create_term
 
@@ -134,7 +136,7 @@ def cm_ipr(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
         client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=False
     )
     yield cm
-    client.purge_typedef(internal_name=cm.name)
+    client.purge_typedef(CM_IPR, CustomMetadataDef)
 
 
 def test_cm_ipr(cm_ipr: CustomMetadataDef):
@@ -210,7 +212,7 @@ def cm_raci(client: AtlanClient) -> Generator[CustomMetadataDef, None, None]:
         client, name=CM_RACI, attribute_defs=attribute_defs, logo="👪", locked=False
     )
     yield cm
-    client.purge_typedef(cm.name)
+    client.purge_typedef(CM_RACI, CustomMetadataDef)
 
 
 def test_cm_raci(cm_raci: CustomMetadataDef):
@@ -260,7 +262,7 @@ def test_cm_raci(cm_raci: CustomMetadataDef):
 def cm_enum(client: AtlanClient) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=CM_ENUM_DQ_TYPE, values=DQ_TYPE_LIST)
     yield enum_def
-    client.purge_typedef(enum_def.name)
+    client.purge_typedef(CM_ENUM_DQ_TYPE, EnumDef)
 
 
 def test_cm_enum(cm_enum: EnumDef):
@@ -295,11 +297,12 @@ def cm_dq(
         client,
         name=CM_QUALITY,
         attribute_defs=attribute_defs,
-        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
+        logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/"
+        "gx-mark-160.png",
         locked=False,
     )
     yield cm
-    client.purge_typedef(cm.name)
+    client.purge_typedef(CM_QUALITY, CustomMetadataDef)
 
 
 def test_cm_dq(cm_dq: CustomMetadataDef):
@@ -520,7 +523,6 @@ def test_search_by_specific_accountable(
         anchor = t.attributes.anchor
         assert anchor
         assert anchor.name == glossary.name
-        return t
 
 
 @pytest.mark.order(
@@ -726,9 +728,9 @@ def test_update_replacing_cm(
 # TODO: test entity audit retrieval and parsing, once available
 
 
-def test_get_custom_metadata_when_name_is_invalid_then_raises_value_error():
+def test_get_custom_metadata_when_name_is_invalid_then_raises_not_found_error():
     with pytest.raises(
-        ValueError, match="No custom metadata with the name: Bogs exist"
+        NotFoundError, match="Custom metadata with name Bogs does not exist"
     ):
         CustomMetadataCache.get_custom_metadata(name="Bogs", asset_type=Table)
 
@@ -776,13 +778,13 @@ def _validate_raci_empty(raci_attrs: CustomMetadata):
 
 def _validate_ipr_attributes(cma: CustomMetadata, mandatory: bool = True):
     assert cma
-    l = getattr(cma, CM_ATTR_IPR_LICENSE_RENAMED)
+    license = getattr(cma, CM_ATTR_IPR_LICENSE_RENAMED)
     v = getattr(cma, CM_ATTR_IPR_VERSION_RENAMED)
     m = getattr(cma, CM_ATTR_IPR_MANDATORY_RENAMED)
     d = getattr(cma, CM_ATTR_IPR_DATE_RENAMED)
     u = getattr(cma, CM_ATTR_IPR_URL_RENAMED)
-    assert l
-    assert l == "CC BY"
+    assert license
+    assert license == "CC BY"
     assert v
     assert v == 2.0
     if mandatory:
@@ -887,3 +889,36 @@ def _validate_raci_structure(
     if total_expected > 4:
         return attributes[total_expected - 1]
     return None
+
+
+def test_add_badge_cm_dq(
+    client: AtlanClient,
+    cm_dq: CustomMetadataDef,
+):
+    badge = Badge.create(
+        name=CM_ATTR_QUALITY_COUNT,
+        cm_name=CM_QUALITY,
+        cm_attribute=CM_ATTR_QUALITY_COUNT_RENAMED,
+        badge_conditions=[
+            BadgeCondition.create(
+                badge_condition_operator=BadgeComparisonOperator.GTE,
+                badge_condition_value="5",
+                badge_condition_colorhex=BadgeConditionColor.GREEN,
+            ),
+            BadgeCondition.create(
+                badge_condition_operator=BadgeComparisonOperator.LT,
+                badge_condition_value="5",
+                badge_condition_colorhex=BadgeConditionColor.YELLOW,
+            ),
+            BadgeCondition.create(
+                badge_condition_operator=BadgeComparisonOperator.LTE,
+                badge_condition_value="2",
+                badge_condition_colorhex=BadgeConditionColor.RED,
+            ),
+        ],
+    )
+    badge.user_description = "How many data quality checks ran against this asset."
+    response = client.upsert(badge)
+    assert (badges := response.assets_created(asset_type=Badge))
+    assert len(badges) == 1
+    client.purge_entity_by_guid(badges[0].guid)

@@ -5,7 +5,7 @@ import enum
 import logging
 import time
 from functools import reduce
-from typing import Optional
+from typing import Any, Optional
 
 ADMIN_URI = "api/service/"
 BASE_URI = "api/meta/"
@@ -106,6 +106,16 @@ def type_coerce_dict_list(obj, obj_type):
         if isinstance(obj, dict)
         else None
     )
+
+
+def validate_required_fields(field_names: list[str], values: list[Any]):
+    for field_name, value in zip(field_names, values):
+        if value is None:
+            raise ValueError(f"{field_name} is required")
+        if isinstance(value, str) and not value.strip():
+            raise ValueError(f"{field_name} cannot be blank")
+        if isinstance(value, list) and len(value) == 0:
+            raise ValueError(f"{field_name} cannot be an empty list")
 
 
 class API:

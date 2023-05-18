@@ -1,3 +1,8 @@
+## 0.0.32 (May 18, 2023)
+
+* Add create method to Badge
+* Add integrations tests for CustomMetaData
+
 ## 0.0.31 (May 15, 2023)
 
 * Added the following classes to support lineage retrieval

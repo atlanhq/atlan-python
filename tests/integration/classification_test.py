@@ -34,7 +34,7 @@ def make_classification(
         logger=LOGGER,
     )
     def _wait_for_successful_purge(name: str):
-        client.purge_typedef(name)
+        client.purge_typedef(name, typedef_type=ClassificationDef)
 
     def _make_classification(name: str) -> ClassificationDef:
         classification_def = ClassificationDef.create(
@@ -42,7 +42,7 @@ def make_classification(
         )
         r = client.create_typedef(classification_def)
         c = r.classification_defs[0]
-        created_names.append(c.name)
+        created_names.append(c.display_name)
         return c
 
     yield _make_classification

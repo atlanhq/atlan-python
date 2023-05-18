@@ -13,6 +13,7 @@ from pydantic.error_wrappers import ValidationError
 
 import pyatlan.cache.classification_cache
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
     ADLSAccountStatus,
     ADLSEncryptionTypes,
@@ -24,6 +25,7 @@ from pyatlan.model.assets import (
     AtlasServer,
     AwsTag,
     AzureTag,
+    Badge,
     BadgeCondition,
     Catalog,
     ColumnValueFrequencyMap,
@@ -55,6 +57,8 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    BadgeComparisonOperator,
+    BadgeConditionColor,
     CertificateStatus,
     GoogleDatastudioAssetType,
     IconType,
@@ -68,8 +72,17 @@ from pyatlan.model.enums import (
     SourceCostUnitType,
 )
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.structs import KafkaTopicConsumption
+from pyatlan.model.structs import (
+    KafkaTopicConsumption,
+    MCRuleComparison,
+    MCRuleSchedule,
+    SourceTagAttribute,
+)
 from pyatlan.model.typedef import TypeDefResponse
+
+CM_ATTR_ID = "WQ6XGXwq9o7UnZlkWyKhQN"
+
+CM_ID = "scAesIb5UhKQdTwu4GuCSN"
 
 SCHEMA_QUALIFIED_NAME = "default/snowflake/1646836521/ATLAN_SAMPLE_DATA/FOOD_BEVERAGE"
 
@@ -83,6 +96,11 @@ MONTE_CARLO = "AFq4ctARP76ctapiTbuT92"
 
 MOON = "FAq4ctARP76ctapiTbuT92"
 
+BADGE_CONDITION = BadgeCondition.create(
+    badge_condition_operator=BadgeComparisonOperator.EQ,
+    badge_condition_value="1",
+    badge_condition_colorhex=BadgeConditionColor.RED,
+)
 DATA_DIR = Path(__file__).parent / "data"
 GLOSSARY_JSON = "glossary.json"
 GLOSSARY_TERM_JSON = "glossary_term.json"
@@ -127,9 +145,12 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[PowerbiEndorsement]": PowerbiEndorsement.PROMOTED,
     "Optional[list[dict[str, str]]]": [{STRING_VALUE: STRING_VALUE}],
     "Optional[list[DbtMetricFilter]]": [DbtMetricFilter()],
+    "Optional[list[SourceTagAttribute]]": [SourceTagAttribute()],
     "Optional[Histogram]": Histogram(),
     "Optional[list[ColumnValueFrequencyMap]]": [ColumnValueFrequencyMap()],
     "Optional[KafkaTopicCompressionType]": KafkaTopicCompressionType.GZIP,
+    "Optional[MCRuleSchedule]": MCRuleSchedule(),
+    "Optional[list[MCRuleComparison]]": [MCRuleComparison()],
     "Optional[QuickSightFolderType]": QuickSightFolderType.SHARED,
     "Optional[QuickSightDatasetFieldType]": QuickSightDatasetFieldType.STRING,
     "Optional[QuickSightAnalysisStatus]": QuickSightAnalysisStatus.CREATION_FAILED,
@@ -1033,12 +1054,12 @@ def test_glossary_term_attributes_create_sets_name_anchor():
 
 
 @patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_get_business_attributes_when_name_not_valid_raises_value_error(
+def test_get_business_attributes_when_name_not_valid_raises_not_found_error(
     mock_client, table, type_def_response
 ):
     mock_client.return_value.get_typedefs.return_value = type_def_response
     with pytest.raises(
-        ValueError, match="No custom metadata with the name: Zoro exist"
+        NotFoundError, match="Custom metadata with name Zoro does not exist."
     ):
         table.get_custom_metadata("Zoro")
 
@@ -1655,3 +1676,178 @@ def test_process_attributes_create(
     assert process_id == process_id
     assert process.inputs == inputs
     assert process.outputs == outputs
+
+
+class Test_Badge_Attributes:
+    @pytest.mark.parametrize(
+        "name, cm_name, cm_attribute, badge_conditions, message",
+        [
+            (None, "Bob", "Dave", [BADGE_CONDITION], "name is required"),
+            ("Bob", None, "Dave", [BADGE_CONDITION], "cm_name is required"),
+            ("Bob", "", "Dave", [BADGE_CONDITION], "cm_name cannot be blank"),
+            ("Bob", "Dave", None, [BADGE_CONDITION], "cm_attribute is required"),
+            ("Bob", "Dave", "", [BADGE_CONDITION], "cm_attribute cannot be blank"),
+            ("Bob", "tom", "Dave", None, "badge_conditions is required"),
+            ("Bob", "tom", "Dave", [], "badge_conditions cannot be an empty list"),
+        ],
+    )
+    def test_create_when_required_parameters_are_missing_raises_value_error(
+        self, name, cm_name, cm_attribute, badge_conditions, message
+    ):
+        with pytest.raises(ValueError, match=message):
+            Badge.Attributes.create(
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            )
+
+    def test_create(self, monkeypatch):
+        def get_attr_id_for_name(set_name: str, attr_name: str):
+            return CM_ATTR_ID
+
+        def get_id_for_name(value):
+            return CM_ID
+
+        monkeypatch.setattr(
+            pyatlan.cache.custom_metadata_cache.CustomMetadataCache,
+            "get_id_for_name",
+            get_id_for_name,
+        )
+
+        monkeypatch.setattr(
+            pyatlan.cache.custom_metadata_cache.CustomMetadataCache,
+            "get_attr_id_for_name",
+            get_attr_id_for_name,
+        )
+
+        badge = Badge.Attributes.create(
+            name="bob",
+            cm_name="Monte Carlo",
+            cm_attribute="dummy",
+            badge_conditions=[BADGE_CONDITION],
+        )
+        assert badge.name == "bob"
+        assert badge.qualified_name == f"badges/global/{CM_ID}.{CM_ATTR_ID}"
+        assert badge.badge_metadata_attribute == f"{CM_ID}.{CM_ATTR_ID}"
+        assert badge.badge_conditions == [BADGE_CONDITION]
+
+
+class Test_Badge:
+    @pytest.mark.parametrize(
+        "name, cm_name, cm_attribute, badge_conditions, message",
+        [
+            (None, "Bob", "Dave", [BADGE_CONDITION], "name is required"),
+            ("Bob", None, "Dave", [BADGE_CONDITION], "cm_name is required"),
+            ("Bob", "", "Dave", [BADGE_CONDITION], "cm_name cannot be blank"),
+            ("Bob", "Dave", None, [BADGE_CONDITION], "cm_attribute is required"),
+            ("Bob", "Dave", "", [BADGE_CONDITION], "cm_attribute cannot be blank"),
+            ("Bob", "tom", "Dave", None, "badge_conditions is required"),
+            ("Bob", "tom", "Dave", [], "badge_conditions cannot be an empty list"),
+        ],
+    )
+    def test_create_when_required_parameters_are_missing_raises_value_error(
+        self, name, cm_name, cm_attribute, badge_conditions, message
+    ):
+        with pytest.raises(ValueError, match=message):
+            Badge.create(
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            )
+
+    def test_create(self, monkeypatch):
+        def get_attr_id_for_name(set_name: str, attr_name: str):
+            return CM_ATTR_ID
+
+        def get_id_for_name(value):
+            return CM_ID
+
+        monkeypatch.setattr(
+            pyatlan.cache.custom_metadata_cache.CustomMetadataCache,
+            "get_id_for_name",
+            get_id_for_name,
+        )
+
+        monkeypatch.setattr(
+            pyatlan.cache.custom_metadata_cache.CustomMetadataCache,
+            "get_attr_id_for_name",
+            get_attr_id_for_name,
+        )
+
+        badge = Badge.create(
+            name="bob",
+            cm_name="Monte Carlo",
+            cm_attribute="dummy",
+            badge_conditions=[BADGE_CONDITION],
+        )
+        assert badge.name == "bob"
+        assert badge.qualified_name == f"badges/global/{CM_ID}.{CM_ATTR_ID}"
+        assert badge.badge_metadata_attribute == f"{CM_ID}.{CM_ATTR_ID}"
+        assert badge.badge_conditions == [BADGE_CONDITION]
+
+
+class Test_BadgeCondition:
+    @pytest.mark.parametrize(
+        "condition_operator, condition_value, condition_colorhex, message",
+        [
+            (
+                None,
+                "1",
+                BadgeConditionColor.RED,
+                "badge_condition_operator is required",
+            ),
+            (
+                BadgeComparisonOperator.EQ,
+                None,
+                BadgeConditionColor.RED,
+                "badge_condition_value is required",
+            ),
+            (
+                BadgeComparisonOperator.EQ,
+                "1",
+                None,
+                "badge_condition_colorhex is required",
+            ),
+        ],
+    )
+    def test_create_when_required_parameter_is_missing_then_raises_value_error(
+        self, condition_operator, condition_value, condition_colorhex, message
+    ):
+        with pytest.raises(ValueError, match=message):
+            BadgeCondition.create(
+                badge_condition_operator=condition_operator,
+                badge_condition_value=condition_value,
+                badge_condition_colorhex=condition_colorhex,
+            )
+
+    def test_create_with_badge_condition_color(self):
+        condition_operator = BadgeComparisonOperator.EQ
+        condition_value = "1"
+        condition_colorhex = BadgeConditionColor.RED
+
+        sut = BadgeCondition.create(
+            badge_condition_operator=condition_operator,
+            badge_condition_value=condition_value,
+            badge_condition_colorhex=condition_colorhex,
+        )
+
+        assert sut.badge_condition_operator == condition_operator.value
+        assert sut.badge_condition_value == condition_value
+        assert sut.badge_condition_colorhex == condition_colorhex.value
+
+    def test_create_with_badge_condition_color_as_str(self):
+        condition_operator = BadgeComparisonOperator.EQ
+        condition_value = "1"
+        condition_colorhex = "#BF1B1B"
+
+        sut = BadgeCondition.create(
+            badge_condition_operator=condition_operator,
+            badge_condition_value=condition_value,
+            badge_condition_colorhex=condition_colorhex,
+        )
+
+        assert sut.badge_condition_operator == condition_operator.value
+        assert sut.badge_condition_value == condition_value
+        assert sut.badge_condition_colorhex == condition_colorhex

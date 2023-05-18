@@ -32,9 +32,13 @@ from pyatlan.client.constants import (
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_LINEAGE,
     GET_ROLES,
+    GET_GROUPS,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
     UPDATE_ENTITY_BY_ATTRIBUTE,
+    CREATE_GROUP,
+    DELETE_GROUP,
+    UPDATE_GROUP,
 )
 from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
@@ -68,6 +72,12 @@ from pyatlan.model.enums import (
     AtlanDeleteType,
     AtlanTypeCategory,
     CertificateStatus,
+)
+from pyatlan.model.group import (
+    GroupResponse,
+    AtlanGroup,
+    CreateGroupResponse,
+    CreateGroupRequest,
 )
 from pyatlan.model.lineage import LineageRequest, LineageResponse
 from pyatlan.model.response import AssetMutationResponse
@@ -123,7 +133,7 @@ def get_session():
     return session
 
 
-def _build_typdef_request(typedef: TypeDef) -> TypeDefResponse:
+def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
     if isinstance(typedef, ClassificationDef):
         # Set up the request payload...
         payload = TypeDefResponse(
@@ -263,6 +273,8 @@ class AtlanClient(BaseSettings):
             try:
                 if (
                     response.content is None
+                    or response.content == "null"
+                    or len(response.content) == 0
                     or response.status_code == HTTPStatus.NO_CONTENT
                 ):
                     return None
@@ -353,6 +365,88 @@ class AtlanClient(BaseSettings):
         """
         raw_json = self._call_api(GET_ROLES.format_path_with_params())
         return RoleResponse(**raw_json)
+
+    def create_group(
+        self,
+        group: AtlanGroup,
+        user_ids: Optional[list[str]] = None,
+    ) -> CreateGroupResponse:
+        payload = CreateGroupRequest(group=group, user_ids=user_ids)
+        raw_json = self._call_api(CREATE_GROUP, request_obj=payload, exclude_unset=True)
+        return CreateGroupResponse(**raw_json)
+
+    def update_group(
+        self,
+        group: AtlanGroup,
+    ) -> None:
+        self._call_api(
+            UPDATE_GROUP.format_path_with_params(group.id),
+            request_obj=group,
+            exclude_unset=True,
+        )
+
+    def purge_group(
+        self,
+        guid: str,
+    ) -> None:
+        self._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
+
+    def get_groups(
+        self,
+        limit: Optional[int] = None,
+        post_filter: Optional[str] = None,
+        sort: Optional[str] = None,
+        count: bool = True,
+        offset: int = 0,
+    ) -> GroupResponse:
+        query_params: dict[str, str] = {
+            "count": str(count),
+            "offset": str(offset),
+        }
+        if limit is not None:
+            query_params["limit"] = str(limit)
+        if post_filter is not None:
+            query_params["filter"] = post_filter
+        if sort is not None:
+            query_params["sort"] = sort
+        raw_json = self._call_api(GET_GROUPS.format_path_with_params(), query_params)
+        return GroupResponse(**raw_json)
+
+    def get_all_groups(self) -> list[AtlanGroup]:
+        """
+        Retrieve all groups defined in Atlan.
+        """
+        groups: list[AtlanGroup] = []
+        offset = 0
+        limit = 100
+        response: Optional[GroupResponse] = self.get_groups(
+            offset=offset, limit=limit, sort="createdAt"
+        )
+        while response:
+            if page := response.records:
+                groups.extend(page)
+                offset += limit
+                response = self.get_groups(offset=offset, limit=limit, sort="createdAt")
+            else:
+                response = None
+        return groups
+
+    def get_group_by_name(
+        self, alias: str, limit: int = 100
+    ) -> Optional[list[AtlanGroup]]:
+        """
+        Retrieve all groups with a name that contains the provided string.
+        (This could include a complete group name, in which case there should be at most
+        a single item in the returned list, or could be a partial group name to retrieve
+        all groups with that naming convention.)
+        """
+        if response := self.get_groups(
+            offset=0,
+            limit=limit,
+            post_filter='{"$and":[{"alias":{"$ilike":"%' + alias + '%"}}]}',
+        ):
+            return response.records
+        return None
 
     @validate_arguments()
     def get_asset_by_qualified_name(
@@ -549,7 +643,7 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        payload = _build_typdef_request(typedef)
+        payload = _build_typedef_request(typedef)
         raw_json = self._call_api(
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
@@ -557,24 +651,51 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def update_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        payload = _build_typdef_request(typedef)
+        payload = _build_typedef_request(typedef)
         raw_json = self._call_api(
             UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
         _refresh_caches(typedef)
         return TypeDefResponse(**raw_json)
 
-    def purge_typedef(self, internal_name: str) -> None:
-        self._call_api(DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name))
-        # TODO: if we know which kind of typedef is being purged, we only need
-        #  to refresh that particular cache
-        from pyatlan.cache.classification_cache import ClassificationCache
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-        from pyatlan.cache.enum_cache import EnumCache
+    def purge_typedef(self, name: str, typedef_type: type) -> None:
+        if typedef_type == CustomMetadataDef:
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
-        ClassificationCache.refresh_cache()
-        CustomMetadataCache.refresh_cache()
-        EnumCache.refresh_cache()
+            internal_name = CustomMetadataCache.get_id_for_name(name)
+        elif typedef_type == EnumDef:
+            internal_name = name
+        elif typedef_type == ClassificationDef:
+            from pyatlan.cache.classification_cache import ClassificationCache
+
+            internal_name = str(ClassificationCache.get_id_for_name(name))
+        else:
+            raise InvalidRequestException(
+                message=f"Unable to purge type definitions of type: {typedef_type}",
+            )
+            # Throw an invalid request exception
+        if internal_name:
+            self._call_api(
+                DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
+            )
+        else:
+            raise NotFoundError(
+                message=f"Unable to find {typedef_type} with name: {name}",
+                code="ATLAN-PYTHON-404-000",
+            )
+
+        if typedef_type == CustomMetadataDef:
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            CustomMetadataCache.refresh_cache()
+        elif typedef_type == EnumDef:
+            from pyatlan.cache.enum_cache import EnumCache
+
+            EnumCache.refresh_cache()
+        elif typedef_type == ClassificationDef:
+            from pyatlan.cache.classification_cache import ClassificationCache
+
+            ClassificationCache.refresh_cache()
 
     @validate_arguments()
     def add_classifications(

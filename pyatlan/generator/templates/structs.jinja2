@@ -1,19 +1,48 @@
-# SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import Field
 
+from pyatlan.utils import validate_required_fields
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import SourceCostUnitType
+from pyatlan.model.enums import (
+    BadgeConditionColor,
+    BadgeComparisonOperator,
+    SourceCostUnitType,
+    )
 
 {% for struct in struct_defs %}
 class {{struct.name}}(AtlanObject):
     """Description"""
-    class Attributes(AtlanObject):
-        {%- for attribute_def in struct.attribute_defs %}
-        {%- set type = attribute_def.type_name | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
-        {%- endfor %}
+    {%- if struct.name == "BadgeCondition" %}
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        badge_condition_operator: BadgeComparisonOperator,
+        badge_condition_value: str,
+        badge_condition_colorhex: Union[BadgeConditionColor, str]
+    ) -> "BadgeCondition":
+        validate_required_fields(
+            [
+                "badge_condition_operator",
+                "badge_condition_value",
+                "badge_condition_colorhex",
+            ],
+            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
+        )
+        return cls(
+            badge_condition_operator=badge_condition_operator.value,
+            badge_condition_value=badge_condition_value,
+            badge_condition_colorhex=badge_condition_colorhex.value
+            if isinstance(badge_condition_colorhex, BadgeConditionColor)
+            else badge_condition_colorhex,
+        )
+    {% endif %}
+    {%- for attribute_def in struct.attribute_defs %}
+    {%- set type = attribute_def.type_name | get_type %}
+    {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
+    {%- endfor %}
 {% endfor %}

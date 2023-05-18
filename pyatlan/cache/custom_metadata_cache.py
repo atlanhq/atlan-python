@@ -4,7 +4,7 @@ import json
 from typing import Any, Optional
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import LogicError, NotFoundError
+from pyatlan.error import InvalidRequestError, LogicError, NotFoundError
 from pyatlan.model.core import CustomMetadata
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
@@ -72,7 +72,7 @@ class CustomMetadataCache:
                         attr_id = str(attr.name)
                         attr_name = str(attr.display_name)
                         # Use a renamed attribute everywhere
-                        attr_renamed = to_snake_case(attr_name.replace(" ", ""))
+                        attr_renamed = to_snake_case(attr_name)
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_renamed
                         if attr.options and attr.options.is_archived:
                             cls.archived_attr_ids[attr_id] = attr_renamed
@@ -91,26 +91,48 @@ class CustomMetadataCache:
                         cls.types_by_asset[asset_type].add(attrib_type)
 
     @classmethod
-    def get_id_for_name(cls, name: str) -> Optional[str]:
+    def get_id_for_name(cls, name: str) -> str:
         """
         Translate the provided human-readable custom metadata set name to its Atlan-internal ID string.
         """
+        if name is None or not name.strip():
+            raise InvalidRequestError(
+                message="No name was provided when attempting to retrieve custom metadata.",
+                code="ATLAN-PYTHON-404-008",
+                param="",
+            )
         if cm_id := cls.map_name_to_id.get(name):
             return cm_id
         # If not found, refresh the cache and look again (could be stale)
         cls.refresh_cache()
-        return cls.map_name_to_id.get(name)
+        if cm_id := cls.map_name_to_id.get(name):
+            return cm_id
+        raise NotFoundError(
+            message=f"Custom metadata with name {name} does not exist.",
+            code="ATLAN-PYTHON-404-009",
+        )
 
     @classmethod
-    def get_name_for_id(cls, idstr: str) -> Optional[str]:
+    def get_name_for_id(cls, idstr: str) -> str:
         """
         Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.
         """
+        if idstr is None or not idstr.strip():
+            raise InvalidRequestError(
+                message="No ID was provided when attempting to retrieve custom metadata.",
+                code="ATLAN-PYTHON-404-008",
+                param="",
+            )
         if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
         # If not found, refresh the cache and look again (could be stale)
         cls.refresh_cache()
-        return cls.map_id_to_name.get(idstr)
+        if cm_name := cls.map_id_to_name.get(idstr):
+            return cm_name
+        raise NotFoundError(
+            message=f"Custom metadata with ID {idstr} does not exist.",
+            code="ATLAN-PYTHON-404-009",
+        )
 
     @classmethod
     def get_type_for_id(cls, idstr: str) -> Optional[type]:
@@ -152,23 +174,32 @@ class CustomMetadataCache:
         return m
 
     @classmethod
-    def get_attr_id_for_name(cls, set_name: str, attr_name: str) -> Optional[str]:
+    def get_attr_id_for_name(cls, set_name: str, attr_name: str) -> str:
         """
         Translate the provided human-readable custom metadata set and attribute names to the Atlan-internal ID string
         for the attribute.
         """
-        attr_id = None
-        if set_id := cls.get_id_for_name(set_name):
-            if sub_map := cls.map_attr_name_to_id.get(set_id):
-                attr_id = sub_map.get(attr_name)
+        set_id = cls.get_id_for_name(set_name)
+        if sub_map := cls.map_attr_name_to_id.get(set_id):
+            attr_id = sub_map.get(attr_name)
             if attr_id:
                 # If found, return straight away
                 return attr_id
-            # Otherwise, refresh the cache and look again (could be stale)
-            cls.refresh_cache()
-            if sub_map := cls.map_attr_name_to_id.get(set_id):
-                return sub_map.get(attr_name)
-        return None
+        # Otherwise, refresh the cache and look again (could be stale)
+        cls.refresh_cache()
+        if sub_map := cls.map_attr_name_to_id.get(set_id):
+            attr_id = sub_map.get(attr_name)
+            if attr_id:
+                # If found, return straight away
+                return attr_id
+            raise NotFoundError(
+                message=f"Custom metadata property with name {attr_name} does not exist in custom metadata {set_name}.",
+                code="ATLAN-PYTHON-404-009",
+            )
+        raise NotFoundError(
+            message=f"Custom metadata with ID {set_id} does not exist.",
+            code="ATLAN-PYTHON-404-009",
+        )
 
     @classmethod
     def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> Optional[str]:
@@ -177,8 +208,7 @@ class CustomMetadataCache:
         for the attribute.
         """
         if sub_map := cls.map_attr_id_to_name.get(set_id):
-            attr_name = sub_map.get(attr_id)
-            if attr_name:
+            if attr_name := sub_map.get(attr_id):
                 return attr_name
             cls.refresh_cache()
             if sub_map := cls.map_attr_id_to_name.get(set_id):

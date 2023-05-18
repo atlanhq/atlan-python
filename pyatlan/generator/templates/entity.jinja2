@@ -11,7 +11,13 @@ from typing import Any, ClassVar, Dict, List, Optional, TypeVar
 
 from pydantic import Field, StrictStr, root_validator, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, CustomMetadata, Classification, Meaning
+from pyatlan.model.core import (
+    Announcement,
+    AtlanObject,
+    CustomMetadata,
+    Classification,
+    Meaning,
+)
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSAccountStatus,
@@ -37,7 +43,7 @@ from pyatlan.model.enums import (
     QueryUsernameStrategy,
     SourceCostUnitType,
     GoogleDatastudioAssetType,
-    PowerbiEndorsement
+    PowerbiEndorsement,
 )
 from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.model.structs import (
@@ -50,10 +56,14 @@ from pyatlan.model.structs import (
     GoogleTag,
     Histogram,
     KafkaTopicConsumption,
+    MCRuleComparison,
+    MCRuleSchedule,
     PopularityInsights,
+    SourceTagAttribute,
 )
-from pyatlan.utils import next_id
+from pyatlan.utils import next_id, validate_required_fields
 from urllib.parse import quote, unquote
+
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
     indexes = [idx for idx, value in enumerate(values) if value is not None]
@@ -67,39 +77,8 @@ def validate_single_required_field(field_names: list[str], values: list[Any]):
             f"Only one of the following parameters are allowed: {', '.join(names)}"
         )
 
-def validate_required_fields(field_names: list[str], values: list[Any]):
-    for field_name, value in zip(field_names, values):
-        if value is None:
-            raise ValueError(f"{field_name} is required")
-        if isinstance(value, str) and not value.strip():
-            raise ValueError(f"{field_name} cannot be blank")
-        if isinstance(value, list) and len(value) == 0:
-            raise ValueError(f"{field_name} cannot be an empty list")
-{%- macro gen_properties(attribute_defs, additional_names=[]) %}
-    _convience_properties: ClassVar[list[str]] = [
-        {%- for attribute_def in attribute_defs %}
-        "{{ attribute_def.name | to_snake_case }}",
-        {%- endfor %}
-        {%- for name in additional_names  %}
-        "{{ name }}",
-         {%- endfor %}]
 
-    {%- for attribute_def in attribute_defs %}
-    {%- set type = attribute_def.typeName | get_type %}
-    {%- set property_type %}{% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %}{% endset %}
-    {%- set property_name =  attribute_def.name | to_snake_case %}
-    @property
-    def {{ property_name }}(self)->{{ property_type }}:
-        return self.attributes.{{ property_name }}
-
-    @{{ property_name }}.setter
-    def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.{{ property_name }} = {{ property_name }}
-
-    {%- endfor %}
-{% endmacro %}
+{% from 'macros.jinja2' import gen_properties %}
 SelfAsset = TypeVar("SelfAsset", bound="Asset")
 {% for entity_def in entity_defs %}
 {%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
@@ -361,7 +340,26 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             raise ValueError('must be {{ entity_def.name }}')
         return v
 
-    {%- if entity_def.name == "Readme" %}
+    {%- if entity_def.name == "Badge" %}
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: list[BadgeCondition],
+    ) -> Badge:
+        return cls(
+            attributes=Badge.Attributes.create(
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            )
+        )
+    {%- elif entity_def.name == "Readme" %}
     @classmethod
     # @validate_arguments()
     def create(
@@ -522,6 +520,33 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 connection_qualified_name=connection_qualified_name,
                 inputs=inputs,
                 outputs=outputs,
+            )
+        {%- elif entity_def.name == "Badge"  %}
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls,
+            *,
+            name: StrictStr,
+            cm_name: str,
+            cm_attribute: str,
+            badge_conditions: list[BadgeCondition],
+        ) -> Badge.Attributes:
+            validate_required_fields(
+                ["name", "cm_name", "cm_attribute", "badge_conditions"],
+                [name, cm_name, cm_attribute, badge_conditions],
+            )
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            cm_id = CustomMetadataCache.get_id_for_name(cm_name)
+            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
+                set_name=cm_name, attr_name=cm_attribute
+            )
+            return Badge.Attributes(
+                name=name,
+                qualified_name=f"badges/global/{cm_id}.{cm_attr_id}",
+                badge_metadata_attribute=f"{cm_id}.{cm_attr_id}",
+                badge_conditions=badge_conditions,
             )
         {%- elif entity_def.name == "Readme"  %}
         @classmethod

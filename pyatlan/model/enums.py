@@ -320,6 +320,22 @@ class LineageDirection(str, Enum):
     BOTH = "BOTH"
 
 
+class BadgeComparisonOperator(str, Enum):
+    GT = "gt"
+    GTE = "gte"
+    LT = "lt"
+    LTE = "lte"
+    EQ = "eq"
+    NEQ = "neq"
+
+
+class BadgeConditionColor(str, Enum):
+    GREEN = "#047960"
+    YELLOW = "#F7B43D"
+    RED = "#BF1B1B"
+    GREY = "#525C73"
+
+
 class AtlanClassificationColor(str, Enum):
     GREEN = "Green"
     YELLOW = "Yellow"
