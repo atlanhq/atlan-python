@@ -24,7 +24,6 @@ class Synonym:
 
 
 class CustomMetadataCache:
-
     cache_by_id: dict[str, CustomMetadataDef] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_id_to_type: dict[str, type] = dict()
@@ -66,25 +65,26 @@ class CustomMetadataCache:
                 applicable_types: set[str] = set()
                 if cm.attribute_defs:
                     for attr in cm.attribute_defs:
-                        if attr.options.custom_applicable_entity_types:
+                        if attr.options and attr.options.custom_applicable_entity_types:
                             applicable_types.update(
                                 json.loads(attr.options.custom_applicable_entity_types)
                             )
-                        attr_id = attr.name
-                        attr_name = attr.display_name
-                        cls.map_attr_id_to_name[type_id][attr_id] = attr_name
+                        attr_id = str(attr.name)
+                        attr_name = str(attr.display_name)
+                        # Use a renamed attribute everywhere
+                        attr_renamed = to_snake_case(attr_name.replace(" ", ""))
+                        cls.map_attr_id_to_name[type_id][attr_id] = attr_renamed
                         if attr.options and attr.options.is_archived:
-                            cls.archived_attr_ids[attr_id] = attr_name
-                        elif attr_name in cls.map_attr_name_to_id[type_id]:
+                            cls.archived_attr_ids[attr_id] = attr_renamed
+                        elif attr_renamed in cls.map_attr_name_to_id[type_id]:
                             raise LogicError(
-                                f"Multiple custom attributes with exactly the same name ({attr_name}) "
+                                f"Multiple custom attributes with exactly the same name ({attr_renamed}) "
                                 f"found for: {type_name}",
                                 code="ATLAN-PYTHON-500-100",
                             )
                         else:
-                            attr_name = to_snake_case(attr_name.replace(" ", ""))
-                            setattr(attrib_type, attr_name, Synonym(attr_id))
-                            cls.map_attr_name_to_id[type_id][attr_name] = attr_id
+                            setattr(attrib_type, attr_renamed, Synonym(attr_id))
+                            cls.map_attr_name_to_id[type_id][attr_renamed] = attr_id
                     for asset_type in applicable_types:
                         if asset_type not in cls.types_by_asset:
                             cls.types_by_asset[asset_type] = set()
@@ -260,3 +260,16 @@ class CustomMetadataCache:
                 else ba_type()
             )
         raise ValueError(f"Custom metadata {name} is not applicable to {type_name}")
+
+    @classmethod
+    def get_custom_metadata_def(cls, name: str) -> CustomMetadataDef:
+        """
+        Retrieve the full custom metadata structure definition.
+        """
+        ba_id = cls.get_id_for_name(name)
+        if ba_id is None:
+            raise ValueError(f"No custom metadata with the name: {name} exist")
+        if typedef := cls.cache_by_id.get(ba_id):
+            return typedef
+        else:
+            raise ValueError(f"No custom metadata with the name: {name} found")

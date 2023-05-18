@@ -42,7 +42,6 @@ class Attributes(str, Enum):
 
 
 class TermAttributes(Attributes):
-
     CONNECTOR_NAME = ("connectorName", AtlanConnectorType)
     CATEGORIES = ("__categories", StrictStr)
     CREATE_TIME_AS_TIMESTAMP = ("__timestamp", datetime)
@@ -174,6 +173,20 @@ class MatchNone(Query):
 class Exists(Query):
     field: str
     type_name: Literal["exists"] = "exists"
+
+    @classmethod
+    @validate_arguments()
+    def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr):
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        if attr_id := CustomMetadataCache.get_attr_id_for_name(
+            set_name=set_name, attr_name=attr_name
+        ):
+            return cls(field=attr_id)
+        else:
+            raise ValueError(
+                f"No custom metadata with the name {set_name} or property {attr_name} exists"
+            )
 
     @classmethod
     @validate_arguments()
@@ -323,6 +336,22 @@ class Term(Query):
     boost: Optional[float] = None
     case_insensitive: Optional[bool] = None
     type_name: Literal["term"] = "term"
+
+    @classmethod
+    @validate_arguments()
+    def with_custom_metadata(
+        cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType
+    ):
+        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+        if attr_id := CustomMetadataCache.get_attr_id_for_name(
+            set_name=set_name, attr_name=attr_name
+        ):
+            return cls(field=attr_id, value=value)
+        else:
+            raise ValueError(
+                f"No custom metadata with the name {set_name} or property {attr_name} exists"
+            )
 
     @classmethod
     @validate_arguments()

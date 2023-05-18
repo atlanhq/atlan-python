@@ -103,7 +103,6 @@ def test_convert_to_display_text_when_id(monkeypatch):
 
 
 def test_json_encode_classification(monkeypatch, good_classification):
-
     assert (
         ClassificationName.json_encode_classification(good_classification)
         == CLASSIFICATION_ID

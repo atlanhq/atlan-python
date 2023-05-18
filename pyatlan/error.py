@@ -66,7 +66,6 @@ class APIConnectionError(AtlanError):
         status_code: Optional[int] = None,
         should_retry: bool = False,
     ):
-
         super(APIConnectionError, self).__init__(message, code, status_code)
         self.should_retry = should_retry
 
