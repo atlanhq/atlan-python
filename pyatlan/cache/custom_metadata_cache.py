@@ -65,12 +65,12 @@ class CustomMetadataCache:
                 applicable_types: set[str] = set()
                 if cm.attribute_defs:
                     for attr in cm.attribute_defs:
-                        if attr.options.custom_applicable_entity_types:
+                        if attr.options and attr.options.custom_applicable_entity_types:
                             applicable_types.update(
                                 json.loads(attr.options.custom_applicable_entity_types)
                             )
-                        attr_id = attr.name
-                        attr_name = attr.display_name
+                        attr_id = str(attr.name)
+                        attr_name = str(attr.display_name)
                         # Use a renamed attribute everywhere
                         attr_renamed = to_snake_case(attr_name.replace(" ", ""))
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_renamed

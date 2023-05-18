@@ -163,16 +163,19 @@ def test_cm_ipr(cm_ipr: CustomMetadataDef):
     assert one.display_name == CM_ATTR_IPR_MANDATORY
     assert one.name != CM_ATTR_IPR_MANDATORY
     assert one.type_name == AtlanCustomAttributePrimitiveType.BOOLEAN.value
+    assert one.options
     assert not one.options.multi_value_select
     one = attributes[3]
     assert one.display_name == CM_ATTR_IPR_DATE
     assert one.name != CM_ATTR_IPR_DATE
     assert one.type_name == AtlanCustomAttributePrimitiveType.DATE.value
+    assert one.options
     assert not one.options.multi_value_select
     one = attributes[4]
     assert one.display_name == CM_ATTR_IPR_URL
     assert one.name != CM_ATTR_IPR_URL
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert one.options
     assert not one.options.multi_value_select
 
 
@@ -237,16 +240,19 @@ def test_cm_raci(cm_raci: CustomMetadataDef):
     assert one.display_name == CM_ATTR_RACI_CONSULTED
     assert one.name != CM_ATTR_RACI_CONSULTED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
+    assert one.options
     assert one.options.multi_value_select
     one = attributes[3]
     assert one.display_name == CM_ATTR_RACI_INFORMED
     assert one.name != CM_ATTR_RACI_INFORMED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
+    assert one.options
     assert one.options.multi_value_select
     one = attributes[4]
     assert one.display_name == CM_ATTR_RACI_EXTRA
     assert one.name != CM_ATTR_RACI_EXTRA
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert one.options
     assert not one.options.multi_value_select
 
 
@@ -324,6 +330,7 @@ def test_cm_dq(cm_dq: CustomMetadataDef):
     assert one.display_name == CM_ATTR_QUALITY_TYPE
     assert one.name != CM_ATTR_QUALITY_TYPE
     assert one.type_name == CM_ENUM_DQ_TYPE
+    assert one.options
     assert not one.options.multi_value_select
     assert one.options.primitive_type == AtlanCustomAttributePrimitiveType.OPTIONS.value
 
@@ -552,6 +559,7 @@ def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
         to_keep = existing_attr
         if existing_attr.display_name == CM_ATTR_RACI_EXTRA:
             to_keep = existing_attr.archive(by="test-automation")
+            assert to_keep.options
             _removal_epoch = to_keep.options.archived_at
         updated_attrs.append(to_keep)
     existing.attribute_defs = updated_attrs
@@ -832,6 +840,7 @@ def _validate_raci_structure(
     assert one.display_name == CM_ATTR_RACI_RESPONSIBLE
     assert one.name != CM_ATTR_RACI_RESPONSIBLE
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
+    assert one.options
     assert "Database" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert one.options.multi_value_select
@@ -840,6 +849,7 @@ def _validate_raci_structure(
     assert one.display_name == CM_ATTR_RACI_ACCOUNTABLE
     assert one.name != CM_ATTR_RACI_ACCOUNTABLE
     assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+    assert one.options
     assert "Table" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert not one.options.multi_value_select
@@ -848,6 +858,7 @@ def _validate_raci_structure(
     assert one.display_name == CM_ATTR_RACI_CONSULTED
     assert one.name != CM_ATTR_RACI_CONSULTED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
+    assert one.options
     assert "Column" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert one.options.multi_value_select
@@ -856,6 +867,7 @@ def _validate_raci_structure(
     assert one.display_name == CM_ATTR_RACI_INFORMED
     assert not one.name == CM_ATTR_RACI_INFORMED
     assert one.type_name == f"array<{AtlanCustomAttributePrimitiveType.STRING.value}>"
+    assert one.options
     assert "MaterialisedView" in str(one.options.custom_applicable_entity_types)
     assert not one.is_archived()
     assert one.options.multi_value_select
@@ -868,6 +880,7 @@ def _validate_raci_structure(
         )
         assert one.name != CM_ATTR_RACI_EXTRA
         assert one.type_name == AtlanCustomAttributePrimitiveType.STRING.value
+        assert one.options
         assert "AtlasGlossaryTerm" in str(one.options.custom_applicable_entity_types)
         assert not one.options.multi_value_select
         assert one.is_archived()

@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-import time
 from typing import Generator, Callable
 
 import pytest
@@ -8,7 +7,7 @@ import pytest
 from pyatlan.cache.classification_cache import ClassificationCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
-from pyatlan.model.enums import AtlanClassificationColor, AtlanTypeCategory
+from pyatlan.model.enums import AtlanClassificationColor
 from pyatlan.model.typedef import ClassificationDef
 
 from retry import retry

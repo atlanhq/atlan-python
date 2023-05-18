@@ -427,7 +427,7 @@ class AttributeDef(AtlanObject):
             base_type = attribute_type.value
         if multi_valued:
             attr_def.type_name = f"array<{str(base_type)}>"
-            attr_def.options.multi_value_select = True
+            attr_def.options.multi_value_select = True  # type: ignore
         else:
             attr_def.type_name = base_type
         if add_enum_values:
