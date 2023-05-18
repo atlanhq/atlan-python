@@ -193,6 +193,7 @@ class AtlanConnectionCategory(Enum):
     ELT = "elt"
     DATABASE = "database"
     API = "API"
+    EVENT_BUS = "eventbus"
 
 
 class AtlanConnectorType(str, Enum):
@@ -250,7 +251,44 @@ class AtlanConnectorType(str, Enum):
     GCS = ("gcs", AtlanConnectionCategory.OBJECT_STORE)
     HIVE = ("hive", AtlanConnectionCategory.WAREHOUSE)
     SAPHANA = ("sap-hana", AtlanConnectionCategory.WAREHOUSE)
-    EMPTY = ("empty", None)
+    ADLS = ("adls", AtlanConnectionCategory.OBJECT_STORE)
+    SIGMA = ("sigma", AtlanConnectionCategory.BI)
+    SYNAPSE = ("synapse", AtlanConnectionCategory.WAREHOUSE)
+    AIRFLOW = ("airflow", AtlanConnectionCategory.ELT)
+    OPENLINEAGE = ("openlineage", AtlanConnectionCategory.ELT)
+    DATAFLOW = ("dataflow", AtlanConnectionCategory.ELT)
+    QLIKSENSE = ("qlik-sense", AtlanConnectionCategory.BI)
+    KAFKA = ("kafka", AtlanConnectionCategory.EVENT_BUS)
+    QUICKSIGHT = ("quicksight", AtlanConnectionCategory.BI)
+    SAP_IQ = ("sap-iq", AtlanConnectionCategory.WAREHOUSE)
+    HEX = ("hex", AtlanConnectionCategory.ELT)
+    TERADATA = ("teradata", AtlanConnectionCategory.WAREHOUSE)
+    YUGABYTEDB = ("yugabytedb", AtlanConnectionCategory.DATABASE)
+    IBM_INFORMIX = ("ibm-informix", AtlanConnectionCategory.DATABASE)
+    SAP_SQL = ("sap-sql", AtlanConnectionCategory.DATABASE)
+    ORACLE_TIMESTEN = ("oracle-timesten", AtlanConnectionCategory.DATABASE)
+    PERCONA_SERVER = ("percona-server", AtlanConnectionCategory.DATABASE)
+    AURORA = ("aurora", AtlanConnectionCategory.DATABASE)
+    SAP_MAXDB = ("sap-maxdb", AtlanConnectionCategory.DATABASE)
+    SQLITE = ("sqlite", AtlanConnectionCategory.DATABASE)
+    ROCKSET = ("rockset", AtlanConnectionCategory.WAREHOUSE)
+    MONGODB = ("mongodb", AtlanConnectionCategory.DATABASE)
+    GREENPLUM = ("greenplum", AtlanConnectionCategory.WAREHOUSE)
+    MONETDB = ("monetdb", AtlanConnectionCategory.WAREHOUSE)
+    ALLOYDB = ("alloydb", AtlanConnectionCategory.DATABASE)
+    COCKROACHDB = ("cockroachdb", AtlanConnectionCategory.DATABASE)
+    AZURE_COSMOS_DB = ("azure-cosmos-db", AtlanConnectionCategory.DATABASE)
+    AZURE_ANALYSIS_SERVICES = (
+        "azure-analysis-services",
+        AtlanConnectionCategory.WAREHOUSE,
+    )
+    SINGLESTORE = ("singlestore", AtlanConnectionCategory.WAREHOUSE)
+    FIREBIRD = ("firebird", AtlanConnectionCategory.DATABASE)
+    THOUGHTSPOT = ("thoughtspot", AtlanConnectionCategory.BI)
+    CLICKHOUSE = ("clickhouse", AtlanConnectionCategory.WAREHOUSE)
+    MULESOFT = ("mulesoft", AtlanConnectionCategory.API)
+    CLARI = ("clari", AtlanConnectionCategory.SAAS)
+    MARKETO = ("marketo", AtlanConnectionCategory.SAAS)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
