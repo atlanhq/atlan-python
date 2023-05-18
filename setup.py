@@ -67,6 +67,8 @@ setup(
             "pre-commit>=2.20.0",
             "deepdiff>=6.2.1",
             "pytest-cov>=4.0.0",
+            "pytest-order==1.1.0",
+            "retry==0.9.2",
             "twine>=4.0.2",
         ]
     },

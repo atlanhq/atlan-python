@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import logging
 from typing import Type
 
 import pytest
@@ -7,12 +8,10 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.response import A
 
-import logging
-
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def client() -> AtlanClient:
     return AtlanClient()
 

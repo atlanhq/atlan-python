@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Generator, Callable
+import logging
+from typing import Callable, Generator
 
 import pytest
+from retry import retry
 
 from pyatlan.cache.classification_cache import ClassificationCache
 from pyatlan.client.atlan import AtlanClient
@@ -10,16 +12,13 @@ from pyatlan.error import AtlanError
 from pyatlan.model.enums import AtlanClassificationColor
 from pyatlan.model.typedef import ClassificationDef
 
-from retry import retry
-import logging
-
 LOGGER = logging.getLogger(__name__)
 
 
 CLS_NAME = "psdk-classification"
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def make_classification(
     client: AtlanClient,
 ) -> Generator[Callable[[str], ClassificationDef], None, None]:
