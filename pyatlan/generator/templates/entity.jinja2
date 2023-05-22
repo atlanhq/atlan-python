@@ -3,19 +3,20 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
-import sys
-from io import StringIO
 import hashlib
+import sys
 from datetime import datetime
+from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, TypeVar
+from urllib.parse import quote, unquote
 
 from pydantic import Field, StrictStr, root_validator, validator
 
 from pyatlan.model.core import (
     Announcement,
     AtlanObject,
-    CustomMetadata,
     Classification,
+    CustomMetadata,
     Meaning,
 )
 from pyatlan.model.enums import (
@@ -34,16 +35,16 @@ from pyatlan.model.enums import (
     AtlanConnectorType,
     CertificateStatus,
     EntityStatus,
+    GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
-    QuickSightFolderType,
-    QuickSightDatasetFieldType,
-    QuickSightAnalysisStatus,
-    QuickSightDatasetImportMode,
-    QueryUsernameStrategy,
-    SourceCostUnitType,
-    GoogleDatastudioAssetType,
     PowerbiEndorsement,
+    QueryUsernameStrategy,
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
+    SourceCostUnitType,
 )
 from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.model.structs import (
@@ -62,7 +63,7 @@ from pyatlan.model.structs import (
     SourceTagAttribute,
 )
 from pyatlan.utils import next_id, validate_required_fields
-from urllib.parse import quote, unquote
+
 
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
@@ -94,19 +95,23 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 return object.__setattr__(self, name, value)
             super().__setattr__( name, value)
 
-    {{ gen_properties(entity_def.attribute_defs, ["terms"]) }}
+{% if entity_def.name == "Referenceable" %}
+    {{ gen_properties(entity_def.attribute_defs, ["assigned_terms"]) }}
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
+    def assigned_terms(self) -> list[AtlasGlossaryTerm]:
         if self.attributes is None:
             self.attributes = self.Attributes()
         return [] if self.attributes.meanings is None else self.attributes.meanings
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @assigned_terms.setter
+    def assigned_terms(self, assigned_terms: list[AtlasGlossaryTerm]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.meanings = assigned_terms
+{% else %}
+    {{ gen_properties(entity_def.attribute_defs) }}
+{% endif %}
 
 {%- if entity_def.name == "Referenceable"  %}
 
@@ -209,7 +214,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         description="Status of the relationship (when this is a related entity).\n",
     )
     meaning_names: Optional[list[str]] = Field(
-        None, description="Names of terms that have been linked to this asset."
+        None, description="Names of assigned_terms that have been linked to this asset."
     )
     meanings: Optional[list[Meaning]] = Field(
         None, description="", alias="meanings"

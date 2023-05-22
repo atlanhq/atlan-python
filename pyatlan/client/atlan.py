@@ -22,23 +22,23 @@ from urllib3.util.retry import Retry
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     BULK_UPDATE,
+    CREATE_GROUP,
     CREATE_TYPE_DEFS,
-    UPDATE_TYPE_DEFS,
     DELETE_ENTITY_BY_ATTRIBUTE,
     DELETE_ENTITY_BY_GUID,
+    DELETE_GROUP,
     DELETE_TYPE_DEF_BY_NAME,
     GET_ALL_TYPE_DEFS,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
+    GET_GROUPS,
     GET_LINEAGE,
     GET_ROLES,
-    GET_GROUPS,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
     UPDATE_ENTITY_BY_ATTRIBUTE,
-    CREATE_GROUP,
-    DELETE_GROUP,
     UPDATE_GROUP,
+    UPDATE_TYPE_DEFS,
 )
 from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
@@ -74,10 +74,10 @@ from pyatlan.model.enums import (
     CertificateStatus,
 )
 from pyatlan.model.group import (
-    GroupResponse,
     AtlanGroup,
-    CreateGroupResponse,
     CreateGroupRequest,
+    CreateGroupResponse,
+    GroupResponse,
 )
 from pyatlan.model.lineage import LineageRequest, LineageResponse
 from pyatlan.model.response import AssetMutationResponse
@@ -889,12 +889,12 @@ class AtlanClient(BaseSettings):
         if not terms:
             return asset
         replacement_terms: list[AtlasGlossaryTerm] = []
-        if existing_terms := asset.terms:
+        if existing_terms := asset.assigned_terms:
             replacement_terms.extend(
                 term for term in existing_terms if term.relationship_status != "DELETED"
             )
         replacement_terms.extend(terms)
-        asset.terms = replacement_terms
+        asset.assigned_terms = replacement_terms
         response = self.upsert(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
@@ -920,7 +920,7 @@ class AtlanClient(BaseSettings):
             )
         else:
             raise ValueError("Either guid or qualified name must be specified")
-        asset.terms = terms
+        asset.assigned_terms = terms
         response = self.upsert(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
@@ -935,7 +935,7 @@ class AtlanClient(BaseSettings):
         qualified_name: Optional[str] = None,
     ) -> A:
         if not terms:
-            raise ValueError("A list of terms to remove must be specified")
+            raise ValueError("A list of assigned_terms to remove must be specified")
         if guid:
             if qualified_name:
                 raise ValueError(
@@ -950,14 +950,14 @@ class AtlanClient(BaseSettings):
             raise ValueError("Either guid or qualified name must be specified")
         replacement_terms: list[AtlasGlossaryTerm] = []
         guids_to_be_removed = {t.guid for t in terms}
-        if existing_terms := asset.terms:
+        if existing_terms := asset.assigned_terms:
             replacement_terms.extend(
                 term
                 for term in existing_terms
                 if term.relationship_status != "DELETED"
                 and term.guid not in guids_to_be_removed
             )
-        asset.terms = replacement_terms
+        asset.assigned_terms = replacement_terms
         response = self.upsert(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]

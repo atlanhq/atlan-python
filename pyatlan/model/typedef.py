@@ -252,7 +252,7 @@ class AttributeDef(AtlanObject):
         multi_value_select: bool = Field(
             description="Whether this attribute can have multiple values (true) or only a single value (false).",
         )
-        show_in_overview: bool = Field(
+        show_in_overview: Optional[bool] = Field(
             description="Whether users will see this attribute in the overview tab of the sidebar (true) or not "
             "(false).",
         )

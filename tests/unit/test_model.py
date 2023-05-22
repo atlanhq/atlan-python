@@ -1343,7 +1343,7 @@ def test_attributes(clazz, property_name, attribute_value):
     )
     assert attribute_value == local_ns["ret_value"]
     exec(
-        f"ret_value = sut.attributes.{property_name if property_name != 'terms' else 'meanings'}",
+        f"ret_value = sut.attributes.{property_name if property_name != 'assigned_terms' else 'meanings'}",
         {"sut": sut, "property_name": property_name},
         local_ns,
     )
