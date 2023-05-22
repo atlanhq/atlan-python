@@ -139,10 +139,21 @@ class Generator:
         if len(entity_def.super_types) > 1:
             entity_def.attribute_defs = self.merge_attributes(entity_def)
         names = {attribute_def["name"] for attribute_def in entity_def.attribute_defs}
+        super_type_relationship_defs = (
+            []
+            if not entity_def.super_types
+            else [
+                s["name"]
+                for s in self.entity_defs[
+                    entity_def.super_types[0]
+                ].relationship_attribute_defs
+            ]
+        )
         entity_def.relationship_attribute_defs = [
             relationship_def
             for relationship_def in entity_def.relationship_attribute_defs
             if relationship_def["name"] not in names
+            and relationship_def["name"] not in super_type_relationship_defs
         ]
         for parent in entity_def.super_types:
             if parent not in self.processed:

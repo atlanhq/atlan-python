@@ -2047,9 +2047,6 @@ class Asset(Referenceable):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
         def remove_description(self):
             self.description = None
@@ -2202,26 +2199,11 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="categories"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -2275,21 +2257,6 @@ class DataSet(Asset, type_name="DataSet"):
         return v
 
     class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -2320,21 +2287,6 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
         return v
 
     class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -2456,9 +2408,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="replacedBy"
         )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="validValues"
         )  # relationship
@@ -2470,9 +2419,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )  # relationship
         see_also: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="seeAlso"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="translatedTerms"
@@ -2489,20 +2435,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         assigned_entities: Optional[list[Referenceable]] = Field(
             None, description="", alias="assignedEntities"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         classifies: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="classifies"
         )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="categories"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="preferredToTerms"
@@ -2617,21 +2554,6 @@ class Cloud(Asset, type_name="Cloud"):
         return v
 
     class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -2662,21 +2584,6 @@ class Infrastructure(Asset, type_name="Infrastructure"):
         return v
 
     class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -3012,21 +2919,6 @@ class Connection(Asset, type_name="Connection"):
         connection_s_s_o_credential_guid: Optional[str] = Field(
             None, description="", alias="connectionSSOCredentialGuid"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -3191,21 +3083,6 @@ class Process(Asset, type_name="Process"):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
         )  # relationship
@@ -3367,9 +3244,6 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
@@ -3379,20 +3253,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         parent_category: Optional[AtlasGlossaryCategory] = Field(
             None, description="", alias="parentCategory"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         children_categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="childrenCategories"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -3515,21 +3377,6 @@ class Badge(Asset, type_name="Badge"):
         badge_metadata_attribute: Optional[str] = Field(
             None, description="", alias="badgeMetadataAttribute"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -3587,26 +3434,11 @@ class Namespace(Asset, type_name="Namespace"):
         return v
 
     class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         children_folders: Optional[list[Folder]] = Field(
             None, description="", alias="childrenFolders"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -3640,21 +3472,6 @@ class Catalog(Asset, type_name="Catalog"):
     class Attributes(Asset.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -3817,9 +3634,6 @@ class Google(Cloud):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "Google.Attributes" = Field(
         None,
@@ -3922,9 +3736,6 @@ class Azure(Cloud):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
     attributes: "Azure.Attributes" = Field(
@@ -4083,9 +3894,6 @@ class AWS(Cloud):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "AWS.Attributes" = Field(
         None,
@@ -4133,12 +3941,6 @@ class BIProcess(Process):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        column_processes: Optional[list[ColumnProcess]] = Field(
-            None, description="", alias="columnProcesses"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
     attributes: "BIProcess.Attributes" = Field(
@@ -4190,12 +3992,6 @@ class ColumnProcess(Process):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        column_processes: Optional[list[ColumnProcess]] = Field(
-            None, description="", alias="columnProcesses"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
     attributes: "ColumnProcess.Attributes" = Field(
@@ -4252,9 +4048,6 @@ class Collection(Namespace):
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
-        children_queries: Optional[list[Query]] = Field(
-            None, description="", alias="childrenQueries"
-        )  # relationship
         mc_incidents: Optional[list[MCIncident]] = Field(
             None, description="", alias="mcIncidents"
         )  # relationship
@@ -4266,12 +4059,6 @@ class Collection(Namespace):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        children_folders: Optional[list[Folder]] = Field(
-            None, description="", alias="childrenFolders"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
     attributes: "Collection.Attributes" = Field(
@@ -4333,9 +4120,6 @@ class Folder(Namespace):
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
-        children_queries: Optional[list[Query]] = Field(
-            None, description="", alias="childrenQueries"
-        )  # relationship
         mc_incidents: Optional[list[MCIncident]] = Field(
             None, description="", alias="mcIncidents"
         )  # relationship
@@ -4347,12 +4131,6 @@ class Folder(Namespace):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        children_folders: Optional[list[Folder]] = Field(
-            None, description="", alias="childrenFolders"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
     attributes: "Folder.Attributes" = Field(
@@ -4381,9 +4159,6 @@ class EventStore(Catalog):
         return v
 
     class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -4398,12 +4173,6 @@ class EventStore(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "EventStore.Attributes" = Field(
@@ -4432,9 +4201,6 @@ class ObjectStore(Catalog):
         return v
 
     class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -4449,12 +4215,6 @@ class ObjectStore(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ObjectStore.Attributes" = Field(
@@ -4483,9 +4243,6 @@ class DataQuality(Catalog):
         return v
 
     class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -4500,12 +4257,6 @@ class DataQuality(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "DataQuality.Attributes" = Field(
@@ -4534,9 +4285,6 @@ class BI(Catalog):
         return v
 
     class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -4551,12 +4299,6 @@ class BI(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "BI.Attributes" = Field(
@@ -4585,9 +4327,6 @@ class SaaS(Catalog):
         return v
 
     class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -4602,12 +4341,6 @@ class SaaS(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SaaS.Attributes" = Field(
@@ -4883,9 +4616,6 @@ class Dbt(Catalog):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             None, description="", alias="dbtSemanticLayerProxyUrl"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -4900,12 +4630,6 @@ class Dbt(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Dbt.Attributes" = Field(
@@ -4985,9 +4709,6 @@ class Resource(Catalog):
         resource_metadata: Optional[dict[str, str]] = Field(
             None, description="", alias="resourceMetadata"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -5002,12 +4723,6 @@ class Resource(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Resource.Attributes" = Field(
@@ -5036,9 +4751,6 @@ class Insight(Catalog):
         return v
 
     class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -5053,12 +4765,6 @@ class Insight(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Insight.Attributes" = Field(
@@ -5168,9 +4874,6 @@ class API(Catalog):
         api_is_auth_optional: Optional[bool] = Field(
             None, description="", alias="apiIsAuthOptional"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -5185,12 +4888,6 @@ class API(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "API.Attributes" = Field(
@@ -5274,9 +4971,6 @@ class Tag(Catalog):
         mapped_classification_name: Optional[str] = Field(
             None, description="", alias="mappedClassificationName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -5291,12 +4985,6 @@ class Tag(Catalog):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Tag.Attributes" = Field(
@@ -5510,9 +5198,6 @@ class SQL(Catalog):
         last_profiled_at: Optional[datetime] = Field(
             None, description="", alias="lastProfiledAt"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
         )  # relationship
@@ -5536,12 +5221,6 @@ class SQL(Catalog):
         )  # relationship
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
@@ -5688,21 +5367,6 @@ class DataStudio(Google):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -5935,21 +5599,6 @@ class GCS(Google):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -6156,9 +5805,6 @@ class DataStudioAsset(DataStudio):
         google_tags: Optional[list[GoogleTag]] = Field(
             None, description="", alias="googleTags"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -6173,12 +5819,6 @@ class DataStudioAsset(DataStudio):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "DataStudioAsset.Attributes" = Field(
@@ -6284,21 +5924,6 @@ class ADLS(ObjectStore):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -6474,21 +6099,6 @@ class S3(ObjectStore):
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -6849,23 +6459,8 @@ class DbtColumnProcess(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         process: Optional[Process] = Field(
             None, description="", alias="process"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
@@ -6905,21 +6500,6 @@ class Kafka(EventStore):
     class Attributes(EventStore.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -6983,21 +6563,6 @@ class MonteCarlo(DataQuality):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -7088,9 +6653,6 @@ class Metric(DataQuality):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         assets: Optional[list[Asset]] = Field(
             None, description="", alias="assets"
         )  # relationship
@@ -7099,18 +6661,6 @@ class Metric(DataQuality):
         )  # relationship
         metric_timestamp_column: Optional[Column] = Field(
             None, description="", alias="metricTimestampColumn"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -7180,21 +6730,6 @@ class Metabase(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -7275,21 +6810,6 @@ class QuickSight(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -7354,21 +6874,6 @@ class Thoughtspot(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -7466,21 +6971,6 @@ class PowerBI(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -7582,21 +7072,6 @@ class Preset(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -7759,21 +7234,6 @@ class Mode(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -7900,21 +7360,6 @@ class Sigma(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -8055,21 +7500,6 @@ class Qlik(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -8106,21 +7536,6 @@ class Tableau(BI):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -8156,21 +7571,6 @@ class Looker(BI):
     class Attributes(BI.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -8222,21 +7622,6 @@ class Redash(BI):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -8300,21 +7685,6 @@ class Salesforce(SaaS):
         api_name: Optional[str] = Field(None, description="", alias="apiName")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -8398,26 +7768,11 @@ class DbtModelColumn(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sql_column: Optional[Column] = Field(
             None, description="", alias="sqlColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -8643,23 +7998,8 @@ class DbtModel(Dbt):
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         dbt_model_sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="dbtModelSqlAssets"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
             None, description="", alias="dbtModelColumns"
@@ -9022,14 +8362,8 @@ class DbtMetric(Dbt):
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
         )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         assets: Optional[list[Asset]] = Field(
             None, description="", alias="assets"
@@ -9039,15 +8373,6 @@ class DbtMetric(Dbt):
         )  # relationship
         dbt_metric_filter_columns: Optional[list[Column]] = Field(
             None, description="", alias="dbtMetricFilterColumns"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -9109,23 +8434,8 @@ class DbtSource(Dbt):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="sqlAssets"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -9484,32 +8794,8 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "DbtProcess.Attributes" = Field(
@@ -9565,21 +8851,6 @@ class ReadmeTemplate(Resource):
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -9641,23 +8912,8 @@ class Readme(Resource):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         internal: Optional[Internal] = Field(
             None, description="", alias="__internal"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         asset: Optional[Asset] = Field(
             None, description="", alias="asset"
@@ -9752,21 +9008,6 @@ class Link(Resource):
         )  # relationship
         internal: Optional[Internal] = Field(
             None, description="", alias="internal"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         asset: Optional[Asset] = Field(
             None, description="", alias="asset"
@@ -9922,23 +9163,8 @@ class APISpec(API):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         api_paths: Optional[list[APIPath]] = Field(
             None, description="", alias="apiPaths"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -10066,21 +9292,6 @@ class APIPath(API):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -10363,9 +9574,6 @@ class SnowflakeTag(Tag):
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
         )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -10378,20 +9586,8 @@ class SnowflakeTag(Tag):
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -10625,41 +9821,14 @@ class TablePartition(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         parent_table: Optional[Table] = Field(
             None, description="", alias="parentTable"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -10884,14 +10053,8 @@ class Table(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
@@ -10899,29 +10062,8 @@ class Table(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -11136,41 +10278,14 @@ class Query(SQL):
             None, description="", alias="inputToProcesses"
         )  # relationship
         parent: Namespace = Field(None, description="", alias="parent")  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         views: Optional[list[View]] = Field(
             None, description="", alias="views"
@@ -11823,14 +10938,8 @@ class Column(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
             None, description="", alias="materialisedView"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
@@ -11841,14 +10950,8 @@ class Column(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
         foreign_key_to: Optional[list[Column]] = Field(
             None, description="", alias="foreignKeyTo"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
         )  # relationship
         foreign_key_from: Optional[Column] = Field(
             None, description="", alias="foreignKeyFrom"
@@ -11856,27 +10959,12 @@ class Column(SQL):
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
         )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         view: Optional[View] = Field(None, description="", alias="view")  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         table_partition: Optional[TablePartition] = Field(
             None, description="", alias="tablePartition"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         data_quality_metric_dimensions: Optional[list[Metric]] = Field(
             None, description="", alias="dataQualityMetricDimensions"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
             None, description="", alias="dbtModelColumns"
@@ -12008,32 +11096,14 @@ class Schema(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
         )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
         )  # relationship
         database: Optional[Database] = Field(
             None, description="", alias="database"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
             None, description="", alias="snowflakePipes"
@@ -12043,15 +11113,6 @@ class Schema(SQL):
         )  # relationship
         procedures: Optional[list[Procedure]] = Field(
             None, description="", alias="procedures"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         views: Optional[list[View]] = Field(
             None, description="", alias="views"
@@ -12200,38 +11261,11 @@ class SnowflakeStream(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -12315,38 +11349,11 @@ class SnowflakePipe(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -12394,38 +11401,11 @@ class Database(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         schemas: Optional[list[Schema]] = Field(
             None, description="", alias="schemas"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -12520,38 +11500,11 @@ class Procedure(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -12687,14 +11640,8 @@ class View(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
@@ -12702,29 +11649,8 @@ class View(SQL):
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -12948,41 +11874,14 @@ class MaterialisedView(SQL):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -13235,9 +12134,6 @@ class GCSObject(GCS):
         gcs_object_retention_expiration_date: Optional[datetime] = Field(
             None, description="", alias="gcsObjectRetentionExpirationDate"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -13255,12 +12151,6 @@ class GCSObject(GCS):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "GCSObject.Attributes" = Field(
@@ -13394,9 +12284,6 @@ class GCSBucket(GCS):
         gcs_bucket_retention_policy: Optional[str] = Field(
             None, description="", alias="gcsBucketRetentionPolicy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -13414,12 +12301,6 @@ class GCSBucket(GCS):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "GCSBucket.Attributes" = Field(
@@ -13597,9 +12478,6 @@ class ADLSAccount(ADLS):
         adls_account_access_tier: Optional[ADLSAccessTier] = Field(
             None, description="", alias="adlsAccountAccessTier"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -13617,12 +12495,6 @@ class ADLSAccount(ADLS):
         )  # relationship
         adls_containers: Optional[list[ADLSContainer]] = Field(
             None, description="", alias="adlsContainers"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ADLSAccount.Attributes" = Field(
@@ -13751,9 +12623,6 @@ class ADLSContainer(ADLS):
         adls_objects: Optional[list[ADLSObject]] = Field(
             None, description="", alias="adlsObjects"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -13771,12 +12640,6 @@ class ADLSContainer(ADLS):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ADLSContainer.Attributes" = Field(
@@ -14066,9 +12929,6 @@ class ADLSObject(ADLS):
         adls_container_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsContainerQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         adls_container: Optional[ADLSContainer] = Field(
             None, description="", alias="adlsContainer"
         )  # relationship
@@ -14086,12 +12946,6 @@ class ADLSObject(ADLS):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ADLSObject.Attributes" = Field(
@@ -14151,9 +13005,6 @@ class S3Bucket(S3):
         s3_bucket_versioning_enabled: Optional[bool] = Field(
             None, description="", alias="s3BucketVersioningEnabled"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -14171,12 +13022,6 @@ class S3Bucket(S3):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -14381,9 +13226,6 @@ class S3Object(S3):
         bucket: Optional[S3Bucket] = Field(
             None, description="", alias="bucket"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -14398,12 +13240,6 @@ class S3Object(S3):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -14607,9 +13443,6 @@ class KafkaTopic(Kafka):
         kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
             None, description="", alias="kafkaTopicCleanupPolicy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -14627,12 +13460,6 @@ class KafkaTopic(Kafka):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "KafkaTopic.Attributes" = Field(
@@ -14735,9 +13562,6 @@ class KafkaConsumerGroup(Kafka):
         kafka_topic_qualified_names: Optional[set[str]] = Field(
             None, description="", alias="kafkaTopicQualifiedNames"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -14755,12 +13579,6 @@ class KafkaConsumerGroup(Kafka):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "KafkaConsumerGroup.Attributes" = Field(
@@ -14874,9 +13692,6 @@ class MCIncident(MonteCarlo):
         mc_incident_warehouse: Optional[str] = Field(
             None, description="", alias="mcIncidentWarehouse"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_incident_assets: Optional[list[Asset]] = Field(
             None, description="", alias="mcIncidentAssets"
         )  # relationship
@@ -14897,12 +13712,6 @@ class MCIncident(MonteCarlo):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "MCIncident.Attributes" = Field(
@@ -15186,9 +13995,6 @@ class MCMonitor(MonteCarlo):
         mc_monitor_incident_count: Optional[int] = Field(
             None, description="", alias="mcMonitorIncidentCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitor_assets: Optional[list[Asset]] = Field(
             None, description="", alias="mcMonitorAssets"
         )  # relationship
@@ -15206,12 +14012,6 @@ class MCMonitor(MonteCarlo):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "MCMonitor.Attributes" = Field(
@@ -15283,9 +14083,6 @@ class MetabaseQuestion(Metabase):
         metabase_query: Optional[str] = Field(
             None, description="", alias="metabaseQuery"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15306,12 +14103,6 @@ class MetabaseQuestion(Metabase):
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
             None, description="", alias="metabaseCollection"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "MetabaseQuestion.Attributes" = Field(
@@ -15399,9 +14190,6 @@ class MetabaseCollection(Metabase):
         metabase_is_personal_collection: Optional[bool] = Field(
             None, description="", alias="metabaseIsPersonalCollection"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15422,12 +14210,6 @@ class MetabaseCollection(Metabase):
         )  # relationship
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
             None, description="", alias="metabaseQuestions"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "MetabaseCollection.Attributes" = Field(
@@ -15471,9 +14253,6 @@ class MetabaseDashboard(Metabase):
         metabase_question_count: Optional[int] = Field(
             None, description="", alias="metabaseQuestionCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15494,12 +14273,6 @@ class MetabaseDashboard(Metabase):
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
             None, description="", alias="metabaseCollection"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(
@@ -15564,9 +14337,6 @@ class QuickSightFolder(QuickSight):
         quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
             None, description="", alias="quickSightDashboards"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15587,12 +14357,6 @@ class QuickSightFolder(QuickSight):
         )  # relationship
         quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
             None, description="", alias="quickSightDatasets"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightFolder.Attributes" = Field(
@@ -15640,9 +14404,6 @@ class QuickSightDashboardVisual(QuickSight):
         quick_sight_dashboard_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightDashboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15660,12 +14421,6 @@ class QuickSightDashboardVisual(QuickSight):
         )  # relationship
         quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
             None, description="", alias="quickSightDashboard"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightDashboardVisual.Attributes" = Field(
@@ -15713,9 +14468,6 @@ class QuickSightAnalysisVisual(QuickSight):
         quick_sight_analysis_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightAnalysisQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15733,12 +14485,6 @@ class QuickSightAnalysisVisual(QuickSight):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightAnalysisVisual.Attributes" = Field(
@@ -15802,9 +14548,6 @@ class QuickSightDatasetField(QuickSight):
         quick_sight_dataset_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightDatasetQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -15822,12 +14565,6 @@ class QuickSightDatasetField(QuickSight):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightDatasetField.Attributes" = Field(
@@ -15927,9 +14664,6 @@ class QuickSightAnalysis(QuickSight):
         quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
             None, description="", alias="quickSightAnalysisFilterGroups"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
             None, description="", alias="quickSightAnalysisVisuals"
         )  # relationship
@@ -15950,12 +14684,6 @@ class QuickSightAnalysis(QuickSight):
         )  # relationship
         quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
             None, description="", alias="quickSightAnalysisFolders"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightAnalysis.Attributes" = Field(
@@ -16021,9 +14749,6 @@ class QuickSightDashboard(QuickSight):
         quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
             None, description="", alias="quickSightDashboardLastPublishedTime"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16046,12 +14771,6 @@ class QuickSightDashboard(QuickSight):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightDashboard.Attributes" = Field(
@@ -16117,9 +14836,6 @@ class QuickSightDataset(QuickSight):
         quick_sight_dataset_column_count: Optional[int] = Field(
             None, description="", alias="quickSightDatasetColumnCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16140,12 +14856,6 @@ class QuickSightDataset(QuickSight):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QuickSightDataset.Attributes" = Field(
@@ -16174,9 +14884,6 @@ class ThoughtspotLiveboard(Thoughtspot):
         return v
 
     class Attributes(Thoughtspot.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16194,12 +14901,6 @@ class ThoughtspotLiveboard(Thoughtspot):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ThoughtspotLiveboard.Attributes" = Field(
@@ -16261,9 +14962,6 @@ class ThoughtspotDashlet(Thoughtspot):
         thoughtspot_liveboard_qualified_name: Optional[str] = Field(
             None, description="", alias="thoughtspotLiveboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16281,12 +14979,6 @@ class ThoughtspotDashlet(Thoughtspot):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ThoughtspotDashlet.Attributes" = Field(
@@ -16315,9 +15007,6 @@ class ThoughtspotAnswer(Thoughtspot):
         return v
 
     class Attributes(Thoughtspot.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16332,12 +15021,6 @@ class ThoughtspotAnswer(Thoughtspot):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ThoughtspotAnswer.Attributes" = Field(
@@ -16419,9 +15102,6 @@ class PowerBIReport(PowerBI):
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
         page_count: Optional[int] = Field(None, description="", alias="pageCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
@@ -16448,12 +15128,6 @@ class PowerBIReport(PowerBI):
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIReport.Attributes" = Field(
@@ -16541,9 +15215,6 @@ class PowerBIMeasure(PowerBI):
         power_b_i_is_external_measure: Optional[bool] = Field(
             None, description="", alias="powerBIIsExternalMeasure"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16559,14 +15230,8 @@ class PowerBIMeasure(PowerBI):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         table: Optional[PowerBITable] = Field(
             None, description="", alias="table"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIMeasure.Attributes" = Field(
@@ -16684,9 +15349,6 @@ class PowerBIColumn(PowerBI):
         power_b_i_column_summarize_by: Optional[str] = Field(
             None, description="", alias="powerBIColumnSummarizeBy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16702,14 +15364,8 @@ class PowerBIColumn(PowerBI):
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         table: Optional[PowerBITable] = Field(
             None, description="", alias="table"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIColumn.Attributes" = Field(
@@ -16815,9 +15471,6 @@ class PowerBITable(PowerBI):
         power_b_i_table_measure_count: Optional[int] = Field(
             None, description="", alias="powerBITableMeasureCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         measures: Optional[list[PowerBIMeasure]] = Field(
             None, description="", alias="measures"
         )  # relationship
@@ -16841,12 +15494,6 @@ class PowerBITable(PowerBI):
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBITable.Attributes" = Field(
@@ -16904,9 +15551,6 @@ class PowerBITile(PowerBI):
         dashboard_qualified_name: Optional[str] = Field(
             None, description="", alias="dashboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16928,14 +15572,8 @@ class PowerBITile(PowerBI):
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         dashboard: Optional[PowerBIDashboard] = Field(
             None, description="", alias="dashboard"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBITile.Attributes" = Field(
@@ -16979,9 +15617,6 @@ class PowerBIDatasource(PowerBI):
         connection_details: Optional[dict[str, str]] = Field(
             None, description="", alias="connectionDetails"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -16999,12 +15634,6 @@ class PowerBIDatasource(PowerBI):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIDatasource.Attributes" = Field(
@@ -17098,9 +15727,6 @@ class PowerBIWorkspace(PowerBI):
         dataflow_count: Optional[int] = Field(
             None, description="", alias="dataflowCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[PowerBIReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
@@ -17127,12 +15753,6 @@ class PowerBIWorkspace(PowerBI):
         )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
             None, description="", alias="dataflows"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIWorkspace.Attributes" = Field(
@@ -17188,9 +15808,6 @@ class PowerBIDataset(PowerBI):
             None, description="", alias="workspaceQualifiedName"
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[PowerBIReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
@@ -17202,9 +15819,6 @@ class PowerBIDataset(PowerBI):
         )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
             None, description="", alias="dataflows"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
@@ -17226,9 +15840,6 @@ class PowerBIDataset(PowerBI):
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIDataset.Attributes" = Field(
@@ -17296,9 +15907,6 @@ class PowerBIDashboard(PowerBI):
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
         tile_count: Optional[int] = Field(None, description="", alias="tileCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
@@ -17319,12 +15927,6 @@ class PowerBIDashboard(PowerBI):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
@@ -17380,9 +15982,6 @@ class PowerBIDataflow(PowerBI):
             None, description="", alias="workspaceQualifiedName"
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
         )  # relationship
@@ -17403,12 +16002,6 @@ class PowerBIDataflow(PowerBI):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIDataflow.Attributes" = Field(
@@ -17466,9 +16059,6 @@ class PowerBIPage(PowerBI):
         report_qualified_name: Optional[str] = Field(
             None, description="", alias="reportQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -17486,12 +16076,6 @@ class PowerBIPage(PowerBI):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PowerBIPage.Attributes" = Field(
@@ -17553,9 +16137,6 @@ class PresetChart(Preset):
         preset_chart_form_data: Optional[dict[str, str]] = Field(
             None, description="", alias="presetChartFormData"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -17573,12 +16154,6 @@ class PresetChart(Preset):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PresetChart.Attributes" = Field(
@@ -17652,9 +16227,6 @@ class PresetDataset(Preset):
         preset_dataset_type: Optional[str] = Field(
             None, description="", alias="presetDatasetType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -17672,12 +16244,6 @@ class PresetDataset(Preset):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PresetDataset.Attributes" = Field(
@@ -17810,9 +16376,6 @@ class PresetDashboard(Preset):
         preset_datasets: Optional[list[PresetDataset]] = Field(
             None, description="", alias="presetDatasets"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -17833,12 +16396,6 @@ class PresetDashboard(Preset):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PresetDashboard.Attributes" = Field(
@@ -18013,9 +16570,6 @@ class PresetWorkspace(Preset):
         preset_dashboards: Optional[list[PresetDashboard]] = Field(
             None, description="", alias="presetDashboards"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18030,12 +16584,6 @@ class PresetWorkspace(Preset):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "PresetWorkspace.Attributes" = Field(
@@ -18163,9 +16711,6 @@ class ModeReport(Mode):
         mode_is_shared: Optional[bool] = Field(
             None, description="", alias="modeIsShared"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18186,12 +16731,6 @@ class ModeReport(Mode):
         )  # relationship
         mode_queries: Optional[list[ModeQuery]] = Field(
             None, description="", alias="modeQueries"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
@@ -18252,9 +16791,6 @@ class ModeQuery(Mode):
         mode_charts: Optional[list[ModeChart]] = Field(
             None, description="", alias="modeCharts"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18272,12 +16808,6 @@ class ModeQuery(Mode):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ModeQuery.Attributes" = Field(
@@ -18321,9 +16851,6 @@ class ModeChart(Mode):
         mode_chart_type: Optional[str] = Field(
             None, description="", alias="modeChartType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18338,12 +16865,6 @@ class ModeChart(Mode):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
         mode_query: Optional[ModeQuery] = Field(
             None, description="", alias="modeQuery"
@@ -18390,9 +16911,6 @@ class ModeWorkspace(Mode):
         mode_collection_count: Optional[int] = Field(
             None, description="", alias="modeCollectionCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18410,12 +16928,6 @@ class ModeWorkspace(Mode):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ModeWorkspace.Attributes" = Field(
@@ -18473,9 +16985,6 @@ class ModeCollection(Mode):
         mode_collection_state: Optional[str] = Field(
             None, description="", alias="modeCollectionState"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18496,12 +17005,6 @@ class ModeCollection(Mode):
         )  # relationship
         mode_reports: Optional[list[ModeReport]] = Field(
             None, description="", alias="modeReports"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ModeCollection.Attributes" = Field(
@@ -18559,9 +17062,6 @@ class SigmaDatasetColumn(Sigma):
         sigma_dataset_name: Optional[str] = Field(
             None, description="", alias="sigmaDatasetName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18579,12 +17079,6 @@ class SigmaDatasetColumn(Sigma):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SigmaDatasetColumn.Attributes" = Field(
@@ -18628,9 +17122,6 @@ class SigmaDataset(Sigma):
         sigma_dataset_column_count: Optional[int] = Field(
             None, description="", alias="sigmaDatasetColumnCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18648,12 +17139,6 @@ class SigmaDataset(Sigma):
         )  # relationship
         sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
             None, description="", alias="sigmaDatasetColumns"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SigmaDataset.Attributes" = Field(
@@ -18697,9 +17182,6 @@ class SigmaWorkbook(Sigma):
         sigma_page_count: Optional[int] = Field(
             None, description="", alias="sigmaPageCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18717,12 +17199,6 @@ class SigmaWorkbook(Sigma):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SigmaWorkbook.Attributes" = Field(
@@ -18788,9 +17264,6 @@ class SigmaDataElementField(Sigma):
         sigma_data_element_field_formula: Optional[str] = Field(
             None, description="", alias="sigmaDataElementFieldFormula"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18808,12 +17281,6 @@ class SigmaDataElementField(Sigma):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SigmaDataElementField.Attributes" = Field(
@@ -18860,9 +17327,6 @@ class SigmaPage(Sigma):
         sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
             None, description="", alias="sigmaDataElements"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18880,12 +17344,6 @@ class SigmaPage(Sigma):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SigmaPage.Attributes" = Field(
@@ -18959,9 +17417,6 @@ class SigmaDataElement(Sigma):
         sigma_data_element_field_count: Optional[int] = Field(
             None, description="", alias="sigmaDataElementFieldCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -18979,12 +17434,6 @@ class SigmaDataElement(Sigma):
         )  # relationship
         sigma_page: Optional[SigmaPage] = Field(
             None, description="", alias="sigmaPage"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
         sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
             None, description="", alias="sigmaDataElementFields"
@@ -19031,9 +17480,6 @@ class QlikSpace(Qlik):
         qlik_space_type: Optional[str] = Field(
             None, description="", alias="qlikSpaceType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         qlik_datasets: Optional[list[QlikDataset]] = Field(
             None, description="", alias="qlikDatasets"
         )  # relationship
@@ -19054,12 +17500,6 @@ class QlikSpace(Qlik):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QlikSpace.Attributes" = Field(
@@ -19159,9 +17599,6 @@ class QlikApp(Qlik):
         qlik_app_static_byte_size: Optional[int] = Field(
             None, description="", alias="qlikAppStaticByteSize"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -19182,12 +17619,6 @@ class QlikApp(Qlik):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QlikApp.Attributes" = Field(
@@ -19273,9 +17704,6 @@ class QlikChart(Qlik):
         qlik_chart_type: Optional[str] = Field(
             None, description="", alias="qlikChartType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -19293,12 +17721,6 @@ class QlikChart(Qlik):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QlikChart.Attributes" = Field(
@@ -19384,9 +17806,6 @@ class QlikDataset(Qlik):
         qlik_dataset_subtype: Optional[str] = Field(
             None, description="", alias="qlikDatasetSubtype"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -19404,12 +17823,6 @@ class QlikDataset(Qlik):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QlikDataset.Attributes" = Field(
@@ -19456,9 +17869,6 @@ class QlikSheet(Qlik):
         qlik_app: Optional[QlikApp] = Field(
             None, description="", alias="qlikApp"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -19476,12 +17886,6 @@ class QlikSheet(Qlik):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "QlikSheet.Attributes" = Field(
@@ -19585,9 +17989,6 @@ class TableauWorkbook(Tableau):
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -19614,12 +18015,6 @@ class TableauWorkbook(Tableau):
         )  # relationship
         dashboards: Optional[list[TableauDashboard]] = Field(
             None, description="", alias="dashboards"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauWorkbook.Attributes" = Field(
@@ -19895,9 +18290,6 @@ class TableauDatasourceField(Tableau):
         datasource_field_type: Optional[str] = Field(
             None, description="", alias="datasourceFieldType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -19918,12 +18310,6 @@ class TableauDatasourceField(Tableau):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauDatasourceField.Attributes" = Field(
@@ -20105,9 +18491,6 @@ class TableauCalculatedField(Tableau):
         upstream_fields: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="upstreamFields"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -20128,12 +18511,6 @@ class TableauCalculatedField(Tableau):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauCalculatedField.Attributes" = Field(
@@ -20223,17 +18600,11 @@ class TableauProject(Tableau):
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         parent_project: Optional[TableauProject] = Field(
             None, description="", alias="parentProject"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         workbooks: Optional[list[TableauWorkbook]] = Field(
             None, description="", alias="workbooks"
@@ -20261,9 +18632,6 @@ class TableauProject(Tableau):
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
             None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauProject.Attributes" = Field(
@@ -20353,9 +18721,6 @@ class TableauMetric(Tableau):
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -20373,12 +18738,6 @@ class TableauMetric(Tableau):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauMetric.Attributes" = Field(
@@ -20407,9 +18766,6 @@ class TableauSite(Tableau):
         return v
 
     class Attributes(Tableau.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -20427,12 +18783,6 @@ class TableauSite(Tableau):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauSite.Attributes" = Field(
@@ -20647,9 +18997,6 @@ class TableauDatasource(Tableau):
         workbook: Optional[TableauWorkbook] = Field(
             None, description="", alias="workbook"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -20670,12 +19017,6 @@ class TableauDatasource(Tableau):
         )  # relationship
         fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="fields"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauDatasource.Attributes" = Field(
@@ -20782,9 +19123,6 @@ class TableauDashboard(Tableau):
         workbook: Optional[TableauWorkbook] = Field(
             None, description="", alias="workbook"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -20802,12 +19140,6 @@ class TableauDashboard(Tableau):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauDashboard.Attributes" = Field(
@@ -20939,9 +19271,6 @@ class TableauFlow(Tableau):
         output_steps: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="outputSteps"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -20959,12 +19288,6 @@ class TableauFlow(Tableau):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauFlow.Attributes" = Field(
@@ -21071,9 +19394,6 @@ class TableauWorksheet(Tableau):
         workbook: Optional[TableauWorkbook] = Field(
             None, description="", alias="workbook"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -21097,12 +19417,6 @@ class TableauWorksheet(Tableau):
         )  # relationship
         dashboards: Optional[list[TableauDashboard]] = Field(
             None, description="", alias="dashboards"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "TableauWorksheet.Attributes" = Field(
@@ -21254,17 +19568,11 @@ class LookerLook(Looker):
             None, description="", alias="sourceQueryId"
         )
         model_name: Optional[str] = Field(None, description="", alias="modelName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
@@ -21289,9 +19597,6 @@ class LookerLook(Looker):
         )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
             None, description="", alias="dashboard"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerLook.Attributes" = Field(
@@ -21417,9 +19722,6 @@ class LookerDashboard(Looker):
         source_last_viewed_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastViewedAt"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[LookerTile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
@@ -21443,12 +19745,6 @@ class LookerDashboard(Looker):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerDashboard.Attributes" = Field(
@@ -21534,9 +19830,6 @@ class LookerFolder(Looker):
         source_parent_i_d: Optional[int] = Field(
             None, description="", alias="sourceParentID"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
         )  # relationship
@@ -21557,12 +19850,6 @@ class LookerFolder(Looker):
         )  # relationship
         dashboards: Optional[list[LookerDashboard]] = Field(
             None, description="", alias="dashboards"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerFolder.Attributes" = Field(
@@ -21682,9 +19969,6 @@ class LookerTile(Looker):
         )
         subtitle_text: Optional[str] = Field(None, description="", alias="subtitleText")
         look_id: Optional[int] = Field(None, description="", alias="lookId")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -21706,14 +19990,8 @@ class LookerTile(Looker):
         look: Optional[LookerLook] = Field(
             None, description="", alias="look"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
             None, description="", alias="dashboard"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerTile.Attributes" = Field(
@@ -21755,9 +20033,6 @@ class LookerModel(Looker):
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         explores: Optional[list[LookerExplore]] = Field(
             None, description="", alias="explores"
         )  # relationship
@@ -21773,9 +20048,6 @@ class LookerModel(Looker):
         queries: Optional[list[LookerQuery]] = Field(
             None, description="", alias="queries"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -21790,9 +20062,6 @@ class LookerModel(Looker):
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerModel.Attributes" = Field(
@@ -21886,9 +20155,6 @@ class LookerExplore(Looker):
         sql_table_name: Optional[str] = Field(
             None, description="", alias="sqlTableName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -21912,12 +20178,6 @@ class LookerExplore(Looker):
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerExplore.Attributes" = Field(
@@ -21946,9 +20206,6 @@ class LookerProject(Looker):
         return v
 
     class Attributes(Looker.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         models: Optional[list[LookerModel]] = Field(
             None, description="", alias="models"
         )  # relationship
@@ -21973,14 +20230,8 @@ class LookerProject(Looker):
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         views: Optional[list[LookerView]] = Field(
             None, description="", alias="views"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerProject.Attributes" = Field(
@@ -22064,9 +20315,6 @@ class LookerQuery(Looker):
             None, description="", alias="sourceDefinitionSchema"
         )
         fields: Optional[set[str]] = Field(None, description="", alias="fields")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[LookerTile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
@@ -22090,12 +20338,6 @@ class LookerQuery(Looker):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerQuery.Attributes" = Field(
@@ -22221,9 +20463,6 @@ class LookerField(Looker):
         looker_times_used: Optional[int] = Field(
             None, description="", alias="lookerTimesUsed"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         view: Optional[LookerView] = Field(
             None, description="", alias="view"
         )  # relationship
@@ -22250,12 +20489,6 @@ class LookerField(Looker):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerField.Attributes" = Field(
@@ -22297,9 +20530,6 @@ class LookerView(Looker):
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -22320,12 +20550,6 @@ class LookerView(Looker):
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "LookerView.Attributes" = Field(
@@ -22371,9 +20595,6 @@ class RedashDashboard(Redash):
         redash_dashboard_widget_count: Optional[int] = Field(
             None, description="", alias="redashDashboardWidgetCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -22388,12 +20609,6 @@ class RedashDashboard(Redash):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "RedashDashboard.Attributes" = Field(
@@ -22517,9 +20732,6 @@ class RedashQuery(Redash):
         redash_query_schedule_humanized: Optional[str] = Field(
             None, description="", alias="redashQueryScheduleHumanized"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -22537,12 +20749,6 @@ class RedashQuery(Redash):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "RedashQuery.Attributes" = Field(
@@ -22614,9 +20820,6 @@ class RedashVisualization(Redash):
         redash_query_qualified_name: Optional[str] = Field(
             None, description="", alias="redashQueryQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -22634,12 +20837,6 @@ class RedashVisualization(Redash):
         )  # relationship
         redash_query: Optional[RedashQuery] = Field(
             None, description="", alias="redashQuery"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "RedashVisualization.Attributes" = Field(
@@ -22717,9 +20914,6 @@ class SalesforceObject(Salesforce):
         is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
         is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
         field_count: Optional[int] = Field(None, description="", alias="fieldCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -22743,12 +20937,6 @@ class SalesforceObject(Salesforce):
         )  # relationship
         fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="fields"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SalesforceObject.Attributes" = Field(
@@ -22986,9 +21174,6 @@ class SalesforceField(Salesforce):
         default_value_formula: Optional[str] = Field(
             None, description="", alias="defaultValueFormula"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -23006,12 +21191,6 @@ class SalesforceField(Salesforce):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
         object: Optional[SalesforceObject] = Field(
             None, description="", alias="object"
@@ -23056,9 +21235,6 @@ class SalesforceOrganization(Salesforce):
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
@@ -23082,12 +21258,6 @@ class SalesforceOrganization(Salesforce):
         )  # relationship
         dashboards: Optional[list[SalesforceDashboard]] = Field(
             None, description="", alias="dashboards"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SalesforceOrganization.Attributes" = Field(
@@ -23155,9 +21325,6 @@ class SalesforceDashboard(Salesforce):
             None, description="", alias="dashboardType"
         )
         report_count: Optional[int] = Field(None, description="", alias="reportCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
@@ -23178,12 +21345,6 @@ class SalesforceDashboard(Salesforce):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SalesforceDashboard.Attributes" = Field(
@@ -23253,9 +21414,6 @@ class SalesforceReport(Salesforce):
         detail_columns: Optional[set[str]] = Field(
             None, description="", alias="detailColumns"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -23276,12 +21434,6 @@ class SalesforceReport(Salesforce):
         )  # relationship
         dashboards: Optional[list[SalesforceDashboard]] = Field(
             None, description="", alias="dashboards"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "SalesforceReport.Attributes" = Field(
@@ -23312,27 +21464,6 @@ class QlikStream(QlikSpace):
     class Attributes(QlikSpace.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
