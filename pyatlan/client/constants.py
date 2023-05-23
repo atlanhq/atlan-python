@@ -14,6 +14,7 @@ from pyatlan.utils import (
 
 ROLE_API = f"{ADMIN_URI}roles"
 GROUP_API = f"{ADMIN_URI}groups"
+USER_API = f"{ADMIN_URI}users"
 
 # Role APIs
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK)
@@ -23,6 +24,26 @@ GET_GROUPS = API(GROUP_API, HTTPMethod.GET, HTTPStatus.OK)
 CREATE_GROUP = API(GROUP_API, HTTPMethod.POST, HTTPStatus.OK)
 UPDATE_GROUP = API(GROUP_API, HTTPMethod.POST, HTTPStatus.OK)
 DELETE_GROUP = API(GROUP_API + "/{group_guid}/delete", HTTPMethod.POST, HTTPStatus.OK)
+GET_GROUP_MEMBERS = API(
+    GROUP_API + "/{group_guid}/members", HTTPMethod.GET, HTTPStatus.OK
+)
+REMOVE_USERS_FROM_GROUP = API(
+    GROUP_API + "/{group_guid}/members/remove", HTTPMethod.POST, HTTPStatus.OK
+)
+
+# User APIs
+GET_USERS = API(USER_API, HTTPMethod.GET, HTTPStatus.OK)
+CREATE_USERS = API(USER_API, HTTPMethod.POST, HTTPStatus.OK)
+UPDATE_USER = API(USER_API, HTTPMethod.POST, HTTPStatus.OK)
+DELETE_USER = API(USER_API + "/{user_guid}/delete", HTTPMethod.POST, HTTPStatus.OK)
+GET_USER_GROUPS = API(USER_API + "/{user_guid}/groups", HTTPMethod.GET, HTTPStatus.OK)
+ADD_USER_TO_GROUPS = API(
+    USER_API + "/{user_guid}/groups", HTTPMethod.POST, HTTPStatus.OK
+)
+CHANGE_USER_ROLE = API(
+    USER_API + "/{user_guid}/roles/update", HTTPMethod.POST, HTTPStatus.OK
+)
+GET_CURRENT_USER = API(USER_API + "/current", HTTPMethod.GET, HTTPStatus.OK)
 
 ENTITY_API = f"{BASE_URI}entity/"
 PREFIX_ATTR = "attr:"

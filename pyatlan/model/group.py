@@ -58,7 +58,7 @@ class AtlanGroup(AtlanObject):
         return (
             self.attributes is not None
             and self.attributes.is_default is not None
-            and self.attributes.is_default == "true"
+            and self.attributes.is_default == ["true"]
         )
 
     @staticmethod
