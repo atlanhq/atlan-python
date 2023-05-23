@@ -336,6 +336,18 @@ class BadgeConditionColor(str, Enum):
     GREY = "#525C73"
 
 
+class FileType(str, Enum):
+    CSV = "csv"
+    DOC = "doc"
+    JSON = "json"
+    PDF = "pdf"
+    PPT = "ppt"
+    TXT = "txt"
+    XLS = "xls"
+    XML = "xml"
+    ZIP = "zip"
+
+
 class AtlanClassificationColor(str, Enum):
     GREEN = "Green"
     YELLOW = "Yellow"

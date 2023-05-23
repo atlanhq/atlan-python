@@ -97,6 +97,7 @@ def test_append_terms_with_guid(
         )
     )
     database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term.guid
 
@@ -114,6 +115,7 @@ def test_append_terms_with_qualified_name(
         )
     )
     database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term.guid
 
@@ -133,6 +135,7 @@ def test_append_terms_using_ref_by_guid_for_term(
         )
     )
     database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term.guid
 
@@ -159,6 +162,7 @@ def test_replace_a_term(
     )
 
     database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert database.assigned_terms
     assert len(database.assigned_terms) == 2
     deleted_terms = [
         t for t in database.assigned_terms if t.relationship_status == "DELETED"
@@ -193,6 +197,7 @@ def test_replace_all_term(
     )
 
     database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     deleted_terms = [
         t for t in database.assigned_terms if t.relationship_status == "DELETED"
@@ -228,6 +233,7 @@ def test_remove_term(
     )
 
     database = m_client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    assert database.assigned_terms
     assert len(database.assigned_terms) == 2
     deleted_terms = [
         t for t in database.assigned_terms if t.relationship_status == "DELETED"

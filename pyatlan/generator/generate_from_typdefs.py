@@ -46,6 +46,7 @@ TYPE_REPLACEMENTS = [
     ("quick_sight_dataset_field_type", "QuickSightDatasetFieldType"),
     ("quick_sight_analysis_status", "QuickSightAnalysisStatus"),
     ("quick_sight_dataset_import_mode", "QuickSightDatasetImportMode"),
+    ("file_type", "FileType"),
 ]
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 
@@ -135,26 +136,40 @@ class Generator:
         return list(attributes.values())
 
     def add_entity_def(self, entity_defs, name):
+        def get_ancestor_relationship_defs(
+            ancetor_name: str, ancestor_relationship_defs
+        ):
+            ancestor_entity_def = self.entity_defs[ancetor_name]
+            if not ancestor_entity_def.super_types or not ancetor_name:
+                return ancestor_relationship_defs
+            for relationship_def in (
+                ancestor_entity_def.relationship_attribute_defs or []
+            ):
+                ancestor_relationship_defs.add(relationship_def["name"])
+            return get_ancestor_relationship_defs(
+                ancestor_entity_def.super_types[0]
+                if ancestor_entity_def.super_types
+                else "",
+                ancestor_relationship_defs,
+            )
+
         entity_def = self.entity_defs[name]
         if len(entity_def.super_types) > 1:
             entity_def.attribute_defs = self.merge_attributes(entity_def)
         names = {attribute_def["name"] for attribute_def in entity_def.attribute_defs}
         super_type_relationship_defs = (
-            []
-            if not entity_def.super_types
-            else [
-                s["name"]
-                for s in self.entity_defs[
-                    entity_def.super_types[0]
-                ].relationship_attribute_defs
-            ]
+            get_ancestor_relationship_defs(entity_def.super_types[0], set())
+            if entity_def.super_types
+            else set()
         )
-        entity_def.relationship_attribute_defs = [
-            relationship_def
-            for relationship_def in entity_def.relationship_attribute_defs
-            if relationship_def["name"] not in names
-            and relationship_def["name"] not in super_type_relationship_defs
-        ]
+        entity_def.relationship_attribute_defs = list(
+            {
+                relationship_def["name"]: relationship_def
+                for relationship_def in entity_def.relationship_attribute_defs
+                if relationship_def["name"] not in names
+                and relationship_def["name"] not in super_type_relationship_defs
+            }.values()
+        )
         for parent in entity_def.super_types:
             if parent not in self.processed:
                 return

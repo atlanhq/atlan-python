@@ -35,6 +35,7 @@ from pyatlan.model.enums import (
     AtlanConnectorType,
     CertificateStatus,
     EntityStatus,
+    FileType,
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
@@ -95,23 +96,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 return object.__setattr__(self, name, value)
             super().__setattr__( name, value)
 
-{% if entity_def.name == "Referenceable" %}
-    {{ gen_properties(entity_def.attribute_defs, ["assigned_terms"]) }}
-
-    @property
-    def assigned_terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @assigned_terms.setter
-    def assigned_terms(self, assigned_terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = assigned_terms
-{% else %}
-    {{ gen_properties(entity_def.attribute_defs) }}
-{% endif %}
+    {{ gen_properties(entity_def.attribute_defs + entity_def.relationship_attribute_defs) }}
 
 {%- if entity_def.name == "Referenceable"  %}
 
@@ -130,7 +115,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             pass
 
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        None,
+        default_factory = lambda : {{entity_def.name}}.Attributes(),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary '
                     'by type, so are described in the sub-types of this schema.\n',
     )
@@ -819,7 +804,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             )
         {%- endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        None,
+        default_factory = lambda: {{entity_def.name}}.Attributes(),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
                     'type, so are described in the sub-types of this schema.\n',
     )
