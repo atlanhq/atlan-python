@@ -69,7 +69,7 @@ setup(
             "pytest-cov>=4.0.0",
             "pytest-order==1.1.0",
             "retry==0.9.2",
-            "types-retry-0.9.9.3",
+            "types-retry==0.9.9.3",
             "twine>=4.0.2",
         ]
     },

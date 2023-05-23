@@ -5,7 +5,7 @@ types-requests==2.28.11.17
 pytest==7.3.1
 pytest-order==1.1.0
 retry==0.9.2
-types-retry-0.9.9.3
+types-retry==0.9.9.3
 pre-commit==2.20.0
 deepdiff==6.2.1
 pytest-cov==4.0.0
