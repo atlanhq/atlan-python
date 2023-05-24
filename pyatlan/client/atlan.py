@@ -21,24 +21,34 @@ from urllib3.util.retry import Retry
 
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
+    ADD_USER_TO_GROUPS,
     BULK_UPDATE,
+    CHANGE_USER_ROLE,
     CREATE_GROUP,
     CREATE_TYPE_DEFS,
+    CREATE_USERS,
     DELETE_ENTITY_BY_ATTRIBUTE,
     DELETE_ENTITY_BY_GUID,
     DELETE_GROUP,
     DELETE_TYPE_DEF_BY_NAME,
+    DELETE_USER,
     GET_ALL_TYPE_DEFS,
+    GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
+    GET_GROUP_MEMBERS,
     GET_GROUPS,
     GET_LINEAGE,
     GET_ROLES,
+    GET_USER_GROUPS,
+    GET_USERS,
     INDEX_SEARCH,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
+    REMOVE_USERS_FROM_GROUP,
     UPDATE_ENTITY_BY_ATTRIBUTE,
     UPDATE_GROUP,
     UPDATE_TYPE_DEFS,
+    UPDATE_USER,
 )
 from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
@@ -78,6 +88,7 @@ from pyatlan.model.group import (
     CreateGroupRequest,
     CreateGroupResponse,
     GroupResponse,
+    RemoveFromGroupRequest,
 )
 from pyatlan.model.lineage import LineageRequest, LineageResponse
 from pyatlan.model.response import AssetMutationResponse
@@ -89,6 +100,14 @@ from pyatlan.model.typedef import (
     EnumDef,
     TypeDef,
     TypeDefResponse,
+)
+from pyatlan.model.user import (
+    AddToGroupsRequest,
+    AtlanUser,
+    ChangeRoleRequest,
+    CreateUserRequest,
+    UserMinimalResponse,
+    UserResponse,
 )
 from pyatlan.utils import HTTPStatus, get_logger
 
@@ -371,7 +390,9 @@ class AtlanClient(BaseSettings):
         group: AtlanGroup,
         user_ids: Optional[list[str]] = None,
     ) -> CreateGroupResponse:
-        payload = CreateGroupRequest(group=group, user_ids=user_ids)
+        payload = CreateGroupRequest(group=group)
+        if user_ids:
+            payload.users = user_ids
         raw_json = self._call_api(CREATE_GROUP, request_obj=payload, exclude_unset=True)
         return CreateGroupResponse(**raw_json)
 
@@ -446,6 +467,169 @@ class AtlanClient(BaseSettings):
             post_filter='{"$and":[{"alias":{"$ilike":"%' + alias + '%"}}]}',
         ):
             return response.records
+        return None
+
+    def get_group_members(self, guid: str) -> UserResponse:
+        """
+        Retrieves the members (users) of a group.
+        """
+        raw_json = self._call_api(GET_GROUP_MEMBERS.format_path({"group_guid": guid}))
+        return UserResponse(**raw_json)
+
+    def remove_users_from_group(self, guid: str, user_ids=list[str]) -> None:
+        """
+        Remove one or more users from a group.
+        """
+        rfgr = RemoveFromGroupRequest(users=user_ids)
+        self._call_api(
+            REMOVE_USERS_FROM_GROUP.format_path({"group_guid": guid}),
+            request_obj=rfgr,
+            exclude_unset=True,
+        )
+
+    def create_users(
+        self,
+        users: list[AtlanUser],
+    ) -> None:
+        from pyatlan.cache.role_cache import RoleCache
+
+        cur = CreateUserRequest(users=[])
+        for user in users:
+            role_name = str(user.workspace_role)
+            if role_id := RoleCache.get_id_for_name(role_name):
+                to_create = CreateUserRequest.CreateUser(
+                    email=user.email,
+                    role_name=role_name,
+                    role_id=role_id,
+                )
+                cur.users.append(to_create)
+        self._call_api(CREATE_USERS, request_obj=cur, exclude_unset=True)
+
+    def update_user(
+        self,
+        guid: str,
+        user: AtlanUser,
+    ) -> UserMinimalResponse:
+        raw_json = self._call_api(
+            UPDATE_USER.format_path_with_params(guid),
+            request_obj=user,
+            exclude_unset=True,
+        )
+        return UserMinimalResponse(**raw_json)
+
+    def purge_user(
+        self,
+        guid: str,
+    ) -> None:
+        self._call_api(DELETE_USER.format_path({"user_guid": guid}))
+
+    def get_groups_for_user(
+        self,
+        guid: str,
+    ) -> GroupResponse:
+        raw_json = self._call_api(GET_USER_GROUPS.format_path({"user_guid": guid}))
+        return GroupResponse(**raw_json)
+
+    def add_user_to_groups(
+        self,
+        guid: str,
+        group_ids: list[str],
+    ) -> None:
+        atgr = AddToGroupsRequest(groups=group_ids)
+        self._call_api(
+            ADD_USER_TO_GROUPS.format_path({"user_guid": guid}),
+            request_obj=atgr,
+            exclude_unset=True,
+        )
+
+    def change_user_role(
+        self,
+        guid: str,
+        role_id: str,
+    ) -> None:
+        crr = ChangeRoleRequest(role_id=role_id)
+        self._call_api(
+            CHANGE_USER_ROLE.format_path({"user_guid": guid}),
+            request_obj=crr,
+            exclude_unset=True,
+        )
+
+    def get_current_user(
+        self,
+    ) -> UserMinimalResponse:
+        raw_json = self._call_api(GET_CURRENT_USER)
+        return UserMinimalResponse(**raw_json)
+
+    def get_users(
+        self,
+        limit: Optional[int] = None,
+        post_filter: Optional[str] = None,
+        sort: Optional[str] = None,
+        count: bool = True,
+        offset: int = 0,
+    ) -> UserResponse:
+        query_params: dict[str, str] = {
+            "count": str(count),
+            "offset": str(offset),
+        }
+        if limit is not None:
+            query_params["limit"] = str(limit)
+        if post_filter is not None:
+            query_params["filter"] = post_filter
+        if sort is not None:
+            query_params["sort"] = sort
+        raw_json = self._call_api(GET_USERS.format_path_with_params(), query_params)
+        return UserResponse(**raw_json)
+
+    def get_all_users(self) -> list[AtlanUser]:
+        """
+        Retrieve all users defined in Atlan.
+        """
+        users: list[AtlanUser] = []
+        offset = 0
+        limit = 100
+        response: Optional[UserResponse] = self.get_users(
+            offset=offset, limit=limit, sort="username"
+        )
+        while response:
+            if page := response.records:
+                users.extend(page)
+                offset += limit
+                response = self.get_users(offset=offset, limit=limit, sort="username")
+            else:
+                response = None
+        return users
+
+    def get_users_by_email(
+        self, email: str, limit: int = 100
+    ) -> Optional[list[AtlanUser]]:
+        """
+        Retrieves all users with email addresses that contain the provided email.
+        (This could include a complete email address, in which case there should be at
+        most a single item in the returned list, or could be a partial email address
+        such as "@example.com" to retrieve all users with that domain in their email
+        address.)
+        """
+        if response := self.get_users(
+            offset=0,
+            limit=limit,
+            post_filter='{"email":{"$ilike":"%' + email + '%"}}',
+        ):
+            return response.records
+        return None
+
+    def get_user_by_username(self, username: str) -> Optional[AtlanUser]:
+        """
+        Retrieves a user based on the username. (This attempts an exact match on username
+        rather than a contains search.)
+        """
+        if response := self.get_users(
+            offset=0,
+            limit=5,
+            post_filter='{"username":"' + username + '"}',
+        ):
+            if response.records and len(response.records) >= 1:
+                return response.records[0]
         return None
 
     @validate_arguments()
