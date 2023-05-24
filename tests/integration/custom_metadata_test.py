@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import logging
 import time
-from typing import Generator, List, Optional
+from typing import Generator, List, Optional, Tuple
 
 import pytest
 
@@ -23,10 +23,12 @@ from pyatlan.model.enums import (
     BadgeComparisonOperator,
     BadgeConditionColor,
 )
+from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.client import delete_asset
 from tests.integration.glossary_test import create_glossary, create_term
+from tests.integration.admin_test import create_group, delete_group
 
 LOGGER = logging.getLogger(__name__)
 
@@ -79,8 +81,8 @@ CM_ATTR_QUALITY_COUNT_RENAMED = to_snake_case(CM_ATTR_QUALITY_COUNT)
 CM_ATTR_QUALITY_SQL_RENAMED = to_snake_case(CM_ATTR_QUALITY_SQL)
 CM_ATTR_QUALITY_TYPE_RENAMED = to_snake_case(CM_ATTR_QUALITY_TYPE)
 
-GROUP_NAME1 = f"{PREFIX}1"
-GROUP_NAME2 = f"{PREFIX}2"
+GROUP_NAME1 = f"{CM_PREFIX}1"
+GROUP_NAME2 = f"{CM_PREFIX}2"
 
 _removal_epoch: Optional[int]
 
@@ -358,23 +360,51 @@ def term(
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 
 
-# TODO: create the groups, once they're modeled in the SDK...
-# @pytest.fixure
-# def groups(client: AtlanClient) -> Generator[List[], None, None]:
+@pytest.fixture(scope="module")
+def groups(
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+    term: AtlasGlossaryTerm,
+    cm_raci: CustomMetadataDef,
+    cm_ipr: CustomMetadataDef,
+    cm_dq: CustomMetadataDef,
+) -> Generator[List[CreateGroupResponse], None, None]:
+    g1 = create_group(client, GROUP_NAME1)
+    g2 = create_group(client, GROUP_NAME2)
+    yield [g1, g2]
+    delete_group(client, g1.group)
+    delete_group(client, g2.group)
+
+
+def _get_groups(client: AtlanClient) -> Tuple[AtlanGroup, AtlanGroup]:
+    candidates = client.get_group_by_name(GROUP_NAME1)
+    assert candidates
+    assert len(candidates) == 1
+    group1 = candidates[0]
+    candidates = client.get_group_by_name(GROUP_NAME2)
+    assert candidates
+    assert len(candidates) == 1
+    group2 = candidates[0]
+    return group1, group2
 
 
 def test_add_term_cm_raci(
-    client: AtlanClient, cm_raci: CustomMetadataDef, term: AtlasGlossaryTerm
+    client: AtlanClient,
+    cm_raci: CustomMetadataDef,
+    term: AtlasGlossaryTerm,
+    groups: List[AtlanGroup],
 ):
     raci_attrs = term.get_custom_metadata(CM_RACI)
     _validate_raci_empty(raci_attrs)
+    group1, group2 = _get_groups(client)
     setattr(raci_attrs, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
     setattr(raci_attrs, CM_ATTR_RACI_ACCOUNTABLE_RENAMED, FIXED_USER)
-    # TODO: set Consulted and Informed once groups are available
+    setattr(raci_attrs, CM_ATTR_RACI_CONSULTED_RENAMED, [group1.name])
+    setattr(raci_attrs, CM_ATTR_RACI_INFORMED_RENAMED, [group1.name, group2.name])
     client.update_custom_metadata_attributes(term.guid, raci_attrs)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_raci_attributes(t.get_custom_metadata(name=CM_RACI))
+    _validate_raci_attributes(client, t.get_custom_metadata(name=CM_RACI))
 
 
 def test_add_term_cm_ipr(
@@ -422,7 +452,7 @@ def test_update_term_cm_ipr(
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_ipr_attributes(t.get_custom_metadata(name=CM_IPR), mandatory=False)
-    _validate_raci_attributes(t.get_custom_metadata(name=CM_RACI))
+    _validate_raci_attributes(client, t.get_custom_metadata(name=CM_RACI))
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
 
 
@@ -431,14 +461,16 @@ def test_replace_term_cm_raci(
     client: AtlanClient, cm_raci: CustomMetadataDef, term: AtlasGlossaryTerm
 ):
     raci = term.get_custom_metadata(CM_RACI)
+    group1, group2 = _get_groups(client)
     # Note: MUST access the getter / setter, not the underlying store
-    setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, None)
+    setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
     setattr(raci, CM_ATTR_RACI_ACCOUNTABLE_RENAMED, FIXED_USER)
-    # TODO: replace consulted or informed (not yet defined, waiting on groups support)
+    setattr(raci, CM_ATTR_RACI_CONSULTED_RENAMED, None)
+    setattr(raci, CM_ATTR_RACI_INFORMED_RENAMED, [group1.name, group2.name])
     client.replace_custom_metadata(term.guid, raci)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_raci_attributes_replacement(t.get_custom_metadata(name=CM_RACI))
+    _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
     _validate_ipr_attributes(t.get_custom_metadata(name=CM_IPR), mandatory=False)
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
 
@@ -450,7 +482,7 @@ def test_replace_term_cm_ipr(
     client.replace_custom_metadata(term.guid, term.get_custom_metadata(CM_IPR))
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
-    _validate_raci_attributes_replacement(t.get_custom_metadata(name=CM_RACI))
+    _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
     _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
 
@@ -695,9 +727,11 @@ def test_update_replacing_cm(
     client: AtlanClient,
 ):
     raci = term.get_custom_metadata(CM_RACI)
+    group1, group2 = _get_groups(client)
     setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
     setattr(raci, CM_ATTR_RACI_ACCOUNTABLE_RENAMED, FIXED_USER)
-    # TODO: set consulted and informed once groups are available
+    setattr(raci, CM_ATTR_RACI_CONSULTED_RENAMED, [group1.name])
+    setattr(raci, CM_ATTR_RACI_INFORMED_RENAMED, [group1.name, group2.name])
     setattr(raci, CM_ATTR_RACI_EXTRA_RENAMED, "something extra...")
     to_update = AtlasGlossaryTerm.create_for_modification(
         qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
@@ -719,7 +753,7 @@ def test_update_replacing_cm(
     assert not x.is_incomplete
     assert x.qualified_name == term.qualified_name
     raci = x.get_custom_metadata(CM_RACI)
-    _validate_raci_attributes(raci)
+    _validate_raci_attributes(client, raci)
     assert getattr(raci, CM_ATTR_RACI_EXTRA_RENAMED) == "something extra..."
     _validate_ipr_empty(x.get_custom_metadata(CM_IPR))
     _validate_dq_empty(x.get_custom_metadata(CM_QUALITY))
@@ -735,28 +769,37 @@ def test_get_custom_metadata_when_name_is_invalid_then_raises_not_found_error():
         CustomMetadataCache.get_custom_metadata(name="Bogs", asset_type=Table)
 
 
-def _validate_raci_attributes(cma: CustomMetadata):
+def _validate_raci_attributes(client: AtlanClient, cma: CustomMetadata):
     assert cma
     # Note: MUST access the getter / setter, not the underlying store
     responsible = getattr(cma, CM_ATTR_RACI_RESPONSIBLE_RENAMED)
     accountable = getattr(cma, CM_ATTR_RACI_ACCOUNTABLE_RENAMED)
+    consulted = getattr(cma, CM_ATTR_RACI_CONSULTED_RENAMED)
+    informed = getattr(cma, CM_ATTR_RACI_INFORMED_RENAMED)
+    group1, group2 = _get_groups(client)
     assert responsible
     assert len(responsible) == 1
     assert FIXED_USER in responsible
     assert accountable
     assert accountable == FIXED_USER
-    # TODO: validate consulted and informed, once groups are included
+    assert consulted == [group1.name]
+    assert informed == [group1.name, group2.name]
 
 
-def _validate_raci_attributes_replacement(cma: CustomMetadata):
+def _validate_raci_attributes_replacement(client: AtlanClient, cma: CustomMetadata):
     assert cma
     # Note: MUST access the getter / setter, not the underlying store
     responsible = getattr(cma, CM_ATTR_RACI_RESPONSIBLE_RENAMED)
     accountable = getattr(cma, CM_ATTR_RACI_ACCOUNTABLE_RENAMED)
-    assert not responsible
+    consulted = getattr(cma, CM_ATTR_RACI_CONSULTED_RENAMED)
+    informed = getattr(cma, CM_ATTR_RACI_INFORMED_RENAMED)
+    group1, group2 = _get_groups(client)
+    assert responsible
+    assert responsible == [FIXED_USER]
     assert accountable
     assert accountable == FIXED_USER
-    # TODO: validate consulted and informed, once groups are included
+    assert not consulted
+    assert informed == [group1.name, group2.name]
 
 
 def _validate_raci_empty(raci_attrs: CustomMetadata):
