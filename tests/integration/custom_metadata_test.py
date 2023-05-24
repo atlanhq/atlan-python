@@ -371,8 +371,7 @@ def groups(
 ) -> Generator[List[CreateGroupResponse], None, None]:
     g1 = create_group(client, GROUP_NAME1)
     g2 = create_group(client, GROUP_NAME2)
-    created = [g1, g2]
-    yield created
+    yield [g1, g2]
     delete_group(client, g1.group)
     delete_group(client, g2.group)
 

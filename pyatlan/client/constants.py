@@ -43,7 +43,7 @@ ADD_USER_TO_GROUPS = API(
 CHANGE_USER_ROLE = API(
     USER_API + "/{user_guid}/roles/update", HTTPMethod.POST, HTTPStatus.OK
 )
-GET_CURRENT_USER = API(USER_API + "/current", HTTPMethod.GET, HTTPStatus.OK)
+GET_CURRENT_USER = API(f"{USER_API}/current", HTTPMethod.GET, HTTPStatus.OK)
 
 ENTITY_API = f"{BASE_URI}entity/"
 PREFIX_ATTR = "attr:"

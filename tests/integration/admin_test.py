@@ -7,13 +7,9 @@ from pydantic import StrictStr
 
 from pyatlan.cache.role_cache import RoleCache
 
-import logging
-
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.user import AtlanUser
-
-LOGGER = logging.getLogger(__name__)
 
 PREFIX = "psdk-Admin"
 GROUP_NAME1 = f"{PREFIX}1"
@@ -45,7 +41,6 @@ def test_retrieve_roles():
 @pytest.fixture(scope="module")
 def group1(client: AtlanClient) -> Generator[CreateGroupResponse, None, None]:
     g = create_group(client, GROUP_NAME1)
-    LOGGER.info(f"Created: {g}")
     yield g
     delete_group(client, g.group)
 
@@ -85,24 +80,15 @@ def test_update_groups(client: AtlanClient, group1: CreateGroupResponse):
 
 
 def _get_user1_from_list(users: list[AtlanUser]) -> Optional[AtlanUser]:
-    for user in users:
-        if user.email == USER_EMAIL1.lower():
-            return user
-    return None
+    return next((user for user in users if user.email == USER_EMAIL1.lower()), None)
 
 
 def _get_user2_from_list(users: list[AtlanUser]) -> Optional[AtlanUser]:
-    for user in users:
-        if user.email == USER_EMAIL2.lower():
-            return user
-    return None
+    return next((user for user in users if user.email == USER_EMAIL2.lower()), None)
 
 
 def _get_user3_from_list(users: list[AtlanUser]) -> Optional[AtlanUser]:
-    for user in users:
-        if user.email == USER_EMAIL3.lower():
-            return user
-    return None
+    return next((user for user in users if user.email == USER_EMAIL3.lower()), None)
 
 
 @pytest.fixture(scope="module")
@@ -153,7 +139,6 @@ def group2(
     user3 = _get_user3_from_list(users)
     assert user3  # must be here for mypy
     g = client.create_group(group=to_create, user_ids=[str(user2.id), str(user3.id)])
-    LOGGER.info(f"Created: {g}")
     yield g
     delete_group(client, g.group)
 
