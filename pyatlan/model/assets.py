@@ -87,7 +87,7 @@ class Referenceable(AtlanObject):
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
-        __pydantic_self__.__fields_set__.add("type_name")
+        __pydantic_self__.__fields_set__.update(["attributes", "type_name"])
 
     def __setattr__(self, name, value):
         if name in Referenceable._convience_properties:
