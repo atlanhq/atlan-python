@@ -1,4 +1,7 @@
-## 0.0.32 (May 18, 2023)
+## 0.0.33 (May 24, 2023)
+
+* Added convenience properties for relationship_attributes
+* Rename convenience property for glossary terms from terms to assigned_terms
 
 * Add create method to Badge
 * Add integrations tests for CustomMetaData

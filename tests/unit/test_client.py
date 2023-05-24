@@ -9,7 +9,7 @@ from pyatlan.model.assets import AtlasGlossaryTerm, Table
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, terms, message",
+    "guid, qualified_name, asset_type, assigned_terms, message",
     [
         (
             "123",
@@ -45,7 +45,7 @@ def test_append_terms_with_invalid_parameter_raises_valueerror(
     guid,
     qualified_name,
     asset_type,
-    terms,
+    assigned_terms,
     message,
     monkeypatch,
 ):
@@ -55,7 +55,10 @@ def test_append_terms_with_invalid_parameter_raises_valueerror(
 
     with pytest.raises(ValueError, match=message):
         client.append_terms(
-            guid=guid, qualified_name=qualified_name, asset_type=asset_type, terms=terms
+            guid=guid,
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            terms=assigned_terms,
         )
 
 
@@ -97,7 +100,7 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
         assert (
             asset := client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
         )
-        assert asset.terms == terms
+        assert asset.assigned_terms == terms
 
 
 def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_given_terms(
@@ -122,7 +125,7 @@ def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_gi
         assert (
             asset := client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
         )
-        assert asset.terms == terms
+        assert asset.assigned_terms == terms
 
 
 def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_terms(
@@ -148,14 +151,14 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
         assert (
             asset := client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
         )
-        assert (updated_terms := asset.terms)
+        assert (updated_terms := asset.assigned_terms)
         assert len(updated_terms) == 2
         assert exisiting_term in updated_terms
         assert new_term in updated_terms
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, terms, message",
+    "guid, qualified_name, asset_type, assigned_terms, message",
     [
         (
             None,
@@ -191,7 +194,7 @@ def test_replace_terms_with_invalid_parameter_raises_valueerror(
     guid,
     qualified_name,
     asset_type,
-    terms,
+    assigned_terms,
     message,
     monkeypatch,
 ):
@@ -201,7 +204,10 @@ def test_replace_terms_with_invalid_parameter_raises_valueerror(
 
     with pytest.raises(ValueError, match=message):
         client.replace_terms(
-            guid=guid, qualified_name=qualified_name, asset_type=asset_type, terms=terms
+            guid=guid,
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            terms=assigned_terms,
         )
 
 
@@ -224,11 +230,11 @@ def test_replace_terms(
         assert (
             asset := client.replace_terms(guid=guid, asset_type=asset_type, terms=terms)
         )
-        assert asset.terms == terms
+        assert asset.assigned_terms == terms
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, terms, message",
+    "guid, qualified_name, asset_type, assigned_terms, message",
     [
         (
             None,
@@ -263,7 +269,7 @@ def test_replace_terms(
             None,
             Table,
             [],
-            "A list of terms to remove must be specified",
+            "A list of assigned_terms to remove must be specified",
         ),
     ],
 )
@@ -271,7 +277,7 @@ def test_remove_terms_with_invalid_parameter_raises_valueerror(
     guid,
     qualified_name,
     asset_type,
-    terms,
+    assigned_terms,
     message,
     monkeypatch,
 ):
@@ -281,7 +287,10 @@ def test_remove_terms_with_invalid_parameter_raises_valueerror(
 
     with pytest.raises(ValueError, match=message):
         client.remove_terms(
-            guid=guid, qualified_name=qualified_name, asset_type=asset_type, terms=terms
+            guid=guid,
+            qualified_name=qualified_name,
+            asset_type=asset_type,
+            terms=assigned_terms,
         )
 
 
@@ -310,6 +319,6 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
                 guid=guid, asset_type=asset_type, terms=[exisiting_term]
             )
         )
-        assert (updated_terms := asset.terms)
+        assert (updated_terms := asset.assigned_terms)
         assert len(updated_terms) == 1
         assert other_term in updated_terms

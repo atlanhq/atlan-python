@@ -1,15 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Generator, Type
+import logging
+from typing import Generator
 
 import pytest
 from pydantic import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm
-
-import logging
-
 from tests.integration.client import delete_asset
 
 LOGGER = logging.getLogger(__name__)
@@ -105,7 +103,6 @@ def test_read_glossary(
     assert g.guid == glossary.guid
     assert g.qualified_name == glossary.qualified_name
     assert g.name == glossary.name
-    # TODO: should we be able to flatten this to g.terms (?)
-    terms = g.attributes.terms
+    terms = g.terms
     assert terms
     assert len(terms) == 2

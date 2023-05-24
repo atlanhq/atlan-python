@@ -35,6 +35,7 @@ from pyatlan.model.enums import (
     AtlanConnectorType,
     CertificateStatus,
     EntityStatus,
+    FileType,
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
@@ -86,7 +87,7 @@ class Referenceable(AtlanObject):
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
-        __pydantic_self__.__fields_set__.add("type_name")
+        __pydantic_self__.__fields_set__.update(["attributes", "type_name"])
 
     def __setattr__(self, name, value):
         if name in Referenceable._convience_properties:
@@ -97,7 +98,7 @@ class Referenceable(AtlanObject):
         "qualified_name",
         "replicated_from",
         "replicated_to",
-        "terms",
+        "assigned_terms",
     ]
 
     @property
@@ -131,16 +132,14 @@ class Referenceable(AtlanObject):
         self.attributes.replicated_to = replicated_to
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.meanings
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @assigned_terms.setter
+    def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.meanings = assigned_terms
 
     class Attributes(AtlanObject):
         qualified_name: str = Field("", description="", alias="qualifiedName")
@@ -158,7 +157,7 @@ class Referenceable(AtlanObject):
             pass
 
     attributes: "Referenceable.Attributes" = Field(
-        None,
+        default_factory=lambda: Referenceable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",
     )
@@ -240,7 +239,7 @@ class Referenceable(AtlanObject):
         description="Status of the relationship (when this is a related entity).\n",
     )
     meaning_names: Optional[list[str]] = Field(
-        None, description="Names of terms that have been linked to this asset."
+        None, description="Names of assigned_terms that have been linked to this asset."
     )
     meanings: Optional[list[Meaning]] = Field(None, description="", alias="meanings")
     custom_attributes: Optional[dict[str, Any]] = Field(
@@ -422,7 +421,13 @@ class Asset(Referenceable):
         "asset_mc_incident_severities",
         "asset_mc_incident_states",
         "asset_mc_last_sync_run_at",
-        "terms",
+        "mc_monitors",
+        "files",
+        "mc_incidents",
+        "links",
+        "metrics",
+        "readme",
+        "assigned_terms",
     ]
 
     @property
@@ -1665,16 +1670,74 @@ class Asset(Referenceable):
         self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mc_monitors(self) -> Optional[list[MCMonitor]]:
+        return self.attributes.mc_monitors
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mc_monitors.setter
+    def mc_monitors(self, mc_monitors: Optional[list[MCMonitor]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mc_monitors = mc_monitors
+
+    @property
+    def files(self) -> Optional[list[File]]:
+        return self.attributes.files
+
+    @files.setter
+    def files(self, files: Optional[list[File]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.files = files
+
+    @property
+    def mc_incidents(self) -> Optional[list[MCIncident]]:
+        return self.attributes.mc_incidents
+
+    @mc_incidents.setter
+    def mc_incidents(self, mc_incidents: Optional[list[MCIncident]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incidents = mc_incidents
+
+    @property
+    def links(self) -> Optional[list[Link]]:
+        return self.attributes.links
+
+    @links.setter
+    def links(self, links: Optional[list[Link]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.links = links
+
+    @property
+    def metrics(self) -> Optional[list[Metric]]:
+        return self.attributes.metrics
+
+    @metrics.setter
+    def metrics(self, metrics: Optional[list[Metric]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metrics = metrics
+
+    @property
+    def readme(self) -> Optional[Readme]:
+        return self.attributes.readme
+
+    @readme.setter
+    def readme(self, readme: Optional[Readme]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.readme = readme
+
+    @property
+    def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.meanings
+
+    @assigned_terms.setter
+    def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.meanings = assigned_terms
 
     _subtypes_: dict[str, type] = dict()
 
@@ -1711,6 +1774,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -2047,6 +2111,9 @@ class Asset(Referenceable):
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
+        files: Optional[list[File]] = Field(
+            None, description="", alias="files"
+        )  # relationship
         mc_incidents: Optional[list[MCIncident]] = Field(
             None, description="", alias="mcIncidents"
         )  # relationship
@@ -2083,7 +2150,7 @@ class Asset(Referenceable):
             self.announcement_type = None
 
     attributes: "Asset.Attributes" = Field(
-        None,
+        default_factory=lambda: Asset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2143,6 +2210,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "usage",
         "additional_attributes",
         "terms",
+        "categories",
     ]
 
     @property
@@ -2196,16 +2264,24 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         self.attributes.additional_attributes = additional_attributes
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.terms
 
     @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.terms = terms
+
+    @property
+    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        return self.attributes.categories
+
+    @categories.setter
+    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.categories = categories
 
     type_name: str = Field("AtlasGlossary", allow_mutation=False)
 
@@ -2227,29 +2303,11 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="categories"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
         @classmethod
@@ -2259,7 +2317,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
 
     attributes: "AtlasGlossary.Attributes" = Field(
-        None,
+        default_factory=lambda: AtlasGlossary.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2289,21 +2347,7 @@ class DataSet(Asset, type_name="DataSet"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("DataSet", allow_mutation=False)
 
@@ -2312,32 +2356,6 @@ class DataSet(Asset, type_name="DataSet"):
         if v != "DataSet":
             raise ValueError("must be DataSet")
         return v
-
-    class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-
-    attributes: "DataSet.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
@@ -2348,21 +2366,7 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("ProcessExecution", allow_mutation=False)
 
@@ -2371,32 +2375,6 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
         if v != "ProcessExecution":
             raise ValueError("must be ProcessExecution")
         return v
-
-    class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-
-    attributes: "ProcessExecution.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
@@ -2414,7 +2392,22 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "abbreviation",
         "usage",
         "additional_attributes",
-        "terms",
+        "translation_terms",
+        "valid_values_for",
+        "synonyms",
+        "replaced_by",
+        "valid_values",
+        "replacement_terms",
+        "see_also",
+        "translated_terms",
+        "is_a",
+        "anchor",
+        "antonyms",
+        "assigned_entities",
+        "classifies",
+        "categories",
+        "preferred_to_terms",
+        "preferred_terms",
     ]
 
     @property
@@ -2478,16 +2471,164 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.additional_attributes = additional_attributes
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.translation_terms
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @translation_terms.setter
+    def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.translation_terms = translation_terms
+
+    @property
+    def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.valid_values_for
+
+    @valid_values_for.setter
+    def valid_values_for(self, valid_values_for: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.valid_values_for = valid_values_for
+
+    @property
+    def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.synonyms
+
+    @synonyms.setter
+    def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.synonyms = synonyms
+
+    @property
+    def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.replaced_by
+
+    @replaced_by.setter
+    def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.replaced_by = replaced_by
+
+    @property
+    def valid_values(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.valid_values
+
+    @valid_values.setter
+    def valid_values(self, valid_values: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.valid_values = valid_values
+
+    @property
+    def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.replacement_terms
+
+    @replacement_terms.setter
+    def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.replacement_terms = replacement_terms
+
+    @property
+    def see_also(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.see_also
+
+    @see_also.setter
+    def see_also(self, see_also: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.see_also = see_also
+
+    @property
+    def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.translated_terms
+
+    @translated_terms.setter
+    def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.translated_terms = translated_terms
+
+    @property
+    def is_a(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.is_a
+
+    @is_a.setter
+    def is_a(self, is_a: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_a = is_a
+
+    @property
+    def anchor(self) -> AtlasGlossary:
+        return self.attributes.anchor
+
+    @anchor.setter
+    def anchor(self, anchor: AtlasGlossary):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.anchor = anchor
+
+    @property
+    def antonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.antonyms
+
+    @antonyms.setter
+    def antonyms(self, antonyms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.antonyms = antonyms
+
+    @property
+    def assigned_entities(self) -> Optional[list[Referenceable]]:
+        return self.attributes.assigned_entities
+
+    @assigned_entities.setter
+    def assigned_entities(self, assigned_entities: Optional[list[Referenceable]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.assigned_entities = assigned_entities
+
+    @property
+    def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.classifies
+
+    @classifies.setter
+    def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.classifies = classifies
+
+    @property
+    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        return self.attributes.categories
+
+    @categories.setter
+    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.categories = categories
+
+    @property
+    def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.preferred_to_terms
+
+    @preferred_to_terms.setter
+    def preferred_to_terms(self, preferred_to_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preferred_to_terms = preferred_to_terms
+
+    @property
+    def preferred_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.preferred_terms
+
+    @preferred_terms.setter
+    def preferred_terms(self, preferred_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preferred_terms = preferred_terms
 
     type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
 
@@ -2522,23 +2663,14 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="replacedBy"
         )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="validValues"
         )  # relationship
         replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="replacementTerms"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         see_also: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="seeAlso"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="translatedTerms"
@@ -2555,20 +2687,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         assigned_entities: Optional[list[Referenceable]] = Field(
             None, description="", alias="assignedEntities"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         classifies: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="classifies"
         )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="categories"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="preferredToTerms"
@@ -2607,7 +2730,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
-        None,
+        default_factory=lambda: AtlasGlossaryTerm.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2672,21 +2795,7 @@ class Cloud(Asset, type_name="Cloud"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("Cloud", allow_mutation=False)
 
@@ -2695,32 +2804,6 @@ class Cloud(Asset, type_name="Cloud"):
         if v != "Cloud":
             raise ValueError("must be Cloud")
         return v
-
-    class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-
-    attributes: "Cloud.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class Infrastructure(Asset, type_name="Infrastructure"):
@@ -2731,21 +2814,7 @@ class Infrastructure(Asset, type_name="Infrastructure"):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("Infrastructure", allow_mutation=False)
 
@@ -2754,32 +2823,6 @@ class Infrastructure(Asset, type_name="Infrastructure"):
         if v != "Infrastructure":
             raise ValueError("must be Infrastructure")
         return v
-
-    class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-
-    attributes: "Infrastructure.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class Connection(Asset, type_name="Connection"):
@@ -2812,7 +2855,7 @@ class Connection(Asset, type_name="Connection"):
         "popularity_insights_timeframe",
         "has_popularity_insights",
         "connection_dbt_environments",
-        "terms",
+        "connection_s_s_o_credential_guid",
     ]
 
     @property
@@ -3034,16 +3077,18 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.connection_dbt_environments = connection_dbt_environments
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def connection_s_s_o_credential_guid(self) -> Optional[str]:
+        return self.attributes.connection_s_s_o_credential_guid
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @connection_s_s_o_credential_guid.setter
+    def connection_s_s_o_credential_guid(
+        self, connection_s_s_o_credential_guid: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.connection_s_s_o_credential_guid = (
+            connection_s_s_o_credential_guid
+        )
 
     type_name: str = Field("Connection", allow_mutation=False)
 
@@ -3101,24 +3146,9 @@ class Connection(Asset, type_name="Connection"):
         connection_dbt_environments: Optional[set[str]] = Field(
             None, description="", alias="connectionDbtEnvironments"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
+        connection_s_s_o_credential_guid: Optional[str] = Field(
+            None, description="", alias="connectionSSOCredentialGuid"
+        )
 
         def validate_required(self):
             if not self.name:
@@ -3164,7 +3194,7 @@ class Connection(Asset, type_name="Connection"):
                 )
 
     attributes: "Connection.Attributes" = Field(
-        None,
+        default_factory=lambda: Connection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3214,7 +3244,7 @@ class Process(Asset, type_name="Process"):
         "code",
         "sql",
         "ast",
-        "terms",
+        "column_processes",
     ]
 
     @property
@@ -3268,16 +3298,14 @@ class Process(Asset, type_name="Process"):
         self.attributes.ast = ast
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def column_processes(self) -> Optional[list[ColumnProcess]]:
+        return self.attributes.column_processes
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @column_processes.setter
+    def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.column_processes = column_processes
 
     type_name: str = Field("Process", allow_mutation=False)
 
@@ -3293,26 +3321,8 @@ class Process(Asset, type_name="Process"):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
         @staticmethod
@@ -3380,7 +3390,7 @@ class Process(Asset, type_name="Process"):
             )
 
     attributes: "Process.Attributes" = Field(
-        None,
+        default_factory=lambda: Process.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3420,6 +3430,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "long_description",
         "additional_attributes",
         "terms",
+        "anchor",
+        "parent_category",
+        "children_categories",
     ]
 
     @property
@@ -3453,16 +3466,46 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self.attributes.additional_attributes = additional_attributes
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.terms
 
     @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.terms = terms
+
+    @property
+    def anchor(self) -> AtlasGlossary:
+        return self.attributes.anchor
+
+    @anchor.setter
+    def anchor(self, anchor: AtlasGlossary):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.anchor = anchor
+
+    @property
+    def parent_category(self) -> Optional[AtlasGlossaryCategory]:
+        return self.attributes.parent_category
+
+    @parent_category.setter
+    def parent_category(self, parent_category: Optional[AtlasGlossaryCategory]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_category = parent_category
+
+    @property
+    def children_categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        return self.attributes.children_categories
+
+    @children_categories.setter
+    def children_categories(
+        self, children_categories: Optional[list[AtlasGlossaryCategory]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.children_categories = children_categories
 
     type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
 
@@ -3482,9 +3525,6 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
@@ -3494,23 +3534,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         parent_category: Optional[AtlasGlossaryCategory] = Field(
             None, description="", alias="parentCategory"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         children_categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="childrenCategories"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
 
         @classmethod
@@ -3531,7 +3556,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
-        None,
+        default_factory=lambda: AtlasGlossaryCategory.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3574,7 +3599,6 @@ class Badge(Asset, type_name="Badge"):
     _convience_properties: ClassVar[list[str]] = [
         "badge_conditions",
         "badge_metadata_attribute",
-        "terms",
     ]
 
     @property
@@ -3596,18 +3620,6 @@ class Badge(Asset, type_name="Badge"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.badge_metadata_attribute = badge_metadata_attribute
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
 
     type_name: str = Field("Badge", allow_mutation=False)
 
@@ -3643,24 +3655,6 @@ class Badge(Asset, type_name="Badge"):
         badge_metadata_attribute: Optional[str] = Field(
             None, description="", alias="badgeMetadataAttribute"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
         @classmethod
         # @validate_arguments()
@@ -3690,7 +3684,7 @@ class Badge(Asset, type_name="Badge"):
             )
 
     attributes: "Badge.Attributes" = Field(
-        None,
+        default_factory=lambda: Badge.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3705,20 +3699,29 @@ class Namespace(Asset, type_name="Namespace"):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "children_queries",
+        "children_folders",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def children_queries(self) -> Optional[list[Query]]:
+        return self.attributes.children_queries
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @children_queries.setter
+    def children_queries(self, children_queries: Optional[list[Query]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.children_queries = children_queries
+
+    @property
+    def children_folders(self) -> Optional[list[Folder]]:
+        return self.attributes.children_folders
+
+    @children_folders.setter
+    def children_folders(self, children_folders: Optional[list[Folder]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.children_folders = children_folders
 
     type_name: str = Field("Namespace", allow_mutation=False)
 
@@ -3729,33 +3732,15 @@ class Namespace(Asset, type_name="Namespace"):
         return v
 
     class Attributes(Asset.Attributes):
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
         )  # relationship
         children_folders: Optional[list[Folder]] = Field(
             None, description="", alias="childrenFolders"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "Namespace.Attributes" = Field(
-        None,
+        default_factory=lambda: Namespace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3770,20 +3755,29 @@ class Catalog(Asset, type_name="Catalog"):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "input_to_processes",
+        "output_from_processes",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def input_to_processes(self) -> Optional[list[Process]]:
+        return self.attributes.input_to_processes
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_processes(self) -> Optional[list[Process]]:
+        return self.attributes.output_from_processes
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
 
     type_name: str = Field("Catalog", allow_mutation=False)
 
@@ -3797,30 +3791,12 @@ class Catalog(Asset, type_name="Catalog"):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Catalog.Attributes" = Field(
-        None,
+        default_factory=lambda: Catalog.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3843,7 +3819,6 @@ class Google(Cloud):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "terms",
     ]
 
     @property
@@ -3926,18 +3901,6 @@ class Google(Cloud):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Google", allow_mutation=False)
 
     @validator("type_name")
@@ -3971,27 +3934,9 @@ class Google(Cloud):
         google_tags: Optional[list[GoogleTag]] = Field(
             None, description="", alias="googleTags"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "Google.Attributes" = Field(
-        None,
+        default_factory=lambda: Google.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4010,7 +3955,6 @@ class Azure(Cloud):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
-        "terms",
     ]
 
     @property
@@ -4057,18 +4001,6 @@ class Azure(Cloud):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Azure", allow_mutation=False)
 
     @validator("type_name")
@@ -4090,27 +4022,9 @@ class Azure(Cloud):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "Azure.Attributes" = Field(
-        None,
+        default_factory=lambda: Azure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4134,7 +4048,6 @@ class AWS(Cloud):
         "aws_owner_name",
         "aws_owner_id",
         "aws_tags",
-        "terms",
     ]
 
     @property
@@ -4227,18 +4140,6 @@ class AWS(Cloud):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("AWS", allow_mutation=False)
 
     @validator("type_name")
@@ -4263,27 +4164,9 @@ class AWS(Cloud):
         )
         aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "AWS.Attributes" = Field(
-        None,
+        default_factory=lambda: AWS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4298,20 +4181,29 @@ class BIProcess(Process):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "outputs",
+        "inputs",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def outputs(self) -> Optional[list[Catalog]]:
+        return self.attributes.outputs
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @outputs.setter
+    def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.outputs = outputs
+
+    @property
+    def inputs(self) -> Optional[list[Catalog]]:
+        return self.attributes.inputs
+
+    @inputs.setter
+    def inputs(self, inputs: Optional[list[Catalog]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.inputs = inputs
 
     type_name: str = Field("BIProcess", allow_mutation=False)
 
@@ -4325,33 +4217,12 @@ class BIProcess(Process):
         outputs: Optional[list[Catalog]] = Field(
             None, description="", alias="outputs"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         inputs: Optional[list[Catalog]] = Field(
             None, description="", alias="inputs"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        column_processes: Optional[list[ColumnProcess]] = Field(
-            None, description="", alias="columnProcesses"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "BIProcess.Attributes" = Field(
-        None,
+        default_factory=lambda: BIProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4366,20 +4237,40 @@ class ColumnProcess(Process):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "outputs",
+        "process",
+        "inputs",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def outputs(self) -> Optional[list[Catalog]]:
+        return self.attributes.outputs
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @outputs.setter
+    def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.outputs = outputs
+
+    @property
+    def process(self) -> Optional[Process]:
+        return self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
+    @property
+    def inputs(self) -> Optional[list[Catalog]]:
+        return self.attributes.inputs
+
+    @inputs.setter
+    def inputs(self, inputs: Optional[list[Catalog]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.inputs = inputs
 
     type_name: str = Field("ColumnProcess", allow_mutation=False)
 
@@ -4396,33 +4287,12 @@ class ColumnProcess(Process):
         process: Optional[Process] = Field(
             None, description="", alias="process"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         inputs: Optional[list[Catalog]] = Field(
             None, description="", alias="inputs"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        column_processes: Optional[list[ColumnProcess]] = Field(
-            None, description="", alias="columnProcesses"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "ColumnProcess.Attributes" = Field(
-        None,
+        default_factory=lambda: ColumnProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4439,7 +4309,6 @@ class Collection(Namespace):
     _convience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
-        "terms",
     ]
 
     @property
@@ -4462,18 +4331,6 @@ class Collection(Namespace):
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Collection", allow_mutation=False)
 
     @validator("type_name")
@@ -4485,33 +4342,9 @@ class Collection(Namespace):
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        children_queries: Optional[list[Query]] = Field(
-            None, description="", alias="childrenQueries"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        children_folders: Optional[list[Folder]] = Field(
-            None, description="", alias="childrenFolders"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "Collection.Attributes" = Field(
-        None,
+        default_factory=lambda: Collection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4528,7 +4361,7 @@ class Folder(Namespace):
     _convience_properties: ClassVar[list[str]] = [
         "parent_qualified_name",
         "collection_qualified_name",
-        "terms",
+        "parent",
     ]
 
     @property
@@ -4552,16 +4385,14 @@ class Folder(Namespace):
         self.attributes.collection_qualified_name = collection_qualified_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def parent(self) -> Namespace:
+        return self.attributes.parent
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @parent.setter
+    def parent(self, parent: Namespace):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.parent = parent
 
     type_name: str = Field("Folder", allow_mutation=False)
 
@@ -4579,33 +4410,9 @@ class Folder(Namespace):
             None, description="", alias="collectionQualifiedName"
         )
         parent: Namespace = Field(None, description="", alias="parent")  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        children_queries: Optional[list[Query]] = Field(
-            None, description="", alias="childrenQueries"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        children_folders: Optional[list[Folder]] = Field(
-            None, description="", alias="childrenFolders"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
 
     attributes: "Folder.Attributes" = Field(
-        None,
+        default_factory=lambda: Folder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4619,21 +4426,7 @@ class EventStore(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("EventStore", allow_mutation=False)
 
@@ -4642,38 +4435,6 @@ class EventStore(Catalog):
         if v != "EventStore":
             raise ValueError("must be EventStore")
         return v
-
-    class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "EventStore.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class ObjectStore(Catalog):
@@ -4684,21 +4445,7 @@ class ObjectStore(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("ObjectStore", allow_mutation=False)
 
@@ -4707,38 +4454,6 @@ class ObjectStore(Catalog):
         if v != "ObjectStore":
             raise ValueError("must be ObjectStore")
         return v
-
-    class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "ObjectStore.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class DataQuality(Catalog):
@@ -4749,21 +4464,7 @@ class DataQuality(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("DataQuality", allow_mutation=False)
 
@@ -4772,38 +4473,6 @@ class DataQuality(Catalog):
         if v != "DataQuality":
             raise ValueError("must be DataQuality")
         return v
-
-    class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "DataQuality.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class BI(Catalog):
@@ -4814,21 +4483,7 @@ class BI(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("BI", allow_mutation=False)
 
@@ -4837,38 +4492,6 @@ class BI(Catalog):
         if v != "BI":
             raise ValueError("must be BI")
         return v
-
-    class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "BI.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class SaaS(Catalog):
@@ -4879,21 +4502,7 @@ class SaaS(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("SaaS", allow_mutation=False)
 
@@ -4902,38 +4511,6 @@ class SaaS(Catalog):
         if v != "SaaS":
             raise ValueError("must be SaaS")
         return v
-
-    class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "SaaS.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class Dbt(Catalog):
@@ -4963,7 +4540,6 @@ class Dbt(Catalog):
         "dbt_tags",
         "dbt_connection_context",
         "dbt_semantic_layer_proxy_url",
-        "terms",
     ]
 
     @property
@@ -5150,18 +4726,6 @@ class Dbt(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Dbt", allow_mutation=False)
 
     @validator("type_name")
@@ -5215,33 +4779,9 @@ class Dbt(Catalog):
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
             None, description="", alias="dbtSemanticLayerProxyUrl"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Dbt.Attributes" = Field(
-        None,
+        default_factory=lambda: Dbt.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5260,7 +4800,6 @@ class Resource(Catalog):
         "is_global",
         "reference",
         "resource_metadata",
-        "terms",
     ]
 
     @property
@@ -5303,18 +4842,6 @@ class Resource(Catalog):
             self.attributes = self.Attributes()
         self.attributes.resource_metadata = resource_metadata
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Resource", allow_mutation=False)
 
     @validator("type_name")
@@ -5330,33 +4857,9 @@ class Resource(Catalog):
         resource_metadata: Optional[dict[str, str]] = Field(
             None, description="", alias="resourceMetadata"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Resource.Attributes" = Field(
-        None,
+        default_factory=lambda: Resource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5370,21 +4873,7 @@ class Insight(Catalog):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("Insight", allow_mutation=False)
 
@@ -5393,38 +4882,6 @@ class Insight(Catalog):
         if v != "Insight":
             raise ValueError("must be Insight")
         return v
-
-    class Attributes(Catalog.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "Insight.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class API(Catalog):
@@ -5442,7 +4899,6 @@ class API(Catalog):
         "api_spec_qualified_name",
         "api_external_docs",
         "api_is_auth_optional",
-        "terms",
     ]
 
     @property
@@ -5505,18 +4961,6 @@ class API(Catalog):
             self.attributes = self.Attributes()
         self.attributes.api_is_auth_optional = api_is_auth_optional
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("API", allow_mutation=False)
 
     @validator("type_name")
@@ -5540,33 +4984,9 @@ class API(Catalog):
         api_is_auth_optional: Optional[bool] = Field(
             None, description="", alias="apiIsAuthOptional"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "API.Attributes" = Field(
-        None,
+        default_factory=lambda: API.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5585,7 +5005,6 @@ class Tag(Catalog):
         "tag_attributes",
         "tag_allowed_values",
         "mapped_classification_name",
-        "terms",
     ]
 
     @property
@@ -5628,18 +5047,6 @@ class Tag(Catalog):
             self.attributes = self.Attributes()
         self.attributes.mapped_classification_name = mapped_classification_name
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Tag", allow_mutation=False)
 
     @validator("type_name")
@@ -5659,33 +5066,9 @@ class Tag(Catalog):
         mapped_classification_name: Optional[str] = Field(
             None, description="", alias="mappedClassificationName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Tag.Attributes" = Field(
-        None,
+        default_factory=lambda: Tag.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5714,7 +5097,10 @@ class SQL(Catalog):
         "view_qualified_name",
         "is_profiled",
         "last_profiled_at",
-        "terms",
+        "dbt_sources",
+        "sql_dbt_models",
+        "sql_dbt_sources",
+        "dbt_models",
     ]
 
     @property
@@ -5858,16 +5244,44 @@ class SQL(Catalog):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def dbt_sources(self) -> Optional[list[DbtSource]]:
+        return self.attributes.dbt_sources
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+        return self.attributes.sql_dbt_models
+
+    @sql_dbt_models.setter
+    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_models = sql_dbt_models
+
+    @property
+    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        return self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
 
     type_name: str = Field("SQL", allow_mutation=False)
 
@@ -5908,45 +5322,21 @@ class SQL(Catalog):
         last_profiled_at: Optional[datetime] = Field(
             None, description="", alias="lastProfiledAt"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="sqlDBTSources"
         )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
 
     attributes: "SQL.Attributes" = Field(
-        None,
+        default_factory=lambda: SQL.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5969,7 +5359,8 @@ class DataStudio(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "terms",
+        "input_to_processes",
+        "output_from_processes",
     ]
 
     @property
@@ -6053,16 +5444,24 @@ class DataStudio(Google):
         self.attributes.google_tags = google_tags
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def input_to_processes(self) -> Optional[list[Process]]:
+        return self.attributes.input_to_processes
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_processes(self) -> Optional[list[Process]]:
+        return self.attributes.output_from_processes
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
 
     type_name: str = Field("DataStudio", allow_mutation=False)
 
@@ -6100,30 +5499,12 @@ class DataStudio(Google):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "DataStudio.Attributes" = Field(
-        None,
+        default_factory=lambda: DataStudio.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6152,7 +5533,8 @@ class GCS(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "terms",
+        "input_to_processes",
+        "output_from_processes",
     ]
 
     @property
@@ -6296,16 +5678,24 @@ class GCS(Google):
         self.attributes.google_tags = google_tags
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def input_to_processes(self) -> Optional[list[Process]]:
+        return self.attributes.input_to_processes
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_processes(self) -> Optional[list[Process]]:
+        return self.attributes.output_from_processes
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
 
     type_name: str = Field("GCS", allow_mutation=False)
 
@@ -6359,30 +5749,12 @@ class GCS(Google):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "GCS.Attributes" = Field(
-        None,
+        default_factory=lambda: GCS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6409,7 +5781,6 @@ class DataStudioAsset(DataStudio):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "terms",
     ]
 
     @property
@@ -6536,18 +5907,6 @@ class DataStudioAsset(DataStudio):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("DataStudioAsset", allow_mutation=False)
 
     @validator("type_name")
@@ -6593,33 +5952,9 @@ class DataStudioAsset(DataStudio):
         google_tags: Optional[list[GoogleTag]] = Field(
             None, description="", alias="googleTags"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DataStudioAsset.Attributes" = Field(
-        None,
+        default_factory=lambda: DataStudioAsset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6639,7 +5974,6 @@ class ADLS(ObjectStore):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
-        "terms",
     ]
 
     @property
@@ -6696,18 +6030,6 @@ class ADLS(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
@@ -6732,33 +6054,9 @@ class ADLS(ObjectStore):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLS.Attributes" = Field(
-        None,
+        default_factory=lambda: ADLS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6784,7 +6082,6 @@ class S3(ObjectStore):
         "aws_owner_name",
         "aws_owner_id",
         "aws_tags",
-        "terms",
     ]
 
     @property
@@ -6897,18 +6194,6 @@ class S3(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("S3", allow_mutation=False)
 
     @validator("type_name")
@@ -6935,33 +6220,9 @@ class S3(ObjectStore):
         )
         aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "S3.Attributes" = Field(
-        None,
+        default_factory=lambda: S3.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7000,7 +6261,8 @@ class DbtColumnProcess(Dbt):
         "code",
         "sql",
         "ast",
-        "terms",
+        "process",
+        "column_processes",
     ]
 
     @property
@@ -7250,16 +6512,24 @@ class DbtColumnProcess(Dbt):
         self.attributes.ast = ast
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def process(self) -> Optional[Process]:
+        return self.attributes.process
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @process.setter
+    def process(self, process: Optional[Process]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.process = process
+
+    @property
+    def column_processes(self) -> Optional[list[ColumnProcess]]:
+        return self.attributes.column_processes
+
+    @column_processes.setter
+    def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_processes = column_processes
 
     type_name: str = Field("DbtColumnProcess", allow_mutation=False)
 
@@ -7322,39 +6592,15 @@ class DbtColumnProcess(Dbt):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         process: Optional[Process] = Field(
             None, description="", alias="process"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DbtColumnProcess.Attributes" = Field(
-        None,
+        default_factory=lambda: DbtColumnProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7368,21 +6614,7 @@ class Kafka(EventStore):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("Kafka", allow_mutation=False)
 
@@ -7391,38 +6623,6 @@ class Kafka(EventStore):
         if v != "Kafka":
             raise ValueError("must be Kafka")
         return v
-
-    class Attributes(EventStore.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "Kafka.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class MonteCarlo(DataQuality):
@@ -7436,7 +6636,6 @@ class MonteCarlo(DataQuality):
     _convience_properties: ClassVar[list[str]] = [
         "mc_labels",
         "mc_asset_qualified_names",
-        "terms",
     ]
 
     @property
@@ -7459,18 +6658,6 @@ class MonteCarlo(DataQuality):
             self.attributes = self.Attributes()
         self.attributes.mc_asset_qualified_names = mc_asset_qualified_names
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("MonteCarlo", allow_mutation=False)
 
     @validator("type_name")
@@ -7484,33 +6671,9 @@ class MonteCarlo(DataQuality):
         mc_asset_qualified_names: Optional[set[str]] = Field(
             None, description="", alias="mcAssetQualifiedNames"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MonteCarlo.Attributes" = Field(
-        None,
+        default_factory=lambda: MonteCarlo.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7529,7 +6692,9 @@ class Metric(DataQuality):
         "metric_s_q_l",
         "metric_filters",
         "metric_time_grains",
-        "terms",
+        "assets",
+        "metric_dimension_columns",
+        "metric_timestamp_column",
     ]
 
     @property
@@ -7573,16 +6738,36 @@ class Metric(DataQuality):
         self.attributes.metric_time_grains = metric_time_grains
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def assets(self) -> Optional[list[Asset]]:
+        return self.attributes.assets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @assets.setter
+    def assets(self, assets: Optional[list[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.assets = assets
+
+    @property
+    def metric_dimension_columns(self) -> Optional[list[Column]]:
+        return self.attributes.metric_dimension_columns
+
+    @metric_dimension_columns.setter
+    def metric_dimension_columns(
+        self, metric_dimension_columns: Optional[list[Column]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metric_dimension_columns = metric_dimension_columns
+
+    @property
+    def metric_timestamp_column(self) -> Optional[Column]:
+        return self.attributes.metric_timestamp_column
+
+    @metric_timestamp_column.setter
+    def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metric_timestamp_column = metric_timestamp_column
 
     type_name: str = Field("Metric", allow_mutation=False)
 
@@ -7601,12 +6786,6 @@ class Metric(DataQuality):
         metric_time_grains: Optional[set[str]] = Field(
             None, description="", alias="metricTimeGrains"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         assets: Optional[list[Asset]] = Field(
             None, description="", alias="assets"
         )  # relationship
@@ -7616,27 +6795,9 @@ class Metric(DataQuality):
         metric_timestamp_column: Optional[Column] = Field(
             None, description="", alias="metricTimestampColumn"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Metric.Attributes" = Field(
-        None,
+        default_factory=lambda: Metric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7653,7 +6814,6 @@ class Metabase(BI):
     _convience_properties: ClassVar[list[str]] = [
         "metabase_collection_name",
         "metabase_collection_qualified_name",
-        "terms",
     ]
 
     @property
@@ -7680,18 +6840,6 @@ class Metabase(BI):
             metabase_collection_qualified_name
         )
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Metabase", allow_mutation=False)
 
     @validator("type_name")
@@ -7707,33 +6855,9 @@ class Metabase(BI):
         metabase_collection_qualified_name: Optional[str] = Field(
             None, description="", alias="metabaseCollectionQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Metabase.Attributes" = Field(
-        None,
+        default_factory=lambda: Metabase.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7751,7 +6875,6 @@ class QuickSight(BI):
         "quick_sight_id",
         "quick_sight_sheet_id",
         "quick_sight_sheet_name",
-        "terms",
     ]
 
     @property
@@ -7784,18 +6907,6 @@ class QuickSight(BI):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("QuickSight", allow_mutation=False)
 
     @validator("type_name")
@@ -7814,33 +6925,9 @@ class QuickSight(BI):
         quick_sight_sheet_name: Optional[str] = Field(
             None, description="", alias="quickSightSheetName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSight.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSight.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7857,7 +6944,6 @@ class Thoughtspot(BI):
     _convience_properties: ClassVar[list[str]] = [
         "thoughtspot_chart_type",
         "thoughtspot_question_text",
-        "terms",
     ]
 
     @property
@@ -7880,18 +6966,6 @@ class Thoughtspot(BI):
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_question_text = thoughtspot_question_text
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Thoughtspot", allow_mutation=False)
 
     @validator("type_name")
@@ -7907,33 +6981,9 @@ class Thoughtspot(BI):
         thoughtspot_question_text: Optional[str] = Field(
             None, description="", alias="thoughtspotQuestionText"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Thoughtspot.Attributes" = Field(
-        None,
+        default_factory=lambda: Thoughtspot.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7952,7 +7002,6 @@ class PowerBI(BI):
         "power_b_i_table_qualified_name",
         "power_b_i_format_string",
         "power_b_i_endorsement",
-        "terms",
     ]
 
     @property
@@ -7999,18 +7048,6 @@ class PowerBI(BI):
             self.attributes = self.Attributes()
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("PowerBI", allow_mutation=False)
 
     @validator("type_name")
@@ -8032,33 +7069,9 @@ class PowerBI(BI):
         power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
             None, description="", alias="powerBIEndorsement"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBI.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBI.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8077,7 +7090,6 @@ class Preset(BI):
         "preset_workspace_qualified_name",
         "preset_dashboard_id",
         "preset_dashboard_qualified_name",
-        "terms",
     ]
 
     @property
@@ -8128,18 +7140,6 @@ class Preset(BI):
             preset_dashboard_qualified_name
         )
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Preset", allow_mutation=False)
 
     @validator("type_name")
@@ -8161,33 +7161,9 @@ class Preset(BI):
         preset_dashboard_qualified_name: Optional[str] = Field(
             None, description="", alias="presetDashboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Preset.Attributes" = Field(
-        None,
+        default_factory=lambda: Preset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8211,7 +7187,6 @@ class Mode(BI):
         "mode_report_qualified_name",
         "mode_query_name",
         "mode_query_qualified_name",
-        "terms",
     ]
 
     @property
@@ -8306,18 +7281,6 @@ class Mode(BI):
             self.attributes = self.Attributes()
         self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Mode", allow_mutation=False)
 
     @validator("type_name")
@@ -8350,33 +7313,9 @@ class Mode(BI):
         mode_query_qualified_name: Optional[str] = Field(
             None, description="", alias="modeQueryQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Mode.Attributes" = Field(
-        None,
+        default_factory=lambda: Mode.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8397,7 +7336,6 @@ class Sigma(BI):
         "sigma_page_name",
         "sigma_data_element_qualified_name",
         "sigma_data_element_name",
-        "terms",
     ]
 
     @property
@@ -8466,18 +7404,6 @@ class Sigma(BI):
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_name = sigma_data_element_name
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Sigma", allow_mutation=False)
 
     @validator("type_name")
@@ -8505,33 +7431,9 @@ class Sigma(BI):
         sigma_data_element_name: Optional[str] = Field(
             None, description="", alias="sigmaDataElementName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Sigma.Attributes" = Field(
-        None,
+        default_factory=lambda: Sigma.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8554,7 +7456,6 @@ class Qlik(BI):
         "qlik_app_qualified_name",
         "qlik_owner_id",
         "qlik_is_published",
-        "terms",
     ]
 
     @property
@@ -8637,18 +7538,6 @@ class Qlik(BI):
             self.attributes = self.Attributes()
         self.attributes.qlik_is_published = qlik_is_published
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Qlik", allow_mutation=False)
 
     @validator("type_name")
@@ -8672,33 +7561,9 @@ class Qlik(BI):
         qlik_is_published: Optional[bool] = Field(
             None, description="", alias="qlikIsPublished"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Qlik.Attributes" = Field(
-        None,
+        default_factory=lambda: Qlik.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8712,21 +7577,7 @@ class Tableau(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("Tableau", allow_mutation=False)
 
@@ -8735,38 +7586,6 @@ class Tableau(BI):
         if v != "Tableau":
             raise ValueError("must be Tableau")
         return v
-
-    class Attributes(BI.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "Tableau.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class Looker(BI):
@@ -8777,21 +7596,7 @@ class Looker(BI):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("Looker", allow_mutation=False)
 
@@ -8800,38 +7605,6 @@ class Looker(BI):
         if v != "Looker":
             raise ValueError("must be Looker")
         return v
-
-    class Attributes(BI.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "Looker.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class Redash(BI):
@@ -8844,7 +7617,6 @@ class Redash(BI):
 
     _convience_properties: ClassVar[list[str]] = [
         "redash_is_published",
-        "terms",
     ]
 
     @property
@@ -8856,18 +7628,6 @@ class Redash(BI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.redash_is_published = redash_is_published
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
 
     type_name: str = Field("Redash", allow_mutation=False)
 
@@ -8881,33 +7641,9 @@ class Redash(BI):
         redash_is_published: Optional[bool] = Field(
             None, description="", alias="redashIsPublished"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Redash.Attributes" = Field(
-        None,
+        default_factory=lambda: Redash.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8924,7 +7660,6 @@ class Salesforce(SaaS):
     _convience_properties: ClassVar[list[str]] = [
         "organization_qualified_name",
         "api_name",
-        "terms",
     ]
 
     @property
@@ -8947,18 +7682,6 @@ class Salesforce(SaaS):
             self.attributes = self.Attributes()
         self.attributes.api_name = api_name
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("Salesforce", allow_mutation=False)
 
     @validator("type_name")
@@ -8972,33 +7695,9 @@ class Salesforce(SaaS):
             None, description="", alias="organizationQualifiedName"
         )
         api_name: Optional[str] = Field(None, description="", alias="apiName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Salesforce.Attributes" = Field(
-        None,
+        default_factory=lambda: Salesforce.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9016,7 +7715,9 @@ class DbtModelColumn(Dbt):
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
-        "terms",
+        "dbt_model_column_sql_columns",
+        "sql_column",
+        "dbt_model",
     ]
 
     @property
@@ -9050,16 +7751,36 @@ class DbtModelColumn(Dbt):
         self.attributes.dbt_model_column_order = dbt_model_column_order
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
+        return self.attributes.dbt_model_column_sql_columns
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @dbt_model_column_sql_columns.setter
+    def dbt_model_column_sql_columns(
+        self, dbt_model_column_sql_columns: Optional[list[Column]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
+
+    @property
+    def sql_column(self) -> Optional[Column]:
+        return self.attributes.sql_column
+
+    @sql_column.setter
+    def sql_column(self, sql_column: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_column = sql_column
+
+    @property
+    def dbt_model(self) -> Optional[DbtModel]:
+        return self.attributes.dbt_model
+
+    @dbt_model.setter
+    def dbt_model(self, dbt_model: Optional[DbtModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model = dbt_model
 
     type_name: str = Field("DbtModelColumn", allow_mutation=False)
 
@@ -9082,39 +7803,15 @@ class DbtModelColumn(Dbt):
         dbt_model_column_sql_columns: Optional[list[Column]] = Field(
             None, description="", alias="dbtModelColumnSqlColumns"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sql_column: Optional[Column] = Field(
             None, description="", alias="sqlColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DbtModelColumn.Attributes" = Field(
-        None,
+        default_factory=lambda: DbtModelColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9142,7 +7839,10 @@ class DbtModel(Dbt):
         "dbt_model_execution_time",
         "dbt_model_run_generated_at",
         "dbt_model_run_elapsed_time",
-        "terms",
+        "dbt_metrics",
+        "dbt_model_sql_assets",
+        "dbt_model_columns",
+        "sql_asset",
     ]
 
     @property
@@ -9286,16 +7986,44 @@ class DbtModel(Dbt):
         self.attributes.dbt_model_run_elapsed_time = dbt_model_run_elapsed_time
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+        return self.attributes.dbt_metrics
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @dbt_metrics.setter
+    def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.dbt_metrics = dbt_metrics
+
+    @property
+    def dbt_model_sql_assets(self) -> Optional[list[SQL]]:
+        return self.attributes.dbt_model_sql_assets
+
+    @dbt_model_sql_assets.setter
+    def dbt_model_sql_assets(self, dbt_model_sql_assets: Optional[list[SQL]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_sql_assets = dbt_model_sql_assets
+
+    @property
+    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return self.attributes.dbt_model_columns
+
+    @dbt_model_columns.setter
+    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_columns = dbt_model_columns
+
+    @property
+    def sql_asset(self) -> Optional[SQL]:
+        return self.attributes.sql_asset
+
+    @sql_asset.setter
+    def sql_asset(self, sql_asset: Optional[SQL]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_asset = sql_asset
 
     type_name: str = Field("DbtModel", allow_mutation=False)
 
@@ -9337,45 +8065,21 @@ class DbtModel(Dbt):
         dbt_model_run_elapsed_time: Optional[float] = Field(
             None, description="", alias="dbtModelRunElapsedTime"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         dbt_model_sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="dbtModelSqlAssets"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
             None, description="", alias="dbtModelColumns"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         sql_asset: Optional[SQL] = Field(
             None, description="", alias="sqlAsset"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DbtModel.Attributes" = Field(
-        None,
+        default_factory=lambda: DbtModel.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9413,7 +8117,11 @@ class DbtMetric(Dbt):
         "metric_s_q_l",
         "metric_filters",
         "metric_time_grains",
-        "terms",
+        "metric_timestamp_column",
+        "dbt_model",
+        "assets",
+        "metric_dimension_columns",
+        "dbt_metric_filter_columns",
     ]
 
     @property
@@ -9651,16 +8359,58 @@ class DbtMetric(Dbt):
         self.attributes.metric_time_grains = metric_time_grains
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def metric_timestamp_column(self) -> Optional[Column]:
+        return self.attributes.metric_timestamp_column
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @metric_timestamp_column.setter
+    def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.metric_timestamp_column = metric_timestamp_column
+
+    @property
+    def dbt_model(self) -> Optional[DbtModel]:
+        return self.attributes.dbt_model
+
+    @dbt_model.setter
+    def dbt_model(self, dbt_model: Optional[DbtModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model = dbt_model
+
+    @property
+    def assets(self) -> Optional[list[Asset]]:
+        return self.attributes.assets
+
+    @assets.setter
+    def assets(self, assets: Optional[list[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.assets = assets
+
+    @property
+    def metric_dimension_columns(self) -> Optional[list[Column]]:
+        return self.attributes.metric_dimension_columns
+
+    @metric_dimension_columns.setter
+    def metric_dimension_columns(
+        self, metric_dimension_columns: Optional[list[Column]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metric_dimension_columns = metric_dimension_columns
+
+    @property
+    def dbt_metric_filter_columns(self) -> Optional[list[Column]]:
+        return self.attributes.dbt_metric_filter_columns
+
+    @dbt_metric_filter_columns.setter
+    def dbt_metric_filter_columns(
+        self, dbt_metric_filter_columns: Optional[list[Column]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_metric_filter_columns = dbt_metric_filter_columns
 
     type_name: str = Field("DbtMetric", allow_mutation=False)
 
@@ -9726,23 +8476,11 @@ class DbtMetric(Dbt):
         metric_time_grains: Optional[set[str]] = Field(
             None, description="", alias="metricTimeGrains"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         metric_timestamp_column: Optional[Column] = Field(
             None, description="", alias="metricTimestampColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         assets: Optional[list[Asset]] = Field(
             None, description="", alias="assets"
@@ -9753,21 +8491,9 @@ class DbtMetric(Dbt):
         dbt_metric_filter_columns: Optional[list[Column]] = Field(
             None, description="", alias="dbtMetricFilterColumns"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DbtMetric.Attributes" = Field(
-        None,
+        default_factory=lambda: DbtMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9784,7 +8510,8 @@ class DbtSource(Dbt):
     _convience_properties: ClassVar[list[str]] = [
         "dbt_state",
         "dbt_freshness_criteria",
-        "terms",
+        "sql_assets",
+        "sql_asset",
     ]
 
     @property
@@ -9808,16 +8535,24 @@ class DbtSource(Dbt):
         self.attributes.dbt_freshness_criteria = dbt_freshness_criteria
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sql_assets(self) -> Optional[list[SQL]]:
+        return self.attributes.sql_assets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sql_assets.setter
+    def sql_assets(self, sql_assets: Optional[list[SQL]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sql_assets = sql_assets
+
+    @property
+    def sql_asset(self) -> Optional[SQL]:
+        return self.attributes.sql_asset
+
+    @sql_asset.setter
+    def sql_asset(self, sql_asset: Optional[SQL]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_asset = sql_asset
 
     type_name: str = Field("DbtSource", allow_mutation=False)
 
@@ -9832,39 +8567,15 @@ class DbtSource(Dbt):
         dbt_freshness_criteria: Optional[str] = Field(
             None, description="", alias="dbtFreshnessCriteria"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="sqlAssets"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         sql_asset: Optional[SQL] = Field(
             None, description="", alias="sqlAsset"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DbtSource.Attributes" = Field(
-        None,
+        default_factory=lambda: DbtSource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9903,7 +8614,7 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
-        "terms",
+        "column_processes",
     ]
 
     @property
@@ -10151,16 +8862,14 @@ class DbtProcess(Dbt):
         self.attributes.ast = ast
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def column_processes(self) -> Optional[list[ColumnProcess]]:
+        return self.attributes.column_processes
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @column_processes.setter
+    def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.column_processes = column_processes
 
     type_name: str = Field("DbtProcess", allow_mutation=False)
 
@@ -10223,36 +8932,12 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "DbtProcess.Attributes" = Field(
-        None,
+        default_factory=lambda: DbtProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10269,7 +8954,6 @@ class ReadmeTemplate(Resource):
     _convience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
-        "terms",
     ]
 
     @property
@@ -10292,18 +8976,6 @@ class ReadmeTemplate(Resource):
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("ReadmeTemplate", allow_mutation=False)
 
     @validator("type_name")
@@ -10315,33 +8987,9 @@ class ReadmeTemplate(Resource):
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ReadmeTemplate.Attributes" = Field(
-        None,
+        default_factory=lambda: ReadmeTemplate.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10356,20 +9004,40 @@ class Readme(Resource):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "internal",
+        "asset",
+        "see_also",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def internal(self) -> Optional[Internal]:
+        return self.attributes.internal
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @internal.setter
+    def internal(self, internal: Optional[Internal]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.internal = internal
+
+    @property
+    def asset(self) -> Optional[Asset]:
+        return self.attributes.asset
+
+    @asset.setter
+    def asset(self, asset: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset = asset
+
+    @property
+    def see_also(self) -> Optional[list[Readme]]:
+        return self.attributes.see_also
+
+    @see_also.setter
+    def see_also(self, see_also: Optional[list[Readme]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.see_also = see_also
 
     type_name: str = Field("Readme", allow_mutation=False)
 
@@ -10404,38 +9072,14 @@ class Readme(Resource):
         )
 
     class Attributes(Resource.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         internal: Optional[Internal] = Field(
             None, description="", alias="__internal"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         asset: Optional[Asset] = Field(
             None, description="", alias="asset"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         see_also: Optional[list[Readme]] = Field(
             None, description="", alias="seeAlso"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -10463,7 +9107,73 @@ class Readme(Resource):
             )
 
     attributes: "Readme.Attributes" = Field(
-        None,
+        default_factory=lambda: Readme.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class File(Resource):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in File._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "file_type",
+        "file_path",
+        "file_assets",
+    ]
+
+    @property
+    def file_type(self) -> Optional[FileType]:
+        return self.attributes.file_type
+
+    @file_type.setter
+    def file_type(self, file_type: Optional[FileType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.file_type = file_type
+
+    @property
+    def file_path(self) -> Optional[str]:
+        return self.attributes.file_path
+
+    @file_path.setter
+    def file_path(self, file_path: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.file_path = file_path
+
+    @property
+    def file_assets(self) -> Optional[Asset]:
+        return self.attributes.file_assets
+
+    @file_assets.setter
+    def file_assets(self, file_assets: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.file_assets = file_assets
+
+    type_name: str = Field("File", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "File":
+            raise ValueError("must be File")
+        return v
+
+    class Attributes(Resource.Attributes):
+        file_type: Optional[FileType] = Field(None, description="", alias="fileType")
+        file_path: Optional[str] = Field(None, description="", alias="filePath")
+        file_assets: Optional[Asset] = Field(
+            None, description="", alias="fileAssets"
+        )  # relationship
+
+    attributes: "File.Attributes" = Field(
+        default_factory=lambda: File.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10480,7 +9190,8 @@ class Link(Resource):
     _convience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
-        "terms",
+        "internal",
+        "asset",
     ]
 
     @property
@@ -10504,16 +9215,24 @@ class Link(Resource):
         self.attributes.icon_type = icon_type
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def internal(self) -> Optional[Internal]:
+        return self.attributes.internal
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @internal.setter
+    def internal(self, internal: Optional[Internal]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.internal = internal
+
+    @property
+    def asset(self) -> Optional[Asset]:
+        return self.attributes.asset
+
+    @asset.setter
+    def asset(self, asset: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset = asset
 
     type_name: str = Field("Link", allow_mutation=False)
 
@@ -10526,39 +9245,15 @@ class Link(Resource):
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         internal: Optional[Internal] = Field(
             None, description="", alias="internal"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         asset: Optional[Asset] = Field(
             None, description="", alias="asset"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Link.Attributes" = Field(
-        None,
+        default_factory=lambda: Link.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10581,7 +9276,7 @@ class APISpec(API):
         "api_spec_license_url",
         "api_spec_contract_version",
         "api_spec_service_alias",
-        "terms",
+        "api_paths",
     ]
 
     @property
@@ -10667,16 +9362,14 @@ class APISpec(API):
         self.attributes.api_spec_service_alias = api_spec_service_alias
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def api_paths(self) -> Optional[list[APIPath]]:
+        return self.attributes.api_paths
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @api_paths.setter
+    def api_paths(self, api_paths: Optional[list[APIPath]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.api_paths = api_paths
 
     type_name: str = Field("APISpec", allow_mutation=False)
 
@@ -10711,36 +9404,12 @@ class APISpec(API):
         api_spec_service_alias: Optional[str] = Field(
             None, description="", alias="apiSpecServiceAlias"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         api_paths: Optional[list[APIPath]] = Field(
             None, description="", alias="apiPaths"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "APISpec.Attributes" = Field(
-        None,
+        default_factory=lambda: APISpec.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10761,7 +9430,7 @@ class APIPath(API):
         "api_path_available_operations",
         "api_path_available_response_codes",
         "api_path_is_ingress_exposed",
-        "terms",
+        "api_spec",
     ]
 
     @property
@@ -10831,16 +9500,14 @@ class APIPath(API):
         self.attributes.api_path_is_ingress_exposed = api_path_is_ingress_exposed
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def api_spec(self) -> Optional[APISpec]:
+        return self.attributes.api_spec
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @api_spec.setter
+    def api_spec(self, api_spec: Optional[APISpec]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.api_spec = api_spec
 
     type_name: str = Field("APIPath", allow_mutation=False)
 
@@ -10869,36 +9536,12 @@ class APIPath(API):
         api_path_is_ingress_exposed: Optional[bool] = Field(
             None, description="", alias="apiPathIsIngressExposed"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         api_spec: Optional[APISpec] = Field(
             None, description="", alias="apiSpec"
         )  # relationship
 
     attributes: "APIPath.Attributes" = Field(
-        None,
+        default_factory=lambda: APIPath.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10931,7 +9574,11 @@ class SnowflakeTag(Tag):
         "view_qualified_name",
         "is_profiled",
         "last_profiled_at",
-        "terms",
+        "dbt_sources",
+        "sql_dbt_models",
+        "sql_dbt_sources",
+        "dbt_models",
+        "atlan_schema",
     ]
 
     @property
@@ -11115,16 +9762,54 @@ class SnowflakeTag(Tag):
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def dbt_sources(self) -> Optional[list[DbtSource]]:
+        return self.attributes.dbt_sources
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+        return self.attributes.sql_dbt_models
+
+    @sql_dbt_models.setter
+    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_models = sql_dbt_models
+
+    @property
+    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        return self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("SnowflakeTag", allow_mutation=False)
 
@@ -11175,17 +9860,8 @@ class SnowflakeTag(Tag):
         last_profiled_at: Optional[datetime] = Field(
             None, description="", alias="lastProfiledAt"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         dbt_sources: Optional[list[DbtSource]] = Field(
             None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         sql_dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="sqlDbtModels"
@@ -11196,27 +9872,12 @@ class SnowflakeTag(Tag):
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SnowflakeTag.Attributes" = Field(
-        None,
+        default_factory=lambda: SnowflakeTag.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11246,7 +9907,8 @@ class TablePartition(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
-        "terms",
+        "columns",
+        "parent_table",
     ]
 
     @property
@@ -11400,16 +10062,24 @@ class TablePartition(SQL):
         self.attributes.partition_list = partition_list
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def columns(self) -> Optional[list[Column]]:
+        return self.attributes.columns
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.columns = columns
+
+    @property
+    def parent_table(self) -> Optional[Table]:
+        return self.attributes.parent_table
+
+    @parent_table.setter
+    def parent_table(self, parent_table: Optional[Table]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_table = parent_table
 
     type_name: str = Field("TablePartition", allow_mutation=False)
 
@@ -11453,51 +10123,15 @@ class TablePartition(SQL):
         partition_list: Optional[str] = Field(
             None, description="", alias="partitionList"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
         )  # relationship
         parent_table: Optional[Table] = Field(
             None, description="", alias="parentTable"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
-        None,
+        default_factory=lambda: TablePartition.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11526,7 +10160,10 @@ class Table(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
-        "terms",
+        "partitions",
+        "columns",
+        "queries",
+        "atlan_schema",
     ]
 
     @property
@@ -11670,16 +10307,44 @@ class Table(SQL):
         self.attributes.partition_list = partition_list
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def partitions(self) -> Optional[list[TablePartition]]:
+        return self.attributes.partitions
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @partitions.setter
+    def partitions(self, partitions: Optional[list[TablePartition]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.partitions = partitions
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("Table", allow_mutation=False)
 
@@ -11725,50 +10390,14 @@ class Table(SQL):
         partitions: Optional[list[TablePartition]] = Field(
             None, description="", alias="partitions"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -11797,7 +10426,7 @@ class Table(SQL):
             )
 
     attributes: "Table.Attributes" = Field(
-        None,
+        default_factory=lambda: Table.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11833,7 +10462,10 @@ class Query(SQL):
         "collection_qualified_name",
         "is_visual_query",
         "visual_builder_schema_base64",
-        "terms",
+        "parent",
+        "columns",
+        "tables",
+        "views",
     ]
 
     @property
@@ -11943,16 +10575,44 @@ class Query(SQL):
         self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def parent(self) -> Namespace:
+        return self.attributes.parent
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @parent.setter
+    def parent(self, parent: Namespace):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.parent = parent
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def tables(self) -> Optional[list[Table]]:
+        return self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def views(self) -> Optional[list[View]]:
+        return self.attributes.views
+
+    @views.setter
+    def views(self, views: Optional[list[View]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.views = views
 
     type_name: str = Field("Query", allow_mutation=False)
 
@@ -11989,55 +10649,19 @@ class Query(SQL):
         visual_builder_schema_base64: Optional[str] = Field(
             None, description="", alias="visualBuilderSchemaBase64"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         parent: Namespace = Field(None, description="", alias="parent")  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
         )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
         views: Optional[list[View]] = Field(
             None, description="", alias="views"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Query.Attributes" = Field(
-        None,
+        default_factory=lambda: Query.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12097,7 +10721,18 @@ class Column(SQL):
         "column_uniqueness_percentage",
         "column_variance",
         "column_top_values",
-        "terms",
+        "view",
+        "data_quality_metric_dimensions",
+        "dbt_model_columns",
+        "table",
+        "column_dbt_model_columns",
+        "materialised_view",
+        "queries",
+        "metric_timestamps",
+        "foreign_key_to",
+        "foreign_key_from",
+        "dbt_metrics",
+        "table_partition",
     ]
 
     @property
@@ -12577,16 +11212,128 @@ class Column(SQL):
         self.attributes.column_top_values = column_top_values
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def view(self) -> Optional[View]:
+        return self.attributes.view
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @view.setter
+    def view(self, view: Optional[View]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.view = view
+
+    @property
+    def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
+        return self.attributes.data_quality_metric_dimensions
+
+    @data_quality_metric_dimensions.setter
+    def data_quality_metric_dimensions(
+        self, data_quality_metric_dimensions: Optional[list[Metric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
+
+    @property
+    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return self.attributes.dbt_model_columns
+
+    @dbt_model_columns.setter
+    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_columns = dbt_model_columns
+
+    @property
+    def table(self) -> Optional[Table]:
+        return self.attributes.table
+
+    @table.setter
+    def table(self, table: Optional[Table]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table = table
+
+    @property
+    def column_dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return self.attributes.column_dbt_model_columns
+
+    @column_dbt_model_columns.setter
+    def column_dbt_model_columns(
+        self, column_dbt_model_columns: Optional[list[DbtModelColumn]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_dbt_model_columns = column_dbt_model_columns
+
+    @property
+    def materialised_view(self) -> Optional[MaterialisedView]:
+        return self.attributes.materialised_view
+
+    @materialised_view.setter
+    def materialised_view(self, materialised_view: Optional[MaterialisedView]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.materialised_view = materialised_view
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def metric_timestamps(self) -> Optional[list[Metric]]:
+        return self.attributes.metric_timestamps
+
+    @metric_timestamps.setter
+    def metric_timestamps(self, metric_timestamps: Optional[list[Metric]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metric_timestamps = metric_timestamps
+
+    @property
+    def foreign_key_to(self) -> Optional[list[Column]]:
+        return self.attributes.foreign_key_to
+
+    @foreign_key_to.setter
+    def foreign_key_to(self, foreign_key_to: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.foreign_key_to = foreign_key_to
+
+    @property
+    def foreign_key_from(self) -> Optional[Column]:
+        return self.attributes.foreign_key_from
+
+    @foreign_key_from.setter
+    def foreign_key_from(self, foreign_key_from: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.foreign_key_from = foreign_key_from
+
+    @property
+    def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+        return self.attributes.dbt_metrics
+
+    @dbt_metrics.setter
+    def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_metrics = dbt_metrics
+
+    @property
+    def table_partition(self) -> Optional[TablePartition]:
+        return self.attributes.table_partition
+
+    @table_partition.setter
+    def table_partition(self, table_partition: Optional[TablePartition]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_partition = table_partition
 
     type_name: str = Field("Column", allow_mutation=False)
 
@@ -12690,63 +11437,9 @@ class Column(SQL):
         column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
             None, description="", alias="columnTopValues"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        materialised_view: Optional[MaterialisedView] = Field(
-            None, description="", alias="materialisedView"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
-        metric_timestamps: Optional[list[Metric]] = Field(
-            None, description="", alias="metricTimestamps"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        foreign_key_to: Optional[list[Column]] = Field(
-            None, description="", alias="foreignKeyTo"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        foreign_key_from: Optional[Column] = Field(
-            None, description="", alias="foreignKeyFrom"
-        )  # relationship
-        dbt_metrics: Optional[list[DbtMetric]] = Field(
-            None, description="", alias="dbtMetrics"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         view: Optional[View] = Field(None, description="", alias="view")  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        table_partition: Optional[TablePartition] = Field(
-            None, description="", alias="tablePartition"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         data_quality_metric_dimensions: Optional[list[Metric]] = Field(
             None, description="", alias="dataQualityMetricDimensions"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
             None, description="", alias="dbtModelColumns"
@@ -12754,11 +11447,29 @@ class Column(SQL):
         table: Optional[Table] = Field(
             None, description="", alias="table"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         column_dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
             None, description="", alias="columnDbtModelColumns"
+        )  # relationship
+        materialised_view: Optional[MaterialisedView] = Field(
+            None, description="", alias="materialisedView"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
+        )  # relationship
+        metric_timestamps: Optional[list[Metric]] = Field(
+            None, description="", alias="metricTimestamps"
+        )  # relationship
+        foreign_key_to: Optional[list[Column]] = Field(
+            None, description="", alias="foreignKeyTo"
+        )  # relationship
+        foreign_key_from: Optional[Column] = Field(
+            None, description="", alias="foreignKeyFrom"
+        )  # relationship
+        dbt_metrics: Optional[list[DbtMetric]] = Field(
+            None, description="", alias="dbtMetrics"
+        )  # relationship
+        table_partition: Optional[TablePartition] = Field(
+            None, description="", alias="tablePartition"
         )  # relationship
 
         @classmethod
@@ -12819,7 +11530,7 @@ class Column(SQL):
         )
 
     attributes: "Column.Attributes" = Field(
-        None,
+        default_factory=lambda: Column.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12836,7 +11547,14 @@ class Schema(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "table_count",
         "views_count",
-        "terms",
+        "snowflake_tags",
+        "materialised_views",
+        "tables",
+        "database",
+        "snowflake_pipes",
+        "snowflake_streams",
+        "procedures",
+        "views",
     ]
 
     @property
@@ -12860,16 +11578,84 @@ class Schema(SQL):
         self.attributes.views_count = views_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
+        return self.attributes.snowflake_tags
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @snowflake_tags.setter
+    def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.snowflake_tags = snowflake_tags
+
+    @property
+    def materialised_views(self) -> Optional[list[MaterialisedView]]:
+        return self.attributes.materialised_views
+
+    @materialised_views.setter
+    def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.materialised_views = materialised_views
+
+    @property
+    def tables(self) -> Optional[list[Table]]:
+        return self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def database(self) -> Optional[Database]:
+        return self.attributes.database
+
+    @database.setter
+    def database(self, database: Optional[Database]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database = database
+
+    @property
+    def snowflake_pipes(self) -> Optional[list[SnowflakePipe]]:
+        return self.attributes.snowflake_pipes
+
+    @snowflake_pipes.setter
+    def snowflake_pipes(self, snowflake_pipes: Optional[list[SnowflakePipe]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_pipes = snowflake_pipes
+
+    @property
+    def snowflake_streams(self) -> Optional[list[SnowflakeStream]]:
+        return self.attributes.snowflake_streams
+
+    @snowflake_streams.setter
+    def snowflake_streams(self, snowflake_streams: Optional[list[SnowflakeStream]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_streams = snowflake_streams
+
+    @property
+    def procedures(self) -> Optional[list[Procedure]]:
+        return self.attributes.procedures
+
+    @procedures.setter
+    def procedures(self, procedures: Optional[list[Procedure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.procedures = procedures
+
+    @property
+    def views(self) -> Optional[list[View]]:
+        return self.attributes.views
+
+    @views.setter
+    def views(self, views: Optional[list[View]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.views = views
 
     type_name: str = Field("Schema", allow_mutation=False)
 
@@ -12888,35 +11674,11 @@ class Schema(SQL):
         materialised_views: Optional[list[MaterialisedView]] = Field(
             None, description="", alias="materialisedViews"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
         )  # relationship
         database: Optional[Database] = Field(
             None, description="", alias="database"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
             None, description="", alias="snowflakePipes"
@@ -12927,20 +11689,8 @@ class Schema(SQL):
         procedures: Optional[list[Procedure]] = Field(
             None, description="", alias="procedures"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
         views: Optional[list[View]] = Field(
             None, description="", alias="views"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -12971,7 +11721,7 @@ class Schema(SQL):
             )
 
     attributes: "Schema.Attributes" = Field(
-        None,
+        default_factory=lambda: Schema.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13002,7 +11752,7 @@ class SnowflakeStream(SQL):
         "snowflake_stream_mode",
         "snowflake_stream_is_stale",
         "snowflake_stream_stale_after",
-        "terms",
+        "atlan_schema",
     ]
 
     @property
@@ -13058,16 +11808,14 @@ class SnowflakeStream(SQL):
         self.attributes.snowflake_stream_stale_after = snowflake_stream_stale_after
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("SnowflakeStream", allow_mutation=False)
 
@@ -13093,48 +11841,12 @@ class SnowflakeStream(SQL):
         snowflake_stream_stale_after: Optional[datetime] = Field(
             None, description="", alias="snowflakeStreamStaleAfter"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SnowflakeStream.Attributes" = Field(
-        None,
+        default_factory=lambda: SnowflakeStream.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13152,7 +11864,7 @@ class SnowflakePipe(SQL):
         "definition",
         "snowflake_pipe_is_auto_ingest_enabled",
         "snowflake_pipe_notification_channel_name",
-        "terms",
+        "atlan_schema",
     ]
 
     @property
@@ -13194,16 +11906,14 @@ class SnowflakePipe(SQL):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("SnowflakePipe", allow_mutation=False)
 
@@ -13221,48 +11931,12 @@ class SnowflakePipe(SQL):
         snowflake_pipe_notification_channel_name: Optional[str] = Field(
             None, description="", alias="snowflakePipeNotificationChannelName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SnowflakePipe.Attributes" = Field(
-        None,
+        default_factory=lambda: SnowflakePipe.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13278,7 +11952,7 @@ class Database(SQL):
 
     _convience_properties: ClassVar[list[str]] = [
         "schema_count",
-        "terms",
+        "schemas",
     ]
 
     @property
@@ -13292,16 +11966,14 @@ class Database(SQL):
         self.attributes.schema_count = schema_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def schemas(self) -> Optional[list[Schema]]:
+        return self.attributes.schemas
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @schemas.setter
+    def schemas(self, schemas: Optional[list[Schema]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.schemas = schemas
 
     type_name: str = Field("Database", allow_mutation=False)
 
@@ -13313,44 +11985,8 @@ class Database(SQL):
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         schemas: Optional[list[Schema]] = Field(
             None, description="", alias="schemas"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -13378,7 +12014,7 @@ class Database(SQL):
             )
 
     attributes: "Database.Attributes" = Field(
-        None,
+        default_factory=lambda: Database.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13417,7 +12053,7 @@ class Procedure(SQL):
 
     _convience_properties: ClassVar[list[str]] = [
         "definition",
-        "terms",
+        "atlan_schema",
     ]
 
     @property
@@ -13431,16 +12067,14 @@ class Procedure(SQL):
         self.attributes.definition = definition
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("Procedure", allow_mutation=False)
 
@@ -13452,48 +12086,12 @@ class Procedure(SQL):
 
     class Attributes(SQL.Attributes):
         definition: str = Field(None, description="", alias="definition")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
-        None,
+        default_factory=lambda: Procedure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13516,7 +12114,9 @@ class View(SQL):
         "alias",
         "is_temporary",
         "definition",
-        "terms",
+        "columns",
+        "queries",
+        "atlan_schema",
     ]
 
     @property
@@ -13600,16 +12200,34 @@ class View(SQL):
         self.attributes.definition = definition
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def columns(self) -> Optional[list[Column]]:
+        return self.attributes.columns
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.columns = columns
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("View", allow_mutation=False)
 
@@ -13632,50 +12250,14 @@ class View(SQL):
         alias: Optional[str] = Field(None, description="", alias="alias")
         is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
         definition: Optional[str] = Field(None, description="", alias="definition")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -13704,7 +12286,7 @@ class View(SQL):
             )
 
     attributes: "View.Attributes" = Field(
-        None,
+        default_factory=lambda: View.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13742,7 +12324,8 @@ class MaterialisedView(SQL):
         "alias",
         "is_temporary",
         "definition",
-        "terms",
+        "columns",
+        "atlan_schema",
     ]
 
     @property
@@ -13866,16 +12449,24 @@ class MaterialisedView(SQL):
         self.attributes.definition = definition
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def columns(self) -> Optional[list[Column]]:
+        return self.attributes.columns
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.columns = columns
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
 
     type_name: str = Field("MaterialisedView", allow_mutation=False)
 
@@ -13906,51 +12497,15 @@ class MaterialisedView(SQL):
         alias: Optional[str] = Field(None, description="", alias="alias")
         is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
         definition: Optional[str] = Field(None, description="", alias="definition")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MaterialisedView.Attributes" = Field(
-        None,
+        default_factory=lambda: MaterialisedView.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13980,7 +12535,7 @@ class GCSObject(GCS):
         "gcs_object_content_disposition",
         "gcs_object_content_language",
         "gcs_object_retention_expiration_date",
-        "terms",
+        "gcs_bucket",
     ]
 
     @property
@@ -14144,16 +12699,14 @@ class GCSObject(GCS):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def gcs_bucket(self) -> Optional[GCSBucket]:
+        return self.attributes.gcs_bucket
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @gcs_bucket.setter
+    def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.gcs_bucket = gcs_bucket
 
     type_name: str = Field("GCSObject", allow_mutation=False)
 
@@ -14209,36 +12762,12 @@ class GCSObject(GCS):
         gcs_object_retention_expiration_date: Optional[datetime] = Field(
             None, description="", alias="gcsObjectRetentionExpirationDate"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         gcs_bucket: Optional[GCSBucket] = Field(
             None, description="", alias="gcsBucket"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "GCSObject.Attributes" = Field(
-        None,
+        default_factory=lambda: GCSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14260,7 +12789,7 @@ class GCSBucket(GCS):
         "gcs_bucket_retention_effective_time",
         "gcs_bucket_lifecycle_rules",
         "gcs_bucket_retention_policy",
-        "terms",
+        "gcs_objects",
     ]
 
     @property
@@ -14340,16 +12869,14 @@ class GCSBucket(GCS):
         self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def gcs_objects(self) -> Optional[list[GCSObject]]:
+        return self.attributes.gcs_objects
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @gcs_objects.setter
+    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.gcs_objects = gcs_objects
 
     type_name: str = Field("GCSBucket", allow_mutation=False)
 
@@ -14381,36 +12908,12 @@ class GCSBucket(GCS):
         gcs_bucket_retention_policy: Optional[str] = Field(
             None, description="", alias="gcsBucketRetentionPolicy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         gcs_objects: Optional[list[GCSObject]] = Field(
             None, description="", alias="gcsObjects"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "GCSBucket.Attributes" = Field(
-        None,
+        default_factory=lambda: GCSBucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14435,7 +12938,7 @@ class ADLSAccount(ADLS):
         "adls_primary_disk_state",
         "adls_account_provision_state",
         "adls_account_access_tier",
-        "terms",
+        "adls_containers",
     ]
 
     @property
@@ -14549,16 +13052,14 @@ class ADLSAccount(ADLS):
         self.attributes.adls_account_access_tier = adls_account_access_tier
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def adls_containers(self) -> Optional[list[ADLSContainer]]:
+        return self.attributes.adls_containers
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @adls_containers.setter
+    def adls_containers(self, adls_containers: Optional[list[ADLSContainer]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.adls_containers = adls_containers
 
     type_name: str = Field("ADLSAccount", allow_mutation=False)
 
@@ -14597,36 +13098,12 @@ class ADLSAccount(ADLS):
         adls_account_access_tier: Optional[ADLSAccessTier] = Field(
             None, description="", alias="adlsAccountAccessTier"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         adls_containers: Optional[list[ADLSContainer]] = Field(
             None, description="", alias="adlsContainers"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLSAccount.Attributes" = Field(
-        None,
+        default_factory=lambda: ADLSAccount.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14647,7 +13124,8 @@ class ADLSContainer(ADLS):
         "adls_container_encryption_scope",
         "adls_container_version_level_immutability_support",
         "adls_object_count",
-        "terms",
+        "adls_objects",
+        "adls_account",
     ]
 
     @property
@@ -14723,16 +13201,24 @@ class ADLSContainer(ADLS):
         self.attributes.adls_object_count = adls_object_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def adls_objects(self) -> Optional[list[ADLSObject]]:
+        return self.attributes.adls_objects
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @adls_objects.setter
+    def adls_objects(self, adls_objects: Optional[list[ADLSObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.adls_objects = adls_objects
+
+    @property
+    def adls_account(self) -> Optional[ADLSAccount]:
+        return self.attributes.adls_account
+
+    @adls_account.setter
+    def adls_account(self, adls_account: Optional[ADLSAccount]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account = adls_account
 
     type_name: str = Field("ADLSContainer", allow_mutation=False)
 
@@ -14764,36 +13250,12 @@ class ADLSContainer(ADLS):
         adls_objects: Optional[list[ADLSObject]] = Field(
             None, description="", alias="adlsObjects"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         adls_account: Optional[ADLSAccount] = Field(
             None, description="", alias="adlsAccount"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLSContainer.Attributes" = Field(
-        None,
+        default_factory=lambda: ADLSContainer.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14825,7 +13287,7 @@ class ADLSObject(ADLS):
         "adls_object_lease_state",
         "adls_object_metadata",
         "adls_container_qualified_name",
-        "terms",
+        "adls_container",
     ]
 
     @property
@@ -15021,16 +13483,14 @@ class ADLSObject(ADLS):
         self.attributes.adls_container_qualified_name = adls_container_qualified_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def adls_container(self) -> Optional[ADLSContainer]:
+        return self.attributes.adls_container
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @adls_container.setter
+    def adls_container(self, adls_container: Optional[ADLSContainer]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.adls_container = adls_container
 
     type_name: str = Field("ADLSObject", allow_mutation=False)
 
@@ -15092,36 +13552,12 @@ class ADLSObject(ADLS):
         adls_container_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsContainerQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         adls_container: Optional[ADLSContainer] = Field(
             None, description="", alias="adlsContainer"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLSObject.Attributes" = Field(
-        None,
+        default_factory=lambda: ADLSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15138,7 +13574,7 @@ class S3Bucket(S3):
     _convience_properties: ClassVar[list[str]] = [
         "s3_object_count",
         "s3_bucket_versioning_enabled",
-        "terms",
+        "objects",
     ]
 
     @property
@@ -15164,16 +13600,14 @@ class S3Bucket(S3):
         self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def objects(self) -> Optional[list[S3Object]]:
+        return self.attributes.objects
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @objects.setter
+    def objects(self, objects: Optional[list[S3Object]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.objects = objects
 
     type_name: str = Field("S3Bucket", allow_mutation=False)
 
@@ -15190,32 +13624,8 @@ class S3Bucket(S3):
         s3_bucket_versioning_enabled: Optional[bool] = Field(
             None, description="", alias="s3BucketVersioningEnabled"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         objects: Optional[list[S3Object]] = Field(
             None, description="", alias="objects"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
 
         @classmethod
@@ -15247,7 +13657,7 @@ class S3Bucket(S3):
             )
 
     attributes: "S3Bucket.Attributes" = Field(
-        None,
+        default_factory=lambda: S3Bucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15287,7 +13697,7 @@ class S3Object(S3):
         "s3_object_content_type",
         "s3_object_content_disposition",
         "s3_object_version_id",
-        "terms",
+        "bucket",
     ]
 
     @property
@@ -15385,16 +13795,14 @@ class S3Object(S3):
         self.attributes.s3_object_version_id = s3_object_version_id
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def bucket(self) -> Optional[S3Bucket]:
+        return self.attributes.bucket
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @bucket.setter
+    def bucket(self, bucket: Optional[S3Bucket]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.bucket = bucket
 
     type_name: str = Field("S3Object", allow_mutation=False)
 
@@ -15433,30 +13841,6 @@ class S3Object(S3):
         bucket: Optional[S3Bucket] = Field(
             None, description="", alias="bucket"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
         @classmethod
         # @validate_arguments()
@@ -15493,7 +13877,7 @@ class S3Object(S3):
             )
 
     attributes: "S3Object.Attributes" = Field(
-        None,
+        default_factory=lambda: S3Object.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15538,7 +13922,7 @@ class KafkaTopic(Kafka):
         "kafka_topic_size_in_bytes",
         "kafka_topic_record_count",
         "kafka_topic_cleanup_policy",
-        "terms",
+        "kafka_consumer_groups",
     ]
 
     @property
@@ -15628,16 +14012,16 @@ class KafkaTopic(Kafka):
         self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
+        return self.attributes.kafka_consumer_groups
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @kafka_consumer_groups.setter
+    def kafka_consumer_groups(
+        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.kafka_consumer_groups = kafka_consumer_groups
 
     type_name: str = Field("KafkaTopic", allow_mutation=False)
 
@@ -15672,36 +14056,12 @@ class KafkaTopic(Kafka):
         kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
             None, description="", alias="kafkaTopicCleanupPolicy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
             None, description="", alias="kafkaConsumerGroups"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "KafkaTopic.Attributes" = Field(
-        None,
+        default_factory=lambda: KafkaTopic.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15720,7 +14080,7 @@ class KafkaConsumerGroup(Kafka):
         "kafka_consumer_group_member_count",
         "kafka_topic_names",
         "kafka_topic_qualified_names",
-        "terms",
+        "kafka_topics",
     ]
 
     @property
@@ -15779,16 +14139,14 @@ class KafkaConsumerGroup(Kafka):
         self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
+        return self.attributes.kafka_topics
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @kafka_topics.setter
+    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.kafka_topics = kafka_topics
 
     type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
 
@@ -15813,36 +14171,12 @@ class KafkaConsumerGroup(Kafka):
         kafka_topic_qualified_names: Optional[set[str]] = Field(
             None, description="", alias="kafkaTopicQualifiedNames"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         kafka_topics: Optional[list[KafkaTopic]] = Field(
             None, description="", alias="kafkaTopics"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "KafkaConsumerGroup.Attributes" = Field(
-        None,
+        default_factory=lambda: KafkaConsumerGroup.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15863,7 +14197,8 @@ class MCIncident(MonteCarlo):
         "mc_incident_severity",
         "mc_incident_state",
         "mc_incident_warehouse",
-        "terms",
+        "mc_incident_assets",
+        "mc_monitor",
     ]
 
     @property
@@ -15927,16 +14262,24 @@ class MCIncident(MonteCarlo):
         self.attributes.mc_incident_warehouse = mc_incident_warehouse
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mc_incident_assets(self) -> Optional[list[Asset]]:
+        return self.attributes.mc_incident_assets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mc_incident_assets.setter
+    def mc_incident_assets(self, mc_incident_assets: Optional[list[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mc_incident_assets = mc_incident_assets
+
+    @property
+    def mc_monitor(self) -> Optional[MCMonitor]:
+        return self.attributes.mc_monitor
+
+    @mc_monitor.setter
+    def mc_monitor(self, mc_monitor: Optional[MCMonitor]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_monitor = mc_monitor
 
     type_name: str = Field("MCIncident", allow_mutation=False)
 
@@ -15965,39 +14308,15 @@ class MCIncident(MonteCarlo):
         mc_incident_warehouse: Optional[str] = Field(
             None, description="", alias="mcIncidentWarehouse"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_incident_assets: Optional[list[Asset]] = Field(
             None, description="", alias="mcIncidentAssets"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         mc_monitor: Optional[MCMonitor] = Field(
             None, description="", alias="mcMonitor"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MCIncident.Attributes" = Field(
-        None,
+        default_factory=lambda: MCIncident.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16029,7 +14348,7 @@ class MCMonitor(MonteCarlo):
         "mc_monitor_rule_is_snoozed",
         "mc_monitor_breach_rate",
         "mc_monitor_incident_count",
-        "terms",
+        "mc_monitor_assets",
     ]
 
     @property
@@ -16221,16 +14540,14 @@ class MCMonitor(MonteCarlo):
         self.attributes.mc_monitor_incident_count = mc_monitor_incident_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mc_monitor_assets(self) -> Optional[list[Asset]]:
+        return self.attributes.mc_monitor_assets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mc_monitor_assets.setter
+    def mc_monitor_assets(self, mc_monitor_assets: Optional[list[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mc_monitor_assets = mc_monitor_assets
 
     type_name: str = Field("MCMonitor", allow_mutation=False)
 
@@ -16290,36 +14607,12 @@ class MCMonitor(MonteCarlo):
         mc_monitor_incident_count: Optional[int] = Field(
             None, description="", alias="mcMonitorIncidentCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         mc_monitor_assets: Optional[list[Asset]] = Field(
             None, description="", alias="mcMonitorAssets"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MCMonitor.Attributes" = Field(
-        None,
+        default_factory=lambda: MCMonitor.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16337,7 +14630,8 @@ class MetabaseQuestion(Metabase):
         "metabase_dashboard_count",
         "metabase_query_type",
         "metabase_query",
-        "terms",
+        "metabase_dashboards",
+        "metabase_collection",
     ]
 
     @property
@@ -16371,16 +14665,26 @@ class MetabaseQuestion(Metabase):
         self.attributes.metabase_query = metabase_query
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        return self.attributes.metabase_dashboards
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @metabase_dashboards.setter
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.metabase_dashboards = metabase_dashboards
+
+    @property
+    def metabase_collection(self) -> Optional[MetabaseCollection]:
+        return self.attributes.metabase_collection
+
+    @metabase_collection.setter
+    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection = metabase_collection
 
     type_name: str = Field("MetabaseQuestion", allow_mutation=False)
 
@@ -16400,39 +14704,15 @@ class MetabaseQuestion(Metabase):
         metabase_query: Optional[str] = Field(
             None, description="", alias="metabaseQuery"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
             None, description="", alias="metabaseDashboards"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
             None, description="", alias="metabaseCollection"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MetabaseQuestion.Attributes" = Field(
-        None,
+        default_factory=lambda: MetabaseQuestion.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16451,7 +14731,8 @@ class MetabaseCollection(Metabase):
         "metabase_color",
         "metabase_namespace",
         "metabase_is_personal_collection",
-        "terms",
+        "metabase_dashboards",
+        "metabase_questions",
     ]
 
     @property
@@ -16499,16 +14780,26 @@ class MetabaseCollection(Metabase):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        return self.attributes.metabase_dashboards
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @metabase_dashboards.setter
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.metabase_dashboards = metabase_dashboards
+
+    @property
+    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        return self.attributes.metabase_questions
+
+    @metabase_questions.setter
+    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_questions = metabase_questions
 
     type_name: str = Field("MetabaseCollection", allow_mutation=False)
 
@@ -16529,39 +14820,15 @@ class MetabaseCollection(Metabase):
         metabase_is_personal_collection: Optional[bool] = Field(
             None, description="", alias="metabaseIsPersonalCollection"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
             None, description="", alias="metabaseDashboards"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
             None, description="", alias="metabaseQuestions"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MetabaseCollection.Attributes" = Field(
-        None,
+        default_factory=lambda: MetabaseCollection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16577,7 +14844,8 @@ class MetabaseDashboard(Metabase):
 
     _convience_properties: ClassVar[list[str]] = [
         "metabase_question_count",
-        "terms",
+        "metabase_questions",
+        "metabase_collection",
     ]
 
     @property
@@ -16591,16 +14859,24 @@ class MetabaseDashboard(Metabase):
         self.attributes.metabase_question_count = metabase_question_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        return self.attributes.metabase_questions
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @metabase_questions.setter
+    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.metabase_questions = metabase_questions
+
+    @property
+    def metabase_collection(self) -> Optional[MetabaseCollection]:
+        return self.attributes.metabase_collection
+
+    @metabase_collection.setter
+    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection = metabase_collection
 
     type_name: str = Field("MetabaseDashboard", allow_mutation=False)
 
@@ -16614,39 +14890,15 @@ class MetabaseDashboard(Metabase):
         metabase_question_count: Optional[int] = Field(
             None, description="", alias="metabaseQuestionCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
             None, description="", alias="metabaseQuestions"
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
             None, description="", alias="metabaseCollection"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: MetabaseDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16663,7 +14915,9 @@ class QuickSightFolder(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_folder_type",
         "quick_sight_folder_hierarchy",
-        "terms",
+        "quick_sight_dashboards",
+        "quick_sight_analyses",
+        "quick_sight_datasets",
     ]
 
     @property
@@ -16691,16 +14945,40 @@ class QuickSightFolder(QuickSight):
         self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
+        return self.attributes.quick_sight_dashboards
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_dashboards.setter
+    def quick_sight_dashboards(
+        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_dashboards = quick_sight_dashboards
+
+    @property
+    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+        return self.attributes.quick_sight_analyses
+
+    @quick_sight_analyses.setter
+    def quick_sight_analyses(
+        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analyses = quick_sight_analyses
+
+    @property
+    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
+        return self.attributes.quick_sight_datasets
+
+    @quick_sight_datasets.setter
+    def quick_sight_datasets(
+        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_datasets = quick_sight_datasets
 
     type_name: str = Field("QuickSightFolder", allow_mutation=False)
 
@@ -16720,39 +14998,15 @@ class QuickSightFolder(QuickSight):
         quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
             None, description="", alias="quickSightDashboards"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
             None, description="", alias="quickSightAnalyses"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
             None, description="", alias="quickSightDatasets"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightFolder.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16768,7 +15022,7 @@ class QuickSightDashboardVisual(QuickSight):
 
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dashboard_qualified_name",
-        "terms",
+        "quick_sight_dashboard",
     ]
 
     @property
@@ -16786,16 +15040,16 @@ class QuickSightDashboardVisual(QuickSight):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
+        return self.attributes.quick_sight_dashboard
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_dashboard.setter
+    def quick_sight_dashboard(
+        self, quick_sight_dashboard: Optional[QuickSightDashboard]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_dashboard = quick_sight_dashboard
 
     type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
 
@@ -16809,36 +15063,12 @@ class QuickSightDashboardVisual(QuickSight):
         quick_sight_dashboard_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightDashboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
             None, description="", alias="quickSightDashboard"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightDashboardVisual.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16854,7 +15084,7 @@ class QuickSightAnalysisVisual(QuickSight):
 
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_analysis_qualified_name",
-        "terms",
+        "quick_sight_analysis",
     ]
 
     @property
@@ -16872,16 +15102,14 @@ class QuickSightAnalysisVisual(QuickSight):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
+        return self.attributes.quick_sight_analysis
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_analysis.setter
+    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_analysis = quick_sight_analysis
 
     type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
 
@@ -16895,36 +15123,12 @@ class QuickSightAnalysisVisual(QuickSight):
         quick_sight_analysis_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightAnalysisQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
             None, description="", alias="quickSightAnalysis"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightAnalysisVisual.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16941,7 +15145,7 @@ class QuickSightDatasetField(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dataset_field_type",
         "quick_sight_dataset_qualified_name",
-        "terms",
+        "quick_sight_dataset",
     ]
 
     @property
@@ -16971,16 +15175,14 @@ class QuickSightDatasetField(QuickSight):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
+        return self.attributes.quick_sight_dataset
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_dataset.setter
+    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_dataset = quick_sight_dataset
 
     type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
 
@@ -16997,36 +15199,12 @@ class QuickSightDatasetField(QuickSight):
         quick_sight_dataset_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightDatasetQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         quick_sight_dataset: Optional[QuickSightDataset] = Field(
             None, description="", alias="quickSightDataset"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightDatasetField.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightDatasetField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17045,7 +15223,8 @@ class QuickSightAnalysis(QuickSight):
         "quick_sight_analysis_calculated_fields",
         "quick_sight_analysis_parameter_declarations",
         "quick_sight_analysis_filter_groups",
-        "terms",
+        "quick_sight_analysis_visuals",
+        "quick_sight_analysis_folders",
     ]
 
     @property
@@ -17103,16 +15282,28 @@ class QuickSightAnalysis(QuickSight):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+        return self.attributes.quick_sight_analysis_visuals
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_analysis_visuals.setter
+    def quick_sight_analysis_visuals(
+        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
+
+    @property
+    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_analysis_folders
+
+    @quick_sight_analysis_folders.setter
+    def quick_sight_analysis_folders(
+        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
 
     type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
 
@@ -17135,39 +15326,15 @@ class QuickSightAnalysis(QuickSight):
         quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
             None, description="", alias="quickSightAnalysisFilterGroups"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
             None, description="", alias="quickSightAnalysisVisuals"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
             None, description="", alias="quickSightAnalysisFolders"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightAnalysis.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightAnalysis.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17184,7 +15351,8 @@ class QuickSightDashboard(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dashboard_published_version_number",
         "quick_sight_dashboard_last_published_time",
-        "terms",
+        "quick_sight_dashboard_folders",
+        "quick_sight_dashboard_visuals",
     ]
 
     @property
@@ -17216,16 +15384,30 @@ class QuickSightDashboard(QuickSight):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_dashboard_folders
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_dashboard_folders.setter
+    def quick_sight_dashboard_folders(
+        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
+
+    @property
+    def quick_sight_dashboard_visuals(
+        self,
+    ) -> Optional[list[QuickSightDashboardVisual]]:
+        return self.attributes.quick_sight_dashboard_visuals
+
+    @quick_sight_dashboard_visuals.setter
+    def quick_sight_dashboard_visuals(
+        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
 
     type_name: str = Field("QuickSightDashboard", allow_mutation=False)
 
@@ -17242,12 +15424,6 @@ class QuickSightDashboard(QuickSight):
         quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
             None, description="", alias="quickSightDashboardLastPublishedTime"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
             None, description="", alias="quickSightDashboardFolders"
         )  # relationship
@@ -17256,27 +15432,9 @@ class QuickSightDashboard(QuickSight):
         ] = Field(
             None, description="", alias="quickSightDashboardVisuals"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17293,7 +15451,8 @@ class QuickSightDataset(QuickSight):
     _convience_properties: ClassVar[list[str]] = [
         "quick_sight_dataset_import_mode",
         "quick_sight_dataset_column_count",
-        "terms",
+        "quick_sight_dataset_folders",
+        "quick_sight_dataset_fields",
     ]
 
     @property
@@ -17325,16 +15484,28 @@ class QuickSightDataset(QuickSight):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_dataset_folders
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @quick_sight_dataset_folders.setter
+    def quick_sight_dataset_folders(
+        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
+
+    @property
+    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
+        return self.attributes.quick_sight_dataset_fields
+
+    @quick_sight_dataset_fields.setter
+    def quick_sight_dataset_fields(
+        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
 
     type_name: str = Field("QuickSightDataset", allow_mutation=False)
 
@@ -17351,39 +15522,15 @@ class QuickSightDataset(QuickSight):
         quick_sight_dataset_column_count: Optional[int] = Field(
             None, description="", alias="quickSightDatasetColumnCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
             None, description="", alias="quickSightDatasetFolders"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
         )  # relationship
         quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
             None, description="", alias="quickSightDatasetFields"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QuickSightDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: QuickSightDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17398,20 +15545,20 @@ class ThoughtspotLiveboard(Thoughtspot):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "thoughtspot_dashlets",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def thoughtspot_dashlets(self) -> Optional[list[ThoughtspotDashlet]]:
+        return self.attributes.thoughtspot_dashlets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @thoughtspot_dashlets.setter
+    def thoughtspot_dashlets(
+        self, thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
 
     type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
 
@@ -17422,36 +15569,12 @@ class ThoughtspotLiveboard(Thoughtspot):
         return v
 
     class Attributes(Thoughtspot.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
             None, description="", alias="thoughtspotDashlets"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ThoughtspotLiveboard.Attributes" = Field(
-        None,
+        default_factory=lambda: ThoughtspotLiveboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17468,7 +15591,7 @@ class ThoughtspotDashlet(Thoughtspot):
     _convience_properties: ClassVar[list[str]] = [
         "thoughtspot_liveboard_name",
         "thoughtspot_liveboard_qualified_name",
-        "terms",
+        "thoughtspot_liveboard",
     ]
 
     @property
@@ -17496,16 +15619,16 @@ class ThoughtspotDashlet(Thoughtspot):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def thoughtspot_liveboard(self) -> Optional[ThoughtspotLiveboard]:
+        return self.attributes.thoughtspot_liveboard
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @thoughtspot_liveboard.setter
+    def thoughtspot_liveboard(
+        self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
 
     type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
 
@@ -17522,36 +15645,12 @@ class ThoughtspotDashlet(Thoughtspot):
         thoughtspot_liveboard_qualified_name: Optional[str] = Field(
             None, description="", alias="thoughtspotLiveboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
             None, description="", alias="thoughtspotLiveboard"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ThoughtspotDashlet.Attributes" = Field(
-        None,
+        default_factory=lambda: ThoughtspotDashlet.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17565,21 +15664,7 @@ class ThoughtspotAnswer(Thoughtspot):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
 
@@ -17588,38 +15673,6 @@ class ThoughtspotAnswer(Thoughtspot):
         if v != "ThoughtspotAnswer":
             raise ValueError("must be ThoughtspotAnswer")
         return v
-
-    class Attributes(Thoughtspot.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "ThoughtspotAnswer.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 class PowerBIReport(PowerBI):
@@ -17635,7 +15688,10 @@ class PowerBIReport(PowerBI):
         "dataset_qualified_name",
         "web_url",
         "page_count",
-        "terms",
+        "workspace",
+        "tiles",
+        "pages",
+        "dataset",
     ]
 
     @property
@@ -17679,16 +15735,44 @@ class PowerBIReport(PowerBI):
         self.attributes.page_count = page_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.workspace = workspace
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def pages(self) -> Optional[list[PowerBIPage]]:
+        return self.attributes.pages
+
+    @pages.setter
+    def pages(self, pages: Optional[list[PowerBIPage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.pages = pages
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
 
     type_name: str = Field("PowerBIReport", allow_mutation=False)
 
@@ -17707,45 +15791,21 @@ class PowerBIReport(PowerBI):
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
         page_count: Optional[int] = Field(None, description="", alias="pageCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         pages: Optional[list[PowerBIPage]] = Field(
             None, description="", alias="pages"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIReport.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17764,7 +15824,7 @@ class PowerBIMeasure(PowerBI):
         "dataset_qualified_name",
         "power_b_i_measure_expression",
         "power_b_i_is_external_measure",
-        "terms",
+        "table",
     ]
 
     @property
@@ -17810,16 +15870,14 @@ class PowerBIMeasure(PowerBI):
         self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def table(self) -> Optional[PowerBITable]:
+        return self.attributes.table
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.table = table
 
     type_name: str = Field("PowerBIMeasure", allow_mutation=False)
 
@@ -17842,36 +15900,12 @@ class PowerBIMeasure(PowerBI):
         power_b_i_is_external_measure: Optional[bool] = Field(
             None, description="", alias="powerBIIsExternalMeasure"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         table: Optional[PowerBITable] = Field(
             None, description="", alias="table"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIMeasure.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIMeasure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17892,7 +15926,7 @@ class PowerBIColumn(PowerBI):
         "power_b_i_column_data_type",
         "power_b_i_sort_by_column",
         "power_b_i_column_summarize_by",
-        "terms",
+        "table",
     ]
 
     @property
@@ -17960,16 +15994,14 @@ class PowerBIColumn(PowerBI):
         self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def table(self) -> Optional[PowerBITable]:
+        return self.attributes.table
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.table = table
 
     type_name: str = Field("PowerBIColumn", allow_mutation=False)
 
@@ -17998,36 +16030,12 @@ class PowerBIColumn(PowerBI):
         power_b_i_column_summarize_by: Optional[str] = Field(
             None, description="", alias="powerBIColumnSummarizeBy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         table: Optional[PowerBITable] = Field(
             None, description="", alias="table"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIColumn.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18047,7 +16055,9 @@ class PowerBITable(PowerBI):
         "power_b_i_table_source_expressions",
         "power_b_i_table_column_count",
         "power_b_i_table_measure_count",
-        "terms",
+        "measures",
+        "columns",
+        "dataset",
     ]
 
     @property
@@ -18107,16 +16117,34 @@ class PowerBITable(PowerBI):
         self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def measures(self) -> Optional[list[PowerBIMeasure]]:
+        return self.attributes.measures
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @measures.setter
+    def measures(self, measures: Optional[list[PowerBIMeasure]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.measures = measures
+
+    @property
+    def columns(self) -> Optional[list[PowerBIColumn]]:
+        return self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[PowerBIColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
 
     type_name: str = Field("PowerBITable", allow_mutation=False)
 
@@ -18142,42 +16170,18 @@ class PowerBITable(PowerBI):
         power_b_i_table_measure_count: Optional[int] = Field(
             None, description="", alias="powerBITableMeasureCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         measures: Optional[list[PowerBIMeasure]] = Field(
             None, description="", alias="measures"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         columns: Optional[list[PowerBIColumn]] = Field(
             None, description="", alias="columns"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBITable.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBITable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18194,7 +16198,9 @@ class PowerBITile(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dashboard_qualified_name",
-        "terms",
+        "report",
+        "dataset",
+        "dashboard",
     ]
 
     @property
@@ -18218,16 +16224,34 @@ class PowerBITile(PowerBI):
         self.attributes.dashboard_qualified_name = dashboard_qualified_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def report(self) -> Optional[PowerBIReport]:
+        return self.attributes.report
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.report = report
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    @property
+    def dashboard(self) -> Optional[PowerBIDashboard]:
+        return self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
 
     type_name: str = Field("PowerBITile", allow_mutation=False)
 
@@ -18244,42 +16268,18 @@ class PowerBITile(PowerBI):
         dashboard_qualified_name: Optional[str] = Field(
             None, description="", alias="dashboardQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         report: Optional[PowerBIReport] = Field(
             None, description="", alias="report"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         dashboard: Optional[PowerBIDashboard] = Field(
             None, description="", alias="dashboard"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBITile.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBITile.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18295,7 +16295,7 @@ class PowerBIDatasource(PowerBI):
 
     _convience_properties: ClassVar[list[str]] = [
         "connection_details",
-        "terms",
+        "datasets",
     ]
 
     @property
@@ -18309,16 +16309,14 @@ class PowerBIDatasource(PowerBI):
         self.attributes.connection_details = connection_details
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return self.attributes.datasets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.datasets = datasets
 
     type_name: str = Field("PowerBIDatasource", allow_mutation=False)
 
@@ -18332,36 +16330,12 @@ class PowerBIDatasource(PowerBI):
         connection_details: Optional[dict[str, str]] = Field(
             None, description="", alias="connectionDetails"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
             None, description="", alias="datasets"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIDatasource.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIDatasource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18381,7 +16355,10 @@ class PowerBIWorkspace(PowerBI):
         "dashboard_count",
         "dataset_count",
         "dataflow_count",
-        "terms",
+        "reports",
+        "datasets",
+        "dashboards",
+        "dataflows",
     ]
 
     @property
@@ -18435,16 +16412,44 @@ class PowerBIWorkspace(PowerBI):
         self.attributes.dataflow_count = dataflow_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return self.attributes.reports
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.reports = reports
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    @property
+    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
 
     type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
 
@@ -18464,29 +16469,11 @@ class PowerBIWorkspace(PowerBI):
         dataflow_count: Optional[int] = Field(
             None, description="", alias="dataflowCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[PowerBIReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
             None, description="", alias="datasets"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         dashboards: Optional[list[PowerBIDashboard]] = Field(
             None, description="", alias="dashboards"
@@ -18494,15 +16481,9 @@ class PowerBIWorkspace(PowerBI):
         dataflows: Optional[list[PowerBIDataflow]] = Field(
             None, description="", alias="dataflows"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIWorkspace.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18519,7 +16500,12 @@ class PowerBIDataset(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
-        "terms",
+        "reports",
+        "workspace",
+        "dataflows",
+        "tiles",
+        "tables",
+        "datasources",
     ]
 
     @property
@@ -18543,16 +16529,64 @@ class PowerBIDataset(PowerBI):
         self.attributes.web_url = web_url
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return self.attributes.reports
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.reports = reports
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def tables(self) -> Optional[list[PowerBITable]]:
+        return self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[PowerBITable]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def datasources(self) -> Optional[list[PowerBIDatasource]]:
+        return self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
 
     type_name: str = Field("PowerBIDataset", allow_mutation=False)
 
@@ -18567,23 +16601,14 @@ class PowerBIDataset(PowerBI):
             None, description="", alias="workspaceQualifiedName"
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[PowerBIReport]] = Field(
             None, description="", alias="reports"
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
         )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
             None, description="", alias="dataflows"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
@@ -18591,27 +16616,12 @@ class PowerBIDataset(PowerBI):
         tables: Optional[list[PowerBITable]] = Field(
             None, description="", alias="tables"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         datasources: Optional[list[PowerBIDatasource]] = Field(
             None, description="", alias="datasources"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18629,7 +16639,8 @@ class PowerBIDashboard(PowerBI):
         "workspace_qualified_name",
         "web_url",
         "tile_count",
-        "terms",
+        "tiles",
+        "workspace",
     ]
 
     @property
@@ -18663,16 +16674,24 @@ class PowerBIDashboard(PowerBI):
         self.attributes.tile_count = tile_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return self.attributes.tiles
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.tiles = tiles
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
 
     type_name: str = Field("PowerBIDashboard", allow_mutation=False)
 
@@ -18688,39 +16707,15 @@ class PowerBIDashboard(PowerBI):
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
         tile_count: Optional[int] = Field(None, description="", alias="tileCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18737,7 +16732,8 @@ class PowerBIDataflow(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
-        "terms",
+        "workspace",
+        "datasets",
     ]
 
     @property
@@ -18761,16 +16757,24 @@ class PowerBIDataflow(PowerBI):
         self.attributes.web_url = web_url
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.workspace = workspace
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
 
     type_name: str = Field("PowerBIDataflow", allow_mutation=False)
 
@@ -18785,39 +16789,15 @@ class PowerBIDataflow(PowerBI):
             None, description="", alias="workspaceQualifiedName"
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
         )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
             None, description="", alias="datasets"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIDataflow.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIDataflow.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18834,7 +16814,7 @@ class PowerBIPage(PowerBI):
     _convience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "report_qualified_name",
-        "terms",
+        "report",
     ]
 
     @property
@@ -18858,16 +16838,14 @@ class PowerBIPage(PowerBI):
         self.attributes.report_qualified_name = report_qualified_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def report(self) -> Optional[PowerBIReport]:
+        return self.attributes.report
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.report = report
 
     type_name: str = Field("PowerBIPage", allow_mutation=False)
 
@@ -18884,36 +16862,12 @@ class PowerBIPage(PowerBI):
         report_qualified_name: Optional[str] = Field(
             None, description="", alias="reportQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         report: Optional[PowerBIReport] = Field(
             None, description="", alias="report"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PowerBIPage.Attributes" = Field(
-        None,
+        default_factory=lambda: PowerBIPage.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -18930,7 +16884,7 @@ class PresetChart(Preset):
     _convience_properties: ClassVar[list[str]] = [
         "preset_chart_description_markdown",
         "preset_chart_form_data",
-        "terms",
+        "preset_dashboard",
     ]
 
     @property
@@ -18958,16 +16912,14 @@ class PresetChart(Preset):
         self.attributes.preset_chart_form_data = preset_chart_form_data
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def preset_dashboard(self) -> Optional[PresetDashboard]:
+        return self.attributes.preset_dashboard
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @preset_dashboard.setter
+    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.preset_dashboard = preset_dashboard
 
     type_name: str = Field("PresetChart", allow_mutation=False)
 
@@ -18984,36 +16936,12 @@ class PresetChart(Preset):
         preset_chart_form_data: Optional[dict[str, str]] = Field(
             None, description="", alias="presetChartFormData"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         preset_dashboard: Optional[PresetDashboard] = Field(
             None, description="", alias="presetDashboard"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PresetChart.Attributes" = Field(
-        None,
+        default_factory=lambda: PresetChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19031,7 +16959,7 @@ class PresetDataset(Preset):
         "preset_dataset_datasource_name",
         "preset_dataset_id",
         "preset_dataset_type",
-        "terms",
+        "preset_dashboard",
     ]
 
     @property
@@ -19067,16 +16995,14 @@ class PresetDataset(Preset):
         self.attributes.preset_dataset_type = preset_dataset_type
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def preset_dashboard(self) -> Optional[PresetDashboard]:
+        return self.attributes.preset_dashboard
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @preset_dashboard.setter
+    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.preset_dashboard = preset_dashboard
 
     type_name: str = Field("PresetDataset", allow_mutation=False)
 
@@ -19096,36 +17022,12 @@ class PresetDataset(Preset):
         preset_dataset_type: Optional[str] = Field(
             None, description="", alias="presetDatasetType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         preset_dashboard: Optional[PresetDashboard] = Field(
             None, description="", alias="presetDashboard"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PresetDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: PresetDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19146,7 +17048,9 @@ class PresetDashboard(Preset):
         "preset_dashboard_is_published",
         "preset_dashboard_thumbnail_url",
         "preset_dashboard_chart_count",
-        "terms",
+        "preset_datasets",
+        "preset_charts",
+        "preset_workspace",
     ]
 
     @property
@@ -19226,16 +17130,34 @@ class PresetDashboard(Preset):
         self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def preset_datasets(self) -> Optional[list[PresetDataset]]:
+        return self.attributes.preset_datasets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @preset_datasets.setter
+    def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.preset_datasets = preset_datasets
+
+    @property
+    def preset_charts(self) -> Optional[list[PresetChart]]:
+        return self.attributes.preset_charts
+
+    @preset_charts.setter
+    def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_charts = preset_charts
+
+    @property
+    def preset_workspace(self) -> Optional[PresetWorkspace]:
+        return self.attributes.preset_workspace
+
+    @preset_workspace.setter
+    def preset_workspace(self, preset_workspace: Optional[PresetWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace = preset_workspace
 
     type_name: str = Field("PresetDashboard", allow_mutation=False)
 
@@ -19267,39 +17189,15 @@ class PresetDashboard(Preset):
         preset_datasets: Optional[list[PresetDataset]] = Field(
             None, description="", alias="presetDatasets"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         preset_charts: Optional[list[PresetChart]] = Field(
             None, description="", alias="presetCharts"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
         )  # relationship
         preset_workspace: Optional[PresetWorkspace] = Field(
             None, description="", alias="presetWorkspace"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PresetDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: PresetDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19323,7 +17221,7 @@ class PresetWorkspace(Preset):
         "preset_workspace_deployment_id",
         "preset_workspace_dashboard_count",
         "preset_workspace_dataset_count",
-        "terms",
+        "preset_dashboards",
     ]
 
     @property
@@ -19433,16 +17331,14 @@ class PresetWorkspace(Preset):
         self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
+        return self.attributes.preset_dashboards
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @preset_dashboards.setter
+    def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.preset_dashboards = preset_dashboards
 
     type_name: str = Field("PresetWorkspace", allow_mutation=False)
 
@@ -19483,33 +17379,9 @@ class PresetWorkspace(Preset):
         preset_dashboards: Optional[list[PresetDashboard]] = Field(
             None, description="", alias="presetDashboards"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "PresetWorkspace.Attributes" = Field(
-        None,
+        default_factory=lambda: PresetWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19531,7 +17403,8 @@ class ModeReport(Mode):
         "mode_query_preview",
         "mode_is_public",
         "mode_is_shared",
-        "terms",
+        "mode_collections",
+        "mode_queries",
     ]
 
     @property
@@ -19605,16 +17478,24 @@ class ModeReport(Mode):
         self.attributes.mode_is_shared = mode_is_shared
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return self.attributes.mode_collections
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mode_collections = mode_collections
+
+    @property
+    def mode_queries(self) -> Optional[list[ModeQuery]]:
+        return self.attributes.mode_queries
+
+    @mode_queries.setter
+    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_queries = mode_queries
 
     type_name: str = Field("ModeReport", allow_mutation=False)
 
@@ -19646,39 +17527,15 @@ class ModeReport(Mode):
         mode_is_shared: Optional[bool] = Field(
             None, description="", alias="modeIsShared"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         mode_collections: Optional[list[ModeCollection]] = Field(
             None, description="", alias="modeCollections"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         mode_queries: Optional[list[ModeQuery]] = Field(
             None, description="", alias="modeQueries"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
-        None,
+        default_factory=lambda: ModeReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19695,7 +17552,8 @@ class ModeQuery(Mode):
     _convience_properties: ClassVar[list[str]] = [
         "mode_raw_query",
         "mode_report_import_count",
-        "terms",
+        "mode_charts",
+        "mode_report",
     ]
 
     @property
@@ -19719,16 +17577,24 @@ class ModeQuery(Mode):
         self.attributes.mode_report_import_count = mode_report_import_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mode_charts(self) -> Optional[list[ModeChart]]:
+        return self.attributes.mode_charts
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mode_charts.setter
+    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mode_charts = mode_charts
+
+    @property
+    def mode_report(self) -> Optional[ModeReport]:
+        return self.attributes.mode_report
+
+    @mode_report.setter
+    def mode_report(self, mode_report: Optional[ModeReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report = mode_report
 
     type_name: str = Field("ModeQuery", allow_mutation=False)
 
@@ -19748,36 +17614,12 @@ class ModeQuery(Mode):
         mode_charts: Optional[list[ModeChart]] = Field(
             None, description="", alias="modeCharts"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         mode_report: Optional[ModeReport] = Field(
             None, description="", alias="modeReport"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ModeQuery.Attributes" = Field(
-        None,
+        default_factory=lambda: ModeQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19793,7 +17635,7 @@ class ModeChart(Mode):
 
     _convience_properties: ClassVar[list[str]] = [
         "mode_chart_type",
-        "terms",
+        "mode_query",
     ]
 
     @property
@@ -19807,16 +17649,14 @@ class ModeChart(Mode):
         self.attributes.mode_chart_type = mode_chart_type
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mode_query(self) -> Optional[ModeQuery]:
+        return self.attributes.mode_query
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mode_query.setter
+    def mode_query(self, mode_query: Optional[ModeQuery]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mode_query = mode_query
 
     type_name: str = Field("ModeChart", allow_mutation=False)
 
@@ -19830,36 +17670,12 @@ class ModeChart(Mode):
         mode_chart_type: Optional[str] = Field(
             None, description="", alias="modeChartType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
         mode_query: Optional[ModeQuery] = Field(
             None, description="", alias="modeQuery"
         )  # relationship
 
     attributes: "ModeChart.Attributes" = Field(
-        None,
+        default_factory=lambda: ModeChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19875,7 +17691,7 @@ class ModeWorkspace(Mode):
 
     _convience_properties: ClassVar[list[str]] = [
         "mode_collection_count",
-        "terms",
+        "mode_collections",
     ]
 
     @property
@@ -19889,16 +17705,14 @@ class ModeWorkspace(Mode):
         self.attributes.mode_collection_count = mode_collection_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return self.attributes.mode_collections
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mode_collections = mode_collections
 
     type_name: str = Field("ModeWorkspace", allow_mutation=False)
 
@@ -19912,36 +17726,12 @@ class ModeWorkspace(Mode):
         mode_collection_count: Optional[int] = Field(
             None, description="", alias="modeCollectionCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         mode_collections: Optional[list[ModeCollection]] = Field(
             None, description="", alias="modeCollections"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ModeWorkspace.Attributes" = Field(
-        None,
+        default_factory=lambda: ModeWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19958,7 +17748,8 @@ class ModeCollection(Mode):
     _convience_properties: ClassVar[list[str]] = [
         "mode_collection_type",
         "mode_collection_state",
-        "terms",
+        "mode_workspace",
+        "mode_reports",
     ]
 
     @property
@@ -19982,16 +17773,24 @@ class ModeCollection(Mode):
         self.attributes.mode_collection_state = mode_collection_state
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def mode_workspace(self) -> Optional[ModeWorkspace]:
+        return self.attributes.mode_workspace
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @mode_workspace.setter
+    def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.mode_workspace = mode_workspace
+
+    @property
+    def mode_reports(self) -> Optional[list[ModeReport]]:
+        return self.attributes.mode_reports
+
+    @mode_reports.setter
+    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_reports = mode_reports
 
     type_name: str = Field("ModeCollection", allow_mutation=False)
 
@@ -20008,39 +17807,15 @@ class ModeCollection(Mode):
         mode_collection_state: Optional[str] = Field(
             None, description="", alias="modeCollectionState"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         mode_workspace: Optional[ModeWorkspace] = Field(
             None, description="", alias="modeWorkspace"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         mode_reports: Optional[list[ModeReport]] = Field(
             None, description="", alias="modeReports"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ModeCollection.Attributes" = Field(
-        None,
+        default_factory=lambda: ModeCollection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20057,7 +17832,7 @@ class SigmaDatasetColumn(Sigma):
     _convience_properties: ClassVar[list[str]] = [
         "sigma_dataset_qualified_name",
         "sigma_dataset_name",
-        "terms",
+        "sigma_dataset",
     ]
 
     @property
@@ -20081,16 +17856,14 @@ class SigmaDatasetColumn(Sigma):
         self.attributes.sigma_dataset_name = sigma_dataset_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sigma_dataset(self) -> Optional[SigmaDataset]:
+        return self.attributes.sigma_dataset
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sigma_dataset.setter
+    def sigma_dataset(self, sigma_dataset: Optional[SigmaDataset]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sigma_dataset = sigma_dataset
 
     type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
 
@@ -20107,36 +17880,12 @@ class SigmaDatasetColumn(Sigma):
         sigma_dataset_name: Optional[str] = Field(
             None, description="", alias="sigmaDatasetName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sigma_dataset: Optional[SigmaDataset] = Field(
             None, description="", alias="sigmaDataset"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SigmaDatasetColumn.Attributes" = Field(
-        None,
+        default_factory=lambda: SigmaDatasetColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20152,7 +17901,7 @@ class SigmaDataset(Sigma):
 
     _convience_properties: ClassVar[list[str]] = [
         "sigma_dataset_column_count",
-        "terms",
+        "sigma_dataset_columns",
     ]
 
     @property
@@ -20166,16 +17915,16 @@ class SigmaDataset(Sigma):
         self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
+        return self.attributes.sigma_dataset_columns
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sigma_dataset_columns.setter
+    def sigma_dataset_columns(
+        self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
     type_name: str = Field("SigmaDataset", allow_mutation=False)
 
@@ -20189,36 +17938,12 @@ class SigmaDataset(Sigma):
         sigma_dataset_column_count: Optional[int] = Field(
             None, description="", alias="sigmaDatasetColumnCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
             None, description="", alias="sigmaDatasetColumns"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SigmaDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: SigmaDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20234,7 +17959,7 @@ class SigmaWorkbook(Sigma):
 
     _convience_properties: ClassVar[list[str]] = [
         "sigma_page_count",
-        "terms",
+        "sigma_pages",
     ]
 
     @property
@@ -20248,16 +17973,14 @@ class SigmaWorkbook(Sigma):
         self.attributes.sigma_page_count = sigma_page_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sigma_pages(self) -> Optional[list[SigmaPage]]:
+        return self.attributes.sigma_pages
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sigma_pages.setter
+    def sigma_pages(self, sigma_pages: Optional[list[SigmaPage]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sigma_pages = sigma_pages
 
     type_name: str = Field("SigmaWorkbook", allow_mutation=False)
 
@@ -20271,36 +17994,12 @@ class SigmaWorkbook(Sigma):
         sigma_page_count: Optional[int] = Field(
             None, description="", alias="sigmaPageCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sigma_pages: Optional[list[SigmaPage]] = Field(
             None, description="", alias="sigmaPages"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SigmaWorkbook.Attributes" = Field(
-        None,
+        default_factory=lambda: SigmaWorkbook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20317,7 +18016,7 @@ class SigmaDataElementField(Sigma):
     _convience_properties: ClassVar[list[str]] = [
         "sigma_data_element_field_is_hidden",
         "sigma_data_element_field_formula",
-        "terms",
+        "sigma_data_element",
     ]
 
     @property
@@ -20349,16 +18048,14 @@ class SigmaDataElementField(Sigma):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sigma_data_element(self) -> Optional[SigmaDataElement]:
+        return self.attributes.sigma_data_element
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sigma_data_element.setter
+    def sigma_data_element(self, sigma_data_element: Optional[SigmaDataElement]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sigma_data_element = sigma_data_element
 
     type_name: str = Field("SigmaDataElementField", allow_mutation=False)
 
@@ -20375,36 +18072,12 @@ class SigmaDataElementField(Sigma):
         sigma_data_element_field_formula: Optional[str] = Field(
             None, description="", alias="sigmaDataElementFieldFormula"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         sigma_data_element: Optional[SigmaDataElement] = Field(
             None, description="", alias="sigmaDataElement"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SigmaDataElementField.Attributes" = Field(
-        None,
+        default_factory=lambda: SigmaDataElementField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20420,7 +18093,8 @@ class SigmaPage(Sigma):
 
     _convience_properties: ClassVar[list[str]] = [
         "sigma_data_element_count",
-        "terms",
+        "sigma_data_elements",
+        "sigma_workbook",
     ]
 
     @property
@@ -20434,16 +18108,26 @@ class SigmaPage(Sigma):
         self.attributes.sigma_data_element_count = sigma_data_element_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sigma_data_elements(self) -> Optional[list[SigmaDataElement]]:
+        return self.attributes.sigma_data_elements
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sigma_data_elements.setter
+    def sigma_data_elements(
+        self, sigma_data_elements: Optional[list[SigmaDataElement]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sigma_data_elements = sigma_data_elements
+
+    @property
+    def sigma_workbook(self) -> Optional[SigmaWorkbook]:
+        return self.attributes.sigma_workbook
+
+    @sigma_workbook.setter
+    def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_workbook = sigma_workbook
 
     type_name: str = Field("SigmaPage", allow_mutation=False)
 
@@ -20460,36 +18144,12 @@ class SigmaPage(Sigma):
         sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
             None, description="", alias="sigmaDataElements"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
         sigma_workbook: Optional[SigmaWorkbook] = Field(
             None, description="", alias="sigmaWorkbook"
         )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SigmaPage.Attributes" = Field(
-        None,
+        default_factory=lambda: SigmaPage.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20507,7 +18167,8 @@ class SigmaDataElement(Sigma):
         "sigma_data_element_query",
         "sigma_data_element_type",
         "sigma_data_element_field_count",
-        "terms",
+        "sigma_page",
+        "sigma_data_element_fields",
     ]
 
     @property
@@ -20543,16 +18204,26 @@ class SigmaDataElement(Sigma):
         self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def sigma_page(self) -> Optional[SigmaPage]:
+        return self.attributes.sigma_page
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @sigma_page.setter
+    def sigma_page(self, sigma_page: Optional[SigmaPage]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.sigma_page = sigma_page
+
+    @property
+    def sigma_data_element_fields(self) -> Optional[list[SigmaDataElementField]]:
+        return self.attributes.sigma_data_element_fields
+
+    @sigma_data_element_fields.setter
+    def sigma_data_element_fields(
+        self, sigma_data_element_fields: Optional[list[SigmaDataElementField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_fields = sigma_data_element_fields
 
     type_name: str = Field("SigmaDataElement", allow_mutation=False)
 
@@ -20572,39 +18243,15 @@ class SigmaDataElement(Sigma):
         sigma_data_element_field_count: Optional[int] = Field(
             None, description="", alias="sigmaDataElementFieldCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         sigma_page: Optional[SigmaPage] = Field(
             None, description="", alias="sigmaPage"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
         sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
             None, description="", alias="sigmaDataElementFields"
         )  # relationship
 
     attributes: "SigmaDataElement.Attributes" = Field(
-        None,
+        default_factory=lambda: SigmaDataElement.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20620,7 +18267,8 @@ class QlikSpace(Qlik):
 
     _convience_properties: ClassVar[list[str]] = [
         "qlik_space_type",
-        "terms",
+        "qlik_datasets",
+        "qlik_apps",
     ]
 
     @property
@@ -20634,16 +18282,24 @@ class QlikSpace(Qlik):
         self.attributes.qlik_space_type = qlik_space_type
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
+        return self.attributes.qlik_datasets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @qlik_datasets.setter
+    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.qlik_datasets = qlik_datasets
+
+    @property
+    def qlik_apps(self) -> Optional[list[QlikApp]]:
+        return self.attributes.qlik_apps
+
+    @qlik_apps.setter
+    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_apps = qlik_apps
 
     type_name: str = Field("QlikSpace", allow_mutation=False)
 
@@ -20657,39 +18313,15 @@ class QlikSpace(Qlik):
         qlik_space_type: Optional[str] = Field(
             None, description="", alias="qlikSpaceType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         qlik_datasets: Optional[list[QlikDataset]] = Field(
             None, description="", alias="qlikDatasets"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
         )  # relationship
         qlik_apps: Optional[list[QlikApp]] = Field(
             None, description="", alias="qlikApps"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QlikSpace.Attributes" = Field(
-        None,
+        default_factory=lambda: QlikSpace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20709,7 +18341,8 @@ class QlikApp(Qlik):
         "qlik_is_encrypted",
         "qlik_is_direct_query_mode",
         "qlik_app_static_byte_size",
-        "terms",
+        "qlik_space",
+        "qlik_sheets",
     ]
 
     @property
@@ -20763,16 +18396,24 @@ class QlikApp(Qlik):
         self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def qlik_space(self) -> Optional[QlikSpace]:
+        return self.attributes.qlik_space
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @qlik_space.setter
+    def qlik_space(self, qlik_space: Optional[QlikSpace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.qlik_space = qlik_space
+
+    @property
+    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
+        return self.attributes.qlik_sheets
+
+    @qlik_sheets.setter
+    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_sheets = qlik_sheets
 
     type_name: str = Field("QlikApp", allow_mutation=False)
 
@@ -20798,39 +18439,15 @@ class QlikApp(Qlik):
         qlik_app_static_byte_size: Optional[int] = Field(
             None, description="", alias="qlikAppStaticByteSize"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         qlik_space: Optional[QlikSpace] = Field(
             None, description="", alias="qlikSpace"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
         )  # relationship
         qlik_sheets: Optional[list[QlikSheet]] = Field(
             None, description="", alias="qlikSheets"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QlikApp.Attributes" = Field(
-        None,
+        default_factory=lambda: QlikApp.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20849,7 +18466,7 @@ class QlikChart(Qlik):
         "qlik_chart_footnote",
         "qlik_chart_orientation",
         "qlik_chart_type",
-        "terms",
+        "qlik_sheet",
     ]
 
     @property
@@ -20893,16 +18510,14 @@ class QlikChart(Qlik):
         self.attributes.qlik_chart_type = qlik_chart_type
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def qlik_sheet(self) -> Optional[QlikSheet]:
+        return self.attributes.qlik_sheet
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @qlik_sheet.setter
+    def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.qlik_sheet = qlik_sheet
 
     type_name: str = Field("QlikChart", allow_mutation=False)
 
@@ -20925,36 +18540,12 @@ class QlikChart(Qlik):
         qlik_chart_type: Optional[str] = Field(
             None, description="", alias="qlikChartType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         qlik_sheet: Optional[QlikSheet] = Field(
             None, description="", alias="qlikSheet"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QlikChart.Attributes" = Field(
-        None,
+        default_factory=lambda: QlikChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20973,7 +18564,7 @@ class QlikDataset(Qlik):
         "qlik_dataset_type",
         "qlik_dataset_uri",
         "qlik_dataset_subtype",
-        "terms",
+        "qlik_space",
     ]
 
     @property
@@ -21017,16 +18608,14 @@ class QlikDataset(Qlik):
         self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def qlik_space(self) -> Optional[QlikSpace]:
+        return self.attributes.qlik_space
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @qlik_space.setter
+    def qlik_space(self, qlik_space: Optional[QlikSpace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.qlik_space = qlik_space
 
     type_name: str = Field("QlikDataset", allow_mutation=False)
 
@@ -21049,36 +18638,12 @@ class QlikDataset(Qlik):
         qlik_dataset_subtype: Optional[str] = Field(
             None, description="", alias="qlikDatasetSubtype"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         qlik_space: Optional[QlikSpace] = Field(
             None, description="", alias="qlikSpace"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QlikDataset.Attributes" = Field(
-        None,
+        default_factory=lambda: QlikDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -21094,7 +18659,8 @@ class QlikSheet(Qlik):
 
     _convience_properties: ClassVar[list[str]] = [
         "qlik_sheet_is_approved",
-        "terms",
+        "qlik_app",
+        "qlik_charts",
     ]
 
     @property
@@ -21108,16 +18674,24 @@ class QlikSheet(Qlik):
         self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def qlik_app(self) -> Optional[QlikApp]:
+        return self.attributes.qlik_app
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @qlik_app.setter
+    def qlik_app(self, qlik_app: Optional[QlikApp]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.qlik_app = qlik_app
+
+    @property
+    def qlik_charts(self) -> Optional[list[QlikChart]]:
+        return self.attributes.qlik_charts
+
+    @qlik_charts.setter
+    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_charts = qlik_charts
 
     type_name: str = Field("QlikSheet", allow_mutation=False)
 
@@ -21134,36 +18708,12 @@ class QlikSheet(Qlik):
         qlik_app: Optional[QlikApp] = Field(
             None, description="", alias="qlikApp"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         qlik_charts: Optional[list[QlikChart]] = Field(
             None, description="", alias="qlikCharts"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "QlikSheet.Attributes" = Field(
-        None,
+        default_factory=lambda: QlikSheet.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -21183,7 +18733,10 @@ class TableauWorkbook(Tableau):
         "top_level_project_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
-        "terms",
+        "project",
+        "dashboards",
+        "worksheets",
+        "datasources",
     ]
 
     @property
@@ -21241,16 +18794,44 @@ class TableauWorkbook(Tableau):
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def project(self) -> Optional[TableauProject]:
+        return self.attributes.project
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.project = project
+
+    @property
+    def dashboards(self) -> Optional[list[TableauDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasources(self) -> Optional[list[TableauDatasource]]:
+        return self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
 
     type_name: str = Field("TableauWorkbook", allow_mutation=False)
 
@@ -21276,11 +18857,11 @@ class TableauWorkbook(Tableau):
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
+        project: Optional[TableauProject] = Field(
+            None, description="", alias="project"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
+        dashboards: Optional[list[TableauDashboard]] = Field(
+            None, description="", alias="dashboards"
         )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
@@ -21288,33 +18869,9 @@ class TableauWorkbook(Tableau):
         datasources: Optional[list[TableauDatasource]] = Field(
             None, description="", alias="datasources"
         )  # relationship
-        project: Optional[TableauProject] = Field(
-            None, description="", alias="project"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        dashboards: Optional[list[TableauDashboard]] = Field(
-            None, description="", alias="dashboards"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauWorkbook.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauWorkbook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -21345,7 +18902,8 @@ class TableauDatasourceField(Tableau):
         "upstream_columns",
         "upstream_fields",
         "datasource_field_type",
-        "terms",
+        "worksheets",
+        "datasource",
     ]
 
     @property
@@ -21531,16 +19089,24 @@ class TableauDatasourceField(Tableau):
         self.attributes.datasource_field_type = datasource_field_type
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return self.attributes.worksheets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasource(self) -> Optional[TableauDatasource]:
+        return self.attributes.datasource
+
+    @datasource.setter
+    def datasource(self, datasource: Optional[TableauDatasource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource = datasource
 
     type_name: str = Field("TableauDatasourceField", allow_mutation=False)
 
@@ -21599,39 +19165,15 @@ class TableauDatasourceField(Tableau):
         datasource_field_type: Optional[str] = Field(
             None, description="", alias="datasourceFieldType"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(
             None, description="", alias="datasource"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauDatasourceField.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauDatasourceField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -21657,7 +19199,8 @@ class TableauCalculatedField(Tableau):
         "tableau_data_type",
         "formula",
         "upstream_fields",
-        "terms",
+        "worksheets",
+        "datasource",
     ]
 
     @property
@@ -21775,16 +19318,24 @@ class TableauCalculatedField(Tableau):
         self.attributes.upstream_fields = upstream_fields
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return self.attributes.worksheets
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.worksheets = worksheets
+
+    @property
+    def datasource(self) -> Optional[TableauDatasource]:
+        return self.attributes.datasource
+
+    @datasource.setter
+    def datasource(self, datasource: Optional[TableauDatasource]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource = datasource
 
     type_name: str = Field("TableauCalculatedField", allow_mutation=False)
 
@@ -21822,39 +19373,15 @@ class TableauCalculatedField(Tableau):
         upstream_fields: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="upstreamFields"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(
             None, description="", alias="datasource"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauCalculatedField.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauCalculatedField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -21873,7 +19400,12 @@ class TableauProject(Tableau):
         "top_level_project_qualified_name",
         "is_top_level_project",
         "project_hierarchy",
-        "terms",
+        "parent_project",
+        "workbooks",
+        "site",
+        "datasources",
+        "flows",
+        "child_projects",
     ]
 
     @property
@@ -21921,16 +19453,64 @@ class TableauProject(Tableau):
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def parent_project(self) -> Optional[TableauProject]:
+        return self.attributes.parent_project
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @parent_project.setter
+    def parent_project(self, parent_project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.parent_project = parent_project
+
+    @property
+    def workbooks(self) -> Optional[list[TableauWorkbook]]:
+        return self.attributes.workbooks
+
+    @workbooks.setter
+    def workbooks(self, workbooks: Optional[list[TableauWorkbook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workbooks = workbooks
+
+    @property
+    def site(self) -> Optional[TableauSite]:
+        return self.attributes.site
+
+    @site.setter
+    def site(self, site: Optional[TableauSite]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.site = site
+
+    @property
+    def datasources(self) -> Optional[list[TableauDatasource]]:
+        return self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[TableauDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    @property
+    def flows(self) -> Optional[list[TableauFlow]]:
+        return self.attributes.flows
+
+    @flows.setter
+    def flows(self, flows: Optional[list[TableauFlow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.flows = flows
+
+    @property
+    def child_projects(self) -> Optional[list[TableauProject]]:
+        return self.attributes.child_projects
+
+    @child_projects.setter
+    def child_projects(self, child_projects: Optional[list[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.child_projects = child_projects
 
     type_name: str = Field("TableauProject", allow_mutation=False)
 
@@ -21953,26 +19533,14 @@ class TableauProject(Tableau):
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         parent_project: Optional[TableauProject] = Field(
             None, description="", alias="parentProject"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         workbooks: Optional[list[TableauWorkbook]] = Field(
             None, description="", alias="workbooks"
         )  # relationship
         site: Optional[TableauSite] = Field(
             None, description="", alias="site"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         datasources: Optional[list[TableauDatasource]] = Field(
             None, description="", alias="datasources"
@@ -21983,21 +19551,9 @@ class TableauProject(Tableau):
         child_projects: Optional[list[TableauProject]] = Field(
             None, description="", alias="childProjects"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauProject.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauProject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22016,7 +19572,7 @@ class TableauMetric(Tableau):
         "project_qualified_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
-        "terms",
+        "project",
     ]
 
     @property
@@ -22064,16 +19620,14 @@ class TableauMetric(Tableau):
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def project(self) -> Optional[TableauProject]:
+        return self.attributes.project
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.project = project
 
     type_name: str = Field("TableauMetric", allow_mutation=False)
 
@@ -22096,36 +19650,12 @@ class TableauMetric(Tableau):
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="projectHierarchy"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauMetric.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22140,20 +19670,18 @@ class TableauSite(Tableau):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "projects",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def projects(self) -> Optional[list[TableauProject]]:
+        return self.attributes.projects
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @projects.setter
+    def projects(self, projects: Optional[list[TableauProject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.projects = projects
 
     type_name: str = Field("TableauSite", allow_mutation=False)
 
@@ -22164,36 +19692,12 @@ class TableauSite(Tableau):
         return v
 
     class Attributes(Tableau.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         projects: Optional[list[TableauProject]] = Field(
             None, description="", alias="projects"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauSite.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauSite.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22221,7 +19725,9 @@ class TableauDatasource(Tableau):
         "certifier_display_name",
         "upstream_tables",
         "upstream_datasources",
-        "terms",
+        "workbook",
+        "project",
+        "fields",
     ]
 
     @property
@@ -22361,16 +19867,34 @@ class TableauDatasource(Tableau):
         self.attributes.upstream_datasources = upstream_datasources
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return self.attributes.workbook
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.workbook = workbook
+
+    @property
+    def project(self) -> Optional[TableauProject]:
+        return self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    @property
+    def fields(self) -> Optional[list[TableauDatasourceField]]:
+        return self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[TableauDatasourceField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
 
     type_name: str = Field("TableauDatasource", allow_mutation=False)
 
@@ -22417,39 +19941,15 @@ class TableauDatasource(Tableau):
         workbook: Optional[TableauWorkbook] = Field(
             None, description="", alias="workbook"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="fields"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauDatasource.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauDatasource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22469,7 +19969,8 @@ class TableauDashboard(Tableau):
         "workbook_qualified_name",
         "top_level_project_qualified_name",
         "project_hierarchy",
-        "terms",
+        "workbook",
+        "worksheets",
     ]
 
     @property
@@ -22527,16 +20028,24 @@ class TableauDashboard(Tableau):
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return self.attributes.workbook
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.workbook = workbook
+
+    @property
+    def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        return self.attributes.worksheets
+
+    @worksheets.setter
+    def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.worksheets = worksheets
 
     type_name: str = Field("TableauDashboard", allow_mutation=False)
 
@@ -22565,36 +20074,12 @@ class TableauDashboard(Tableau):
         workbook: Optional[TableauWorkbook] = Field(
             None, description="", alias="workbook"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
             None, description="", alias="worksheets"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22616,7 +20101,7 @@ class TableauFlow(Tableau):
         "input_fields",
         "output_fields",
         "output_steps",
-        "terms",
+        "project",
     ]
 
     @property
@@ -22694,16 +20179,14 @@ class TableauFlow(Tableau):
         self.attributes.output_steps = output_steps
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def project(self) -> Optional[TableauProject]:
+        return self.attributes.project
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @project.setter
+    def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.project = project
 
     type_name: str = Field("TableauFlow", allow_mutation=False)
 
@@ -22735,36 +20218,12 @@ class TableauFlow(Tableau):
         output_steps: Optional[list[dict[str, str]]] = Field(
             None, description="", alias="outputSteps"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         project: Optional[TableauProject] = Field(
             None, description="", alias="project"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauFlow.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauFlow.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22784,7 +20243,10 @@ class TableauWorksheet(Tableau):
         "top_level_project_qualified_name",
         "project_hierarchy",
         "workbook_qualified_name",
-        "terms",
+        "workbook",
+        "datasource_fields",
+        "calculated_fields",
+        "dashboards",
     ]
 
     @property
@@ -22842,16 +20304,48 @@ class TableauWorksheet(Tableau):
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def workbook(self) -> Optional[TableauWorkbook]:
+        return self.attributes.workbook
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @workbook.setter
+    def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.workbook = workbook
+
+    @property
+    def datasource_fields(self) -> Optional[list[TableauDatasourceField]]:
+        return self.attributes.datasource_fields
+
+    @datasource_fields.setter
+    def datasource_fields(
+        self, datasource_fields: Optional[list[TableauDatasourceField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasource_fields = datasource_fields
+
+    @property
+    def calculated_fields(self) -> Optional[list[TableauCalculatedField]]:
+        return self.attributes.calculated_fields
+
+    @calculated_fields.setter
+    def calculated_fields(
+        self, calculated_fields: Optional[list[TableauCalculatedField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.calculated_fields = calculated_fields
+
+    @property
+    def dashboards(self) -> Optional[list[TableauDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
 
     type_name: str = Field("TableauWorksheet", allow_mutation=False)
 
@@ -22880,26 +20374,8 @@ class TableauWorksheet(Tableau):
         workbook: Optional[TableauWorkbook] = Field(
             None, description="", alias="workbook"
         )  # relationship
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         datasource_fields: Optional[list[TableauDatasourceField]] = Field(
             None, description="", alias="datasourceFields"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         calculated_fields: Optional[list[TableauCalculatedField]] = Field(
             None, description="", alias="calculatedFields"
@@ -22907,15 +20383,9 @@ class TableauWorksheet(Tableau):
         dashboards: Optional[list[TableauDashboard]] = Field(
             None, description="", alias="dashboards"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "TableauWorksheet.Attributes" = Field(
-        None,
+        default_factory=lambda: TableauWorksheet.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22939,7 +20409,11 @@ class LookerLook(Looker):
         "source_content_metadata_id",
         "source_query_id",
         "model_name",
-        "terms",
+        "query",
+        "folder",
+        "tile",
+        "model",
+        "dashboard",
     ]
 
     @property
@@ -23033,16 +20507,54 @@ class LookerLook(Looker):
         self.attributes.model_name = model_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def query(self) -> Optional[LookerQuery]:
+        return self.attributes.query
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @query.setter
+    def query(self, query: Optional[LookerQuery]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.query = query
+
+    @property
+    def folder(self) -> Optional[LookerFolder]:
+        return self.attributes.folder
+
+    @folder.setter
+    def folder(self, folder: Optional[LookerFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.folder = folder
+
+    @property
+    def tile(self) -> Optional[LookerTile]:
+        return self.attributes.tile
+
+    @tile.setter
+    def tile(self, tile: Optional[LookerTile]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tile = tile
+
+    @property
+    def model(self) -> Optional[LookerModel]:
+        return self.attributes.model
+
+    @model.setter
+    def model(self, model: Optional[LookerModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model = model
+
+    @property
+    def dashboard(self) -> Optional[LookerDashboard]:
+        return self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[LookerDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
 
     type_name: str = Field("LookerLook", allow_mutation=False)
 
@@ -23076,20 +20588,8 @@ class LookerLook(Looker):
             None, description="", alias="sourceQueryId"
         )
         model_name: Optional[str] = Field(None, description="", alias="modelName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         folder: Optional[LookerFolder] = Field(
             None, description="", alias="folder"
@@ -23097,27 +20597,15 @@ class LookerLook(Looker):
         tile: Optional[LookerTile] = Field(
             None, description="", alias="tile"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
         )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
             None, description="", alias="dashboard"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerLook.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerLook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23139,7 +20627,9 @@ class LookerDashboard(Looker):
         "sourcelast_updater_id",
         "source_last_accessed_at",
         "source_last_viewed_at",
-        "terms",
+        "tiles",
+        "looks",
+        "folder",
     ]
 
     @property
@@ -23213,16 +20703,34 @@ class LookerDashboard(Looker):
         self.attributes.source_last_viewed_at = source_last_viewed_at
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def tiles(self) -> Optional[list[LookerTile]]:
+        return self.attributes.tiles
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[LookerTile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.tiles = tiles
+
+    @property
+    def looks(self) -> Optional[list[LookerLook]]:
+        return self.attributes.looks
+
+    @looks.setter
+    def looks(self, looks: Optional[list[LookerLook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looks = looks
+
+    @property
+    def folder(self) -> Optional[LookerFolder]:
+        return self.attributes.folder
+
+    @folder.setter
+    def folder(self, folder: Optional[LookerFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.folder = folder
 
     type_name: str = Field("LookerDashboard", allow_mutation=False)
 
@@ -23252,42 +20760,18 @@ class LookerDashboard(Looker):
         source_last_viewed_at: Optional[datetime] = Field(
             None, description="", alias="sourceLastViewedAt"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[LookerTile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         folder: Optional[LookerFolder] = Field(
             None, description="", alias="folder"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23306,7 +20790,8 @@ class LookerFolder(Looker):
         "source_creator_id",
         "source_child_count",
         "source_parent_i_d",
-        "terms",
+        "looks",
+        "dashboards",
     ]
 
     @property
@@ -23350,16 +20835,24 @@ class LookerFolder(Looker):
         self.attributes.source_parent_i_d = source_parent_i_d
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def looks(self) -> Optional[list[LookerLook]]:
+        return self.attributes.looks
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @looks.setter
+    def looks(self, looks: Optional[list[LookerLook]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.looks = looks
+
+    @property
+    def dashboards(self) -> Optional[list[LookerDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[LookerDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
 
     type_name: str = Field("LookerFolder", allow_mutation=False)
 
@@ -23382,39 +20875,15 @@ class LookerFolder(Looker):
         source_parent_i_d: Optional[int] = Field(
             None, description="", alias="sourceParentID"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         dashboards: Optional[list[LookerDashboard]] = Field(
             None, description="", alias="dashboards"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerFolder.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23436,7 +20905,9 @@ class LookerTile(Looker):
         "result_maker_i_d",
         "subtitle_text",
         "look_id",
-        "terms",
+        "query",
+        "look",
+        "dashboard",
     ]
 
     @property
@@ -23510,16 +20981,34 @@ class LookerTile(Looker):
         self.attributes.look_id = look_id
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def query(self) -> Optional[LookerQuery]:
+        return self.attributes.query
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @query.setter
+    def query(self, query: Optional[LookerQuery]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.query = query
+
+    @property
+    def look(self) -> Optional[LookerLook]:
+        return self.attributes.look
+
+    @look.setter
+    def look(self, look: Optional[LookerLook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.look = look
+
+    @property
+    def dashboard(self) -> Optional[LookerDashboard]:
+        return self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[LookerDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
 
     type_name: str = Field("LookerTile", allow_mutation=False)
 
@@ -23543,42 +21032,18 @@ class LookerTile(Looker):
         )
         subtitle_text: Optional[str] = Field(None, description="", alias="subtitleText")
         look_id: Optional[int] = Field(None, description="", alias="lookId")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         query: Optional[LookerQuery] = Field(
             None, description="", alias="query"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         look: Optional[LookerLook] = Field(
             None, description="", alias="look"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
         dashboard: Optional[LookerDashboard] = Field(
             None, description="", alias="dashboard"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerTile.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerTile.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23594,7 +21059,11 @@ class LookerModel(Looker):
 
     _convience_properties: ClassVar[list[str]] = [
         "project_name",
-        "terms",
+        "explores",
+        "project",
+        "look",
+        "queries",
+        "fields",
     ]
 
     @property
@@ -23608,16 +21077,54 @@ class LookerModel(Looker):
         self.attributes.project_name = project_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def explores(self) -> Optional[list[LookerExplore]]:
+        return self.attributes.explores
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @explores.setter
+    def explores(self, explores: Optional[list[LookerExplore]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.explores = explores
+
+    @property
+    def project(self) -> Optional[LookerProject]:
+        return self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[LookerProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    @property
+    def look(self) -> Optional[LookerLook]:
+        return self.attributes.look
+
+    @look.setter
+    def look(self, look: Optional[LookerLook]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.look = look
+
+    @property
+    def queries(self) -> Optional[list[LookerQuery]]:
+        return self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[LookerQuery]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def fields(self) -> Optional[list[LookerField]]:
+        return self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[LookerField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
 
     type_name: str = Field("LookerModel", allow_mutation=False)
 
@@ -23629,17 +21136,11 @@ class LookerModel(Looker):
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         explores: Optional[list[LookerExplore]] = Field(
             None, description="", alias="explores"
         )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         look: Optional[LookerLook] = Field(
             None, description="", alias="look"
@@ -23647,30 +21148,12 @@ class LookerModel(Looker):
         queries: Optional[list[LookerQuery]] = Field(
             None, description="", alias="queries"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerModel.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerModel.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23690,7 +21173,9 @@ class LookerExplore(Looker):
         "source_connection_name",
         "view_name",
         "sql_table_name",
-        "terms",
+        "project",
+        "model",
+        "fields",
     ]
 
     @property
@@ -23744,16 +21229,34 @@ class LookerExplore(Looker):
         self.attributes.sql_table_name = sql_table_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def project(self) -> Optional[LookerProject]:
+        return self.attributes.project
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @project.setter
+    def project(self, project: Optional[LookerProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.project = project
+
+    @property
+    def model(self) -> Optional[LookerModel]:
+        return self.attributes.model
+
+    @model.setter
+    def model(self, model: Optional[LookerModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model = model
+
+    @property
+    def fields(self) -> Optional[list[LookerField]]:
+        return self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[LookerField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
 
     type_name: str = Field("LookerExplore", allow_mutation=False)
 
@@ -23773,42 +21276,18 @@ class LookerExplore(Looker):
         sql_table_name: Optional[str] = Field(
             None, description="", alias="sqlTableName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
         )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerExplore.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerExplore.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23823,20 +21302,51 @@ class LookerProject(Looker):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "terms",
+        "models",
+        "explores",
+        "fields",
+        "views",
     ]
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def models(self) -> Optional[list[LookerModel]]:
+        return self.attributes.models
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @models.setter
+    def models(self, models: Optional[list[LookerModel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.models = models
+
+    @property
+    def explores(self) -> Optional[list[LookerExplore]]:
+        return self.attributes.explores
+
+    @explores.setter
+    def explores(self, explores: Optional[list[LookerExplore]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.explores = explores
+
+    @property
+    def fields(self) -> Optional[list[LookerField]]:
+        return self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[LookerField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
+
+    @property
+    def views(self) -> Optional[list[LookerView]]:
+        return self.attributes.views
+
+    @views.setter
+    def views(self, views: Optional[list[LookerView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.views = views
 
     type_name: str = Field("LookerProject", allow_mutation=False)
 
@@ -23847,45 +21357,21 @@ class LookerProject(Looker):
         return v
 
     class Attributes(Looker.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         models: Optional[list[LookerModel]] = Field(
             None, description="", alias="models"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         explores: Optional[list[LookerExplore]] = Field(
             None, description="", alias="explores"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
         )  # relationship
         views: Optional[list[LookerView]] = Field(
             None, description="", alias="views"
         )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerProject.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerProject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -23904,7 +21390,9 @@ class LookerQuery(Looker):
         "source_definition_database",
         "source_definition_schema",
         "fields",
-        "terms",
+        "tiles",
+        "looks",
+        "model",
     ]
 
     @property
@@ -23948,16 +21436,34 @@ class LookerQuery(Looker):
         self.attributes.fields = fields
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def tiles(self) -> Optional[list[LookerTile]]:
+        return self.attributes.tiles
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[LookerTile]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.tiles = tiles
+
+    @property
+    def looks(self) -> Optional[list[LookerLook]]:
+        return self.attributes.looks
+
+    @looks.setter
+    def looks(self, looks: Optional[list[LookerLook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looks = looks
+
+    @property
+    def model(self) -> Optional[LookerModel]:
+        return self.attributes.model
+
+    @model.setter
+    def model(self, model: Optional[LookerModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model = model
 
     type_name: str = Field("LookerQuery", allow_mutation=False)
 
@@ -23978,42 +21484,18 @@ class LookerQuery(Looker):
             None, description="", alias="sourceDefinitionSchema"
         )
         fields: Optional[set[str]] = Field(None, description="", alias="fields")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         tiles: Optional[list[LookerTile]] = Field(
             None, description="", alias="tiles"
         )  # relationship
         looks: Optional[list[LookerLook]] = Field(
             None, description="", alias="looks"
         )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerQuery.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24035,7 +21517,10 @@ class LookerField(Looker):
         "source_definition",
         "looker_field_data_type",
         "looker_times_used",
-        "terms",
+        "explore",
+        "project",
+        "view",
+        "model",
     ]
 
     @property
@@ -24111,16 +21596,44 @@ class LookerField(Looker):
         self.attributes.looker_times_used = looker_times_used
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def explore(self) -> Optional[LookerExplore]:
+        return self.attributes.explore
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @explore.setter
+    def explore(self, explore: Optional[LookerExplore]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.explore = explore
+
+    @property
+    def project(self) -> Optional[LookerProject]:
+        return self.attributes.project
+
+    @project.setter
+    def project(self, project: Optional[LookerProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.project = project
+
+    @property
+    def view(self) -> Optional[LookerView]:
+        return self.attributes.view
+
+    @view.setter
+    def view(self, view: Optional[LookerView]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view = view
+
+    @property
+    def model(self) -> Optional[LookerModel]:
+        return self.attributes.model
+
+    @model.setter
+    def model(self, model: Optional[LookerModel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.model = model
 
     type_name: str = Field("LookerField", allow_mutation=False)
 
@@ -24148,45 +21661,21 @@ class LookerField(Looker):
         looker_times_used: Optional[int] = Field(
             None, description="", alias="lookerTimesUsed"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        view: Optional[LookerView] = Field(
-            None, description="", alias="view"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         explore: Optional[LookerExplore] = Field(
             None, description="", alias="explore"
         )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
+        view: Optional[LookerView] = Field(
+            None, description="", alias="view"
         )  # relationship
         model: Optional[LookerModel] = Field(
             None, description="", alias="model"
         )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerField.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24202,7 +21691,8 @@ class LookerView(Looker):
 
     _convience_properties: ClassVar[list[str]] = [
         "project_name",
-        "terms",
+        "project",
+        "fields",
     ]
 
     @property
@@ -24216,16 +21706,24 @@ class LookerView(Looker):
         self.attributes.project_name = project_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def project(self) -> Optional[LookerProject]:
+        return self.attributes.project
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @project.setter
+    def project(self, project: Optional[LookerProject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.project = project
+
+    @property
+    def fields(self) -> Optional[list[LookerField]]:
+        return self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[LookerField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
 
     type_name: str = Field("LookerView", allow_mutation=False)
 
@@ -24237,39 +21735,15 @@ class LookerView(Looker):
 
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         project: Optional[LookerProject] = Field(
             None, description="", alias="project"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         fields: Optional[list[LookerField]] = Field(
             None, description="", alias="fields"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "LookerView.Attributes" = Field(
-        None,
+        default_factory=lambda: LookerView.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24285,7 +21759,6 @@ class RedashDashboard(Redash):
 
     _convience_properties: ClassVar[list[str]] = [
         "redash_dashboard_widget_count",
-        "terms",
     ]
 
     @property
@@ -24300,18 +21773,6 @@ class RedashDashboard(Redash):
             self.attributes = self.Attributes()
         self.attributes.redash_dashboard_widget_count = redash_dashboard_widget_count
 
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
-
     type_name: str = Field("RedashDashboard", allow_mutation=False)
 
     @validator("type_name")
@@ -24324,33 +21785,9 @@ class RedashDashboard(Redash):
         redash_dashboard_widget_count: Optional[int] = Field(
             None, description="", alias="redashDashboardWidgetCount"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "RedashDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: RedashDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24371,7 +21808,7 @@ class RedashQuery(Redash):
         "redash_query_last_execution_runtime",
         "redash_query_last_executed_at",
         "redash_query_schedule_humanized",
-        "terms",
+        "redash_visualizations",
     ]
 
     @property
@@ -24445,16 +21882,16 @@ class RedashQuery(Redash):
         )
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def redash_visualizations(self) -> Optional[list[RedashVisualization]]:
+        return self.attributes.redash_visualizations
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @redash_visualizations.setter
+    def redash_visualizations(
+        self, redash_visualizations: Optional[list[RedashVisualization]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.redash_visualizations = redash_visualizations
 
     type_name: str = Field("RedashQuery", allow_mutation=False)
 
@@ -24483,36 +21920,12 @@ class RedashQuery(Redash):
         redash_query_schedule_humanized: Optional[str] = Field(
             None, description="", alias="redashQueryScheduleHumanized"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         redash_visualizations: Optional[list[RedashVisualization]] = Field(
             None, description="", alias="redashVisualizations"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "RedashQuery.Attributes" = Field(
-        None,
+        default_factory=lambda: RedashQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24530,7 +21943,7 @@ class RedashVisualization(Redash):
         "redash_visualization_type",
         "redash_query_name",
         "redash_query_qualified_name",
-        "terms",
+        "redash_query",
     ]
 
     @property
@@ -24564,16 +21977,14 @@ class RedashVisualization(Redash):
         self.attributes.redash_query_qualified_name = redash_query_qualified_name
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def redash_query(self) -> Optional[RedashQuery]:
+        return self.attributes.redash_query
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @redash_query.setter
+    def redash_query(self, redash_query: Optional[RedashQuery]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.redash_query = redash_query
 
     type_name: str = Field("RedashVisualization", allow_mutation=False)
 
@@ -24593,36 +22004,12 @@ class RedashVisualization(Redash):
         redash_query_qualified_name: Optional[str] = Field(
             None, description="", alias="redashQueryQualifiedName"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         redash_query: Optional[RedashQuery] = Field(
             None, description="", alias="redashQuery"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "RedashVisualization.Attributes" = Field(
-        None,
+        default_factory=lambda: RedashVisualization.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24641,7 +22028,9 @@ class SalesforceObject(Salesforce):
         "is_mergable",
         "is_queryable",
         "field_count",
-        "terms",
+        "organization",
+        "lookup_fields",
+        "fields",
     ]
 
     @property
@@ -24685,16 +22074,34 @@ class SalesforceObject(Salesforce):
         self.attributes.field_count = field_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return self.attributes.organization
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.organization = organization
+
+    @property
+    def lookup_fields(self) -> Optional[list[SalesforceField]]:
+        return self.attributes.lookup_fields
+
+    @lookup_fields.setter
+    def lookup_fields(self, lookup_fields: Optional[list[SalesforceField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.lookup_fields = lookup_fields
+
+    @property
+    def fields(self) -> Optional[list[SalesforceField]]:
+        return self.attributes.fields
+
+    @fields.setter
+    def fields(self, fields: Optional[list[SalesforceField]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.fields = fields
 
     type_name: str = Field("SalesforceObject", allow_mutation=False)
 
@@ -24709,42 +22116,18 @@ class SalesforceObject(Salesforce):
         is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
         is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
         field_count: Optional[int] = Field(None, description="", alias="fieldCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             None, description="", alias="organization"
         )  # relationship
         lookup_fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="lookupFields"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="fields"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SalesforceObject.Attributes" = Field(
-        None,
+        default_factory=lambda: SalesforceObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -24775,7 +22158,8 @@ class SalesforceField(Salesforce):
         "picklist_values",
         "is_polymorphic_foreign_key",
         "default_value_formula",
-        "terms",
+        "lookup_objects",
+        "object",
     ]
 
     @property
@@ -24939,16 +22323,24 @@ class SalesforceField(Salesforce):
         self.attributes.default_value_formula = default_value_formula
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def lookup_objects(self) -> Optional[list[SalesforceObject]]:
+        return self.attributes.lookup_objects
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @lookup_objects.setter
+    def lookup_objects(self, lookup_objects: Optional[list[SalesforceObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.lookup_objects = lookup_objects
+
+    @property
+    def object(self) -> Optional[SalesforceObject]:
+        return self.attributes.object
+
+    @object.setter
+    def object(self, object: Optional[SalesforceObject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.object = object
 
     type_name: str = Field("SalesforceField", allow_mutation=False)
 
@@ -24991,39 +22383,15 @@ class SalesforceField(Salesforce):
         default_value_formula: Optional[str] = Field(
             None, description="", alias="defaultValueFormula"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         lookup_objects: Optional[list[SalesforceObject]] = Field(
             None, description="", alias="lookupObjects"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
         )  # relationship
         object: Optional[SalesforceObject] = Field(
             None, description="", alias="object"
         )  # relationship
 
     attributes: "SalesforceField.Attributes" = Field(
-        None,
+        default_factory=lambda: SalesforceField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -25039,7 +22407,9 @@ class SalesforceOrganization(Salesforce):
 
     _convience_properties: ClassVar[list[str]] = [
         "source_id",
-        "terms",
+        "reports",
+        "objects",
+        "dashboards",
     ]
 
     @property
@@ -25053,16 +22423,34 @@ class SalesforceOrganization(Salesforce):
         self.attributes.source_id = source_id
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def reports(self) -> Optional[list[SalesforceReport]]:
+        return self.attributes.reports
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @reports.setter
+    def reports(self, reports: Optional[list[SalesforceReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.reports = reports
+
+    @property
+    def objects(self) -> Optional[list[SalesforceObject]]:
+        return self.attributes.objects
+
+    @objects.setter
+    def objects(self, objects: Optional[list[SalesforceObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.objects = objects
+
+    @property
+    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
 
     type_name: str = Field("SalesforceOrganization", allow_mutation=False)
 
@@ -25074,42 +22462,18 @@ class SalesforceOrganization(Salesforce):
 
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         objects: Optional[list[SalesforceObject]] = Field(
             None, description="", alias="objects"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
         dashboards: Optional[list[SalesforceDashboard]] = Field(
             None, description="", alias="dashboards"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SalesforceOrganization.Attributes" = Field(
-        None,
+        default_factory=lambda: SalesforceOrganization.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -25127,7 +22491,8 @@ class SalesforceDashboard(Salesforce):
         "source_id",
         "dashboard_type",
         "report_count",
-        "terms",
+        "reports",
+        "organization",
     ]
 
     @property
@@ -25161,16 +22526,24 @@ class SalesforceDashboard(Salesforce):
         self.attributes.report_count = report_count
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def reports(self) -> Optional[list[SalesforceReport]]:
+        return self.attributes.reports
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @reports.setter
+    def reports(self, reports: Optional[list[SalesforceReport]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.reports = reports
+
+    @property
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return self.attributes.organization
+
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.organization = organization
 
     type_name: str = Field("SalesforceDashboard", allow_mutation=False)
 
@@ -25186,39 +22559,15 @@ class SalesforceDashboard(Salesforce):
             None, description="", alias="dashboardType"
         )
         report_count: Optional[int] = Field(None, description="", alias="reportCount")
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
         reports: Optional[list[SalesforceReport]] = Field(
             None, description="", alias="reports"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
         )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             None, description="", alias="organization"
         )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SalesforceDashboard.Attributes" = Field(
-        None,
+        default_factory=lambda: SalesforceDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -25236,7 +22585,8 @@ class SalesforceReport(Salesforce):
         "source_id",
         "report_type",
         "detail_columns",
-        "terms",
+        "organization",
+        "dashboards",
     ]
 
     @property
@@ -25270,16 +22620,24 @@ class SalesforceReport(Salesforce):
         self.attributes.detail_columns = detail_columns
 
     @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return self.attributes.organization
 
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+        self.attributes.organization = organization
+
+    @property
+    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
 
     type_name: str = Field("SalesforceReport", allow_mutation=False)
 
@@ -25297,39 +22655,15 @@ class SalesforceReport(Salesforce):
         detail_columns: Optional[set[str]] = Field(
             None, description="", alias="detailColumns"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
         organization: Optional[SalesforceOrganization] = Field(
             None, description="", alias="organization"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
         )  # relationship
         dashboards: Optional[list[SalesforceDashboard]] = Field(
             None, description="", alias="dashboards"
         )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "SalesforceReport.Attributes" = Field(
-        None,
+        default_factory=lambda: SalesforceReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -25343,21 +22677,7 @@ class QlikStream(QlikSpace):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "terms",
-    ]
-
-    @property
-    def terms(self) -> list[AtlasGlossaryTerm]:
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        return [] if self.attributes.meanings is None else self.attributes.meanings
-
-    @terms.setter
-    def terms(self, terms: list[AtlasGlossaryTerm]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.meanings = terms
+    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("QlikStream", allow_mutation=False)
 
@@ -25366,44 +22686,6 @@ class QlikStream(QlikSpace):
         if v != "QlikStream":
             raise ValueError("must be QlikStream")
         return v
-
-    class Attributes(QlikSpace.Attributes):
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
-        )  # relationship
-        qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
-        )  # relationship
-        mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
-        )  # relationship
-        links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
-        )  # relationship
-        qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
-        )  # relationship
-        metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
-        )  # relationship
-        readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
-        )  # relationship
-        meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "QlikStream.Attributes" = Field(
-        None,
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
 
 
 Referenceable.update_forward_refs()
@@ -25528,6 +22810,8 @@ DbtProcess.Attributes.update_forward_refs()
 ReadmeTemplate.Attributes.update_forward_refs()
 
 Readme.Attributes.update_forward_refs()
+
+File.Attributes.update_forward_refs()
 
 Link.Attributes.update_forward_refs()
 

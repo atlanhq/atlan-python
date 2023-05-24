@@ -8,5 +8,6 @@
   "relationshipStatus": "ACTIVE",
   "relationshipAttributes": {
     "typeName": "AtlasGlossaryTermAnchor"
-  }
+  },
+  "attributes": {"qualifiedName": "9c9a7a04-d738-48e8-b1d3-a491eb2bccf5"}
 }
