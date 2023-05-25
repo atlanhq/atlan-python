@@ -14,8 +14,7 @@ from pyatlan.model.typedef import ClassificationDef
 
 LOGGER = logging.getLogger(__name__)
 
-
-CLS_NAME = "psdk-classification"
+MODULE_NAME = "CLS"
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -56,16 +55,21 @@ def make_classification(
 
 @pytest.fixture(scope="module")
 def classification_def(
-    client: AtlanClient, make_classification: Callable[[str], ClassificationDef]
+    client: AtlanClient,
+    make_unique: Callable[[str], str],
+    make_classification: Callable[[str], ClassificationDef],
 ) -> ClassificationDef:
-    return make_classification(CLS_NAME)
+    cls_name = make_unique(MODULE_NAME)
+    return make_classification(cls_name)
 
 
-def test_classification_def(classification_def: ClassificationDef):
+def test_classification_def(
+    classification_def: ClassificationDef, make_unique: Callable[[str], str]
+):
     assert classification_def
     assert classification_def.guid
-    assert classification_def.display_name == CLS_NAME
-    assert classification_def.name != CLS_NAME
+    assert classification_def.display_name == make_unique(MODULE_NAME)
+    assert classification_def.name != make_unique(MODULE_NAME)
     assert classification_def.options
     assert "color" in classification_def.options.keys()
     assert (
@@ -73,10 +77,13 @@ def test_classification_def(classification_def: ClassificationDef):
     )
 
 
-def test_classification_cache(classification_def: ClassificationDef):
-    cls_id = ClassificationCache.get_id_for_name(CLS_NAME)
+def test_classification_cache(
+    classification_def: ClassificationDef, make_unique: Callable[[str], str]
+):
+    cls_name = make_unique(MODULE_NAME)
+    cls_id = ClassificationCache.get_id_for_name(cls_name)
     assert cls_id
     assert cls_id == classification_def.name
-    cls_name = ClassificationCache.get_name_for_id(cls_id)
-    assert cls_name
-    assert cls_name == CLS_NAME
+    cls_name_found = ClassificationCache.get_name_for_id(cls_id)
+    assert cls_name_found
+    assert cls_name_found == cls_name

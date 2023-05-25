@@ -140,10 +140,10 @@ Asset_Types = Union[
 
 def get_session():
     retry_strategy = Retry(
-        total=6,
+        total=10,
         backoff_factor=1,
         status_forcelist=[403, 500, 502, 503, 504],
-        allowed_methods=["HEAD", "GET", "OPTIONS"],
+        allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
     )
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()

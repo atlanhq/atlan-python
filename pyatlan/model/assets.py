@@ -3184,45 +3184,44 @@ class Connection(Asset, type_name="Connection"):
         if not name:
             raise ValueError("name cannot be blank")
         validate_required_fields(["connector_type"], [connector_type])
-        if admin_users or admin_groups or admin_roles:
-            if admin_roles:
-                from pyatlan.cache.role_cache import RoleCache
-
-                for role_id in admin_roles:
-                    if not RoleCache.get_name_for_id(role_id):
-                        raise ValueError(
-                            f"Provided role ID {role_id} was not found in Atlan."
-                        )
-            if admin_groups:
-                from pyatlan.cache.group_cache import GroupCache
-
-                for group_alias in admin_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
-                        raise ValueError(
-                            f"Provided group name {group_alias} was not found in Atlan."
-                        )
-            if admin_users:
-                from pyatlan.cache.user_cache import UserCache
-
-                for username in admin_users:
-                    if not UserCache.get_id_for_name(username):
-                        raise ValueError(
-                            f"Provided username {username} was not found in Atlan."
-                        )
-            attr = cls.Attributes(
-                name=name,
-                qualified_name=connector_type.to_qualified_name(),
-                connector_name=connector_type.value,
-                category=connector_type.category.value,
-                admin_users=admin_users if admin_users else [],
-                admin_groups=admin_groups if admin_groups else [],
-                admin_roles=admin_roles if admin_roles else [],
-            )
-            return cls(attributes=attr)
-        else:
+        if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
+        if admin_roles:
+            from pyatlan.cache.role_cache import RoleCache
+
+            for role_id in admin_roles:
+                if not RoleCache.get_name_for_id(role_id):
+                    raise ValueError(
+                        f"Provided role ID {role_id} was not found in Atlan."
+                    )
+        if admin_groups:
+            from pyatlan.cache.group_cache import GroupCache
+
+            for group_alias in admin_groups:
+                if not GroupCache.get_id_for_alias(group_alias):
+                    raise ValueError(
+                        f"Provided group name {group_alias} was not found in Atlan."
+                    )
+        if admin_users:
+            from pyatlan.cache.user_cache import UserCache
+
+            for username in admin_users:
+                if not UserCache.get_id_for_name(username):
+                    raise ValueError(
+                        f"Provided username {username} was not found in Atlan."
+                    )
+        attr = cls.Attributes(
+            name=name,
+            qualified_name=connector_type.to_qualified_name(),
+            connector_name=connector_type.value,
+            category=connector_type.category.value,
+            admin_users=admin_users if admin_users else [],
+            admin_groups=admin_groups if admin_groups else [],
+            admin_roles=admin_roles if admin_roles else [],
+        )
+        return cls(attributes=attr)
 
 
 class Process(Asset, type_name="Process"):
