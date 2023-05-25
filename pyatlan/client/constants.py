@@ -8,6 +8,7 @@ from pyatlan.utils import (
     APPLICATION_OCTET_STREAM,
     BASE_URI,
     MULTIPART_FORM_DATA,
+    SQL_URI,
     HTTPMethod,
     HTTPStatus,
 )
@@ -15,6 +16,7 @@ from pyatlan.utils import (
 ROLE_API = f"{ADMIN_URI}roles"
 GROUP_API = f"{ADMIN_URI}groups"
 USER_API = f"{ADMIN_URI}users"
+QUERY_API = f"{SQL_URI}query"
 
 # Role APIs
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK)
@@ -44,6 +46,9 @@ CHANGE_USER_ROLE = API(
     USER_API + "/{user_guid}/roles/update", HTTPMethod.POST, HTTPStatus.OK
 )
 GET_CURRENT_USER = API(f"{USER_API}/current", HTTPMethod.GET, HTTPStatus.OK)
+
+# SQL parsing APIs
+PARSE_QUERY = API(f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK)
 
 ENTITY_API = f"{BASE_URI}entity/"
 PREFIX_ATTR = "attr:"

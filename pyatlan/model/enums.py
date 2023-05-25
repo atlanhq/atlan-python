@@ -352,3 +352,18 @@ class AtlanClassificationColor(str, Enum):
     GREEN = "Green"
     YELLOW = "Yellow"
     RED = "Red"
+
+
+class QueryParserSourceType(str, Enum):
+    ANSI = "ansi"
+    BIGQUERY = "bigquery"
+    HANA = "hana"
+    HIVE = "hive"
+    MSSQL = "mssql"
+    MYSQL = "mysql"
+    ORACLE = "oracle"
+    POSTGRESQL = "postgresql"
+    REDSHIFT = "redshift"
+    SNOWFLAKE = "snowflake"
+    SPARKSQL = "sparksql"
+    ATHENA = "athena"
