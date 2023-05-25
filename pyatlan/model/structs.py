@@ -4,13 +4,13 @@ from typing import Optional, Union
 
 from pydantic import Field
 
+from pyatlan.utils import validate_required_fields
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
-    BadgeComparisonOperator,
     BadgeConditionColor,
+    BadgeComparisonOperator,
     SourceCostUnitType,
 )
-from pyatlan.utils import validate_required_fields
 
 
 class MCRuleSchedule(AtlanObject):

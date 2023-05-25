@@ -757,13 +757,13 @@ def test_connection_attributes_create_without_required_parameters_raises_validat
     name, connector_type, admin_users, admin_groups, admin_roles, error
 ):
     with pytest.raises(error):
-        Connection.Attributes.create(
+        Connection.Attributes(
             name=name,
             connector_type=connector_type,
             admin_users=admin_users,
             admin_groups=admin_groups,
             admin_roles=admin_roles,
-        )
+        ).validate_required()
 
 
 @pytest.mark.parametrize(
@@ -778,9 +778,11 @@ def test_connection_attributes_create_without_required_parameters_raises_validat
 def test_connection_attributes_create_with_required_parameters(
     name, connector_type, admin_users, admin_groups, admin_roles
 ):
-    c = Connection.Attributes.create(
+    c = Connection.Attributes(
         name=name,
-        connector_type=connector_type,
+        qualified_name=connector_type.to_qualified_name(),
+        connector_name=connector_type.value,
+        category=connector_type.category.value,
         admin_users=admin_users,
         admin_groups=admin_groups,
         admin_roles=admin_roles,
@@ -792,29 +794,6 @@ def test_connection_attributes_create_with_required_parameters(
     assert c.admin_roles == admin_roles
     assert c.admin_users == admin_users
     assert c.admin_groups == admin_groups
-
-
-@pytest.mark.parametrize(
-    "name, connector_type, admin_users, admin_groups, admin_roles",
-    [("somequery", AtlanConnectorType.BIGQUERY, {"bob"}, {"ted"}, {"alice"})],
-)
-def test_connection_create_with_required_parameters(
-    name, connector_type, admin_users, admin_groups, admin_roles
-):
-    c = Connection.create(
-        name=name,
-        connector_type=connector_type,
-        admin_users=admin_users,
-        admin_groups=admin_groups,
-        admin_roles=admin_roles,
-    )
-    assert c.attributes.qualified_name
-    assert c.attributes.qualified_name <= connector_type.to_qualified_name()
-    assert c.attributes.connector_name == connector_type.value
-    assert c.attributes.category == connector_type.category.value
-    assert c.attributes.admin_roles == admin_roles
-    assert c.attributes.admin_users == admin_users
-    assert c.attributes.admin_groups == admin_groups
 
 
 @pytest.mark.parametrize(

@@ -2404,8 +2404,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "anchor",
         "antonyms",
         "assigned_entities",
-        "classifies",
         "categories",
+        "classifies",
         "preferred_to_terms",
         "preferred_terms",
     ]
@@ -2591,16 +2591,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.assigned_entities = assigned_entities
 
     @property
-    def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.classifies
-
-    @classifies.setter
-    def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.classifies = classifies
-
-    @property
     def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
         return self.attributes.categories
 
@@ -2609,6 +2599,16 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.categories = categories
+
+    @property
+    def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.classifies
+
+    @classifies.setter
+    def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.classifies = classifies
 
     @property
     def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -2687,11 +2687,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         assigned_entities: Optional[list[Referenceable]] = Field(
             None, description="", alias="assignedEntities"
         )  # relationship
-        classifies: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="classifies"
-        )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
             None, description="", alias="categories"
+        )  # relationship
+        classifies: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="classifies"
         )  # relationship
         preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="preferredToTerms"
@@ -3164,35 +3164,6 @@ class Connection(Asset, type_name="Connection"):
             if not self.connector_name:
                 raise ValueError("connector_name is required")
 
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls,
-            *,
-            name: str,
-            connector_type: AtlanConnectorType,
-            admin_users: Optional[list[str]] = None,
-            admin_groups: Optional[list[str]] = None,
-            admin_roles: Optional[list[str]] = None,
-        ) -> Connection.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["connector_type"], [connector_type])
-            if admin_users or admin_groups or admin_roles:
-                return cls(
-                    name=name,
-                    qualified_name=connector_type.to_qualified_name(),
-                    connector_name=connector_type.value,
-                    category=connector_type.category.value,
-                    admin_users=admin_users,
-                    admin_groups=admin_groups,
-                    admin_roles=admin_roles,
-                )
-            else:
-                raise ValueError(
-                    "One of admin_user, admin_groups or admin_roles is required"
-                )
-
     attributes: "Connection.Attributes" = Field(
         default_factory=lambda: Connection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -3213,21 +3184,44 @@ class Connection(Asset, type_name="Connection"):
         if not name:
             raise ValueError("name cannot be blank")
         validate_required_fields(["connector_type"], [connector_type])
-        if admin_users or admin_groups or admin_roles:
-            attr = cls.Attributes(
-                name=name,
-                qualified_name=connector_type.to_qualified_name(),
-                connector_name=connector_type.value,
-                category=connector_type.category.value,
-                admin_users=admin_users,
-                admin_groups=admin_groups,
-                admin_roles=admin_roles,
-            )
-            return cls(attributes=attr)
-        else:
+        if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
+        if admin_roles:
+            from pyatlan.cache.role_cache import RoleCache
+
+            for role_id in admin_roles:
+                if not RoleCache.get_name_for_id(role_id):
+                    raise ValueError(
+                        f"Provided role ID {role_id} was not found in Atlan."
+                    )
+        if admin_groups:
+            from pyatlan.cache.group_cache import GroupCache
+
+            for group_alias in admin_groups:
+                if not GroupCache.get_id_for_alias(group_alias):
+                    raise ValueError(
+                        f"Provided group name {group_alias} was not found in Atlan."
+                    )
+        if admin_users:
+            from pyatlan.cache.user_cache import UserCache
+
+            for username in admin_users:
+                if not UserCache.get_id_for_name(username):
+                    raise ValueError(
+                        f"Provided username {username} was not found in Atlan."
+                    )
+        attr = cls.Attributes(
+            name=name,
+            qualified_name=connector_type.to_qualified_name(),
+            connector_name=connector_type.value,
+            category=connector_type.category.value,
+            admin_users=admin_users if admin_users else [],
+            admin_groups=admin_groups if admin_groups else [],
+            admin_roles=admin_roles if admin_roles else [],
+        )
+        return cls(attributes=attr)
 
 
 class Process(Asset, type_name="Process"):
@@ -7169,6 +7163,124 @@ class Preset(BI):
     )
 
 
+class Sigma(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Sigma._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_workbook_qualified_name",
+        "sigma_workbook_name",
+        "sigma_page_qualified_name",
+        "sigma_page_name",
+        "sigma_data_element_qualified_name",
+        "sigma_data_element_name",
+    ]
+
+    @property
+    def sigma_workbook_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_workbook_qualified_name
+
+    @sigma_workbook_qualified_name.setter
+    def sigma_workbook_qualified_name(
+        self, sigma_workbook_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
+
+    @property
+    def sigma_workbook_name(self) -> Optional[str]:
+        return self.attributes.sigma_workbook_name
+
+    @sigma_workbook_name.setter
+    def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_workbook_name = sigma_workbook_name
+
+    @property
+    def sigma_page_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_page_qualified_name
+
+    @sigma_page_qualified_name.setter
+    def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
+
+    @property
+    def sigma_page_name(self) -> Optional[str]:
+        return self.attributes.sigma_page_name
+
+    @sigma_page_name.setter
+    def sigma_page_name(self, sigma_page_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page_name = sigma_page_name
+
+    @property
+    def sigma_data_element_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_qualified_name
+
+    @sigma_data_element_qualified_name.setter
+    def sigma_data_element_qualified_name(
+        self, sigma_data_element_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_qualified_name = (
+            sigma_data_element_qualified_name
+        )
+
+    @property
+    def sigma_data_element_name(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_name
+
+    @sigma_data_element_name.setter
+    def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_name = sigma_data_element_name
+
+    type_name: str = Field("Sigma", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Sigma":
+            raise ValueError("must be Sigma")
+        return v
+
+    class Attributes(BI.Attributes):
+        sigma_workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookQualifiedName"
+        )
+        sigma_workbook_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookName"
+        )
+        sigma_page_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageQualifiedName"
+        )
+        sigma_page_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageName"
+        )
+        sigma_data_element_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQualifiedName"
+        )
+        sigma_data_element_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementName"
+        )
+
+    attributes: "Sigma.Attributes" = Field(
+        default_factory=lambda: Sigma.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Mode(BI):
     """Description"""
 
@@ -7316,124 +7428,6 @@ class Mode(BI):
 
     attributes: "Mode.Attributes" = Field(
         default_factory=lambda: Mode.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Sigma(BI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Sigma._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_workbook_qualified_name",
-        "sigma_workbook_name",
-        "sigma_page_qualified_name",
-        "sigma_page_name",
-        "sigma_data_element_qualified_name",
-        "sigma_data_element_name",
-    ]
-
-    @property
-    def sigma_workbook_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_workbook_qualified_name
-
-    @sigma_workbook_qualified_name.setter
-    def sigma_workbook_qualified_name(
-        self, sigma_workbook_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
-
-    @property
-    def sigma_workbook_name(self) -> Optional[str]:
-        return self.attributes.sigma_workbook_name
-
-    @sigma_workbook_name.setter
-    def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_name = sigma_workbook_name
-
-    @property
-    def sigma_page_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_page_qualified_name
-
-    @sigma_page_qualified_name.setter
-    def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
-
-    @property
-    def sigma_page_name(self) -> Optional[str]:
-        return self.attributes.sigma_page_name
-
-    @sigma_page_name.setter
-    def sigma_page_name(self, sigma_page_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_name = sigma_page_name
-
-    @property
-    def sigma_data_element_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_qualified_name
-
-    @sigma_data_element_qualified_name.setter
-    def sigma_data_element_qualified_name(
-        self, sigma_data_element_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_qualified_name = (
-            sigma_data_element_qualified_name
-        )
-
-    @property
-    def sigma_data_element_name(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_name
-
-    @sigma_data_element_name.setter
-    def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_name = sigma_data_element_name
-
-    type_name: str = Field("Sigma", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Sigma":
-            raise ValueError("must be Sigma")
-        return v
-
-    class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
-        )
-        sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
-        )
-        sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
-        )
-        sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
-        )
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
-        )
-        sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
-        )
-
-    attributes: "Sigma.Attributes" = Field(
-        default_factory=lambda: Sigma.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10162,8 +10156,10 @@ class Table(SQL):
         "partition_list",
         "partitions",
         "columns",
+        "facts",
         "queries",
         "atlan_schema",
+        "dimensions",
     ]
 
     @property
@@ -10327,6 +10323,16 @@ class Table(SQL):
         self.attributes.columns = columns
 
     @property
+    def facts(self) -> Optional[list[Table]]:
+        return self.attributes.facts
+
+    @facts.setter
+    def facts(self, facts: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.facts = facts
+
+    @property
     def queries(self) -> Optional[list[Query]]:
         return self.attributes.queries
 
@@ -10345,6 +10351,16 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def dimensions(self) -> Optional[list[Table]]:
+        return self.attributes.dimensions
+
+    @dimensions.setter
+    def dimensions(self, dimensions: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dimensions = dimensions
 
     type_name: str = Field("Table", allow_mutation=False)
 
@@ -10393,11 +10409,17 @@ class Table(SQL):
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
+        facts: Optional[list[Table]] = Field(
+            None, description="", alias="facts"
+        )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
+        )  # relationship
+        dimensions: Optional[list[Table]] = Field(
+            None, description="", alias="dimensions"
         )  # relationship
 
         @classmethod
@@ -11547,8 +11569,8 @@ class Schema(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "table_count",
         "views_count",
-        "snowflake_tags",
         "materialised_views",
+        "snowflake_tags",
         "tables",
         "database",
         "snowflake_pipes",
@@ -11578,16 +11600,6 @@ class Schema(SQL):
         self.attributes.views_count = views_count
 
     @property
-    def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
-        return self.attributes.snowflake_tags
-
-    @snowflake_tags.setter
-    def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_tags = snowflake_tags
-
-    @property
     def materialised_views(self) -> Optional[list[MaterialisedView]]:
         return self.attributes.materialised_views
 
@@ -11596,6 +11608,16 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.materialised_views = materialised_views
+
+    @property
+    def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
+        return self.attributes.snowflake_tags
+
+    @snowflake_tags.setter
+    def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_tags = snowflake_tags
 
     @property
     def tables(self) -> Optional[list[Table]]:
@@ -11668,11 +11690,11 @@ class Schema(SQL):
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
         views_count: Optional[int] = Field(None, description="", alias="viewsCount")
-        snowflake_tags: Optional[list[SnowflakeTag]] = Field(
-            None, description="", alias="snowflakeTags"
-        )  # relationship
         materialised_views: Optional[list[MaterialisedView]] = Field(
             None, description="", alias="materialisedViews"
+        )  # relationship
+        snowflake_tags: Optional[list[SnowflakeTag]] = Field(
+            None, description="", alias="snowflakeTags"
         )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
@@ -11734,6 +11756,107 @@ class Schema(SQL):
         )
         attributes = Schema.Attributes.create(
             name=name, database_qualified_name=database_qualified_name
+        )
+        return cls(attributes=attributes)
+
+
+class Database(SQL):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Database._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "schema_count",
+        "schemas",
+    ]
+
+    @property
+    def schema_count(self) -> Optional[int]:
+        return self.attributes.schema_count
+
+    @schema_count.setter
+    def schema_count(self, schema_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_count = schema_count
+
+    @property
+    def schemas(self) -> Optional[list[Schema]]:
+        return self.attributes.schemas
+
+    @schemas.setter
+    def schemas(self, schemas: Optional[list[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schemas = schemas
+
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
+
+    class Attributes(SQL.Attributes):
+        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
+        schemas: Optional[list[Schema]] = Field(
+            None, description="", alias="schemas"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str
+        ) -> Database.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(
+                ["connection_qualified_name"], [connection_qualified_name]
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
+    attributes: "Database.Attributes" = Field(
+        default_factory=lambda: Database.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
+        if not name:
+            raise ValueError("name cannot be blank")
+        validate_required_fields(
+            ["connection_qualified_name"], [connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
         )
         return cls(attributes=attributes)
 
@@ -11940,107 +12063,6 @@ class SnowflakePipe(SQL):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-class Database(SQL):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Database._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "schema_count",
-        "schemas",
-    ]
-
-    @property
-    def schema_count(self) -> Optional[int]:
-        return self.attributes.schema_count
-
-    @schema_count.setter
-    def schema_count(self, schema_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_count = schema_count
-
-    @property
-    def schemas(self) -> Optional[list[Schema]]:
-        return self.attributes.schemas
-
-    @schemas.setter
-    def schemas(self, schemas: Optional[list[Schema]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schemas = schemas
-
-    type_name: str = Field("Database", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Database":
-            raise ValueError("must be Database")
-        return v
-
-    class Attributes(SQL.Attributes):
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        schemas: Optional[list[Schema]] = Field(
-            None, description="", alias="schemas"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, name: str, connection_qualified_name: str
-        ) -> Database.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(
-                ["connection_qualified_name"], [connection_qualified_name]
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return Database.Attributes(
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{name}",
-                connector_name=connector_type.value,
-            )
-
-    attributes: "Database.Attributes" = Field(
-        default_factory=lambda: Database.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
-        if not name:
-            raise ValueError("name cannot be blank")
-        validate_required_fields(
-            ["connection_qualified_name"], [connection_qualified_name]
-        )
-        fields = connection_qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError("Invalid connection_qualified_name")
-        try:
-            connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError as e:
-            raise ValueError("Invalid connection_qualified_name") from e
-        attributes = Database.Attributes(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=connector_type.value,
-        )
-        return cls(attributes=attributes)
 
 
 class Procedure(SQL):
@@ -15074,6 +15096,136 @@ class QuickSightDashboardVisual(QuickSight):
     )
 
 
+class QuickSightAnalysis(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysis._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_status",
+        "quick_sight_analysis_calculated_fields",
+        "quick_sight_analysis_parameter_declarations",
+        "quick_sight_analysis_filter_groups",
+        "quick_sight_analysis_visuals",
+        "quick_sight_analysis_folders",
+    ]
+
+    @property
+    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
+        return self.attributes.quick_sight_analysis_status
+
+    @quick_sight_analysis_status.setter
+    def quick_sight_analysis_status(
+        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
+
+    @property
+    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_calculated_fields
+
+    @quick_sight_analysis_calculated_fields.setter
+    def quick_sight_analysis_calculated_fields(
+        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_calculated_fields = (
+            quick_sight_analysis_calculated_fields
+        )
+
+    @property
+    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_parameter_declarations
+
+    @quick_sight_analysis_parameter_declarations.setter
+    def quick_sight_analysis_parameter_declarations(
+        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_parameter_declarations = (
+            quick_sight_analysis_parameter_declarations
+        )
+
+    @property
+    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_filter_groups
+
+    @quick_sight_analysis_filter_groups.setter
+    def quick_sight_analysis_filter_groups(
+        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_filter_groups = (
+            quick_sight_analysis_filter_groups
+        )
+
+    @property
+    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+        return self.attributes.quick_sight_analysis_visuals
+
+    @quick_sight_analysis_visuals.setter
+    def quick_sight_analysis_visuals(
+        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
+
+    @property
+    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_analysis_folders
+
+    @quick_sight_analysis_folders.setter
+    def quick_sight_analysis_folders(
+        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
+
+    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysis":
+            raise ValueError("must be QuickSightAnalysis")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
+            None, description="", alias="quickSightAnalysisStatus"
+        )
+        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisCalculatedFields"
+        )
+        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisParameterDeclarations"
+        )
+        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisFilterGroups"
+        )
+        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
+            None, description="", alias="quickSightAnalysisVisuals"
+        )  # relationship
+        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightAnalysisFolders"
+        )  # relationship
+
+    attributes: "QuickSightAnalysis.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysis.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class QuickSightAnalysisVisual(QuickSight):
     """Description"""
 
@@ -15205,136 +15357,6 @@ class QuickSightDatasetField(QuickSight):
 
     attributes: "QuickSightDatasetField.Attributes" = Field(
         default_factory=lambda: QuickSightDatasetField.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightAnalysis(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightAnalysis._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_status",
-        "quick_sight_analysis_calculated_fields",
-        "quick_sight_analysis_parameter_declarations",
-        "quick_sight_analysis_filter_groups",
-        "quick_sight_analysis_visuals",
-        "quick_sight_analysis_folders",
-    ]
-
-    @property
-    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
-        return self.attributes.quick_sight_analysis_status
-
-    @quick_sight_analysis_status.setter
-    def quick_sight_analysis_status(
-        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
-
-    @property
-    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
-        return self.attributes.quick_sight_analysis_calculated_fields
-
-    @quick_sight_analysis_calculated_fields.setter
-    def quick_sight_analysis_calculated_fields(
-        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_calculated_fields = (
-            quick_sight_analysis_calculated_fields
-        )
-
-    @property
-    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
-        return self.attributes.quick_sight_analysis_parameter_declarations
-
-    @quick_sight_analysis_parameter_declarations.setter
-    def quick_sight_analysis_parameter_declarations(
-        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_parameter_declarations = (
-            quick_sight_analysis_parameter_declarations
-        )
-
-    @property
-    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
-        return self.attributes.quick_sight_analysis_filter_groups
-
-    @quick_sight_analysis_filter_groups.setter
-    def quick_sight_analysis_filter_groups(
-        self, quick_sight_analysis_filter_groups: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_filter_groups = (
-            quick_sight_analysis_filter_groups
-        )
-
-    @property
-    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
-        return self.attributes.quick_sight_analysis_visuals
-
-    @quick_sight_analysis_visuals.setter
-    def quick_sight_analysis_visuals(
-        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
-
-    @property
-    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
-        return self.attributes.quick_sight_analysis_folders
-
-    @quick_sight_analysis_folders.setter
-    def quick_sight_analysis_folders(
-        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
-
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightAnalysis":
-            raise ValueError("must be QuickSightAnalysis")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
-        )
-        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
-        )
-        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
-        )
-        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
-        )
-        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
-        )  # relationship
-        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
-        )  # relationship
-
-    attributes: "QuickSightAnalysis.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysis.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16041,6 +16063,104 @@ class PowerBIColumn(PowerBI):
     )
 
 
+class PowerBITile(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBITile._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dashboard_qualified_name",
+        "report",
+        "dataset",
+        "dashboard",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dashboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.dashboard_qualified_name
+
+    @dashboard_qualified_name.setter
+    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_qualified_name = dashboard_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    @property
+    def dashboard(self) -> Optional[PowerBIDashboard]:
+        return self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="dashboardQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+        dashboard: Optional[PowerBIDashboard] = Field(
+            None, description="", alias="dashboard"
+        )  # relationship
+
+    attributes: "PowerBITile.Attributes" = Field(
+        default_factory=lambda: PowerBITile.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PowerBITable(PowerBI):
     """Description"""
 
@@ -16182,104 +16302,6 @@ class PowerBITable(PowerBI):
 
     attributes: "PowerBITable.Attributes" = Field(
         default_factory=lambda: PowerBITable.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBITile(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBITile._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dashboard_qualified_name",
-        "report",
-        "dataset",
-        "dashboard",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dashboard_qualified_name(self) -> Optional[str]:
-        return self.attributes.dashboard_qualified_name
-
-    @dashboard_qualified_name.setter
-    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard_qualified_name = dashboard_qualified_name
-
-    @property
-    def report(self) -> Optional[PowerBIReport]:
-        return self.attributes.report
-
-    @report.setter
-    def report(self, report: Optional[PowerBIReport]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report = report
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    @property
-    def dashboard(self) -> Optional[PowerBIDashboard]:
-        return self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    type_name: str = Field("PowerBITile", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBITile":
-            raise ValueError("must be PowerBITile")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="dashboardQualifiedName"
-        )
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-        dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-
-    attributes: "PowerBITile.Attributes" = Field(
-        default_factory=lambda: PowerBITile.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -16721,6 +16743,76 @@ class PowerBIDashboard(PowerBI):
     )
 
 
+class PowerBIPage(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIPage._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "report_qualified_name",
+        "report",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def report_qualified_name(self) -> Optional[str]:
+        return self.attributes.report_qualified_name
+
+    @report_qualified_name.setter
+    def report_qualified_name(self, report_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_qualified_name = report_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        report_qualified_name: Optional[str] = Field(
+            None, description="", alias="reportQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+
+    attributes: "PowerBIPage.Attributes" = Field(
+        default_factory=lambda: PowerBIPage.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class PowerBIDataflow(PowerBI):
     """Description"""
 
@@ -16798,76 +16890,6 @@ class PowerBIDataflow(PowerBI):
 
     attributes: "PowerBIDataflow.Attributes" = Field(
         default_factory=lambda: PowerBIDataflow.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIPage(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIPage._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "report_qualified_name",
-        "report",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def report_qualified_name(self) -> Optional[str]:
-        return self.attributes.report_qualified_name
-
-    @report_qualified_name.setter
-    def report_qualified_name(self, report_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_qualified_name = report_qualified_name
-
-    @property
-    def report(self) -> Optional[PowerBIReport]:
-        return self.attributes.report
-
-    @report.setter
-    def report(self, report: Optional[PowerBIReport]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report = report
-
-    type_name: str = Field("PowerBIPage", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIPage":
-            raise ValueError("must be PowerBIPage")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        report_qualified_name: Optional[str] = Field(
-            None, description="", alias="reportQualifiedName"
-        )
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-
-    attributes: "PowerBIPage.Attributes" = Field(
-        default_factory=lambda: PowerBIPage.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17387,440 +17409,6 @@ class PresetWorkspace(Preset):
     )
 
 
-class ModeReport(Mode):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ModeReport._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_collection_token",
-        "mode_report_published_at",
-        "mode_query_count",
-        "mode_chart_count",
-        "mode_query_preview",
-        "mode_is_public",
-        "mode_is_shared",
-        "mode_collections",
-        "mode_queries",
-    ]
-
-    @property
-    def mode_collection_token(self) -> Optional[str]:
-        return self.attributes.mode_collection_token
-
-    @mode_collection_token.setter
-    def mode_collection_token(self, mode_collection_token: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collection_token = mode_collection_token
-
-    @property
-    def mode_report_published_at(self) -> Optional[datetime]:
-        return self.attributes.mode_report_published_at
-
-    @mode_report_published_at.setter
-    def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_report_published_at = mode_report_published_at
-
-    @property
-    def mode_query_count(self) -> Optional[int]:
-        return self.attributes.mode_query_count
-
-    @mode_query_count.setter
-    def mode_query_count(self, mode_query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_count = mode_query_count
-
-    @property
-    def mode_chart_count(self) -> Optional[int]:
-        return self.attributes.mode_chart_count
-
-    @mode_chart_count.setter
-    def mode_chart_count(self, mode_chart_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_chart_count = mode_chart_count
-
-    @property
-    def mode_query_preview(self) -> Optional[str]:
-        return self.attributes.mode_query_preview
-
-    @mode_query_preview.setter
-    def mode_query_preview(self, mode_query_preview: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_preview = mode_query_preview
-
-    @property
-    def mode_is_public(self) -> Optional[bool]:
-        return self.attributes.mode_is_public
-
-    @mode_is_public.setter
-    def mode_is_public(self, mode_is_public: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_is_public = mode_is_public
-
-    @property
-    def mode_is_shared(self) -> Optional[bool]:
-        return self.attributes.mode_is_shared
-
-    @mode_is_shared.setter
-    def mode_is_shared(self, mode_is_shared: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_is_shared = mode_is_shared
-
-    @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return self.attributes.mode_collections
-
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
-
-    @property
-    def mode_queries(self) -> Optional[list[ModeQuery]]:
-        return self.attributes.mode_queries
-
-    @mode_queries.setter
-    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_queries = mode_queries
-
-    type_name: str = Field("ModeReport", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeReport":
-            raise ValueError("must be ModeReport")
-        return v
-
-    class Attributes(Mode.Attributes):
-        mode_collection_token: Optional[str] = Field(
-            None, description="", alias="modeCollectionToken"
-        )
-        mode_report_published_at: Optional[datetime] = Field(
-            None, description="", alias="modeReportPublishedAt"
-        )
-        mode_query_count: Optional[int] = Field(
-            None, description="", alias="modeQueryCount"
-        )
-        mode_chart_count: Optional[int] = Field(
-            None, description="", alias="modeChartCount"
-        )
-        mode_query_preview: Optional[str] = Field(
-            None, description="", alias="modeQueryPreview"
-        )
-        mode_is_public: Optional[bool] = Field(
-            None, description="", alias="modeIsPublic"
-        )
-        mode_is_shared: Optional[bool] = Field(
-            None, description="", alias="modeIsShared"
-        )
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
-        )  # relationship
-        mode_queries: Optional[list[ModeQuery]] = Field(
-            None, description="", alias="modeQueries"
-        )  # relationship
-
-    attributes: "ModeReport.Attributes" = Field(
-        default_factory=lambda: ModeReport.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeQuery(Mode):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ModeQuery._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_raw_query",
-        "mode_report_import_count",
-        "mode_charts",
-        "mode_report",
-    ]
-
-    @property
-    def mode_raw_query(self) -> Optional[str]:
-        return self.attributes.mode_raw_query
-
-    @mode_raw_query.setter
-    def mode_raw_query(self, mode_raw_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_raw_query = mode_raw_query
-
-    @property
-    def mode_report_import_count(self) -> Optional[int]:
-        return self.attributes.mode_report_import_count
-
-    @mode_report_import_count.setter
-    def mode_report_import_count(self, mode_report_import_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_report_import_count = mode_report_import_count
-
-    @property
-    def mode_charts(self) -> Optional[list[ModeChart]]:
-        return self.attributes.mode_charts
-
-    @mode_charts.setter
-    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_charts = mode_charts
-
-    @property
-    def mode_report(self) -> Optional[ModeReport]:
-        return self.attributes.mode_report
-
-    @mode_report.setter
-    def mode_report(self, mode_report: Optional[ModeReport]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_report = mode_report
-
-    type_name: str = Field("ModeQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeQuery":
-            raise ValueError("must be ModeQuery")
-        return v
-
-    class Attributes(Mode.Attributes):
-        mode_raw_query: Optional[str] = Field(
-            None, description="", alias="modeRawQuery"
-        )
-        mode_report_import_count: Optional[int] = Field(
-            None, description="", alias="modeReportImportCount"
-        )
-        mode_charts: Optional[list[ModeChart]] = Field(
-            None, description="", alias="modeCharts"
-        )  # relationship
-        mode_report: Optional[ModeReport] = Field(
-            None, description="", alias="modeReport"
-        )  # relationship
-
-    attributes: "ModeQuery.Attributes" = Field(
-        default_factory=lambda: ModeQuery.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeChart(Mode):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ModeChart._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_chart_type",
-        "mode_query",
-    ]
-
-    @property
-    def mode_chart_type(self) -> Optional[str]:
-        return self.attributes.mode_chart_type
-
-    @mode_chart_type.setter
-    def mode_chart_type(self, mode_chart_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_chart_type = mode_chart_type
-
-    @property
-    def mode_query(self) -> Optional[ModeQuery]:
-        return self.attributes.mode_query
-
-    @mode_query.setter
-    def mode_query(self, mode_query: Optional[ModeQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query = mode_query
-
-    type_name: str = Field("ModeChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeChart":
-            raise ValueError("must be ModeChart")
-        return v
-
-    class Attributes(Mode.Attributes):
-        mode_chart_type: Optional[str] = Field(
-            None, description="", alias="modeChartType"
-        )
-        mode_query: Optional[ModeQuery] = Field(
-            None, description="", alias="modeQuery"
-        )  # relationship
-
-    attributes: "ModeChart.Attributes" = Field(
-        default_factory=lambda: ModeChart.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeWorkspace(Mode):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ModeWorkspace._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_collection_count",
-        "mode_collections",
-    ]
-
-    @property
-    def mode_collection_count(self) -> Optional[int]:
-        return self.attributes.mode_collection_count
-
-    @mode_collection_count.setter
-    def mode_collection_count(self, mode_collection_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collection_count = mode_collection_count
-
-    @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return self.attributes.mode_collections
-
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
-
-    type_name: str = Field("ModeWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeWorkspace":
-            raise ValueError("must be ModeWorkspace")
-        return v
-
-    class Attributes(Mode.Attributes):
-        mode_collection_count: Optional[int] = Field(
-            None, description="", alias="modeCollectionCount"
-        )
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
-        )  # relationship
-
-    attributes: "ModeWorkspace.Attributes" = Field(
-        default_factory=lambda: ModeWorkspace.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeCollection(Mode):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ModeCollection._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_collection_type",
-        "mode_collection_state",
-        "mode_workspace",
-        "mode_reports",
-    ]
-
-    @property
-    def mode_collection_type(self) -> Optional[str]:
-        return self.attributes.mode_collection_type
-
-    @mode_collection_type.setter
-    def mode_collection_type(self, mode_collection_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collection_type = mode_collection_type
-
-    @property
-    def mode_collection_state(self) -> Optional[str]:
-        return self.attributes.mode_collection_state
-
-    @mode_collection_state.setter
-    def mode_collection_state(self, mode_collection_state: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collection_state = mode_collection_state
-
-    @property
-    def mode_workspace(self) -> Optional[ModeWorkspace]:
-        return self.attributes.mode_workspace
-
-    @mode_workspace.setter
-    def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_workspace = mode_workspace
-
-    @property
-    def mode_reports(self) -> Optional[list[ModeReport]]:
-        return self.attributes.mode_reports
-
-    @mode_reports.setter
-    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_reports = mode_reports
-
-    type_name: str = Field("ModeCollection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeCollection":
-            raise ValueError("must be ModeCollection")
-        return v
-
-    class Attributes(Mode.Attributes):
-        mode_collection_type: Optional[str] = Field(
-            None, description="", alias="modeCollectionType"
-        )
-        mode_collection_state: Optional[str] = Field(
-            None, description="", alias="modeCollectionState"
-        )
-        mode_workspace: Optional[ModeWorkspace] = Field(
-            None, description="", alias="modeWorkspace"
-        )  # relationship
-        mode_reports: Optional[list[ModeReport]] = Field(
-            None, description="", alias="modeReports"
-        )  # relationship
-
-    attributes: "ModeCollection.Attributes" = Field(
-        default_factory=lambda: ModeCollection.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class SigmaDatasetColumn(Sigma):
     """Description"""
 
@@ -18252,6 +17840,440 @@ class SigmaDataElement(Sigma):
 
     attributes: "SigmaDataElement.Attributes" = Field(
         default_factory=lambda: SigmaDataElement.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ModeReport(Mode):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ModeReport._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_collection_token",
+        "mode_report_published_at",
+        "mode_query_count",
+        "mode_chart_count",
+        "mode_query_preview",
+        "mode_is_public",
+        "mode_is_shared",
+        "mode_collections",
+        "mode_queries",
+    ]
+
+    @property
+    def mode_collection_token(self) -> Optional[str]:
+        return self.attributes.mode_collection_token
+
+    @mode_collection_token.setter
+    def mode_collection_token(self, mode_collection_token: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_token = mode_collection_token
+
+    @property
+    def mode_report_published_at(self) -> Optional[datetime]:
+        return self.attributes.mode_report_published_at
+
+    @mode_report_published_at.setter
+    def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report_published_at = mode_report_published_at
+
+    @property
+    def mode_query_count(self) -> Optional[int]:
+        return self.attributes.mode_query_count
+
+    @mode_query_count.setter
+    def mode_query_count(self, mode_query_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_query_count = mode_query_count
+
+    @property
+    def mode_chart_count(self) -> Optional[int]:
+        return self.attributes.mode_chart_count
+
+    @mode_chart_count.setter
+    def mode_chart_count(self, mode_chart_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_chart_count = mode_chart_count
+
+    @property
+    def mode_query_preview(self) -> Optional[str]:
+        return self.attributes.mode_query_preview
+
+    @mode_query_preview.setter
+    def mode_query_preview(self, mode_query_preview: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_query_preview = mode_query_preview
+
+    @property
+    def mode_is_public(self) -> Optional[bool]:
+        return self.attributes.mode_is_public
+
+    @mode_is_public.setter
+    def mode_is_public(self, mode_is_public: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_is_public = mode_is_public
+
+    @property
+    def mode_is_shared(self) -> Optional[bool]:
+        return self.attributes.mode_is_shared
+
+    @mode_is_shared.setter
+    def mode_is_shared(self, mode_is_shared: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_is_shared = mode_is_shared
+
+    @property
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return self.attributes.mode_collections
+
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collections = mode_collections
+
+    @property
+    def mode_queries(self) -> Optional[list[ModeQuery]]:
+        return self.attributes.mode_queries
+
+    @mode_queries.setter
+    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_queries = mode_queries
+
+    type_name: str = Field("ModeReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeReport":
+            raise ValueError("must be ModeReport")
+        return v
+
+    class Attributes(Mode.Attributes):
+        mode_collection_token: Optional[str] = Field(
+            None, description="", alias="modeCollectionToken"
+        )
+        mode_report_published_at: Optional[datetime] = Field(
+            None, description="", alias="modeReportPublishedAt"
+        )
+        mode_query_count: Optional[int] = Field(
+            None, description="", alias="modeQueryCount"
+        )
+        mode_chart_count: Optional[int] = Field(
+            None, description="", alias="modeChartCount"
+        )
+        mode_query_preview: Optional[str] = Field(
+            None, description="", alias="modeQueryPreview"
+        )
+        mode_is_public: Optional[bool] = Field(
+            None, description="", alias="modeIsPublic"
+        )
+        mode_is_shared: Optional[bool] = Field(
+            None, description="", alias="modeIsShared"
+        )
+        mode_collections: Optional[list[ModeCollection]] = Field(
+            None, description="", alias="modeCollections"
+        )  # relationship
+        mode_queries: Optional[list[ModeQuery]] = Field(
+            None, description="", alias="modeQueries"
+        )  # relationship
+
+    attributes: "ModeReport.Attributes" = Field(
+        default_factory=lambda: ModeReport.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ModeQuery(Mode):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ModeQuery._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_raw_query",
+        "mode_report_import_count",
+        "mode_charts",
+        "mode_report",
+    ]
+
+    @property
+    def mode_raw_query(self) -> Optional[str]:
+        return self.attributes.mode_raw_query
+
+    @mode_raw_query.setter
+    def mode_raw_query(self, mode_raw_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_raw_query = mode_raw_query
+
+    @property
+    def mode_report_import_count(self) -> Optional[int]:
+        return self.attributes.mode_report_import_count
+
+    @mode_report_import_count.setter
+    def mode_report_import_count(self, mode_report_import_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report_import_count = mode_report_import_count
+
+    @property
+    def mode_charts(self) -> Optional[list[ModeChart]]:
+        return self.attributes.mode_charts
+
+    @mode_charts.setter
+    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_charts = mode_charts
+
+    @property
+    def mode_report(self) -> Optional[ModeReport]:
+        return self.attributes.mode_report
+
+    @mode_report.setter
+    def mode_report(self, mode_report: Optional[ModeReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report = mode_report
+
+    type_name: str = Field("ModeQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeQuery":
+            raise ValueError("must be ModeQuery")
+        return v
+
+    class Attributes(Mode.Attributes):
+        mode_raw_query: Optional[str] = Field(
+            None, description="", alias="modeRawQuery"
+        )
+        mode_report_import_count: Optional[int] = Field(
+            None, description="", alias="modeReportImportCount"
+        )
+        mode_charts: Optional[list[ModeChart]] = Field(
+            None, description="", alias="modeCharts"
+        )  # relationship
+        mode_report: Optional[ModeReport] = Field(
+            None, description="", alias="modeReport"
+        )  # relationship
+
+    attributes: "ModeQuery.Attributes" = Field(
+        default_factory=lambda: ModeQuery.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ModeChart(Mode):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ModeChart._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_chart_type",
+        "mode_query",
+    ]
+
+    @property
+    def mode_chart_type(self) -> Optional[str]:
+        return self.attributes.mode_chart_type
+
+    @mode_chart_type.setter
+    def mode_chart_type(self, mode_chart_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_chart_type = mode_chart_type
+
+    @property
+    def mode_query(self) -> Optional[ModeQuery]:
+        return self.attributes.mode_query
+
+    @mode_query.setter
+    def mode_query(self, mode_query: Optional[ModeQuery]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_query = mode_query
+
+    type_name: str = Field("ModeChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeChart":
+            raise ValueError("must be ModeChart")
+        return v
+
+    class Attributes(Mode.Attributes):
+        mode_chart_type: Optional[str] = Field(
+            None, description="", alias="modeChartType"
+        )
+        mode_query: Optional[ModeQuery] = Field(
+            None, description="", alias="modeQuery"
+        )  # relationship
+
+    attributes: "ModeChart.Attributes" = Field(
+        default_factory=lambda: ModeChart.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ModeWorkspace(Mode):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ModeWorkspace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_collection_count",
+        "mode_collections",
+    ]
+
+    @property
+    def mode_collection_count(self) -> Optional[int]:
+        return self.attributes.mode_collection_count
+
+    @mode_collection_count.setter
+    def mode_collection_count(self, mode_collection_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_count = mode_collection_count
+
+    @property
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return self.attributes.mode_collections
+
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collections = mode_collections
+
+    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeWorkspace":
+            raise ValueError("must be ModeWorkspace")
+        return v
+
+    class Attributes(Mode.Attributes):
+        mode_collection_count: Optional[int] = Field(
+            None, description="", alias="modeCollectionCount"
+        )
+        mode_collections: Optional[list[ModeCollection]] = Field(
+            None, description="", alias="modeCollections"
+        )  # relationship
+
+    attributes: "ModeWorkspace.Attributes" = Field(
+        default_factory=lambda: ModeWorkspace.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ModeCollection(Mode):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ModeCollection._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_collection_type",
+        "mode_collection_state",
+        "mode_workspace",
+        "mode_reports",
+    ]
+
+    @property
+    def mode_collection_type(self) -> Optional[str]:
+        return self.attributes.mode_collection_type
+
+    @mode_collection_type.setter
+    def mode_collection_type(self, mode_collection_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_type = mode_collection_type
+
+    @property
+    def mode_collection_state(self) -> Optional[str]:
+        return self.attributes.mode_collection_state
+
+    @mode_collection_state.setter
+    def mode_collection_state(self, mode_collection_state: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collection_state = mode_collection_state
+
+    @property
+    def mode_workspace(self) -> Optional[ModeWorkspace]:
+        return self.attributes.mode_workspace
+
+    @mode_workspace.setter
+    def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace = mode_workspace
+
+    @property
+    def mode_reports(self) -> Optional[list[ModeReport]]:
+        return self.attributes.mode_reports
+
+    @mode_reports.setter
+    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_reports = mode_reports
+
+    type_name: str = Field("ModeCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeCollection":
+            raise ValueError("must be ModeCollection")
+        return v
+
+    class Attributes(Mode.Attributes):
+        mode_collection_type: Optional[str] = Field(
+            None, description="", alias="modeCollectionType"
+        )
+        mode_collection_state: Optional[str] = Field(
+            None, description="", alias="modeCollectionState"
+        )
+        mode_workspace: Optional[ModeWorkspace] = Field(
+            None, description="", alias="modeWorkspace"
+        )  # relationship
+        mode_reports: Optional[list[ModeReport]] = Field(
+            None, description="", alias="modeReports"
+        )  # relationship
+
+    attributes: "ModeCollection.Attributes" = Field(
+        default_factory=lambda: ModeCollection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -19661,48 +19683,6 @@ class TableauMetric(Tableau):
     )
 
 
-class TableauSite(Tableau):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in TableauSite._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "projects",
-    ]
-
-    @property
-    def projects(self) -> Optional[list[TableauProject]]:
-        return self.attributes.projects
-
-    @projects.setter
-    def projects(self, projects: Optional[list[TableauProject]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.projects = projects
-
-    type_name: str = Field("TableauSite", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauSite":
-            raise ValueError("must be TableauSite")
-        return v
-
-    class Attributes(Tableau.Attributes):
-        projects: Optional[list[TableauProject]] = Field(
-            None, description="", alias="projects"
-        )  # relationship
-
-    attributes: "TableauSite.Attributes" = Field(
-        default_factory=lambda: TableauSite.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class TableauDatasource(Tableau):
     """Description"""
 
@@ -19950,6 +19930,48 @@ class TableauDatasource(Tableau):
 
     attributes: "TableauDatasource.Attributes" = Field(
         default_factory=lambda: TableauDatasource.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class TableauSite(Tableau):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TableauSite._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "projects",
+    ]
+
+    @property
+    def projects(self) -> Optional[list[TableauProject]]:
+        return self.attributes.projects
+
+    @projects.setter
+    def projects(self, projects: Optional[list[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.projects = projects
+
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
+
+    class Attributes(Tableau.Attributes):
+        projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="projects"
+        )  # relationship
+
+    attributes: "TableauSite.Attributes" = Field(
+        default_factory=lambda: TableauSite.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22783,9 +22805,9 @@ PowerBI.Attributes.update_forward_refs()
 
 Preset.Attributes.update_forward_refs()
 
-Mode.Attributes.update_forward_refs()
-
 Sigma.Attributes.update_forward_refs()
+
+Mode.Attributes.update_forward_refs()
 
 Qlik.Attributes.update_forward_refs()
 
@@ -22831,11 +22853,11 @@ Column.Attributes.update_forward_refs()
 
 Schema.Attributes.update_forward_refs()
 
+Database.Attributes.update_forward_refs()
+
 SnowflakeStream.Attributes.update_forward_refs()
 
 SnowflakePipe.Attributes.update_forward_refs()
-
-Database.Attributes.update_forward_refs()
 
 Procedure.Attributes.update_forward_refs()
 
@@ -22875,11 +22897,11 @@ QuickSightFolder.Attributes.update_forward_refs()
 
 QuickSightDashboardVisual.Attributes.update_forward_refs()
 
+QuickSightAnalysis.Attributes.update_forward_refs()
+
 QuickSightAnalysisVisual.Attributes.update_forward_refs()
 
 QuickSightDatasetField.Attributes.update_forward_refs()
-
-QuickSightAnalysis.Attributes.update_forward_refs()
 
 QuickSightDashboard.Attributes.update_forward_refs()
 
@@ -22897,9 +22919,9 @@ PowerBIMeasure.Attributes.update_forward_refs()
 
 PowerBIColumn.Attributes.update_forward_refs()
 
-PowerBITable.Attributes.update_forward_refs()
-
 PowerBITile.Attributes.update_forward_refs()
+
+PowerBITable.Attributes.update_forward_refs()
 
 PowerBIDatasource.Attributes.update_forward_refs()
 
@@ -22909,9 +22931,9 @@ PowerBIDataset.Attributes.update_forward_refs()
 
 PowerBIDashboard.Attributes.update_forward_refs()
 
-PowerBIDataflow.Attributes.update_forward_refs()
-
 PowerBIPage.Attributes.update_forward_refs()
+
+PowerBIDataflow.Attributes.update_forward_refs()
 
 PresetChart.Attributes.update_forward_refs()
 
@@ -22920,16 +22942,6 @@ PresetDataset.Attributes.update_forward_refs()
 PresetDashboard.Attributes.update_forward_refs()
 
 PresetWorkspace.Attributes.update_forward_refs()
-
-ModeReport.Attributes.update_forward_refs()
-
-ModeQuery.Attributes.update_forward_refs()
-
-ModeChart.Attributes.update_forward_refs()
-
-ModeWorkspace.Attributes.update_forward_refs()
-
-ModeCollection.Attributes.update_forward_refs()
 
 SigmaDatasetColumn.Attributes.update_forward_refs()
 
@@ -22942,6 +22954,16 @@ SigmaDataElementField.Attributes.update_forward_refs()
 SigmaPage.Attributes.update_forward_refs()
 
 SigmaDataElement.Attributes.update_forward_refs()
+
+ModeReport.Attributes.update_forward_refs()
+
+ModeQuery.Attributes.update_forward_refs()
+
+ModeChart.Attributes.update_forward_refs()
+
+ModeWorkspace.Attributes.update_forward_refs()
+
+ModeCollection.Attributes.update_forward_refs()
 
 QlikSpace.Attributes.update_forward_refs()
 
@@ -22963,9 +22985,9 @@ TableauProject.Attributes.update_forward_refs()
 
 TableauMetric.Attributes.update_forward_refs()
 
-TableauSite.Attributes.update_forward_refs()
-
 TableauDatasource.Attributes.update_forward_refs()
+
+TableauSite.Attributes.update_forward_refs()
 
 TableauDashboard.Attributes.update_forward_refs()
 
