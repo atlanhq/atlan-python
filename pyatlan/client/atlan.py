@@ -43,6 +43,7 @@ from pyatlan.client.constants import (
     GET_USER_GROUPS,
     GET_USERS,
     INDEX_SEARCH,
+    PARSE_QUERY,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
     REMOVE_USERS_FROM_GROUP,
     UPDATE_ENTITY_BY_ATTRIBUTE,
@@ -91,6 +92,7 @@ from pyatlan.model.group import (
     RemoveFromGroupRequest,
 )
 from pyatlan.model.lineage import LineageRequest, LineageResponse
+from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
@@ -631,6 +633,17 @@ class AtlanClient(BaseSettings):
             if response.records and len(response.records) >= 1:
                 return response.records[0]
         return None
+
+    def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
+        """
+        Parses the provided query to describe its component parts.
+        """
+        raw_json = self._call_api(
+            PARSE_QUERY,
+            request_obj=query,
+            exclude_unset=True,
+        )
+        return ParsedQuery(**raw_json)
 
     @validate_arguments()
     def get_asset_by_qualified_name(

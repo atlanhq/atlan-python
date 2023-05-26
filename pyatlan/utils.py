@@ -9,6 +9,7 @@ from typing import Any, Optional
 
 ADMIN_URI = "api/service/"
 BASE_URI = "api/meta/"
+SQL_URI = "api/sql/"
 APPLICATION_JSON = "application/json"
 APPLICATION_OCTET_STREAM = "application/octet-stream"
 MULTIPART_FORM_DATA = "multipart/form-data"
