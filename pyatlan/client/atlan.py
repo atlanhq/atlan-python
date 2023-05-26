@@ -39,6 +39,7 @@ from pyatlan.client.constants import (
     GET_GROUP_MEMBERS,
     GET_GROUPS,
     GET_LINEAGE,
+    GET_LINEAGE_LIST,
     GET_ROLES,
     GET_USER_GROUPS,
     GET_USERS,
@@ -91,7 +92,12 @@ from pyatlan.model.group import (
     GroupResponse,
     RemoveFromGroupRequest,
 )
-from pyatlan.model.lineage import LineageRequest, LineageResponse
+from pyatlan.model.lineage import (
+    LineageListRequest,
+    LineageListResponse,
+    LineageRequest,
+    LineageResponse,
+)
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
@@ -1188,3 +1194,11 @@ class AtlanClient(BaseSettings):
             GET_LINEAGE, None, lineage_request, exclude_unset=False
         )
         return LineageResponse(**raw_json)
+
+    def get_lineage_list(
+        self, lineage_request: LineageListRequest
+    ) -> LineageListResponse:
+        raw_json = self._call_api(
+            GET_LINEAGE_LIST, None, lineage_request, exclude_unset=True
+        )
+        return LineageListResponse(**raw_json)

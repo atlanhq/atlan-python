@@ -335,6 +335,10 @@ class LineageDirection(str, Enum):
     BOTH = "BOTH"
 
 
+class AtlanComparisonOperator(str, Enum):
+    CONTAINS = "contains"
+
+
 class BadgeComparisonOperator(str, Enum):
     GT = "gt"
     GTE = "gte"
