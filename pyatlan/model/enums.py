@@ -289,6 +289,21 @@ class AtlanConnectorType(str, Enum):
     MULESOFT = ("mulesoft", AtlanConnectionCategory.API)
     CLARI = ("clari", AtlanConnectionCategory.SAAS)
     MARKETO = ("marketo", AtlanConnectionCategory.SAAS)
+    AZURE_DATA_LAKE = ("azure-data-lake", AtlanConnectionCategory.LAKE)
+    DELTA_LAKE = ("delta-lake", AtlanConnectionCategory.LAKE)
+    MINISQL = ("minisql", AtlanConnectionCategory.DATABASE)
+    ICEBERG = ("iceberg", AtlanConnectionCategory.WAREHOUSE)
+    IMPALA = ("impala", AtlanConnectionCategory.WAREHOUSE)
+    SPARK_SQL = ("spark-sql", AtlanConnectionCategory.LAKE)
+    MARIADB = ("mariadb", AtlanConnectionCategory.DATABASE)
+    FIREBOLT = ("firebolt", AtlanConnectionCategory.WAREHOUSE)
+    CLOUDERA_DATA_WAREHOUSE = (
+        "cloudera-data-warehouse",
+        AtlanConnectionCategory.WAREHOUSE,
+    )
+    STARBURST_GALAXY = ("starburst-galaxy", AtlanConnectionCategory.WAREHOUSE)
+    REDIS = ("redis", AtlanConnectionCategory.DATABASE)
+    GRAPHQL = ("graphql", AtlanConnectionCategory.DATABASE)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
