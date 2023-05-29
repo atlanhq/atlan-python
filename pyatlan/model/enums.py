@@ -385,24 +385,24 @@ class QueryParserSourceType(str, Enum):
 
 
 class AuthPolicyType(str, Enum):
-    ALLOW0 = "allow0"
-    DENY1 = "deny1"
-    ALLOWEXCEPTIONS2 = "allowExceptions2"
-    DENYEXCEPTIONS3 = "denyExceptions3"
-    DATAMASK4 = "dataMask4"
-    ROWFILTER5 = "rowFilter5"
+    ALLOW = "allow"
+    DENY = "deny"
+    ALLOWEXCEPTIONS = "allowExceptions"
+    DENYEXCEPTIONS = "denyExceptions"
+    DATAMASK = "dataMask"
+    ROWFILTER = "rowFilter"
 
 
 class AuthPolicyCategory(str, Enum):
-    BOOTSTRAP0 = "bootstrap0"
-    PERSONA1 = "persona1"
-    PURPOSE2 = "purpose2"
+    BOOTSTRAP = "bootstrap"
+    PERSONA = "persona"
+    PURPOSE = "purpose"
 
 
 class AuthPolicyResourceCategory(str, Enum):
-    ENTITY0 = "ENTITY0"
-    RELATIONSHIP1 = "RELATIONSHIP1"
-    TAG2 = "TAG2"
-    custom3 = "CUSTOM3"
-    TYPEDEFS4 = "TYPEDEFS4"
-    ADMIN5 = "ADMIN5"
+    ENTITY = "ENTITY"
+    RELATIONSHIP = "RELATIONSHIP"
+    TAG = "TAG"
+    CUSTOM = "CUSTOM"
+    TYPEDEFS = "TYPEDEFS"
+    ADMIN = "ADMIN"
