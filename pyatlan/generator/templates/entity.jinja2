@@ -583,7 +583,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 connector_name=connector_type.value,
                 database=Database.ref_by_qualified_name(database_qualified_name),
             )
-        {%- elif entity_def.name == "Table" or entity_def.name == "View" %}
+        {%- elif entity_def.name == "Table" or entity_def.name == "View" or entity_def.name == "MaterialisedView" %}
         @classmethod
         # @validate_arguments()
         def create(cls, *, name: str, schema_qualified_name: str) -> {{ entity_def.name }}.Attributes:
@@ -881,7 +881,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         validate_required_fields(["name", "database_qualified_name"], [name, database_qualified_name])
         attributes = Schema.Attributes.create(name=name, database_qualified_name=database_qualified_name)
         return cls(attributes=attributes)
-    {%- elif entity_def.name == "Table" or entity_def.name == "View" %}
+    {%- elif entity_def.name == "Table" or entity_def.name == "View" or entity_def.name == "MaterialisedView" %}
     @classmethod
     # @validate_arguments()
     def create(cls, *, name: str, schema_qualified_name: str)->{{ entity_def.name }}:

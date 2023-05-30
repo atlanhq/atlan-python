@@ -292,6 +292,26 @@ class LineageListRequest(AtlanObject):
         description="Whether to include classifications for assets (false) or not (true)."
     )
 
+    @staticmethod
+    def create(
+        guid: str,
+    ) -> "LineageListRequest":
+        from pyatlan.model.assets import validate_required_fields
+
+        validate_required_fields(
+            ["guid"],
+            [guid],
+        )
+        return LineageListRequest(
+            guid=guid,
+            depth=1000000,
+            direction=LineageDirection.DOWNSTREAM,
+            offset=0,
+            size=10,
+            exclude_meanings=True,
+            exclude_classifications=True,
+        )
+
 
 class LineageListResponse(AtlanObject):
     entities: List[Asset] = Field(description="Entities in the lineage requested.")

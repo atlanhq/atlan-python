@@ -84,6 +84,7 @@ from pyatlan.model.enums import (
     AtlanDeleteType,
     AtlanTypeCategory,
     CertificateStatus,
+    LineageDirection,
 )
 from pyatlan.model.group import (
     AtlanGroup,
@@ -1198,6 +1199,10 @@ class AtlanClient(BaseSettings):
     def get_lineage_list(
         self, lineage_request: LineageListRequest
     ) -> LineageListResponse:
+        if lineage_request.direction == LineageDirection.BOTH:
+            raise InvalidRequestException(
+                message="Unable to request both directions of lineage at the same time through the lineage list API.",
+            )
         raw_json = self._call_api(
             GET_LINEAGE_LIST, None, lineage_request, exclude_unset=True
         )
