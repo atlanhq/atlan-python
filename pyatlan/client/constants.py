@@ -62,6 +62,7 @@ BULK_HEADERS = "bulk/headers"
 BULK_UPDATE = API(ENTITY_BULK_API, HTTPMethod.POST, HTTPStatus.OK)
 # Lineage APIs
 GET_LINEAGE = API(f"{BASE_URI}lineage/getlineage", HTTPMethod.POST, HTTPStatus.OK)
+GET_LINEAGE_LIST = API(f"{BASE_URI}lineage/list", HTTPMethod.POST, HTTPStatus.OK)
 # Entity APIs
 GET_ENTITY_BY_GUID = API(f"{ENTITY_API}guid", HTTPMethod.GET, HTTPStatus.OK)
 GET_ENTITY_BY_UNIQUE_ATTRIBUTE = API(

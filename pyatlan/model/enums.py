@@ -335,6 +335,10 @@ class LineageDirection(str, Enum):
     BOTH = "BOTH"
 
 
+class AtlanComparisonOperator(str, Enum):
+    CONTAINS = "contains"
+
+
 class BadgeComparisonOperator(str, Enum):
     GT = "gt"
     GTE = "gte"
@@ -382,3 +386,27 @@ class QueryParserSourceType(str, Enum):
     SNOWFLAKE = "snowflake"
     SPARKSQL = "sparksql"
     ATHENA = "athena"
+
+
+class AuthPolicyType(str, Enum):
+    ALLOW = "allow"
+    DENY = "deny"
+    ALLOWEXCEPTIONS = "allowExceptions"
+    DENYEXCEPTIONS = "denyExceptions"
+    DATAMASK = "dataMask"
+    ROWFILTER = "rowFilter"
+
+
+class AuthPolicyCategory(str, Enum):
+    BOOTSTRAP = "bootstrap"
+    PERSONA = "persona"
+    PURPOSE = "purpose"
+
+
+class AuthPolicyResourceCategory(str, Enum):
+    ENTITY = "ENTITY"
+    RELATIONSHIP = "RELATIONSHIP"
+    TAG = "TAG"
+    CUSTOM = "CUSTOM"
+    TYPEDEFS = "TYPEDEFS"
+    ADMIN = "ADMIN"

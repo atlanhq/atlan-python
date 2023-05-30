@@ -4,13 +4,13 @@ from typing import Optional, Union
 
 from pydantic import Field
 
-from pyatlan.utils import validate_required_fields
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
-    BadgeConditionColor,
     BadgeComparisonOperator,
+    BadgeConditionColor,
     SourceCostUnitType,
 )
+from pyatlan.utils import validate_required_fields
 
 
 class MCRuleSchedule(AtlanObject):
@@ -150,6 +150,17 @@ class AzureTag(AtlanObject):
     azure_tag_value: str = Field(None, description="", alias="azureTagValue")
 
 
+class AuthPolicyCondition(AtlanObject):
+    """Description"""
+
+    policy_condition_type: str = Field(
+        None, description="", alias="policyConditionType"
+    )
+    policy_condition_values: set[str] = Field(
+        None, description="", alias="policyConditionValues"
+    )
+
+
 class AwsTag(AtlanObject):
     """Description"""
 
@@ -179,6 +190,20 @@ class GoogleTag(AtlanObject):
 
     google_tag_key: str = Field(None, description="", alias="googleTagKey")
     google_tag_value: str = Field(None, description="", alias="googleTagValue")
+
+
+class AuthPolicyValiditySchedule(AtlanObject):
+    """Description"""
+
+    policy_validity_schedule_start_time: str = Field(
+        None, description="", alias="policyValidityScheduleStartTime"
+    )
+    policy_validity_schedule_end_time: str = Field(
+        None, description="", alias="policyValidityScheduleEndTime"
+    )
+    policy_validity_schedule_timezone: str = Field(
+        None, description="", alias="policyValidityScheduleTimezone"
+    )
 
 
 class MCRuleComparison(AtlanObject):

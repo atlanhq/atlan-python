@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from collections import deque
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from pydantic import Field
 
@@ -14,7 +14,7 @@ else:
 from pyatlan.error import InvalidRequestError
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject
-from pyatlan.model.enums import LineageDirection
+from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
 
 
 class LineageRelation(AtlanObject):
@@ -222,3 +222,105 @@ class LineageRequest(AtlanObject):
     direction: LineageDirection = Field(default=LineageDirection.BOTH)
     hide_process: bool = Field(default=True)
     allow_deleted_process: bool = Field(default=False)
+
+
+class EntityFilter(AtlanObject):
+    attribute_name: str = Field(
+        description="Name of the attribute on which filtering should be applied."
+    )
+    operator: AtlanComparisonOperator = Field(
+        description="Comparison that should be used when checking attribute_name"
+        " against the provided attribute_value."
+    )
+    attribute_value: str = Field(
+        description="Value that attribute_name should be compared against."
+    )
+
+
+class FilterList(AtlanObject):
+    condition: str = Field(
+        description="Whether the criteria must all match (AND) or any matching is sufficient (OR)."
+    )
+    criteria: List[EntityFilter] = Field(
+        description="Basis on which to compare a result for inclusion.",
+        alias="criterion",
+    )
+
+
+class LineageListRequest(AtlanObject):
+    guid: str = Field(
+        description="Unique identifier of the asset for which to retrieve lineage."
+    )
+    depth: int = Field(
+        description="Number of degrees of separation (hops) across which lineage should be fetched."
+        "A depth of 1 will fetch the immediate upstream or downstream assets, while 2"
+        "will also fetch the immediate upstream or downstream assets of those assets,"
+        "and so on. A large integer (for example, 1000000) will therefore in effect fetch"
+        "all upstream or downstream assets. (BEWARE! This could take a long time and"
+        "result in a very large response payload.)"
+    )
+    direction: LineageDirection = Field(
+        description="Indicates whether to fetch upstream lineage only, or downstream lineage only. "
+        "Note that you cannot fetch both upstream and downstream at the same time."
+    )
+    entity_filters: Optional[FilterList] = Field(
+        description="Filters to apply on entities."
+    )
+    entity_traversal_filters: Optional[FilterList] = Field(
+        description="Filters to apply for skipping traversal based on entities."
+        "Any sub-graphs beyond the entities filtered out by these filters will not be included"
+        "in the lineage result."
+    )
+    relationship_traversal_filters: Optional[FilterList] = Field(
+        description="Filters to apply for skipping traversal based on relationships."
+        "Any sub-graphs beyond the relationships filtered out by these filters will not be included"
+        "in the lineage result."
+    )
+    attributes: Optional[List[str]] = Field(
+        description="List of attributes to be returned for each asset."
+    )
+    offset: Optional[int] = Field(
+        description="Starting point for pagination.", alias="from"
+    )
+    size: Optional[int] = Field(
+        description="How many results to include in each page of results."
+    )
+    exclude_meanings: Optional[bool] = Field(
+        description="Whether to include assigned terms for assets (false) or not (true)."
+    )
+    exclude_classifications: Optional[bool] = Field(
+        description="Whether to include classifications for assets (false) or not (true)."
+    )
+
+    @staticmethod
+    def create(
+        guid: str,
+    ) -> "LineageListRequest":
+        from pyatlan.model.assets import validate_required_fields
+
+        validate_required_fields(
+            ["guid"],
+            [guid],
+        )
+        return LineageListRequest(
+            guid=guid,
+            depth=1000000,
+            direction=LineageDirection.DOWNSTREAM,
+            offset=0,
+            size=10,
+            exclude_meanings=True,
+            exclude_classifications=True,
+        )
+
+
+class LineageListResponse(AtlanObject):
+    entities: List[Asset] = Field(description="Entities in the lineage requested.")
+    has_more: bool = Field(
+        description="Whether there are more entities present in lineage that can be traversed (true) or not (false)."
+    )
+    entity_count: int = Field(
+        description="Total count of entities returned, equal to the size of the entities list."
+    )
+    search_parameters: LineageListRequest = Field(
+        description="Request used to produce this lineage."
+    )
