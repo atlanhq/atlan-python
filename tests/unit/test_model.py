@@ -16,6 +16,7 @@ from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
     SQL,
+    AccessControl,
     ADLSAccount,
     ADLSAccountStatus,
     ADLSContainer,
@@ -29,6 +30,9 @@ from pyatlan.model.assets import (
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     AtlasServer,
+    AuthPolicy,
+    AuthPolicyCondition,
+    AuthPolicyValiditySchedule,
     AwsTag,
     AzureTag,
     Badge,
@@ -158,6 +162,7 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    AuthPolicyType,
     BadgeComparisonOperator,
     BadgeConditionColor,
     CertificateStatus,
@@ -412,6 +417,11 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[list[SnowflakeStream]]": [SnowflakeStream()],
     "Optional[list[SnowflakeTag]]": [SnowflakeTag()],
     "Optional[list[Schema]]": [Schema()],
+    "Optional[list[AuthPolicy]]": [AuthPolicy()],
+    "Optional[AccessControl]": AccessControl(),
+    "Optional[list[AuthPolicyCondition]]": [AuthPolicyCondition()],
+    "Optional[AuthPolicyType]": AuthPolicyType.ALLOW,
+    "Optional[list[AuthPolicyValiditySchedule]]": [AuthPolicyValiditySchedule()],
 }
 
 

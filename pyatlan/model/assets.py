@@ -33,6 +33,7 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    AuthPolicyType,
     CertificateStatus,
     EntityStatus,
     FileType,
@@ -49,6 +50,8 @@ from pyatlan.model.enums import (
 )
 from pyatlan.model.internal import AtlasServer, Internal
 from pyatlan.model.structs import (
+    AuthPolicyCondition,
+    AuthPolicyValiditySchedule,
     AwsTag,
     AzureTag,
     BadgeCondition,
@@ -2195,150 +2198,6 @@ class Asset(Referenceable):
         self.attributes.remove_certificate()
 
 
-class AtlasGlossary(Asset, type_name="AtlasGlossary"):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in AtlasGlossary._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "short_description",
-        "long_description",
-        "language",
-        "usage",
-        "additional_attributes",
-        "terms",
-        "categories",
-    ]
-
-    @property
-    def short_description(self) -> Optional[str]:
-        return self.attributes.short_description
-
-    @short_description.setter
-    def short_description(self, short_description: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.short_description = short_description
-
-    @property
-    def long_description(self) -> Optional[str]:
-        return self.attributes.long_description
-
-    @long_description.setter
-    def long_description(self, long_description: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.long_description = long_description
-
-    @property
-    def language(self) -> Optional[str]:
-        return self.attributes.language
-
-    @language.setter
-    def language(self, language: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.language = language
-
-    @property
-    def usage(self) -> Optional[str]:
-        return self.attributes.usage
-
-    @usage.setter
-    def usage(self, usage: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.usage = usage
-
-    @property
-    def additional_attributes(self) -> Optional[dict[str, str]]:
-        return self.attributes.additional_attributes
-
-    @additional_attributes.setter
-    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.additional_attributes = additional_attributes
-
-    @property
-    def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.terms
-
-    @terms.setter
-    def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.terms = terms
-
-    @property
-    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
-        return self.attributes.categories
-
-    @categories.setter
-    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.categories = categories
-
-    type_name: str = Field("AtlasGlossary", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AtlasGlossary":
-            raise ValueError("must be AtlasGlossary")
-        return v
-
-    class Attributes(Asset.Attributes):
-        short_description: Optional[str] = Field(
-            None, description="", alias="shortDescription"
-        )
-        long_description: Optional[str] = Field(
-            None, description="", alias="longDescription"
-        )
-        language: Optional[str] = Field(None, description="", alias="language")
-        usage: Optional[str] = Field(None, description="", alias="usage")
-        additional_attributes: Optional[dict[str, str]] = Field(
-            None, description="", alias="additionalAttributes"
-        )
-        terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="terms"
-        )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(cls, *, name: StrictStr) -> AtlasGlossary.Attributes:
-            validate_required_fields(["name"], [name])
-            return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
-
-    attributes: "AtlasGlossary.Attributes" = Field(
-        default_factory=lambda: AtlasGlossary.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-    @root_validator()
-    def update_qualified_name(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
-        return values
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: StrictStr) -> AtlasGlossary:
-        validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
-
-
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
 
@@ -2355,473 +2214,6 @@ class DataSet(Asset, type_name="DataSet"):
     def validate_type_name(cls, v):
         if v != "DataSet":
             raise ValueError("must be DataSet")
-        return v
-
-
-class ProcessExecution(Asset, type_name="ProcessExecution"):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ProcessExecution._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
-    type_name: str = Field("ProcessExecution", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ProcessExecution":
-            raise ValueError("must be ProcessExecution")
-        return v
-
-
-class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in AtlasGlossaryTerm._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "short_description",
-        "long_description",
-        "examples",
-        "abbreviation",
-        "usage",
-        "additional_attributes",
-        "translation_terms",
-        "valid_values_for",
-        "synonyms",
-        "replaced_by",
-        "valid_values",
-        "replacement_terms",
-        "see_also",
-        "translated_terms",
-        "is_a",
-        "anchor",
-        "antonyms",
-        "assigned_entities",
-        "categories",
-        "classifies",
-        "preferred_to_terms",
-        "preferred_terms",
-    ]
-
-    @property
-    def short_description(self) -> Optional[str]:
-        return self.attributes.short_description
-
-    @short_description.setter
-    def short_description(self, short_description: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.short_description = short_description
-
-    @property
-    def long_description(self) -> Optional[str]:
-        return self.attributes.long_description
-
-    @long_description.setter
-    def long_description(self, long_description: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.long_description = long_description
-
-    @property
-    def examples(self) -> Optional[set[str]]:
-        return self.attributes.examples
-
-    @examples.setter
-    def examples(self, examples: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.examples = examples
-
-    @property
-    def abbreviation(self) -> Optional[str]:
-        return self.attributes.abbreviation
-
-    @abbreviation.setter
-    def abbreviation(self, abbreviation: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.abbreviation = abbreviation
-
-    @property
-    def usage(self) -> Optional[str]:
-        return self.attributes.usage
-
-    @usage.setter
-    def usage(self, usage: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.usage = usage
-
-    @property
-    def additional_attributes(self) -> Optional[dict[str, str]]:
-        return self.attributes.additional_attributes
-
-    @additional_attributes.setter
-    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.additional_attributes = additional_attributes
-
-    @property
-    def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.translation_terms
-
-    @translation_terms.setter
-    def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.translation_terms = translation_terms
-
-    @property
-    def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.valid_values_for
-
-    @valid_values_for.setter
-    def valid_values_for(self, valid_values_for: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.valid_values_for = valid_values_for
-
-    @property
-    def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.synonyms
-
-    @synonyms.setter
-    def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.synonyms = synonyms
-
-    @property
-    def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.replaced_by
-
-    @replaced_by.setter
-    def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.replaced_by = replaced_by
-
-    @property
-    def valid_values(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.valid_values
-
-    @valid_values.setter
-    def valid_values(self, valid_values: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.valid_values = valid_values
-
-    @property
-    def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.replacement_terms
-
-    @replacement_terms.setter
-    def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.replacement_terms = replacement_terms
-
-    @property
-    def see_also(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.see_also
-
-    @see_also.setter
-    def see_also(self, see_also: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.see_also = see_also
-
-    @property
-    def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.translated_terms
-
-    @translated_terms.setter
-    def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.translated_terms = translated_terms
-
-    @property
-    def is_a(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.is_a
-
-    @is_a.setter
-    def is_a(self, is_a: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_a = is_a
-
-    @property
-    def anchor(self) -> AtlasGlossary:
-        return self.attributes.anchor
-
-    @anchor.setter
-    def anchor(self, anchor: AtlasGlossary):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.anchor = anchor
-
-    @property
-    def antonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.antonyms
-
-    @antonyms.setter
-    def antonyms(self, antonyms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.antonyms = antonyms
-
-    @property
-    def assigned_entities(self) -> Optional[list[Referenceable]]:
-        return self.attributes.assigned_entities
-
-    @assigned_entities.setter
-    def assigned_entities(self, assigned_entities: Optional[list[Referenceable]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.assigned_entities = assigned_entities
-
-    @property
-    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
-        return self.attributes.categories
-
-    @categories.setter
-    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.categories = categories
-
-    @property
-    def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.classifies
-
-    @classifies.setter
-    def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.classifies = classifies
-
-    @property
-    def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.preferred_to_terms
-
-    @preferred_to_terms.setter
-    def preferred_to_terms(self, preferred_to_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preferred_to_terms = preferred_to_terms
-
-    @property
-    def preferred_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return self.attributes.preferred_terms
-
-    @preferred_terms.setter
-    def preferred_terms(self, preferred_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preferred_terms = preferred_terms
-
-    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AtlasGlossaryTerm":
-            raise ValueError("must be AtlasGlossaryTerm")
-        return v
-
-    class Attributes(Asset.Attributes):
-        short_description: Optional[str] = Field(
-            None, description="", alias="shortDescription"
-        )
-        long_description: Optional[str] = Field(
-            None, description="", alias="longDescription"
-        )
-        examples: Optional[set[str]] = Field(None, description="", alias="examples")
-        abbreviation: Optional[str] = Field(None, description="", alias="abbreviation")
-        usage: Optional[str] = Field(None, description="", alias="usage")
-        additional_attributes: Optional[dict[str, str]] = Field(
-            None, description="", alias="additionalAttributes"
-        )
-        translation_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="translationTerms"
-        )  # relationship
-        valid_values_for: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="validValuesFor"
-        )  # relationship
-        synonyms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="synonyms"
-        )  # relationship
-        replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="replacedBy"
-        )  # relationship
-        valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="validValues"
-        )  # relationship
-        replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="replacementTerms"
-        )  # relationship
-        see_also: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="seeAlso"
-        )  # relationship
-        translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="translatedTerms"
-        )  # relationship
-        is_a: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="isA"
-        )  # relationship
-        anchor: AtlasGlossary = Field(
-            None, description="", alias="anchor"
-        )  # relationship
-        antonyms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="antonyms"
-        )  # relationship
-        assigned_entities: Optional[list[Referenceable]] = Field(
-            None, description="", alias="assignedEntities"
-        )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
-        )  # relationship
-        classifies: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="classifies"
-        )  # relationship
-        preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="preferredToTerms"
-        )  # relationship
-        preferred_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="preferredTerms"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls,
-            *,
-            name: StrictStr,
-            anchor: Optional[AtlasGlossary] = None,
-            glossary_qualified_name: Optional[StrictStr] = None,
-            glossary_guid: Optional[StrictStr] = None,
-            categories: Optional[list[AtlasGlossaryCategory]] = None,
-        ) -> AtlasGlossaryTerm.Attributes:
-            validate_required_fields(["name"], [name])
-            validate_single_required_field(
-                ["anchor", "glossary_qualified_name", "glossary_guid"],
-                [anchor, glossary_qualified_name, glossary_guid],
-            )
-            if glossary_qualified_name:
-                anchor = AtlasGlossary()
-                anchor.unique_attributes = {"qualifiedName": glossary_qualified_name}
-            if glossary_guid:
-                anchor = AtlasGlossary()
-                anchor.guid = glossary_guid
-            return AtlasGlossaryTerm.Attributes(
-                name=name,
-                anchor=anchor,
-                categories=categories,
-                qualified_name=next_id(),
-            )
-
-    attributes: "AtlasGlossaryTerm.Attributes" = Field(
-        default_factory=lambda: AtlasGlossaryTerm.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-    @root_validator()
-    def update_qualified_name(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
-        return values
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: StrictStr,
-        anchor: Optional[AtlasGlossary] = None,
-        glossary_qualified_name: Optional[StrictStr] = None,
-        glossary_guid: Optional[StrictStr] = None,
-        categories: Optional[list[AtlasGlossaryCategory]] = None,
-    ) -> AtlasGlossaryTerm:
-        validate_required_fields(["name"], [name])
-        return cls(
-            attributes=AtlasGlossaryTerm.Attributes.create(
-                name=name,
-                anchor=anchor,
-                glossary_qualified_name=glossary_qualified_name,
-                glossary_guid=glossary_guid,
-                categories=categories,
-            )
-        )
-
-    @classmethod
-    def create_for_modification(
-        cls: type[SelfAsset],
-        qualified_name: str = "",
-        name: str = "",
-        glossary_guid: str = "",
-    ) -> SelfAsset:
-        validate_required_fields(
-            ["name", "qualified_name", "glossary_guid"],
-            [name, qualified_name, glossary_guid],
-        )
-        glossary = AtlasGlossary()
-        glossary.guid = glossary_guid
-        return cls(
-            attributes=cls.Attributes(
-                qualified_name=qualified_name, name=name, anchor=glossary
-            )
-        )
-
-
-class Cloud(Asset, type_name="Cloud"):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Cloud._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
-    type_name: str = Field("Cloud", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Cloud":
-            raise ValueError("must be Cloud")
-        return v
-
-
-class Infrastructure(Asset, type_name="Infrastructure"):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Infrastructure._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
-    type_name: str = Field("Infrastructure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Infrastructure":
-            raise ValueError("must be Infrastructure")
         return v
 
 
@@ -3684,6 +3076,104 @@ class Badge(Asset, type_name="Badge"):
     )
 
 
+class AccessControl(Asset, type_name="AccessControl"):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in AccessControl._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "is_access_control_enabled",
+        "deny_custom_metadata_guids",
+        "deny_asset_tabs",
+        "channel_link",
+        "policies",
+    ]
+
+    @property
+    def is_access_control_enabled(self) -> Optional[bool]:
+        return self.attributes.is_access_control_enabled
+
+    @is_access_control_enabled.setter
+    def is_access_control_enabled(self, is_access_control_enabled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_access_control_enabled = is_access_control_enabled
+
+    @property
+    def deny_custom_metadata_guids(self) -> Optional[set[str]]:
+        return self.attributes.deny_custom_metadata_guids
+
+    @deny_custom_metadata_guids.setter
+    def deny_custom_metadata_guids(
+        self, deny_custom_metadata_guids: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_custom_metadata_guids = deny_custom_metadata_guids
+
+    @property
+    def deny_asset_tabs(self) -> Optional[set[str]]:
+        return self.attributes.deny_asset_tabs
+
+    @deny_asset_tabs.setter
+    def deny_asset_tabs(self, deny_asset_tabs: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_asset_tabs = deny_asset_tabs
+
+    @property
+    def channel_link(self) -> Optional[str]:
+        return self.attributes.channel_link
+
+    @channel_link.setter
+    def channel_link(self, channel_link: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.channel_link = channel_link
+
+    @property
+    def policies(self) -> Optional[list[AuthPolicy]]:
+        return self.attributes.policies
+
+    @policies.setter
+    def policies(self, policies: Optional[list[AuthPolicy]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policies = policies
+
+    type_name: str = Field("AccessControl", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AccessControl":
+            raise ValueError("must be AccessControl")
+        return v
+
+    class Attributes(Asset.Attributes):
+        is_access_control_enabled: Optional[bool] = Field(
+            None, description="", alias="isAccessControlEnabled"
+        )
+        deny_custom_metadata_guids: Optional[set[str]] = Field(
+            None, description="", alias="denyCustomMetadataGuids"
+        )
+        deny_asset_tabs: Optional[set[str]] = Field(
+            None, description="", alias="denyAssetTabs"
+        )
+        channel_link: Optional[str] = Field(None, description="", alias="channelLink")
+        policies: Optional[list[AuthPolicy]] = Field(
+            None, description="", alias="policies"
+        )  # relationship
+
+    attributes: "AccessControl.Attributes" = Field(
+        default_factory=lambda: AccessControl.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class Namespace(Asset, type_name="Namespace"):
     """Description"""
 
@@ -3796,374 +3286,995 @@ class Catalog(Asset, type_name="Catalog"):
     )
 
 
-class Google(Cloud):
+class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in Google._convience_properties:
+        if name in AtlasGlossary._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "google_service",
-        "google_project_name",
-        "google_project_id",
-        "google_project_number",
-        "google_location",
-        "google_location_type",
-        "google_labels",
-        "google_tags",
+        "short_description",
+        "long_description",
+        "language",
+        "usage",
+        "additional_attributes",
+        "terms",
+        "categories",
     ]
 
     @property
-    def google_service(self) -> Optional[str]:
-        return self.attributes.google_service
+    def short_description(self) -> Optional[str]:
+        return self.attributes.short_description
 
-    @google_service.setter
-    def google_service(self, google_service: Optional[str]):
+    @short_description.setter
+    def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_service = google_service
+        self.attributes.short_description = short_description
 
     @property
-    def google_project_name(self) -> Optional[str]:
-        return self.attributes.google_project_name
+    def long_description(self) -> Optional[str]:
+        return self.attributes.long_description
 
-    @google_project_name.setter
-    def google_project_name(self, google_project_name: Optional[str]):
+    @long_description.setter
+    def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_name = google_project_name
+        self.attributes.long_description = long_description
 
     @property
-    def google_project_id(self) -> Optional[str]:
-        return self.attributes.google_project_id
+    def language(self) -> Optional[str]:
+        return self.attributes.language
 
-    @google_project_id.setter
-    def google_project_id(self, google_project_id: Optional[str]):
+    @language.setter
+    def language(self, language: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_id = google_project_id
+        self.attributes.language = language
 
     @property
-    def google_project_number(self) -> Optional[int]:
-        return self.attributes.google_project_number
+    def usage(self) -> Optional[str]:
+        return self.attributes.usage
 
-    @google_project_number.setter
-    def google_project_number(self, google_project_number: Optional[int]):
+    @usage.setter
+    def usage(self, usage: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_number = google_project_number
+        self.attributes.usage = usage
 
     @property
-    def google_location(self) -> Optional[str]:
-        return self.attributes.google_location
+    def additional_attributes(self) -> Optional[dict[str, str]]:
+        return self.attributes.additional_attributes
 
-    @google_location.setter
-    def google_location(self, google_location: Optional[str]):
+    @additional_attributes.setter
+    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_location = google_location
+        self.attributes.additional_attributes = additional_attributes
 
     @property
-    def google_location_type(self) -> Optional[str]:
-        return self.attributes.google_location_type
+    def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.terms
 
-    @google_location_type.setter
-    def google_location_type(self, google_location_type: Optional[str]):
+    @terms.setter
+    def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_location_type = google_location_type
+        self.attributes.terms = terms
 
     @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
-        return self.attributes.google_labels
+    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        return self.attributes.categories
 
-    @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+    @categories.setter
+    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_labels = google_labels
+        self.attributes.categories = categories
 
-    @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
-        return self.attributes.google_tags
-
-    @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_tags = google_tags
-
-    type_name: str = Field("Google", allow_mutation=False)
+    type_name: str = Field("AtlasGlossary", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Google":
-            raise ValueError("must be Google")
+        if v != "AtlasGlossary":
+            raise ValueError("must be AtlasGlossary")
         return v
 
-    class Attributes(Cloud.Attributes):
-        google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
+    class Attributes(Asset.Attributes):
+        short_description: Optional[str] = Field(
+            None, description="", alias="shortDescription"
         )
-        google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
+        long_description: Optional[str] = Field(
+            None, description="", alias="longDescription"
         )
-        google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
+        language: Optional[str] = Field(None, description="", alias="language")
+        usage: Optional[str] = Field(None, description="", alias="usage")
+        additional_attributes: Optional[dict[str, str]] = Field(
+            None, description="", alias="additionalAttributes"
         )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
-        )
+        terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="terms"
+        )  # relationship
+        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+            None, description="", alias="categories"
+        )  # relationship
 
-    attributes: "Google.Attributes" = Field(
-        default_factory=lambda: Google.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        def create(cls, *, name: StrictStr) -> AtlasGlossary.Attributes:
+            validate_required_fields(["name"], [name])
+            return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
+
+    attributes: "AtlasGlossary.Attributes" = Field(
+        default_factory=lambda: AtlasGlossary.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
 
-class Azure(Cloud):
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: StrictStr) -> AtlasGlossary:
+        validate_required_fields(["name"], [name])
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
+
+
+class AuthPolicy(Asset, type_name="AuthPolicy"):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in Azure._convience_properties:
+        if name in AuthPolicy._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "azure_resource_id",
-        "azure_location",
-        "adls_account_secondary_location",
-        "azure_tags",
+        "policy_type",
+        "policy_service_name",
+        "policy_category",
+        "policy_sub_category",
+        "policy_users",
+        "policy_groups",
+        "policy_roles",
+        "policy_actions",
+        "policy_resources",
+        "policy_resource_category",
+        "policy_priority",
+        "is_policy_enabled",
+        "policy_mask_type",
+        "policy_validity_schedule",
+        "policy_resource_signature",
+        "policy_delegate_admin",
+        "policy_conditions",
+        "access_control",
     ]
 
     @property
-    def azure_resource_id(self) -> Optional[str]:
-        return self.attributes.azure_resource_id
+    def policy_type(self) -> Optional[AuthPolicyType]:
+        return self.attributes.policy_type
 
-    @azure_resource_id.setter
-    def azure_resource_id(self, azure_resource_id: Optional[str]):
+    @policy_type.setter
+    def policy_type(self, policy_type: Optional[AuthPolicyType]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_resource_id = azure_resource_id
+        self.attributes.policy_type = policy_type
 
     @property
-    def azure_location(self) -> Optional[str]:
-        return self.attributes.azure_location
+    def policy_service_name(self) -> Optional[str]:
+        return self.attributes.policy_service_name
 
-    @azure_location.setter
-    def azure_location(self, azure_location: Optional[str]):
+    @policy_service_name.setter
+    def policy_service_name(self, policy_service_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_location = azure_location
+        self.attributes.policy_service_name = policy_service_name
 
     @property
-    def adls_account_secondary_location(self) -> Optional[str]:
-        return self.attributes.adls_account_secondary_location
+    def policy_category(self) -> Optional[str]:
+        return self.attributes.policy_category
 
-    @adls_account_secondary_location.setter
-    def adls_account_secondary_location(
-        self, adls_account_secondary_location: Optional[str]
+    @policy_category.setter
+    def policy_category(self, policy_category: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_category = policy_category
+
+    @property
+    def policy_sub_category(self) -> Optional[str]:
+        return self.attributes.policy_sub_category
+
+    @policy_sub_category.setter
+    def policy_sub_category(self, policy_sub_category: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_sub_category = policy_sub_category
+
+    @property
+    def policy_users(self) -> Optional[set[str]]:
+        return self.attributes.policy_users
+
+    @policy_users.setter
+    def policy_users(self, policy_users: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_users = policy_users
+
+    @property
+    def policy_groups(self) -> Optional[set[str]]:
+        return self.attributes.policy_groups
+
+    @policy_groups.setter
+    def policy_groups(self, policy_groups: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_groups = policy_groups
+
+    @property
+    def policy_roles(self) -> Optional[set[str]]:
+        return self.attributes.policy_roles
+
+    @policy_roles.setter
+    def policy_roles(self, policy_roles: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_roles = policy_roles
+
+    @property
+    def policy_actions(self) -> Optional[set[str]]:
+        return self.attributes.policy_actions
+
+    @policy_actions.setter
+    def policy_actions(self, policy_actions: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_actions = policy_actions
+
+    @property
+    def policy_resources(self) -> Optional[set[str]]:
+        return self.attributes.policy_resources
+
+    @policy_resources.setter
+    def policy_resources(self, policy_resources: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_resources = policy_resources
+
+    @property
+    def policy_resource_category(self) -> Optional[str]:
+        return self.attributes.policy_resource_category
+
+    @policy_resource_category.setter
+    def policy_resource_category(self, policy_resource_category: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_resource_category = policy_resource_category
+
+    @property
+    def policy_priority(self) -> Optional[int]:
+        return self.attributes.policy_priority
+
+    @policy_priority.setter
+    def policy_priority(self, policy_priority: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_priority = policy_priority
+
+    @property
+    def is_policy_enabled(self) -> Optional[bool]:
+        return self.attributes.is_policy_enabled
+
+    @is_policy_enabled.setter
+    def is_policy_enabled(self, is_policy_enabled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_policy_enabled = is_policy_enabled
+
+    @property
+    def policy_mask_type(self) -> Optional[str]:
+        return self.attributes.policy_mask_type
+
+    @policy_mask_type.setter
+    def policy_mask_type(self, policy_mask_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_mask_type = policy_mask_type
+
+    @property
+    def policy_validity_schedule(self) -> Optional[list[AuthPolicyValiditySchedule]]:
+        return self.attributes.policy_validity_schedule
+
+    @policy_validity_schedule.setter
+    def policy_validity_schedule(
+        self, policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.adls_account_secondary_location = (
-            adls_account_secondary_location
-        )
+        self.attributes.policy_validity_schedule = policy_validity_schedule
 
     @property
-    def azure_tags(self) -> Optional[list[AzureTag]]:
-        return self.attributes.azure_tags
+    def policy_resource_signature(self) -> Optional[str]:
+        return self.attributes.policy_resource_signature
 
-    @azure_tags.setter
-    def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
+    @policy_resource_signature.setter
+    def policy_resource_signature(self, policy_resource_signature: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.azure_tags = azure_tags
+        self.attributes.policy_resource_signature = policy_resource_signature
 
-    type_name: str = Field("Azure", allow_mutation=False)
+    @property
+    def policy_delegate_admin(self) -> Optional[bool]:
+        return self.attributes.policy_delegate_admin
+
+    @policy_delegate_admin.setter
+    def policy_delegate_admin(self, policy_delegate_admin: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_delegate_admin = policy_delegate_admin
+
+    @property
+    def policy_conditions(self) -> Optional[list[AuthPolicyCondition]]:
+        return self.attributes.policy_conditions
+
+    @policy_conditions.setter
+    def policy_conditions(self, policy_conditions: Optional[list[AuthPolicyCondition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.policy_conditions = policy_conditions
+
+    @property
+    def access_control(self) -> Optional[AccessControl]:
+        return self.attributes.access_control
+
+    @access_control.setter
+    def access_control(self, access_control: Optional[AccessControl]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.access_control = access_control
+
+    type_name: str = Field("AuthPolicy", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Azure":
-            raise ValueError("must be Azure")
+        if v != "AuthPolicy":
+            raise ValueError("must be AuthPolicy")
         return v
 
-    class Attributes(Cloud.Attributes):
-        azure_resource_id: Optional[str] = Field(
-            None, description="", alias="azureResourceId"
+    class Attributes(Asset.Attributes):
+        policy_type: Optional[AuthPolicyType] = Field(
+            None, description="", alias="policyType"
         )
-        azure_location: Optional[str] = Field(
-            None, description="", alias="azureLocation"
+        policy_service_name: Optional[str] = Field(
+            None, description="", alias="policyServiceName"
         )
-        adls_account_secondary_location: Optional[str] = Field(
-            None, description="", alias="adlsAccountSecondaryLocation"
+        policy_category: Optional[str] = Field(
+            None, description="", alias="policyCategory"
         )
-        azure_tags: Optional[list[AzureTag]] = Field(
-            None, description="", alias="azureTags"
+        policy_sub_category: Optional[str] = Field(
+            None, description="", alias="policySubCategory"
         )
+        policy_users: Optional[set[str]] = Field(
+            None, description="", alias="policyUsers"
+        )
+        policy_groups: Optional[set[str]] = Field(
+            None, description="", alias="policyGroups"
+        )
+        policy_roles: Optional[set[str]] = Field(
+            None, description="", alias="policyRoles"
+        )
+        policy_actions: Optional[set[str]] = Field(
+            None, description="", alias="policyActions"
+        )
+        policy_resources: Optional[set[str]] = Field(
+            None, description="", alias="policyResources"
+        )
+        policy_resource_category: Optional[str] = Field(
+            None, description="", alias="policyResourceCategory"
+        )
+        policy_priority: Optional[int] = Field(
+            None, description="", alias="policyPriority"
+        )
+        is_policy_enabled: Optional[bool] = Field(
+            None, description="", alias="isPolicyEnabled"
+        )
+        policy_mask_type: Optional[str] = Field(
+            None, description="", alias="policyMaskType"
+        )
+        policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]] = Field(
+            None, description="", alias="policyValiditySchedule"
+        )
+        policy_resource_signature: Optional[str] = Field(
+            None, description="", alias="policyResourceSignature"
+        )
+        policy_delegate_admin: Optional[bool] = Field(
+            None, description="", alias="policyDelegateAdmin"
+        )
+        policy_conditions: Optional[list[AuthPolicyCondition]] = Field(
+            None, description="", alias="policyConditions"
+        )
+        access_control: Optional[AccessControl] = Field(
+            None, description="", alias="accessControl"
+        )  # relationship
 
-    attributes: "Azure.Attributes" = Field(
-        default_factory=lambda: Azure.Attributes(),
+    attributes: "AuthPolicy.Attributes" = Field(
+        default_factory=lambda: AuthPolicy.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class AWS(Cloud):
+class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in AWS._convience_properties:
+        if name in ProcessExecution._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("ProcessExecution", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ProcessExecution":
+            raise ValueError("must be ProcessExecution")
+        return v
+
+
+class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in AtlasGlossaryTerm._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "aws_arn",
-        "aws_partition",
-        "aws_service",
-        "aws_region",
-        "aws_account_id",
-        "aws_resource_id",
-        "aws_owner_name",
-        "aws_owner_id",
-        "aws_tags",
+        "short_description",
+        "long_description",
+        "examples",
+        "abbreviation",
+        "usage",
+        "additional_attributes",
+        "translation_terms",
+        "valid_values_for",
+        "synonyms",
+        "replaced_by",
+        "valid_values",
+        "replacement_terms",
+        "see_also",
+        "translated_terms",
+        "is_a",
+        "anchor",
+        "antonyms",
+        "assigned_entities",
+        "categories",
+        "classifies",
+        "preferred_to_terms",
+        "preferred_terms",
     ]
 
     @property
-    def aws_arn(self) -> Optional[str]:
-        return self.attributes.aws_arn
+    def short_description(self) -> Optional[str]:
+        return self.attributes.short_description
 
-    @aws_arn.setter
-    def aws_arn(self, aws_arn: Optional[str]):
+    @short_description.setter
+    def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_arn = aws_arn
+        self.attributes.short_description = short_description
 
     @property
-    def aws_partition(self) -> Optional[str]:
-        return self.attributes.aws_partition
+    def long_description(self) -> Optional[str]:
+        return self.attributes.long_description
 
-    @aws_partition.setter
-    def aws_partition(self, aws_partition: Optional[str]):
+    @long_description.setter
+    def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_partition = aws_partition
+        self.attributes.long_description = long_description
 
     @property
-    def aws_service(self) -> Optional[str]:
-        return self.attributes.aws_service
+    def examples(self) -> Optional[set[str]]:
+        return self.attributes.examples
 
-    @aws_service.setter
-    def aws_service(self, aws_service: Optional[str]):
+    @examples.setter
+    def examples(self, examples: Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_service = aws_service
+        self.attributes.examples = examples
 
     @property
-    def aws_region(self) -> Optional[str]:
-        return self.attributes.aws_region
+    def abbreviation(self) -> Optional[str]:
+        return self.attributes.abbreviation
 
-    @aws_region.setter
-    def aws_region(self, aws_region: Optional[str]):
+    @abbreviation.setter
+    def abbreviation(self, abbreviation: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_region = aws_region
+        self.attributes.abbreviation = abbreviation
 
     @property
-    def aws_account_id(self) -> Optional[str]:
-        return self.attributes.aws_account_id
+    def usage(self) -> Optional[str]:
+        return self.attributes.usage
 
-    @aws_account_id.setter
-    def aws_account_id(self, aws_account_id: Optional[str]):
+    @usage.setter
+    def usage(self, usage: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_account_id = aws_account_id
+        self.attributes.usage = usage
 
     @property
-    def aws_resource_id(self) -> Optional[str]:
-        return self.attributes.aws_resource_id
+    def additional_attributes(self) -> Optional[dict[str, str]]:
+        return self.attributes.additional_attributes
 
-    @aws_resource_id.setter
-    def aws_resource_id(self, aws_resource_id: Optional[str]):
+    @additional_attributes.setter
+    def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_resource_id = aws_resource_id
+        self.attributes.additional_attributes = additional_attributes
 
     @property
-    def aws_owner_name(self) -> Optional[str]:
-        return self.attributes.aws_owner_name
+    def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.translation_terms
 
-    @aws_owner_name.setter
-    def aws_owner_name(self, aws_owner_name: Optional[str]):
+    @translation_terms.setter
+    def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_owner_name = aws_owner_name
+        self.attributes.translation_terms = translation_terms
 
     @property
-    def aws_owner_id(self) -> Optional[str]:
-        return self.attributes.aws_owner_id
+    def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.valid_values_for
 
-    @aws_owner_id.setter
-    def aws_owner_id(self, aws_owner_id: Optional[str]):
+    @valid_values_for.setter
+    def valid_values_for(self, valid_values_for: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_owner_id = aws_owner_id
+        self.attributes.valid_values_for = valid_values_for
 
     @property
-    def aws_tags(self) -> Optional[list[AwsTag]]:
-        return self.attributes.aws_tags
+    def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.synonyms
 
-    @aws_tags.setter
-    def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
+    @synonyms.setter
+    def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_tags = aws_tags
+        self.attributes.synonyms = synonyms
 
-    type_name: str = Field("AWS", allow_mutation=False)
+    @property
+    def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.replaced_by
+
+    @replaced_by.setter
+    def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.replaced_by = replaced_by
+
+    @property
+    def valid_values(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.valid_values
+
+    @valid_values.setter
+    def valid_values(self, valid_values: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.valid_values = valid_values
+
+    @property
+    def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.replacement_terms
+
+    @replacement_terms.setter
+    def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.replacement_terms = replacement_terms
+
+    @property
+    def see_also(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.see_also
+
+    @see_also.setter
+    def see_also(self, see_also: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.see_also = see_also
+
+    @property
+    def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.translated_terms
+
+    @translated_terms.setter
+    def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.translated_terms = translated_terms
+
+    @property
+    def is_a(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.is_a
+
+    @is_a.setter
+    def is_a(self, is_a: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_a = is_a
+
+    @property
+    def anchor(self) -> AtlasGlossary:
+        return self.attributes.anchor
+
+    @anchor.setter
+    def anchor(self, anchor: AtlasGlossary):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.anchor = anchor
+
+    @property
+    def antonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.antonyms
+
+    @antonyms.setter
+    def antonyms(self, antonyms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.antonyms = antonyms
+
+    @property
+    def assigned_entities(self) -> Optional[list[Referenceable]]:
+        return self.attributes.assigned_entities
+
+    @assigned_entities.setter
+    def assigned_entities(self, assigned_entities: Optional[list[Referenceable]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.assigned_entities = assigned_entities
+
+    @property
+    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        return self.attributes.categories
+
+    @categories.setter
+    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.categories = categories
+
+    @property
+    def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.classifies
+
+    @classifies.setter
+    def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.classifies = classifies
+
+    @property
+    def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.preferred_to_terms
+
+    @preferred_to_terms.setter
+    def preferred_to_terms(self, preferred_to_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preferred_to_terms = preferred_to_terms
+
+    @property
+    def preferred_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return self.attributes.preferred_terms
+
+    @preferred_terms.setter
+    def preferred_terms(self, preferred_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preferred_terms = preferred_terms
+
+    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "AWS":
-            raise ValueError("must be AWS")
+        if v != "AtlasGlossaryTerm":
+            raise ValueError("must be AtlasGlossaryTerm")
         return v
 
-    class Attributes(Cloud.Attributes):
-        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
-        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
-        aws_service: Optional[str] = Field(None, description="", alias="awsService")
-        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
-        aws_account_id: Optional[str] = Field(
-            None, description="", alias="awsAccountId"
+    class Attributes(Asset.Attributes):
+        short_description: Optional[str] = Field(
+            None, description="", alias="shortDescription"
         )
-        aws_resource_id: Optional[str] = Field(
-            None, description="", alias="awsResourceId"
+        long_description: Optional[str] = Field(
+            None, description="", alias="longDescription"
         )
-        aws_owner_name: Optional[str] = Field(
-            None, description="", alias="awsOwnerName"
+        examples: Optional[set[str]] = Field(None, description="", alias="examples")
+        abbreviation: Optional[str] = Field(None, description="", alias="abbreviation")
+        usage: Optional[str] = Field(None, description="", alias="usage")
+        additional_attributes: Optional[dict[str, str]] = Field(
+            None, description="", alias="additionalAttributes"
         )
-        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
-        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
+        translation_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="translationTerms"
+        )  # relationship
+        valid_values_for: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="validValuesFor"
+        )  # relationship
+        synonyms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="synonyms"
+        )  # relationship
+        replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="replacedBy"
+        )  # relationship
+        valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="validValues"
+        )  # relationship
+        replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="replacementTerms"
+        )  # relationship
+        see_also: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="seeAlso"
+        )  # relationship
+        translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="translatedTerms"
+        )  # relationship
+        is_a: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="isA"
+        )  # relationship
+        anchor: AtlasGlossary = Field(
+            None, description="", alias="anchor"
+        )  # relationship
+        antonyms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="antonyms"
+        )  # relationship
+        assigned_entities: Optional[list[Referenceable]] = Field(
+            None, description="", alias="assignedEntities"
+        )  # relationship
+        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+            None, description="", alias="categories"
+        )  # relationship
+        classifies: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="classifies"
+        )  # relationship
+        preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="preferredToTerms"
+        )  # relationship
+        preferred_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="preferredTerms"
+        )  # relationship
 
-    attributes: "AWS.Attributes" = Field(
-        default_factory=lambda: AWS.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls,
+            *,
+            name: StrictStr,
+            anchor: Optional[AtlasGlossary] = None,
+            glossary_qualified_name: Optional[StrictStr] = None,
+            glossary_guid: Optional[StrictStr] = None,
+            categories: Optional[list[AtlasGlossaryCategory]] = None,
+        ) -> AtlasGlossaryTerm.Attributes:
+            validate_required_fields(["name"], [name])
+            validate_single_required_field(
+                ["anchor", "glossary_qualified_name", "glossary_guid"],
+                [anchor, glossary_qualified_name, glossary_guid],
+            )
+            if glossary_qualified_name:
+                anchor = AtlasGlossary()
+                anchor.unique_attributes = {"qualifiedName": glossary_qualified_name}
+            if glossary_guid:
+                anchor = AtlasGlossary()
+                anchor.guid = glossary_guid
+            return AtlasGlossaryTerm.Attributes(
+                name=name,
+                anchor=anchor,
+                categories=categories,
+                qualified_name=next_id(),
+            )
+
+    attributes: "AtlasGlossaryTerm.Attributes" = Field(
+        default_factory=lambda: AtlasGlossaryTerm.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        anchor: Optional[AtlasGlossary] = None,
+        glossary_qualified_name: Optional[StrictStr] = None,
+        glossary_guid: Optional[StrictStr] = None,
+        categories: Optional[list[AtlasGlossaryCategory]] = None,
+    ) -> AtlasGlossaryTerm:
+        validate_required_fields(["name"], [name])
+        return cls(
+            attributes=AtlasGlossaryTerm.Attributes.create(
+                name=name,
+                anchor=anchor,
+                glossary_qualified_name=glossary_qualified_name,
+                glossary_guid=glossary_guid,
+                categories=categories,
+            )
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
+        )
+
+
+class AuthService(Asset, type_name="AuthService"):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in AuthService._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "auth_service_type",
+        "tag_service",
+        "auth_service_is_enabled",
+        "auth_service_config",
+        "auth_service_policy_last_sync",
+    ]
+
+    @property
+    def auth_service_type(self) -> Optional[str]:
+        return self.attributes.auth_service_type
+
+    @auth_service_type.setter
+    def auth_service_type(self, auth_service_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.auth_service_type = auth_service_type
+
+    @property
+    def tag_service(self) -> Optional[str]:
+        return self.attributes.tag_service
+
+    @tag_service.setter
+    def tag_service(self, tag_service: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_service = tag_service
+
+    @property
+    def auth_service_is_enabled(self) -> Optional[bool]:
+        return self.attributes.auth_service_is_enabled
+
+    @auth_service_is_enabled.setter
+    def auth_service_is_enabled(self, auth_service_is_enabled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.auth_service_is_enabled = auth_service_is_enabled
+
+    @property
+    def auth_service_config(self) -> Optional[dict[str, str]]:
+        return self.attributes.auth_service_config
+
+    @auth_service_config.setter
+    def auth_service_config(self, auth_service_config: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.auth_service_config = auth_service_config
+
+    @property
+    def auth_service_policy_last_sync(self) -> Optional[int]:
+        return self.attributes.auth_service_policy_last_sync
+
+    @auth_service_policy_last_sync.setter
+    def auth_service_policy_last_sync(
+        self, auth_service_policy_last_sync: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.auth_service_policy_last_sync = auth_service_policy_last_sync
+
+    type_name: str = Field("AuthService", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AuthService":
+            raise ValueError("must be AuthService")
+        return v
+
+    class Attributes(Asset.Attributes):
+        auth_service_type: Optional[str] = Field(
+            None, description="", alias="authServiceType"
+        )
+        tag_service: Optional[str] = Field(None, description="", alias="tagService")
+        auth_service_is_enabled: Optional[bool] = Field(
+            None, description="", alias="authServiceIsEnabled"
+        )
+        auth_service_config: Optional[dict[str, str]] = Field(
+            None, description="", alias="authServiceConfig"
+        )
+        auth_service_policy_last_sync: Optional[int] = Field(
+            None, description="", alias="authServicePolicyLastSync"
+        )
+
+    attributes: "AuthService.Attributes" = Field(
+        default_factory=lambda: AuthService.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Cloud(Asset, type_name="Cloud"):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Cloud._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("Cloud", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Cloud":
+            raise ValueError("must be Cloud")
+        return v
+
+
+class Infrastructure(Asset, type_name="Infrastructure"):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Infrastructure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("Infrastructure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Infrastructure":
+            raise ValueError("must be Infrastructure")
+        return v
 
 
 class BIProcess(Process):
@@ -4287,6 +4398,116 @@ class ColumnProcess(Process):
 
     attributes: "ColumnProcess.Attributes" = Field(
         default_factory=lambda: ColumnProcess.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Persona(AccessControl):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Persona._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "persona_groups",
+        "persona_users",
+        "role_id",
+    ]
+
+    @property
+    def persona_groups(self) -> Optional[set[str]]:
+        return self.attributes.persona_groups
+
+    @persona_groups.setter
+    def persona_groups(self, persona_groups: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.persona_groups = persona_groups
+
+    @property
+    def persona_users(self) -> Optional[set[str]]:
+        return self.attributes.persona_users
+
+    @persona_users.setter
+    def persona_users(self, persona_users: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.persona_users = persona_users
+
+    @property
+    def role_id(self) -> Optional[str]:
+        return self.attributes.role_id
+
+    @role_id.setter
+    def role_id(self, role_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.role_id = role_id
+
+    type_name: str = Field("Persona", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Persona":
+            raise ValueError("must be Persona")
+        return v
+
+    class Attributes(AccessControl.Attributes):
+        persona_groups: Optional[set[str]] = Field(
+            None, description="", alias="personaGroups"
+        )
+        persona_users: Optional[set[str]] = Field(
+            None, description="", alias="personaUsers"
+        )
+        role_id: Optional[str] = Field(None, description="", alias="roleId")
+
+    attributes: "Persona.Attributes" = Field(
+        default_factory=lambda: Persona.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Purpose(AccessControl):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Purpose._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "purpose_classifications",
+    ]
+
+    @property
+    def purpose_classifications(self) -> Optional[set[str]]:
+        return self.attributes.purpose_classifications
+
+    @purpose_classifications.setter
+    def purpose_classifications(self, purpose_classifications: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.purpose_classifications = purpose_classifications
+
+    type_name: str = Field("Purpose", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Purpose":
+            raise ValueError("must be Purpose")
+        return v
+
+    class Attributes(AccessControl.Attributes):
+        purpose_classifications: Optional[set[str]] = Field(
+            None, description="", alias="purposeClassifications"
+        )
+
+    attributes: "Purpose.Attributes" = Field(
+        default_factory=lambda: Purpose.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5336,11 +5557,11 @@ class SQL(Catalog):
     )
 
 
-class DataStudio(Google):
+class Google(Cloud):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in DataStudio._convience_properties:
+        if name in Google._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -5353,8 +5574,6 @@ class DataStudio(Google):
         "google_location_type",
         "google_labels",
         "google_tags",
-        "input_to_processes",
-        "output_from_processes",
     ]
 
     @property
@@ -5437,491 +5656,15 @@ class DataStudio(Google):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
-    @property
-    def input_to_processes(self) -> Optional[list[Process]]:
-        return self.attributes.input_to_processes
-
-    @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_processes = input_to_processes
-
-    @property
-    def output_from_processes(self) -> Optional[list[Process]]:
-        return self.attributes.output_from_processes
-
-    @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_processes = output_from_processes
-
-    type_name: str = Field("DataStudio", allow_mutation=False)
+    type_name: str = Field("Google", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DataStudio":
-            raise ValueError("must be DataStudio")
+        if v != "Google":
+            raise ValueError("must be Google")
         return v
 
-    class Attributes(Google.Attributes):
-        google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "DataStudio.Attributes" = Field(
-        default_factory=lambda: DataStudio.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class GCS(Google):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in GCS._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "gcs_storage_class",
-        "gcs_encryption_type",
-        "gcs_e_tag",
-        "gcs_requester_pays",
-        "gcs_access_control",
-        "gcs_meta_generation_id",
-        "google_service",
-        "google_project_name",
-        "google_project_id",
-        "google_project_number",
-        "google_location",
-        "google_location_type",
-        "google_labels",
-        "google_tags",
-        "input_to_processes",
-        "output_from_processes",
-    ]
-
-    @property
-    def gcs_storage_class(self) -> Optional[str]:
-        return self.attributes.gcs_storage_class
-
-    @gcs_storage_class.setter
-    def gcs_storage_class(self, gcs_storage_class: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_storage_class = gcs_storage_class
-
-    @property
-    def gcs_encryption_type(self) -> Optional[str]:
-        return self.attributes.gcs_encryption_type
-
-    @gcs_encryption_type.setter
-    def gcs_encryption_type(self, gcs_encryption_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_encryption_type = gcs_encryption_type
-
-    @property
-    def gcs_e_tag(self) -> Optional[str]:
-        return self.attributes.gcs_e_tag
-
-    @gcs_e_tag.setter
-    def gcs_e_tag(self, gcs_e_tag: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_e_tag = gcs_e_tag
-
-    @property
-    def gcs_requester_pays(self) -> Optional[bool]:
-        return self.attributes.gcs_requester_pays
-
-    @gcs_requester_pays.setter
-    def gcs_requester_pays(self, gcs_requester_pays: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_requester_pays = gcs_requester_pays
-
-    @property
-    def gcs_access_control(self) -> Optional[str]:
-        return self.attributes.gcs_access_control
-
-    @gcs_access_control.setter
-    def gcs_access_control(self, gcs_access_control: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_access_control = gcs_access_control
-
-    @property
-    def gcs_meta_generation_id(self) -> Optional[int]:
-        return self.attributes.gcs_meta_generation_id
-
-    @gcs_meta_generation_id.setter
-    def gcs_meta_generation_id(self, gcs_meta_generation_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_meta_generation_id = gcs_meta_generation_id
-
-    @property
-    def google_service(self) -> Optional[str]:
-        return self.attributes.google_service
-
-    @google_service.setter
-    def google_service(self, google_service: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_service = google_service
-
-    @property
-    def google_project_name(self) -> Optional[str]:
-        return self.attributes.google_project_name
-
-    @google_project_name.setter
-    def google_project_name(self, google_project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_name = google_project_name
-
-    @property
-    def google_project_id(self) -> Optional[str]:
-        return self.attributes.google_project_id
-
-    @google_project_id.setter
-    def google_project_id(self, google_project_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_id = google_project_id
-
-    @property
-    def google_project_number(self) -> Optional[int]:
-        return self.attributes.google_project_number
-
-    @google_project_number.setter
-    def google_project_number(self, google_project_number: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_number = google_project_number
-
-    @property
-    def google_location(self) -> Optional[str]:
-        return self.attributes.google_location
-
-    @google_location.setter
-    def google_location(self, google_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_location = google_location
-
-    @property
-    def google_location_type(self) -> Optional[str]:
-        return self.attributes.google_location_type
-
-    @google_location_type.setter
-    def google_location_type(self, google_location_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_location_type = google_location_type
-
-    @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
-        return self.attributes.google_labels
-
-    @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_labels = google_labels
-
-    @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
-        return self.attributes.google_tags
-
-    @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_tags = google_tags
-
-    @property
-    def input_to_processes(self) -> Optional[list[Process]]:
-        return self.attributes.input_to_processes
-
-    @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_processes = input_to_processes
-
-    @property
-    def output_from_processes(self) -> Optional[list[Process]]:
-        return self.attributes.output_from_processes
-
-    @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_processes = output_from_processes
-
-    type_name: str = Field("GCS", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "GCS":
-            raise ValueError("must be GCS")
-        return v
-
-    class Attributes(Google.Attributes):
-        gcs_storage_class: Optional[str] = Field(
-            None, description="", alias="gcsStorageClass"
-        )
-        gcs_encryption_type: Optional[str] = Field(
-            None, description="", alias="gcsEncryptionType"
-        )
-        gcs_e_tag: Optional[str] = Field(None, description="", alias="gcsETag")
-        gcs_requester_pays: Optional[bool] = Field(
-            None, description="", alias="gcsRequesterPays"
-        )
-        gcs_access_control: Optional[str] = Field(
-            None, description="", alias="gcsAccessControl"
-        )
-        gcs_meta_generation_id: Optional[int] = Field(
-            None, description="", alias="gcsMetaGenerationId"
-        )
-        google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
-        )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
-
-    attributes: "GCS.Attributes" = Field(
-        default_factory=lambda: GCS.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class DataStudioAsset(DataStudio):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in DataStudioAsset._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "data_studio_asset_type",
-        "data_studio_asset_title",
-        "data_studio_asset_owner",
-        "is_trashed_data_studio_asset",
-        "google_service",
-        "google_project_name",
-        "google_project_id",
-        "google_project_number",
-        "google_location",
-        "google_location_type",
-        "google_labels",
-        "google_tags",
-    ]
-
-    @property
-    def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
-        return self.attributes.data_studio_asset_type
-
-    @data_studio_asset_type.setter
-    def data_studio_asset_type(
-        self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_studio_asset_type = data_studio_asset_type
-
-    @property
-    def data_studio_asset_title(self) -> Optional[str]:
-        return self.attributes.data_studio_asset_title
-
-    @data_studio_asset_title.setter
-    def data_studio_asset_title(self, data_studio_asset_title: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_studio_asset_title = data_studio_asset_title
-
-    @property
-    def data_studio_asset_owner(self) -> Optional[str]:
-        return self.attributes.data_studio_asset_owner
-
-    @data_studio_asset_owner.setter
-    def data_studio_asset_owner(self, data_studio_asset_owner: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_studio_asset_owner = data_studio_asset_owner
-
-    @property
-    def is_trashed_data_studio_asset(self) -> Optional[bool]:
-        return self.attributes.is_trashed_data_studio_asset
-
-    @is_trashed_data_studio_asset.setter
-    def is_trashed_data_studio_asset(
-        self, is_trashed_data_studio_asset: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_trashed_data_studio_asset = is_trashed_data_studio_asset
-
-    @property
-    def google_service(self) -> Optional[str]:
-        return self.attributes.google_service
-
-    @google_service.setter
-    def google_service(self, google_service: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_service = google_service
-
-    @property
-    def google_project_name(self) -> Optional[str]:
-        return self.attributes.google_project_name
-
-    @google_project_name.setter
-    def google_project_name(self, google_project_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_name = google_project_name
-
-    @property
-    def google_project_id(self) -> Optional[str]:
-        return self.attributes.google_project_id
-
-    @google_project_id.setter
-    def google_project_id(self, google_project_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_id = google_project_id
-
-    @property
-    def google_project_number(self) -> Optional[int]:
-        return self.attributes.google_project_number
-
-    @google_project_number.setter
-    def google_project_number(self, google_project_number: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_number = google_project_number
-
-    @property
-    def google_location(self) -> Optional[str]:
-        return self.attributes.google_location
-
-    @google_location.setter
-    def google_location(self, google_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_location = google_location
-
-    @property
-    def google_location_type(self) -> Optional[str]:
-        return self.attributes.google_location_type
-
-    @google_location_type.setter
-    def google_location_type(self, google_location_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_location_type = google_location_type
-
-    @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
-        return self.attributes.google_labels
-
-    @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_labels = google_labels
-
-    @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
-        return self.attributes.google_tags
-
-    @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_tags = google_tags
-
-    type_name: str = Field("DataStudioAsset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DataStudioAsset":
-            raise ValueError("must be DataStudioAsset")
-        return v
-
-    class Attributes(DataStudio.Attributes):
-        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
-            None, description="", alias="dataStudioAssetType"
-        )
-        data_studio_asset_title: Optional[str] = Field(
-            None, description="", alias="dataStudioAssetTitle"
-        )
-        data_studio_asset_owner: Optional[str] = Field(
-            None, description="", alias="dataStudioAssetOwner"
-        )
-        is_trashed_data_studio_asset: Optional[bool] = Field(
-            None, description="", alias="isTrashedDataStudioAsset"
-        )
+    class Attributes(Cloud.Attributes):
         google_service: Optional[str] = Field(
             None, description="", alias="googleService"
         )
@@ -5947,38 +5690,27 @@ class DataStudioAsset(DataStudio):
             None, description="", alias="googleTags"
         )
 
-    attributes: "DataStudioAsset.Attributes" = Field(
-        default_factory=lambda: DataStudioAsset.Attributes(),
+    attributes: "Google.Attributes" = Field(
+        default_factory=lambda: Google.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ADLS(ObjectStore):
+class Azure(Cloud):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in ADLS._convience_properties:
+        if name in Azure._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "adls_account_qualified_name",
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
     ]
-
-    @property
-    def adls_account_qualified_name(self) -> Optional[str]:
-        return self.attributes.adls_account_qualified_name
-
-    @adls_account_qualified_name.setter
-    def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.adls_account_qualified_name = adls_account_qualified_name
 
     @property
     def azure_resource_id(self) -> Optional[str]:
@@ -6024,18 +5756,15 @@ class ADLS(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    type_name: str = Field("ADLS", allow_mutation=False)
+    type_name: str = Field("Azure", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ADLS":
-            raise ValueError("must be ADLS")
+        if v != "Azure":
+            raise ValueError("must be Azure")
         return v
 
-    class Attributes(ObjectStore.Attributes):
-        adls_account_qualified_name: Optional[str] = Field(
-            None, description="", alias="adlsAccountQualifiedName"
-        )
+    class Attributes(Cloud.Attributes):
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
         )
@@ -6049,24 +5778,22 @@ class ADLS(ObjectStore):
             None, description="", alias="azureTags"
         )
 
-    attributes: "ADLS.Attributes" = Field(
-        default_factory=lambda: ADLS.Attributes(),
+    attributes: "Azure.Attributes" = Field(
+        default_factory=lambda: Azure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class S3(ObjectStore):
+class AWS(Cloud):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in S3._convience_properties:
+        if name in AWS._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "s3_e_tag",
-        "s3_encryption",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -6077,26 +5804,6 @@ class S3(ObjectStore):
         "aws_owner_id",
         "aws_tags",
     ]
-
-    @property
-    def s3_e_tag(self) -> Optional[str]:
-        return self.attributes.s3_e_tag
-
-    @s3_e_tag.setter
-    def s3_e_tag(self, s3_e_tag: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_e_tag = s3_e_tag
-
-    @property
-    def s3_encryption(self) -> Optional[str]:
-        return self.attributes.s3_encryption
-
-    @s3_encryption.setter
-    def s3_encryption(self, s3_encryption: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_encryption = s3_encryption
 
     @property
     def aws_arn(self) -> Optional[str]:
@@ -6188,17 +5895,15 @@ class S3(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
-    type_name: str = Field("S3", allow_mutation=False)
+    type_name: str = Field("AWS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "S3":
-            raise ValueError("must be S3")
+        if v != "AWS":
+            raise ValueError("must be AWS")
         return v
 
-    class Attributes(ObjectStore.Attributes):
-        s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
-        s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
+    class Attributes(Cloud.Attributes):
         aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
         aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
         aws_service: Optional[str] = Field(None, description="", alias="awsService")
@@ -6215,8 +5920,8 @@ class S3(ObjectStore):
         aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
 
-    attributes: "S3.Attributes" = Field(
-        default_factory=lambda: S3.Attributes(),
+    attributes: "AWS.Attributes" = Field(
+        default_factory=lambda: AWS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6619,6 +6324,524 @@ class Kafka(EventStore):
         return v
 
 
+class S3(ObjectStore):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in S3._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "s3_e_tag",
+        "s3_encryption",
+        "aws_arn",
+        "aws_partition",
+        "aws_service",
+        "aws_region",
+        "aws_account_id",
+        "aws_resource_id",
+        "aws_owner_name",
+        "aws_owner_id",
+        "aws_tags",
+    ]
+
+    @property
+    def s3_e_tag(self) -> Optional[str]:
+        return self.attributes.s3_e_tag
+
+    @s3_e_tag.setter
+    def s3_e_tag(self, s3_e_tag: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_e_tag = s3_e_tag
+
+    @property
+    def s3_encryption(self) -> Optional[str]:
+        return self.attributes.s3_encryption
+
+    @s3_encryption.setter
+    def s3_encryption(self, s3_encryption: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_encryption = s3_encryption
+
+    @property
+    def aws_arn(self) -> Optional[str]:
+        return self.attributes.aws_arn
+
+    @aws_arn.setter
+    def aws_arn(self, aws_arn: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_arn = aws_arn
+
+    @property
+    def aws_partition(self) -> Optional[str]:
+        return self.attributes.aws_partition
+
+    @aws_partition.setter
+    def aws_partition(self, aws_partition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_partition = aws_partition
+
+    @property
+    def aws_service(self) -> Optional[str]:
+        return self.attributes.aws_service
+
+    @aws_service.setter
+    def aws_service(self, aws_service: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_service = aws_service
+
+    @property
+    def aws_region(self) -> Optional[str]:
+        return self.attributes.aws_region
+
+    @aws_region.setter
+    def aws_region(self, aws_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_region = aws_region
+
+    @property
+    def aws_account_id(self) -> Optional[str]:
+        return self.attributes.aws_account_id
+
+    @aws_account_id.setter
+    def aws_account_id(self, aws_account_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_account_id = aws_account_id
+
+    @property
+    def aws_resource_id(self) -> Optional[str]:
+        return self.attributes.aws_resource_id
+
+    @aws_resource_id.setter
+    def aws_resource_id(self, aws_resource_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_resource_id = aws_resource_id
+
+    @property
+    def aws_owner_name(self) -> Optional[str]:
+        return self.attributes.aws_owner_name
+
+    @aws_owner_name.setter
+    def aws_owner_name(self, aws_owner_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_owner_name = aws_owner_name
+
+    @property
+    def aws_owner_id(self) -> Optional[str]:
+        return self.attributes.aws_owner_id
+
+    @aws_owner_id.setter
+    def aws_owner_id(self, aws_owner_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_owner_id = aws_owner_id
+
+    @property
+    def aws_tags(self) -> Optional[list[AwsTag]]:
+        return self.attributes.aws_tags
+
+    @aws_tags.setter
+    def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.aws_tags = aws_tags
+
+    type_name: str = Field("S3", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3":
+            raise ValueError("must be S3")
+        return v
+
+    class Attributes(ObjectStore.Attributes):
+        s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
+        s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
+        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
+        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
+        aws_service: Optional[str] = Field(None, description="", alias="awsService")
+        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
+        aws_account_id: Optional[str] = Field(
+            None, description="", alias="awsAccountId"
+        )
+        aws_resource_id: Optional[str] = Field(
+            None, description="", alias="awsResourceId"
+        )
+        aws_owner_name: Optional[str] = Field(
+            None, description="", alias="awsOwnerName"
+        )
+        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
+        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
+
+    attributes: "S3.Attributes" = Field(
+        default_factory=lambda: S3.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ADLS(ObjectStore):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ADLS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "adls_account_qualified_name",
+        "azure_resource_id",
+        "azure_location",
+        "adls_account_secondary_location",
+        "azure_tags",
+    ]
+
+    @property
+    def adls_account_qualified_name(self) -> Optional[str]:
+        return self.attributes.adls_account_qualified_name
+
+    @adls_account_qualified_name.setter
+    def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account_qualified_name = adls_account_qualified_name
+
+    @property
+    def azure_resource_id(self) -> Optional[str]:
+        return self.attributes.azure_resource_id
+
+    @azure_resource_id.setter
+    def azure_resource_id(self, azure_resource_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.azure_resource_id = azure_resource_id
+
+    @property
+    def azure_location(self) -> Optional[str]:
+        return self.attributes.azure_location
+
+    @azure_location.setter
+    def azure_location(self, azure_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.azure_location = azure_location
+
+    @property
+    def adls_account_secondary_location(self) -> Optional[str]:
+        return self.attributes.adls_account_secondary_location
+
+    @adls_account_secondary_location.setter
+    def adls_account_secondary_location(
+        self, adls_account_secondary_location: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account_secondary_location = (
+            adls_account_secondary_location
+        )
+
+    @property
+    def azure_tags(self) -> Optional[list[AzureTag]]:
+        return self.attributes.azure_tags
+
+    @azure_tags.setter
+    def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.azure_tags = azure_tags
+
+    type_name: str = Field("ADLS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLS":
+            raise ValueError("must be ADLS")
+        return v
+
+    class Attributes(ObjectStore.Attributes):
+        adls_account_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsAccountQualifiedName"
+        )
+        azure_resource_id: Optional[str] = Field(
+            None, description="", alias="azureResourceId"
+        )
+        azure_location: Optional[str] = Field(
+            None, description="", alias="azureLocation"
+        )
+        adls_account_secondary_location: Optional[str] = Field(
+            None, description="", alias="adlsAccountSecondaryLocation"
+        )
+        azure_tags: Optional[list[AzureTag]] = Field(
+            None, description="", alias="azureTags"
+        )
+
+    attributes: "ADLS.Attributes" = Field(
+        default_factory=lambda: ADLS.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class GCS(Google):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in GCS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "gcs_storage_class",
+        "gcs_encryption_type",
+        "gcs_e_tag",
+        "gcs_requester_pays",
+        "gcs_access_control",
+        "gcs_meta_generation_id",
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
+        "input_to_processes",
+        "output_from_processes",
+    ]
+
+    @property
+    def gcs_storage_class(self) -> Optional[str]:
+        return self.attributes.gcs_storage_class
+
+    @gcs_storage_class.setter
+    def gcs_storage_class(self, gcs_storage_class: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_storage_class = gcs_storage_class
+
+    @property
+    def gcs_encryption_type(self) -> Optional[str]:
+        return self.attributes.gcs_encryption_type
+
+    @gcs_encryption_type.setter
+    def gcs_encryption_type(self, gcs_encryption_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_encryption_type = gcs_encryption_type
+
+    @property
+    def gcs_e_tag(self) -> Optional[str]:
+        return self.attributes.gcs_e_tag
+
+    @gcs_e_tag.setter
+    def gcs_e_tag(self, gcs_e_tag: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_e_tag = gcs_e_tag
+
+    @property
+    def gcs_requester_pays(self) -> Optional[bool]:
+        return self.attributes.gcs_requester_pays
+
+    @gcs_requester_pays.setter
+    def gcs_requester_pays(self, gcs_requester_pays: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_requester_pays = gcs_requester_pays
+
+    @property
+    def gcs_access_control(self) -> Optional[str]:
+        return self.attributes.gcs_access_control
+
+    @gcs_access_control.setter
+    def gcs_access_control(self, gcs_access_control: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_access_control = gcs_access_control
+
+    @property
+    def gcs_meta_generation_id(self) -> Optional[int]:
+        return self.attributes.gcs_meta_generation_id
+
+    @gcs_meta_generation_id.setter
+    def gcs_meta_generation_id(self, gcs_meta_generation_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_meta_generation_id = gcs_meta_generation_id
+
+    @property
+    def google_service(self) -> Optional[str]:
+        return self.attributes.google_service
+
+    @google_service.setter
+    def google_service(self, google_service: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_service = google_service
+
+    @property
+    def google_project_name(self) -> Optional[str]:
+        return self.attributes.google_project_name
+
+    @google_project_name.setter
+    def google_project_name(self, google_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_name = google_project_name
+
+    @property
+    def google_project_id(self) -> Optional[str]:
+        return self.attributes.google_project_id
+
+    @google_project_id.setter
+    def google_project_id(self, google_project_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_id = google_project_id
+
+    @property
+    def google_project_number(self) -> Optional[int]:
+        return self.attributes.google_project_number
+
+    @google_project_number.setter
+    def google_project_number(self, google_project_number: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_number = google_project_number
+
+    @property
+    def google_location(self) -> Optional[str]:
+        return self.attributes.google_location
+
+    @google_location.setter
+    def google_location(self, google_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location = google_location
+
+    @property
+    def google_location_type(self) -> Optional[str]:
+        return self.attributes.google_location_type
+
+    @google_location_type.setter
+    def google_location_type(self, google_location_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location_type = google_location_type
+
+    @property
+    def google_labels(self) -> Optional[list[GoogleLabel]]:
+        return self.attributes.google_labels
+
+    @google_labels.setter
+    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_labels = google_labels
+
+    @property
+    def google_tags(self) -> Optional[list[GoogleTag]]:
+        return self.attributes.google_tags
+
+    @google_tags.setter
+    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_tags = google_tags
+
+    @property
+    def input_to_processes(self) -> Optional[list[Process]]:
+        return self.attributes.input_to_processes
+
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_processes(self) -> Optional[list[Process]]:
+        return self.attributes.output_from_processes
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
+
+    type_name: str = Field("GCS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCS":
+            raise ValueError("must be GCS")
+        return v
+
+    class Attributes(Google.Attributes):
+        gcs_storage_class: Optional[str] = Field(
+            None, description="", alias="gcsStorageClass"
+        )
+        gcs_encryption_type: Optional[str] = Field(
+            None, description="", alias="gcsEncryptionType"
+        )
+        gcs_e_tag: Optional[str] = Field(None, description="", alias="gcsETag")
+        gcs_requester_pays: Optional[bool] = Field(
+            None, description="", alias="gcsRequesterPays"
+        )
+        gcs_access_control: Optional[str] = Field(
+            None, description="", alias="gcsAccessControl"
+        )
+        gcs_meta_generation_id: Optional[int] = Field(
+            None, description="", alias="gcsMetaGenerationId"
+        )
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "GCS.Attributes" = Field(
+        default_factory=lambda: GCS.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class MonteCarlo(DataQuality):
     """Description"""
 
@@ -6792,6 +7015,174 @@ class Metric(DataQuality):
 
     attributes: "Metric.Attributes" = Field(
         default_factory=lambda: Metric.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DataStudio(Google):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in DataStudio._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
+        "input_to_processes",
+        "output_from_processes",
+    ]
+
+    @property
+    def google_service(self) -> Optional[str]:
+        return self.attributes.google_service
+
+    @google_service.setter
+    def google_service(self, google_service: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_service = google_service
+
+    @property
+    def google_project_name(self) -> Optional[str]:
+        return self.attributes.google_project_name
+
+    @google_project_name.setter
+    def google_project_name(self, google_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_name = google_project_name
+
+    @property
+    def google_project_id(self) -> Optional[str]:
+        return self.attributes.google_project_id
+
+    @google_project_id.setter
+    def google_project_id(self, google_project_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_id = google_project_id
+
+    @property
+    def google_project_number(self) -> Optional[int]:
+        return self.attributes.google_project_number
+
+    @google_project_number.setter
+    def google_project_number(self, google_project_number: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_number = google_project_number
+
+    @property
+    def google_location(self) -> Optional[str]:
+        return self.attributes.google_location
+
+    @google_location.setter
+    def google_location(self, google_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location = google_location
+
+    @property
+    def google_location_type(self) -> Optional[str]:
+        return self.attributes.google_location_type
+
+    @google_location_type.setter
+    def google_location_type(self, google_location_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location_type = google_location_type
+
+    @property
+    def google_labels(self) -> Optional[list[GoogleLabel]]:
+        return self.attributes.google_labels
+
+    @google_labels.setter
+    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_labels = google_labels
+
+    @property
+    def google_tags(self) -> Optional[list[GoogleTag]]:
+        return self.attributes.google_tags
+
+    @google_tags.setter
+    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_tags = google_tags
+
+    @property
+    def input_to_processes(self) -> Optional[list[Process]]:
+        return self.attributes.input_to_processes
+
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_processes(self) -> Optional[list[Process]]:
+        return self.attributes.output_from_processes
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
+
+    type_name: str = Field("DataStudio", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataStudio":
+            raise ValueError("must be DataStudio")
+        return v
+
+    class Attributes(Google.Attributes):
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
+
+    attributes: "DataStudio.Attributes" = Field(
+        default_factory=lambda: DataStudio.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12533,412 +12924,823 @@ class MaterialisedView(SQL):
     )
 
 
-class GCSObject(GCS):
+class DataStudioAsset(DataStudio):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in GCSObject._convience_properties:
+        if name in DataStudioAsset._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "gcs_bucket_name",
-        "gcs_bucket_qualified_name",
-        "gcs_object_size",
-        "gcs_object_key",
-        "gcs_object_media_link",
-        "gcs_object_hold_type",
-        "gcs_object_generation_id",
-        "gcs_object_c_r_c32_c_hash",
-        "gcs_object_m_d5_hash",
-        "gcs_object_data_last_modified_time",
-        "gcs_object_content_type",
-        "gcs_object_content_encoding",
-        "gcs_object_content_disposition",
-        "gcs_object_content_language",
-        "gcs_object_retention_expiration_date",
-        "gcs_bucket",
+        "data_studio_asset_type",
+        "data_studio_asset_title",
+        "data_studio_asset_owner",
+        "is_trashed_data_studio_asset",
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
     ]
 
     @property
-    def gcs_bucket_name(self) -> Optional[str]:
-        return self.attributes.gcs_bucket_name
+    def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
+        return self.attributes.data_studio_asset_type
 
-    @gcs_bucket_name.setter
-    def gcs_bucket_name(self, gcs_bucket_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_name = gcs_bucket_name
-
-    @property
-    def gcs_bucket_qualified_name(self) -> Optional[str]:
-        return self.attributes.gcs_bucket_qualified_name
-
-    @gcs_bucket_qualified_name.setter
-    def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_qualified_name = gcs_bucket_qualified_name
-
-    @property
-    def gcs_object_size(self) -> Optional[int]:
-        return self.attributes.gcs_object_size
-
-    @gcs_object_size.setter
-    def gcs_object_size(self, gcs_object_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_size = gcs_object_size
-
-    @property
-    def gcs_object_key(self) -> Optional[str]:
-        return self.attributes.gcs_object_key
-
-    @gcs_object_key.setter
-    def gcs_object_key(self, gcs_object_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_key = gcs_object_key
-
-    @property
-    def gcs_object_media_link(self) -> Optional[str]:
-        return self.attributes.gcs_object_media_link
-
-    @gcs_object_media_link.setter
-    def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_media_link = gcs_object_media_link
-
-    @property
-    def gcs_object_hold_type(self) -> Optional[str]:
-        return self.attributes.gcs_object_hold_type
-
-    @gcs_object_hold_type.setter
-    def gcs_object_hold_type(self, gcs_object_hold_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_hold_type = gcs_object_hold_type
-
-    @property
-    def gcs_object_generation_id(self) -> Optional[int]:
-        return self.attributes.gcs_object_generation_id
-
-    @gcs_object_generation_id.setter
-    def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_generation_id = gcs_object_generation_id
-
-    @property
-    def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
-        return self.attributes.gcs_object_c_r_c32_c_hash
-
-    @gcs_object_c_r_c32_c_hash.setter
-    def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_c_r_c32_c_hash = gcs_object_c_r_c32_c_hash
-
-    @property
-    def gcs_object_m_d5_hash(self) -> Optional[str]:
-        return self.attributes.gcs_object_m_d5_hash
-
-    @gcs_object_m_d5_hash.setter
-    def gcs_object_m_d5_hash(self, gcs_object_m_d5_hash: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_object_m_d5_hash = gcs_object_m_d5_hash
-
-    @property
-    def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
-        return self.attributes.gcs_object_data_last_modified_time
-
-    @gcs_object_data_last_modified_time.setter
-    def gcs_object_data_last_modified_time(
-        self, gcs_object_data_last_modified_time: Optional[datetime]
+    @data_studio_asset_type.setter
+    def data_studio_asset_type(
+        self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_data_last_modified_time = (
-            gcs_object_data_last_modified_time
-        )
+        self.attributes.data_studio_asset_type = data_studio_asset_type
 
     @property
-    def gcs_object_content_type(self) -> Optional[str]:
-        return self.attributes.gcs_object_content_type
+    def data_studio_asset_title(self) -> Optional[str]:
+        return self.attributes.data_studio_asset_title
 
-    @gcs_object_content_type.setter
-    def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
+    @data_studio_asset_title.setter
+    def data_studio_asset_title(self, data_studio_asset_title: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_content_type = gcs_object_content_type
+        self.attributes.data_studio_asset_title = data_studio_asset_title
 
     @property
-    def gcs_object_content_encoding(self) -> Optional[str]:
-        return self.attributes.gcs_object_content_encoding
+    def data_studio_asset_owner(self) -> Optional[str]:
+        return self.attributes.data_studio_asset_owner
 
-    @gcs_object_content_encoding.setter
-    def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
+    @data_studio_asset_owner.setter
+    def data_studio_asset_owner(self, data_studio_asset_owner: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_content_encoding = gcs_object_content_encoding
+        self.attributes.data_studio_asset_owner = data_studio_asset_owner
 
     @property
-    def gcs_object_content_disposition(self) -> Optional[str]:
-        return self.attributes.gcs_object_content_disposition
+    def is_trashed_data_studio_asset(self) -> Optional[bool]:
+        return self.attributes.is_trashed_data_studio_asset
 
-    @gcs_object_content_disposition.setter
-    def gcs_object_content_disposition(
-        self, gcs_object_content_disposition: Optional[str]
+    @is_trashed_data_studio_asset.setter
+    def is_trashed_data_studio_asset(
+        self, is_trashed_data_studio_asset: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
+        self.attributes.is_trashed_data_studio_asset = is_trashed_data_studio_asset
 
     @property
-    def gcs_object_content_language(self) -> Optional[str]:
-        return self.attributes.gcs_object_content_language
+    def google_service(self) -> Optional[str]:
+        return self.attributes.google_service
 
-    @gcs_object_content_language.setter
-    def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
+    @google_service.setter
+    def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_content_language = gcs_object_content_language
+        self.attributes.google_service = google_service
 
     @property
-    def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
-        return self.attributes.gcs_object_retention_expiration_date
+    def google_project_name(self) -> Optional[str]:
+        return self.attributes.google_project_name
 
-    @gcs_object_retention_expiration_date.setter
-    def gcs_object_retention_expiration_date(
-        self, gcs_object_retention_expiration_date: Optional[datetime]
-    ):
+    @google_project_name.setter
+    def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_retention_expiration_date = (
-            gcs_object_retention_expiration_date
-        )
+        self.attributes.google_project_name = google_project_name
 
     @property
-    def gcs_bucket(self) -> Optional[GCSBucket]:
-        return self.attributes.gcs_bucket
+    def google_project_id(self) -> Optional[str]:
+        return self.attributes.google_project_id
 
-    @gcs_bucket.setter
-    def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
+    @google_project_id.setter
+    def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_bucket = gcs_bucket
+        self.attributes.google_project_id = google_project_id
 
-    type_name: str = Field("GCSObject", allow_mutation=False)
+    @property
+    def google_project_number(self) -> Optional[int]:
+        return self.attributes.google_project_number
+
+    @google_project_number.setter
+    def google_project_number(self, google_project_number: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_number = google_project_number
+
+    @property
+    def google_location(self) -> Optional[str]:
+        return self.attributes.google_location
+
+    @google_location.setter
+    def google_location(self, google_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location = google_location
+
+    @property
+    def google_location_type(self) -> Optional[str]:
+        return self.attributes.google_location_type
+
+    @google_location_type.setter
+    def google_location_type(self, google_location_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location_type = google_location_type
+
+    @property
+    def google_labels(self) -> Optional[list[GoogleLabel]]:
+        return self.attributes.google_labels
+
+    @google_labels.setter
+    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_labels = google_labels
+
+    @property
+    def google_tags(self) -> Optional[list[GoogleTag]]:
+        return self.attributes.google_tags
+
+    @google_tags.setter
+    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_tags = google_tags
+
+    type_name: str = Field("DataStudioAsset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "GCSObject":
-            raise ValueError("must be GCSObject")
+        if v != "DataStudioAsset":
+            raise ValueError("must be DataStudioAsset")
         return v
 
-    class Attributes(GCS.Attributes):
-        gcs_bucket_name: Optional[str] = Field(
-            None, description="", alias="gcsBucketName"
+    class Attributes(DataStudio.Attributes):
+        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
+            None, description="", alias="dataStudioAssetType"
         )
-        gcs_bucket_qualified_name: Optional[str] = Field(
-            None, description="", alias="gcsBucketQualifiedName"
+        data_studio_asset_title: Optional[str] = Field(
+            None, description="", alias="dataStudioAssetTitle"
         )
-        gcs_object_size: Optional[int] = Field(
-            None, description="", alias="gcsObjectSize"
+        data_studio_asset_owner: Optional[str] = Field(
+            None, description="", alias="dataStudioAssetOwner"
         )
-        gcs_object_key: Optional[str] = Field(
-            None, description="", alias="gcsObjectKey"
+        is_trashed_data_studio_asset: Optional[bool] = Field(
+            None, description="", alias="isTrashedDataStudioAsset"
         )
-        gcs_object_media_link: Optional[str] = Field(
-            None, description="", alias="gcsObjectMediaLink"
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
         )
-        gcs_object_hold_type: Optional[str] = Field(
-            None, description="", alias="gcsObjectHoldType"
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
         )
-        gcs_object_generation_id: Optional[int] = Field(
-            None, description="", alias="gcsObjectGenerationId"
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
         )
-        gcs_object_c_r_c32_c_hash: Optional[str] = Field(
-            None, description="", alias="gcsObjectCRC32CHash"
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
         )
-        gcs_object_m_d5_hash: Optional[str] = Field(
-            None, description="", alias="gcsObjectMD5Hash"
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
         )
-        gcs_object_data_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="gcsObjectDataLastModifiedTime"
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
         )
-        gcs_object_content_type: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentType"
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
         )
-        gcs_object_content_encoding: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentEncoding"
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
         )
-        gcs_object_content_disposition: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentDisposition"
-        )
-        gcs_object_content_language: Optional[str] = Field(
-            None, description="", alias="gcsObjectContentLanguage"
-        )
-        gcs_object_retention_expiration_date: Optional[datetime] = Field(
-            None, description="", alias="gcsObjectRetentionExpirationDate"
-        )
-        gcs_bucket: Optional[GCSBucket] = Field(
-            None, description="", alias="gcsBucket"
-        )  # relationship
 
-    attributes: "GCSObject.Attributes" = Field(
-        default_factory=lambda: GCSObject.Attributes(),
+    attributes: "DataStudioAsset.Attributes" = Field(
+        default_factory=lambda: DataStudioAsset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class GCSBucket(GCS):
+class KafkaTopic(Kafka):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in GCSBucket._convience_properties:
+        if name in KafkaTopic._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "gcs_object_count",
-        "gcs_bucket_versioning_enabled",
-        "gcs_bucket_retention_locked",
-        "gcs_bucket_retention_period",
-        "gcs_bucket_retention_effective_time",
-        "gcs_bucket_lifecycle_rules",
-        "gcs_bucket_retention_policy",
-        "gcs_objects",
+        "kafka_topic_is_internal",
+        "kafka_topic_compression_type",
+        "kafka_topic_replication_factor",
+        "kafka_topic_segment_bytes",
+        "kafka_topic_partitions_count",
+        "kafka_topic_size_in_bytes",
+        "kafka_topic_record_count",
+        "kafka_topic_cleanup_policy",
+        "kafka_consumer_groups",
     ]
 
     @property
-    def gcs_object_count(self) -> Optional[int]:
-        return self.attributes.gcs_object_count
+    def kafka_topic_is_internal(self) -> Optional[bool]:
+        return self.attributes.kafka_topic_is_internal
 
-    @gcs_object_count.setter
-    def gcs_object_count(self, gcs_object_count: Optional[int]):
+    @kafka_topic_is_internal.setter
+    def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_object_count = gcs_object_count
+        self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
 
     @property
-    def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
-        return self.attributes.gcs_bucket_versioning_enabled
+    def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
+        return self.attributes.kafka_topic_compression_type
 
-    @gcs_bucket_versioning_enabled.setter
-    def gcs_bucket_versioning_enabled(
-        self, gcs_bucket_versioning_enabled: Optional[bool]
+    @kafka_topic_compression_type.setter
+    def kafka_topic_compression_type(
+        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
+        self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
 
     @property
-    def gcs_bucket_retention_locked(self) -> Optional[bool]:
-        return self.attributes.gcs_bucket_retention_locked
+    def kafka_topic_replication_factor(self) -> Optional[int]:
+        return self.attributes.kafka_topic_replication_factor
 
-    @gcs_bucket_retention_locked.setter
-    def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_retention_locked = gcs_bucket_retention_locked
-
-    @property
-    def gcs_bucket_retention_period(self) -> Optional[int]:
-        return self.attributes.gcs_bucket_retention_period
-
-    @gcs_bucket_retention_period.setter
-    def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_retention_period = gcs_bucket_retention_period
-
-    @property
-    def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
-        return self.attributes.gcs_bucket_retention_effective_time
-
-    @gcs_bucket_retention_effective_time.setter
-    def gcs_bucket_retention_effective_time(
-        self, gcs_bucket_retention_effective_time: Optional[datetime]
+    @kafka_topic_replication_factor.setter
+    def kafka_topic_replication_factor(
+        self, kafka_topic_replication_factor: Optional[int]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_retention_effective_time = (
-            gcs_bucket_retention_effective_time
-        )
+        self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
 
     @property
-    def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
-        return self.attributes.gcs_bucket_lifecycle_rules
+    def kafka_topic_segment_bytes(self) -> Optional[int]:
+        return self.attributes.kafka_topic_segment_bytes
 
-    @gcs_bucket_lifecycle_rules.setter
-    def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
+    @kafka_topic_segment_bytes.setter
+    def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_lifecycle_rules = gcs_bucket_lifecycle_rules
+        self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
 
     @property
-    def gcs_bucket_retention_policy(self) -> Optional[str]:
-        return self.attributes.gcs_bucket_retention_policy
+    def kafka_topic_partitions_count(self) -> Optional[int]:
+        return self.attributes.kafka_topic_partitions_count
 
-    @gcs_bucket_retention_policy.setter
-    def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
+    @kafka_topic_partitions_count.setter
+    def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
+        self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
 
     @property
-    def gcs_objects(self) -> Optional[list[GCSObject]]:
-        return self.attributes.gcs_objects
+    def kafka_topic_size_in_bytes(self) -> Optional[int]:
+        return self.attributes.kafka_topic_size_in_bytes
 
-    @gcs_objects.setter
-    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
+    @kafka_topic_size_in_bytes.setter
+    def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_objects = gcs_objects
+        self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
 
-    type_name: str = Field("GCSBucket", allow_mutation=False)
+    @property
+    def kafka_topic_record_count(self) -> Optional[int]:
+        return self.attributes.kafka_topic_record_count
+
+    @kafka_topic_record_count.setter
+    def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_record_count = kafka_topic_record_count
+
+    @property
+    def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
+        return self.attributes.kafka_topic_cleanup_policy
+
+    @kafka_topic_cleanup_policy.setter
+    def kafka_topic_cleanup_policy(
+        self, kafka_topic_cleanup_policy: Optional[PowerbiEndorsement]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
+
+    @property
+    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
+        return self.attributes.kafka_consumer_groups
+
+    @kafka_consumer_groups.setter
+    def kafka_consumer_groups(
+        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_groups = kafka_consumer_groups
+
+    type_name: str = Field("KafkaTopic", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "GCSBucket":
-            raise ValueError("must be GCSBucket")
+        if v != "KafkaTopic":
+            raise ValueError("must be KafkaTopic")
         return v
 
-    class Attributes(GCS.Attributes):
-        gcs_object_count: Optional[int] = Field(
-            None, description="", alias="gcsObjectCount"
+    class Attributes(Kafka.Attributes):
+        kafka_topic_is_internal: Optional[bool] = Field(
+            None, description="", alias="kafkaTopicIsInternal"
         )
-        gcs_bucket_versioning_enabled: Optional[bool] = Field(
-            None, description="", alias="gcsBucketVersioningEnabled"
+        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
+            None, description="", alias="kafkaTopicCompressionType"
         )
-        gcs_bucket_retention_locked: Optional[bool] = Field(
-            None, description="", alias="gcsBucketRetentionLocked"
+        kafka_topic_replication_factor: Optional[int] = Field(
+            None, description="", alias="kafkaTopicReplicationFactor"
         )
-        gcs_bucket_retention_period: Optional[int] = Field(
-            None, description="", alias="gcsBucketRetentionPeriod"
+        kafka_topic_segment_bytes: Optional[int] = Field(
+            None, description="", alias="kafkaTopicSegmentBytes"
         )
-        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
-            None, description="", alias="gcsBucketRetentionEffectiveTime"
+        kafka_topic_partitions_count: Optional[int] = Field(
+            None, description="", alias="kafkaTopicPartitionsCount"
         )
-        gcs_bucket_lifecycle_rules: Optional[str] = Field(
-            None, description="", alias="gcsBucketLifecycleRules"
+        kafka_topic_size_in_bytes: Optional[int] = Field(
+            None, description="", alias="kafkaTopicSizeInBytes"
         )
-        gcs_bucket_retention_policy: Optional[str] = Field(
-            None, description="", alias="gcsBucketRetentionPolicy"
+        kafka_topic_record_count: Optional[int] = Field(
+            None, description="", alias="kafkaTopicRecordCount"
         )
-        gcs_objects: Optional[list[GCSObject]] = Field(
-            None, description="", alias="gcsObjects"
+        kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
+            None, description="", alias="kafkaTopicCleanupPolicy"
+        )
+        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
+            None, description="", alias="kafkaConsumerGroups"
         )  # relationship
 
-    attributes: "GCSBucket.Attributes" = Field(
-        default_factory=lambda: GCSBucket.Attributes(),
+    attributes: "KafkaTopic.Attributes" = Field(
+        default_factory=lambda: KafkaTopic.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+
+class KafkaConsumerGroup(Kafka):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in KafkaConsumerGroup._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "kafka_consumer_group_topic_consumption_properties",
+        "kafka_consumer_group_member_count",
+        "kafka_topic_names",
+        "kafka_topic_qualified_names",
+        "kafka_topics",
+    ]
+
+    @property
+    def kafka_consumer_group_topic_consumption_properties(
+        self,
+    ) -> Optional[list[KafkaTopicConsumption]]:
+        return self.attributes.kafka_consumer_group_topic_consumption_properties
+
+    @kafka_consumer_group_topic_consumption_properties.setter
+    def kafka_consumer_group_topic_consumption_properties(
+        self,
+        kafka_consumer_group_topic_consumption_properties: Optional[
+            list[KafkaTopicConsumption]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_topic_consumption_properties = (
+            kafka_consumer_group_topic_consumption_properties
+        )
+
+    @property
+    def kafka_consumer_group_member_count(self) -> Optional[int]:
+        return self.attributes.kafka_consumer_group_member_count
+
+    @kafka_consumer_group_member_count.setter
+    def kafka_consumer_group_member_count(
+        self, kafka_consumer_group_member_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_member_count = (
+            kafka_consumer_group_member_count
+        )
+
+    @property
+    def kafka_topic_names(self) -> Optional[set[str]]:
+        return self.attributes.kafka_topic_names
+
+    @kafka_topic_names.setter
+    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_names = kafka_topic_names
+
+    @property
+    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.kafka_topic_qualified_names
+
+    @kafka_topic_qualified_names.setter
+    def kafka_topic_qualified_names(
+        self, kafka_topic_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
+
+    @property
+    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
+        return self.attributes.kafka_topics
+
+    @kafka_topics.setter
+    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topics = kafka_topics
+
+    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaConsumerGroup":
+            raise ValueError("must be KafkaConsumerGroup")
+        return v
+
+    class Attributes(Kafka.Attributes):
+        kafka_consumer_group_topic_consumption_properties: Optional[
+            list[KafkaTopicConsumption]
+        ] = Field(
+            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
+        )
+        kafka_consumer_group_member_count: Optional[int] = Field(
+            None, description="", alias="kafkaConsumerGroupMemberCount"
+        )
+        kafka_topic_names: Optional[set[str]] = Field(
+            None, description="", alias="kafkaTopicNames"
+        )
+        kafka_topic_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="kafkaTopicQualifiedNames"
+        )
+        kafka_topics: Optional[list[KafkaTopic]] = Field(
+            None, description="", alias="kafkaTopics"
+        )  # relationship
+
+    attributes: "KafkaConsumerGroup.Attributes" = Field(
+        default_factory=lambda: KafkaConsumerGroup.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class S3Bucket(S3):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in S3Bucket._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "s3_object_count",
+        "s3_bucket_versioning_enabled",
+        "objects",
+    ]
+
+    @property
+    def s3_object_count(self) -> Optional[int]:
+        return self.attributes.s3_object_count
+
+    @s3_object_count.setter
+    def s3_object_count(self, s3_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_count = s3_object_count
+
+    @property
+    def s3_bucket_versioning_enabled(self) -> Optional[bool]:
+        return self.attributes.s3_bucket_versioning_enabled
+
+    @s3_bucket_versioning_enabled.setter
+    def s3_bucket_versioning_enabled(
+        self, s3_bucket_versioning_enabled: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
+
+    @property
+    def objects(self) -> Optional[list[S3Object]]:
+        return self.attributes.objects
+
+    @objects.setter
+    def objects(self, objects: Optional[list[S3Object]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.objects = objects
+
+    type_name: str = Field("S3Bucket", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3Bucket":
+            raise ValueError("must be S3Bucket")
+        return v
+
+    class Attributes(S3.Attributes):
+        s3_object_count: Optional[int] = Field(
+            None, description="", alias="s3ObjectCount"
+        )
+        s3_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="s3BucketVersioningEnabled"
+        )
+        objects: Optional[list[S3Object]] = Field(
+            None, description="", alias="objects"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str, aws_arn: str
+        ) -> S3Bucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Bucket.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+            )
+
+    attributes: "S3Bucket.Attributes" = Field(
+        default_factory=lambda: S3Bucket.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+        return cls(attributes=attributes)
+
+
+class S3Object(S3):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in S3Object._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "s3_object_last_modified_time",
+        "s3_bucket_name",
+        "s3_bucket_qualified_name",
+        "s3_object_size",
+        "s3_object_storage_class",
+        "s3_object_key",
+        "s3_object_content_type",
+        "s3_object_content_disposition",
+        "s3_object_version_id",
+        "bucket",
+    ]
+
+    @property
+    def s3_object_last_modified_time(self) -> Optional[datetime]:
+        return self.attributes.s3_object_last_modified_time
+
+    @s3_object_last_modified_time.setter
+    def s3_object_last_modified_time(
+        self, s3_object_last_modified_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
+
+    @property
+    def s3_bucket_name(self) -> Optional[str]:
+        return self.attributes.s3_bucket_name
+
+    @s3_bucket_name.setter
+    def s3_bucket_name(self, s3_bucket_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_bucket_name = s3_bucket_name
+
+    @property
+    def s3_bucket_qualified_name(self) -> Optional[str]:
+        return self.attributes.s3_bucket_qualified_name
+
+    @s3_bucket_qualified_name.setter
+    def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
+
+    @property
+    def s3_object_size(self) -> Optional[int]:
+        return self.attributes.s3_object_size
+
+    @s3_object_size.setter
+    def s3_object_size(self, s3_object_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_size = s3_object_size
+
+    @property
+    def s3_object_storage_class(self) -> Optional[str]:
+        return self.attributes.s3_object_storage_class
+
+    @s3_object_storage_class.setter
+    def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_storage_class = s3_object_storage_class
+
+    @property
+    def s3_object_key(self) -> Optional[str]:
+        return self.attributes.s3_object_key
+
+    @s3_object_key.setter
+    def s3_object_key(self, s3_object_key: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_key = s3_object_key
+
+    @property
+    def s3_object_content_type(self) -> Optional[str]:
+        return self.attributes.s3_object_content_type
+
+    @s3_object_content_type.setter
+    def s3_object_content_type(self, s3_object_content_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_content_type = s3_object_content_type
+
+    @property
+    def s3_object_content_disposition(self) -> Optional[str]:
+        return self.attributes.s3_object_content_disposition
+
+    @s3_object_content_disposition.setter
+    def s3_object_content_disposition(
+        self, s3_object_content_disposition: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_content_disposition = s3_object_content_disposition
+
+    @property
+    def s3_object_version_id(self) -> Optional[str]:
+        return self.attributes.s3_object_version_id
+
+    @s3_object_version_id.setter
+    def s3_object_version_id(self, s3_object_version_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_version_id = s3_object_version_id
+
+    @property
+    def bucket(self) -> Optional[S3Bucket]:
+        return self.attributes.bucket
+
+    @bucket.setter
+    def bucket(self, bucket: Optional[S3Bucket]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.bucket = bucket
+
+    type_name: str = Field("S3Object", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3Object":
+            raise ValueError("must be S3Object")
+        return v
+
+    class Attributes(S3.Attributes):
+        s3_object_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="s3ObjectLastModifiedTime"
+        )
+        s3_bucket_name: Optional[str] = Field(
+            None, description="", alias="s3BucketName"
+        )
+        s3_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="s3BucketQualifiedName"
+        )
+        s3_object_size: Optional[int] = Field(
+            None, description="", alias="s3ObjectSize"
+        )
+        s3_object_storage_class: Optional[str] = Field(
+            None, description="", alias="s3ObjectStorageClass"
+        )
+        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
+        s3_object_content_type: Optional[str] = Field(
+            None, description="", alias="s3ObjectContentType"
+        )
+        s3_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="s3ObjectContentDisposition"
+        )
+        s3_object_version_id: Optional[str] = Field(
+            None, description="", alias="s3ObjectVersionId"
+        )
+        bucket: Optional[S3Bucket] = Field(
+            None, description="", alias="bucket"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: str,
+            s3_bucket_qualified_name: Optional[str] = None,
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Object.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
+            )
+
+    attributes: "S3Object.Attributes" = Field(
+        default_factory=lambda: S3Object.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: Optional[str] = None,
+    ) -> S3Object:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Object.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
+        )
+        return cls(attributes=attributes)
 
 
 class ADLSAccount(ADLS):
@@ -13585,620 +14387,409 @@ class ADLSObject(ADLS):
     )
 
 
-class S3Bucket(S3):
+class GCSObject(GCS):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in S3Bucket._convience_properties:
+        if name in GCSObject._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "s3_object_count",
-        "s3_bucket_versioning_enabled",
-        "objects",
+        "gcs_bucket_name",
+        "gcs_bucket_qualified_name",
+        "gcs_object_size",
+        "gcs_object_key",
+        "gcs_object_media_link",
+        "gcs_object_hold_type",
+        "gcs_object_generation_id",
+        "gcs_object_c_r_c32_c_hash",
+        "gcs_object_m_d5_hash",
+        "gcs_object_data_last_modified_time",
+        "gcs_object_content_type",
+        "gcs_object_content_encoding",
+        "gcs_object_content_disposition",
+        "gcs_object_content_language",
+        "gcs_object_retention_expiration_date",
+        "gcs_bucket",
     ]
 
     @property
-    def s3_object_count(self) -> Optional[int]:
-        return self.attributes.s3_object_count
+    def gcs_bucket_name(self) -> Optional[str]:
+        return self.attributes.gcs_bucket_name
 
-    @s3_object_count.setter
-    def s3_object_count(self, s3_object_count: Optional[int]):
+    @gcs_bucket_name.setter
+    def gcs_bucket_name(self, gcs_bucket_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_object_count = s3_object_count
+        self.attributes.gcs_bucket_name = gcs_bucket_name
 
     @property
-    def s3_bucket_versioning_enabled(self) -> Optional[bool]:
-        return self.attributes.s3_bucket_versioning_enabled
+    def gcs_bucket_qualified_name(self) -> Optional[str]:
+        return self.attributes.gcs_bucket_qualified_name
 
-    @s3_bucket_versioning_enabled.setter
-    def s3_bucket_versioning_enabled(
-        self, s3_bucket_versioning_enabled: Optional[bool]
+    @gcs_bucket_qualified_name.setter
+    def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_qualified_name = gcs_bucket_qualified_name
+
+    @property
+    def gcs_object_size(self) -> Optional[int]:
+        return self.attributes.gcs_object_size
+
+    @gcs_object_size.setter
+    def gcs_object_size(self, gcs_object_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_size = gcs_object_size
+
+    @property
+    def gcs_object_key(self) -> Optional[str]:
+        return self.attributes.gcs_object_key
+
+    @gcs_object_key.setter
+    def gcs_object_key(self, gcs_object_key: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_key = gcs_object_key
+
+    @property
+    def gcs_object_media_link(self) -> Optional[str]:
+        return self.attributes.gcs_object_media_link
+
+    @gcs_object_media_link.setter
+    def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_media_link = gcs_object_media_link
+
+    @property
+    def gcs_object_hold_type(self) -> Optional[str]:
+        return self.attributes.gcs_object_hold_type
+
+    @gcs_object_hold_type.setter
+    def gcs_object_hold_type(self, gcs_object_hold_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_hold_type = gcs_object_hold_type
+
+    @property
+    def gcs_object_generation_id(self) -> Optional[int]:
+        return self.attributes.gcs_object_generation_id
+
+    @gcs_object_generation_id.setter
+    def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_generation_id = gcs_object_generation_id
+
+    @property
+    def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
+        return self.attributes.gcs_object_c_r_c32_c_hash
+
+    @gcs_object_c_r_c32_c_hash.setter
+    def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_c_r_c32_c_hash = gcs_object_c_r_c32_c_hash
+
+    @property
+    def gcs_object_m_d5_hash(self) -> Optional[str]:
+        return self.attributes.gcs_object_m_d5_hash
+
+    @gcs_object_m_d5_hash.setter
+    def gcs_object_m_d5_hash(self, gcs_object_m_d5_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_m_d5_hash = gcs_object_m_d5_hash
+
+    @property
+    def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
+        return self.attributes.gcs_object_data_last_modified_time
+
+    @gcs_object_data_last_modified_time.setter
+    def gcs_object_data_last_modified_time(
+        self, gcs_object_data_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
+        self.attributes.gcs_object_data_last_modified_time = (
+            gcs_object_data_last_modified_time
+        )
 
     @property
-    def objects(self) -> Optional[list[S3Object]]:
-        return self.attributes.objects
+    def gcs_object_content_type(self) -> Optional[str]:
+        return self.attributes.gcs_object_content_type
 
-    @objects.setter
-    def objects(self, objects: Optional[list[S3Object]]):
+    @gcs_object_content_type.setter
+    def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.objects = objects
+        self.attributes.gcs_object_content_type = gcs_object_content_type
 
-    type_name: str = Field("S3Bucket", allow_mutation=False)
+    @property
+    def gcs_object_content_encoding(self) -> Optional[str]:
+        return self.attributes.gcs_object_content_encoding
+
+    @gcs_object_content_encoding.setter
+    def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_encoding = gcs_object_content_encoding
+
+    @property
+    def gcs_object_content_disposition(self) -> Optional[str]:
+        return self.attributes.gcs_object_content_disposition
+
+    @gcs_object_content_disposition.setter
+    def gcs_object_content_disposition(
+        self, gcs_object_content_disposition: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
+
+    @property
+    def gcs_object_content_language(self) -> Optional[str]:
+        return self.attributes.gcs_object_content_language
+
+    @gcs_object_content_language.setter
+    def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_language = gcs_object_content_language
+
+    @property
+    def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
+        return self.attributes.gcs_object_retention_expiration_date
+
+    @gcs_object_retention_expiration_date.setter
+    def gcs_object_retention_expiration_date(
+        self, gcs_object_retention_expiration_date: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_retention_expiration_date = (
+            gcs_object_retention_expiration_date
+        )
+
+    @property
+    def gcs_bucket(self) -> Optional[GCSBucket]:
+        return self.attributes.gcs_bucket
+
+    @gcs_bucket.setter
+    def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket = gcs_bucket
+
+    type_name: str = Field("GCSObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "S3Bucket":
-            raise ValueError("must be S3Bucket")
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
         return v
 
-    class Attributes(S3.Attributes):
-        s3_object_count: Optional[int] = Field(
-            None, description="", alias="s3ObjectCount"
+    class Attributes(GCS.Attributes):
+        gcs_bucket_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketName"
         )
-        s3_bucket_versioning_enabled: Optional[bool] = Field(
-            None, description="", alias="s3BucketVersioningEnabled"
+        gcs_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketQualifiedName"
         )
-        objects: Optional[list[S3Object]] = Field(
-            None, description="", alias="objects"
+        gcs_object_size: Optional[int] = Field(
+            None, description="", alias="gcsObjectSize"
+        )
+        gcs_object_key: Optional[str] = Field(
+            None, description="", alias="gcsObjectKey"
+        )
+        gcs_object_media_link: Optional[str] = Field(
+            None, description="", alias="gcsObjectMediaLink"
+        )
+        gcs_object_hold_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectHoldType"
+        )
+        gcs_object_generation_id: Optional[int] = Field(
+            None, description="", alias="gcsObjectGenerationId"
+        )
+        gcs_object_c_r_c32_c_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectCRC32CHash"
+        )
+        gcs_object_m_d5_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectMD5Hash"
+        )
+        gcs_object_data_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectDataLastModifiedTime"
+        )
+        gcs_object_content_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentType"
+        )
+        gcs_object_content_encoding: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentEncoding"
+        )
+        gcs_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentDisposition"
+        )
+        gcs_object_content_language: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentLanguage"
+        )
+        gcs_object_retention_expiration_date: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectRetentionExpirationDate"
+        )
+        gcs_bucket: Optional[GCSBucket] = Field(
+            None, description="", alias="gcsBucket"
         )  # relationship
 
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, name: str, connection_qualified_name: str, aws_arn: str
-        ) -> S3Bucket.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name", "aws_arn"],
-                [name, connection_qualified_name, aws_arn],
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return S3Bucket.Attributes(
-                aws_arn=aws_arn,
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
-                connector_name=connector_type.value,
-            )
-
-    attributes: "S3Bucket.Attributes" = Field(
-        default_factory=lambda: S3Bucket.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: str
-    ) -> S3Bucket:
-        validate_required_fields(
-            ["name", "connection_qualified_name", "aws_arn"],
-            [name, connection_qualified_name, aws_arn],
-        )
-        attributes = S3Bucket.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-        )
-        return cls(attributes=attributes)
-
-
-class S3Object(S3):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in S3Object._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "s3_object_last_modified_time",
-        "s3_bucket_name",
-        "s3_bucket_qualified_name",
-        "s3_object_size",
-        "s3_object_storage_class",
-        "s3_object_key",
-        "s3_object_content_type",
-        "s3_object_content_disposition",
-        "s3_object_version_id",
-        "bucket",
-    ]
-
-    @property
-    def s3_object_last_modified_time(self) -> Optional[datetime]:
-        return self.attributes.s3_object_last_modified_time
-
-    @s3_object_last_modified_time.setter
-    def s3_object_last_modified_time(
-        self, s3_object_last_modified_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
-
-    @property
-    def s3_bucket_name(self) -> Optional[str]:
-        return self.attributes.s3_bucket_name
-
-    @s3_bucket_name.setter
-    def s3_bucket_name(self, s3_bucket_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_bucket_name = s3_bucket_name
-
-    @property
-    def s3_bucket_qualified_name(self) -> Optional[str]:
-        return self.attributes.s3_bucket_qualified_name
-
-    @s3_bucket_qualified_name.setter
-    def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
-
-    @property
-    def s3_object_size(self) -> Optional[int]:
-        return self.attributes.s3_object_size
-
-    @s3_object_size.setter
-    def s3_object_size(self, s3_object_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_size = s3_object_size
-
-    @property
-    def s3_object_storage_class(self) -> Optional[str]:
-        return self.attributes.s3_object_storage_class
-
-    @s3_object_storage_class.setter
-    def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_storage_class = s3_object_storage_class
-
-    @property
-    def s3_object_key(self) -> Optional[str]:
-        return self.attributes.s3_object_key
-
-    @s3_object_key.setter
-    def s3_object_key(self, s3_object_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_key = s3_object_key
-
-    @property
-    def s3_object_content_type(self) -> Optional[str]:
-        return self.attributes.s3_object_content_type
-
-    @s3_object_content_type.setter
-    def s3_object_content_type(self, s3_object_content_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_content_type = s3_object_content_type
-
-    @property
-    def s3_object_content_disposition(self) -> Optional[str]:
-        return self.attributes.s3_object_content_disposition
-
-    @s3_object_content_disposition.setter
-    def s3_object_content_disposition(
-        self, s3_object_content_disposition: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_content_disposition = s3_object_content_disposition
-
-    @property
-    def s3_object_version_id(self) -> Optional[str]:
-        return self.attributes.s3_object_version_id
-
-    @s3_object_version_id.setter
-    def s3_object_version_id(self, s3_object_version_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_version_id = s3_object_version_id
-
-    @property
-    def bucket(self) -> Optional[S3Bucket]:
-        return self.attributes.bucket
-
-    @bucket.setter
-    def bucket(self, bucket: Optional[S3Bucket]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.bucket = bucket
-
-    type_name: str = Field("S3Object", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "S3Object":
-            raise ValueError("must be S3Object")
-        return v
-
-    class Attributes(S3.Attributes):
-        s3_object_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="s3ObjectLastModifiedTime"
-        )
-        s3_bucket_name: Optional[str] = Field(
-            None, description="", alias="s3BucketName"
-        )
-        s3_bucket_qualified_name: Optional[str] = Field(
-            None, description="", alias="s3BucketQualifiedName"
-        )
-        s3_object_size: Optional[int] = Field(
-            None, description="", alias="s3ObjectSize"
-        )
-        s3_object_storage_class: Optional[str] = Field(
-            None, description="", alias="s3ObjectStorageClass"
-        )
-        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
-        s3_object_content_type: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentType"
-        )
-        s3_object_content_disposition: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentDisposition"
-        )
-        s3_object_version_id: Optional[str] = Field(
-            None, description="", alias="s3ObjectVersionId"
-        )
-        bucket: Optional[S3Bucket] = Field(
-            None, description="", alias="bucket"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            aws_arn: str,
-            s3_bucket_qualified_name: Optional[str] = None,
-        ) -> S3Object.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name", "aws_arn"],
-                [name, connection_qualified_name, aws_arn],
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return S3Object.Attributes(
-                aws_arn=aws_arn,
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
-                connector_name=connector_type.value,
-                s3_bucket_qualified_name=s3_bucket_qualified_name,
-            )
-
-    attributes: "S3Object.Attributes" = Field(
-        default_factory=lambda: S3Object.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        aws_arn: str,
-        s3_bucket_qualified_name: Optional[str] = None,
-    ) -> S3Object:
-        validate_required_fields(
-            ["name", "connection_qualified_name", "aws_arn"],
-            [name, connection_qualified_name, aws_arn],
-        )
-        attributes = S3Object.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-            s3_bucket_qualified_name=s3_bucket_qualified_name,
-        )
-        return cls(attributes=attributes)
-
-
-class KafkaTopic(Kafka):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in KafkaTopic._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "kafka_topic_is_internal",
-        "kafka_topic_compression_type",
-        "kafka_topic_replication_factor",
-        "kafka_topic_segment_bytes",
-        "kafka_topic_partitions_count",
-        "kafka_topic_size_in_bytes",
-        "kafka_topic_record_count",
-        "kafka_topic_cleanup_policy",
-        "kafka_consumer_groups",
-    ]
-
-    @property
-    def kafka_topic_is_internal(self) -> Optional[bool]:
-        return self.attributes.kafka_topic_is_internal
-
-    @kafka_topic_is_internal.setter
-    def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
-
-    @property
-    def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
-        return self.attributes.kafka_topic_compression_type
-
-    @kafka_topic_compression_type.setter
-    def kafka_topic_compression_type(
-        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
-
-    @property
-    def kafka_topic_replication_factor(self) -> Optional[int]:
-        return self.attributes.kafka_topic_replication_factor
-
-    @kafka_topic_replication_factor.setter
-    def kafka_topic_replication_factor(
-        self, kafka_topic_replication_factor: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
-
-    @property
-    def kafka_topic_segment_bytes(self) -> Optional[int]:
-        return self.attributes.kafka_topic_segment_bytes
-
-    @kafka_topic_segment_bytes.setter
-    def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
-
-    @property
-    def kafka_topic_partitions_count(self) -> Optional[int]:
-        return self.attributes.kafka_topic_partitions_count
-
-    @kafka_topic_partitions_count.setter
-    def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
-
-    @property
-    def kafka_topic_size_in_bytes(self) -> Optional[int]:
-        return self.attributes.kafka_topic_size_in_bytes
-
-    @kafka_topic_size_in_bytes.setter
-    def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
-
-    @property
-    def kafka_topic_record_count(self) -> Optional[int]:
-        return self.attributes.kafka_topic_record_count
-
-    @kafka_topic_record_count.setter
-    def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_record_count = kafka_topic_record_count
-
-    @property
-    def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
-        return self.attributes.kafka_topic_cleanup_policy
-
-    @kafka_topic_cleanup_policy.setter
-    def kafka_topic_cleanup_policy(
-        self, kafka_topic_cleanup_policy: Optional[PowerbiEndorsement]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
-
-    @property
-    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
-        return self.attributes.kafka_consumer_groups
-
-    @kafka_consumer_groups.setter
-    def kafka_consumer_groups(
-        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_groups = kafka_consumer_groups
-
-    type_name: str = Field("KafkaTopic", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "KafkaTopic":
-            raise ValueError("must be KafkaTopic")
-        return v
-
-    class Attributes(Kafka.Attributes):
-        kafka_topic_is_internal: Optional[bool] = Field(
-            None, description="", alias="kafkaTopicIsInternal"
-        )
-        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
-            None, description="", alias="kafkaTopicCompressionType"
-        )
-        kafka_topic_replication_factor: Optional[int] = Field(
-            None, description="", alias="kafkaTopicReplicationFactor"
-        )
-        kafka_topic_segment_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSegmentBytes"
-        )
-        kafka_topic_partitions_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicPartitionsCount"
-        )
-        kafka_topic_size_in_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSizeInBytes"
-        )
-        kafka_topic_record_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicRecordCount"
-        )
-        kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
-            None, description="", alias="kafkaTopicCleanupPolicy"
-        )
-        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
-            None, description="", alias="kafkaConsumerGroups"
-        )  # relationship
-
-    attributes: "KafkaTopic.Attributes" = Field(
-        default_factory=lambda: KafkaTopic.Attributes(),
+    attributes: "GCSObject.Attributes" = Field(
+        default_factory=lambda: GCSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class KafkaConsumerGroup(Kafka):
+class GCSBucket(GCS):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in KafkaConsumerGroup._convience_properties:
+        if name in GCSBucket._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "kafka_consumer_group_topic_consumption_properties",
-        "kafka_consumer_group_member_count",
-        "kafka_topic_names",
-        "kafka_topic_qualified_names",
-        "kafka_topics",
+        "gcs_object_count",
+        "gcs_bucket_versioning_enabled",
+        "gcs_bucket_retention_locked",
+        "gcs_bucket_retention_period",
+        "gcs_bucket_retention_effective_time",
+        "gcs_bucket_lifecycle_rules",
+        "gcs_bucket_retention_policy",
+        "gcs_objects",
     ]
 
     @property
-    def kafka_consumer_group_topic_consumption_properties(
-        self,
-    ) -> Optional[list[KafkaTopicConsumption]]:
-        return self.attributes.kafka_consumer_group_topic_consumption_properties
+    def gcs_object_count(self) -> Optional[int]:
+        return self.attributes.gcs_object_count
 
-    @kafka_consumer_group_topic_consumption_properties.setter
-    def kafka_consumer_group_topic_consumption_properties(
-        self,
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
-        ],
+    @gcs_object_count.setter
+    def gcs_object_count(self, gcs_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_count = gcs_object_count
+
+    @property
+    def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
+        return self.attributes.gcs_bucket_versioning_enabled
+
+    @gcs_bucket_versioning_enabled.setter
+    def gcs_bucket_versioning_enabled(
+        self, gcs_bucket_versioning_enabled: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_topic_consumption_properties = (
-            kafka_consumer_group_topic_consumption_properties
+        self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
+
+    @property
+    def gcs_bucket_retention_locked(self) -> Optional[bool]:
+        return self.attributes.gcs_bucket_retention_locked
+
+    @gcs_bucket_retention_locked.setter
+    def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_locked = gcs_bucket_retention_locked
+
+    @property
+    def gcs_bucket_retention_period(self) -> Optional[int]:
+        return self.attributes.gcs_bucket_retention_period
+
+    @gcs_bucket_retention_period.setter
+    def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_period = gcs_bucket_retention_period
+
+    @property
+    def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
+        return self.attributes.gcs_bucket_retention_effective_time
+
+    @gcs_bucket_retention_effective_time.setter
+    def gcs_bucket_retention_effective_time(
+        self, gcs_bucket_retention_effective_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_effective_time = (
+            gcs_bucket_retention_effective_time
         )
 
     @property
-    def kafka_consumer_group_member_count(self) -> Optional[int]:
-        return self.attributes.kafka_consumer_group_member_count
+    def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
+        return self.attributes.gcs_bucket_lifecycle_rules
 
-    @kafka_consumer_group_member_count.setter
-    def kafka_consumer_group_member_count(
-        self, kafka_consumer_group_member_count: Optional[int]
-    ):
+    @gcs_bucket_lifecycle_rules.setter
+    def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_member_count = (
-            kafka_consumer_group_member_count
-        )
+        self.attributes.gcs_bucket_lifecycle_rules = gcs_bucket_lifecycle_rules
 
     @property
-    def kafka_topic_names(self) -> Optional[set[str]]:
-        return self.attributes.kafka_topic_names
+    def gcs_bucket_retention_policy(self) -> Optional[str]:
+        return self.attributes.gcs_bucket_retention_policy
 
-    @kafka_topic_names.setter
-    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
+    @gcs_bucket_retention_policy.setter
+    def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_names = kafka_topic_names
+        self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
 
     @property
-    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
-        return self.attributes.kafka_topic_qualified_names
+    def gcs_objects(self) -> Optional[list[GCSObject]]:
+        return self.attributes.gcs_objects
 
-    @kafka_topic_qualified_names.setter
-    def kafka_topic_qualified_names(
-        self, kafka_topic_qualified_names: Optional[set[str]]
-    ):
+    @gcs_objects.setter
+    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
+        self.attributes.gcs_objects = gcs_objects
 
-    @property
-    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
-        return self.attributes.kafka_topics
-
-    @kafka_topics.setter
-    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topics = kafka_topics
-
-    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+    type_name: str = Field("GCSBucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "KafkaConsumerGroup":
-            raise ValueError("must be KafkaConsumerGroup")
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
         return v
 
-    class Attributes(Kafka.Attributes):
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
-        ] = Field(
-            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
+    class Attributes(GCS.Attributes):
+        gcs_object_count: Optional[int] = Field(
+            None, description="", alias="gcsObjectCount"
         )
-        kafka_consumer_group_member_count: Optional[int] = Field(
-            None, description="", alias="kafkaConsumerGroupMemberCount"
+        gcs_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="gcsBucketVersioningEnabled"
         )
-        kafka_topic_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicNames"
+        gcs_bucket_retention_locked: Optional[bool] = Field(
+            None, description="", alias="gcsBucketRetentionLocked"
         )
-        kafka_topic_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicQualifiedNames"
+        gcs_bucket_retention_period: Optional[int] = Field(
+            None, description="", alias="gcsBucketRetentionPeriod"
         )
-        kafka_topics: Optional[list[KafkaTopic]] = Field(
-            None, description="", alias="kafkaTopics"
+        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
+            None, description="", alias="gcsBucketRetentionEffectiveTime"
+        )
+        gcs_bucket_lifecycle_rules: Optional[str] = Field(
+            None, description="", alias="gcsBucketLifecycleRules"
+        )
+        gcs_bucket_retention_policy: Optional[str] = Field(
+            None, description="", alias="gcsBucketRetentionPolicy"
+        )
+        gcs_objects: Optional[list[GCSObject]] = Field(
+            None, description="", alias="gcsObjects"
         )  # relationship
 
-    attributes: "KafkaConsumerGroup.Attributes" = Field(
-        default_factory=lambda: KafkaConsumerGroup.Attributes(),
+    attributes: "GCSBucket.Attributes" = Field(
+        default_factory=lambda: GCSBucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22717,17 +23308,7 @@ Referenceable.Attributes.update_forward_refs()
 
 Asset.Attributes.update_forward_refs()
 
-AtlasGlossary.Attributes.update_forward_refs()
-
 DataSet.Attributes.update_forward_refs()
-
-ProcessExecution.Attributes.update_forward_refs()
-
-AtlasGlossaryTerm.Attributes.update_forward_refs()
-
-Cloud.Attributes.update_forward_refs()
-
-Infrastructure.Attributes.update_forward_refs()
 
 Connection.Attributes.update_forward_refs()
 
@@ -22737,19 +23318,33 @@ AtlasGlossaryCategory.Attributes.update_forward_refs()
 
 Badge.Attributes.update_forward_refs()
 
+AccessControl.Attributes.update_forward_refs()
+
 Namespace.Attributes.update_forward_refs()
 
 Catalog.Attributes.update_forward_refs()
 
-Google.Attributes.update_forward_refs()
+AtlasGlossary.Attributes.update_forward_refs()
 
-Azure.Attributes.update_forward_refs()
+AuthPolicy.Attributes.update_forward_refs()
 
-AWS.Attributes.update_forward_refs()
+ProcessExecution.Attributes.update_forward_refs()
+
+AtlasGlossaryTerm.Attributes.update_forward_refs()
+
+AuthService.Attributes.update_forward_refs()
+
+Cloud.Attributes.update_forward_refs()
+
+Infrastructure.Attributes.update_forward_refs()
 
 BIProcess.Attributes.update_forward_refs()
 
 ColumnProcess.Attributes.update_forward_refs()
+
+Persona.Attributes.update_forward_refs()
+
+Purpose.Attributes.update_forward_refs()
 
 Collection.Attributes.update_forward_refs()
 
@@ -22777,23 +23372,27 @@ Tag.Attributes.update_forward_refs()
 
 SQL.Attributes.update_forward_refs()
 
-DataStudio.Attributes.update_forward_refs()
+Google.Attributes.update_forward_refs()
 
-GCS.Attributes.update_forward_refs()
+Azure.Attributes.update_forward_refs()
 
-DataStudioAsset.Attributes.update_forward_refs()
-
-ADLS.Attributes.update_forward_refs()
-
-S3.Attributes.update_forward_refs()
+AWS.Attributes.update_forward_refs()
 
 DbtColumnProcess.Attributes.update_forward_refs()
 
 Kafka.Attributes.update_forward_refs()
 
+S3.Attributes.update_forward_refs()
+
+ADLS.Attributes.update_forward_refs()
+
+GCS.Attributes.update_forward_refs()
+
 MonteCarlo.Attributes.update_forward_refs()
 
 Metric.Attributes.update_forward_refs()
+
+DataStudio.Attributes.update_forward_refs()
 
 Metabase.Attributes.update_forward_refs()
 
@@ -22865,9 +23464,15 @@ View.Attributes.update_forward_refs()
 
 MaterialisedView.Attributes.update_forward_refs()
 
-GCSObject.Attributes.update_forward_refs()
+DataStudioAsset.Attributes.update_forward_refs()
 
-GCSBucket.Attributes.update_forward_refs()
+KafkaTopic.Attributes.update_forward_refs()
+
+KafkaConsumerGroup.Attributes.update_forward_refs()
+
+S3Bucket.Attributes.update_forward_refs()
+
+S3Object.Attributes.update_forward_refs()
 
 ADLSAccount.Attributes.update_forward_refs()
 
@@ -22875,13 +23480,9 @@ ADLSContainer.Attributes.update_forward_refs()
 
 ADLSObject.Attributes.update_forward_refs()
 
-S3Bucket.Attributes.update_forward_refs()
+GCSObject.Attributes.update_forward_refs()
 
-S3Object.Attributes.update_forward_refs()
-
-KafkaTopic.Attributes.update_forward_refs()
-
-KafkaConsumerGroup.Attributes.update_forward_refs()
+GCSBucket.Attributes.update_forward_refs()
 
 MCIncident.Attributes.update_forward_refs()
 
