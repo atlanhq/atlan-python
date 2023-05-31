@@ -73,18 +73,18 @@ class CustomMetadataCache:
                         attr_name = str(attr.display_name)
                         # Use a renamed attribute everywhere
                         attr_renamed = to_snake_case(attr_name)
-                        cls.map_attr_id_to_name[type_id][attr_id] = attr_renamed
+                        cls.map_attr_id_to_name[type_id][attr_id] = attr_name
                         if attr.options and attr.options.is_archived:
-                            cls.archived_attr_ids[attr_id] = attr_renamed
-                        elif attr_renamed in cls.map_attr_name_to_id[type_id]:
+                            cls.archived_attr_ids[attr_id] = attr_name
+                        elif attr_name in cls.map_attr_name_to_id[type_id]:
                             raise LogicError(
-                                f"Multiple custom attributes with exactly the same name ({attr_renamed}) "
+                                f"Multiple custom attributes with exactly the same name ({attr_name}) "
                                 f"found for: {type_name}",
                                 code="ATLAN-PYTHON-500-100",
                             )
                         else:
                             setattr(attrib_type, attr_renamed, Synonym(attr_id))
-                            cls.map_attr_name_to_id[type_id][attr_renamed] = attr_id
+                            cls.map_attr_name_to_id[type_id][attr_name] = attr_id
                     for asset_type in applicable_types:
                         if asset_type not in cls.types_by_asset:
                             cls.types_by_asset[asset_type] = set()
