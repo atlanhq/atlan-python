@@ -11,7 +11,7 @@ from pyatlan.model.response import A
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def make_unique() -> Callable[[str], str]:
     from nanoid import generate as generate_nanoid
 
@@ -26,7 +26,7 @@ def make_unique() -> Callable[[str], str]:
     return _get_unique_name
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope="module")
 def client() -> AtlanClient:
     return AtlanClient()
 
