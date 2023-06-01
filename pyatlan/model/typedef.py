@@ -589,7 +589,7 @@ class CustomMetadataDef(TypeDef):
                 [emoji],
             )
             return CustomMetadataDef.Options(
-                emoji=emoji, logo_type="emoji", is_locked=locked
+                emoji=emoji, logo_type="emoji", is_locked=str(locked).lower()
             )
 
         @staticmethod

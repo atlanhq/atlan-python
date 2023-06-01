@@ -130,7 +130,7 @@ def cm_ipr(
     ]
     cm_name = make_unique("IPR")
     cm = create_custom_metadata(
-        client, name=cm_name, attribute_defs=attribute_defs, logo="⚖️", locked=False
+        client, name=cm_name, attribute_defs=attribute_defs, logo="⚖️", locked=True
     )
     yield cm
     client.purge_typedef(cm_name, CustomMetadataDef)
@@ -317,7 +317,7 @@ def cm_dq(
         attribute_defs=attribute_defs,
         logo="https://github.com/great-expectations/great_expectations/raw/develop/docs/docusaurus/static/img/"
         "gx-mark-160.png",
-        locked=False,
+        locked=True,
     )
     yield cm
     client.purge_typedef(cm_name, CustomMetadataDef)
