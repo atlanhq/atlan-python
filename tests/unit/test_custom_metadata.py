@@ -3,7 +3,11 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.error import NotFoundError
-from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
+from pyatlan.model.custom_metadata import (
+    CustomMetadataDict,
+    CustomMetadataProxy,
+    CustomMetadataRequest,
+)
 
 ATTR_LAST_NAME = "Last Name"
 
@@ -23,6 +27,14 @@ META_DATA = {CM_ID: CM_ATTRIBUTES}
 def mock_cache():
     with patch("pyatlan.model.custom_metadata.CustomMetadataCache") as cache:
         yield cache
+
+
+def get_attr_id_for_name(*args, **kwargs):
+    return ATTR_FIRST_NAME_ID if args[1] == ATTR_FIRST_NAME else ATTR_LAST_NAME_ID
+
+
+def get_attr_name_for_id(*args, **kwargs):
+    return ATTR_FIRST_NAME if args[1] == ATTR_FIRST_NAME_ID else ATTR_FIRST_NAME
 
 
 class Test_CustomMetadataDict:
@@ -63,10 +75,10 @@ class Test_CustomMetadataDict:
             sut["garb"] = ATTR_FIRST_NAME_ID
 
     def test_clear_set_all_attributes_to_none(self, sut):
-        sut[ATTR_FIRST_NAME] = "Bob"
         sut.clear()
         for name in sut.attribute_names:
             assert sut[name] is None
+        assert sut.modified is True
 
     def test_get_item_using_name_that_has_not_been_set_raises_key_err(self, sut):
         with pytest.raises(
@@ -74,6 +86,16 @@ class Test_CustomMetadataDict:
             match="'First Name' must be set before trying to retrieve the value",
         ):
             sut[ATTR_FIRST_NAME]
+
+    def test_business_attributes_when_no_changes(self, sut):
+
+        assert sut.business_attributes == {CM_ID: {}}
+
+    def test_business_attributes_with_data(self, sut, mock_cache):
+        mock_cache.get_attr_id_for_name.side_effect = get_attr_id_for_name
+        alice = "alice"
+        sut[ATTR_FIRST_NAME] = alice
+        assert sut.business_attributes == {CM_ID: {ATTR_FIRST_NAME_ID: alice}}
 
 
 class TestCustomMetadataProxy:
@@ -119,15 +141,6 @@ class TestCustomMetadataProxy:
         assert sut.business_attributes is ba
 
     def test_when_modified_returns_updated_business_attributes(self, mock_cache):
-        def get_attr_id_for_name(*args, **kwargs):
-            if args[1] == ATTR_FIRST_NAME:
-                return ATTR_FIRST_NAME_ID
-            return ATTR_LAST_NAME_ID
-
-        def get_attr_name_for_id(*args, **kwargs):
-            if args[1] == ATTR_FIRST_NAME_ID:
-                return ATTR_FIRST_NAME
-            return ATTR_FIRST_NAME
 
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.side_effect = get_attr_name_for_id
@@ -145,3 +158,13 @@ class TestCustomMetadataProxy:
         ba = sut.business_attributes
 
         assert ba == {CM_ID: {ATTR_FIRST_NAME_ID: donna, ATTR_LAST_NAME_ID: joey}}
+
+
+class TestCustomMetadataRequest:
+    def test_create(self, mock_cache):
+        mock_cache.get_id_for_name.return_value = CM_ID
+        mock_cache.map_attr_id_to_name = META_DATA
+
+        cm = CustomMetadataDict(CM_NAME)
+        request = CustomMetadataRequest.create(custom_metadata_dict=cm)
+        assert request.__root__ == {CM_ID: {}}

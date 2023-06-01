@@ -2,6 +2,7 @@ from collections import UserDict
 from typing import Any, Optional
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.model.core import AtlanObject
 
 
 class CustomMetadataDict(UserDict):
@@ -37,6 +38,15 @@ class CustomMetadataDict(UserDict):
     def clear(self):
         for attribute_name in self._names:
             self.data[attribute_name] = None
+        self._modified = True
+
+    @property
+    def business_attributes(self) -> dict[str, dict[str, Any]]:
+        values = {
+            CustomMetadataCache.get_attr_id_for_name(self._name, key): value
+            for (key, value) in self.data.items()
+        }
+        return {CustomMetadataCache.get_id_for_name(self._name): values}
 
 
 class CustomMetadataProxy:
@@ -83,16 +93,17 @@ class CustomMetadataProxy:
 
     @property
     def business_attributes(self) -> Optional[dict[str, Any]]:
-        def convert(cm_name: str, properties: CustomMetadataDict):
-            return {
-                CustomMetadataCache.get_attr_id_for_name(cm_name, key): value
-                for (key, value) in properties.items()
-            }
-
         if self.modified and self._metadata is not None:
-            new_metadata = {
-                CustomMetadataCache.get_id_for_name(cm_name): convert(cm_name, attribs)
-                for (cm_name, attribs) in self._metadata.items()
-            }
+            new_metadata = {}
+            for dict in self._metadata.values():
+                new_metadata.update(dict.business_attributes)
             self._business_attributes = new_metadata
         return self._business_attributes
+
+
+class CustomMetadataRequest(AtlanObject):
+    __root__: dict[str, dict[str, Any]]
+
+    @classmethod
+    def create(cls, custom_metadata_dict: CustomMetadataDict):
+        return cls(__root__=custom_metadata_dict.business_attributes)
