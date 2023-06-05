@@ -90,14 +90,14 @@ class Referenceable(AtlanObject):
             __pydantic_self__.business_attributes
         )
 
+    def json(self, *args, **kwargs) -> str:
+        self.business_attributes = self._metadata_proxy.business_attributes
+        return super().json(**kwargs)
+
     def __setattr__(self, name, value):
         if name in Referenceable._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
-
-    def json(self, *args, **kwargs) -> str:
-        self.business_attributes = self._metadata_proxy.business_attributes
-        return super().json(**kwargs)
 
     _convience_properties: ClassVar[list[str]] = [
         "qualified_name",
@@ -6456,7 +6456,7 @@ class S3(ObjectStore):
     )
 
 
-class ADLS(ObjectStore):
+class ADLS(Azure):
     """Description"""
 
     def __setattr__(self, name, value):
@@ -6470,6 +6470,8 @@ class ADLS(ObjectStore):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
+        "input_to_processes",
+        "output_from_processes",
     ]
 
     @property
@@ -6526,6 +6528,26 @@ class ADLS(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
+    @property
+    def input_to_processes(self) -> Optional[list[Process]]:
+        return self.attributes.input_to_processes
+
+    @input_to_processes.setter
+    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_processes(self) -> Optional[list[Process]]:
+        return self.attributes.output_from_processes
+
+    @output_from_processes.setter
+    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_processes = output_from_processes
+
     type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
@@ -6534,7 +6556,7 @@ class ADLS(ObjectStore):
             raise ValueError("must be ADLS")
         return v
 
-    class Attributes(ObjectStore.Attributes):
+    class Attributes(Azure.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsAccountQualifiedName"
         )
@@ -6550,6 +6572,12 @@ class ADLS(ObjectStore):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
+        input_to_processes: Optional[list[Process]] = Field(
+            None, description="", alias="inputToProcesses"
+        )  # relationship
+        output_from_processes: Optional[list[Process]] = Field(
+            None, description="", alias="outputFromProcesses"
+        )  # relationship
 
     attributes: "ADLS.Attributes" = Field(
         default_factory=lambda: ADLS.Attributes(),
