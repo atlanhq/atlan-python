@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import TYPE_CHECKING
 
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, Extra, Field, validator
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -184,6 +184,22 @@ class AssetResponse(AtlanObject, GenericModel, Generic[T]):
 class AssetRequest(AtlanObject, GenericModel, Generic[T]):
     entity: T
 
+    @validator("entity")
+    def flush_custom_metadata(cls, v):
+        from pyatlan.model.assets import Asset
+
+        if isinstance(v, Asset):
+            v.flush_custom_metadata()
+        return v
+
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
+
+    @validator("entities", each_item=True)
+    def flush_custom_metadata(cls, v):
+        from pyatlan.model.assets import Asset
+
+        if isinstance(v, Asset):
+            v.flush_custom_metadata()
+        return v

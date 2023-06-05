@@ -268,6 +268,9 @@ class Referenceable(AtlanObject):
     def set_custom_metadata(self, custom_metadata: CustomMetadataDict):
         return self._metadata_proxy.set_custom_metadata(custom_metadata=custom_metadata)
 
+    def flush_custom_metadata(self):
+        self.business_attributes = self._metadata_proxy.business_attributes
+
 
 class Asset(Referenceable):
     """Description"""

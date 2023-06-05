@@ -404,7 +404,7 @@ def test_add_term_cm_raci(
     groups: List[AtlanGroup],
 ):
     cm_name = make_unique("RACI")
-    raci_attrs = term.get_custom_metadata(cm_name)
+    raci_attrs = CustomMetadataDict(cm_name)
     _validate_raci_empty(raci_attrs)
     group1, group2 = _get_groups(client, make_unique)
     raci_attrs[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
@@ -424,7 +424,7 @@ def test_add_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     cm_name = make_unique("IPR")
-    ipr_attrs = term.get_custom_metadata(cm_name)
+    ipr_attrs = CustomMetadataDict(cm_name)
     _validate_ipr_empty(ipr_attrs)
     ipr_attrs[CM_ATTR_IPR_LICENSE] = "CC BY"
     ipr_attrs[CM_ATTR_IPR_VERSION] = 2.0
@@ -445,7 +445,7 @@ def test_add_term_cm_dq(
     term: AtlasGlossaryTerm,
 ):
     cm_name = make_unique("DQ")
-    dq_attrs = term.get_custom_metadata(cm_name)
+    dq_attrs = CustomMetadataDict(cm_name)
     _validate_dq_empty(dq_attrs)
     dq_attrs[CM_ATTR_QUALITY_COUNT] = 42
     dq_attrs[CM_ATTR_QUALITY_SQL] = "SELECT * from SOMEWHERE;"
@@ -464,7 +464,7 @@ def test_update_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     cm_name = make_unique("IPR")
-    ipr = term.get_custom_metadata(cm_name)
+    ipr = CustomMetadataDict(cm_name)
     # Note: MUST access the getter / setter, not the underlying store
     ipr[CM_ATTR_IPR_MANDATORY] = False
     client.update_custom_metadata_attributes(term.guid, ipr)
@@ -487,7 +487,7 @@ def test_replace_term_cm_raci(
     CM_RACI = make_unique("RACI")
     CM_IPR = make_unique("IPR")
     CM_QUALITY = make_unique("DQ")
-    raci = term.get_custom_metadata(CM_RACI)
+    raci = CustomMetadataDict(CM_RACI)
     group1, group2 = _get_groups(client, make_unique)
     raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
@@ -513,7 +513,7 @@ def test_replace_term_cm_ipr(
     CM_RACI = make_unique("RACI")
     CM_IPR = make_unique("IPR")
     CM_QUALITY = make_unique("DQ")
-    term_cm_ipr = term.get_custom_metadata(CM_IPR)
+    term_cm_ipr = CustomMetadataDict(CM_IPR)
     client.replace_custom_metadata(term.guid, term_cm_ipr)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -800,7 +800,7 @@ def test_update_replacing_cm(
     CM_RACI = make_unique("RACI")
     CM_IPR = make_unique("IPR")
     CM_QUALITY = make_unique("DQ")
-    raci = term.get_custom_metadata(CM_RACI)
+    raci = CustomMetadataDict(CM_RACI)
     group1, group2 = _get_groups(client, make_unique)
     raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
