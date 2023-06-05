@@ -10,15 +10,10 @@ from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, TypeVar
 from urllib.parse import quote, unquote
 
-from pydantic import Field, StrictStr, root_validator, validator
+from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
-from pyatlan.model.core import (
-    Announcement,
-    AtlanObject,
-    Classification,
-    CustomMetadata,
-    Meaning,
-)
+from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
+from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSAccountStatus,
@@ -91,11 +86,18 @@ class Referenceable(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["attributes", "type_name"])
+        __pydantic_self__._metadata_proxy = CustomMetadataProxy(
+            __pydantic_self__.business_attributes
+        )
 
     def __setattr__(self, name, value):
         if name in Referenceable._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
+
+    def json(self, *args, **kwargs) -> str:
+        self.business_attributes = self._metadata_proxy.business_attributes
+        return super().json(**kwargs)
 
     _convience_properties: ClassVar[list[str]] = [
         "qualified_name",
@@ -159,6 +161,7 @@ class Referenceable(AtlanObject):
         def validate_required(self):
             pass
 
+    _metadata_proxy: CustomMetadataProxy = PrivateAttr()
     attributes: "Referenceable.Attributes" = Field(
         default_factory=lambda: Referenceable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
@@ -259,51 +262,11 @@ class Referenceable(AtlanObject):
         if not self.create_time or self.created_by:
             self.attributes.validate_required()
 
-    def get_custom_metadata(self, name: str) -> CustomMetadata:
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+    def get_custom_metadata(self, name: str) -> CustomMetadataDict:
+        return self._metadata_proxy.get_custom_metadata(name=name)
 
-        ba_id = CustomMetadataCache.get_id_for_name(name)
-        if ba_id is None:
-            raise ValueError(f"No custom metadata with the name: {name} exist")
-        for a_type in CustomMetadataCache.types_by_asset[self.type_name]:
-            if (
-                hasattr(a_type, "_meta_data_type_name")
-                and a_type._meta_data_type_name == name
-            ):
-                break
-        else:
-            raise ValueError(
-                f"Custom metadata attributes {name} are not applicable to {self.type_name}"
-            )
-        if ba_type := CustomMetadataCache.get_type_for_id(ba_id):
-            return (
-                ba_type(self.business_attributes[ba_id])
-                if self.business_attributes and ba_id in self.business_attributes
-                else ba_type()
-            )
-        else:
-            raise ValueError(
-                f"Custom metadata attributes {name} are not applicable to {self.type_name}"
-            )
-
-    def set_custom_metadata(self, custom_metadata: CustomMetadata) -> None:
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        if not isinstance(custom_metadata, CustomMetadata):
-            raise ValueError(
-                "business_attributes must be an instance of CustomMetadata"
-            )
-        if (
-            type(custom_metadata)
-            not in CustomMetadataCache.types_by_asset[self.type_name]
-        ):
-            raise ValueError(
-                f"Business attributes {custom_metadata._meta_data_type_name} are not applicable to {self.type_name}"
-            )
-        ba_dict = dict(custom_metadata)
-        if not self.business_attributes:
-            self.business_attributes = {}
-        self.business_attributes[custom_metadata._meta_data_type_id] = ba_dict
+    def set_custom_metadata(self, custom_metadata: CustomMetadataDict):
+        return self._metadata_proxy.set_custom_metadata(custom_metadata=custom_metadata)
 
 
 class Asset(Referenceable):

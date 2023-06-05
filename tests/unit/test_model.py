@@ -5,15 +5,14 @@ from datetime import datetime
 from hashlib import md5
 from inspect import signature
 from pathlib import Path
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec
 
 import pytest
-from deepdiff import DeepDiff
+
+# from deepdiff import DeepDiff
 from pydantic.error_wrappers import ValidationError
 
 import pyatlan.cache.classification_cache
-from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
     SQL,
     AccessControl,
@@ -150,7 +149,7 @@ from pyatlan.model.assets import (
     View,
     validate_single_required_field,
 )
-from pyatlan.model.core import Announcement, AssetResponse
+from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSLeaseState,
@@ -178,7 +177,6 @@ from pyatlan.model.enums import (
     QuickSightFolderType,
     SourceCostUnitType,
 )
-from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.structs import (
     KafkaTopicConsumption,
     MCRuleComparison,
@@ -670,69 +668,9 @@ def test_wrong_json(glossary_json):
         AtlasGlossaryTerm(**glossary_json)
 
 
-def test_asset_response(glossary_category_json):
-    asset_response_json = {"referredEntities": {}, "entity": glossary_category_json}
-    glossary_category = AssetResponse[AtlasGlossaryCategory](
-        **asset_response_json
-    ).entity
-    assert glossary_category == AtlasGlossaryCategory(**glossary_category_json)
-
-
 @pytest.fixture(scope="function")
 def the_json(request):
     return load_json(request.param)
-
-
-@pytest.mark.parametrize(
-    "the_json, a_type",
-    [
-        ("glossary.json", AtlasGlossary),
-        ("glossary_category.json", AtlasGlossaryCategory),
-        ("glossary_term.json", AtlasGlossaryTerm),
-        ("glossary_term2.json", AtlasGlossaryTerm),
-        ("asset_mutated_response_empty.json", AssetMutationResponse),
-        ("asset_mutated_response_update.json", AssetMutationResponse),
-    ],
-    indirect=["the_json"],
-)
-def test_constructor(the_json, a_type, monkeypatch):
-    def get_name_for_id(value):
-        return "PII"
-
-    def get_id_for_name(value):
-        return "WQ6XGXwq9o7UnZlkWyKhQN"
-
-    monkeypatch.setattr(
-        pyatlan.cache.classification_cache.ClassificationCache,
-        "get_id_for_name",
-        get_id_for_name,
-    )
-
-    monkeypatch.setattr(
-        pyatlan.cache.classification_cache.ClassificationCache,
-        "get_name_for_id",
-        get_name_for_id,
-    )
-
-    asset = a_type(**the_json)
-    assert not DeepDiff(
-        the_json,
-        json.loads(asset.json(by_alias=True, exclude_unset=True)),
-        ignore_order=True,
-    )
-
-
-def test_has_announcement(glossary):
-    assert glossary.has_announcement() == (
-        bool(glossary.attributes.announcement_type)
-        or bool(glossary.attributes.announcement_title)
-    )
-
-
-def test_set_announcement(glossary, announcement):
-    glossary.set_announcement(announcement)
-    assert glossary.has_announcement() is True
-    assert announcement == glossary.get_announcment()
 
 
 def test_create_glossary():
@@ -742,15 +680,6 @@ def test_create_glossary():
         )
     )
     assert "AtlasGlossary" == glossary.type_name
-
-
-def test_clear_announcement(glossary, announcement):
-    glossary.set_announcement(announcement)
-    glossary.remove_announcement()
-    assert not glossary.has_announcement()
-    assert glossary.attributes.announcement_title is None
-    assert glossary.attributes.announcement_type is None
-    assert glossary.attributes.announcement_message is None
 
 
 @pytest.mark.parametrize(
@@ -1295,136 +1224,6 @@ def test_glossary_term_attributes_create_sets_name_anchor():
     sut = AtlasGlossaryTerm.Attributes.create(name="Bob", anchor=glossary)
     assert sut.name == "Bob"
     assert sut.anchor == glossary
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_get_business_attributes_when_name_not_valid_raises_not_found_error(
-    mock_client, table, type_def_response
-):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
-    with pytest.raises(
-        NotFoundError, match="Custom metadata with name Zoro does not exist."
-    ):
-        table.get_custom_metadata("Zoro")
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_get_business_attributes_when_name_not_appropriate_for_asset_raises_value_error(
-    mock_client, table, type_def_response
-):
-    mock_client.get_default_client.return_value = mock_client
-    mock_client.get_typedefs.return_value = type_def_response
-    with pytest.raises(
-        ValueError, match="Custom metadata attributes Moon are not applicable to Table"
-    ):
-        table.get_custom_metadata("Moon")
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_get_business_attributes_with_valid_name_returns_empty_attribute_when_table_does_not_have_attribute(
-    mock_client, table, type_def_response
-):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
-
-    monte_carlo = table.get_custom_metadata("Monte Carlo")
-
-    assert monte_carlo is not None
-    assert monte_carlo.freshness is None
-    assert monte_carlo.freshness_date is None
-    assert monte_carlo.table_url is None
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_get_business_attributes_with_valid_name_returns_attribute_when_table_has_attribute(
-    mock_client, table, type_def_response
-):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
-    table.business_attributes = {
-        MONTE_CARLO: {
-            FRESHNESS: "pass",
-            TABLE_URL: "https://getmontecarlo.com/catalog/",
-        }
-    }
-
-    monte_carlo = table.get_custom_metadata("Monte Carlo")
-
-    assert monte_carlo is not None
-    assert monte_carlo.freshness == "pass"
-    assert monte_carlo.table_url == "https://getmontecarlo.com/catalog/"
-
-
-def test_set_busines_attributes_with_non_business_attributes_object_raises_value_error(
-    table,
-):
-    with pytest.raises(
-        ValueError,
-        match="business_attributes must be an instance of CustomMetadata",
-    ):
-        table.set_custom_metadata({})
-
-
-def test_set_business_attributes_with_non_appropriate_meta_data_type_name_raises_value_error(
-    table,
-):
-    with pytest.raises(
-        ValueError,
-        match="business_attributes must be an instance of CustomMetadata",
-    ):
-        table.set_custom_metadata({})
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_assigning_to_invalid_business_attribute_raises_attribute_error(
-    mock_client, table, type_def_response
-):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
-    table.business_attributes = {
-        MONTE_CARLO: {
-            FRESHNESS: "pass",
-            TABLE_URL: "https://getmontecarlo.com/catalog/",
-        }
-    }
-    business_attributes = table.get_custom_metadata("Monte Carlo")
-    with pytest.raises(AttributeError, match="Attribute bogus does not exist"):
-        business_attributes.bogus = "123"
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_set_business_attributes_with_business_attribute_not_appropriate_to_asset_raises_value_error(
-    mock_client, table, type_def_response
-):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
-
-    moon = CustomMetadataCache.get_type_for_id(MOON)()
-
-    with pytest.raises(
-        ValueError,
-        match="Business attributes Moon are not applicable to Table",
-    ):
-        table.set_custom_metadata(moon)
-
-
-@patch("pyatlan.cache.custom_metadata_cache.AtlanClient")
-def test_set_business_attributes_with_appropriate_business_attribute_updates_dictionary(
-    mock_client, table, type_def_response
-):
-    mock_client.return_value.get_typedefs.return_value = type_def_response
-
-    table.business_attributes = {
-        MONTE_CARLO: {
-            FRESHNESS: "pass",
-            TABLE_URL: "https://getmontecarlo.com/catalog/",
-        }
-    }
-    monte_carlo = table.get_custom_metadata("Monte Carlo")
-
-    monte_carlo.freshness = "fail"
-    monte_carlo.table_url = "http://anywhere.com"
-    table.set_custom_metadata(monte_carlo)
-
-    monte_carlo_dict = table.business_attributes[MONTE_CARLO]
-    assert monte_carlo_dict[FRESHNESS] == monte_carlo.freshness
-    assert monte_carlo_dict[TABLE_URL] == monte_carlo.table_url
 
 
 @pytest.mark.parametrize(

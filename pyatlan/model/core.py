@@ -187,17 +187,3 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
 
 class BulkRequest(AtlanObject, GenericModel, Generic[T]):
     entities: list[T]
-
-
-class CustomMetadata(dict):
-    _meta_data_type_name = ""
-    _meta_data_type_id = ""
-
-    def __setattr__(self, key, value):
-        if not hasattr(self, key):
-            raise AttributeError(f"Attribute {key} does not exist")
-        super().__setattr__(key, value)
-
-
-class CustomMetadataReqest(AtlanObject):
-    __root__: CustomMetadata

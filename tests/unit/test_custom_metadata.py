@@ -74,28 +74,43 @@ class Test_CustomMetadataDict:
         ):
             sut["garb"] = ATTR_FIRST_NAME_ID
 
-    def test_clear_set_all_attributes_to_none(self, sut):
-        sut.clear()
-        for name in sut.attribute_names:
-            assert sut[name] is None
+    @pytest.mark.parametrize("name", [ATTR_FIRST_NAME, ATTR_FIRST_NAME])
+    def test_clear_all_set_all_attributes_to_none(self, sut, name):
+        sut.clear_all()
+        assert sut[name] is None
         assert sut.modified is True
 
-    def test_get_item_using_name_that_has_not_been_set_raises_key_err(self, sut):
-        with pytest.raises(
-            KeyError,
-            match="'First Name' must be set before trying to retrieve the value",
-        ):
-            sut[ATTR_FIRST_NAME]
+    @pytest.mark.parametrize(
+        "property_to_set, other_property",
+        [(ATTR_FIRST_NAME, ATTR_LAST_NAME), (ATTR_LAST_NAME, ATTR_FIRST_NAME)],
+    )
+    def test_clear_unset_sets_unset_to_none(self, sut, property_to_set, other_property):
+        sut[property_to_set] = "bob"
+        sut.clear_unset()
+        assert sut[property_to_set] == "bob"
+        assert sut[other_property] is None
+
+    def test_get_item_using_name_that_has_not_been_set_returns_none(self, sut):
+        assert sut[ATTR_FIRST_NAME] is None
 
     def test_business_attributes_when_no_changes(self, sut):
 
-        assert sut.business_attributes == {CM_ID: {}}
+        assert sut.business_attributes == {}
 
     def test_business_attributes_with_data(self, sut, mock_cache):
         mock_cache.get_attr_id_for_name.side_effect = get_attr_id_for_name
         alice = "alice"
         sut[ATTR_FIRST_NAME] = alice
-        assert sut.business_attributes == {CM_ID: {ATTR_FIRST_NAME_ID: alice}}
+        assert sut.business_attributes == {ATTR_FIRST_NAME_ID: alice}
+
+    @pytest.mark.parametrize("name", [ATTR_FIRST_NAME, ATTR_FIRST_NAME])
+    def test_is_unset_initially_returns_false(self, sut, name):
+        assert sut.is_set(name) is False
+
+    @pytest.mark.parametrize("name", [ATTR_FIRST_NAME, ATTR_FIRST_NAME])
+    def test_unset_after_update_returns_true(self, sut, name):
+        sut[name] = "bob"
+        assert sut.is_set(name) is True
 
 
 class TestCustomMetadataProxy:
@@ -167,4 +182,4 @@ class TestCustomMetadataRequest:
 
         cm = CustomMetadataDict(CM_NAME)
         request = CustomMetadataRequest.create(custom_metadata_dict=cm)
-        assert request.__root__ == {CM_ID: {}}
+        assert request.__root__ == {}

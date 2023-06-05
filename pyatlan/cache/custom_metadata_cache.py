@@ -1,11 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-import json
-from typing import Any, Optional
+from typing import Optional
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import InvalidRequestError, LogicError, NotFoundError
-from pyatlan.model.core import CustomMetadata
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
@@ -35,7 +32,7 @@ class CustomMetadataCache:
 
     @classmethod
     def refresh_cache(cls) -> None:
-        from pyatlan.model.core import CustomMetadata, to_snake_case
+        from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_default_client()
         if client is None:
@@ -56,23 +53,10 @@ class CustomMetadataCache:
                 cls.map_name_to_id[type_name] = type_id
                 cls.map_attr_id_to_name[type_id] = {}
                 cls.map_attr_name_to_id[type_id] = {}
-                meta_name = cm.display_name.replace(" ", "")
-                attribute_class_name = f"Attributes_{meta_name}"
-                attrib_type = type(attribute_class_name, (CustomMetadata,), {})
-                attrib_type._meta_data_type_id = type_id  # type: ignore
-                attrib_type._meta_data_type_name = type_name  # type: ignore
-                cls.map_id_to_type[type_id] = attrib_type
-                applicable_types: set[str] = set()
                 if cm.attribute_defs:
                     for attr in cm.attribute_defs:
-                        if attr.options and attr.options.custom_applicable_entity_types:
-                            applicable_types.update(
-                                json.loads(attr.options.custom_applicable_entity_types)
-                            )
                         attr_id = str(attr.name)
                         attr_name = str(attr.display_name)
-                        # Use a renamed attribute everywhere
-                        attr_renamed = to_snake_case(attr_name)
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_name
                         if attr.options and attr.options.is_archived:
                             cls.archived_attr_ids[attr_id] = attr_name
@@ -83,12 +67,7 @@ class CustomMetadataCache:
                                 code="ATLAN-PYTHON-500-100",
                             )
                         else:
-                            setattr(attrib_type, attr_renamed, Synonym(attr_id))
                             cls.map_attr_name_to_id[type_id][attr_name] = attr_id
-                    for asset_type in applicable_types:
-                        if asset_type not in cls.types_by_asset:
-                            cls.types_by_asset[asset_type] = set()
-                        cls.types_by_asset[asset_type].add(attrib_type)
 
     @classmethod
     def get_id_for_name(cls, name: str) -> str:
@@ -202,18 +181,22 @@ class CustomMetadataCache:
         )
 
     @classmethod
-    def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> Optional[str]:
+    def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> str:
         """
-        Translate the provided human-readable custom metadata set and attribute names to the Atlan-internal ID string
-        for the attribute.
+        Given the Atlan-internal ID stringfor the set and the Atlan-internal ID for the attribute return the
+        human-readable custom metadata name for the attribute.
         """
         if sub_map := cls.map_attr_id_to_name.get(set_id):
             if attr_name := sub_map.get(attr_id):
                 return attr_name
             cls.refresh_cache()
             if sub_map := cls.map_attr_id_to_name.get(set_id):
-                return sub_map.get(attr_id)
-        return None
+                if attr_name := sub_map.get(attr_id):
+                    return attr_name
+        raise NotFoundError(
+            message=f"Custom metadata property with ID {attr_id} does not exist in the custom metadata {set_id}.",
+            code="ATLAN-PYTHON-404-009",
+        )
 
     @classmethod
     def _get_attributes_for_search_results(cls, set_id: str) -> Optional[list[str]]:
@@ -233,33 +216,6 @@ class CustomMetadataCache:
             cls.refresh_cache()
             return cls._get_attributes_for_search_results(set_id)
         return None
-
-    @classmethod
-    def get_custom_metadata(
-        cls,
-        name: str,
-        asset_type: type,
-        business_attributes: Optional[dict[str, Any]] = None,
-    ) -> CustomMetadata:
-        type_name = asset_type.__name__
-        ba_id = cls.get_id_for_name(name)
-        if ba_id is None:
-            raise ValueError(f"No custom metadata with the name: {name} exist")
-        for a_type in CustomMetadataCache.types_by_asset[type_name]:
-            if (
-                hasattr(a_type, "_meta_data_type_name")
-                and a_type._meta_data_type_name == name
-            ):
-                break
-        else:
-            raise ValueError(f"Custom metadata {name} is not applicable to {type_name}")
-        if ba_type := CustomMetadataCache.get_type_for_id(ba_id):
-            return (
-                ba_type(business_attributes[ba_id])
-                if business_attributes and ba_id in business_attributes
-                else ba_type()
-            )
-        raise ValueError(f"Custom metadata {name} is not applicable to {type_name}")
 
     @classmethod
     def get_custom_metadata_def(cls, name: str) -> CustomMetadataDef:

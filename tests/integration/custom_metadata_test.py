@@ -8,15 +8,8 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import NotFoundError
-from pyatlan.model.assets import (
-    AtlasGlossary,
-    AtlasGlossaryTerm,
-    Badge,
-    BadgeCondition,
-    Table,
-)
-from pyatlan.model.core import CustomMetadata, to_snake_case
+from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Badge, BadgeCondition
+from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
     AtlanTypeCategory,
@@ -41,23 +34,12 @@ CM_ATTR_RACI_CONSULTED = "Consulted"
 CM_ATTR_RACI_INFORMED = "Informed"
 CM_ATTR_RACI_EXTRA = "Extra"
 
-CM_ATTR_RACI_RESPONSIBLE_RENAMED = to_snake_case(CM_ATTR_RACI_RESPONSIBLE)
-CM_ATTR_RACI_ACCOUNTABLE_RENAMED = to_snake_case(CM_ATTR_RACI_ACCOUNTABLE)
-CM_ATTR_RACI_CONSULTED_RENAMED = to_snake_case(CM_ATTR_RACI_CONSULTED)
-CM_ATTR_RACI_INFORMED_RENAMED = to_snake_case(CM_ATTR_RACI_INFORMED)
-CM_ATTR_RACI_EXTRA_RENAMED = to_snake_case(CM_ATTR_RACI_EXTRA)
 
 CM_ATTR_IPR_LICENSE = "License"
 CM_ATTR_IPR_VERSION = "Version"
 CM_ATTR_IPR_MANDATORY = "Mandatory"
 CM_ATTR_IPR_DATE = "Date"
 CM_ATTR_IPR_URL = "URL"
-
-CM_ATTR_IPR_LICENSE_RENAMED = to_snake_case(CM_ATTR_IPR_LICENSE)
-CM_ATTR_IPR_VERSION_RENAMED = to_snake_case(CM_ATTR_IPR_VERSION)
-CM_ATTR_IPR_MANDATORY_RENAMED = to_snake_case(CM_ATTR_IPR_MANDATORY)
-CM_ATTR_IPR_DATE_RENAMED = to_snake_case(CM_ATTR_IPR_DATE)
-CM_ATTR_IPR_URL_RENAMED = to_snake_case(CM_ATTR_IPR_URL)
 
 CM_ATTR_QUALITY_COUNT = "Count"
 CM_ATTR_QUALITY_SQL = "SQL"
@@ -70,10 +52,6 @@ DQ_TYPE_LIST = [
     "Validity",
     "Uniqueness",
 ]
-
-CM_ATTR_QUALITY_COUNT_RENAMED = to_snake_case(CM_ATTR_QUALITY_COUNT)
-CM_ATTR_QUALITY_SQL_RENAMED = to_snake_case(CM_ATTR_QUALITY_SQL)
-CM_ATTR_QUALITY_TYPE_RENAMED = to_snake_case(CM_ATTR_QUALITY_TYPE)
 
 _removal_epoch: Optional[int]
 
@@ -429,10 +407,10 @@ def test_add_term_cm_raci(
     raci_attrs = term.get_custom_metadata(cm_name)
     _validate_raci_empty(raci_attrs)
     group1, group2 = _get_groups(client, make_unique)
-    setattr(raci_attrs, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
-    setattr(raci_attrs, CM_ATTR_RACI_ACCOUNTABLE_RENAMED, FIXED_USER)
-    setattr(raci_attrs, CM_ATTR_RACI_CONSULTED_RENAMED, [group1.name])
-    setattr(raci_attrs, CM_ATTR_RACI_INFORMED_RENAMED, [group1.name, group2.name])
+    raci_attrs[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
+    raci_attrs[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
+    raci_attrs[CM_ATTR_RACI_CONSULTED] = [group1.name]
+    raci_attrs[CM_ATTR_RACI_INFORMED] = [group1.name, group2.name]
     client.update_custom_metadata_attributes(term.guid, raci_attrs)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -448,15 +426,12 @@ def test_add_term_cm_ipr(
     cm_name = make_unique("IPR")
     ipr_attrs = term.get_custom_metadata(cm_name)
     _validate_ipr_empty(ipr_attrs)
-    setattr(ipr_attrs, CM_ATTR_IPR_LICENSE_RENAMED, "CC BY")
-    setattr(ipr_attrs, CM_ATTR_IPR_VERSION_RENAMED, 2.0)
-    setattr(ipr_attrs, CM_ATTR_IPR_MANDATORY_RENAMED, True)
-    setattr(ipr_attrs, CM_ATTR_IPR_DATE_RENAMED, 1659308400000)
-    setattr(
-        ipr_attrs,
-        CM_ATTR_IPR_URL_RENAMED,
-        "https://creativecommons.org/licenses/by/2.0/",
-    )
+    ipr_attrs[CM_ATTR_IPR_LICENSE] = "CC BY"
+    ipr_attrs[CM_ATTR_IPR_VERSION] = 2.0
+    ipr_attrs[CM_ATTR_IPR_MANDATORY] = True
+    ipr_attrs[CM_ATTR_IPR_DATE] = 1659308400000
+    ipr_attrs[CM_ATTR_IPR_URL] = "https://creativecommons.org/licenses/by/2.0/"
+
     client.update_custom_metadata_attributes(term.guid, ipr_attrs)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -472,9 +447,9 @@ def test_add_term_cm_dq(
     cm_name = make_unique("DQ")
     dq_attrs = term.get_custom_metadata(cm_name)
     _validate_dq_empty(dq_attrs)
-    setattr(dq_attrs, CM_ATTR_QUALITY_COUNT_RENAMED, 42)
-    setattr(dq_attrs, CM_ATTR_QUALITY_SQL_RENAMED, "SELECT * from SOMEWHERE;")
-    setattr(dq_attrs, CM_ATTR_QUALITY_TYPE_RENAMED, "Completeness")
+    dq_attrs[CM_ATTR_QUALITY_COUNT] = 42
+    dq_attrs[CM_ATTR_QUALITY_SQL] = "SELECT * from SOMEWHERE;"
+    dq_attrs[CM_ATTR_QUALITY_TYPE] = "Completeness"
     client.update_custom_metadata_attributes(term.guid, dq_attrs)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -491,7 +466,7 @@ def test_update_term_cm_ipr(
     cm_name = make_unique("IPR")
     ipr = term.get_custom_metadata(cm_name)
     # Note: MUST access the getter / setter, not the underlying store
-    setattr(ipr, CM_ATTR_IPR_MANDATORY_RENAMED, False)
+    ipr[CM_ATTR_IPR_MANDATORY] = False
     client.update_custom_metadata_attributes(term.guid, ipr)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -514,11 +489,10 @@ def test_replace_term_cm_raci(
     CM_QUALITY = make_unique("DQ")
     raci = term.get_custom_metadata(CM_RACI)
     group1, group2 = _get_groups(client, make_unique)
-    # Note: MUST access the getter / setter, not the underlying store
-    setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
-    setattr(raci, CM_ATTR_RACI_ACCOUNTABLE_RENAMED, FIXED_USER)
-    setattr(raci, CM_ATTR_RACI_CONSULTED_RENAMED, None)
-    setattr(raci, CM_ATTR_RACI_INFORMED_RENAMED, [group1.name, group2.name])
+    raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
+    raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
+    raci[CM_ATTR_RACI_CONSULTED] = None
+    raci[CM_ATTR_RACI_INFORMED] = [group1.name, group2.name]
     client.replace_custom_metadata(term.guid, raci)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -539,7 +513,8 @@ def test_replace_term_cm_ipr(
     CM_RACI = make_unique("RACI")
     CM_IPR = make_unique("IPR")
     CM_QUALITY = make_unique("DQ")
-    client.replace_custom_metadata(term.guid, term.get_custom_metadata(CM_IPR))
+    term_cm_ipr = term.get_custom_metadata(CM_IPR)
+    client.replace_custom_metadata(term.guid, term_cm_ipr)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_raci_attributes_replacement(
@@ -560,7 +535,7 @@ def test_search_by_any_accountable(
     be_active = Term.with_state("ACTIVE")
     be_a_term = Term.with_type_name("AtlasGlossaryTerm")
     have_attr = Exists.with_custom_metadata(
-        set_name=make_unique("RACI"), attr_name=CM_ATTR_RACI_ACCOUNTABLE_RENAMED
+        set_name=make_unique("RACI"), attr_name=CM_ATTR_RACI_ACCOUNTABLE
     )
     query = Bool(must=[be_active, be_a_term, have_attr])
     dsl = DSL(query=query)
@@ -597,7 +572,7 @@ def test_search_by_specific_accountable(
     be_a_term = Term.with_type_name("AtlasGlossaryTerm")
     have_attr = Term.with_custom_metadata(
         set_name=make_unique("RACI"),
-        attr_name=CM_ATTR_RACI_ACCOUNTABLE_RENAMED,
+        attr_name=CM_ATTR_RACI_ACCOUNTABLE,
         value=FIXED_USER,
     )
     query = Bool(must=[be_active, be_a_term, have_attr])
@@ -827,11 +802,11 @@ def test_update_replacing_cm(
     CM_QUALITY = make_unique("DQ")
     raci = term.get_custom_metadata(CM_RACI)
     group1, group2 = _get_groups(client, make_unique)
-    setattr(raci, CM_ATTR_RACI_RESPONSIBLE_RENAMED, [FIXED_USER])
-    setattr(raci, CM_ATTR_RACI_ACCOUNTABLE_RENAMED, FIXED_USER)
-    setattr(raci, CM_ATTR_RACI_CONSULTED_RENAMED, [group1.name])
-    setattr(raci, CM_ATTR_RACI_INFORMED_RENAMED, [group1.name, group2.name])
-    setattr(raci, CM_ATTR_RACI_EXTRA_RENAMED, "something extra...")
+    raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
+    raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
+    raci[CM_ATTR_RACI_CONSULTED] = [group1.name]
+    raci[CM_ATTR_RACI_INFORMED] = [group1.name, group2.name]
+    raci[CM_ATTR_RACI_EXTRA] = "something extra..."
     to_update = AtlasGlossaryTerm.create_for_modification(
         qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
     )
@@ -853,7 +828,7 @@ def test_update_replacing_cm(
     assert x.qualified_name == term.qualified_name
     raci = x.get_custom_metadata(CM_RACI)
     _validate_raci_attributes(client, make_unique, raci)
-    assert getattr(raci, CM_ATTR_RACI_EXTRA_RENAMED) == "something extra..."
+    assert raci[CM_ATTR_RACI_EXTRA] == "something extra..."
     _validate_ipr_empty(x.get_custom_metadata(CM_IPR))
     _validate_dq_empty(x.get_custom_metadata(CM_QUALITY))
 
@@ -861,22 +836,15 @@ def test_update_replacing_cm(
 # TODO: test entity audit retrieval and parsing, once available
 
 
-def test_get_custom_metadata_when_name_is_invalid_then_raises_not_found_error():
-    with pytest.raises(
-        NotFoundError, match="Custom metadata with name Bogs does not exist"
-    ):
-        CustomMetadataCache.get_custom_metadata(name="Bogs", asset_type=Table)
-
-
 def _validate_raci_attributes(
-    client: AtlanClient, make_unique: Callable[[str], str], cma: CustomMetadata
+    client: AtlanClient, make_unique: Callable[[str], str], cma: CustomMetadataDict
 ):
     assert cma
     # Note: MUST access the getter / setter, not the underlying store
-    responsible = getattr(cma, CM_ATTR_RACI_RESPONSIBLE_RENAMED)
-    accountable = getattr(cma, CM_ATTR_RACI_ACCOUNTABLE_RENAMED)
-    consulted = getattr(cma, CM_ATTR_RACI_CONSULTED_RENAMED)
-    informed = getattr(cma, CM_ATTR_RACI_INFORMED_RENAMED)
+    responsible = cma[CM_ATTR_RACI_RESPONSIBLE]
+    accountable = cma[CM_ATTR_RACI_ACCOUNTABLE]
+    consulted = cma[CM_ATTR_RACI_CONSULTED]
+    informed = cma[CM_ATTR_RACI_INFORMED]
     group1, group2 = _get_groups(client, make_unique)
     assert responsible
     assert len(responsible) == 1
@@ -888,14 +856,14 @@ def _validate_raci_attributes(
 
 
 def _validate_raci_attributes_replacement(
-    client: AtlanClient, make_unique: Callable[[str], str], cma: CustomMetadata
+    client: AtlanClient, make_unique: Callable[[str], str], cma: CustomMetadataDict
 ):
     assert cma
     # Note: MUST access the getter / setter, not the underlying store
-    responsible = getattr(cma, CM_ATTR_RACI_RESPONSIBLE_RENAMED)
-    accountable = getattr(cma, CM_ATTR_RACI_ACCOUNTABLE_RENAMED)
-    consulted = getattr(cma, CM_ATTR_RACI_CONSULTED_RENAMED)
-    informed = getattr(cma, CM_ATTR_RACI_INFORMED_RENAMED)
+    responsible = cma[CM_ATTR_RACI_RESPONSIBLE]
+    accountable = cma[CM_ATTR_RACI_ACCOUNTABLE]
+    consulted = cma[CM_ATTR_RACI_CONSULTED]
+    informed = cma[CM_ATTR_RACI_INFORMED]
     group1, group2 = _get_groups(client, make_unique)
     assert responsible
     assert responsible == [FIXED_USER]
@@ -905,30 +873,27 @@ def _validate_raci_attributes_replacement(
     assert informed == [group1.name, group2.name]
 
 
-def _validate_raci_empty(raci_attrs: CustomMetadata):
-    assert hasattr(raci_attrs, CM_ATTR_RACI_RESPONSIBLE_RENAMED)
-    assert hasattr(raci_attrs, CM_ATTR_RACI_ACCOUNTABLE_RENAMED)
-    assert hasattr(raci_attrs, CM_ATTR_RACI_CONSULTED_RENAMED)
-    assert hasattr(raci_attrs, CM_ATTR_RACI_INFORMED_RENAMED)
-    assert hasattr(raci_attrs, CM_ATTR_RACI_EXTRA_RENAMED)
-    assert not getattr(
-        raci_attrs, CM_ATTR_RACI_RESPONSIBLE_RENAMED
-    )  # could be empty list
-    assert getattr(raci_attrs, CM_ATTR_RACI_ACCOUNTABLE_RENAMED) is None
-    assert not getattr(
-        raci_attrs, CM_ATTR_RACI_CONSULTED_RENAMED
-    )  # could be empty list
-    assert not getattr(raci_attrs, CM_ATTR_RACI_INFORMED_RENAMED)  # could be empty list
-    assert getattr(raci_attrs, CM_ATTR_RACI_EXTRA_RENAMED) is None
+def _validate_raci_empty(raci_attrs: CustomMetadataDict):
+    attribute_names = raci_attrs.attribute_names
+    assert CM_ATTR_RACI_RESPONSIBLE in attribute_names
+    assert CM_ATTR_RACI_ACCOUNTABLE in attribute_names
+    assert CM_ATTR_RACI_CONSULTED in attribute_names
+    assert CM_ATTR_RACI_INFORMED in attribute_names
+    assert CM_ATTR_RACI_EXTRA in attribute_names
+    assert not raci_attrs[CM_ATTR_RACI_RESPONSIBLE]
+    assert raci_attrs[CM_ATTR_RACI_ACCOUNTABLE] is None
+    assert not raci_attrs[CM_ATTR_RACI_CONSULTED]  # could be empty list
+    assert not raci_attrs[CM_ATTR_RACI_INFORMED]  # could be empty list
+    assert raci_attrs[CM_ATTR_RACI_EXTRA] is None
 
 
-def _validate_ipr_attributes(cma: CustomMetadata, mandatory: bool = True):
+def _validate_ipr_attributes(cma: CustomMetadataDict, mandatory: bool = True):
     assert cma
-    license = getattr(cma, CM_ATTR_IPR_LICENSE_RENAMED)
-    v = getattr(cma, CM_ATTR_IPR_VERSION_RENAMED)
-    m = getattr(cma, CM_ATTR_IPR_MANDATORY_RENAMED)
-    d = getattr(cma, CM_ATTR_IPR_DATE_RENAMED)
-    u = getattr(cma, CM_ATTR_IPR_URL_RENAMED)
+    license = cma[CM_ATTR_IPR_LICENSE]
+    v = cma[CM_ATTR_IPR_VERSION]
+    m = cma[CM_ATTR_IPR_MANDATORY]
+    d = cma[CM_ATTR_IPR_DATE]
+    u = cma[CM_ATTR_IPR_URL]
     assert license
     assert license == "CC BY"
     assert v
@@ -943,24 +908,25 @@ def _validate_ipr_attributes(cma: CustomMetadata, mandatory: bool = True):
     assert u == "https://creativecommons.org/licenses/by/2.0/"
 
 
-def _validate_ipr_empty(ipr_attrs: CustomMetadata):
-    assert hasattr(ipr_attrs, CM_ATTR_IPR_LICENSE_RENAMED)
-    assert hasattr(ipr_attrs, CM_ATTR_IPR_VERSION_RENAMED)
-    assert hasattr(ipr_attrs, CM_ATTR_IPR_MANDATORY_RENAMED)
-    assert hasattr(ipr_attrs, CM_ATTR_IPR_DATE_RENAMED)
-    assert hasattr(ipr_attrs, CM_ATTR_IPR_URL_RENAMED)
-    assert getattr(ipr_attrs, CM_ATTR_IPR_LICENSE_RENAMED) is None
-    assert getattr(ipr_attrs, CM_ATTR_IPR_VERSION_RENAMED) is None
-    assert getattr(ipr_attrs, CM_ATTR_IPR_MANDATORY_RENAMED) is None
-    assert getattr(ipr_attrs, CM_ATTR_IPR_DATE_RENAMED) is None
-    assert getattr(ipr_attrs, CM_ATTR_IPR_URL_RENAMED) is None
+def _validate_ipr_empty(ipr_attrs: CustomMetadataDict):
+    attribute_names = ipr_attrs.attribute_names
+    assert CM_ATTR_IPR_LICENSE in attribute_names
+    assert CM_ATTR_IPR_VERSION in attribute_names
+    assert CM_ATTR_IPR_MANDATORY in attribute_names
+    assert CM_ATTR_IPR_DATE in attribute_names
+    assert CM_ATTR_IPR_URL in attribute_names
+    assert ipr_attrs[CM_ATTR_IPR_LICENSE] is None
+    assert ipr_attrs[CM_ATTR_IPR_VERSION] is None
+    assert ipr_attrs[CM_ATTR_IPR_MANDATORY] is None
+    assert ipr_attrs[CM_ATTR_IPR_DATE] is None
+    assert ipr_attrs[CM_ATTR_IPR_URL] is None
 
 
-def _validate_dq_attributes(cma: CustomMetadata):
+def _validate_dq_attributes(cma: CustomMetadataDict):
     assert cma
-    c = getattr(cma, CM_ATTR_QUALITY_COUNT_RENAMED)
-    s = getattr(cma, CM_ATTR_QUALITY_SQL_RENAMED)
-    t = getattr(cma, CM_ATTR_QUALITY_TYPE_RENAMED)
+    c = cma[CM_ATTR_QUALITY_COUNT]
+    s = cma[CM_ATTR_QUALITY_SQL]
+    t = cma[CM_ATTR_QUALITY_TYPE]
     assert c
     assert c == 42
     assert s
@@ -969,13 +935,14 @@ def _validate_dq_attributes(cma: CustomMetadata):
     assert t == "Completeness"
 
 
-def _validate_dq_empty(dq_attrs: CustomMetadata):
-    assert hasattr(dq_attrs, CM_ATTR_QUALITY_COUNT_RENAMED)
-    assert hasattr(dq_attrs, CM_ATTR_QUALITY_SQL_RENAMED)
-    assert hasattr(dq_attrs, CM_ATTR_QUALITY_TYPE_RENAMED)
-    assert getattr(dq_attrs, CM_ATTR_QUALITY_COUNT_RENAMED) is None
-    assert getattr(dq_attrs, CM_ATTR_QUALITY_SQL_RENAMED) is None
-    assert getattr(dq_attrs, CM_ATTR_QUALITY_TYPE_RENAMED) is None
+def _validate_dq_empty(dq_attrs: CustomMetadataDict):
+    attribute_names = dq_attrs.attribute_names
+    assert CM_ATTR_QUALITY_COUNT in attribute_names
+    assert CM_ATTR_QUALITY_SQL in attribute_names
+    assert CM_ATTR_QUALITY_TYPE in attribute_names
+    assert dq_attrs[CM_ATTR_QUALITY_COUNT] is None
+    assert dq_attrs[CM_ATTR_QUALITY_SQL] is None
+    assert dq_attrs[CM_ATTR_QUALITY_TYPE] is None
 
 
 def _validate_raci_structure(
@@ -1046,7 +1013,7 @@ def test_add_badge_cm_dq(
     badge = Badge.create(
         name=CM_ATTR_QUALITY_COUNT,
         cm_name=CM_QUALITY,
-        cm_attribute=CM_ATTR_QUALITY_COUNT_RENAMED,
+        cm_attribute=CM_ATTR_QUALITY_COUNT,
         badge_conditions=[
             BadgeCondition.create(
                 badge_condition_operator=BadgeComparisonOperator.GTE,
