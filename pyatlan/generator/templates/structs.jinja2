@@ -43,6 +43,6 @@ class {{struct.name}}(AtlanObject):
     {% endif %}
     {%- for attribute_def in struct.attribute_defs %}
     {%- set type = attribute_def.type_name | get_type %}
-    {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}{{type}}{% if attribute_def.is_optional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
+    {{attribute_def.name | to_snake_case }}: {% if attribute_def.is_optional %}Optional[{% endif %}'{{type}}'{% if attribute_def.is_optional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
     {%- endfor %}
 {% endfor %}

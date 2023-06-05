@@ -76,9 +76,8 @@ from pyatlan.model.core import (
     Classification,
     ClassificationName,
     Classifications,
-    CustomMetadata,
-    CustomMetadataReqest,
 )
+from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataRequest
 from pyatlan.model.enums import (
     AtlanConnectorType,
     AtlanDeleteType,
@@ -1015,60 +1014,56 @@ class AtlanClient(BaseSettings):
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
     def update_custom_metadata_attributes(
-        self, guid: str, custom_metadata: CustomMetadata
+        self, guid: str, custom_metadata: CustomMetadataDict
     ):
-        custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
+        custom_metadata_request = CustomMetadataRequest.create(
+            custom_metadata_dict=custom_metadata
+        )
         self._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
-                {"entity_guid": guid, "bm_id": custom_metadata._meta_data_type_id}
+                {
+                    "entity_guid": guid,
+                    "bm_id": custom_metadata_request.custom_metadata_set_id,
+                }
             ),
             None,
             custom_metadata_request,
         )
 
-    def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadata):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        # Iterate through the custom metadata provided and explicitly set every
-        # single attribute, so that they are all serialized out (forcing removal
-        # of any empty ones)
-        for k, v in custom_metadata.items():
-            # Need to translate the hashed-string key here back to an attribute name
-            attr_name = str(
-                CustomMetadataCache.get_attr_name_for_id(
-                    set_id=custom_metadata._meta_data_type_id, attr_id=k
-                )
-            )
-            if not v:
-                setattr(custom_metadata, attr_name, None)
-            else:
-                setattr(custom_metadata, attr_name, v)
-        custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
+    def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadataDict):
+        # clear unset attributes so that they are removed
+        custom_metadata.clear_unset()
+        custom_metadata_request = CustomMetadataRequest.create(
+            custom_metadata_dict=custom_metadata
+        )
         self._call_api(
             ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
-                {"entity_guid": guid, "bm_id": custom_metadata._meta_data_type_id}
+                {
+                    "entity_guid": guid,
+                    "bm_id": custom_metadata_request.custom_metadata_set_id,
+                }
             ),
             None,
             custom_metadata_request,
         )
 
     def remove_custom_metadata(self, guid: str, cm_name: str):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        # Ensure the custom metadata exists first - let this throw an error if not
-        if cm_id := CustomMetadataCache.get_id_for_name(cm_name):
-            # Initialize a dict of empty attributes for the custom metadata, and then
-            # send that so that they are removed accordingly
-            if cm_type := CustomMetadataCache.get_type_for_id(cm_id):
-                custom_metadata = cm_type()
-                custom_metadata_request = CustomMetadataReqest(__root__=custom_metadata)
-                self._call_api(
-                    ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
-                        {"entity_guid": guid, "bm_id": cm_id}
-                    ),
-                    None,
-                    custom_metadata_request,
-                )
+        custom_metadata = CustomMetadataDict(name=cm_name)
+        # invoke clear_all so all attributes are set to None and consequently removed
+        custom_metadata.clear_all()
+        custom_metadata_request = CustomMetadataRequest.create(
+            custom_metadata_dict=custom_metadata
+        )
+        self._call_api(
+            ADD_BUSINESS_ATTRIBUTE_BY_ID.format_path(
+                {
+                    "entity_guid": guid,
+                    "bm_id": custom_metadata_request.custom_metadata_set_id,
+                }
+            ),
+            None,
+            custom_metadata_request,
+        )
 
     @validate_arguments()
     def append_terms(

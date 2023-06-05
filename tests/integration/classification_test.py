@@ -17,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 MODULE_NAME = "CLS"
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope="module")
 def make_classification(
     client: AtlanClient,
 ) -> Generator[Callable[[str], ClassificationDef], None, None]:
