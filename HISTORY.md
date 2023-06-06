@@ -1,3 +1,18 @@
+## 0.1.0 (June 6, 2023)
+
+* Fixes connection creation and associated validations
+* Adds further connectors (with icons)
+* Adds SQL parser endpoint
+* Add Lineage list API and integration tests
+* Fix bug on locking custom metadata
+* Refactor syntax for accessing custom metadata properties
+
+  Previously the custom metadata property `First Name` would have been accessed as follows:
+    ````cm.first_name````
+
+  This could cause confusion how the name was converted so now the following syntax will be used:
+
+    ```cm['First Name']```
 ## 0.0.33 (May 24, 2023)
 
 * Added convenience properties for relationship_attributes
