@@ -49,6 +49,7 @@ TYPE_REPLACEMENTS = [
     ("file_type", "FileType"),
 ]
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
+LIST_OVERRIDES = {"policyResources": "list[str]"}
 
 
 def get_type(type_: str):
@@ -102,7 +103,11 @@ class Generator:
             if i >= len(entity_defs):
                 break
         content = self.template.render(
-            {"struct_defs": self.type_defs.struct_defs, "entity_defs": entity_defs}
+            {
+                "struct_defs": self.type_defs.struct_defs,
+                "entity_defs": entity_defs,
+                "list_overrides": LIST_OVERRIDES,
+            }
         )
         with (PARENT.parent / "model" / "assets.py").open("w") as script:
             script.write(content)

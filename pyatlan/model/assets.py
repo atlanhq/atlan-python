@@ -7,7 +7,7 @@ import hashlib
 import sys
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, TypeVar
+from typing import Any, ClassVar, Dict, List, Optional, Set, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -28,13 +28,18 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    AuthPolicyCategory,
+    AuthPolicyResourceCategory,
     AuthPolicyType,
     CertificateStatus,
+    DataAction,
     EntityStatus,
     FileType,
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
+    PersonaGlossaryAction,
+    PersonaMetadataAction,
     PowerbiEndorsement,
     QueryUsernameStrategy,
     QuickSightAnalysisStatus,
@@ -327,6 +332,7 @@ class Asset(Referenceable):
         "last_row_changed_at",
         "source_total_cost",
         "source_cost_unit",
+        "source_read_query_cost",
         "source_read_recent_user_list",
         "source_read_recent_user_record_list",
         "source_read_top_user_list",
@@ -858,6 +864,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_cost_unit = source_cost_unit
+
+    @property
+    def source_read_query_cost(self) -> Optional[float]:
+        return self.attributes.source_read_query_cost
+
+    @source_read_query_cost.setter
+    def source_read_query_cost(self, source_read_query_cost: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_read_query_cost = source_read_query_cost
 
     @property
     def source_read_recent_user_list(self) -> Optional[set[str]]:
@@ -1889,6 +1905,9 @@ class Asset(Referenceable):
         )
         source_cost_unit: Optional[SourceCostUnitType] = Field(
             None, description="", alias="sourceCostUnit"
+        )
+        source_read_query_cost: Optional[float] = Field(
+            None, description="", alias="sourceReadQueryCost"
         )
         source_read_recent_user_list: Optional[set[str]] = Field(
             None, description="", alias="sourceReadRecentUserList"
@@ -3506,11 +3525,11 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self.attributes.policy_actions = policy_actions
 
     @property
-    def policy_resources(self) -> Optional[set[str]]:
+    def policy_resources(self) -> Optional[list[str]]:
         return self.attributes.policy_resources
 
     @policy_resources.setter
-    def policy_resources(self, policy_resources: Optional[set[str]]):
+    def policy_resources(self, policy_resources: Optional[list[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.policy_resources = policy_resources
@@ -3640,7 +3659,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         policy_actions: Optional[set[str]] = Field(
             None, description="", alias="policyActions"
         )
-        policy_resources: Optional[set[str]] = Field(
+        policy_resources: Optional[list[str]] = Field(
             None, description="", alias="policyResources"
         )
         policy_resource_category: Optional[str] = Field(
@@ -3671,11 +3690,28 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             None, description="", alias="accessControl"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> AuthPolicy.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return AuthPolicy.Attributes(
+                qualified_name=name, name=name, display_name=""
+            )
+
     attributes: "AuthPolicy.Attributes" = Field(
         default_factory=lambda: AuthPolicy.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> AuthPolicy:
+        validate_required_fields(["name"], [name])
+        attributes = AuthPolicy.Attributes.create(name=name)
+        return cls(attributes=attributes)
 
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
@@ -4430,11 +4466,135 @@ class Persona(AccessControl):
         )
         role_id: Optional[str] = Field(None, description="", alias="roleId")
 
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> Persona.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return Persona.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description="",
+            )
+
     attributes: "Persona.Attributes" = Field(
         default_factory=lambda: Persona.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> Persona:
+        validate_required_fields(["name"], [name])
+        attributes = Persona.Attributes.create(name=name)
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    def create_metadata_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PersonaMetadataAction],
+        resources: list[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "actions", "resources"],
+            [name, persona_id, policy_type, actions, resources],
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "metadata"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_data_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        resources: list[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "resources"],
+            [name, persona_id, policy_type, resources],
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resources.append("entity-type:*")
+        policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value
+        policy.policy_service_name = "heka"
+        policy.policy_sub_category = "data"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_glossary_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PersonaGlossaryAction],
+        resources: list[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "actions", "resources"],
+            [name, persona_id, policy_type, actions, resources],
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "glossary"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                is_access_control_enabled=is_enabled,
+            )
+        )
 
 
 class Purpose(AccessControl):
@@ -4472,11 +4632,54 @@ class Purpose(AccessControl):
             None, description="", alias="purposeClassifications"
         )
 
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str, classifications: list[str]) -> Purpose.Attributes:
+            validate_required_fields(
+                ["name", "classifications"], [name, classifications]
+            )
+            return Purpose.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description="",
+                purpose_classifications=classifications,
+            )
+
     attributes: "Purpose.Attributes" = Field(
         default_factory=lambda: Purpose.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, classifications: list[str]) -> Purpose:
+        validate_required_fields(["name", "classifications"], [name, classifications])
+        attributes = Purpose.Attributes.create(
+            name=name, classifications=classifications
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                is_access_control_enabled=is_enabled,
+            )
+        )
 
 
 class Collection(Namespace):
@@ -6456,7 +6659,7 @@ class S3(ObjectStore):
     )
 
 
-class ADLS(Azure):
+class ADLS(ObjectStore):
     """Description"""
 
     def __setattr__(self, name, value):
@@ -6470,8 +6673,6 @@ class ADLS(Azure):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
-        "input_to_processes",
-        "output_from_processes",
     ]
 
     @property
@@ -6528,26 +6729,6 @@ class ADLS(Azure):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    @property
-    def input_to_processes(self) -> Optional[list[Process]]:
-        return self.attributes.input_to_processes
-
-    @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_processes = input_to_processes
-
-    @property
-    def output_from_processes(self) -> Optional[list[Process]]:
-        return self.attributes.output_from_processes
-
-    @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_processes = output_from_processes
-
     type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
@@ -6556,7 +6737,7 @@ class ADLS(Azure):
             raise ValueError("must be ADLS")
         return v
 
-    class Attributes(Azure.Attributes):
+    class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsAccountQualifiedName"
         )
@@ -6572,12 +6753,6 @@ class ADLS(Azure):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLS.Attributes" = Field(
         default_factory=lambda: ADLS.Attributes(),

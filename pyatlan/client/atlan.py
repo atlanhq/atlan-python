@@ -62,6 +62,8 @@ from pyatlan.model.assets import (
     Connection,
     Database,
     MaterialisedView,
+    Persona,
+    Purpose,
     Referenceable,
     Schema,
     Table,
@@ -1202,3 +1204,45 @@ class AtlanClient(BaseSettings):
             GET_LINEAGE_LIST, None, lineage_request, exclude_unset=True
         )
         return LineageListResponse(**raw_json)
+
+    @validate_arguments()
+    def find_personas_by_name(
+        self,
+        name: str,
+        attributes: Optional[list[str]] = None,
+    ) -> list[Persona]:
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("PERSONA")
+            + Term.with_name(name)
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        return [asset for asset in results if isinstance(asset, Persona)]
+
+    @validate_arguments()
+    def find_purposes_by_name(
+        self,
+        name: str,
+        attributes: Optional[list[str]] = None,
+    ) -> list[Purpose]:
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("PURPOSE")
+            + Term.with_name(name)
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        return [asset for asset in results if isinstance(asset, Purpose)]
