@@ -28,7 +28,12 @@ def make_unique() -> Callable[[str], str]:
 
 @pytest.fixture(scope="module")
 def client() -> AtlanClient:
-    return AtlanClient()
+    client = AtlanClient()
+    client.register_client(client)
+
+    yield client
+
+    AtlanClient.reset_default_client()
 
 
 def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:
