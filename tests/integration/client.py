@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import logging
-from typing import Callable, Type
+from typing import Callable, Generator, Type
 
 import pytest
 
@@ -27,7 +27,7 @@ def make_unique() -> Callable[[str], str]:
 
 
 @pytest.fixture(scope="module")
-def client() -> AtlanClient:
+def client() -> Generator[AtlanClient, None, None]:
     client = AtlanClient()
     client.register_client(client)
 

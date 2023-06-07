@@ -43,14 +43,18 @@ def connection(
 def database(
     client: AtlanClient, connection: Connection, make_unique: Callable[[str], str]
 ) -> Generator[Database, None, None]:
-    database_name = make_unique(MODULE_NAME + "_db")
+    database_name = make_unique(f"{MODULE_NAME}_db")
+    db = create_database(client, connection, make_unique, database_name)
+    yield db
+    delete_asset(client, guid=db.guid, asset_type=Database)
+
+
+def create_database(client, connection, make_unique, database_name: str):
     to_create = Database.create(
         name=database_name, connection_qualified_name=connection.qualified_name
     )
     result = client.upsert(to_create)
-    db = result.assets_created(asset_type=Database)[0]
-    yield db
-    delete_asset(client, guid=db.guid, asset_type=Database)
+    return result.assets_created(asset_type=Database)[0]
 
 
 @pytest.fixture(scope="module")
@@ -60,7 +64,7 @@ def schema(
     database: Database,
     make_unique: Callable[[str], str],
 ) -> Generator[Schema, None, None]:
-    schema_name = make_unique(MODULE_NAME + "_schema")
+    schema_name = make_unique(f"{MODULE_NAME}_schema")
     to_create = Schema.create(
         name=schema_name, database_qualified_name=database.qualified_name
     )
@@ -78,7 +82,7 @@ def table(
     schema: Schema,
     make_unique: Callable[[str], str],
 ) -> Generator[Table, None, None]:
-    table_name = make_unique(MODULE_NAME + "_tbl")
+    table_name = make_unique(f"{MODULE_NAME}_tbl")
     to_create = Table.create(
         name=table_name, schema_qualified_name=schema.qualified_name
     )
@@ -96,7 +100,7 @@ def mview(
     schema: Schema,
     make_unique: Callable[[str], str],
 ) -> Generator[MaterialisedView, None, None]:
-    mview_name = make_unique(MODULE_NAME + "_mv")
+    mview_name = make_unique(f"{MODULE_NAME}_mv")
     to_create = MaterialisedView.create(
         name=mview_name, schema_qualified_name=schema.qualified_name
     )
@@ -114,7 +118,7 @@ def view(
     schema: Schema,
     make_unique: Callable[[str], str],
 ) -> Generator[View, None, None]:
-    view_name = make_unique(MODULE_NAME + "_v")
+    view_name = make_unique(f"{MODULE_NAME}_v")
     to_create = View.create(name=view_name, schema_qualified_name=schema.qualified_name)
     result = client.upsert(to_create)
     v = result.assets_created(asset_type=View)[0]
@@ -131,7 +135,7 @@ def column1(
     table: Table,
     make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(MODULE_NAME + "1")
+    column_name = make_unique(f"{MODULE_NAME}1")
     to_create = Column.create(
         name=column_name,
         parent_type=Table,
@@ -153,7 +157,7 @@ def column2(
     table: Table,
     make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(MODULE_NAME + "2")
+    column_name = make_unique(f"{MODULE_NAME}2")
     to_create = Column.create(
         name=column_name,
         parent_type=Table,
@@ -175,7 +179,7 @@ def column3(
     mview: MaterialisedView,
     make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(MODULE_NAME + "3")
+    column_name = make_unique(f"{MODULE_NAME}3")
     to_create = Column.create(
         name=column_name,
         parent_type=MaterialisedView,
@@ -197,7 +201,7 @@ def column4(
     mview: MaterialisedView,
     make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(MODULE_NAME + "4")
+    column_name = make_unique(f"{MODULE_NAME}4")
     to_create = Column.create(
         name=column_name,
         parent_type=MaterialisedView,
@@ -219,7 +223,7 @@ def column5(
     view: View,
     make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(MODULE_NAME + "5")
+    column_name = make_unique(f"{MODULE_NAME}5")
     to_create = Column.create(
         name=column_name,
         parent_type=View,
@@ -241,7 +245,7 @@ def column6(
     view: View,
     make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(MODULE_NAME + "6")
+    column_name = make_unique(f"{MODULE_NAME}6")
     to_create = Column.create(
         name=column_name,
         parent_type=View,

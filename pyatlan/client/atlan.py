@@ -194,7 +194,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
         )
     else:
         raise InvalidRequestException(
-            "Unable to update type definitions of category: " + typedef.category.value,
+            f"Unable to update type definitions of category: {typedef.category.value}",
             param="category",
         )
         # Throw an invalid request exception
