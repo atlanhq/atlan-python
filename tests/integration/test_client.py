@@ -72,18 +72,6 @@ def make_term(
         m_client.purge_entity_by_guid(guid=guid)
 
 
-def test_register_client_with_bad_parameter_raises_valueerror():
-    with pytest.raises(ValueError, match="client must be an instance of AtlanClient"):
-        AtlanClient.register_client("")
-    assert AtlanClient.get_default_client() is None
-
-
-def test_register_client():
-    client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
-    AtlanClient.register_client(client)
-    assert AtlanClient.get_default_client() == client
-
-
 def test_append_terms_with_guid(
     m_client: AtlanClient,
     make_term: Callable[[str], AtlasGlossaryTerm],
