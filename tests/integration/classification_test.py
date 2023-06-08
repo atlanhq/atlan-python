@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import logging
+import os
+import urllib.request
 from typing import Callable, Generator
 
 import pytest
@@ -9,7 +11,8 @@ from retry import retry
 from pyatlan.cache.classification_cache import ClassificationCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
-from pyatlan.model.enums import AtlanClassificationColor
+from pyatlan.model.atlan_image import AtlanImage
+from pyatlan.model.enums import AtlanClassificationColor, AtlanIcon, IconType
 from pyatlan.model.typedef import ClassificationDef
 
 LOGGER = logging.getLogger(__name__)
@@ -54,36 +57,97 @@ def make_classification(
 
 
 @pytest.fixture(scope="module")
-def classification_def(
+def image(
+    client: AtlanClient, make_unique: Callable[[str], str]
+) -> Generator[AtlanImage, None, None]:
+    urllib.request.urlretrieve(
+        "https://github.com/great-expectations/great_expectations"
+        "/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
+        "gx-mark-160.png",
+    )
+    with open("gx-mark-160.png", "rb") as out_file:
+        image = client.upload_image(file=out_file, filename="gx-mark-160.png")
+        yield image
+        os.remove("gx-mark-160.png")
+
+
+@pytest.fixture(scope="module")
+def classification_with_image(
+    client: AtlanClient,
+    image: AtlanImage,
+    make_unique: Callable[[str], str],
+) -> Generator[ClassificationDef, None, None]:
+    cls_name = f"{make_unique(MODULE_NAME)}_image"
+    cls = ClassificationDef.create(
+        name=cls_name, color=AtlanClassificationColor.YELLOW, image=image
+    )
+    response = client.create_typedef(cls)
+    created = response.classification_defs[0]
+    yield created
+    client.purge_typedef(cls_name, typedef_type=ClassificationDef)
+
+
+@pytest.fixture(scope="module")
+def classification_with_icon(
     client: AtlanClient,
     make_unique: Callable[[str], str],
-    make_classification: Callable[[str], ClassificationDef],
-) -> ClassificationDef:
-    cls_name = make_unique(MODULE_NAME)
-    return make_classification(cls_name)
-
-
-def test_classification_def(
-    classification_def: ClassificationDef, make_unique: Callable[[str], str]
-):
-    assert classification_def
-    assert classification_def.guid
-    assert classification_def.display_name == make_unique(MODULE_NAME)
-    assert classification_def.name != make_unique(MODULE_NAME)
-    assert classification_def.options
-    assert "color" in classification_def.options.keys()
-    assert (
-        classification_def.options.get("color") == AtlanClassificationColor.GREEN.value
+) -> Generator[ClassificationDef, None, None]:
+    cls_name = f"{make_unique(MODULE_NAME)}_icon"
+    cls = ClassificationDef.create(
+        name=cls_name,
+        color=AtlanClassificationColor.YELLOW,
+        icon=AtlanIcon.BOOK_BOOKMARK,
     )
+    response = client.create_typedef(cls)
+    created = response.classification_defs[0]
+    yield created
+    client.purge_typedef(cls_name, typedef_type=ClassificationDef)
+
+
+def test_classification_with_image(
+    classification_with_image: ClassificationDef, make_unique: Callable[[str], str]
+):
+    assert classification_with_image
+    assert classification_with_image.guid
+    assert classification_with_image.display_name == f"{make_unique(MODULE_NAME)}_image"
+    assert classification_with_image.name != f"{make_unique(MODULE_NAME)}_image"
+    assert classification_with_image.options
+    assert "color" in classification_with_image.options.keys()
+    assert (
+        classification_with_image.options.get("color")
+        == AtlanClassificationColor.YELLOW.value
+    )
+    assert "imageID" in classification_with_image.options.keys()
+    assert classification_with_image.options.get("imageID")
+    assert "iconType" in classification_with_image.options.keys()
+    assert classification_with_image.options.get("iconType") == IconType.IMAGE.value
 
 
 def test_classification_cache(
-    classification_def: ClassificationDef, make_unique: Callable[[str], str]
+    classification_with_image: ClassificationDef, make_unique: Callable[[str], str]
 ):
-    cls_name = make_unique(MODULE_NAME)
+    cls_name = f"{make_unique(MODULE_NAME)}_image"
     cls_id = ClassificationCache.get_id_for_name(cls_name)
     assert cls_id
-    assert cls_id == classification_def.name
+    assert cls_id == classification_with_image.name
     cls_name_found = ClassificationCache.get_name_for_id(cls_id)
     assert cls_name_found
     assert cls_name_found == cls_name
+
+
+def test_classification_with_icon(
+    classification_with_icon: ClassificationDef, make_unique: Callable[[str], str]
+):
+    assert classification_with_icon
+    assert classification_with_icon.guid
+    assert classification_with_icon.display_name == f"{make_unique(MODULE_NAME)}_icon"
+    assert classification_with_icon.name != f"{make_unique(MODULE_NAME)}_icon"
+    assert classification_with_icon.options
+    assert "color" in classification_with_icon.options.keys()
+    assert (
+        classification_with_icon.options.get("color")
+        == AtlanClassificationColor.YELLOW.value
+    )
+    assert not classification_with_icon.options.get("imageID")
+    assert "iconType" in classification_with_icon.options.keys()
+    assert classification_with_icon.options.get("iconType") == IconType.ICON.value
