@@ -1,6 +1,10 @@
 name: Python package
 
-on: [push, workflow_dispatch]
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron : '0 1 * * *' # At 01:00 Daily
 
 jobs:
   build:
