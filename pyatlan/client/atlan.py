@@ -52,6 +52,7 @@ from pyatlan.client.constants import (
     UPDATE_GROUP,
     UPDATE_TYPE_DEFS,
     UPDATE_USER,
+    UPLOAD_IMAGE,
 )
 from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
@@ -68,6 +69,7 @@ from pyatlan.model.assets import (
     Table,
     View,
 )
+from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import (
     Announcement,
     AssetRequest,
@@ -118,6 +120,7 @@ from pyatlan.model.user import (
     UserMinimalResponse,
     UserResponse,
 )
+from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import HTTPStatus, get_logger
 
 LOGGER = get_logger()
@@ -291,13 +294,13 @@ class AtlanClient(BaseSettings):
         super().__init__(**data)
         self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
-    def _call_api(
-        self, api, query_params=None, request_obj=None, exclude_unset: bool = True
-    ):
-        params, path = self._create_params(
-            api, query_params, request_obj, exclude_unset
-        )
-        response = self._session.request(api.method.value, path, **params)
+    def _call_api_internal(self, api, path, params, binary_data=None):
+        if binary_data:
+            response = self._session.request(
+                api.method.value, path, data=binary_data, **params
+            )
+        else:
+            response = self._session.request(api.method.value, path, **params)
         if response is not None:
             LOGGER.debug("HTTP Status: %s", response.status_code)
         if response is None:
@@ -313,10 +316,9 @@ class AtlanClient(BaseSettings):
                     return None
                 if LOGGER.isEnabledFor(logging.DEBUG):
                     LOGGER.debug(
-                        "<== __call_api(%s,%s,%s), result = %s",
+                        "<== __call_api(%s,%s), result = %s",
                         vars(api),
                         params,
-                        request_obj,
                         response,
                     )
                     LOGGER.debug(response.json())
@@ -347,6 +349,24 @@ class AtlanClient(BaseSettings):
                     )
             raise AtlanServiceException(api, response)
 
+    def _call_api(
+        self, api, query_params=None, request_obj=None, exclude_unset: bool = True
+    ):
+        params, path = self._create_params(
+            api, query_params, request_obj, exclude_unset
+        )
+        return self._call_api_internal(api, path, params)
+
+    def _upload_file(self, api, file=None, filename=None):
+        generator = MultipartDataGenerator()
+        generator.add_file(file=file, filename=filename)
+        post_data = generator.get_post_data()
+        api.produces = f"multipart/form-data; boundary={generator.boundary}"
+        params, path = self._create_params(
+            api, query_params=None, request_obj=None, exclude_unset=True
+        )
+        return self._call_api_internal(api, path, params, binary_data=post_data)
+
     def _create_params(
         self, api, query_params, request_obj, exclude_unset: bool = True
     ):
@@ -369,6 +389,10 @@ class AtlanClient(BaseSettings):
             LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
         return params, path
+
+    def upload_image(self, file, filename: str) -> AtlanImage:
+        raw_json = self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
+        return AtlanImage(**raw_json)
 
     def get_roles(
         self,

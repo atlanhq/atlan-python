@@ -5,12 +5,15 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 
+from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
     AtlanClassificationColor,
     AtlanCustomAttributePrimitiveType,
+    AtlanIcon,
     AtlanTypeCategory,
     Cardinality,
+    IconType,
     IndexType,
 )
 
@@ -491,19 +494,35 @@ class ClassificationDef(TypeDef):
     skip_display_name_uniqueness_check: Optional[bool] = Field(description="TBC")
 
     @staticmethod
-    def create(name: str, color: AtlanClassificationColor) -> ClassificationDef:
+    def create(
+        name: str,
+        color: AtlanClassificationColor,
+        icon: AtlanIcon = AtlanIcon.ATLAN_TAG,
+        image: Optional[AtlanImage] = None,
+    ) -> ClassificationDef:
         from pyatlan.model.assets import validate_required_fields
 
         validate_required_fields(
             ["name", "color"],
             [name, color],
         )
+        cls_options = {
+            "color": color.value,
+            "iconName": icon.value,
+        }
+        if image:
+            cls_options["imageID"] = str(image.id)
+            cls_options["iconType"] = IconType.IMAGE.value
+        else:
+            cls_options["imageID"] = ""
+            cls_options["iconType"] = IconType.ICON.value
+
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
         return ClassificationDef(
             category=AtlanTypeCategory.CLASSIFICATION,
             name=name,
             display_name=name,
-            options={"color": color.value},
+            options=cls_options,
             skip_display_name_uniqueness_check=False,
         )
 
