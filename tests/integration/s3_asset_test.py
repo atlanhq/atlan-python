@@ -1,27 +1,27 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Connection, S3Bucket
 from pyatlan.model.enums import AtlanConnectorType
-from tests.integration.client import delete_asset
+from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 
-MODULE_NAME = "S3"
+MODULE_NAME = TestId.make_unique("S3")
+
 CONNECTOR_TYPE = AtlanConnectorType.S3
 ARN = "arn:aws:s3:::"
+BUCKET_NAME = MODULE_NAME
+BUCKET_ARN = f"{ARN}{MODULE_NAME}"
 
 
 @pytest.fixture(scope="module")
-def connection(
-    client: AtlanClient, make_unique: Callable[[str], str]
-) -> Generator[Connection, None, None]:
-    connection_name = make_unique(MODULE_NAME)
+def connection(client: AtlanClient) -> Generator[Connection, None, None]:
     result = create_connection(
-        client=client, name=connection_name, connector_type=CONNECTOR_TYPE
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
     )
     yield result
     # TODO: proper connection delete workflow
@@ -30,14 +30,12 @@ def connection(
 
 @pytest.fixture(scope="module")
 def bucket(
-    client: AtlanClient, connection: Connection, make_unique: Callable[[str], str]
+    client: AtlanClient, connection: Connection
 ) -> Generator[S3Bucket, None, None]:
-    bucket_name = make_unique(MODULE_NAME)
-    bucket_arn = make_unique(ARN + MODULE_NAME)
     to_create = S3Bucket.create(
-        name=bucket_name,
+        name=BUCKET_NAME,
         connection_qualified_name=connection.qualified_name,
-        aws_arn=bucket_arn,
+        aws_arn=BUCKET_ARN,
     )
     response = client.upsert(to_create)
     result = response.assets_created(asset_type=S3Bucket)[0]
@@ -49,11 +47,10 @@ def test_bucket(
     client: AtlanClient,
     connection: Connection,
     bucket: S3Bucket,
-    make_unique: Callable[[str], str],
 ):
     assert bucket
     assert bucket.guid
     assert bucket.qualified_name
-    assert bucket.name == make_unique(MODULE_NAME)
-    assert bucket.aws_arn == make_unique(ARN + MODULE_NAME)
+    assert bucket.name == BUCKET_NAME
+    assert bucket.aws_arn == BUCKET_ARN
     assert bucket.connector_name == AtlanConnectorType.S3.value
