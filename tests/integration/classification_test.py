@@ -14,10 +14,14 @@ from pyatlan.error import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.enums import AtlanClassificationColor, AtlanIcon, IconType
 from pyatlan.model.typedef import ClassificationDef
+from tests.integration.client import TestId
+
+MODULE_NAME = TestId.make_unique("CLS")
+
+CLS_IMAGE = f"{MODULE_NAME}_image"
+CLS_ICON = f"{MODULE_NAME}_icon"
 
 LOGGER = logging.getLogger(__name__)
-
-MODULE_NAME = "CLS"
 
 
 @pytest.fixture(scope="module")
@@ -57,9 +61,7 @@ def make_classification(
 
 
 @pytest.fixture(scope="module")
-def image(
-    client: AtlanClient, make_unique: Callable[[str], str]
-) -> Generator[AtlanImage, None, None]:
+def image(client: AtlanClient) -> Generator[AtlanImage, None, None]:
     urllib.request.urlretrieve(
         "https://github.com/great-expectations/great_expectations"
         "/raw/develop/docs/docusaurus/static/img/gx-mark-160.png",
@@ -74,38 +76,32 @@ def image(
 def classification_with_image(
     client: AtlanClient,
     image: AtlanImage,
-    make_unique: Callable[[str], str],
 ) -> Generator[ClassificationDef, None, None]:
-    cls_name = f"{make_unique(MODULE_NAME)}_image"
     cls = ClassificationDef.create(
-        name=cls_name, color=AtlanClassificationColor.YELLOW, image=image
+        name=CLS_IMAGE, color=AtlanClassificationColor.YELLOW, image=image
     )
     yield client.create_typedef(cls).classification_defs[0]
-    client.purge_typedef(cls_name, typedef_type=ClassificationDef)
+    client.purge_typedef(CLS_IMAGE, typedef_type=ClassificationDef)
 
 
 @pytest.fixture(scope="module")
 def classification_with_icon(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
 ) -> Generator[ClassificationDef, None, None]:
-    cls_name = f"{make_unique(MODULE_NAME)}_icon"
     cls = ClassificationDef.create(
-        name=cls_name,
+        name=CLS_ICON,
         color=AtlanClassificationColor.YELLOW,
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
     yield client.create_typedef(cls).classification_defs[0]
-    client.purge_typedef(cls_name, typedef_type=ClassificationDef)
+    client.purge_typedef(CLS_ICON, typedef_type=ClassificationDef)
 
 
-def test_classification_with_image(
-    classification_with_image: ClassificationDef, make_unique: Callable[[str], str]
-):
+def test_classification_with_image(classification_with_image: ClassificationDef):
     assert classification_with_image
     assert classification_with_image.guid
-    assert classification_with_image.display_name == f"{make_unique(MODULE_NAME)}_image"
-    assert classification_with_image.name != f"{make_unique(MODULE_NAME)}_image"
+    assert classification_with_image.display_name == CLS_IMAGE
+    assert classification_with_image.name != CLS_IMAGE
     assert classification_with_image.options
     assert "color" in classification_with_image.options.keys()
     assert (
@@ -118,10 +114,8 @@ def test_classification_with_image(
     assert classification_with_image.options.get("iconType") == IconType.IMAGE.value
 
 
-def test_classification_cache(
-    classification_with_image: ClassificationDef, make_unique: Callable[[str], str]
-):
-    cls_name = f"{make_unique(MODULE_NAME)}_image"
+def test_classification_cache(classification_with_image: ClassificationDef):
+    cls_name = CLS_IMAGE
     cls_id = ClassificationCache.get_id_for_name(cls_name)
     assert cls_id
     assert cls_id == classification_with_image.name
@@ -130,13 +124,11 @@ def test_classification_cache(
     assert cls_name_found == cls_name
 
 
-def test_classification_with_icon(
-    classification_with_icon: ClassificationDef, make_unique: Callable[[str], str]
-):
+def test_classification_with_icon(classification_with_icon: ClassificationDef):
     assert classification_with_icon
     assert classification_with_icon.guid
-    assert classification_with_icon.display_name == f"{make_unique(MODULE_NAME)}_icon"
-    assert classification_with_icon.name != f"{make_unique(MODULE_NAME)}_icon"
+    assert classification_with_icon.display_name == CLS_ICON
+    assert classification_with_icon.name != CLS_ICON
     assert classification_with_icon.options
     assert "color" in classification_with_icon.options.keys()
     assert (
