@@ -41,13 +41,6 @@ class AwsCloudWatchMetric(AtlanObject):
     )
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: "set[float]" = Field(None, description="", alias="boundaries")
-    frequencies: "set[float]" = Field(None, description="", alias="frequencies")
-
-
 class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
@@ -61,12 +54,30 @@ class KafkaTopicConsumption(AtlanObject):
     )
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: "set[float]" = Field(None, description="", alias="boundaries")
+    frequencies: "set[float]" = Field(None, description="", alias="frequencies")
+
+
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional["str"] = Field(None, description="", alias="columnValue")
     column_value_frequency: Optional["int"] = Field(
         None, description="", alias="columnValueFrequency"
+    )
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional["str"] = Field(
+        None, description="", alias="tagAttachmentKey"
+    )
+    tag_attachment_value: Optional["str"] = Field(
+        None, description="", alias="tagAttachmentValue"
     )
 
 
@@ -135,17 +146,6 @@ class SourceTagAttachment(AtlanObject):
     )
     source_tag_sync_error: Optional["str"] = Field(
         None, description="", alias="sourceTagSyncError"
-    )
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentKey"
-    )
-    tag_attachment_value: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentValue"
     )
 
 
