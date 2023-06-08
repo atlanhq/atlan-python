@@ -288,121 +288,78 @@ class AtlanClient(BaseSettings):
         super().__init__(**data)
         self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
 
+    def _call_api_internal(self, api, path, params, binary_data=None):
+        if binary_data:
+            response = self._session.request(
+                api.method.value, path, data=binary_data, **params
+            )
+        else:
+            response = self._session.request(api.method.value, path, **params)
+        if response is not None:
+            LOGGER.debug("HTTP Status: %s", response.status_code)
+        if response is None:
+            return None
+        if response.status_code == api.expected_status:
+            try:
+                if (
+                    response.content is None
+                    or response.content == "null"
+                    or len(response.content) == 0
+                    or response.status_code == HTTPStatus.NO_CONTENT
+                ):
+                    return None
+                if LOGGER.isEnabledFor(logging.DEBUG):
+                    LOGGER.debug(
+                        "<== __call_api(%s,%s), result = %s",
+                        vars(api),
+                        params,
+                        response,
+                    )
+                    LOGGER.debug(response.json())
+                return response.json()
+            except Exception as e:
+                print(e)
+                LOGGER.exception(
+                    "Exception occurred while parsing response with msg: %s", e
+                )
+                raise AtlanServiceException(api, response) from e
+        elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
+            LOGGER.error(
+                "Atlas Service unavailable. HTTP Status: %s",
+                HTTPStatus.SERVICE_UNAVAILABLE,
+            )
+
+            return None
+        else:
+            with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
+                error_info = json.loads(response.text)
+                error_code = error_info.get("errorCode", 0)
+                error_message = error_info.get("errorMessage", "")
+                if error_code and error_message:
+                    raise AtlanError(
+                        message=error_message,
+                        code=error_code,
+                        status_code=response.status_code,
+                    )
+            raise AtlanServiceException(api, response)
+
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
     ):
         params, path = self._create_params(
             api, query_params, request_obj, exclude_unset
         )
-        response = self._session.request(api.method.value, path, **params)
-        if response is not None:
-            LOGGER.debug("HTTP Status: %s", response.status_code)
-        if response is None:
-            return None
-        if response.status_code == api.expected_status:
-            try:
-                if (
-                    response.content is None
-                    or response.content == "null"
-                    or len(response.content) == 0
-                    or response.status_code == HTTPStatus.NO_CONTENT
-                ):
-                    return None
-                if LOGGER.isEnabledFor(logging.DEBUG):
-                    LOGGER.debug(
-                        "<== __call_api(%s,%s,%s), result = %s",
-                        vars(api),
-                        params,
-                        request_obj,
-                        response,
-                    )
-                    LOGGER.debug(response.json())
-                return response.json()
-            except Exception as e:
-                print(e)
-                LOGGER.exception(
-                    "Exception occurred while parsing response with msg: %s", e
-                )
-                raise AtlanServiceException(api, response) from e
-        elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
-            LOGGER.error(
-                "Atlas Service unavailable. HTTP Status: %s",
-                HTTPStatus.SERVICE_UNAVAILABLE,
-            )
-
-            return None
-        else:
-            with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
-                error_info = json.loads(response.text)
-                error_code = error_info.get("errorCode", 0)
-                error_message = error_info.get("errorMessage", "")
-                if error_code and error_message:
-                    raise AtlanError(
-                        message=error_message,
-                        code=error_code,
-                        status_code=response.status_code,
-                    )
-            raise AtlanServiceException(api, response)
+        return self._call_api_internal(api, path, params)
 
     def _upload_file(self, api, file=None, filename=None):
         generator = MultipartDataGenerator()
         generator.add_file(file=file, filename=filename)
         post_data = generator.get_post_data()
-        api.produces = "multipart/form-data; boundary=%s" % (generator.boundary,)
+        api.produces = f"multipart/form-data; boundary={generator.boundary}"
         params, path = self._create_params(
             api, query_params=None, request_obj=None, exclude_unset=True
         )
-        response = self._session.request(
-            api.method.value, path, data=post_data, **params
-        )
-        if response is not None:
-            LOGGER.debug("HTTP Status: %s", response.status_code)
-        if response is None:
-            return None
-        if response.status_code == api.expected_status:
-            try:
-                if (
-                    response.content is None
-                    or response.content == "null"
-                    or len(response.content) == 0
-                    or response.status_code == HTTPStatus.NO_CONTENT
-                ):
-                    return None
-                if LOGGER.isEnabledFor(logging.DEBUG):
-                    LOGGER.debug(
-                        "<== __call_api(%s,%s,%s), result = %s",
-                        vars(api),
-                        params,
-                        filename,
-                        response,
-                    )
-                    LOGGER.debug(response.json())
-                return response.json()
-            except Exception as e:
-                print(e)
-                LOGGER.exception(
-                    "Exception occurred while parsing response with msg: %s", e
-                )
-                raise AtlanServiceException(api, response) from e
-        elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
-            LOGGER.error(
-                "Atlas Service unavailable. HTTP Status: %s",
-                HTTPStatus.SERVICE_UNAVAILABLE,
-            )
-
-            return None
-        else:
-            with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
-                error_info = json.loads(response.text)
-                error_code = error_info.get("errorCode", 0)
-                error_message = error_info.get("errorMessage", "")
-                if error_code and error_message:
-                    raise AtlanError(
-                        message=error_message,
-                        code=error_code,
-                        status_code=response.status_code,
-                    )
-            raise AtlanServiceException(api, response)
+        return self._call_api_internal(api, path, params, binary_data=post_data)
 
     def _create_params(
         self, api, query_params, request_obj, exclude_unset: bool = True

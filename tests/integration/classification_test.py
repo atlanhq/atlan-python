@@ -66,8 +66,7 @@ def image(
         "gx-mark-160.png",
     )
     with open("gx-mark-160.png", "rb") as out_file:
-        image = client.upload_image(file=out_file, filename="gx-mark-160.png")
-        yield image
+        yield client.upload_image(file=out_file, filename="gx-mark-160.png")
         os.remove("gx-mark-160.png")
 
 
@@ -81,9 +80,7 @@ def classification_with_image(
     cls = ClassificationDef.create(
         name=cls_name, color=AtlanClassificationColor.YELLOW, image=image
     )
-    response = client.create_typedef(cls)
-    created = response.classification_defs[0]
-    yield created
+    yield client.create_typedef(cls).classification_defs[0]
     client.purge_typedef(cls_name, typedef_type=ClassificationDef)
 
 
@@ -98,9 +95,7 @@ def classification_with_icon(
         color=AtlanClassificationColor.YELLOW,
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
-    response = client.create_typedef(cls)
-    created = response.classification_defs[0]
-    yield created
+    yield client.create_typedef(cls).classification_defs[0]
     client.purge_typedef(cls_name, typedef_type=ClassificationDef)
 
 

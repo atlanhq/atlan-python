@@ -11,7 +11,7 @@ class MultipartDataGenerator(object):
     def __init__(self, chunk_size=1028):
         self.data = io.BytesIO()
         self.line_break = "\r\n"
-        self.boundary = self._initialize_boundary()
+        self.boundary = uuid.uuid4()
         self.chunk_size = chunk_size
 
     def add_file(self, file, filename):
@@ -49,10 +49,10 @@ class MultipartDataGenerator(object):
         self._write(self.line_break)
 
     def param_header(self):
-        return "--%s" % self.boundary
+        return f"--{self.boundary}"
 
     def get_post_data(self):
-        self._write("--%s--" % (self.boundary,))
+        self._write(f"--{self.boundary}--")
         self._write(self.line_break)
         return self.data.getvalue()
 
@@ -69,11 +69,5 @@ class MultipartDataGenerator(object):
         self.data.write(array)
 
     def _write_file(self, f):
-        while True:
-            file_contents = f.read(self.chunk_size)
-            if not file_contents:
-                break
+        while file_contents := f.read(self.chunk_size):
             self._write(file_contents)
-
-    def _initialize_boundary(self):
-        return uuid.uuid4()
