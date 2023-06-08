@@ -1,4 +1,3 @@
-from itertools import count
 from typing import Callable, Generator
 
 import pytest
@@ -6,16 +5,26 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
+    Announcement,
     AtlasGlossary,
     AtlasGlossaryTerm,
     Connection,
     Database,
     Table,
 )
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
 from tests.integration.lineage_test import create_database, delete_asset
 
-iter_count = count(1)
+CLASSIFICATION_NAME = "Issue"
+
+
+@pytest.fixture()
+def announcement():
+    return Announcement(
+        announcement_title="Important Announcement",
+        announcement_message="Very important info",
+        announcement_type=AnnouncementType.ISSUE,
+    )
 
 
 @pytest.fixture()
@@ -233,3 +242,73 @@ def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
         qualified_name=qualified_name, asset_type=AtlasGlossary
     )
     assert glossary.attributes.qualified_name == qualified_name
+
+
+def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    client.add_classifications(
+        AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
+    )
+    glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    assert glossary_term.classifications
+    assert len(glossary_term.classifications) == 1
+    classification = glossary_term.classifications[0]
+    assert str(classification.type_name) == CLASSIFICATION_NAME
+
+
+@pytest.mark.order(after="test_add_classification")
+def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    client.remove_classification(
+        AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
+    )
+    glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    assert not glossary_term.classifications
+
+
+def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
+    message = "An important message"
+    client.update_certificate(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+        certificate_status=CertificateStatus.DRAFT,
+        message=message,
+    )
+    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    assert glossary.certificate_status == CertificateStatus.DRAFT
+    assert glossary.certificate_status_message == message
+
+
+@pytest.mark.order(after="test_update_certificate")
+def test_remove_certificate(client: AtlanClient, glossary: AtlasGlossary):
+    client.remove_certificate(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+    )
+    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    assert glossary.certificate_status is None
+    assert glossary.certificate_status_message is None
+
+
+def test_update_announcement(
+    client: AtlanClient, glossary: AtlasGlossary, announcement: Announcement
+):
+    client.update_announcement(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+        announcement=announcement,
+    )
+    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    assert glossary.get_announcment() == announcement
+
+
+@pytest.mark.order(after="test_update_certificate")
+def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
+    client.remove_announcement(
+        asset_type=AtlasGlossary,
+        qualified_name=glossary.qualified_name,
+        name=glossary.name,
+    )
+    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    assert glossary.get_announcment() is None
