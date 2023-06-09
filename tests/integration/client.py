@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import logging
-from typing import Type
+from typing import Generator, Type
 
 import pytest
 
@@ -25,8 +25,13 @@ class TestId:
 
 
 @pytest.fixture(scope="module")
-def client() -> AtlanClient:
-    return AtlanClient()
+def client() -> Generator[AtlanClient, None, None]:
+    client = AtlanClient()
+    client.register_client(client)
+
+    yield client
+
+    AtlanClient.reset_default_client()
 
 
 def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:

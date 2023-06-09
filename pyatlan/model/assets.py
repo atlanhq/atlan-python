@@ -327,6 +327,7 @@ class Asset(Referenceable):
         "last_row_changed_at",
         "source_total_cost",
         "source_cost_unit",
+        "source_read_query_cost",
         "source_read_recent_user_list",
         "source_read_recent_user_record_list",
         "source_read_top_user_list",
@@ -858,6 +859,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.source_cost_unit = source_cost_unit
+
+    @property
+    def source_read_query_cost(self) -> Optional[float]:
+        return self.attributes.source_read_query_cost
+
+    @source_read_query_cost.setter
+    def source_read_query_cost(self, source_read_query_cost: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_read_query_cost = source_read_query_cost
 
     @property
     def source_read_recent_user_list(self) -> Optional[set[str]]:
@@ -1890,6 +1901,9 @@ class Asset(Referenceable):
         source_cost_unit: Optional[SourceCostUnitType] = Field(
             None, description="", alias="sourceCostUnit"
         )
+        source_read_query_cost: Optional[float] = Field(
+            None, description="", alias="sourceReadQueryCost"
+        )
         source_read_recent_user_list: Optional[set[str]] = Field(
             None, description="", alias="sourceReadRecentUserList"
         )
@@ -2507,20 +2521,6 @@ class Connection(Asset, type_name="Connection"):
         connection_s_s_o_credential_guid: Optional[str] = Field(
             None, description="", alias="connectionSSOCredentialGuid"
         )
-
-        def validate_required(self):
-            if not self.name:
-                raise ValueError("name is required")
-            if not self.admin_roles and not self.admin_groups and not self.admin_users:
-                raise ValueError(
-                    "One of admin_user, admin_groups or admin_roles is required"
-                )
-            if not self.qualified_name:
-                raise ValueError("qualified_name is required")
-            if not self.category:
-                raise ValueError("category is required")
-            if not self.connector_name:
-                raise ValueError("connector_name is required")
 
     attributes: "Connection.Attributes" = Field(
         default_factory=lambda: Connection.Attributes(),
@@ -3724,8 +3724,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "anchor",
         "antonyms",
         "assigned_entities",
-        "categories",
         "classifies",
+        "categories",
         "preferred_to_terms",
         "preferred_terms",
     ]
@@ -3911,16 +3911,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.assigned_entities = assigned_entities
 
     @property
-    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
-        return self.attributes.categories
-
-    @categories.setter
-    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.categories = categories
-
-    @property
     def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
         return self.attributes.classifies
 
@@ -3929,6 +3919,16 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.classifies = classifies
+
+    @property
+    def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        return self.attributes.categories
+
+    @categories.setter
+    def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.categories = categories
 
     @property
     def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -4007,11 +4007,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         assigned_entities: Optional[list[Referenceable]] = Field(
             None, description="", alias="assignedEntities"
         )  # relationship
-        categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
-        )  # relationship
         classifies: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="classifies"
+        )  # relationship
+        categories: Optional[list[AtlasGlossaryCategory]] = Field(
+            None, description="", alias="categories"
         )  # relationship
         preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="preferredToTerms"
@@ -6456,7 +6456,7 @@ class S3(ObjectStore):
     )
 
 
-class ADLS(Azure):
+class ADLS(ObjectStore):
     """Description"""
 
     def __setattr__(self, name, value):
@@ -6470,8 +6470,6 @@ class ADLS(Azure):
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
-        "input_to_processes",
-        "output_from_processes",
     ]
 
     @property
@@ -6528,26 +6526,6 @@ class ADLS(Azure):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    @property
-    def input_to_processes(self) -> Optional[list[Process]]:
-        return self.attributes.input_to_processes
-
-    @input_to_processes.setter
-    def input_to_processes(self, input_to_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.input_to_processes = input_to_processes
-
-    @property
-    def output_from_processes(self) -> Optional[list[Process]]:
-        return self.attributes.output_from_processes
-
-    @output_from_processes.setter
-    def output_from_processes(self, output_from_processes: Optional[list[Process]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.output_from_processes = output_from_processes
-
     type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
@@ -6556,7 +6534,7 @@ class ADLS(Azure):
             raise ValueError("must be ADLS")
         return v
 
-    class Attributes(Azure.Attributes):
+    class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsAccountQualifiedName"
         )
@@ -6572,12 +6550,6 @@ class ADLS(Azure):
         azure_tags: Optional[list[AzureTag]] = Field(
             None, description="", alias="azureTags"
         )
-        input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
-        )  # relationship
-        output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
-        )  # relationship
 
     attributes: "ADLS.Attributes" = Field(
         default_factory=lambda: ADLS.Attributes(),
@@ -7009,6 +6981,448 @@ class Metric(DataQuality):
 
     attributes: "Metric.Attributes" = Field(
         default_factory=lambda: Metric.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Preset(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Preset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "preset_workspace_id",
+        "preset_workspace_qualified_name",
+        "preset_dashboard_id",
+        "preset_dashboard_qualified_name",
+    ]
+
+    @property
+    def preset_workspace_id(self) -> Optional[int]:
+        return self.attributes.preset_workspace_id
+
+    @preset_workspace_id.setter
+    def preset_workspace_id(self, preset_workspace_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_id = preset_workspace_id
+
+    @property
+    def preset_workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.preset_workspace_qualified_name
+
+    @preset_workspace_qualified_name.setter
+    def preset_workspace_qualified_name(
+        self, preset_workspace_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_qualified_name = (
+            preset_workspace_qualified_name
+        )
+
+    @property
+    def preset_dashboard_id(self) -> Optional[int]:
+        return self.attributes.preset_dashboard_id
+
+    @preset_dashboard_id.setter
+    def preset_dashboard_id(self, preset_dashboard_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard_id = preset_dashboard_id
+
+    @property
+    def preset_dashboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.preset_dashboard_qualified_name
+
+    @preset_dashboard_qualified_name.setter
+    def preset_dashboard_qualified_name(
+        self, preset_dashboard_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard_qualified_name = (
+            preset_dashboard_qualified_name
+        )
+
+    type_name: str = Field("Preset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Preset":
+            raise ValueError("must be Preset")
+        return v
+
+    class Attributes(BI.Attributes):
+        preset_workspace_id: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceId"
+        )
+        preset_workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="presetWorkspaceQualifiedName"
+        )
+        preset_dashboard_id: Optional[int] = Field(
+            None, description="", alias="presetDashboardId"
+        )
+        preset_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="presetDashboardQualifiedName"
+        )
+
+    attributes: "Preset.Attributes" = Field(
+        default_factory=lambda: Preset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Mode(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Mode._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "mode_id",
+        "mode_token",
+        "mode_workspace_name",
+        "mode_workspace_username",
+        "mode_workspace_qualified_name",
+        "mode_report_name",
+        "mode_report_qualified_name",
+        "mode_query_name",
+        "mode_query_qualified_name",
+    ]
+
+    @property
+    def mode_id(self) -> Optional[str]:
+        return self.attributes.mode_id
+
+    @mode_id.setter
+    def mode_id(self, mode_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_id = mode_id
+
+    @property
+    def mode_token(self) -> Optional[str]:
+        return self.attributes.mode_token
+
+    @mode_token.setter
+    def mode_token(self, mode_token: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_token = mode_token
+
+    @property
+    def mode_workspace_name(self) -> Optional[str]:
+        return self.attributes.mode_workspace_name
+
+    @mode_workspace_name.setter
+    def mode_workspace_name(self, mode_workspace_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace_name = mode_workspace_name
+
+    @property
+    def mode_workspace_username(self) -> Optional[str]:
+        return self.attributes.mode_workspace_username
+
+    @mode_workspace_username.setter
+    def mode_workspace_username(self, mode_workspace_username: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace_username = mode_workspace_username
+
+    @property
+    def mode_workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.mode_workspace_qualified_name
+
+    @mode_workspace_qualified_name.setter
+    def mode_workspace_qualified_name(
+        self, mode_workspace_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace_qualified_name = mode_workspace_qualified_name
+
+    @property
+    def mode_report_name(self) -> Optional[str]:
+        return self.attributes.mode_report_name
+
+    @mode_report_name.setter
+    def mode_report_name(self, mode_report_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report_name = mode_report_name
+
+    @property
+    def mode_report_qualified_name(self) -> Optional[str]:
+        return self.attributes.mode_report_qualified_name
+
+    @mode_report_qualified_name.setter
+    def mode_report_qualified_name(self, mode_report_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_report_qualified_name = mode_report_qualified_name
+
+    @property
+    def mode_query_name(self) -> Optional[str]:
+        return self.attributes.mode_query_name
+
+    @mode_query_name.setter
+    def mode_query_name(self, mode_query_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_query_name = mode_query_name
+
+    @property
+    def mode_query_qualified_name(self) -> Optional[str]:
+        return self.attributes.mode_query_qualified_name
+
+    @mode_query_qualified_name.setter
+    def mode_query_qualified_name(self, mode_query_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_query_qualified_name = mode_query_qualified_name
+
+    type_name: str = Field("Mode", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Mode":
+            raise ValueError("must be Mode")
+        return v
+
+    class Attributes(BI.Attributes):
+        mode_id: Optional[str] = Field(None, description="", alias="modeId")
+        mode_token: Optional[str] = Field(None, description="", alias="modeToken")
+        mode_workspace_name: Optional[str] = Field(
+            None, description="", alias="modeWorkspaceName"
+        )
+        mode_workspace_username: Optional[str] = Field(
+            None, description="", alias="modeWorkspaceUsername"
+        )
+        mode_workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="modeWorkspaceQualifiedName"
+        )
+        mode_report_name: Optional[str] = Field(
+            None, description="", alias="modeReportName"
+        )
+        mode_report_qualified_name: Optional[str] = Field(
+            None, description="", alias="modeReportQualifiedName"
+        )
+        mode_query_name: Optional[str] = Field(
+            None, description="", alias="modeQueryName"
+        )
+        mode_query_qualified_name: Optional[str] = Field(
+            None, description="", alias="modeQueryQualifiedName"
+        )
+
+    attributes: "Mode.Attributes" = Field(
+        default_factory=lambda: Mode.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Sigma(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Sigma._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_workbook_qualified_name",
+        "sigma_workbook_name",
+        "sigma_page_qualified_name",
+        "sigma_page_name",
+        "sigma_data_element_qualified_name",
+        "sigma_data_element_name",
+    ]
+
+    @property
+    def sigma_workbook_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_workbook_qualified_name
+
+    @sigma_workbook_qualified_name.setter
+    def sigma_workbook_qualified_name(
+        self, sigma_workbook_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
+
+    @property
+    def sigma_workbook_name(self) -> Optional[str]:
+        return self.attributes.sigma_workbook_name
+
+    @sigma_workbook_name.setter
+    def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_workbook_name = sigma_workbook_name
+
+    @property
+    def sigma_page_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_page_qualified_name
+
+    @sigma_page_qualified_name.setter
+    def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
+
+    @property
+    def sigma_page_name(self) -> Optional[str]:
+        return self.attributes.sigma_page_name
+
+    @sigma_page_name.setter
+    def sigma_page_name(self, sigma_page_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page_name = sigma_page_name
+
+    @property
+    def sigma_data_element_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_qualified_name
+
+    @sigma_data_element_qualified_name.setter
+    def sigma_data_element_qualified_name(
+        self, sigma_data_element_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_qualified_name = (
+            sigma_data_element_qualified_name
+        )
+
+    @property
+    def sigma_data_element_name(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_name
+
+    @sigma_data_element_name.setter
+    def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_name = sigma_data_element_name
+
+    type_name: str = Field("Sigma", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Sigma":
+            raise ValueError("must be Sigma")
+        return v
+
+    class Attributes(BI.Attributes):
+        sigma_workbook_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookQualifiedName"
+        )
+        sigma_workbook_name: Optional[str] = Field(
+            None, description="", alias="sigmaWorkbookName"
+        )
+        sigma_page_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageQualifiedName"
+        )
+        sigma_page_name: Optional[str] = Field(
+            None, description="", alias="sigmaPageName"
+        )
+        sigma_data_element_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQualifiedName"
+        )
+        sigma_data_element_name: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementName"
+        )
+
+    attributes: "Sigma.Attributes" = Field(
+        default_factory=lambda: Sigma.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Tableau(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Tableau._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("Tableau", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Tableau":
+            raise ValueError("must be Tableau")
+        return v
+
+
+class Looker(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Looker._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("Looker", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Looker":
+            raise ValueError("must be Looker")
+        return v
+
+
+class Redash(BI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Redash._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "redash_is_published",
+    ]
+
+    @property
+    def redash_is_published(self) -> Optional[bool]:
+        return self.attributes.redash_is_published
+
+    @redash_is_published.setter
+    def redash_is_published(self, redash_is_published: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.redash_is_published = redash_is_published
+
+    type_name: str = Field("Redash", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Redash":
+            raise ValueError("must be Redash")
+        return v
+
+    class Attributes(BI.Attributes):
+        redash_is_published: Optional[bool] = Field(
+            None, description="", alias="redashIsPublished"
+        )
+
+    attributes: "Redash.Attributes" = Field(
+        default_factory=lambda: Redash.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7456,363 +7870,187 @@ class PowerBI(BI):
     )
 
 
-class Preset(BI):
+class MicroStrategy(BI):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in Preset._convience_properties:
+        if name in MicroStrategy._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "preset_workspace_id",
-        "preset_workspace_qualified_name",
-        "preset_dashboard_id",
-        "preset_dashboard_qualified_name",
+        "micro_strategy_project_qualified_name",
+        "micro_strategy_project_name",
+        "micro_strategy_cube_qualified_names",
+        "micro_strategy_cube_names",
+        "micro_strategy_report_qualified_names",
+        "micro_strategy_report_names",
+        "micro_strategy_is_certified",
+        "micro_strategy_certified_by",
+        "micro_strategy_certified_at",
+        "micro_strategy_location",
     ]
 
     @property
-    def preset_workspace_id(self) -> Optional[int]:
-        return self.attributes.preset_workspace_id
+    def micro_strategy_project_qualified_name(self) -> Optional[str]:
+        return self.attributes.micro_strategy_project_qualified_name
 
-    @preset_workspace_id.setter
-    def preset_workspace_id(self, preset_workspace_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_id = preset_workspace_id
-
-    @property
-    def preset_workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.preset_workspace_qualified_name
-
-    @preset_workspace_qualified_name.setter
-    def preset_workspace_qualified_name(
-        self, preset_workspace_qualified_name: Optional[str]
+    @micro_strategy_project_qualified_name.setter
+    def micro_strategy_project_qualified_name(
+        self, micro_strategy_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_workspace_qualified_name = (
-            preset_workspace_qualified_name
+        self.attributes.micro_strategy_project_qualified_name = (
+            micro_strategy_project_qualified_name
         )
 
     @property
-    def preset_dashboard_id(self) -> Optional[int]:
-        return self.attributes.preset_dashboard_id
+    def micro_strategy_project_name(self) -> Optional[str]:
+        return self.attributes.micro_strategy_project_name
 
-    @preset_dashboard_id.setter
-    def preset_dashboard_id(self, preset_dashboard_id: Optional[int]):
+    @micro_strategy_project_name.setter
+    def micro_strategy_project_name(self, micro_strategy_project_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_id = preset_dashboard_id
+        self.attributes.micro_strategy_project_name = micro_strategy_project_name
 
     @property
-    def preset_dashboard_qualified_name(self) -> Optional[str]:
-        return self.attributes.preset_dashboard_qualified_name
+    def micro_strategy_cube_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_cube_qualified_names
 
-    @preset_dashboard_qualified_name.setter
-    def preset_dashboard_qualified_name(
-        self, preset_dashboard_qualified_name: Optional[str]
+    @micro_strategy_cube_qualified_names.setter
+    def micro_strategy_cube_qualified_names(
+        self, micro_strategy_cube_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_qualified_name = (
-            preset_dashboard_qualified_name
+        self.attributes.micro_strategy_cube_qualified_names = (
+            micro_strategy_cube_qualified_names
         )
 
-    type_name: str = Field("Preset", allow_mutation=False)
+    @property
+    def micro_strategy_cube_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_cube_names
+
+    @micro_strategy_cube_names.setter
+    def micro_strategy_cube_names(self, micro_strategy_cube_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_names = micro_strategy_cube_names
+
+    @property
+    def micro_strategy_report_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_report_qualified_names
+
+    @micro_strategy_report_qualified_names.setter
+    def micro_strategy_report_qualified_names(
+        self, micro_strategy_report_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_report_qualified_names = (
+            micro_strategy_report_qualified_names
+        )
+
+    @property
+    def micro_strategy_report_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_report_names
+
+    @micro_strategy_report_names.setter
+    def micro_strategy_report_names(
+        self, micro_strategy_report_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_report_names = micro_strategy_report_names
+
+    @property
+    def micro_strategy_is_certified(self) -> Optional[bool]:
+        return self.attributes.micro_strategy_is_certified
+
+    @micro_strategy_is_certified.setter
+    def micro_strategy_is_certified(self, micro_strategy_is_certified: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_is_certified = micro_strategy_is_certified
+
+    @property
+    def micro_strategy_certified_by(self) -> Optional[str]:
+        return self.attributes.micro_strategy_certified_by
+
+    @micro_strategy_certified_by.setter
+    def micro_strategy_certified_by(self, micro_strategy_certified_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_certified_by = micro_strategy_certified_by
+
+    @property
+    def micro_strategy_certified_at(self) -> Optional[datetime]:
+        return self.attributes.micro_strategy_certified_at
+
+    @micro_strategy_certified_at.setter
+    def micro_strategy_certified_at(
+        self, micro_strategy_certified_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_certified_at = micro_strategy_certified_at
+
+    @property
+    def micro_strategy_location(self) -> Optional[list[dict[str, str]]]:
+        return self.attributes.micro_strategy_location
+
+    @micro_strategy_location.setter
+    def micro_strategy_location(
+        self, micro_strategy_location: Optional[list[dict[str, str]]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_location = micro_strategy_location
+
+    type_name: str = Field("MicroStrategy", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Preset":
-            raise ValueError("must be Preset")
+        if v != "MicroStrategy":
+            raise ValueError("must be MicroStrategy")
         return v
 
     class Attributes(BI.Attributes):
-        preset_workspace_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceId"
+        micro_strategy_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="microStrategyProjectQualifiedName"
         )
-        preset_workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceQualifiedName"
+        micro_strategy_project_name: Optional[str] = Field(
+            None, description="", alias="microStrategyProjectName"
         )
-        preset_dashboard_id: Optional[int] = Field(
-            None, description="", alias="presetDashboardId"
+        micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyCubeQualifiedNames"
         )
-        preset_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardQualifiedName"
+        micro_strategy_cube_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyCubeNames"
         )
-
-    attributes: "Preset.Attributes" = Field(
-        default_factory=lambda: Preset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Sigma(BI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Sigma._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_workbook_qualified_name",
-        "sigma_workbook_name",
-        "sigma_page_qualified_name",
-        "sigma_page_name",
-        "sigma_data_element_qualified_name",
-        "sigma_data_element_name",
-    ]
-
-    @property
-    def sigma_workbook_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_workbook_qualified_name
-
-    @sigma_workbook_qualified_name.setter
-    def sigma_workbook_qualified_name(
-        self, sigma_workbook_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
-
-    @property
-    def sigma_workbook_name(self) -> Optional[str]:
-        return self.attributes.sigma_workbook_name
-
-    @sigma_workbook_name.setter
-    def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_name = sigma_workbook_name
-
-    @property
-    def sigma_page_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_page_qualified_name
-
-    @sigma_page_qualified_name.setter
-    def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
-
-    @property
-    def sigma_page_name(self) -> Optional[str]:
-        return self.attributes.sigma_page_name
-
-    @sigma_page_name.setter
-    def sigma_page_name(self, sigma_page_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_name = sigma_page_name
-
-    @property
-    def sigma_data_element_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_qualified_name
-
-    @sigma_data_element_qualified_name.setter
-    def sigma_data_element_qualified_name(
-        self, sigma_data_element_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_qualified_name = (
-            sigma_data_element_qualified_name
+        micro_strategy_report_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyReportQualifiedNames"
+        )
+        micro_strategy_report_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyReportNames"
+        )
+        micro_strategy_is_certified: Optional[bool] = Field(
+            None, description="", alias="microStrategyIsCertified"
+        )
+        micro_strategy_certified_by: Optional[str] = Field(
+            None, description="", alias="microStrategyCertifiedBy"
+        )
+        micro_strategy_certified_at: Optional[datetime] = Field(
+            None, description="", alias="microStrategyCertifiedAt"
+        )
+        micro_strategy_location: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="microStrategyLocation"
         )
 
-    @property
-    def sigma_data_element_name(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_name
-
-    @sigma_data_element_name.setter
-    def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_name = sigma_data_element_name
-
-    type_name: str = Field("Sigma", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Sigma":
-            raise ValueError("must be Sigma")
-        return v
-
-    class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
-        )
-        sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
-        )
-        sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
-        )
-        sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
-        )
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
-        )
-        sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
-        )
-
-    attributes: "Sigma.Attributes" = Field(
-        default_factory=lambda: Sigma.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Mode(BI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Mode._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_id",
-        "mode_token",
-        "mode_workspace_name",
-        "mode_workspace_username",
-        "mode_workspace_qualified_name",
-        "mode_report_name",
-        "mode_report_qualified_name",
-        "mode_query_name",
-        "mode_query_qualified_name",
-    ]
-
-    @property
-    def mode_id(self) -> Optional[str]:
-        return self.attributes.mode_id
-
-    @mode_id.setter
-    def mode_id(self, mode_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_id = mode_id
-
-    @property
-    def mode_token(self) -> Optional[str]:
-        return self.attributes.mode_token
-
-    @mode_token.setter
-    def mode_token(self, mode_token: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_token = mode_token
-
-    @property
-    def mode_workspace_name(self) -> Optional[str]:
-        return self.attributes.mode_workspace_name
-
-    @mode_workspace_name.setter
-    def mode_workspace_name(self, mode_workspace_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_workspace_name = mode_workspace_name
-
-    @property
-    def mode_workspace_username(self) -> Optional[str]:
-        return self.attributes.mode_workspace_username
-
-    @mode_workspace_username.setter
-    def mode_workspace_username(self, mode_workspace_username: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_workspace_username = mode_workspace_username
-
-    @property
-    def mode_workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.mode_workspace_qualified_name
-
-    @mode_workspace_qualified_name.setter
-    def mode_workspace_qualified_name(
-        self, mode_workspace_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_workspace_qualified_name = mode_workspace_qualified_name
-
-    @property
-    def mode_report_name(self) -> Optional[str]:
-        return self.attributes.mode_report_name
-
-    @mode_report_name.setter
-    def mode_report_name(self, mode_report_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_report_name = mode_report_name
-
-    @property
-    def mode_report_qualified_name(self) -> Optional[str]:
-        return self.attributes.mode_report_qualified_name
-
-    @mode_report_qualified_name.setter
-    def mode_report_qualified_name(self, mode_report_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_report_qualified_name = mode_report_qualified_name
-
-    @property
-    def mode_query_name(self) -> Optional[str]:
-        return self.attributes.mode_query_name
-
-    @mode_query_name.setter
-    def mode_query_name(self, mode_query_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_name = mode_query_name
-
-    @property
-    def mode_query_qualified_name(self) -> Optional[str]:
-        return self.attributes.mode_query_qualified_name
-
-    @mode_query_qualified_name.setter
-    def mode_query_qualified_name(self, mode_query_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_qualified_name = mode_query_qualified_name
-
-    type_name: str = Field("Mode", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Mode":
-            raise ValueError("must be Mode")
-        return v
-
-    class Attributes(BI.Attributes):
-        mode_id: Optional[str] = Field(None, description="", alias="modeId")
-        mode_token: Optional[str] = Field(None, description="", alias="modeToken")
-        mode_workspace_name: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceName"
-        )
-        mode_workspace_username: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceUsername"
-        )
-        mode_workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeWorkspaceQualifiedName"
-        )
-        mode_report_name: Optional[str] = Field(
-            None, description="", alias="modeReportName"
-        )
-        mode_report_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeReportQualifiedName"
-        )
-        mode_query_name: Optional[str] = Field(
-            None, description="", alias="modeQueryName"
-        )
-        mode_query_qualified_name: Optional[str] = Field(
-            None, description="", alias="modeQueryQualifiedName"
-        )
-
-    attributes: "Mode.Attributes" = Field(
-        default_factory=lambda: Mode.Attributes(),
+    attributes: "MicroStrategy.Attributes" = Field(
+        default_factory=lambda: MicroStrategy.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7943,86 +8181,6 @@ class Qlik(BI):
 
     attributes: "Qlik.Attributes" = Field(
         default_factory=lambda: Qlik.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Tableau(BI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Tableau._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
-    type_name: str = Field("Tableau", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Tableau":
-            raise ValueError("must be Tableau")
-        return v
-
-
-class Looker(BI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Looker._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
-    type_name: str = Field("Looker", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Looker":
-            raise ValueError("must be Looker")
-        return v
-
-
-class Redash(BI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Redash._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "redash_is_published",
-    ]
-
-    @property
-    def redash_is_published(self) -> Optional[bool]:
-        return self.attributes.redash_is_published
-
-    @redash_is_published.setter
-    def redash_is_published(self, redash_is_published: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.redash_is_published = redash_is_published
-
-    type_name: str = Field("Redash", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Redash":
-            raise ValueError("must be Redash")
-        return v
-
-    class Attributes(BI.Attributes):
-        redash_is_published: Optional[bool] = Field(
-            None, description="", alias="redashIsPublished"
-        )
-
-    attributes: "Redash.Attributes" = Field(
-        default_factory=lambda: Redash.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10541,8 +10699,8 @@ class Table(SQL):
         "partition_list",
         "partitions",
         "columns",
-        "facts",
         "queries",
+        "facts",
         "atlan_schema",
         "dimensions",
     ]
@@ -10708,16 +10866,6 @@ class Table(SQL):
         self.attributes.columns = columns
 
     @property
-    def facts(self) -> Optional[list[Table]]:
-        return self.attributes.facts
-
-    @facts.setter
-    def facts(self, facts: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.facts = facts
-
-    @property
     def queries(self) -> Optional[list[Query]]:
         return self.attributes.queries
 
@@ -10726,6 +10874,16 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.queries = queries
+
+    @property
+    def facts(self) -> Optional[list[Table]]:
+        return self.attributes.facts
+
+    @facts.setter
+    def facts(self, facts: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.facts = facts
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
@@ -10794,11 +10952,11 @@ class Table(SQL):
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
-        facts: Optional[list[Table]] = Field(
-            None, description="", alias="facts"
-        )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
+        )  # relationship
+        facts: Optional[list[Table]] = Field(
+            None, description="", alias="facts"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
@@ -11954,8 +12112,8 @@ class Schema(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "table_count",
         "views_count",
-        "materialised_views",
         "snowflake_tags",
+        "materialised_views",
         "tables",
         "database",
         "snowflake_pipes",
@@ -11985,16 +12143,6 @@ class Schema(SQL):
         self.attributes.views_count = views_count
 
     @property
-    def materialised_views(self) -> Optional[list[MaterialisedView]]:
-        return self.attributes.materialised_views
-
-    @materialised_views.setter
-    def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.materialised_views = materialised_views
-
-    @property
     def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
         return self.attributes.snowflake_tags
 
@@ -12003,6 +12151,16 @@ class Schema(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.snowflake_tags = snowflake_tags
+
+    @property
+    def materialised_views(self) -> Optional[list[MaterialisedView]]:
+        return self.attributes.materialised_views
+
+    @materialised_views.setter
+    def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.materialised_views = materialised_views
 
     @property
     def tables(self) -> Optional[list[Table]]:
@@ -12075,11 +12233,11 @@ class Schema(SQL):
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
         views_count: Optional[int] = Field(None, description="", alias="viewsCount")
-        materialised_views: Optional[list[MaterialisedView]] = Field(
-            None, description="", alias="materialisedViews"
-        )  # relationship
         snowflake_tags: Optional[list[SnowflakeTag]] = Field(
             None, description="", alias="snowflakeTags"
+        )  # relationship
+        materialised_views: Optional[list[MaterialisedView]] = Field(
+            None, description="", alias="materialisedViews"
         )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
@@ -12141,107 +12299,6 @@ class Schema(SQL):
         )
         attributes = Schema.Attributes.create(
             name=name, database_qualified_name=database_qualified_name
-        )
-        return cls(attributes=attributes)
-
-
-class Database(SQL):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in Database._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "schema_count",
-        "schemas",
-    ]
-
-    @property
-    def schema_count(self) -> Optional[int]:
-        return self.attributes.schema_count
-
-    @schema_count.setter
-    def schema_count(self, schema_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_count = schema_count
-
-    @property
-    def schemas(self) -> Optional[list[Schema]]:
-        return self.attributes.schemas
-
-    @schemas.setter
-    def schemas(self, schemas: Optional[list[Schema]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schemas = schemas
-
-    type_name: str = Field("Database", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Database":
-            raise ValueError("must be Database")
-        return v
-
-    class Attributes(SQL.Attributes):
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        schemas: Optional[list[Schema]] = Field(
-            None, description="", alias="schemas"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, name: str, connection_qualified_name: str
-        ) -> Database.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(
-                ["connection_qualified_name"], [connection_qualified_name]
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return Database.Attributes(
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{name}",
-                connector_name=connector_type.value,
-            )
-
-    attributes: "Database.Attributes" = Field(
-        default_factory=lambda: Database.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
-        if not name:
-            raise ValueError("name cannot be blank")
-        validate_required_fields(
-            ["connection_qualified_name"], [connection_qualified_name]
-        )
-        fields = connection_qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError("Invalid connection_qualified_name")
-        try:
-            connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError as e:
-            raise ValueError("Invalid connection_qualified_name") from e
-        attributes = Database.Attributes(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=connector_type.value,
         )
         return cls(attributes=attributes)
 
@@ -12448,6 +12505,107 @@ class SnowflakePipe(SQL):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+
+class Database(SQL):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in Database._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "schema_count",
+        "schemas",
+    ]
+
+    @property
+    def schema_count(self) -> Optional[int]:
+        return self.attributes.schema_count
+
+    @schema_count.setter
+    def schema_count(self, schema_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_count = schema_count
+
+    @property
+    def schemas(self) -> Optional[list[Schema]]:
+        return self.attributes.schemas
+
+    @schemas.setter
+    def schemas(self, schemas: Optional[list[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schemas = schemas
+
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
+
+    class Attributes(SQL.Attributes):
+        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
+        schemas: Optional[list[Schema]] = Field(
+            None, description="", alias="schemas"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str
+        ) -> Database.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(
+                ["connection_qualified_name"], [connection_qualified_name]
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
+    attributes: "Database.Attributes" = Field(
+        default_factory=lambda: Database.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
+        if not name:
+            raise ValueError("name cannot be blank")
+        validate_required_fields(
+            ["connection_qualified_name"], [connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
 
 
 class Procedure(SQL):
@@ -15263,2261 +15421,6 @@ class MCMonitor(MonteCarlo):
     )
 
 
-class MetabaseQuestion(Metabase):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in MetabaseQuestion._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "metabase_dashboard_count",
-        "metabase_query_type",
-        "metabase_query",
-        "metabase_dashboards",
-        "metabase_collection",
-    ]
-
-    @property
-    def metabase_dashboard_count(self) -> Optional[int]:
-        return self.attributes.metabase_dashboard_count
-
-    @metabase_dashboard_count.setter
-    def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_dashboard_count = metabase_dashboard_count
-
-    @property
-    def metabase_query_type(self) -> Optional[str]:
-        return self.attributes.metabase_query_type
-
-    @metabase_query_type.setter
-    def metabase_query_type(self, metabase_query_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_query_type = metabase_query_type
-
-    @property
-    def metabase_query(self) -> Optional[str]:
-        return self.attributes.metabase_query
-
-    @metabase_query.setter
-    def metabase_query(self, metabase_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_query = metabase_query
-
-    @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
-        return self.attributes.metabase_dashboards
-
-    @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_dashboards = metabase_dashboards
-
-    @property
-    def metabase_collection(self) -> Optional[MetabaseCollection]:
-        return self.attributes.metabase_collection
-
-    @metabase_collection.setter
-    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_collection = metabase_collection
-
-    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseQuestion":
-            raise ValueError("must be MetabaseQuestion")
-        return v
-
-    class Attributes(Metabase.Attributes):
-        metabase_dashboard_count: Optional[int] = Field(
-            None, description="", alias="metabaseDashboardCount"
-        )
-        metabase_query_type: Optional[str] = Field(
-            None, description="", alias="metabaseQueryType"
-        )
-        metabase_query: Optional[str] = Field(
-            None, description="", alias="metabaseQuery"
-        )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
-        )  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
-        )  # relationship
-
-    attributes: "MetabaseQuestion.Attributes" = Field(
-        default_factory=lambda: MetabaseQuestion.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class MetabaseCollection(Metabase):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in MetabaseCollection._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "metabase_slug",
-        "metabase_color",
-        "metabase_namespace",
-        "metabase_is_personal_collection",
-        "metabase_dashboards",
-        "metabase_questions",
-    ]
-
-    @property
-    def metabase_slug(self) -> Optional[str]:
-        return self.attributes.metabase_slug
-
-    @metabase_slug.setter
-    def metabase_slug(self, metabase_slug: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_slug = metabase_slug
-
-    @property
-    def metabase_color(self) -> Optional[str]:
-        return self.attributes.metabase_color
-
-    @metabase_color.setter
-    def metabase_color(self, metabase_color: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_color = metabase_color
-
-    @property
-    def metabase_namespace(self) -> Optional[str]:
-        return self.attributes.metabase_namespace
-
-    @metabase_namespace.setter
-    def metabase_namespace(self, metabase_namespace: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_namespace = metabase_namespace
-
-    @property
-    def metabase_is_personal_collection(self) -> Optional[bool]:
-        return self.attributes.metabase_is_personal_collection
-
-    @metabase_is_personal_collection.setter
-    def metabase_is_personal_collection(
-        self, metabase_is_personal_collection: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_is_personal_collection = (
-            metabase_is_personal_collection
-        )
-
-    @property
-    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
-        return self.attributes.metabase_dashboards
-
-    @metabase_dashboards.setter
-    def metabase_dashboards(
-        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_dashboards = metabase_dashboards
-
-    @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
-        return self.attributes.metabase_questions
-
-    @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_questions = metabase_questions
-
-    type_name: str = Field("MetabaseCollection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseCollection":
-            raise ValueError("must be MetabaseCollection")
-        return v
-
-    class Attributes(Metabase.Attributes):
-        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
-        metabase_color: Optional[str] = Field(
-            None, description="", alias="metabaseColor"
-        )
-        metabase_namespace: Optional[str] = Field(
-            None, description="", alias="metabaseNamespace"
-        )
-        metabase_is_personal_collection: Optional[bool] = Field(
-            None, description="", alias="metabaseIsPersonalCollection"
-        )
-        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
-        )  # relationship
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
-        )  # relationship
-
-    attributes: "MetabaseCollection.Attributes" = Field(
-        default_factory=lambda: MetabaseCollection.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class MetabaseDashboard(Metabase):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in MetabaseDashboard._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "metabase_question_count",
-        "metabase_questions",
-        "metabase_collection",
-    ]
-
-    @property
-    def metabase_question_count(self) -> Optional[int]:
-        return self.attributes.metabase_question_count
-
-    @metabase_question_count.setter
-    def metabase_question_count(self, metabase_question_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_question_count = metabase_question_count
-
-    @property
-    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
-        return self.attributes.metabase_questions
-
-    @metabase_questions.setter
-    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_questions = metabase_questions
-
-    @property
-    def metabase_collection(self) -> Optional[MetabaseCollection]:
-        return self.attributes.metabase_collection
-
-    @metabase_collection.setter
-    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_collection = metabase_collection
-
-    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseDashboard":
-            raise ValueError("must be MetabaseDashboard")
-        return v
-
-    class Attributes(Metabase.Attributes):
-        metabase_question_count: Optional[int] = Field(
-            None, description="", alias="metabaseQuestionCount"
-        )
-        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
-        )  # relationship
-        metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
-        )  # relationship
-
-    attributes: "MetabaseDashboard.Attributes" = Field(
-        default_factory=lambda: MetabaseDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightFolder(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightFolder._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_folder_type",
-        "quick_sight_folder_hierarchy",
-        "quick_sight_dashboards",
-        "quick_sight_analyses",
-        "quick_sight_datasets",
-    ]
-
-    @property
-    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
-        return self.attributes.quick_sight_folder_type
-
-    @quick_sight_folder_type.setter
-    def quick_sight_folder_type(
-        self, quick_sight_folder_type: Optional[QuickSightFolderType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_type = quick_sight_folder_type
-
-    @property
-    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
-        return self.attributes.quick_sight_folder_hierarchy
-
-    @quick_sight_folder_hierarchy.setter
-    def quick_sight_folder_hierarchy(
-        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
-
-    @property
-    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
-        return self.attributes.quick_sight_dashboards
-
-    @quick_sight_dashboards.setter
-    def quick_sight_dashboards(
-        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboards = quick_sight_dashboards
-
-    @property
-    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
-        return self.attributes.quick_sight_analyses
-
-    @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analyses = quick_sight_analyses
-
-    @property
-    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
-        return self.attributes.quick_sight_datasets
-
-    @quick_sight_datasets.setter
-    def quick_sight_datasets(
-        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_datasets = quick_sight_datasets
-
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightFolder":
-            raise ValueError("must be QuickSightFolder")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            None, description="", alias="quickSightFolderType"
-        )
-        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="quickSightFolderHierarchy"
-        )
-        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
-            None, description="", alias="quickSightDashboards"
-        )  # relationship
-        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
-        )  # relationship
-        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
-            None, description="", alias="quickSightDatasets"
-        )  # relationship
-
-    attributes: "QuickSightFolder.Attributes" = Field(
-        default_factory=lambda: QuickSightFolder.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDashboardVisual(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDashboardVisual._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_qualified_name",
-        "quick_sight_dashboard",
-    ]
-
-    @property
-    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
-        return self.attributes.quick_sight_dashboard_qualified_name
-
-    @quick_sight_dashboard_qualified_name.setter
-    def quick_sight_dashboard_qualified_name(
-        self, quick_sight_dashboard_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_qualified_name = (
-            quick_sight_dashboard_qualified_name
-        )
-
-    @property
-    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
-        return self.attributes.quick_sight_dashboard
-
-    @quick_sight_dashboard.setter
-    def quick_sight_dashboard(
-        self, quick_sight_dashboard: Optional[QuickSightDashboard]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard = quick_sight_dashboard
-
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDashboardVisual":
-            raise ValueError("must be QuickSightDashboardVisual")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDashboardQualifiedName"
-        )
-        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            None, description="", alias="quickSightDashboard"
-        )  # relationship
-
-    attributes: "QuickSightDashboardVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightAnalysis(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightAnalysis._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_status",
-        "quick_sight_analysis_calculated_fields",
-        "quick_sight_analysis_parameter_declarations",
-        "quick_sight_analysis_filter_groups",
-        "quick_sight_analysis_visuals",
-        "quick_sight_analysis_folders",
-    ]
-
-    @property
-    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
-        return self.attributes.quick_sight_analysis_status
-
-    @quick_sight_analysis_status.setter
-    def quick_sight_analysis_status(
-        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
-
-    @property
-    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
-        return self.attributes.quick_sight_analysis_calculated_fields
-
-    @quick_sight_analysis_calculated_fields.setter
-    def quick_sight_analysis_calculated_fields(
-        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_calculated_fields = (
-            quick_sight_analysis_calculated_fields
-        )
-
-    @property
-    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
-        return self.attributes.quick_sight_analysis_parameter_declarations
-
-    @quick_sight_analysis_parameter_declarations.setter
-    def quick_sight_analysis_parameter_declarations(
-        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_parameter_declarations = (
-            quick_sight_analysis_parameter_declarations
-        )
-
-    @property
-    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
-        return self.attributes.quick_sight_analysis_filter_groups
-
-    @quick_sight_analysis_filter_groups.setter
-    def quick_sight_analysis_filter_groups(
-        self, quick_sight_analysis_filter_groups: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_filter_groups = (
-            quick_sight_analysis_filter_groups
-        )
-
-    @property
-    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
-        return self.attributes.quick_sight_analysis_visuals
-
-    @quick_sight_analysis_visuals.setter
-    def quick_sight_analysis_visuals(
-        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
-
-    @property
-    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
-        return self.attributes.quick_sight_analysis_folders
-
-    @quick_sight_analysis_folders.setter
-    def quick_sight_analysis_folders(
-        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
-
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightAnalysis":
-            raise ValueError("must be QuickSightAnalysis")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
-        )
-        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
-        )
-        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
-        )
-        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
-        )
-        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
-        )  # relationship
-        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
-        )  # relationship
-
-    attributes: "QuickSightAnalysis.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysis.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightAnalysisVisual(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightAnalysisVisual._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_qualified_name",
-        "quick_sight_analysis",
-    ]
-
-    @property
-    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
-        return self.attributes.quick_sight_analysis_qualified_name
-
-    @quick_sight_analysis_qualified_name.setter
-    def quick_sight_analysis_qualified_name(
-        self, quick_sight_analysis_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_qualified_name = (
-            quick_sight_analysis_qualified_name
-        )
-
-    @property
-    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
-        return self.attributes.quick_sight_analysis
-
-    @quick_sight_analysis.setter
-    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis = quick_sight_analysis
-
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightAnalysisVisual":
-            raise ValueError("must be QuickSightAnalysisVisual")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightAnalysisQualifiedName"
-        )
-        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            None, description="", alias="quickSightAnalysis"
-        )  # relationship
-
-    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDatasetField(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDatasetField._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_field_type",
-        "quick_sight_dataset_qualified_name",
-        "quick_sight_dataset",
-    ]
-
-    @property
-    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
-        return self.attributes.quick_sight_dataset_field_type
-
-    @quick_sight_dataset_field_type.setter
-    def quick_sight_dataset_field_type(
-        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
-
-    @property
-    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
-        return self.attributes.quick_sight_dataset_qualified_name
-
-    @quick_sight_dataset_qualified_name.setter
-    def quick_sight_dataset_qualified_name(
-        self, quick_sight_dataset_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_qualified_name = (
-            quick_sight_dataset_qualified_name
-        )
-
-    @property
-    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
-        return self.attributes.quick_sight_dataset
-
-    @quick_sight_dataset.setter
-    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset = quick_sight_dataset
-
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDatasetField":
-            raise ValueError("must be QuickSightDatasetField")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
-            None, description="", alias="quickSightDatasetFieldType"
-        )
-        quick_sight_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDatasetQualifiedName"
-        )
-        quick_sight_dataset: Optional[QuickSightDataset] = Field(
-            None, description="", alias="quickSightDataset"
-        )  # relationship
-
-    attributes: "QuickSightDatasetField.Attributes" = Field(
-        default_factory=lambda: QuickSightDatasetField.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDashboard(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDashboard._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_published_version_number",
-        "quick_sight_dashboard_last_published_time",
-        "quick_sight_dashboard_folders",
-        "quick_sight_dashboard_visuals",
-    ]
-
-    @property
-    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
-        return self.attributes.quick_sight_dashboard_published_version_number
-
-    @quick_sight_dashboard_published_version_number.setter
-    def quick_sight_dashboard_published_version_number(
-        self, quick_sight_dashboard_published_version_number: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_published_version_number = (
-            quick_sight_dashboard_published_version_number
-        )
-
-    @property
-    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
-        return self.attributes.quick_sight_dashboard_last_published_time
-
-    @quick_sight_dashboard_last_published_time.setter
-    def quick_sight_dashboard_last_published_time(
-        self, quick_sight_dashboard_last_published_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_last_published_time = (
-            quick_sight_dashboard_last_published_time
-        )
-
-    @property
-    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
-        return self.attributes.quick_sight_dashboard_folders
-
-    @quick_sight_dashboard_folders.setter
-    def quick_sight_dashboard_folders(
-        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
-
-    @property
-    def quick_sight_dashboard_visuals(
-        self,
-    ) -> Optional[list[QuickSightDashboardVisual]]:
-        return self.attributes.quick_sight_dashboard_visuals
-
-    @quick_sight_dashboard_visuals.setter
-    def quick_sight_dashboard_visuals(
-        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
-
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDashboard":
-            raise ValueError("must be QuickSightDashboard")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_published_version_number: Optional[int] = Field(
-            None, description="", alias="quickSightDashboardPublishedVersionNumber"
-        )
-        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
-            None, description="", alias="quickSightDashboardLastPublishedTime"
-        )
-        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDashboardFolders"
-        )  # relationship
-        quick_sight_dashboard_visuals: Optional[
-            list[QuickSightDashboardVisual]
-        ] = Field(
-            None, description="", alias="quickSightDashboardVisuals"
-        )  # relationship
-
-    attributes: "QuickSightDashboard.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDataset(QuickSight):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDataset._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_import_mode",
-        "quick_sight_dataset_column_count",
-        "quick_sight_dataset_folders",
-        "quick_sight_dataset_fields",
-    ]
-
-    @property
-    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
-        return self.attributes.quick_sight_dataset_import_mode
-
-    @quick_sight_dataset_import_mode.setter
-    def quick_sight_dataset_import_mode(
-        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_import_mode = (
-            quick_sight_dataset_import_mode
-        )
-
-    @property
-    def quick_sight_dataset_column_count(self) -> Optional[int]:
-        return self.attributes.quick_sight_dataset_column_count
-
-    @quick_sight_dataset_column_count.setter
-    def quick_sight_dataset_column_count(
-        self, quick_sight_dataset_column_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_column_count = (
-            quick_sight_dataset_column_count
-        )
-
-    @property
-    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
-        return self.attributes.quick_sight_dataset_folders
-
-    @quick_sight_dataset_folders.setter
-    def quick_sight_dataset_folders(
-        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
-
-    @property
-    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
-        return self.attributes.quick_sight_dataset_fields
-
-    @quick_sight_dataset_fields.setter
-    def quick_sight_dataset_fields(
-        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
-
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDataset":
-            raise ValueError("must be QuickSightDataset")
-        return v
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
-            None, description="", alias="quickSightDatasetImportMode"
-        )
-        quick_sight_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="quickSightDatasetColumnCount"
-        )
-        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDatasetFolders"
-        )  # relationship
-        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
-            None, description="", alias="quickSightDatasetFields"
-        )  # relationship
-
-    attributes: "QuickSightDataset.Attributes" = Field(
-        default_factory=lambda: QuickSightDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ThoughtspotLiveboard(Thoughtspot):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ThoughtspotLiveboard._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "thoughtspot_dashlets",
-    ]
-
-    @property
-    def thoughtspot_dashlets(self) -> Optional[list[ThoughtspotDashlet]]:
-        return self.attributes.thoughtspot_dashlets
-
-    @thoughtspot_dashlets.setter
-    def thoughtspot_dashlets(
-        self, thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
-
-    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ThoughtspotLiveboard":
-            raise ValueError("must be ThoughtspotLiveboard")
-        return v
-
-    class Attributes(Thoughtspot.Attributes):
-        thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
-            None, description="", alias="thoughtspotDashlets"
-        )  # relationship
-
-    attributes: "ThoughtspotLiveboard.Attributes" = Field(
-        default_factory=lambda: ThoughtspotLiveboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ThoughtspotDashlet(Thoughtspot):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ThoughtspotDashlet._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "thoughtspot_liveboard_name",
-        "thoughtspot_liveboard_qualified_name",
-        "thoughtspot_liveboard",
-    ]
-
-    @property
-    def thoughtspot_liveboard_name(self) -> Optional[str]:
-        return self.attributes.thoughtspot_liveboard_name
-
-    @thoughtspot_liveboard_name.setter
-    def thoughtspot_liveboard_name(self, thoughtspot_liveboard_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard_name = thoughtspot_liveboard_name
-
-    @property
-    def thoughtspot_liveboard_qualified_name(self) -> Optional[str]:
-        return self.attributes.thoughtspot_liveboard_qualified_name
-
-    @thoughtspot_liveboard_qualified_name.setter
-    def thoughtspot_liveboard_qualified_name(
-        self, thoughtspot_liveboard_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard_qualified_name = (
-            thoughtspot_liveboard_qualified_name
-        )
-
-    @property
-    def thoughtspot_liveboard(self) -> Optional[ThoughtspotLiveboard]:
-        return self.attributes.thoughtspot_liveboard
-
-    @thoughtspot_liveboard.setter
-    def thoughtspot_liveboard(
-        self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
-
-    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ThoughtspotDashlet":
-            raise ValueError("must be ThoughtspotDashlet")
-        return v
-
-    class Attributes(Thoughtspot.Attributes):
-        thoughtspot_liveboard_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardName"
-        )
-        thoughtspot_liveboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardQualifiedName"
-        )
-        thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
-            None, description="", alias="thoughtspotLiveboard"
-        )  # relationship
-
-    attributes: "ThoughtspotDashlet.Attributes" = Field(
-        default_factory=lambda: ThoughtspotDashlet.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ThoughtspotAnswer(Thoughtspot):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in ThoughtspotAnswer._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
-    type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ThoughtspotAnswer":
-            raise ValueError("must be ThoughtspotAnswer")
-        return v
-
-
-class PowerBIReport(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIReport._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "web_url",
-        "page_count",
-        "workspace",
-        "tiles",
-        "pages",
-        "dataset",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return self.attributes.dataset_qualified_name
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def page_count(self) -> Optional[int]:
-        return self.attributes.page_count
-
-    @page_count.setter
-    def page_count(self, page_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.page_count = page_count
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def pages(self) -> Optional[list[PowerBIPage]]:
-        return self.attributes.pages
-
-    @pages.setter
-    def pages(self, pages: Optional[list[PowerBIPage]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.pages = pages
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    type_name: str = Field("PowerBIReport", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIReport":
-            raise ValueError("must be PowerBIReport")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        page_count: Optional[int] = Field(None, description="", alias="pageCount")
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        pages: Optional[list[PowerBIPage]] = Field(
-            None, description="", alias="pages"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-
-    attributes: "PowerBIReport.Attributes" = Field(
-        default_factory=lambda: PowerBIReport.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIMeasure(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIMeasure._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "power_b_i_measure_expression",
-        "power_b_i_is_external_measure",
-        "table",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return self.attributes.dataset_qualified_name
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def power_b_i_measure_expression(self) -> Optional[str]:
-        return self.attributes.power_b_i_measure_expression
-
-    @power_b_i_measure_expression.setter
-    def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_measure_expression = power_b_i_measure_expression
-
-    @property
-    def power_b_i_is_external_measure(self) -> Optional[bool]:
-        return self.attributes.power_b_i_is_external_measure
-
-    @power_b_i_is_external_measure.setter
-    def power_b_i_is_external_measure(
-        self, power_b_i_is_external_measure: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
-
-    @property
-    def table(self) -> Optional[PowerBITable]:
-        return self.attributes.table
-
-    @table.setter
-    def table(self, table: Optional[PowerBITable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table = table
-
-    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIMeasure":
-            raise ValueError("must be PowerBIMeasure")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        power_b_i_measure_expression: Optional[str] = Field(
-            None, description="", alias="powerBIMeasureExpression"
-        )
-        power_b_i_is_external_measure: Optional[bool] = Field(
-            None, description="", alias="powerBIIsExternalMeasure"
-        )
-        table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
-        )  # relationship
-
-    attributes: "PowerBIMeasure.Attributes" = Field(
-        default_factory=lambda: PowerBIMeasure.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIColumn(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIColumn._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "power_b_i_column_data_category",
-        "power_b_i_column_data_type",
-        "power_b_i_sort_by_column",
-        "power_b_i_column_summarize_by",
-        "table",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return self.attributes.dataset_qualified_name
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def power_b_i_column_data_category(self) -> Optional[str]:
-        return self.attributes.power_b_i_column_data_category
-
-    @power_b_i_column_data_category.setter
-    def power_b_i_column_data_category(
-        self, power_b_i_column_data_category: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
-
-    @property
-    def power_b_i_column_data_type(self) -> Optional[str]:
-        return self.attributes.power_b_i_column_data_type
-
-    @power_b_i_column_data_type.setter
-    def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_column_data_type = power_b_i_column_data_type
-
-    @property
-    def power_b_i_sort_by_column(self) -> Optional[str]:
-        return self.attributes.power_b_i_sort_by_column
-
-    @power_b_i_sort_by_column.setter
-    def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_sort_by_column = power_b_i_sort_by_column
-
-    @property
-    def power_b_i_column_summarize_by(self) -> Optional[str]:
-        return self.attributes.power_b_i_column_summarize_by
-
-    @power_b_i_column_summarize_by.setter
-    def power_b_i_column_summarize_by(
-        self, power_b_i_column_summarize_by: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
-
-    @property
-    def table(self) -> Optional[PowerBITable]:
-        return self.attributes.table
-
-    @table.setter
-    def table(self, table: Optional[PowerBITable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table = table
-
-    type_name: str = Field("PowerBIColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIColumn":
-            raise ValueError("must be PowerBIColumn")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        power_b_i_column_data_category: Optional[str] = Field(
-            None, description="", alias="powerBIColumnDataCategory"
-        )
-        power_b_i_column_data_type: Optional[str] = Field(
-            None, description="", alias="powerBIColumnDataType"
-        )
-        power_b_i_sort_by_column: Optional[str] = Field(
-            None, description="", alias="powerBISortByColumn"
-        )
-        power_b_i_column_summarize_by: Optional[str] = Field(
-            None, description="", alias="powerBIColumnSummarizeBy"
-        )
-        table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
-        )  # relationship
-
-    attributes: "PowerBIColumn.Attributes" = Field(
-        default_factory=lambda: PowerBIColumn.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBITile(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBITile._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dashboard_qualified_name",
-        "report",
-        "dataset",
-        "dashboard",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dashboard_qualified_name(self) -> Optional[str]:
-        return self.attributes.dashboard_qualified_name
-
-    @dashboard_qualified_name.setter
-    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard_qualified_name = dashboard_qualified_name
-
-    @property
-    def report(self) -> Optional[PowerBIReport]:
-        return self.attributes.report
-
-    @report.setter
-    def report(self, report: Optional[PowerBIReport]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report = report
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    @property
-    def dashboard(self) -> Optional[PowerBIDashboard]:
-        return self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    type_name: str = Field("PowerBITile", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBITile":
-            raise ValueError("must be PowerBITile")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="dashboardQualifiedName"
-        )
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-        dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
-        )  # relationship
-
-    attributes: "PowerBITile.Attributes" = Field(
-        default_factory=lambda: PowerBITile.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBITable(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBITable._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "power_b_i_table_source_expressions",
-        "power_b_i_table_column_count",
-        "power_b_i_table_measure_count",
-        "measures",
-        "columns",
-        "dataset",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return self.attributes.dataset_qualified_name
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
-        return self.attributes.power_b_i_table_source_expressions
-
-    @power_b_i_table_source_expressions.setter
-    def power_b_i_table_source_expressions(
-        self, power_b_i_table_source_expressions: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_source_expressions = (
-            power_b_i_table_source_expressions
-        )
-
-    @property
-    def power_b_i_table_column_count(self) -> Optional[int]:
-        return self.attributes.power_b_i_table_column_count
-
-    @power_b_i_table_column_count.setter
-    def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_column_count = power_b_i_table_column_count
-
-    @property
-    def power_b_i_table_measure_count(self) -> Optional[int]:
-        return self.attributes.power_b_i_table_measure_count
-
-    @power_b_i_table_measure_count.setter
-    def power_b_i_table_measure_count(
-        self, power_b_i_table_measure_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
-
-    @property
-    def measures(self) -> Optional[list[PowerBIMeasure]]:
-        return self.attributes.measures
-
-    @measures.setter
-    def measures(self, measures: Optional[list[PowerBIMeasure]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.measures = measures
-
-    @property
-    def columns(self) -> Optional[list[PowerBIColumn]]:
-        return self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[PowerBIColumn]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    type_name: str = Field("PowerBITable", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBITable":
-            raise ValueError("must be PowerBITable")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        power_b_i_table_source_expressions: Optional[set[str]] = Field(
-            None, description="", alias="powerBITableSourceExpressions"
-        )
-        power_b_i_table_column_count: Optional[int] = Field(
-            None, description="", alias="powerBITableColumnCount"
-        )
-        power_b_i_table_measure_count: Optional[int] = Field(
-            None, description="", alias="powerBITableMeasureCount"
-        )
-        measures: Optional[list[PowerBIMeasure]] = Field(
-            None, description="", alias="measures"
-        )  # relationship
-        columns: Optional[list[PowerBIColumn]] = Field(
-            None, description="", alias="columns"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-
-    attributes: "PowerBITable.Attributes" = Field(
-        default_factory=lambda: PowerBITable.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIDatasource(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIDatasource._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "connection_details",
-        "datasets",
-    ]
-
-    @property
-    def connection_details(self) -> Optional[dict[str, str]]:
-        return self.attributes.connection_details
-
-    @connection_details.setter
-    def connection_details(self, connection_details: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.connection_details = connection_details
-
-    @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
-        return self.attributes.datasets
-
-    @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasets = datasets
-
-    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDatasource":
-            raise ValueError("must be PowerBIDatasource")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        connection_details: Optional[dict[str, str]] = Field(
-            None, description="", alias="connectionDetails"
-        )
-        datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
-        )  # relationship
-
-    attributes: "PowerBIDatasource.Attributes" = Field(
-        default_factory=lambda: PowerBIDatasource.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIWorkspace(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIWorkspace._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "web_url",
-        "report_count",
-        "dashboard_count",
-        "dataset_count",
-        "dataflow_count",
-        "reports",
-        "datasets",
-        "dashboards",
-        "dataflows",
-    ]
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def report_count(self) -> Optional[int]:
-        return self.attributes.report_count
-
-    @report_count.setter
-    def report_count(self, report_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_count = report_count
-
-    @property
-    def dashboard_count(self) -> Optional[int]:
-        return self.attributes.dashboard_count
-
-    @dashboard_count.setter
-    def dashboard_count(self, dashboard_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard_count = dashboard_count
-
-    @property
-    def dataset_count(self) -> Optional[int]:
-        return self.attributes.dataset_count
-
-    @dataset_count.setter
-    def dataset_count(self, dataset_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_count = dataset_count
-
-    @property
-    def dataflow_count(self) -> Optional[int]:
-        return self.attributes.dataflow_count
-
-    @dataflow_count.setter
-    def dataflow_count(self, dataflow_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflow_count = dataflow_count
-
-    @property
-    def reports(self) -> Optional[list[PowerBIReport]]:
-        return self.attributes.reports
-
-    @reports.setter
-    def reports(self, reports: Optional[list[PowerBIReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reports = reports
-
-    @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
-        return self.attributes.datasets
-
-    @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasets = datasets
-
-    @property
-    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
-        return self.attributes.dashboards
-
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
-
-    @property
-    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
-        return self.attributes.dataflows
-
-    @dataflows.setter
-    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflows = dataflows
-
-    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIWorkspace":
-            raise ValueError("must be PowerBIWorkspace")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        report_count: Optional[int] = Field(None, description="", alias="reportCount")
-        dashboard_count: Optional[int] = Field(
-            None, description="", alias="dashboardCount"
-        )
-        dataset_count: Optional[int] = Field(None, description="", alias="datasetCount")
-        dataflow_count: Optional[int] = Field(
-            None, description="", alias="dataflowCount"
-        )
-        reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
-        )  # relationship
-        datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
-        )  # relationship
-        dashboards: Optional[list[PowerBIDashboard]] = Field(
-            None, description="", alias="dashboards"
-        )  # relationship
-        dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
-        )  # relationship
-
-    attributes: "PowerBIWorkspace.Attributes" = Field(
-        default_factory=lambda: PowerBIWorkspace.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIDataset(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIDataset._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "web_url",
-        "reports",
-        "workspace",
-        "dataflows",
-        "tiles",
-        "tables",
-        "datasources",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def reports(self) -> Optional[list[PowerBIReport]]:
-        return self.attributes.reports
-
-    @reports.setter
-    def reports(self, reports: Optional[list[PowerBIReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reports = reports
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
-        return self.attributes.dataflows
-
-    @dataflows.setter
-    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflows = dataflows
-
-    @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def tables(self) -> Optional[list[PowerBITable]]:
-        return self.attributes.tables
-
-    @tables.setter
-    def tables(self, tables: Optional[list[PowerBITable]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tables = tables
-
-    @property
-    def datasources(self) -> Optional[list[PowerBIDatasource]]:
-        return self.attributes.datasources
-
-    @datasources.setter
-    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasources = datasources
-
-    type_name: str = Field("PowerBIDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDataset":
-            raise ValueError("must be PowerBIDataset")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
-        )  # relationship
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-        dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
-        )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        tables: Optional[list[PowerBITable]] = Field(
-            None, description="", alias="tables"
-        )  # relationship
-        datasources: Optional[list[PowerBIDatasource]] = Field(
-            None, description="", alias="datasources"
-        )  # relationship
-
-    attributes: "PowerBIDataset.Attributes" = Field(
-        default_factory=lambda: PowerBIDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIDashboard(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIDashboard._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "web_url",
-        "tile_count",
-        "tiles",
-        "workspace",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def tile_count(self) -> Optional[int]:
-        return self.attributes.tile_count
-
-    @tile_count.setter
-    def tile_count(self, tile_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tile_count = tile_count
-
-    @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDashboard":
-            raise ValueError("must be PowerBIDashboard")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        tile_count: Optional[int] = Field(None, description="", alias="tileCount")
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-
-    attributes: "PowerBIDashboard.Attributes" = Field(
-        default_factory=lambda: PowerBIDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIPage(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIPage._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "report_qualified_name",
-        "report",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def report_qualified_name(self) -> Optional[str]:
-        return self.attributes.report_qualified_name
-
-    @report_qualified_name.setter
-    def report_qualified_name(self, report_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_qualified_name = report_qualified_name
-
-    @property
-    def report(self) -> Optional[PowerBIReport]:
-        return self.attributes.report
-
-    @report.setter
-    def report(self, report: Optional[PowerBIReport]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report = report
-
-    type_name: str = Field("PowerBIPage", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIPage":
-            raise ValueError("must be PowerBIPage")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        report_qualified_name: Optional[str] = Field(
-            None, description="", alias="reportQualifiedName"
-        )
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-
-    attributes: "PowerBIPage.Attributes" = Field(
-        default_factory=lambda: PowerBIPage.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIDataflow(PowerBI):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in PowerBIDataflow._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "web_url",
-        "workspace",
-        "datasets",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return self.attributes.workspace_qualified_name
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
-        return self.attributes.datasets
-
-    @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasets = datasets
-
-    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDataflow":
-            raise ValueError("must be PowerBIDataflow")
-        return v
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-        datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
-        )  # relationship
-
-    attributes: "PowerBIDataflow.Attributes" = Field(
-        default_factory=lambda: PowerBIDataflow.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class PresetChart(Preset):
     """Description"""
 
@@ -18032,442 +15935,6 @@ class PresetWorkspace(Preset):
     )
 
 
-class SigmaDatasetColumn(Sigma):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in SigmaDatasetColumn._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_dataset_qualified_name",
-        "sigma_dataset_name",
-        "sigma_dataset",
-    ]
-
-    @property
-    def sigma_dataset_qualified_name(self) -> Optional[str]:
-        return self.attributes.sigma_dataset_qualified_name
-
-    @sigma_dataset_qualified_name.setter
-    def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_qualified_name = sigma_dataset_qualified_name
-
-    @property
-    def sigma_dataset_name(self) -> Optional[str]:
-        return self.attributes.sigma_dataset_name
-
-    @sigma_dataset_name.setter
-    def sigma_dataset_name(self, sigma_dataset_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_name = sigma_dataset_name
-
-    @property
-    def sigma_dataset(self) -> Optional[SigmaDataset]:
-        return self.attributes.sigma_dataset
-
-    @sigma_dataset.setter
-    def sigma_dataset(self, sigma_dataset: Optional[SigmaDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset = sigma_dataset
-
-    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDatasetColumn":
-            raise ValueError("must be SigmaDatasetColumn")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetQualifiedName"
-        )
-        sigma_dataset_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetName"
-        )
-        sigma_dataset: Optional[SigmaDataset] = Field(
-            None, description="", alias="sigmaDataset"
-        )  # relationship
-
-    attributes: "SigmaDatasetColumn.Attributes" = Field(
-        default_factory=lambda: SigmaDatasetColumn.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataset(Sigma):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in SigmaDataset._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_dataset_column_count",
-        "sigma_dataset_columns",
-    ]
-
-    @property
-    def sigma_dataset_column_count(self) -> Optional[int]:
-        return self.attributes.sigma_dataset_column_count
-
-    @sigma_dataset_column_count.setter
-    def sigma_dataset_column_count(self, sigma_dataset_column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
-
-    @property
-    def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
-        return self.attributes.sigma_dataset_columns
-
-    @sigma_dataset_columns.setter
-    def sigma_dataset_columns(
-        self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_dataset_columns = sigma_dataset_columns
-
-    type_name: str = Field("SigmaDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataset":
-            raise ValueError("must be SigmaDataset")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="sigmaDatasetColumnCount"
-        )
-        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
-            None, description="", alias="sigmaDatasetColumns"
-        )  # relationship
-
-    attributes: "SigmaDataset.Attributes" = Field(
-        default_factory=lambda: SigmaDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaWorkbook(Sigma):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in SigmaWorkbook._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_page_count",
-        "sigma_pages",
-    ]
-
-    @property
-    def sigma_page_count(self) -> Optional[int]:
-        return self.attributes.sigma_page_count
-
-    @sigma_page_count.setter
-    def sigma_page_count(self, sigma_page_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_count = sigma_page_count
-
-    @property
-    def sigma_pages(self) -> Optional[list[SigmaPage]]:
-        return self.attributes.sigma_pages
-
-    @sigma_pages.setter
-    def sigma_pages(self, sigma_pages: Optional[list[SigmaPage]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_pages = sigma_pages
-
-    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaWorkbook":
-            raise ValueError("must be SigmaWorkbook")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_page_count: Optional[int] = Field(
-            None, description="", alias="sigmaPageCount"
-        )
-        sigma_pages: Optional[list[SigmaPage]] = Field(
-            None, description="", alias="sigmaPages"
-        )  # relationship
-
-    attributes: "SigmaWorkbook.Attributes" = Field(
-        default_factory=lambda: SigmaWorkbook.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataElementField(Sigma):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in SigmaDataElementField._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_data_element_field_is_hidden",
-        "sigma_data_element_field_formula",
-        "sigma_data_element",
-    ]
-
-    @property
-    def sigma_data_element_field_is_hidden(self) -> Optional[bool]:
-        return self.attributes.sigma_data_element_field_is_hidden
-
-    @sigma_data_element_field_is_hidden.setter
-    def sigma_data_element_field_is_hidden(
-        self, sigma_data_element_field_is_hidden: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_field_is_hidden = (
-            sigma_data_element_field_is_hidden
-        )
-
-    @property
-    def sigma_data_element_field_formula(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_field_formula
-
-    @sigma_data_element_field_formula.setter
-    def sigma_data_element_field_formula(
-        self, sigma_data_element_field_formula: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_field_formula = (
-            sigma_data_element_field_formula
-        )
-
-    @property
-    def sigma_data_element(self) -> Optional[SigmaDataElement]:
-        return self.attributes.sigma_data_element
-
-    @sigma_data_element.setter
-    def sigma_data_element(self, sigma_data_element: Optional[SigmaDataElement]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element = sigma_data_element
-
-    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataElementField":
-            raise ValueError("must be SigmaDataElementField")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_field_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sigmaDataElementFieldIsHidden"
-        )
-        sigma_data_element_field_formula: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementFieldFormula"
-        )
-        sigma_data_element: Optional[SigmaDataElement] = Field(
-            None, description="", alias="sigmaDataElement"
-        )  # relationship
-
-    attributes: "SigmaDataElementField.Attributes" = Field(
-        default_factory=lambda: SigmaDataElementField.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaPage(Sigma):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in SigmaPage._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_data_element_count",
-        "sigma_data_elements",
-        "sigma_workbook",
-    ]
-
-    @property
-    def sigma_data_element_count(self) -> Optional[int]:
-        return self.attributes.sigma_data_element_count
-
-    @sigma_data_element_count.setter
-    def sigma_data_element_count(self, sigma_data_element_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_count = sigma_data_element_count
-
-    @property
-    def sigma_data_elements(self) -> Optional[list[SigmaDataElement]]:
-        return self.attributes.sigma_data_elements
-
-    @sigma_data_elements.setter
-    def sigma_data_elements(
-        self, sigma_data_elements: Optional[list[SigmaDataElement]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_elements = sigma_data_elements
-
-    @property
-    def sigma_workbook(self) -> Optional[SigmaWorkbook]:
-        return self.attributes.sigma_workbook
-
-    @sigma_workbook.setter
-    def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_workbook = sigma_workbook
-
-    type_name: str = Field("SigmaPage", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaPage":
-            raise ValueError("must be SigmaPage")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementCount"
-        )
-        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
-            None, description="", alias="sigmaDataElements"
-        )  # relationship
-        sigma_workbook: Optional[SigmaWorkbook] = Field(
-            None, description="", alias="sigmaWorkbook"
-        )  # relationship
-
-    attributes: "SigmaPage.Attributes" = Field(
-        default_factory=lambda: SigmaPage.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SigmaDataElement(Sigma):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in SigmaDataElement._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "sigma_data_element_query",
-        "sigma_data_element_type",
-        "sigma_data_element_field_count",
-        "sigma_page",
-        "sigma_data_element_fields",
-    ]
-
-    @property
-    def sigma_data_element_query(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_query
-
-    @sigma_data_element_query.setter
-    def sigma_data_element_query(self, sigma_data_element_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_query = sigma_data_element_query
-
-    @property
-    def sigma_data_element_type(self) -> Optional[str]:
-        return self.attributes.sigma_data_element_type
-
-    @sigma_data_element_type.setter
-    def sigma_data_element_type(self, sigma_data_element_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_type = sigma_data_element_type
-
-    @property
-    def sigma_data_element_field_count(self) -> Optional[int]:
-        return self.attributes.sigma_data_element_field_count
-
-    @sigma_data_element_field_count.setter
-    def sigma_data_element_field_count(
-        self, sigma_data_element_field_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
-
-    @property
-    def sigma_page(self) -> Optional[SigmaPage]:
-        return self.attributes.sigma_page
-
-    @sigma_page.setter
-    def sigma_page(self, sigma_page: Optional[SigmaPage]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page = sigma_page
-
-    @property
-    def sigma_data_element_fields(self) -> Optional[list[SigmaDataElementField]]:
-        return self.attributes.sigma_data_element_fields
-
-    @sigma_data_element_fields.setter
-    def sigma_data_element_fields(
-        self, sigma_data_element_fields: Optional[list[SigmaDataElementField]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_fields = sigma_data_element_fields
-
-    type_name: str = Field("SigmaDataElement", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataElement":
-            raise ValueError("must be SigmaDataElement")
-        return v
-
-    class Attributes(Sigma.Attributes):
-        sigma_data_element_query: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQuery"
-        )
-        sigma_data_element_type: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementType"
-        )
-        sigma_data_element_field_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementFieldCount"
-        )
-        sigma_page: Optional[SigmaPage] = Field(
-            None, description="", alias="sigmaPage"
-        )  # relationship
-        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
-            None, description="", alias="sigmaDataElementFields"
-        )  # relationship
-
-    attributes: "SigmaDataElement.Attributes" = Field(
-        default_factory=lambda: SigmaDataElement.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class ModeReport(Mode):
     """Description"""
 
@@ -18902,463 +16369,437 @@ class ModeCollection(Mode):
     )
 
 
-class QlikSpace(Qlik):
+class SigmaDatasetColumn(Sigma):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in QlikSpace._convience_properties:
+        if name in SigmaDatasetColumn._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_space_type",
-        "qlik_datasets",
-        "qlik_apps",
+        "sigma_dataset_qualified_name",
+        "sigma_dataset_name",
+        "sigma_dataset",
     ]
 
     @property
-    def qlik_space_type(self) -> Optional[str]:
-        return self.attributes.qlik_space_type
+    def sigma_dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.sigma_dataset_qualified_name
 
-    @qlik_space_type.setter
-    def qlik_space_type(self, qlik_space_type: Optional[str]):
+    @sigma_dataset_qualified_name.setter
+    def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_space_type = qlik_space_type
+        self.attributes.sigma_dataset_qualified_name = sigma_dataset_qualified_name
 
     @property
-    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
-        return self.attributes.qlik_datasets
+    def sigma_dataset_name(self) -> Optional[str]:
+        return self.attributes.sigma_dataset_name
 
-    @qlik_datasets.setter
-    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
+    @sigma_dataset_name.setter
+    def sigma_dataset_name(self, sigma_dataset_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_datasets = qlik_datasets
+        self.attributes.sigma_dataset_name = sigma_dataset_name
 
     @property
-    def qlik_apps(self) -> Optional[list[QlikApp]]:
-        return self.attributes.qlik_apps
+    def sigma_dataset(self) -> Optional[SigmaDataset]:
+        return self.attributes.sigma_dataset
 
-    @qlik_apps.setter
-    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
+    @sigma_dataset.setter
+    def sigma_dataset(self, sigma_dataset: Optional[SigmaDataset]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_apps = qlik_apps
+        self.attributes.sigma_dataset = sigma_dataset
 
-    type_name: str = Field("QlikSpace", allow_mutation=False)
+    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikSpace":
-            raise ValueError("must be QlikSpace")
+        if v != "SigmaDatasetColumn":
+            raise ValueError("must be SigmaDatasetColumn")
         return v
 
-    class Attributes(Qlik.Attributes):
-        qlik_space_type: Optional[str] = Field(
-            None, description="", alias="qlikSpaceType"
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetQualifiedName"
         )
-        qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
-        )  # relationship
-        qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
+        sigma_dataset_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetName"
+        )
+        sigma_dataset: Optional[SigmaDataset] = Field(
+            None, description="", alias="sigmaDataset"
         )  # relationship
 
-    attributes: "QlikSpace.Attributes" = Field(
-        default_factory=lambda: QlikSpace.Attributes(),
+    attributes: "SigmaDatasetColumn.Attributes" = Field(
+        default_factory=lambda: SigmaDatasetColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikApp(Qlik):
+class SigmaDataset(Sigma):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in QlikApp._convience_properties:
+        if name in SigmaDataset._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_has_section_access",
-        "qlik_origin_app_id",
-        "qlik_is_encrypted",
-        "qlik_is_direct_query_mode",
-        "qlik_app_static_byte_size",
-        "qlik_space",
-        "qlik_sheets",
+        "sigma_dataset_column_count",
+        "sigma_dataset_columns",
     ]
 
     @property
-    def qlik_has_section_access(self) -> Optional[bool]:
-        return self.attributes.qlik_has_section_access
+    def sigma_dataset_column_count(self) -> Optional[int]:
+        return self.attributes.sigma_dataset_column_count
 
-    @qlik_has_section_access.setter
-    def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
+    @sigma_dataset_column_count.setter
+    def sigma_dataset_column_count(self, sigma_dataset_column_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_has_section_access = qlik_has_section_access
+        self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
 
     @property
-    def qlik_origin_app_id(self) -> Optional[str]:
-        return self.attributes.qlik_origin_app_id
+    def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
+        return self.attributes.sigma_dataset_columns
 
-    @qlik_origin_app_id.setter
-    def qlik_origin_app_id(self, qlik_origin_app_id: Optional[str]):
+    @sigma_dataset_columns.setter
+    def sigma_dataset_columns(
+        self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_origin_app_id = qlik_origin_app_id
+        self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
-    @property
-    def qlik_is_encrypted(self) -> Optional[bool]:
-        return self.attributes.qlik_is_encrypted
-
-    @qlik_is_encrypted.setter
-    def qlik_is_encrypted(self, qlik_is_encrypted: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_is_encrypted = qlik_is_encrypted
-
-    @property
-    def qlik_is_direct_query_mode(self) -> Optional[bool]:
-        return self.attributes.qlik_is_direct_query_mode
-
-    @qlik_is_direct_query_mode.setter
-    def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_is_direct_query_mode = qlik_is_direct_query_mode
-
-    @property
-    def qlik_app_static_byte_size(self) -> Optional[int]:
-        return self.attributes.qlik_app_static_byte_size
-
-    @qlik_app_static_byte_size.setter
-    def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
-
-    @property
-    def qlik_space(self) -> Optional[QlikSpace]:
-        return self.attributes.qlik_space
-
-    @qlik_space.setter
-    def qlik_space(self, qlik_space: Optional[QlikSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space = qlik_space
-
-    @property
-    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
-        return self.attributes.qlik_sheets
-
-    @qlik_sheets.setter
-    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_sheets = qlik_sheets
-
-    type_name: str = Field("QlikApp", allow_mutation=False)
+    type_name: str = Field("SigmaDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikApp":
-            raise ValueError("must be QlikApp")
+        if v != "SigmaDataset":
+            raise ValueError("must be SigmaDataset")
         return v
 
-    class Attributes(Qlik.Attributes):
-        qlik_has_section_access: Optional[bool] = Field(
-            None, description="", alias="qlikHasSectionAccess"
+    class Attributes(Sigma.Attributes):
+        sigma_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="sigmaDatasetColumnCount"
         )
-        qlik_origin_app_id: Optional[str] = Field(
-            None, description="", alias="qlikOriginAppId"
-        )
-        qlik_is_encrypted: Optional[bool] = Field(
-            None, description="", alias="qlikIsEncrypted"
-        )
-        qlik_is_direct_query_mode: Optional[bool] = Field(
-            None, description="", alias="qlikIsDirectQueryMode"
-        )
-        qlik_app_static_byte_size: Optional[int] = Field(
-            None, description="", alias="qlikAppStaticByteSize"
-        )
-        qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
-        )  # relationship
-        qlik_sheets: Optional[list[QlikSheet]] = Field(
-            None, description="", alias="qlikSheets"
+        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
+            None, description="", alias="sigmaDatasetColumns"
         )  # relationship
 
-    attributes: "QlikApp.Attributes" = Field(
-        default_factory=lambda: QlikApp.Attributes(),
+    attributes: "SigmaDataset.Attributes" = Field(
+        default_factory=lambda: SigmaDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikChart(Qlik):
+class SigmaWorkbook(Sigma):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in QlikChart._convience_properties:
+        if name in SigmaWorkbook._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_chart_subtitle",
-        "qlik_chart_footnote",
-        "qlik_chart_orientation",
-        "qlik_chart_type",
-        "qlik_sheet",
+        "sigma_page_count",
+        "sigma_pages",
     ]
 
     @property
-    def qlik_chart_subtitle(self) -> Optional[str]:
-        return self.attributes.qlik_chart_subtitle
+    def sigma_page_count(self) -> Optional[int]:
+        return self.attributes.sigma_page_count
 
-    @qlik_chart_subtitle.setter
-    def qlik_chart_subtitle(self, qlik_chart_subtitle: Optional[str]):
+    @sigma_page_count.setter
+    def sigma_page_count(self, sigma_page_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_chart_subtitle = qlik_chart_subtitle
+        self.attributes.sigma_page_count = sigma_page_count
 
     @property
-    def qlik_chart_footnote(self) -> Optional[str]:
-        return self.attributes.qlik_chart_footnote
+    def sigma_pages(self) -> Optional[list[SigmaPage]]:
+        return self.attributes.sigma_pages
 
-    @qlik_chart_footnote.setter
-    def qlik_chart_footnote(self, qlik_chart_footnote: Optional[str]):
+    @sigma_pages.setter
+    def sigma_pages(self, sigma_pages: Optional[list[SigmaPage]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_chart_footnote = qlik_chart_footnote
+        self.attributes.sigma_pages = sigma_pages
 
-    @property
-    def qlik_chart_orientation(self) -> Optional[str]:
-        return self.attributes.qlik_chart_orientation
-
-    @qlik_chart_orientation.setter
-    def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_orientation = qlik_chart_orientation
-
-    @property
-    def qlik_chart_type(self) -> Optional[str]:
-        return self.attributes.qlik_chart_type
-
-    @qlik_chart_type.setter
-    def qlik_chart_type(self, qlik_chart_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_type = qlik_chart_type
-
-    @property
-    def qlik_sheet(self) -> Optional[QlikSheet]:
-        return self.attributes.qlik_sheet
-
-    @qlik_sheet.setter
-    def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_sheet = qlik_sheet
-
-    type_name: str = Field("QlikChart", allow_mutation=False)
+    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikChart":
-            raise ValueError("must be QlikChart")
+        if v != "SigmaWorkbook":
+            raise ValueError("must be SigmaWorkbook")
         return v
 
-    class Attributes(Qlik.Attributes):
-        qlik_chart_subtitle: Optional[str] = Field(
-            None, description="", alias="qlikChartSubtitle"
+    class Attributes(Sigma.Attributes):
+        sigma_page_count: Optional[int] = Field(
+            None, description="", alias="sigmaPageCount"
         )
-        qlik_chart_footnote: Optional[str] = Field(
-            None, description="", alias="qlikChartFootnote"
-        )
-        qlik_chart_orientation: Optional[str] = Field(
-            None, description="", alias="qlikChartOrientation"
-        )
-        qlik_chart_type: Optional[str] = Field(
-            None, description="", alias="qlikChartType"
-        )
-        qlik_sheet: Optional[QlikSheet] = Field(
-            None, description="", alias="qlikSheet"
+        sigma_pages: Optional[list[SigmaPage]] = Field(
+            None, description="", alias="sigmaPages"
         )  # relationship
 
-    attributes: "QlikChart.Attributes" = Field(
-        default_factory=lambda: QlikChart.Attributes(),
+    attributes: "SigmaWorkbook.Attributes" = Field(
+        default_factory=lambda: SigmaWorkbook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikDataset(Qlik):
+class SigmaDataElementField(Sigma):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in QlikDataset._convience_properties:
+        if name in SigmaDataElementField._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_dataset_technical_name",
-        "qlik_dataset_type",
-        "qlik_dataset_uri",
-        "qlik_dataset_subtype",
-        "qlik_space",
+        "sigma_data_element_field_is_hidden",
+        "sigma_data_element_field_formula",
+        "sigma_data_element",
     ]
 
     @property
-    def qlik_dataset_technical_name(self) -> Optional[str]:
-        return self.attributes.qlik_dataset_technical_name
+    def sigma_data_element_field_is_hidden(self) -> Optional[bool]:
+        return self.attributes.sigma_data_element_field_is_hidden
 
-    @qlik_dataset_technical_name.setter
-    def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
+    @sigma_data_element_field_is_hidden.setter
+    def sigma_data_element_field_is_hidden(
+        self, sigma_data_element_field_is_hidden: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_technical_name = qlik_dataset_technical_name
+        self.attributes.sigma_data_element_field_is_hidden = (
+            sigma_data_element_field_is_hidden
+        )
 
     @property
-    def qlik_dataset_type(self) -> Optional[str]:
-        return self.attributes.qlik_dataset_type
+    def sigma_data_element_field_formula(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_field_formula
 
-    @qlik_dataset_type.setter
-    def qlik_dataset_type(self, qlik_dataset_type: Optional[str]):
+    @sigma_data_element_field_formula.setter
+    def sigma_data_element_field_formula(
+        self, sigma_data_element_field_formula: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_type = qlik_dataset_type
+        self.attributes.sigma_data_element_field_formula = (
+            sigma_data_element_field_formula
+        )
 
     @property
-    def qlik_dataset_uri(self) -> Optional[str]:
-        return self.attributes.qlik_dataset_uri
+    def sigma_data_element(self) -> Optional[SigmaDataElement]:
+        return self.attributes.sigma_data_element
 
-    @qlik_dataset_uri.setter
-    def qlik_dataset_uri(self, qlik_dataset_uri: Optional[str]):
+    @sigma_data_element.setter
+    def sigma_data_element(self, sigma_data_element: Optional[SigmaDataElement]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_uri = qlik_dataset_uri
+        self.attributes.sigma_data_element = sigma_data_element
 
-    @property
-    def qlik_dataset_subtype(self) -> Optional[str]:
-        return self.attributes.qlik_dataset_subtype
-
-    @qlik_dataset_subtype.setter
-    def qlik_dataset_subtype(self, qlik_dataset_subtype: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
-
-    @property
-    def qlik_space(self) -> Optional[QlikSpace]:
-        return self.attributes.qlik_space
-
-    @qlik_space.setter
-    def qlik_space(self, qlik_space: Optional[QlikSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space = qlik_space
-
-    type_name: str = Field("QlikDataset", allow_mutation=False)
+    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikDataset":
-            raise ValueError("must be QlikDataset")
+        if v != "SigmaDataElementField":
+            raise ValueError("must be SigmaDataElementField")
         return v
 
-    class Attributes(Qlik.Attributes):
-        qlik_dataset_technical_name: Optional[str] = Field(
-            None, description="", alias="qlikDatasetTechnicalName"
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_field_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sigmaDataElementFieldIsHidden"
         )
-        qlik_dataset_type: Optional[str] = Field(
-            None, description="", alias="qlikDatasetType"
+        sigma_data_element_field_formula: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementFieldFormula"
         )
-        qlik_dataset_uri: Optional[str] = Field(
-            None, description="", alias="qlikDatasetUri"
-        )
-        qlik_dataset_subtype: Optional[str] = Field(
-            None, description="", alias="qlikDatasetSubtype"
-        )
-        qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
+        sigma_data_element: Optional[SigmaDataElement] = Field(
+            None, description="", alias="sigmaDataElement"
         )  # relationship
 
-    attributes: "QlikDataset.Attributes" = Field(
-        default_factory=lambda: QlikDataset.Attributes(),
+    attributes: "SigmaDataElementField.Attributes" = Field(
+        default_factory=lambda: SigmaDataElementField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikSheet(Qlik):
+class SigmaPage(Sigma):
     """Description"""
 
     def __setattr__(self, name, value):
-        if name in QlikSheet._convience_properties:
+        if name in SigmaPage._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_sheet_is_approved",
-        "qlik_app",
-        "qlik_charts",
+        "sigma_data_element_count",
+        "sigma_data_elements",
+        "sigma_workbook",
     ]
 
     @property
-    def qlik_sheet_is_approved(self) -> Optional[bool]:
-        return self.attributes.qlik_sheet_is_approved
+    def sigma_data_element_count(self) -> Optional[int]:
+        return self.attributes.sigma_data_element_count
 
-    @qlik_sheet_is_approved.setter
-    def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
+    @sigma_data_element_count.setter
+    def sigma_data_element_count(self, sigma_data_element_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
+        self.attributes.sigma_data_element_count = sigma_data_element_count
 
     @property
-    def qlik_app(self) -> Optional[QlikApp]:
-        return self.attributes.qlik_app
+    def sigma_data_elements(self) -> Optional[list[SigmaDataElement]]:
+        return self.attributes.sigma_data_elements
 
-    @qlik_app.setter
-    def qlik_app(self, qlik_app: Optional[QlikApp]):
+    @sigma_data_elements.setter
+    def sigma_data_elements(
+        self, sigma_data_elements: Optional[list[SigmaDataElement]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_app = qlik_app
+        self.attributes.sigma_data_elements = sigma_data_elements
 
     @property
-    def qlik_charts(self) -> Optional[list[QlikChart]]:
-        return self.attributes.qlik_charts
+    def sigma_workbook(self) -> Optional[SigmaWorkbook]:
+        return self.attributes.sigma_workbook
 
-    @qlik_charts.setter
-    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
+    @sigma_workbook.setter
+    def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_charts = qlik_charts
+        self.attributes.sigma_workbook = sigma_workbook
 
-    type_name: str = Field("QlikSheet", allow_mutation=False)
+    type_name: str = Field("SigmaPage", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikSheet":
-            raise ValueError("must be QlikSheet")
+        if v != "SigmaPage":
+            raise ValueError("must be SigmaPage")
         return v
 
-    class Attributes(Qlik.Attributes):
-        qlik_sheet_is_approved: Optional[bool] = Field(
-            None, description="", alias="qlikSheetIsApproved"
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementCount"
         )
-        qlik_app: Optional[QlikApp] = Field(
-            None, description="", alias="qlikApp"
+        sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
+            None, description="", alias="sigmaDataElements"
         )  # relationship
-        qlik_charts: Optional[list[QlikChart]] = Field(
-            None, description="", alias="qlikCharts"
+        sigma_workbook: Optional[SigmaWorkbook] = Field(
+            None, description="", alias="sigmaWorkbook"
         )  # relationship
 
-    attributes: "QlikSheet.Attributes" = Field(
-        default_factory=lambda: QlikSheet.Attributes(),
+    attributes: "SigmaPage.Attributes" = Field(
+        default_factory=lambda: SigmaPage.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SigmaDataElement(Sigma):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in SigmaDataElement._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "sigma_data_element_query",
+        "sigma_data_element_type",
+        "sigma_data_element_field_count",
+        "sigma_page",
+        "sigma_data_element_fields",
+    ]
+
+    @property
+    def sigma_data_element_query(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_query
+
+    @sigma_data_element_query.setter
+    def sigma_data_element_query(self, sigma_data_element_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_query = sigma_data_element_query
+
+    @property
+    def sigma_data_element_type(self) -> Optional[str]:
+        return self.attributes.sigma_data_element_type
+
+    @sigma_data_element_type.setter
+    def sigma_data_element_type(self, sigma_data_element_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_type = sigma_data_element_type
+
+    @property
+    def sigma_data_element_field_count(self) -> Optional[int]:
+        return self.attributes.sigma_data_element_field_count
+
+    @sigma_data_element_field_count.setter
+    def sigma_data_element_field_count(
+        self, sigma_data_element_field_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
+
+    @property
+    def sigma_page(self) -> Optional[SigmaPage]:
+        return self.attributes.sigma_page
+
+    @sigma_page.setter
+    def sigma_page(self, sigma_page: Optional[SigmaPage]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_page = sigma_page
+
+    @property
+    def sigma_data_element_fields(self) -> Optional[list[SigmaDataElementField]]:
+        return self.attributes.sigma_data_element_fields
+
+    @sigma_data_element_fields.setter
+    def sigma_data_element_fields(
+        self, sigma_data_element_fields: Optional[list[SigmaDataElementField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sigma_data_element_fields = sigma_data_element_fields
+
+    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElement":
+            raise ValueError("must be SigmaDataElement")
+        return v
+
+    class Attributes(Sigma.Attributes):
+        sigma_data_element_query: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementQuery"
+        )
+        sigma_data_element_type: Optional[str] = Field(
+            None, description="", alias="sigmaDataElementType"
+        )
+        sigma_data_element_field_count: Optional[int] = Field(
+            None, description="", alias="sigmaDataElementFieldCount"
+        )
+        sigma_page: Optional[SigmaPage] = Field(
+            None, description="", alias="sigmaPage"
+        )  # relationship
+        sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
+            None, description="", alias="sigmaDataElementFields"
+        )  # relationship
+
+    attributes: "SigmaDataElement.Attributes" = Field(
+        default_factory=lambda: SigmaDataElement.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -20306,6 +17747,48 @@ class TableauMetric(Tableau):
     )
 
 
+class TableauSite(Tableau):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in TableauSite._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "projects",
+    ]
+
+    @property
+    def projects(self) -> Optional[list[TableauProject]]:
+        return self.attributes.projects
+
+    @projects.setter
+    def projects(self, projects: Optional[list[TableauProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.projects = projects
+
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
+
+    class Attributes(Tableau.Attributes):
+        projects: Optional[list[TableauProject]] = Field(
+            None, description="", alias="projects"
+        )  # relationship
+
+    attributes: "TableauSite.Attributes" = Field(
+        default_factory=lambda: TableauSite.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class TableauDatasource(Tableau):
     """Description"""
 
@@ -20553,48 +18036,6 @@ class TableauDatasource(Tableau):
 
     attributes: "TableauDatasource.Attributes" = Field(
         default_factory=lambda: TableauDatasource.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class TableauSite(Tableau):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in TableauSite._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "projects",
-    ]
-
-    @property
-    def projects(self) -> Optional[list[TableauProject]]:
-        return self.attributes.projects
-
-    @projects.setter
-    def projects(self, projects: Optional[list[TableauProject]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.projects = projects
-
-    type_name: str = Field("TableauSite", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauSite":
-            raise ValueError("must be TableauSite")
-        return v
-
-    class Attributes(Tableau.Attributes):
-        projects: Optional[list[TableauProject]] = Field(
-            None, description="", alias="projects"
-        )  # relationship
-
-    attributes: "TableauSite.Attributes" = Field(
-        default_factory=lambda: TableauSite.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -22660,6 +20101,3759 @@ class RedashVisualization(Redash):
     )
 
 
+class MetabaseQuestion(Metabase):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MetabaseQuestion._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_dashboard_count",
+        "metabase_query_type",
+        "metabase_query",
+        "metabase_dashboards",
+        "metabase_collection",
+    ]
+
+    @property
+    def metabase_dashboard_count(self) -> Optional[int]:
+        return self.attributes.metabase_dashboard_count
+
+    @metabase_dashboard_count.setter
+    def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_dashboard_count = metabase_dashboard_count
+
+    @property
+    def metabase_query_type(self) -> Optional[str]:
+        return self.attributes.metabase_query_type
+
+    @metabase_query_type.setter
+    def metabase_query_type(self, metabase_query_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_query_type = metabase_query_type
+
+    @property
+    def metabase_query(self) -> Optional[str]:
+        return self.attributes.metabase_query
+
+    @metabase_query.setter
+    def metabase_query(self, metabase_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_query = metabase_query
+
+    @property
+    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        return self.attributes.metabase_dashboards
+
+    @metabase_dashboards.setter
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_dashboards = metabase_dashboards
+
+    @property
+    def metabase_collection(self) -> Optional[MetabaseCollection]:
+        return self.attributes.metabase_collection
+
+    @metabase_collection.setter
+    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection = metabase_collection
+
+    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseQuestion":
+            raise ValueError("must be MetabaseQuestion")
+        return v
+
+    class Attributes(Metabase.Attributes):
+        metabase_dashboard_count: Optional[int] = Field(
+            None, description="", alias="metabaseDashboardCount"
+        )
+        metabase_query_type: Optional[str] = Field(
+            None, description="", alias="metabaseQueryType"
+        )
+        metabase_query: Optional[str] = Field(
+            None, description="", alias="metabaseQuery"
+        )
+        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
+            None, description="", alias="metabaseDashboards"
+        )  # relationship
+        metabase_collection: Optional[MetabaseCollection] = Field(
+            None, description="", alias="metabaseCollection"
+        )  # relationship
+
+    attributes: "MetabaseQuestion.Attributes" = Field(
+        default_factory=lambda: MetabaseQuestion.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MetabaseCollection(Metabase):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MetabaseCollection._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_slug",
+        "metabase_color",
+        "metabase_namespace",
+        "metabase_is_personal_collection",
+        "metabase_dashboards",
+        "metabase_questions",
+    ]
+
+    @property
+    def metabase_slug(self) -> Optional[str]:
+        return self.attributes.metabase_slug
+
+    @metabase_slug.setter
+    def metabase_slug(self, metabase_slug: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_slug = metabase_slug
+
+    @property
+    def metabase_color(self) -> Optional[str]:
+        return self.attributes.metabase_color
+
+    @metabase_color.setter
+    def metabase_color(self, metabase_color: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_color = metabase_color
+
+    @property
+    def metabase_namespace(self) -> Optional[str]:
+        return self.attributes.metabase_namespace
+
+    @metabase_namespace.setter
+    def metabase_namespace(self, metabase_namespace: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_namespace = metabase_namespace
+
+    @property
+    def metabase_is_personal_collection(self) -> Optional[bool]:
+        return self.attributes.metabase_is_personal_collection
+
+    @metabase_is_personal_collection.setter
+    def metabase_is_personal_collection(
+        self, metabase_is_personal_collection: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_is_personal_collection = (
+            metabase_is_personal_collection
+        )
+
+    @property
+    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        return self.attributes.metabase_dashboards
+
+    @metabase_dashboards.setter
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_dashboards = metabase_dashboards
+
+    @property
+    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        return self.attributes.metabase_questions
+
+    @metabase_questions.setter
+    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_questions = metabase_questions
+
+    type_name: str = Field("MetabaseCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseCollection":
+            raise ValueError("must be MetabaseCollection")
+        return v
+
+    class Attributes(Metabase.Attributes):
+        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
+        metabase_color: Optional[str] = Field(
+            None, description="", alias="metabaseColor"
+        )
+        metabase_namespace: Optional[str] = Field(
+            None, description="", alias="metabaseNamespace"
+        )
+        metabase_is_personal_collection: Optional[bool] = Field(
+            None, description="", alias="metabaseIsPersonalCollection"
+        )
+        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
+            None, description="", alias="metabaseDashboards"
+        )  # relationship
+        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
+            None, description="", alias="metabaseQuestions"
+        )  # relationship
+
+    attributes: "MetabaseCollection.Attributes" = Field(
+        default_factory=lambda: MetabaseCollection.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MetabaseDashboard(Metabase):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MetabaseDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "metabase_question_count",
+        "metabase_questions",
+        "metabase_collection",
+    ]
+
+    @property
+    def metabase_question_count(self) -> Optional[int]:
+        return self.attributes.metabase_question_count
+
+    @metabase_question_count.setter
+    def metabase_question_count(self, metabase_question_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_question_count = metabase_question_count
+
+    @property
+    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        return self.attributes.metabase_questions
+
+    @metabase_questions.setter
+    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_questions = metabase_questions
+
+    @property
+    def metabase_collection(self) -> Optional[MetabaseCollection]:
+        return self.attributes.metabase_collection
+
+    @metabase_collection.setter
+    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection = metabase_collection
+
+    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseDashboard":
+            raise ValueError("must be MetabaseDashboard")
+        return v
+
+    class Attributes(Metabase.Attributes):
+        metabase_question_count: Optional[int] = Field(
+            None, description="", alias="metabaseQuestionCount"
+        )
+        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
+            None, description="", alias="metabaseQuestions"
+        )  # relationship
+        metabase_collection: Optional[MetabaseCollection] = Field(
+            None, description="", alias="metabaseCollection"
+        )  # relationship
+
+    attributes: "MetabaseDashboard.Attributes" = Field(
+        default_factory=lambda: MetabaseDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightFolder(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightFolder._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_folder_type",
+        "quick_sight_folder_hierarchy",
+        "quick_sight_dashboards",
+        "quick_sight_analyses",
+        "quick_sight_datasets",
+    ]
+
+    @property
+    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
+        return self.attributes.quick_sight_folder_type
+
+    @quick_sight_folder_type.setter
+    def quick_sight_folder_type(
+        self, quick_sight_folder_type: Optional[QuickSightFolderType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_folder_type = quick_sight_folder_type
+
+    @property
+    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        return self.attributes.quick_sight_folder_hierarchy
+
+    @quick_sight_folder_hierarchy.setter
+    def quick_sight_folder_hierarchy(
+        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
+
+    @property
+    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
+        return self.attributes.quick_sight_dashboards
+
+    @quick_sight_dashboards.setter
+    def quick_sight_dashboards(
+        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboards = quick_sight_dashboards
+
+    @property
+    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+        return self.attributes.quick_sight_analyses
+
+    @quick_sight_analyses.setter
+    def quick_sight_analyses(
+        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analyses = quick_sight_analyses
+
+    @property
+    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
+        return self.attributes.quick_sight_datasets
+
+    @quick_sight_datasets.setter
+    def quick_sight_datasets(
+        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_datasets = quick_sight_datasets
+
+    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightFolder":
+            raise ValueError("must be QuickSightFolder")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
+            None, description="", alias="quickSightFolderType"
+        )
+        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="quickSightFolderHierarchy"
+        )
+        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
+            None, description="", alias="quickSightDashboards"
+        )  # relationship
+        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
+            None, description="", alias="quickSightAnalyses"
+        )  # relationship
+        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
+            None, description="", alias="quickSightDatasets"
+        )  # relationship
+
+    attributes: "QuickSightFolder.Attributes" = Field(
+        default_factory=lambda: QuickSightFolder.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDashboardVisual(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDashboardVisual._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dashboard_qualified_name",
+        "quick_sight_dashboard",
+    ]
+
+    @property
+    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_dashboard_qualified_name
+
+    @quick_sight_dashboard_qualified_name.setter
+    def quick_sight_dashboard_qualified_name(
+        self, quick_sight_dashboard_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_qualified_name = (
+            quick_sight_dashboard_qualified_name
+        )
+
+    @property
+    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
+        return self.attributes.quick_sight_dashboard
+
+    @quick_sight_dashboard.setter
+    def quick_sight_dashboard(
+        self, quick_sight_dashboard: Optional[QuickSightDashboard]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard = quick_sight_dashboard
+
+    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboardVisual":
+            raise ValueError("must be QuickSightDashboardVisual")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDashboardQualifiedName"
+        )
+        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
+            None, description="", alias="quickSightDashboard"
+        )  # relationship
+
+    attributes: "QuickSightDashboardVisual.Attributes" = Field(
+        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightAnalysisVisual(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysisVisual._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_qualified_name",
+        "quick_sight_analysis",
+    ]
+
+    @property
+    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_analysis_qualified_name
+
+    @quick_sight_analysis_qualified_name.setter
+    def quick_sight_analysis_qualified_name(
+        self, quick_sight_analysis_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_qualified_name = (
+            quick_sight_analysis_qualified_name
+        )
+
+    @property
+    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
+        return self.attributes.quick_sight_analysis
+
+    @quick_sight_analysis.setter
+    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis = quick_sight_analysis
+
+    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysisVisual":
+            raise ValueError("must be QuickSightAnalysisVisual")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightAnalysisQualifiedName"
+        )
+        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
+            None, description="", alias="quickSightAnalysis"
+        )  # relationship
+
+    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDatasetField(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDatasetField._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dataset_field_type",
+        "quick_sight_dataset_qualified_name",
+        "quick_sight_dataset",
+    ]
+
+    @property
+    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
+        return self.attributes.quick_sight_dataset_field_type
+
+    @quick_sight_dataset_field_type.setter
+    def quick_sight_dataset_field_type(
+        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
+
+    @property
+    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.quick_sight_dataset_qualified_name
+
+    @quick_sight_dataset_qualified_name.setter
+    def quick_sight_dataset_qualified_name(
+        self, quick_sight_dataset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_qualified_name = (
+            quick_sight_dataset_qualified_name
+        )
+
+    @property
+    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
+        return self.attributes.quick_sight_dataset
+
+    @quick_sight_dataset.setter
+    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset = quick_sight_dataset
+
+    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDatasetField":
+            raise ValueError("must be QuickSightDatasetField")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
+            None, description="", alias="quickSightDatasetFieldType"
+        )
+        quick_sight_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDatasetQualifiedName"
+        )
+        quick_sight_dataset: Optional[QuickSightDataset] = Field(
+            None, description="", alias="quickSightDataset"
+        )  # relationship
+
+    attributes: "QuickSightDatasetField.Attributes" = Field(
+        default_factory=lambda: QuickSightDatasetField.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightAnalysis(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysis._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_status",
+        "quick_sight_analysis_calculated_fields",
+        "quick_sight_analysis_parameter_declarations",
+        "quick_sight_analysis_filter_groups",
+        "quick_sight_analysis_visuals",
+        "quick_sight_analysis_folders",
+    ]
+
+    @property
+    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
+        return self.attributes.quick_sight_analysis_status
+
+    @quick_sight_analysis_status.setter
+    def quick_sight_analysis_status(
+        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
+
+    @property
+    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_calculated_fields
+
+    @quick_sight_analysis_calculated_fields.setter
+    def quick_sight_analysis_calculated_fields(
+        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_calculated_fields = (
+            quick_sight_analysis_calculated_fields
+        )
+
+    @property
+    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_parameter_declarations
+
+    @quick_sight_analysis_parameter_declarations.setter
+    def quick_sight_analysis_parameter_declarations(
+        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_parameter_declarations = (
+            quick_sight_analysis_parameter_declarations
+        )
+
+    @property
+    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+        return self.attributes.quick_sight_analysis_filter_groups
+
+    @quick_sight_analysis_filter_groups.setter
+    def quick_sight_analysis_filter_groups(
+        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_filter_groups = (
+            quick_sight_analysis_filter_groups
+        )
+
+    @property
+    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+        return self.attributes.quick_sight_analysis_visuals
+
+    @quick_sight_analysis_visuals.setter
+    def quick_sight_analysis_visuals(
+        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
+
+    @property
+    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_analysis_folders
+
+    @quick_sight_analysis_folders.setter
+    def quick_sight_analysis_folders(
+        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
+
+    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysis":
+            raise ValueError("must be QuickSightAnalysis")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
+            None, description="", alias="quickSightAnalysisStatus"
+        )
+        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisCalculatedFields"
+        )
+        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisParameterDeclarations"
+        )
+        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisFilterGroups"
+        )
+        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
+            None, description="", alias="quickSightAnalysisVisuals"
+        )  # relationship
+        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightAnalysisFolders"
+        )  # relationship
+
+    attributes: "QuickSightAnalysis.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysis.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDashboard(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dashboard_published_version_number",
+        "quick_sight_dashboard_last_published_time",
+        "quick_sight_dashboard_folders",
+        "quick_sight_dashboard_visuals",
+    ]
+
+    @property
+    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
+        return self.attributes.quick_sight_dashboard_published_version_number
+
+    @quick_sight_dashboard_published_version_number.setter
+    def quick_sight_dashboard_published_version_number(
+        self, quick_sight_dashboard_published_version_number: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_published_version_number = (
+            quick_sight_dashboard_published_version_number
+        )
+
+    @property
+    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+        return self.attributes.quick_sight_dashboard_last_published_time
+
+    @quick_sight_dashboard_last_published_time.setter
+    def quick_sight_dashboard_last_published_time(
+        self, quick_sight_dashboard_last_published_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_last_published_time = (
+            quick_sight_dashboard_last_published_time
+        )
+
+    @property
+    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_dashboard_folders
+
+    @quick_sight_dashboard_folders.setter
+    def quick_sight_dashboard_folders(
+        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
+
+    @property
+    def quick_sight_dashboard_visuals(
+        self,
+    ) -> Optional[list[QuickSightDashboardVisual]]:
+        return self.attributes.quick_sight_dashboard_visuals
+
+    @quick_sight_dashboard_visuals.setter
+    def quick_sight_dashboard_visuals(
+        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
+
+    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboard":
+            raise ValueError("must be QuickSightDashboard")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_published_version_number: Optional[int] = Field(
+            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+        )
+        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
+            None, description="", alias="quickSightDashboardLastPublishedTime"
+        )
+        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDashboardFolders"
+        )  # relationship
+        quick_sight_dashboard_visuals: Optional[
+            list[QuickSightDashboardVisual]
+        ] = Field(
+            None, description="", alias="quickSightDashboardVisuals"
+        )  # relationship
+
+    attributes: "QuickSightDashboard.Attributes" = Field(
+        default_factory=lambda: QuickSightDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightDataset(QuickSight):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QuickSightDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "quick_sight_dataset_import_mode",
+        "quick_sight_dataset_column_count",
+        "quick_sight_dataset_folders",
+        "quick_sight_dataset_fields",
+    ]
+
+    @property
+    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
+        return self.attributes.quick_sight_dataset_import_mode
+
+    @quick_sight_dataset_import_mode.setter
+    def quick_sight_dataset_import_mode(
+        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_import_mode = (
+            quick_sight_dataset_import_mode
+        )
+
+    @property
+    def quick_sight_dataset_column_count(self) -> Optional[int]:
+        return self.attributes.quick_sight_dataset_column_count
+
+    @quick_sight_dataset_column_count.setter
+    def quick_sight_dataset_column_count(
+        self, quick_sight_dataset_column_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_column_count = (
+            quick_sight_dataset_column_count
+        )
+
+    @property
+    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
+        return self.attributes.quick_sight_dataset_folders
+
+    @quick_sight_dataset_folders.setter
+    def quick_sight_dataset_folders(
+        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
+
+    @property
+    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
+        return self.attributes.quick_sight_dataset_fields
+
+    @quick_sight_dataset_fields.setter
+    def quick_sight_dataset_fields(
+        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
+
+    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDataset":
+            raise ValueError("must be QuickSightDataset")
+        return v
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
+            None, description="", alias="quickSightDatasetImportMode"
+        )
+        quick_sight_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="quickSightDatasetColumnCount"
+        )
+        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDatasetFolders"
+        )  # relationship
+        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
+            None, description="", alias="quickSightDatasetFields"
+        )  # relationship
+
+    attributes: "QuickSightDataset.Attributes" = Field(
+        default_factory=lambda: QuickSightDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ThoughtspotLiveboard(Thoughtspot):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ThoughtspotLiveboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "thoughtspot_dashlets",
+    ]
+
+    @property
+    def thoughtspot_dashlets(self) -> Optional[list[ThoughtspotDashlet]]:
+        return self.attributes.thoughtspot_dashlets
+
+    @thoughtspot_dashlets.setter
+    def thoughtspot_dashlets(
+        self, thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
+
+    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotLiveboard":
+            raise ValueError("must be ThoughtspotLiveboard")
+        return v
+
+    class Attributes(Thoughtspot.Attributes):
+        thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
+            None, description="", alias="thoughtspotDashlets"
+        )  # relationship
+
+    attributes: "ThoughtspotLiveboard.Attributes" = Field(
+        default_factory=lambda: ThoughtspotLiveboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ThoughtspotDashlet(Thoughtspot):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ThoughtspotDashlet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "thoughtspot_liveboard_name",
+        "thoughtspot_liveboard_qualified_name",
+        "thoughtspot_liveboard",
+    ]
+
+    @property
+    def thoughtspot_liveboard_name(self) -> Optional[str]:
+        return self.attributes.thoughtspot_liveboard_name
+
+    @thoughtspot_liveboard_name.setter
+    def thoughtspot_liveboard_name(self, thoughtspot_liveboard_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_liveboard_name = thoughtspot_liveboard_name
+
+    @property
+    def thoughtspot_liveboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.thoughtspot_liveboard_qualified_name
+
+    @thoughtspot_liveboard_qualified_name.setter
+    def thoughtspot_liveboard_qualified_name(
+        self, thoughtspot_liveboard_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_liveboard_qualified_name = (
+            thoughtspot_liveboard_qualified_name
+        )
+
+    @property
+    def thoughtspot_liveboard(self) -> Optional[ThoughtspotLiveboard]:
+        return self.attributes.thoughtspot_liveboard
+
+    @thoughtspot_liveboard.setter
+    def thoughtspot_liveboard(
+        self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
+
+    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotDashlet":
+            raise ValueError("must be ThoughtspotDashlet")
+        return v
+
+    class Attributes(Thoughtspot.Attributes):
+        thoughtspot_liveboard_name: Optional[str] = Field(
+            None, description="", alias="thoughtspotLiveboardName"
+        )
+        thoughtspot_liveboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="thoughtspotLiveboardQualifiedName"
+        )
+        thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
+            None, description="", alias="thoughtspotLiveboard"
+        )  # relationship
+
+    attributes: "ThoughtspotDashlet.Attributes" = Field(
+        default_factory=lambda: ThoughtspotDashlet.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class ThoughtspotAnswer(Thoughtspot):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in ThoughtspotAnswer._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+    type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotAnswer":
+            raise ValueError("must be ThoughtspotAnswer")
+        return v
+
+
+class PowerBIReport(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIReport._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "web_url",
+        "page_count",
+        "workspace",
+        "tiles",
+        "pages",
+        "dataset",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.dataset_qualified_name
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def page_count(self) -> Optional[int]:
+        return self.attributes.page_count
+
+    @page_count.setter
+    def page_count(self, page_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.page_count = page_count
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def pages(self) -> Optional[list[PowerBIPage]]:
+        return self.attributes.pages
+
+    @pages.setter
+    def pages(self, pages: Optional[list[PowerBIPage]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.pages = pages
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    type_name: str = Field("PowerBIReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIReport":
+            raise ValueError("must be PowerBIReport")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        page_count: Optional[int] = Field(None, description="", alias="pageCount")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        pages: Optional[list[PowerBIPage]] = Field(
+            None, description="", alias="pages"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+
+    attributes: "PowerBIReport.Attributes" = Field(
+        default_factory=lambda: PowerBIReport.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIMeasure(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIMeasure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_measure_expression",
+        "power_b_i_is_external_measure",
+        "table",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.dataset_qualified_name
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_measure_expression(self) -> Optional[str]:
+        return self.attributes.power_b_i_measure_expression
+
+    @power_b_i_measure_expression.setter
+    def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_measure_expression = power_b_i_measure_expression
+
+    @property
+    def power_b_i_is_external_measure(self) -> Optional[bool]:
+        return self.attributes.power_b_i_is_external_measure
+
+    @power_b_i_is_external_measure.setter
+    def power_b_i_is_external_measure(
+        self, power_b_i_is_external_measure: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
+
+    @property
+    def table(self) -> Optional[PowerBITable]:
+        return self.attributes.table
+
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table = table
+
+    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIMeasure":
+            raise ValueError("must be PowerBIMeasure")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_measure_expression: Optional[str] = Field(
+            None, description="", alias="powerBIMeasureExpression"
+        )
+        power_b_i_is_external_measure: Optional[bool] = Field(
+            None, description="", alias="powerBIIsExternalMeasure"
+        )
+        table: Optional[PowerBITable] = Field(
+            None, description="", alias="table"
+        )  # relationship
+
+    attributes: "PowerBIMeasure.Attributes" = Field(
+        default_factory=lambda: PowerBIMeasure.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIColumn(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIColumn._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_column_data_category",
+        "power_b_i_column_data_type",
+        "power_b_i_sort_by_column",
+        "power_b_i_column_summarize_by",
+        "table",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.dataset_qualified_name
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_column_data_category(self) -> Optional[str]:
+        return self.attributes.power_b_i_column_data_category
+
+    @power_b_i_column_data_category.setter
+    def power_b_i_column_data_category(
+        self, power_b_i_column_data_category: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
+
+    @property
+    def power_b_i_column_data_type(self) -> Optional[str]:
+        return self.attributes.power_b_i_column_data_type
+
+    @power_b_i_column_data_type.setter
+    def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_column_data_type = power_b_i_column_data_type
+
+    @property
+    def power_b_i_sort_by_column(self) -> Optional[str]:
+        return self.attributes.power_b_i_sort_by_column
+
+    @power_b_i_sort_by_column.setter
+    def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_sort_by_column = power_b_i_sort_by_column
+
+    @property
+    def power_b_i_column_summarize_by(self) -> Optional[str]:
+        return self.attributes.power_b_i_column_summarize_by
+
+    @power_b_i_column_summarize_by.setter
+    def power_b_i_column_summarize_by(
+        self, power_b_i_column_summarize_by: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
+
+    @property
+    def table(self) -> Optional[PowerBITable]:
+        return self.attributes.table
+
+    @table.setter
+    def table(self, table: Optional[PowerBITable]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table = table
+
+    type_name: str = Field("PowerBIColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIColumn":
+            raise ValueError("must be PowerBIColumn")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_column_data_category: Optional[str] = Field(
+            None, description="", alias="powerBIColumnDataCategory"
+        )
+        power_b_i_column_data_type: Optional[str] = Field(
+            None, description="", alias="powerBIColumnDataType"
+        )
+        power_b_i_sort_by_column: Optional[str] = Field(
+            None, description="", alias="powerBISortByColumn"
+        )
+        power_b_i_column_summarize_by: Optional[str] = Field(
+            None, description="", alias="powerBIColumnSummarizeBy"
+        )
+        table: Optional[PowerBITable] = Field(
+            None, description="", alias="table"
+        )  # relationship
+
+    attributes: "PowerBIColumn.Attributes" = Field(
+        default_factory=lambda: PowerBIColumn.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBITable(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBITable._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dataset_qualified_name",
+        "power_b_i_table_source_expressions",
+        "power_b_i_table_column_count",
+        "power_b_i_table_measure_count",
+        "measures",
+        "columns",
+        "dataset",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dataset_qualified_name(self) -> Optional[str]:
+        return self.attributes.dataset_qualified_name
+
+    @dataset_qualified_name.setter
+    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_qualified_name = dataset_qualified_name
+
+    @property
+    def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
+        return self.attributes.power_b_i_table_source_expressions
+
+    @power_b_i_table_source_expressions.setter
+    def power_b_i_table_source_expressions(
+        self, power_b_i_table_source_expressions: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_source_expressions = (
+            power_b_i_table_source_expressions
+        )
+
+    @property
+    def power_b_i_table_column_count(self) -> Optional[int]:
+        return self.attributes.power_b_i_table_column_count
+
+    @power_b_i_table_column_count.setter
+    def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_column_count = power_b_i_table_column_count
+
+    @property
+    def power_b_i_table_measure_count(self) -> Optional[int]:
+        return self.attributes.power_b_i_table_measure_count
+
+    @power_b_i_table_measure_count.setter
+    def power_b_i_table_measure_count(
+        self, power_b_i_table_measure_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
+
+    @property
+    def measures(self) -> Optional[list[PowerBIMeasure]]:
+        return self.attributes.measures
+
+    @measures.setter
+    def measures(self, measures: Optional[list[PowerBIMeasure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.measures = measures
+
+    @property
+    def columns(self) -> Optional[list[PowerBIColumn]]:
+        return self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[PowerBIColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    type_name: str = Field("PowerBITable", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITable":
+            raise ValueError("must be PowerBITable")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="datasetQualifiedName"
+        )
+        power_b_i_table_source_expressions: Optional[set[str]] = Field(
+            None, description="", alias="powerBITableSourceExpressions"
+        )
+        power_b_i_table_column_count: Optional[int] = Field(
+            None, description="", alias="powerBITableColumnCount"
+        )
+        power_b_i_table_measure_count: Optional[int] = Field(
+            None, description="", alias="powerBITableMeasureCount"
+        )
+        measures: Optional[list[PowerBIMeasure]] = Field(
+            None, description="", alias="measures"
+        )  # relationship
+        columns: Optional[list[PowerBIColumn]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+
+    attributes: "PowerBITable.Attributes" = Field(
+        default_factory=lambda: PowerBITable.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBITile(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBITile._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "dashboard_qualified_name",
+        "report",
+        "dataset",
+        "dashboard",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def dashboard_qualified_name(self) -> Optional[str]:
+        return self.attributes.dashboard_qualified_name
+
+    @dashboard_qualified_name.setter
+    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_qualified_name = dashboard_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    @property
+    def dataset(self) -> Optional[PowerBIDataset]:
+        return self.attributes.dataset
+
+    @dataset.setter
+    def dataset(self, dataset: Optional[PowerBIDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset = dataset
+
+    @property
+    def dashboard(self) -> Optional[PowerBIDashboard]:
+        return self.attributes.dashboard
+
+    @dashboard.setter
+    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard = dashboard
+
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="dashboardQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+        dataset: Optional[PowerBIDataset] = Field(
+            None, description="", alias="dataset"
+        )  # relationship
+        dashboard: Optional[PowerBIDashboard] = Field(
+            None, description="", alias="dashboard"
+        )  # relationship
+
+    attributes: "PowerBITile.Attributes" = Field(
+        default_factory=lambda: PowerBITile.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIDatasource(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDatasource._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "connection_details",
+        "datasets",
+    ]
+
+    @property
+    def connection_details(self) -> Optional[dict[str, str]]:
+        return self.attributes.connection_details
+
+    @connection_details.setter
+    def connection_details(self, connection_details: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.connection_details = connection_details
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDatasource":
+            raise ValueError("must be PowerBIDatasource")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        connection_details: Optional[dict[str, str]] = Field(
+            None, description="", alias="connectionDetails"
+        )
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+
+    attributes: "PowerBIDatasource.Attributes" = Field(
+        default_factory=lambda: PowerBIDatasource.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIWorkspace(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIWorkspace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "web_url",
+        "report_count",
+        "dashboard_count",
+        "dataset_count",
+        "dataflow_count",
+        "reports",
+        "datasets",
+        "dashboards",
+        "dataflows",
+    ]
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def report_count(self) -> Optional[int]:
+        return self.attributes.report_count
+
+    @report_count.setter
+    def report_count(self, report_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_count = report_count
+
+    @property
+    def dashboard_count(self) -> Optional[int]:
+        return self.attributes.dashboard_count
+
+    @dashboard_count.setter
+    def dashboard_count(self, dashboard_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_count = dashboard_count
+
+    @property
+    def dataset_count(self) -> Optional[int]:
+        return self.attributes.dataset_count
+
+    @dataset_count.setter
+    def dataset_count(self, dataset_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataset_count = dataset_count
+
+    @property
+    def dataflow_count(self) -> Optional[int]:
+        return self.attributes.dataflow_count
+
+    @dataflow_count.setter
+    def dataflow_count(self, dataflow_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflow_count = dataflow_count
+
+    @property
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    @property
+    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
+        return self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIWorkspace":
+            raise ValueError("must be PowerBIWorkspace")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        report_count: Optional[int] = Field(None, description="", alias="reportCount")
+        dashboard_count: Optional[int] = Field(
+            None, description="", alias="dashboardCount"
+        )
+        dataset_count: Optional[int] = Field(None, description="", alias="datasetCount")
+        dataflow_count: Optional[int] = Field(
+            None, description="", alias="dataflowCount"
+        )
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+        dashboards: Optional[list[PowerBIDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+        dataflows: Optional[list[PowerBIDataflow]] = Field(
+            None, description="", alias="dataflows"
+        )  # relationship
+
+    attributes: "PowerBIWorkspace.Attributes" = Field(
+        default_factory=lambda: PowerBIWorkspace.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIDataset(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "reports",
+        "workspace",
+        "dataflows",
+        "tiles",
+        "tables",
+        "datasources",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def reports(self) -> Optional[list[PowerBIReport]]:
+        return self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[PowerBIReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        return self.attributes.dataflows
+
+    @dataflows.setter
+    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dataflows = dataflows
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def tables(self) -> Optional[list[PowerBITable]]:
+        return self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[PowerBITable]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def datasources(self) -> Optional[list[PowerBIDatasource]]:
+        return self.attributes.datasources
+
+    @datasources.setter
+    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasources = datasources
+
+    type_name: str = Field("PowerBIDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataset":
+            raise ValueError("must be PowerBIDataset")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        reports: Optional[list[PowerBIReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        dataflows: Optional[list[PowerBIDataflow]] = Field(
+            None, description="", alias="dataflows"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        tables: Optional[list[PowerBITable]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        datasources: Optional[list[PowerBIDatasource]] = Field(
+            None, description="", alias="datasources"
+        )  # relationship
+
+    attributes: "PowerBIDataset.Attributes" = Field(
+        default_factory=lambda: PowerBIDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIDashboard(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDashboard._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "tile_count",
+        "tiles",
+        "workspace",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def tile_count(self) -> Optional[int]:
+        return self.attributes.tile_count
+
+    @tile_count.setter
+    def tile_count(self, tile_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tile_count = tile_count
+
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        tile_count: Optional[int] = Field(None, description="", alias="tileCount")
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
+        )  # relationship
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+
+    attributes: "PowerBIDashboard.Attributes" = Field(
+        default_factory=lambda: PowerBIDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIDataflow(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIDataflow._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "web_url",
+        "workspace",
+        "datasets",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def web_url(self) -> Optional[str]:
+        return self.attributes.web_url
+
+    @web_url.setter
+    def web_url(self, web_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.web_url = web_url
+
+    @property
+    def workspace(self) -> Optional[PowerBIWorkspace]:
+        return self.attributes.workspace
+
+    @workspace.setter
+    def workspace(self, workspace: Optional[PowerBIWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace = workspace
+
+    @property
+    def datasets(self) -> Optional[list[PowerBIDataset]]:
+        return self.attributes.datasets
+
+    @datasets.setter
+    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.datasets = datasets
+
+    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataflow":
+            raise ValueError("must be PowerBIDataflow")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+        workspace: Optional[PowerBIWorkspace] = Field(
+            None, description="", alias="workspace"
+        )  # relationship
+        datasets: Optional[list[PowerBIDataset]] = Field(
+            None, description="", alias="datasets"
+        )  # relationship
+
+    attributes: "PowerBIDataflow.Attributes" = Field(
+        default_factory=lambda: PowerBIDataflow.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class PowerBIPage(PowerBI):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in PowerBIPage._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "workspace_qualified_name",
+        "report_qualified_name",
+        "report",
+    ]
+
+    @property
+    def workspace_qualified_name(self) -> Optional[str]:
+        return self.attributes.workspace_qualified_name
+
+    @workspace_qualified_name.setter
+    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.workspace_qualified_name = workspace_qualified_name
+
+    @property
+    def report_qualified_name(self) -> Optional[str]:
+        return self.attributes.report_qualified_name
+
+    @report_qualified_name.setter
+    def report_qualified_name(self, report_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_qualified_name = report_qualified_name
+
+    @property
+    def report(self) -> Optional[PowerBIReport]:
+        return self.attributes.report
+
+    @report.setter
+    def report(self, report: Optional[PowerBIReport]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report = report
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
+
+    class Attributes(PowerBI.Attributes):
+        workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="workspaceQualifiedName"
+        )
+        report_qualified_name: Optional[str] = Field(
+            None, description="", alias="reportQualifiedName"
+        )
+        report: Optional[PowerBIReport] = Field(
+            None, description="", alias="report"
+        )  # relationship
+
+    attributes: "PowerBIPage.Attributes" = Field(
+        default_factory=lambda: PowerBIPage.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyReport(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyReport._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_report_type",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
+    ]
+
+    @property
+    def micro_strategy_report_type(self) -> Optional[str]:
+        return self.attributes.micro_strategy_report_type
+
+    @micro_strategy_report_type.setter
+    def micro_strategy_report_type(self, micro_strategy_report_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_report_type = micro_strategy_report_type
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metrics
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return self.attributes.micro_strategy_attributes
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyReport":
+            raise ValueError("must be MicroStrategyReport")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_report_type: Optional[str] = Field(
+            None, description="", alias="microStrategyReportType"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
+        )  # relationship
+
+    attributes: "MicroStrategyReport.Attributes" = Field(
+        default_factory=lambda: MicroStrategyReport.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyProject(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyProject._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_reports",
+        "micro_strategy_facts",
+        "micro_strategy_metrics",
+        "micro_strategy_visualizations",
+        "micro_strategy_documents",
+        "micro_strategy_cubes",
+        "micro_strategy_dossiers",
+        "micro_strategy_attributes",
+    ]
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return self.attributes.micro_strategy_reports
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        return self.attributes.micro_strategy_facts
+
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_facts = micro_strategy_facts
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metrics
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_visualizations(
+        self,
+    ) -> Optional[list[MicroStrategyVisualization]]:
+        return self.attributes.micro_strategy_visualizations
+
+    @micro_strategy_visualizations.setter
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
+
+    @property
+    def micro_strategy_documents(self) -> Optional[list[MicroStrategyDocument]]:
+        return self.attributes.micro_strategy_documents
+
+    @micro_strategy_documents.setter
+    def micro_strategy_documents(
+        self, micro_strategy_documents: Optional[list[MicroStrategyDocument]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_documents = micro_strategy_documents
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_dossiers(self) -> Optional[list[MicroStrategyDossier]]:
+        return self.attributes.micro_strategy_dossiers
+
+    @micro_strategy_dossiers.setter
+    def micro_strategy_dossiers(
+        self, micro_strategy_dossiers: Optional[list[MicroStrategyDossier]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossiers = micro_strategy_dossiers
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return self.attributes.micro_strategy_attributes
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyProject":
+            raise ValueError("must be MicroStrategyProject")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
+            None, description="", alias="microStrategyFacts"
+        )  # relationship
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_visualizations: Optional[
+            list[MicroStrategyVisualization]
+        ] = Field(
+            None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+        micro_strategy_documents: Optional[list[MicroStrategyDocument]] = Field(
+            None, description="", alias="microStrategyDocuments"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_dossiers: Optional[list[MicroStrategyDossier]] = Field(
+            None, description="", alias="microStrategyDossiers"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
+        )  # relationship
+
+    attributes: "MicroStrategyProject.Attributes" = Field(
+        default_factory=lambda: MicroStrategyProject.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyMetric(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyMetric._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_metric_expression",
+        "micro_strategy_attribute_qualified_names",
+        "micro_strategy_attribute_names",
+        "micro_strategy_fact_qualified_names",
+        "micro_strategy_fact_names",
+        "micro_strategy_metric_parent_qualified_names",
+        "micro_strategy_metric_parent_names",
+        "micro_strategy_metric_parents",
+        "micro_strategy_facts",
+        "micro_strategy_reports",
+        "micro_strategy_cubes",
+        "micro_strategy_metric_children",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
+    ]
+
+    @property
+    def micro_strategy_metric_expression(self) -> Optional[str]:
+        return self.attributes.micro_strategy_metric_expression
+
+    @micro_strategy_metric_expression.setter
+    def micro_strategy_metric_expression(
+        self, micro_strategy_metric_expression: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_expression = (
+            micro_strategy_metric_expression
+        )
+
+    @property
+    def micro_strategy_attribute_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_attribute_qualified_names
+
+    @micro_strategy_attribute_qualified_names.setter
+    def micro_strategy_attribute_qualified_names(
+        self, micro_strategy_attribute_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_qualified_names = (
+            micro_strategy_attribute_qualified_names
+        )
+
+    @property
+    def micro_strategy_attribute_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_attribute_names
+
+    @micro_strategy_attribute_names.setter
+    def micro_strategy_attribute_names(
+        self, micro_strategy_attribute_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_names = micro_strategy_attribute_names
+
+    @property
+    def micro_strategy_fact_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_fact_qualified_names
+
+    @micro_strategy_fact_qualified_names.setter
+    def micro_strategy_fact_qualified_names(
+        self, micro_strategy_fact_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_qualified_names = (
+            micro_strategy_fact_qualified_names
+        )
+
+    @property
+    def micro_strategy_fact_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_fact_names
+
+    @micro_strategy_fact_names.setter
+    def micro_strategy_fact_names(self, micro_strategy_fact_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_names = micro_strategy_fact_names
+
+    @property
+    def micro_strategy_metric_parent_qualified_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_metric_parent_qualified_names
+
+    @micro_strategy_metric_parent_qualified_names.setter
+    def micro_strategy_metric_parent_qualified_names(
+        self, micro_strategy_metric_parent_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parent_qualified_names = (
+            micro_strategy_metric_parent_qualified_names
+        )
+
+    @property
+    def micro_strategy_metric_parent_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_metric_parent_names
+
+    @micro_strategy_metric_parent_names.setter
+    def micro_strategy_metric_parent_names(
+        self, micro_strategy_metric_parent_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parent_names = (
+            micro_strategy_metric_parent_names
+        )
+
+    @property
+    def micro_strategy_metric_parents(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metric_parents
+
+    @micro_strategy_metric_parents.setter
+    def micro_strategy_metric_parents(
+        self, micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parents = micro_strategy_metric_parents
+
+    @property
+    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        return self.attributes.micro_strategy_facts
+
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_facts = micro_strategy_facts
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return self.attributes.micro_strategy_reports
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_metric_children(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metric_children
+
+    @micro_strategy_metric_children.setter
+    def micro_strategy_metric_children(
+        self, micro_strategy_metric_children: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_children = micro_strategy_metric_children
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return self.attributes.micro_strategy_attributes
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyMetric":
+            raise ValueError("must be MicroStrategyMetric")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_metric_expression: Optional[str] = Field(
+            None, description="", alias="microStrategyMetricExpression"
+        )
+        micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyAttributeQualifiedNames"
+        )
+        micro_strategy_attribute_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyAttributeNames"
+        )
+        micro_strategy_fact_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactQualifiedNames"
+        )
+        micro_strategy_fact_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactNames"
+        )
+        micro_strategy_metric_parent_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyMetricParentQualifiedNames"
+        )
+        micro_strategy_metric_parent_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyMetricParentNames"
+        )
+        micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetricParents"
+        )  # relationship
+        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
+            None, description="", alias="microStrategyFacts"
+        )  # relationship
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_metric_children: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetricChildren"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
+        )  # relationship
+
+    attributes: "MicroStrategyMetric.Attributes" = Field(
+        default_factory=lambda: MicroStrategyMetric.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyCube(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyCube._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_cube_type",
+        "micro_strategy_cube_query",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
+    ]
+
+    @property
+    def micro_strategy_cube_type(self) -> Optional[str]:
+        return self.attributes.micro_strategy_cube_type
+
+    @micro_strategy_cube_type.setter
+    def micro_strategy_cube_type(self, micro_strategy_cube_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_type = micro_strategy_cube_type
+
+    @property
+    def micro_strategy_cube_query(self) -> Optional[str]:
+        return self.attributes.micro_strategy_cube_query
+
+    @micro_strategy_cube_query.setter
+    def micro_strategy_cube_query(self, micro_strategy_cube_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_query = micro_strategy_cube_query
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metrics
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return self.attributes.micro_strategy_attributes
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyCube":
+            raise ValueError("must be MicroStrategyCube")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_cube_type: Optional[str] = Field(
+            None, description="", alias="microStrategyCubeType"
+        )
+        micro_strategy_cube_query: Optional[str] = Field(
+            None, description="", alias="microStrategyCubeQuery"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
+        )  # relationship
+
+    attributes: "MicroStrategyCube.Attributes" = Field(
+        default_factory=lambda: MicroStrategyCube.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyDossier(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyDossier._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_dossier_chapter_names",
+        "micro_strategy_project",
+        "micro_strategy_visualizations",
+    ]
+
+    @property
+    def micro_strategy_dossier_chapter_names(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_dossier_chapter_names
+
+    @micro_strategy_dossier_chapter_names.setter
+    def micro_strategy_dossier_chapter_names(
+        self, micro_strategy_dossier_chapter_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_chapter_names = (
+            micro_strategy_dossier_chapter_names
+        )
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_visualizations(
+        self,
+    ) -> Optional[list[MicroStrategyVisualization]]:
+        return self.attributes.micro_strategy_visualizations
+
+    @micro_strategy_visualizations.setter
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
+
+    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDossier":
+            raise ValueError("must be MicroStrategyDossier")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyDossierChapterNames"
+        )
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_visualizations: Optional[
+            list[MicroStrategyVisualization]
+        ] = Field(
+            None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+
+    attributes: "MicroStrategyDossier.Attributes" = Field(
+        default_factory=lambda: MicroStrategyDossier.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyFact(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyFact._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_fact_expressions",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_fact_expressions(self) -> Optional[set[str]]:
+        return self.attributes.micro_strategy_fact_expressions
+
+    @micro_strategy_fact_expressions.setter
+    def micro_strategy_fact_expressions(
+        self, micro_strategy_fact_expressions: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_expressions = (
+            micro_strategy_fact_expressions
+        )
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metrics
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyFact":
+            raise ValueError("must be MicroStrategyFact")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_fact_expressions: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactExpressions"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyFact.Attributes" = Field(
+        default_factory=lambda: MicroStrategyFact.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyDocument(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyDocument._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDocument":
+            raise ValueError("must be MicroStrategyDocument")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyDocument.Attributes" = Field(
+        default_factory=lambda: MicroStrategyDocument.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyAttribute(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyAttribute._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_attribute_forms",
+        "micro_strategy_reports",
+        "micro_strategy_metrics",
+        "micro_strategy_cubes",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_attribute_forms(self) -> Optional[str]:
+        return self.attributes.micro_strategy_attribute_forms
+
+    @micro_strategy_attribute_forms.setter
+    def micro_strategy_attribute_forms(
+        self, micro_strategy_attribute_forms: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_forms = micro_strategy_attribute_forms
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return self.attributes.micro_strategy_reports
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return self.attributes.micro_strategy_metrics
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyAttribute":
+            raise ValueError("must be MicroStrategyAttribute")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_attribute_forms: Optional[str] = Field(
+            None, description="", alias="microStrategyAttributeForms"
+        )
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyAttribute.Attributes" = Field(
+        default_factory=lambda: MicroStrategyAttribute.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyVisualization(MicroStrategy):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyVisualization._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_visualization_type",
+        "micro_strategy_dossier_qualified_name",
+        "micro_strategy_dossier_name",
+        "micro_strategy_dossier",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_visualization_type(self) -> Optional[str]:
+        return self.attributes.micro_strategy_visualization_type
+
+    @micro_strategy_visualization_type.setter
+    def micro_strategy_visualization_type(
+        self, micro_strategy_visualization_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualization_type = (
+            micro_strategy_visualization_type
+        )
+
+    @property
+    def micro_strategy_dossier_qualified_name(self) -> Optional[str]:
+        return self.attributes.micro_strategy_dossier_qualified_name
+
+    @micro_strategy_dossier_qualified_name.setter
+    def micro_strategy_dossier_qualified_name(
+        self, micro_strategy_dossier_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_qualified_name = (
+            micro_strategy_dossier_qualified_name
+        )
+
+    @property
+    def micro_strategy_dossier_name(self) -> Optional[str]:
+        return self.attributes.micro_strategy_dossier_name
+
+    @micro_strategy_dossier_name.setter
+    def micro_strategy_dossier_name(self, micro_strategy_dossier_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_name = micro_strategy_dossier_name
+
+    @property
+    def micro_strategy_dossier(self) -> Optional[MicroStrategyDossier]:
+        return self.attributes.micro_strategy_dossier
+
+    @micro_strategy_dossier.setter
+    def micro_strategy_dossier(
+        self, micro_strategy_dossier: Optional[MicroStrategyDossier]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier = micro_strategy_dossier
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return self.attributes.micro_strategy_project
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyVisualization":
+            raise ValueError("must be MicroStrategyVisualization")
+        return v
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_visualization_type: Optional[str] = Field(
+            None, description="", alias="microStrategyVisualizationType"
+        )
+        micro_strategy_dossier_qualified_name: Optional[str] = Field(
+            None, description="", alias="microStrategyDossierQualifiedName"
+        )
+        micro_strategy_dossier_name: Optional[str] = Field(
+            None, description="", alias="microStrategyDossierName"
+        )
+        micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
+            None, description="", alias="microStrategyDossier"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyVisualization.Attributes" = Field(
+        default_factory=lambda: MicroStrategyVisualization.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikSpace(Qlik):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikSpace._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_space_type",
+        "qlik_datasets",
+        "qlik_apps",
+    ]
+
+    @property
+    def qlik_space_type(self) -> Optional[str]:
+        return self.attributes.qlik_space_type
+
+    @qlik_space_type.setter
+    def qlik_space_type(self, qlik_space_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_space_type = qlik_space_type
+
+    @property
+    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
+        return self.attributes.qlik_datasets
+
+    @qlik_datasets.setter
+    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_datasets = qlik_datasets
+
+    @property
+    def qlik_apps(self) -> Optional[list[QlikApp]]:
+        return self.attributes.qlik_apps
+
+    @qlik_apps.setter
+    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_apps = qlik_apps
+
+    type_name: str = Field("QlikSpace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSpace":
+            raise ValueError("must be QlikSpace")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_space_type: Optional[str] = Field(
+            None, description="", alias="qlikSpaceType"
+        )
+        qlik_datasets: Optional[list[QlikDataset]] = Field(
+            None, description="", alias="qlikDatasets"
+        )  # relationship
+        qlik_apps: Optional[list[QlikApp]] = Field(
+            None, description="", alias="qlikApps"
+        )  # relationship
+
+    attributes: "QlikSpace.Attributes" = Field(
+        default_factory=lambda: QlikSpace.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikApp(Qlik):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikApp._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_has_section_access",
+        "qlik_origin_app_id",
+        "qlik_is_encrypted",
+        "qlik_is_direct_query_mode",
+        "qlik_app_static_byte_size",
+        "qlik_space",
+        "qlik_sheets",
+    ]
+
+    @property
+    def qlik_has_section_access(self) -> Optional[bool]:
+        return self.attributes.qlik_has_section_access
+
+    @qlik_has_section_access.setter
+    def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_has_section_access = qlik_has_section_access
+
+    @property
+    def qlik_origin_app_id(self) -> Optional[str]:
+        return self.attributes.qlik_origin_app_id
+
+    @qlik_origin_app_id.setter
+    def qlik_origin_app_id(self, qlik_origin_app_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_origin_app_id = qlik_origin_app_id
+
+    @property
+    def qlik_is_encrypted(self) -> Optional[bool]:
+        return self.attributes.qlik_is_encrypted
+
+    @qlik_is_encrypted.setter
+    def qlik_is_encrypted(self, qlik_is_encrypted: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_is_encrypted = qlik_is_encrypted
+
+    @property
+    def qlik_is_direct_query_mode(self) -> Optional[bool]:
+        return self.attributes.qlik_is_direct_query_mode
+
+    @qlik_is_direct_query_mode.setter
+    def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_is_direct_query_mode = qlik_is_direct_query_mode
+
+    @property
+    def qlik_app_static_byte_size(self) -> Optional[int]:
+        return self.attributes.qlik_app_static_byte_size
+
+    @qlik_app_static_byte_size.setter
+    def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
+
+    @property
+    def qlik_space(self) -> Optional[QlikSpace]:
+        return self.attributes.qlik_space
+
+    @qlik_space.setter
+    def qlik_space(self, qlik_space: Optional[QlikSpace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_space = qlik_space
+
+    @property
+    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
+        return self.attributes.qlik_sheets
+
+    @qlik_sheets.setter
+    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_sheets = qlik_sheets
+
+    type_name: str = Field("QlikApp", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikApp":
+            raise ValueError("must be QlikApp")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_has_section_access: Optional[bool] = Field(
+            None, description="", alias="qlikHasSectionAccess"
+        )
+        qlik_origin_app_id: Optional[str] = Field(
+            None, description="", alias="qlikOriginAppId"
+        )
+        qlik_is_encrypted: Optional[bool] = Field(
+            None, description="", alias="qlikIsEncrypted"
+        )
+        qlik_is_direct_query_mode: Optional[bool] = Field(
+            None, description="", alias="qlikIsDirectQueryMode"
+        )
+        qlik_app_static_byte_size: Optional[int] = Field(
+            None, description="", alias="qlikAppStaticByteSize"
+        )
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+        qlik_sheets: Optional[list[QlikSheet]] = Field(
+            None, description="", alias="qlikSheets"
+        )  # relationship
+
+    attributes: "QlikApp.Attributes" = Field(
+        default_factory=lambda: QlikApp.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikChart(Qlik):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikChart._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_chart_subtitle",
+        "qlik_chart_footnote",
+        "qlik_chart_orientation",
+        "qlik_chart_type",
+        "qlik_sheet",
+    ]
+
+    @property
+    def qlik_chart_subtitle(self) -> Optional[str]:
+        return self.attributes.qlik_chart_subtitle
+
+    @qlik_chart_subtitle.setter
+    def qlik_chart_subtitle(self, qlik_chart_subtitle: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_chart_subtitle = qlik_chart_subtitle
+
+    @property
+    def qlik_chart_footnote(self) -> Optional[str]:
+        return self.attributes.qlik_chart_footnote
+
+    @qlik_chart_footnote.setter
+    def qlik_chart_footnote(self, qlik_chart_footnote: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_chart_footnote = qlik_chart_footnote
+
+    @property
+    def qlik_chart_orientation(self) -> Optional[str]:
+        return self.attributes.qlik_chart_orientation
+
+    @qlik_chart_orientation.setter
+    def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_chart_orientation = qlik_chart_orientation
+
+    @property
+    def qlik_chart_type(self) -> Optional[str]:
+        return self.attributes.qlik_chart_type
+
+    @qlik_chart_type.setter
+    def qlik_chart_type(self, qlik_chart_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_chart_type = qlik_chart_type
+
+    @property
+    def qlik_sheet(self) -> Optional[QlikSheet]:
+        return self.attributes.qlik_sheet
+
+    @qlik_sheet.setter
+    def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_sheet = qlik_sheet
+
+    type_name: str = Field("QlikChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikChart":
+            raise ValueError("must be QlikChart")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_chart_subtitle: Optional[str] = Field(
+            None, description="", alias="qlikChartSubtitle"
+        )
+        qlik_chart_footnote: Optional[str] = Field(
+            None, description="", alias="qlikChartFootnote"
+        )
+        qlik_chart_orientation: Optional[str] = Field(
+            None, description="", alias="qlikChartOrientation"
+        )
+        qlik_chart_type: Optional[str] = Field(
+            None, description="", alias="qlikChartType"
+        )
+        qlik_sheet: Optional[QlikSheet] = Field(
+            None, description="", alias="qlikSheet"
+        )  # relationship
+
+    attributes: "QlikChart.Attributes" = Field(
+        default_factory=lambda: QlikChart.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikDataset(Qlik):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikDataset._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_dataset_technical_name",
+        "qlik_dataset_type",
+        "qlik_dataset_uri",
+        "qlik_dataset_subtype",
+        "qlik_space",
+    ]
+
+    @property
+    def qlik_dataset_technical_name(self) -> Optional[str]:
+        return self.attributes.qlik_dataset_technical_name
+
+    @qlik_dataset_technical_name.setter
+    def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_technical_name = qlik_dataset_technical_name
+
+    @property
+    def qlik_dataset_type(self) -> Optional[str]:
+        return self.attributes.qlik_dataset_type
+
+    @qlik_dataset_type.setter
+    def qlik_dataset_type(self, qlik_dataset_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_type = qlik_dataset_type
+
+    @property
+    def qlik_dataset_uri(self) -> Optional[str]:
+        return self.attributes.qlik_dataset_uri
+
+    @qlik_dataset_uri.setter
+    def qlik_dataset_uri(self, qlik_dataset_uri: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_uri = qlik_dataset_uri
+
+    @property
+    def qlik_dataset_subtype(self) -> Optional[str]:
+        return self.attributes.qlik_dataset_subtype
+
+    @qlik_dataset_subtype.setter
+    def qlik_dataset_subtype(self, qlik_dataset_subtype: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
+
+    @property
+    def qlik_space(self) -> Optional[QlikSpace]:
+        return self.attributes.qlik_space
+
+    @qlik_space.setter
+    def qlik_space(self, qlik_space: Optional[QlikSpace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_space = qlik_space
+
+    type_name: str = Field("QlikDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikDataset":
+            raise ValueError("must be QlikDataset")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_dataset_technical_name: Optional[str] = Field(
+            None, description="", alias="qlikDatasetTechnicalName"
+        )
+        qlik_dataset_type: Optional[str] = Field(
+            None, description="", alias="qlikDatasetType"
+        )
+        qlik_dataset_uri: Optional[str] = Field(
+            None, description="", alias="qlikDatasetUri"
+        )
+        qlik_dataset_subtype: Optional[str] = Field(
+            None, description="", alias="qlikDatasetSubtype"
+        )
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+
+    attributes: "QlikDataset.Attributes" = Field(
+        default_factory=lambda: QlikDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikSheet(Qlik):
+    """Description"""
+
+    def __setattr__(self, name, value):
+        if name in QlikSheet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "qlik_sheet_is_approved",
+        "qlik_app",
+        "qlik_charts",
+    ]
+
+    @property
+    def qlik_sheet_is_approved(self) -> Optional[bool]:
+        return self.attributes.qlik_sheet_is_approved
+
+    @qlik_sheet_is_approved.setter
+    def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
+
+    @property
+    def qlik_app(self) -> Optional[QlikApp]:
+        return self.attributes.qlik_app
+
+    @qlik_app.setter
+    def qlik_app(self, qlik_app: Optional[QlikApp]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_app = qlik_app
+
+    @property
+    def qlik_charts(self) -> Optional[list[QlikChart]]:
+        return self.attributes.qlik_charts
+
+    @qlik_charts.setter
+    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_charts = qlik_charts
+
+    type_name: str = Field("QlikSheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSheet":
+            raise ValueError("must be QlikSheet")
+        return v
+
+    class Attributes(Qlik.Attributes):
+        qlik_sheet_is_approved: Optional[bool] = Field(
+            None, description="", alias="qlikSheetIsApproved"
+        )
+        qlik_app: Optional[QlikApp] = Field(
+            None, description="", alias="qlikApp"
+        )  # relationship
+        qlik_charts: Optional[list[QlikChart]] = Field(
+            None, description="", alias="qlikCharts"
+        )  # relationship
+
+    attributes: "QlikSheet.Attributes" = Field(
+        default_factory=lambda: QlikSheet.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 class SalesforceObject(Salesforce):
     """Description"""
 
@@ -23424,6 +24618,18 @@ MonteCarlo.Attributes.update_forward_refs()
 
 Metric.Attributes.update_forward_refs()
 
+Preset.Attributes.update_forward_refs()
+
+Mode.Attributes.update_forward_refs()
+
+Sigma.Attributes.update_forward_refs()
+
+Tableau.Attributes.update_forward_refs()
+
+Looker.Attributes.update_forward_refs()
+
+Redash.Attributes.update_forward_refs()
+
 DataStudio.Attributes.update_forward_refs()
 
 Metabase.Attributes.update_forward_refs()
@@ -23434,19 +24640,9 @@ Thoughtspot.Attributes.update_forward_refs()
 
 PowerBI.Attributes.update_forward_refs()
 
-Preset.Attributes.update_forward_refs()
-
-Sigma.Attributes.update_forward_refs()
-
-Mode.Attributes.update_forward_refs()
+MicroStrategy.Attributes.update_forward_refs()
 
 Qlik.Attributes.update_forward_refs()
-
-Tableau.Attributes.update_forward_refs()
-
-Looker.Attributes.update_forward_refs()
-
-Redash.Attributes.update_forward_refs()
 
 Salesforce.Attributes.update_forward_refs()
 
@@ -23484,11 +24680,11 @@ Column.Attributes.update_forward_refs()
 
 Schema.Attributes.update_forward_refs()
 
-Database.Attributes.update_forward_refs()
-
 SnowflakeStream.Attributes.update_forward_refs()
 
 SnowflakePipe.Attributes.update_forward_refs()
+
+Database.Attributes.update_forward_refs()
 
 Procedure.Attributes.update_forward_refs()
 
@@ -23520,54 +24716,6 @@ MCIncident.Attributes.update_forward_refs()
 
 MCMonitor.Attributes.update_forward_refs()
 
-MetabaseQuestion.Attributes.update_forward_refs()
-
-MetabaseCollection.Attributes.update_forward_refs()
-
-MetabaseDashboard.Attributes.update_forward_refs()
-
-QuickSightFolder.Attributes.update_forward_refs()
-
-QuickSightDashboardVisual.Attributes.update_forward_refs()
-
-QuickSightAnalysis.Attributes.update_forward_refs()
-
-QuickSightAnalysisVisual.Attributes.update_forward_refs()
-
-QuickSightDatasetField.Attributes.update_forward_refs()
-
-QuickSightDashboard.Attributes.update_forward_refs()
-
-QuickSightDataset.Attributes.update_forward_refs()
-
-ThoughtspotLiveboard.Attributes.update_forward_refs()
-
-ThoughtspotDashlet.Attributes.update_forward_refs()
-
-ThoughtspotAnswer.Attributes.update_forward_refs()
-
-PowerBIReport.Attributes.update_forward_refs()
-
-PowerBIMeasure.Attributes.update_forward_refs()
-
-PowerBIColumn.Attributes.update_forward_refs()
-
-PowerBITile.Attributes.update_forward_refs()
-
-PowerBITable.Attributes.update_forward_refs()
-
-PowerBIDatasource.Attributes.update_forward_refs()
-
-PowerBIWorkspace.Attributes.update_forward_refs()
-
-PowerBIDataset.Attributes.update_forward_refs()
-
-PowerBIDashboard.Attributes.update_forward_refs()
-
-PowerBIPage.Attributes.update_forward_refs()
-
-PowerBIDataflow.Attributes.update_forward_refs()
-
 PresetChart.Attributes.update_forward_refs()
 
 PresetDataset.Attributes.update_forward_refs()
@@ -23575,6 +24723,16 @@ PresetDataset.Attributes.update_forward_refs()
 PresetDashboard.Attributes.update_forward_refs()
 
 PresetWorkspace.Attributes.update_forward_refs()
+
+ModeReport.Attributes.update_forward_refs()
+
+ModeQuery.Attributes.update_forward_refs()
+
+ModeChart.Attributes.update_forward_refs()
+
+ModeWorkspace.Attributes.update_forward_refs()
+
+ModeCollection.Attributes.update_forward_refs()
 
 SigmaDatasetColumn.Attributes.update_forward_refs()
 
@@ -23588,26 +24746,6 @@ SigmaPage.Attributes.update_forward_refs()
 
 SigmaDataElement.Attributes.update_forward_refs()
 
-ModeReport.Attributes.update_forward_refs()
-
-ModeQuery.Attributes.update_forward_refs()
-
-ModeChart.Attributes.update_forward_refs()
-
-ModeWorkspace.Attributes.update_forward_refs()
-
-ModeCollection.Attributes.update_forward_refs()
-
-QlikSpace.Attributes.update_forward_refs()
-
-QlikApp.Attributes.update_forward_refs()
-
-QlikChart.Attributes.update_forward_refs()
-
-QlikDataset.Attributes.update_forward_refs()
-
-QlikSheet.Attributes.update_forward_refs()
-
 TableauWorkbook.Attributes.update_forward_refs()
 
 TableauDatasourceField.Attributes.update_forward_refs()
@@ -23618,9 +24756,9 @@ TableauProject.Attributes.update_forward_refs()
 
 TableauMetric.Attributes.update_forward_refs()
 
-TableauDatasource.Attributes.update_forward_refs()
-
 TableauSite.Attributes.update_forward_refs()
+
+TableauDatasource.Attributes.update_forward_refs()
 
 TableauDashboard.Attributes.update_forward_refs()
 
@@ -23653,6 +24791,82 @@ RedashDashboard.Attributes.update_forward_refs()
 RedashQuery.Attributes.update_forward_refs()
 
 RedashVisualization.Attributes.update_forward_refs()
+
+MetabaseQuestion.Attributes.update_forward_refs()
+
+MetabaseCollection.Attributes.update_forward_refs()
+
+MetabaseDashboard.Attributes.update_forward_refs()
+
+QuickSightFolder.Attributes.update_forward_refs()
+
+QuickSightDashboardVisual.Attributes.update_forward_refs()
+
+QuickSightAnalysisVisual.Attributes.update_forward_refs()
+
+QuickSightDatasetField.Attributes.update_forward_refs()
+
+QuickSightAnalysis.Attributes.update_forward_refs()
+
+QuickSightDashboard.Attributes.update_forward_refs()
+
+QuickSightDataset.Attributes.update_forward_refs()
+
+ThoughtspotLiveboard.Attributes.update_forward_refs()
+
+ThoughtspotDashlet.Attributes.update_forward_refs()
+
+ThoughtspotAnswer.Attributes.update_forward_refs()
+
+PowerBIReport.Attributes.update_forward_refs()
+
+PowerBIMeasure.Attributes.update_forward_refs()
+
+PowerBIColumn.Attributes.update_forward_refs()
+
+PowerBITable.Attributes.update_forward_refs()
+
+PowerBITile.Attributes.update_forward_refs()
+
+PowerBIDatasource.Attributes.update_forward_refs()
+
+PowerBIWorkspace.Attributes.update_forward_refs()
+
+PowerBIDataset.Attributes.update_forward_refs()
+
+PowerBIDashboard.Attributes.update_forward_refs()
+
+PowerBIDataflow.Attributes.update_forward_refs()
+
+PowerBIPage.Attributes.update_forward_refs()
+
+MicroStrategyReport.Attributes.update_forward_refs()
+
+MicroStrategyProject.Attributes.update_forward_refs()
+
+MicroStrategyMetric.Attributes.update_forward_refs()
+
+MicroStrategyCube.Attributes.update_forward_refs()
+
+MicroStrategyDossier.Attributes.update_forward_refs()
+
+MicroStrategyFact.Attributes.update_forward_refs()
+
+MicroStrategyDocument.Attributes.update_forward_refs()
+
+MicroStrategyAttribute.Attributes.update_forward_refs()
+
+MicroStrategyVisualization.Attributes.update_forward_refs()
+
+QlikSpace.Attributes.update_forward_refs()
+
+QlikApp.Attributes.update_forward_refs()
+
+QlikChart.Attributes.update_forward_refs()
+
+QlikDataset.Attributes.update_forward_refs()
+
+QlikSheet.Attributes.update_forward_refs()
 
 SalesforceObject.Attributes.update_forward_refs()
 

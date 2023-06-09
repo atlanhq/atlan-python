@@ -20,8 +20,7 @@ def create_connection(
     )
     response = client.upsert(to_create)
     result = response.assets_created(asset_type=Connection)[0]
-    resolved = client.get_asset_by_guid(result.guid, asset_type=Connection)
-    return resolved
+    return client.get_asset_by_guid(result.guid, asset_type=Connection)
 
 
 def test_invalid_connection(client: AtlanClient):

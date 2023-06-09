@@ -53,13 +53,19 @@ def connection(client: AtlanClient) -> Generator[Connection, None, None]:
 def database(
     client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
-    to_create = Database.create(
-        name=DATABASE_NAME, connection_qualified_name=connection.qualified_name
+    db = create_database(
+        client=client, connection=connection, database_name=DATABASE_NAME
     )
-    result = client.upsert(to_create)
-    db = result.assets_created(asset_type=Database)[0]
     yield db
     delete_asset(client, guid=db.guid, asset_type=Database)
+
+
+def create_database(client, connection, database_name: str):
+    to_create = Database.create(
+        name=database_name, connection_qualified_name=connection.qualified_name
+    )
+    result = client.upsert(to_create)
+    return result.assets_created(asset_type=Database)[0]
 
 
 @pytest.fixture(scope="module")
