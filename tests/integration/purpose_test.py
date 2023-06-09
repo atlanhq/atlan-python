@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import time
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 
@@ -16,33 +16,29 @@ from pyatlan.model.enums import (
     PurposeMetadataAction,
 )
 from pyatlan.model.typedef import ClassificationDef
-from tests.integration.client import delete_asset
+from tests.integration.client import TestId, delete_asset
 
-MODULE_NAME = "Purpose"
+MODULE_NAME = TestId.make_unique("Purpose")
 
 
 @pytest.fixture(scope="module")
 def atlan_tag(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
 ) -> Generator[ClassificationDef, None, None]:
-    cls_name = make_unique(MODULE_NAME)
     classification_def = ClassificationDef.create(
-        name=cls_name, color=AtlanClassificationColor.GREEN
+        name=MODULE_NAME, color=AtlanClassificationColor.GREEN
     )
     yield client.create_typedef(classification_def).classification_defs[0]
-    client.purge_typedef(cls_name, typedef_type=ClassificationDef)
+    client.purge_typedef(MODULE_NAME, typedef_type=ClassificationDef)
 
 
 @pytest.fixture(scope="module")
 def purpose(
     client: AtlanClient,
     atlan_tag: ClassificationDef,
-    make_unique: Callable[[str], str],
 ) -> Generator[Purpose, None, None]:
-    purpose_name = make_unique(MODULE_NAME)
     to_create = Purpose.create(
-        name=purpose_name, classifications=[atlan_tag.display_name]
+        name=MODULE_NAME, classifications=[atlan_tag.display_name]
     )
     response = client.upsert(to_create)
     p = response.assets_created(asset_type=Purpose)[0]
@@ -53,21 +49,19 @@ def purpose(
 def test_purpose(
     client: AtlanClient,
     purpose: Purpose,
-    make_unique: Callable[[str], str],
 ):
     assert purpose
     assert purpose.guid
     assert purpose.qualified_name
-    assert purpose.name == make_unique(MODULE_NAME)
-    assert purpose.display_name == make_unique(MODULE_NAME)
-    assert purpose.qualified_name != make_unique(MODULE_NAME)
+    assert purpose.name == MODULE_NAME
+    assert purpose.display_name == MODULE_NAME
+    assert purpose.qualified_name != MODULE_NAME
 
 
 @pytest.mark.order(after="test_purpose")
 def test_update_purpose(
     client: AtlanClient,
     purpose: Purpose,
-    make_unique: Callable[[str], str],
 ):
     to_update = Purpose.create_for_modification(
         purpose.qualified_name, purpose.name, True
@@ -94,14 +88,13 @@ def test_update_purpose(
 def test_find_purpose_by_name(
     client: AtlanClient,
     purpose: Purpose,
-    make_unique: Callable[[str], str],
 ):
-    result = client.find_purposes_by_name(make_unique(MODULE_NAME))
+    result = client.find_purposes_by_name(MODULE_NAME)
     count = 0
     # TODO: replace with exponential back-off and jitter
     while not result and count < 10:
         time.sleep(2)
-        result = client.find_purposes_by_name(make_unique(MODULE_NAME))
+        result = client.find_purposes_by_name(MODULE_NAME)
         count += 1
     assert result
     assert len(result) == 1
@@ -112,7 +105,6 @@ def test_find_purpose_by_name(
 def test_add_policies_to_purpose(
     client: AtlanClient,
     purpose: Purpose,
-    make_unique: Callable[[str], str],
 ):
     metadata = Purpose.create_metadata_policy(
         name="Simple read access",
@@ -143,7 +135,6 @@ def test_add_policies_to_purpose(
 def test_retrieve_purpose(
     client: AtlanClient,
     purpose: Purpose,
-    make_unique: Callable[[str], str],
 ):
     one = client.get_asset_by_qualified_name(
         qualified_name=purpose.qualified_name, asset_type=Purpose

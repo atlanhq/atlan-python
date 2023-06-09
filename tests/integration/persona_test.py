@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import time
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 
@@ -15,21 +15,19 @@ from pyatlan.model.enums import (
     PersonaGlossaryAction,
     PersonaMetadataAction,
 )
-from tests.integration.client import delete_asset
+from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 from tests.integration.glossary_test import create_glossary
 
-MODULE_NAME = "Persona"
+MODULE_NAME = TestId.make_unique("Persona")
+
 CONNECTOR_TYPE = AtlanConnectorType.GCS
 
 
 @pytest.fixture(scope="module")
-def connection(
-    client: AtlanClient, make_unique: Callable[[str], str]
-) -> Generator[Connection, None, None]:
-    connection_name = make_unique(MODULE_NAME)
+def connection(client: AtlanClient) -> Generator[Connection, None, None]:
     result = create_connection(
-        client=client, name=connection_name, connector_type=CONNECTOR_TYPE
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
     )
     yield result
     # TODO: proper connection delete workflow
@@ -39,10 +37,8 @@ def connection(
 @pytest.fixture(scope="module")
 def glossary(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
 ) -> Generator[AtlasGlossary, None, None]:
-    glossary_name = make_unique(MODULE_NAME)
-    g = create_glossary(client, name=glossary_name)
+    g = create_glossary(client, name=MODULE_NAME)
     yield g
     delete_asset(client, guid=g.guid, asset_type=AtlasGlossary)
 
@@ -50,12 +46,10 @@ def glossary(
 @pytest.fixture(scope="module")
 def persona(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
     connection: Connection,
     glossary: AtlasGlossary,
 ) -> Generator[Persona, None, None]:
-    persona_name = make_unique(MODULE_NAME)
-    to_create = Persona.create(name=persona_name)
+    to_create = Persona.create(name=MODULE_NAME)
     response = client.upsert(to_create)
     p = response.assets_created(asset_type=Persona)[0]
     yield p
@@ -65,23 +59,21 @@ def persona(
 def test_persona(
     client: AtlanClient,
     persona: Persona,
-    make_unique: Callable[[str], str],
     connection: Connection,
     glossary: AtlasGlossary,
 ):
     assert persona
     assert persona.guid
     assert persona.qualified_name
-    assert persona.name == make_unique(MODULE_NAME)
-    assert persona.display_name == make_unique(MODULE_NAME)
-    assert persona.qualified_name != make_unique(MODULE_NAME)
+    assert persona.name == MODULE_NAME
+    assert persona.display_name == MODULE_NAME
+    assert persona.qualified_name != MODULE_NAME
 
 
 @pytest.mark.order(after="test_persona")
 def test_update_persona(
     client: AtlanClient,
     persona: Persona,
-    make_unique: Callable[[str], str],
     connection: Connection,
     glossary: AtlasGlossary,
 ):
@@ -110,16 +102,15 @@ def test_update_persona(
 def test_find_persona_by_name(
     client: AtlanClient,
     persona: Persona,
-    make_unique: Callable[[str], str],
     connection: Connection,
     glossary: AtlasGlossary,
 ):
-    result = client.find_personas_by_name(make_unique(MODULE_NAME))
+    result = client.find_personas_by_name(MODULE_NAME)
     count = 0
     # TODO: replace with exponential back-off and jitter
     while not result and count < 10:
         time.sleep(2)
-        result = client.find_personas_by_name(make_unique(MODULE_NAME))
+        result = client.find_personas_by_name(MODULE_NAME)
         count += 1
     assert result
     assert len(result) == 1
@@ -130,7 +121,6 @@ def test_find_persona_by_name(
 def test_add_policies_to_persona(
     client: AtlanClient,
     persona: Persona,
-    make_unique: Callable[[str], str],
     connection: Connection,
     glossary: AtlasGlossary,
 ):
@@ -169,7 +159,6 @@ def test_add_policies_to_persona(
 def test_retrieve_persona(
     client: AtlanClient,
     persona: Persona,
-    make_unique: Callable[[str], str],
     connection: Connection,
     glossary: AtlasGlossary,
 ):
