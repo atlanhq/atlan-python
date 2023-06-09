@@ -8,6 +8,7 @@ from pydantic import Field
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
+    AtlanAttributeType,
     AtlanClassificationColor,
     AtlanCustomAttributePrimitiveType,
     AtlanIcon,
@@ -442,6 +443,53 @@ class AttributeDef(AtlanObject):
                 attr_def.enum_values = []
         return attr_def
 
+    @staticmethod
+    def _create(
+        name: str,
+        attribute_type: AtlanAttributeType,
+        related_object_type: Optional[str] = None,
+        cardinality: Cardinality = Cardinality.SINGLE,
+        description: str = "",
+        indexable: bool = False,
+        optional: bool = True,
+        unique: bool = False,
+        skip_scrubbing: bool = True,
+        include_in_notification: bool = True,
+        values_min: int = 0,
+        values_max: int = 1,
+    ) -> AttributeDef:
+        from pyatlan.model.assets import validate_required_fields
+
+        validate_required_fields(
+            ["name", "attribute_type"],
+            [name, attribute_type],
+        )
+        # Explicitly set all defaults to ensure inclusion during pydantic serialization
+        type_name = (
+            related_object_type
+            if (
+                attribute_type == AtlanAttributeType.ENUM
+                or attribute_type == AtlanAttributeType.STRUCT
+            )
+            else attribute_type.value
+        )
+        if cardinality != Cardinality.SINGLE:
+            type_name = f"array<{type_name}>"
+        attr_def = AttributeDef(
+            name=name,
+            type_name=type_name,
+            cardinality=cardinality,
+            description=description,
+            is_indexable=indexable,
+            is_optional=optional,
+            is_unique=unique,
+            skip_scrubbing=skip_scrubbing,
+            include_in_notification=include_in_notification,
+            values_min_count=values_min,
+            values_max_count=values_max,
+        )
+        return attr_def
+
     def is_archived(self) -> bool:
         return bool(opt.is_archived) if (opt := self.options) else False
 
@@ -464,6 +512,29 @@ class StructDef(TypeDef):
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
     )
+
+    @staticmethod
+    def _create(
+        name: str,
+        description: str,
+        attributes: List[AttributeDef],
+        type_version: str = "1.0",
+        service_type: str = "custom_extension",
+    ) -> StructDef:
+        from pyatlan.model.assets import validate_required_fields
+
+        validate_required_fields(
+            ["name", "description", "service_type", "type_version", "attributes"],
+            [name, description, service_type, type_version, attributes],
+        )
+        # Explicitly set all defaults to ensure inclusion during pydantic serialization
+        return StructDef(
+            name=name,
+            description=description,
+            service_type=service_type,
+            type_version=type_version,
+            attribute_defs=attributes,
+        )
 
 
 class ClassificationDef(TypeDef):
@@ -554,6 +625,33 @@ class EntityDef(TypeDef):
         "use only, and should not be used without specific guidance.)",
         example=[],
     )
+
+    @staticmethod
+    def _create(
+        name: str,
+        description: str,
+        attributes: List[AttributeDef],
+        type_version: str = "1.0",
+        service_type: str = "custom_extension",
+        super_types: Optional[List[str]] = None,
+    ) -> EntityDef:
+        from pyatlan.model.assets import validate_required_fields
+
+        validate_required_fields(
+            ["name", "description", "service_type", "type_version", "attributes"],
+            [name, description, service_type, type_version, attributes],
+        )
+        if not super_types:
+            super_types = ["Asset"]
+        # Explicitly set all defaults to ensure inclusion during pydantic serialization
+        return EntityDef(
+            name=name,
+            description=description,
+            service_type=service_type,
+            type_version=type_version,
+            super_types=super_types,
+            attribute_defs=attributes,
+        )
 
 
 class RelationshipDef(TypeDef):

@@ -325,6 +325,17 @@ class AtlanCustomAttributePrimitiveType(str, Enum):
     SQL = "SQL"
 
 
+class AtlanAttributeType(str, Enum):
+    STRING = "string"
+    LONG = "long"
+    DECIMAL = "float"
+    BOOLEAN = "boolean"
+    DATE = "date"
+    MAP_STRINGS = "map<string,string>"
+    ENUM = "enum"  # special value, will be replaced in-attribute
+    STRUCT = "struct"  # special value, will be replaced in-attribute
+
+
 class SortOrder(str, Enum):
     ASCENDING = "asc"
     DESCENDING = "desc"

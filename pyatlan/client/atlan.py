@@ -107,7 +107,10 @@ from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (
     ClassificationDef,
     CustomMetadataDef,
+    EntityDef,
     EnumDef,
+    RelationshipDef,
+    StructDef,
     TypeDef,
     TypeDefResponse,
 )
@@ -163,7 +166,9 @@ def get_session():
     return session
 
 
-def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
+def _build_typedef_request(
+    typedef: TypeDef, allow_all: bool = False
+) -> TypeDefResponse:
     if isinstance(typedef, ClassificationDef):
         # Set up the request payload...
         payload = TypeDefResponse(
@@ -195,11 +200,40 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             custom_metadata_defs=[],
         )
     else:
-        raise InvalidRequestException(
-            "Unable to update type definitions of category: " + typedef.category.value,
-            param="category",
-        )
-        # Throw an invalid request exception
+        if not allow_all:
+            raise InvalidRequestException(
+                "Unable to update type definitions of category: "
+                + typedef.category.value,
+                param="category",
+            )
+            # Throw an invalid request exception
+        elif isinstance(typedef, StructDef):
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[],
+                struct_defs=[typedef],
+                entity_defs=[],
+                relationship_defs=[],
+                custom_metadata_defs=[],
+            )
+        elif isinstance(typedef, EntityDef):
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[typedef],
+                relationship_defs=[],
+                custom_metadata_defs=[],
+            )
+        elif isinstance(typedef, RelationshipDef):
+            payload = TypeDefResponse(
+                classification_defs=[],
+                enum_defs=[],
+                struct_defs=[],
+                entity_defs=[],
+                relationship_defs=[typedef],
+                custom_metadata_defs=[],
+            )
     return payload
 
 
@@ -871,6 +905,14 @@ class AtlanClient(BaseSettings):
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
         payload = _build_typedef_request(typedef)
+        raw_json = self._call_api(
+            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        )
+        _refresh_caches(typedef)
+        return TypeDefResponse(**raw_json)
+
+    def _create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        payload = _build_typedef_request(typedef, allow_all=True)
         raw_json = self._call_api(
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
         )
