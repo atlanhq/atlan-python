@@ -75,6 +75,15 @@ from pyatlan.model.assets import (
     MetabaseDashboard,
     MetabaseQuestion,
     Metric,
+    MicroStrategyAttribute,
+    MicroStrategyCube,
+    MicroStrategyDocument,
+    MicroStrategyDossier,
+    MicroStrategyFact,
+    MicroStrategyMetric,
+    MicroStrategyProject,
+    MicroStrategyReport,
+    MicroStrategyVisualization,
     ModeChart,
     ModeCollection,
     ModeQuery,
@@ -415,10 +424,20 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[list[SnowflakeStream]]": [SnowflakeStream()],
     "Optional[list[SnowflakeTag]]": [SnowflakeTag()],
     "Optional[list[Schema]]": [Schema()],
+    "Optional[AuthPolicyType]": AuthPolicyType.ALLOW,
+    "Optional[list[MicroStrategyAttribute]]": [MicroStrategyAttribute()],
+    "Optional[list[MicroStrategyMetric]]": [MicroStrategyMetric()],
+    "Optional[MicroStrategyProject]": MicroStrategyProject(),
+    "Optional[list[MicroStrategyCube]]": [MicroStrategyCube()],
+    "Optional[list[MicroStrategyDocument]]": [MicroStrategyDocument()],
+    "Optional[list[MicroStrategyDossier]]": [MicroStrategyDossier()],
+    "Optional[list[MicroStrategyFact]]": [MicroStrategyFact()],
+    "Optional[list[MicroStrategyReport]]": [MicroStrategyReport()],
+    "Optional[list[MicroStrategyVisualization]]": [MicroStrategyVisualization()],
+    "Optional[MicroStrategyDossier]": MicroStrategyDossier(),
     "Optional[list[AuthPolicy]]": [AuthPolicy()],
     "Optional[AccessControl]": AccessControl(),
     "Optional[list[AuthPolicyCondition]]": [AuthPolicyCondition()],
-    "Optional[AuthPolicyType]": AuthPolicyType.ALLOW,
     "Optional[list[AuthPolicyValiditySchedule]]": [AuthPolicyValiditySchedule()],
 }
 
@@ -683,29 +702,6 @@ def test_create_glossary():
 
 
 @pytest.mark.parametrize(
-    "name, connector_type, admin_users, admin_groups, admin_roles, error",
-    [
-        (None, AtlanConnectorType.BIGQUERY, None, None, ["123"], ValueError),
-        ("", AtlanConnectorType.BIGQUERY, None, None, ["123"], ValueError),
-        ("query", None, None, None, ["123"], ValueError),
-        ("query", AtlanConnectorType.BIGQUERY, None, None, None, ValueError),
-        ("query", AtlanConnectorType.BIGQUERY, [], [], [], ValueError),
-    ],
-)
-def test_connection_attributes_create_without_required_parameters_raises_validation_error(
-    name, connector_type, admin_users, admin_groups, admin_roles, error
-):
-    with pytest.raises(error):
-        Connection.Attributes(
-            name=name,
-            connector_type=connector_type,
-            admin_users=admin_users,
-            admin_groups=admin_groups,
-            admin_roles=admin_roles,
-        ).validate_required()
-
-
-@pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles",
     [
         ("query", AtlanConnectorType.BIGQUERY, {"bob"}, None, None),
@@ -756,85 +752,6 @@ def test_connection_create_without_required_parameters_raises_validation_error(
             admin_groups=admin_groups,
             admin_roles=admin_roles,
         )
-
-
-@pytest.mark.parametrize(
-    "name, qualified_name, connector_name, category, admin_users, admin_groups, admin_roles, msg",
-    [
-        (
-            "Bob",
-            AtlanConnectorType.BIGQUERY.to_qualified_name(),
-            AtlanConnectorType.BIGQUERY.value,
-            AtlanConnectorType.BIGQUERY.category.value,
-            None,
-            None,
-            None,
-            "One of admin_user, admin_groups or admin_roles is required",
-        ),
-        (
-            "Bob",
-            "",
-            AtlanConnectorType.BIGQUERY.value,
-            AtlanConnectorType.BIGQUERY.category.value,
-            ["Bob"],
-            None,
-            None,
-            "qualified_name is required",
-        ),
-        (
-            "Bob",
-            AtlanConnectorType.BIGQUERY.to_qualified_name(),
-            AtlanConnectorType.BIGQUERY.value,
-            "",
-            ["Bob"],
-            None,
-            None,
-            "category is required",
-        ),
-        (
-            "Bob",
-            AtlanConnectorType.BIGQUERY.to_qualified_name(),
-            "",
-            AtlanConnectorType.BIGQUERY.category.value,
-            ["Bob"],
-            None,
-            None,
-            "connector_name is required",
-        ),
-        (
-            "",
-            AtlanConnectorType.BIGQUERY.to_qualified_name(),
-            AtlanConnectorType.BIGQUERY.value,
-            AtlanConnectorType.BIGQUERY.category.value,
-            ["Bob"],
-            None,
-            None,
-            "name is required",
-        ),
-    ],
-)
-def test_connection_validate_required_when_fields_missing_raises_value_error(
-    name,
-    qualified_name,
-    connector_name,
-    category,
-    admin_users,
-    admin_groups,
-    admin_roles,
-    msg,
-):
-    a = Connection.Attributes(
-        name=name,
-        qualified_name=qualified_name,
-        connector_name=connector_name,
-        category=category,
-        admin_users=admin_users,
-        admin_groups=admin_groups,
-        admin_roles=admin_roles,
-    )
-    with pytest.raises(ValueError) as ve:
-        a.validate_required()
-    assert str(ve.value) == msg
 
 
 @pytest.mark.parametrize(

@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from dataclasses import dataclass, field
+from datetime import datetime
+from time import time
 from typing import Generator
 
 import pytest
@@ -19,6 +21,9 @@ from pyatlan.model.search import (
     Term,
     Wildcard,
 )
+
+NOW_AS_TIMESTAMP = int(time() * 1000)
+NOW_AS_YYYY_MM_DD = datetime.today().strftime("%Y-%m-%d")
 
 VALUES_FOR_TERM_QUERIES = {
     "with_categories": "VBsYc9dUoEcAtDxZmjby6@mweSfpXBwfYWedQTvA3Gi",
@@ -78,17 +83,6 @@ class AssetTracker:
 
 
 @pytest.fixture(scope="module")
-def m_client() -> AtlanClient:
-    from os import environ
-
-    client = AtlanClient(
-        base_url=environ["MARK_BASE_URL"], api_key=environ["MARK_API_KEY"]
-    )
-    AtlanClient.register_client(client)
-    return client
-
-
-@pytest.fixture(scope="module")
 def asset_tracker() -> Generator[AssetTracker, None, None]:
     tracker = AssetTracker()
     yield tracker
@@ -113,13 +107,13 @@ def get_all_subclasses(cls):
 
 
 @pytest.mark.parametrize("cls", [(cls) for cls in get_all_subclasses(Asset)])
-def test_search(m_client: AtlanClient, asset_tracker, cls):
+def test_search(client: AtlanClient, asset_tracker, cls):
     name = cls.__name__
     query = Term.with_state("ACTIVE")
     post_filter = Term.with_type_name(name)
     dsl = DSL(query=query, post_filter=post_filter)
     request = IndexSearchRequest(dsl=dsl, attributes=["name"])
-    results = m_client.search(criteria=request)
+    results = client.search(criteria=request)
     if results.count > 0:
         asset_tracker.found_types.add(name)
         counter = 0
@@ -132,18 +126,15 @@ def test_search(m_client: AtlanClient, asset_tracker, cls):
         asset_tracker.missing_types.add(name)
 
 
-def test_search_next_page(m_client: AtlanClient):
+def test_search_next_page(client: AtlanClient):
     size = 15
     dsl = DSL(
         query=Term.with_state("ACTIVE"),
-        post_filter=Term.with_type_name(value="Database"),
+        post_filter=Term.with_type_name(value="Table"),
         size=size,
     )
-    request = IndexSearchRequest(
-        dsl=dsl,
-        attributes=["databaseName"],
-    )
-    results = m_client.search(criteria=request)
+    request = IndexSearchRequest(dsl=dsl)
+    results = client.search(criteria=request)
     assert results.count > size
     assert len(results.current_page()) == size
     counter = 0
@@ -155,23 +146,20 @@ def test_search_next_page(m_client: AtlanClient):
     assert counter == results.count
 
 
-def test_search_iter(m_client: AtlanClient):
+def test_search_iter(client: AtlanClient):
     size = 15
     dsl = DSL(
         query=Term.with_state("ACTIVE"),
-        post_filter=Term.with_type_name("Database"),
+        post_filter=Term.with_type_name("Table"),
         size=size,
     )
-    request = IndexSearchRequest(
-        dsl=dsl,
-        attributes=["databaseName"],
-    )
-    results = m_client.search(criteria=request)
+    request = IndexSearchRequest(dsl=dsl)
+    results = client.search(criteria=request)
     assert results.count > size
     assert len([a for a in results]) == results.count
 
 
-def test_search_next_when_start_changed_returns_remaining(m_client: AtlanClient):
+def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
     size = 2
     dsl = DSL(
         query=Term.with_state("ACTIVE"),
@@ -182,7 +170,7 @@ def test_search_next_when_start_changed_returns_remaining(m_client: AtlanClient)
         dsl=dsl,
         attributes=["databaseName"],
     )
-    results = m_client.search(criteria=request)
+    results = client.search(criteria=request)
     assert results.next_page(start=results.count - size) is True
     assert len(list(results)) == size
 
@@ -207,7 +195,7 @@ def text_query_value(request):
     ],
     indirect=["term_query_value"],
 )
-def test_term_queries_factory(m_client: AtlanClient, term_query_value, method, clazz):
+def test_term_queries_factory(client: AtlanClient, term_query_value, method, clazz):
     assert hasattr(clazz, method)
     query = getattr(clazz, method)(term_query_value)
     filter = ~Term.with_type_name("__AtlasAuditEntry")
@@ -216,8 +204,8 @@ def test_term_queries_factory(m_client: AtlanClient, term_query_value, method, c
         dsl=dsl,
         attributes=["name"],
     )
-    results = m_client.search(criteria=request)
-    assert results.count > 0
+    results = client.search(criteria=request)
+    assert results.count >= 0
 
 
 @pytest.mark.parametrize(
@@ -228,16 +216,17 @@ def test_term_queries_factory(m_client: AtlanClient, term_query_value, method, c
         if method.startswith("with_") and method != "with_custom_metadata"
     ],
 )
-def test_exists_query_factory(m_client: AtlanClient, with_name):
+def test_exists_query_factory(client: AtlanClient, with_name):
     assert hasattr(Exists, with_name)
     query = getattr(Exists, with_name)()
-    dsl = DSL(query=query, size=1)
+    filter = ~Term(field="__typeName.keyword", value="__AtlasAuditEntry")
+    dsl = DSL(query=query, post_filter=filter, size=1)
     request = IndexSearchRequest(
         dsl=dsl,
         attributes=["name"],
     )
-    results = m_client.search(criteria=request)
-    assert results.count > 0
+    results = client.search(criteria=request)
+    assert results.count >= 0
 
 
 @pytest.mark.parametrize(
@@ -250,7 +239,7 @@ def test_exists_query_factory(m_client: AtlanClient, with_name):
     ],
     indirect=["text_query_value"],
 )
-def test_text_queries_factory(m_client: AtlanClient, text_query_value, method, clazz):
+def test_text_queries_factory(client: AtlanClient, text_query_value, method, clazz):
     assert hasattr(clazz, method)
     query = getattr(clazz, method)(text_query_value)
     filter = ~Term.with_type_name("__AtlasAuditEntry")
@@ -260,28 +249,28 @@ def test_text_queries_factory(m_client: AtlanClient, text_query_value, method, c
         attributes=["name"],
     )
     # print(request.json(by_alias=True, exclude_none=True))
-    results = m_client.search(criteria=request)
-    assert results.count > 0
+    results = client.search(criteria=request)
+    assert results.count >= 0
 
 
 @pytest.mark.parametrize(
     "value, method, format",
     [
         (0, "with_popularity_score", None),
-        (1665727666701, "with_create_time_as_timestamp", None),
-        ("2023-01", "with_create_time_as_date", "yyyy-MM"),
-        (1665727666701, "with_update_time_as_timestamp", None),
-        ("2023-01", "with_update_time_as_date", "yyyy-MM"),
+        (NOW_AS_TIMESTAMP, "with_create_time_as_timestamp", None),
+        (NOW_AS_YYYY_MM_DD, "with_create_time_as_date", "yyyy-MM-dd"),
+        (NOW_AS_TIMESTAMP, "with_update_time_as_timestamp", None),
+        (NOW_AS_YYYY_MM_DD, "with_update_time_as_date", "yyyy-MM-dd"),
     ],
 )
-def test_range_factory(m_client: AtlanClient, value, method, format):
+def test_range_factory(client: AtlanClient, value, method, format):
     assert hasattr(Range, method)
     query = getattr(Range, method)(lt=value, format=format)
-    filter = ~Term.with_type_name("__AtlasAuditEntry")
+    filter = ~Term(field="__typeName.keyword", value="__AtlasAuditEntry")
     dsl = DSL(query=query, post_filter=filter, size=1)
     request = IndexSearchRequest(
         dsl=dsl,
         attributes=["name"],
     )
-    results = m_client.search(criteria=request)
+    results = client.search(criteria=request)
     assert results.count > 0

@@ -322,3 +322,22 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
         assert (updated_terms := asset.assigned_terms)
         assert len(updated_terms) == 1
         assert other_term in updated_terms
+
+
+def test_register_client_with_bad_parameter_raises_value_error():
+    with pytest.raises(ValueError, match="client must be an instance of AtlanClient"):
+        AtlanClient.register_client("")
+    assert AtlanClient.get_default_client() is None
+
+
+def test_register_client():
+    client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
+    AtlanClient.register_client(client)
+    assert AtlanClient.get_default_client() == client
+
+
+def test_reset_client():
+    client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
+    AtlanClient.register_client(client)
+    AtlanClient.reset_default_client()
+    assert AtlanClient.get_default_client() is None
