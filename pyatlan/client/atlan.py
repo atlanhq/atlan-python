@@ -966,6 +966,40 @@ class AtlanClient(BaseSettings):
 
             ClassificationCache.refresh_cache()
 
+    def _purge_typedef(self, name: str, typedef_type: type) -> None:
+        if typedef_type == CustomMetadataDef:
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            internal_name = CustomMetadataCache.get_id_for_name(name)
+        elif typedef_type == ClassificationDef:
+            from pyatlan.cache.classification_cache import ClassificationCache
+
+            internal_name = str(ClassificationCache.get_id_for_name(name))
+        else:
+            internal_name = name
+        if internal_name:
+            self._call_api(
+                DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
+            )
+        else:
+            raise NotFoundError(
+                message=f"Unable to find {typedef_type} with name: {name}",
+                code="ATLAN-PYTHON-404-000",
+            )
+
+        if typedef_type == CustomMetadataDef:
+            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+
+            CustomMetadataCache.refresh_cache()
+        elif typedef_type == EnumDef:
+            from pyatlan.cache.enum_cache import EnumCache
+
+            EnumCache.refresh_cache()
+        elif typedef_type == ClassificationDef:
+            from pyatlan.cache.classification_cache import ClassificationCache
+
+            ClassificationCache.refresh_cache()
+
     @validate_arguments()
     def add_classifications(
         self,
