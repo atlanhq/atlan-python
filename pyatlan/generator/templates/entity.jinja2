@@ -1048,7 +1048,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             return policy
         else:
             raise ValueError(
-                f"No user or group specified for the policy."
+                "No user or group specified for the policy."
             )
 
     @classmethod
@@ -1095,7 +1095,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             return policy
         else:
             raise ValueError(
-                f"No user or group specified for the policy."
+                "No user or group specified for the policy."
             )
     {%- elif entity_def.name == "AuthPolicy" %}
     @classmethod
