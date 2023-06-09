@@ -398,6 +398,14 @@ class AuthPolicyType(str, Enum):
     ROWFILTER = "rowFilter"
 
 
+class DataMaskingType(str, Enum):
+    SHOW_FIRST_4 = "MASK_SHOW_FIRST_4"
+    SHOW_LAST_4 = "MASK_SHOW_LAST_4"
+    HASH = "MASK_HASH"
+    NULLIFY = "MASK_NULL"
+    REDACT = "MASK_REDACT"
+
+
 class AuthPolicyCategory(str, Enum):
     BOOTSTRAP = "bootstrap"
     PERSONA = "persona"
@@ -438,6 +446,17 @@ class AssetSidebarTab(str, Enum):
 
 class DataAction(str, Enum):
     SELECT = "select"
+
+
+class PurposeMetadataAction(str, Enum):
+    CREATE = "entity-create"
+    READ = "entity-read"
+    UPDATE = "entity-update"
+    DELETE = "entity-delete"
+    UPDATE_CUSTOM_METADATA = "entity-update-business-metadata"
+    ADD_ATLAN_TAG = "entity-add-classification"
+    UPDATE_ATLAN_TAG = "entity-update-classification"
+    REMOVE_ATLAN_TAG = "entity-remove-classification"
 
 
 class PersonaMetadataAction(str, Enum):
