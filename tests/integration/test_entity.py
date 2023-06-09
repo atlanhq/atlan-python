@@ -150,7 +150,7 @@ class TestDatabase:
 class TestSchema:
     schema: Optional[Schema] = None
 
-    def test_create_schema(
+    def test_create(
         self,
         client: AtlanClient,
         make_unique: Callable[[str], str],
