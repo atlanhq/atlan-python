@@ -17,6 +17,7 @@ from pyatlan.model.assets import (
 )
 from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.response import A, AssetMutationResponse
+from tests.integration.client import TestId
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,12 +67,11 @@ class TestConnection:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
         role = RoleCache.get_id_for_name("$admin")
         assert role
-        connection_name = make_unique("INT")
+        connection_name = TestId.make_unique("INT")
         c = Connection.create(
             name=connection_name,
             connector_type=AtlanConnectorType.SNOWFLAKE,
@@ -111,12 +111,11 @@ class TestDatabase:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
         assert TestConnection.connection
         connection = TestConnection.connection
-        database_name = make_unique("My_Db")
+        database_name = TestId.make_unique("My_Db")
         database = Database.create(
             name=database_name,
             connection_qualified_name=connection.qualified_name,
@@ -153,10 +152,9 @@ class TestSchema:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-        schema_name = make_unique("My_Schema")
+        schema_name = TestId.make_unique("My_Schema")
         assert TestDatabase.database is not None
         schema = Schema.create(
             name=schema_name,
@@ -197,10 +195,9 @@ class TestTable:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-        table_name = make_unique("My_Table")
+        table_name = TestId.make_unique("My_Table")
         assert TestSchema.schema is not None
         table = Table.create(
             name=table_name,
@@ -241,10 +238,9 @@ class TestView:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-        view_name = make_unique("My_View")
+        view_name = TestId.make_unique("My_View")
         assert TestSchema.schema is not None
         view = View.create(
             name=view_name,
@@ -281,10 +277,9 @@ class TestColumn:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-        column_name = make_unique("My_Column")
+        column_name = TestId.make_unique("My_Column")
         assert TestTable.table is not None
         column = Column.create(
             name=column_name,
@@ -325,7 +320,6 @@ class TestReadme:
     def test_create(
         self,
         client: AtlanClient,
-        make_unique: Callable[[str], str],
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
         assert TestColumn.column

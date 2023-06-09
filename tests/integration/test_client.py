@@ -1,4 +1,4 @@
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 
@@ -13,6 +13,7 @@ from pyatlan.model.assets import (
     Table,
 )
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
+from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
 
 CLASSIFICATION_NAME = "Issue"
@@ -29,11 +30,11 @@ def announcement():
 
 @pytest.fixture()
 def database(
-    client: AtlanClient, connection: Connection, make_unique: Callable[[str], str]
+    client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
     """Get a database with function scope"""
-    database_name = make_unique("Func" + "_db")
-    db = create_database(client, connection, make_unique, database_name)
+    database_name = TestId.make_unique("my_db")
+    db = create_database(client, connection, database_name)
     yield db
     delete_asset(client, guid=db.guid, asset_type=Database)
 

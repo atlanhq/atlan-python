@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import time
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 
@@ -19,20 +19,30 @@ from pyatlan.model.assets import (
 from pyatlan.model.enums import AtlanConnectorType, EntityStatus, LineageDirection
 from pyatlan.model.lineage import LineageListRequest, LineageRequest
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Prefix, Term
-from tests.integration.client import delete_asset
+from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 
-MODULE_NAME = "lineage"
+MODULE_NAME = TestId.make_unique("lineage")
+
+DATABASE_NAME = f"{MODULE_NAME}_db"
+SCHEMA_NAME = f"{MODULE_NAME}_schema"
+TABLE_NAME = f"{MODULE_NAME}_tbl"
+MVIEW_NAME = f"{MODULE_NAME}_mv"
+VIEW_NAME = f"{MODULE_NAME}_v"
+COLUMN_NAME1 = f"{MODULE_NAME}1"
+COLUMN_NAME2 = f"{MODULE_NAME}2"
+COLUMN_NAME3 = f"{MODULE_NAME}3"
+COLUMN_NAME4 = f"{MODULE_NAME}4"
+COLUMN_NAME5 = f"{MODULE_NAME}5"
+COLUMN_NAME6 = f"{MODULE_NAME}6"
+
 CONNECTOR_TYPE = AtlanConnectorType.VERTICA
 
 
 @pytest.fixture(scope="module")
-def connection(
-    client: AtlanClient, make_unique: Callable[[str], str]
-) -> Generator[Connection, None, None]:
-    connection_name = make_unique(MODULE_NAME)
+def connection(client: AtlanClient) -> Generator[Connection, None, None]:
     result = create_connection(
-        client=client, name=connection_name, connector_type=CONNECTOR_TYPE
+        client=client, name=MODULE_NAME, connector_type=CONNECTOR_TYPE
     )
     yield result
     # TODO: proper connection delete workflow
@@ -41,15 +51,16 @@ def connection(
 
 @pytest.fixture(scope="module")
 def database(
-    client: AtlanClient, connection: Connection, make_unique: Callable[[str], str]
+    client: AtlanClient, connection: Connection
 ) -> Generator[Database, None, None]:
-    database_name = make_unique(f"{MODULE_NAME}_db")
-    db = create_database(client, connection, make_unique, database_name)
+    db = create_database(
+        client=client, connection=connection, database_name=DATABASE_NAME
+    )
     yield db
     delete_asset(client, guid=db.guid, asset_type=Database)
 
 
-def create_database(client, connection, make_unique, database_name: str):
+def create_database(client, connection, database_name: str):
     to_create = Database.create(
         name=database_name, connection_qualified_name=connection.qualified_name
     )
@@ -62,11 +73,9 @@ def schema(
     client: AtlanClient,
     connection: Connection,
     database: Database,
-    make_unique: Callable[[str], str],
 ) -> Generator[Schema, None, None]:
-    schema_name = make_unique(f"{MODULE_NAME}_schema")
     to_create = Schema.create(
-        name=schema_name, database_qualified_name=database.qualified_name
+        name=SCHEMA_NAME, database_qualified_name=database.qualified_name
     )
     result = client.upsert(to_create)
     sch = result.assets_created(asset_type=Schema)[0]
@@ -80,11 +89,9 @@ def table(
     connection: Connection,
     database: Database,
     schema: Schema,
-    make_unique: Callable[[str], str],
 ) -> Generator[Table, None, None]:
-    table_name = make_unique(f"{MODULE_NAME}_tbl")
     to_create = Table.create(
-        name=table_name, schema_qualified_name=schema.qualified_name
+        name=TABLE_NAME, schema_qualified_name=schema.qualified_name
     )
     result = client.upsert(to_create)
     tbl = result.assets_created(asset_type=Table)[0]
@@ -98,11 +105,9 @@ def mview(
     connection: Connection,
     database: Database,
     schema: Schema,
-    make_unique: Callable[[str], str],
 ) -> Generator[MaterialisedView, None, None]:
-    mview_name = make_unique(f"{MODULE_NAME}_mv")
     to_create = MaterialisedView.create(
-        name=mview_name, schema_qualified_name=schema.qualified_name
+        name=MVIEW_NAME, schema_qualified_name=schema.qualified_name
     )
     result = client.upsert(to_create)
     mv = result.assets_created(asset_type=MaterialisedView)[0]
@@ -116,10 +121,8 @@ def view(
     connection: Connection,
     database: Database,
     schema: Schema,
-    make_unique: Callable[[str], str],
 ) -> Generator[View, None, None]:
-    view_name = make_unique(f"{MODULE_NAME}_v")
-    to_create = View.create(name=view_name, schema_qualified_name=schema.qualified_name)
+    to_create = View.create(name=VIEW_NAME, schema_qualified_name=schema.qualified_name)
     result = client.upsert(to_create)
     v = result.assets_created(asset_type=View)[0]
     yield v
@@ -133,11 +136,9 @@ def column1(
     database: Database,
     schema: Schema,
     table: Table,
-    make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(f"{MODULE_NAME}1")
     to_create = Column.create(
-        name=column_name,
+        name=COLUMN_NAME1,
         parent_type=Table,
         parent_qualified_name=table.qualified_name,
         order=1,
@@ -155,11 +156,9 @@ def column2(
     database: Database,
     schema: Schema,
     table: Table,
-    make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(f"{MODULE_NAME}2")
     to_create = Column.create(
-        name=column_name,
+        name=COLUMN_NAME2,
         parent_type=Table,
         parent_qualified_name=table.qualified_name,
         order=2,
@@ -177,11 +176,9 @@ def column3(
     database: Database,
     schema: Schema,
     mview: MaterialisedView,
-    make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(f"{MODULE_NAME}3")
     to_create = Column.create(
-        name=column_name,
+        name=COLUMN_NAME3,
         parent_type=MaterialisedView,
         parent_qualified_name=mview.qualified_name,
         order=1,
@@ -199,11 +196,9 @@ def column4(
     database: Database,
     schema: Schema,
     mview: MaterialisedView,
-    make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(f"{MODULE_NAME}4")
     to_create = Column.create(
-        name=column_name,
+        name=COLUMN_NAME4,
         parent_type=MaterialisedView,
         parent_qualified_name=mview.qualified_name,
         order=2,
@@ -221,11 +216,9 @@ def column5(
     database: Database,
     schema: Schema,
     view: View,
-    make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(f"{MODULE_NAME}5")
     to_create = Column.create(
-        name=column_name,
+        name=COLUMN_NAME5,
         parent_type=View,
         parent_qualified_name=view.qualified_name,
         order=1,
@@ -243,11 +236,9 @@ def column6(
     database: Database,
     schema: Schema,
     view: View,
-    make_unique: Callable[[str], str],
 ) -> Generator[Column, None, None]:
-    column_name = make_unique(f"{MODULE_NAME}6")
     to_create = Column.create(
-        name=column_name,
+        name=COLUMN_NAME6,
         parent_type=View,
         parent_qualified_name=view.qualified_name,
         order=2,
@@ -267,7 +258,6 @@ def lineage_start(
     table: Table,
     mview: MaterialisedView,
     view: View,
-    make_unique: Callable[[str], str],
 ) -> Generator[Process, None, None]:
     process_name = f"{table.name} >> {mview.name}"
     to_create = Process.create(
@@ -291,7 +281,6 @@ def test_lineage_start(
     mview: MaterialisedView,
     view: View,
     lineage_start: Process,
-    make_unique: Callable[[str], str],
 ):
     assert lineage_start
     assert lineage_start.guid
@@ -318,7 +307,6 @@ def lineage_end(
     table: Table,
     mview: MaterialisedView,
     view: View,
-    make_unique: Callable[[str], str],
 ) -> Generator[Process, None, None]:
     process_name = f"{mview.name} >> {view.name}"
     to_create = Process.create(
@@ -342,7 +330,6 @@ def test_lineage_end(
     mview: MaterialisedView,
     view: View,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     assert lineage_end
     assert lineage_end.guid
@@ -370,7 +357,6 @@ def test_fetch_lineage_start(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     lineage = LineageRequest(guid=table.guid, hide_process=True)
     response = client.get_lineage(lineage)
@@ -410,7 +396,6 @@ def test_fetch_lineage_start_list(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     lineage = LineageListRequest.create(guid=table.guid)
     lineage.attributes = ["name"]
@@ -443,7 +428,6 @@ def test_fetch_lineage_middle(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     lineage = LineageRequest(guid=mview.guid, hide_process=True)
     response = client.get_lineage(lineage)
@@ -503,7 +487,6 @@ def test_fetch_lineage_middle_list(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     lineage = LineageListRequest.create(guid=mview.guid)
     lineage.attributes = ["name"]
@@ -537,7 +520,6 @@ def test_fetch_lineage_end(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     lineage = LineageRequest(guid=view.guid, hide_process=True)
     response = client.get_lineage(lineage)
@@ -581,7 +563,6 @@ def test_fetch_lineage_end_list(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     lineage = LineageListRequest.create(guid=view.guid)
     lineage.attributes = ["name"]
@@ -614,7 +595,6 @@ def test_search_by_lineage(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     be_active = Term.with_state("ACTIVE")
     have_lineage = Term.with_has_lineage(True)
@@ -671,7 +651,6 @@ def test_delete_lineage(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     response = client.delete_entity_by_guid(lineage_start.guid)
     assert response
@@ -696,7 +675,6 @@ def test_restore_lineage(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     to_restore = Process.create_for_modification(
         lineage_start.qualified_name, lineage_start.name
@@ -727,7 +705,6 @@ def test_purge_lineage(
     view: View,
     lineage_start: Process,
     lineage_end: Process,
-    make_unique: Callable[[str], str],
 ):
     response = client.purge_entity_by_guid(lineage_start.guid)
     assert response
