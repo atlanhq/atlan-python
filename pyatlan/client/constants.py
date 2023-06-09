@@ -17,6 +17,7 @@ ROLE_API = f"{ADMIN_URI}roles"
 GROUP_API = f"{ADMIN_URI}groups"
 USER_API = f"{ADMIN_URI}users"
 QUERY_API = f"{SQL_URI}query"
+IMAGE_API = f"{ADMIN_URI}images"
 
 # Role APIs
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK)
@@ -49,6 +50,9 @@ GET_CURRENT_USER = API(f"{USER_API}/current", HTTPMethod.GET, HTTPStatus.OK)
 
 # SQL parsing APIs
 PARSE_QUERY = API(f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK)
+
+# File upload APIs
+UPLOAD_IMAGE = API(IMAGE_API, HTTPMethod.POST, HTTPStatus.OK)
 
 ENTITY_API = f"{BASE_URI}entity/"
 PREFIX_ATTR = "attr:"
