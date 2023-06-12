@@ -1,3 +1,11 @@
+## 0.1.1 (June 12, 2023)
+
+* Adds icons and images for classifications
+* Migrates to easier to use uniqueness generator for testing
+* Refactor Integration Tests to work on any server
+* Remove incorrect required field validations for Connection
+
+
 ## 0.1.0 (June 6, 2023)
 
 * Fixes connection creation and associated validations
