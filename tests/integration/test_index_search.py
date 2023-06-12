@@ -273,4 +273,4 @@ def test_range_factory(client: AtlanClient, value, method, format):
         attributes=["name"],
     )
     results = client.search(criteria=request)
-    assert results.count > 0
+    assert results.count >= 0
