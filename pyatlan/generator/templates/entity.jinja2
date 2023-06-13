@@ -374,21 +374,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             self.announcement_title = None
             self.announcement_type = None
         {%- endif  %}
-        {%- if entity_def.name == "Connection"  %}
-        def validate_required(self):
-            if not self.name:
-                raise ValueError("name is required")
-            if not self.admin_roles and not self.admin_groups and not self.admin_users:
-                raise ValueError(
-                    "One of admin_user, admin_groups or admin_roles is required"
-                )
-            if not self.qualified_name:
-                raise ValueError("qualified_name is required")
-            if not self.category:
-                raise ValueError("category is required")
-            if not self.connector_name:
-                raise ValueError("connector_name is required")
-        {%- elif entity_def.name == "Process" %}
+        {%- if entity_def.name == "Process" %}
         @staticmethod
         def generate_qualified_name(
             name: str,

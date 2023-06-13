@@ -383,6 +383,7 @@ class AtlanClassificationColor(str, Enum):
     GREEN = "Green"
     YELLOW = "Yellow"
     RED = "Red"
+    GRAY = "Gray"
 
 
 class QueryParserSourceType(str, Enum):

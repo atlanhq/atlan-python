@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import logging
-from typing import Callable, Type
+from typing import Generator, Type
 
 import pytest
 
@@ -11,8 +11,7 @@ from pyatlan.model.response import A
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="session")
-def make_unique() -> Callable[[str], str]:
+class TestId:
     from nanoid import generate as generate_nanoid
 
     session_id = generate_nanoid(
@@ -20,15 +19,19 @@ def make_unique() -> Callable[[str], str]:
         size=5,
     )
 
-    def _get_unique_name(input: str) -> str:
-        return f"psdk_{input}_{session_id}"
-
-    return _get_unique_name
+    @classmethod
+    def make_unique(cls, input: str):
+        return f"psdk_{input}_{cls.session_id}"
 
 
 @pytest.fixture(scope="module")
-def client() -> AtlanClient:
-    return AtlanClient()
+def client() -> Generator[AtlanClient, None, None]:
+    client = AtlanClient()
+    client.register_client(client)
+
+    yield client
+
+    AtlanClient.reset_default_client()
 
 
 def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:

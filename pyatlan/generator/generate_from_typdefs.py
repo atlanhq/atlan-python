@@ -74,6 +74,8 @@ def get_type_defs() -> TypeDefResponse:
     else:
         client = AtlanClient()
         type_defs = client.get_all_typedefs()
+        if len(type_defs.entity_defs) == 0:
+            raise Exception("No entity definitions were returned.")
         with TYPE_DEF_FILE.open("w") as output_file:
             output_file.write(type_defs.json())
         return type_defs

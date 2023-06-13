@@ -13,6 +13,7 @@ from pydantic import (
     BaseSettings,
     HttpUrl,
     PrivateAttr,
+    ValidationError,
     parse_obj_as,
     validate_arguments,
 )
@@ -201,12 +202,11 @@ def _build_typedef_request(
         )
     else:
         if not allow_all:
+            # Throw an invalid request exception
             raise InvalidRequestException(
-                "Unable to update type definitions of category: "
-                + typedef.category.value,
+                f"Unable to update type definitions of category: {typedef.category.value}",
                 param="category",
             )
-            # Throw an invalid request exception
         elif isinstance(typedef, StructDef):
             payload = TypeDefResponse(
                 classification_defs=[],
@@ -317,6 +317,11 @@ class AtlanClient(BaseSettings):
     @classmethod
     def get_default_client(cls) -> "Optional[AtlanClient]":
         return cls._default_client
+
+    @classmethod
+    def reset_default_client(cls):
+        """Sets the default_client to None"""
+        cls._default_client = None
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -878,7 +883,11 @@ class AtlanClient(BaseSettings):
             request_obj=criteria,
         )
         if "entities" in raw_json:
-            assets = parse_obj_as(list[Asset], raw_json["entities"])
+            try:
+                assets = parse_obj_as(list[Asset], raw_json["entities"])
+            except ValidationError as err:
+                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
+                raise err
         else:
             assets = []
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0

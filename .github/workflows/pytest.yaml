@@ -1,6 +1,10 @@
 name: Python package
 
-on: [push, workflow_dispatch]
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron : '0 3 * * *' # At 01:00 Daily
 
 jobs:
   build:
@@ -34,4 +38,5 @@ jobs:
           MARK_API_KEY: ${{ secrets.MARK_ATLAN_API_KEY }}
           MARK_BASE_URL: https://mark.atlan.com
         run: |
-          pytest
+          pytest tests/unit
+          pytest tests/integration

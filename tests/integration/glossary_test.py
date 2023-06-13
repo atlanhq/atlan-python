@@ -1,15 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Callable, Generator
+from typing import Generator
 
 import pytest
 from pydantic import StrictStr
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm
-from tests.integration.client import delete_asset
+from tests.integration.client import TestId, delete_asset
 
-MODULE_NAME = "GLS"
+MODULE_NAME = TestId.make_unique("GLS")
+
+TERM_NAME1 = f"{MODULE_NAME}1"
+TERM_NAME2 = f"{MODULE_NAME}2"
 
 
 def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
@@ -31,44 +34,39 @@ def create_term(
 @pytest.fixture(scope="module")
 def glossary(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
 ) -> Generator[AtlasGlossary, None, None]:
-    glossary_name = make_unique(f"{MODULE_NAME}")
-    g = create_glossary(client, glossary_name)
+    g = create_glossary(client, MODULE_NAME)
     yield g
     delete_asset(client, guid=g.guid, asset_type=AtlasGlossary)
 
 
 def test_glossary(
     glossary: AtlasGlossary,
-    make_unique: Callable[[str], str],
 ):
     assert glossary.guid
-    assert glossary.name == make_unique(f"{MODULE_NAME}")
+    assert glossary.name == MODULE_NAME
     assert glossary.qualified_name
-    assert glossary.qualified_name != make_unique(f"{MODULE_NAME}")
+    assert glossary.qualified_name != MODULE_NAME
 
 
 @pytest.fixture(scope="module")
 def term1(
-    client: AtlanClient, make_unique: Callable[[str], str], glossary: AtlasGlossary
+    client: AtlanClient, glossary: AtlasGlossary
 ) -> Generator[AtlasGlossaryTerm, None, None]:
-    term_name1 = make_unique(f"{MODULE_NAME}1")
-    t = create_term(client, name=term_name1, glossary_guid=glossary.guid)
+    t = create_term(client, name=TERM_NAME1, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 
 
 def test_term1(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
     term1: AtlasGlossaryTerm,
     glossary: AtlasGlossary,
 ):
     assert term1.guid
-    assert term1.name == make_unique(f"{MODULE_NAME}1")
+    assert term1.name == TERM_NAME1
     assert term1.qualified_name
-    assert term1.qualified_name != make_unique(f"{MODULE_NAME}1")
+    assert term1.qualified_name != TERM_NAME1
     t = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert t
     assert t.guid == term1.guid
@@ -78,24 +76,22 @@ def test_term1(
 
 @pytest.fixture(scope="module")
 def term2(
-    client: AtlanClient, make_unique: Callable[[str], str], glossary: AtlasGlossary
+    client: AtlanClient, glossary: AtlasGlossary
 ) -> Generator[AtlasGlossaryTerm, None, None]:
-    term_name2 = make_unique(f"{MODULE_NAME}2")
-    t = create_term(client, name=term_name2, glossary_guid=glossary.guid)
+    t = create_term(client, name=TERM_NAME2, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
 
 
 def test_term2(
     client: AtlanClient,
-    make_unique: Callable[[str], str],
     term2: AtlasGlossaryTerm,
     glossary: AtlasGlossary,
 ):
     assert term2.guid
-    assert term2.name == make_unique(f"{MODULE_NAME}2")
+    assert term2.name == TERM_NAME2
     assert term2.qualified_name
-    assert term2.qualified_name != make_unique(f"{MODULE_NAME}2")
+    assert term2.qualified_name != TERM_NAME2
     t = client.get_asset_by_guid(term2.guid, asset_type=AtlasGlossaryTerm)
     assert t
     assert t.guid == term2.guid
