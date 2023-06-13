@@ -7,7 +7,7 @@ import hashlib
 import sys
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, TypeVar
+from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -108,6 +108,8 @@ class Referenceable(AtlanObject):
 
     @property
     def qualified_name(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.qualified_name
 
     @qualified_name.setter
@@ -118,6 +120,8 @@ class Referenceable(AtlanObject):
 
     @property
     def replicated_from(self) -> Optional[list[AtlasServer]]:
+        if self.attributes is None:
+            return None
         return self.attributes.replicated_from
 
     @replicated_from.setter
@@ -128,6 +132,8 @@ class Referenceable(AtlanObject):
 
     @property
     def replicated_to(self) -> Optional[list[AtlasServer]]:
+        if self.attributes is None:
+            return None
         return self.attributes.replicated_to
 
     @replicated_to.setter
@@ -138,6 +144,8 @@ class Referenceable(AtlanObject):
 
     @property
     def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.meanings
 
     @assigned_terms.setter
@@ -402,6 +410,8 @@ class Asset(Referenceable):
 
     @property
     def name(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.name
 
     @name.setter
@@ -412,6 +422,8 @@ class Asset(Referenceable):
 
     @property
     def display_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.display_name
 
     @display_name.setter
@@ -422,6 +434,8 @@ class Asset(Referenceable):
 
     @property
     def description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.description
 
     @description.setter
@@ -432,6 +446,8 @@ class Asset(Referenceable):
 
     @property
     def user_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.user_description
 
     @user_description.setter
@@ -442,6 +458,8 @@ class Asset(Referenceable):
 
     @property
     def tenant_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tenant_id
 
     @tenant_id.setter
@@ -452,6 +470,8 @@ class Asset(Referenceable):
 
     @property
     def certificate_status(self) -> Optional[CertificateStatus]:
+        if self.attributes is None:
+            return None
         return self.attributes.certificate_status
 
     @certificate_status.setter
@@ -462,6 +482,8 @@ class Asset(Referenceable):
 
     @property
     def certificate_status_message(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.certificate_status_message
 
     @certificate_status_message.setter
@@ -472,6 +494,8 @@ class Asset(Referenceable):
 
     @property
     def certificate_updated_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.certificate_updated_by
 
     @certificate_updated_by.setter
@@ -482,6 +506,8 @@ class Asset(Referenceable):
 
     @property
     def certificate_updated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.certificate_updated_at
 
     @certificate_updated_at.setter
@@ -492,6 +518,8 @@ class Asset(Referenceable):
 
     @property
     def announcement_title(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.announcement_title
 
     @announcement_title.setter
@@ -502,6 +530,8 @@ class Asset(Referenceable):
 
     @property
     def announcement_message(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.announcement_message
 
     @announcement_message.setter
@@ -512,6 +542,8 @@ class Asset(Referenceable):
 
     @property
     def announcement_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.announcement_type
 
     @announcement_type.setter
@@ -522,6 +554,8 @@ class Asset(Referenceable):
 
     @property
     def announcement_updated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.announcement_updated_at
 
     @announcement_updated_at.setter
@@ -532,6 +566,8 @@ class Asset(Referenceable):
 
     @property
     def announcement_updated_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.announcement_updated_by
 
     @announcement_updated_by.setter
@@ -542,6 +578,8 @@ class Asset(Referenceable):
 
     @property
     def owner_users(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.owner_users
 
     @owner_users.setter
@@ -552,6 +590,8 @@ class Asset(Referenceable):
 
     @property
     def owner_groups(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.owner_groups
 
     @owner_groups.setter
@@ -562,6 +602,8 @@ class Asset(Referenceable):
 
     @property
     def admin_users(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.admin_users
 
     @admin_users.setter
@@ -572,6 +614,8 @@ class Asset(Referenceable):
 
     @property
     def admin_groups(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.admin_groups
 
     @admin_groups.setter
@@ -582,6 +626,8 @@ class Asset(Referenceable):
 
     @property
     def viewer_users(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.viewer_users
 
     @viewer_users.setter
@@ -592,6 +638,8 @@ class Asset(Referenceable):
 
     @property
     def viewer_groups(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.viewer_groups
 
     @viewer_groups.setter
@@ -602,6 +650,8 @@ class Asset(Referenceable):
 
     @property
     def connector_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.connector_name
 
     @connector_name.setter
@@ -612,6 +662,8 @@ class Asset(Referenceable):
 
     @property
     def connection_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.connection_name
 
     @connection_name.setter
@@ -622,6 +674,8 @@ class Asset(Referenceable):
 
     @property
     def connection_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.connection_qualified_name
 
     @connection_qualified_name.setter
@@ -632,6 +686,8 @@ class Asset(Referenceable):
 
     @property
     def has_lineage(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.has_lineage
 
     @has_lineage.setter
@@ -642,6 +698,8 @@ class Asset(Referenceable):
 
     @property
     def is_discoverable(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_discoverable
 
     @is_discoverable.setter
@@ -652,6 +710,8 @@ class Asset(Referenceable):
 
     @property
     def is_editable(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_editable
 
     @is_editable.setter
@@ -662,6 +722,8 @@ class Asset(Referenceable):
 
     @property
     def sub_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sub_type
 
     @sub_type.setter
@@ -672,6 +734,8 @@ class Asset(Referenceable):
 
     @property
     def view_score(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.view_score
 
     @view_score.setter
@@ -682,6 +746,8 @@ class Asset(Referenceable):
 
     @property
     def popularity_score(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.popularity_score
 
     @popularity_score.setter
@@ -692,6 +758,8 @@ class Asset(Referenceable):
 
     @property
     def source_owners(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_owners
 
     @source_owners.setter
@@ -702,6 +770,8 @@ class Asset(Referenceable):
 
     @property
     def source_created_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_created_by
 
     @source_created_by.setter
@@ -712,6 +782,8 @@ class Asset(Referenceable):
 
     @property
     def source_created_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_created_at
 
     @source_created_at.setter
@@ -722,6 +794,8 @@ class Asset(Referenceable):
 
     @property
     def source_updated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_updated_at
 
     @source_updated_at.setter
@@ -732,6 +806,8 @@ class Asset(Referenceable):
 
     @property
     def source_updated_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_updated_by
 
     @source_updated_by.setter
@@ -742,6 +818,8 @@ class Asset(Referenceable):
 
     @property
     def source_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_url
 
     @source_url.setter
@@ -752,6 +830,8 @@ class Asset(Referenceable):
 
     @property
     def source_embed_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_embed_url
 
     @source_embed_url.setter
@@ -762,6 +842,8 @@ class Asset(Referenceable):
 
     @property
     def last_sync_workflow_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.last_sync_workflow_name
 
     @last_sync_workflow_name.setter
@@ -772,6 +854,8 @@ class Asset(Referenceable):
 
     @property
     def last_sync_run_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.last_sync_run_at
 
     @last_sync_run_at.setter
@@ -782,6 +866,8 @@ class Asset(Referenceable):
 
     @property
     def last_sync_run(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.last_sync_run
 
     @last_sync_run.setter
@@ -792,6 +878,8 @@ class Asset(Referenceable):
 
     @property
     def admin_roles(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.admin_roles
 
     @admin_roles.setter
@@ -802,6 +890,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_count
 
     @source_read_count.setter
@@ -812,6 +902,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_user_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_user_count
 
     @source_read_user_count.setter
@@ -822,6 +914,8 @@ class Asset(Referenceable):
 
     @property
     def source_last_read_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_last_read_at
 
     @source_last_read_at.setter
@@ -832,6 +926,8 @@ class Asset(Referenceable):
 
     @property
     def last_row_changed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.last_row_changed_at
 
     @last_row_changed_at.setter
@@ -842,6 +938,8 @@ class Asset(Referenceable):
 
     @property
     def source_total_cost(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_total_cost
 
     @source_total_cost.setter
@@ -852,6 +950,8 @@ class Asset(Referenceable):
 
     @property
     def source_cost_unit(self) -> Optional[SourceCostUnitType]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_cost_unit
 
     @source_cost_unit.setter
@@ -862,6 +962,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_query_cost(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_query_cost
 
     @source_read_query_cost.setter
@@ -872,6 +974,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_recent_user_list(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_recent_user_list
 
     @source_read_recent_user_list.setter
@@ -884,6 +988,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_recent_user_record_list(self) -> Optional[list[PopularityInsights]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_recent_user_record_list
 
     @source_read_recent_user_record_list.setter
@@ -898,6 +1004,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_top_user_list(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_top_user_list
 
     @source_read_top_user_list.setter
@@ -908,6 +1016,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_top_user_record_list(self) -> Optional[list[PopularityInsights]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_top_user_record_list
 
     @source_read_top_user_record_list.setter
@@ -924,6 +1034,8 @@ class Asset(Referenceable):
     def source_read_popular_query_record_list(
         self,
     ) -> Optional[list[PopularityInsights]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_popular_query_record_list
 
     @source_read_popular_query_record_list.setter
@@ -940,6 +1052,8 @@ class Asset(Referenceable):
     def source_read_expensive_query_record_list(
         self,
     ) -> Optional[list[PopularityInsights]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_expensive_query_record_list
 
     @source_read_expensive_query_record_list.setter
@@ -955,6 +1069,8 @@ class Asset(Referenceable):
 
     @property
     def source_read_slow_query_record_list(self) -> Optional[list[PopularityInsights]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_read_slow_query_record_list
 
     @source_read_slow_query_record_list.setter
@@ -969,6 +1085,8 @@ class Asset(Referenceable):
 
     @property
     def source_query_compute_cost_list(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_query_compute_cost_list
 
     @source_query_compute_cost_list.setter
@@ -983,6 +1101,8 @@ class Asset(Referenceable):
     def source_query_compute_cost_record_list(
         self,
     ) -> Optional[list[PopularityInsights]]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_query_compute_cost_record_list
 
     @source_query_compute_cost_record_list.setter
@@ -997,6 +1117,8 @@ class Asset(Referenceable):
 
     @property
     def dbt_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_qualified_name
 
     @dbt_qualified_name.setter
@@ -1007,6 +1129,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_alias
 
     @asset_dbt_alias.setter
@@ -1017,6 +1141,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_meta(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_meta
 
     @asset_dbt_meta.setter
@@ -1027,6 +1153,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_unique_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_unique_id
 
     @asset_dbt_unique_id.setter
@@ -1037,6 +1165,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_account_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_account_name
 
     @asset_dbt_account_name.setter
@@ -1047,6 +1177,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_project_name
 
     @asset_dbt_project_name.setter
@@ -1057,6 +1189,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_package_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_package_name
 
     @asset_dbt_package_name.setter
@@ -1067,6 +1201,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_name
 
     @asset_dbt_job_name.setter
@@ -1077,6 +1213,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_schedule(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_schedule
 
     @asset_dbt_job_schedule.setter
@@ -1087,6 +1225,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_status
 
     @asset_dbt_job_status.setter
@@ -1097,6 +1237,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_schedule_cron_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_schedule_cron_humanized
 
     @asset_dbt_job_schedule_cron_humanized.setter
@@ -1111,6 +1253,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run
 
     @asset_dbt_job_last_run.setter
@@ -1121,6 +1265,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_url
 
     @asset_dbt_job_last_run_url.setter
@@ -1131,6 +1277,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_created_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_created_at
 
     @asset_dbt_job_last_run_created_at.setter
@@ -1145,6 +1293,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_updated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_updated_at
 
     @asset_dbt_job_last_run_updated_at.setter
@@ -1159,6 +1309,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_dequed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_dequed_at
 
     @asset_dbt_job_last_run_dequed_at.setter
@@ -1173,6 +1325,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_started_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_started_at
 
     @asset_dbt_job_last_run_started_at.setter
@@ -1187,6 +1341,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_total_duration(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_total_duration
 
     @asset_dbt_job_last_run_total_duration.setter
@@ -1201,6 +1357,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_total_duration_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_total_duration_humanized
 
     @asset_dbt_job_last_run_total_duration_humanized.setter
@@ -1215,6 +1373,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_queued_duration(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_queued_duration
 
     @asset_dbt_job_last_run_queued_duration.setter
@@ -1229,6 +1389,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_queued_duration_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_queued_duration_humanized
 
     @asset_dbt_job_last_run_queued_duration_humanized.setter
@@ -1243,6 +1405,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_run_duration(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_run_duration
 
     @asset_dbt_job_last_run_run_duration.setter
@@ -1257,6 +1421,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_run_duration_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_run_duration_humanized
 
     @asset_dbt_job_last_run_run_duration_humanized.setter
@@ -1271,6 +1437,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_git_branch(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_git_branch
 
     @asset_dbt_job_last_run_git_branch.setter
@@ -1285,6 +1453,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_git_sha(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_git_sha
 
     @asset_dbt_job_last_run_git_sha.setter
@@ -1297,6 +1467,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_status_message(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_status_message
 
     @asset_dbt_job_last_run_status_message.setter
@@ -1311,6 +1483,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_owner_thread_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_owner_thread_id
 
     @asset_dbt_job_last_run_owner_thread_id.setter
@@ -1325,6 +1499,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_executed_by_thread_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_executed_by_thread_id
 
     @asset_dbt_job_last_run_executed_by_thread_id.setter
@@ -1339,6 +1515,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_artifacts_saved(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_artifacts_saved
 
     @asset_dbt_job_last_run_artifacts_saved.setter
@@ -1353,6 +1531,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_artifact_s3_path(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_artifact_s3_path
 
     @asset_dbt_job_last_run_artifact_s3_path.setter
@@ -1367,6 +1547,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_has_docs_generated(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_has_docs_generated
 
     @asset_dbt_job_last_run_has_docs_generated.setter
@@ -1381,6 +1563,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_has_sources_generated(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_has_sources_generated
 
     @asset_dbt_job_last_run_has_sources_generated.setter
@@ -1395,6 +1579,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_last_run_notifications_sent(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_last_run_notifications_sent
 
     @asset_dbt_job_last_run_notifications_sent.setter
@@ -1409,6 +1595,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_next_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_next_run
 
     @asset_dbt_job_next_run.setter
@@ -1419,6 +1607,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_job_next_run_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_job_next_run_humanized
 
     @asset_dbt_job_next_run_humanized.setter
@@ -1433,6 +1623,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_environment_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_environment_name
 
     @asset_dbt_environment_name.setter
@@ -1443,6 +1635,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_environment_dbt_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_environment_dbt_version
 
     @asset_dbt_environment_dbt_version.setter
@@ -1457,6 +1651,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_tags(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_tags
 
     @asset_dbt_tags.setter
@@ -1467,6 +1663,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_semantic_layer_proxy_url
 
     @asset_dbt_semantic_layer_proxy_url.setter
@@ -1481,6 +1679,8 @@ class Asset(Referenceable):
 
     @property
     def asset_dbt_source_freshness_criteria(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_dbt_source_freshness_criteria
 
     @asset_dbt_source_freshness_criteria.setter
@@ -1495,6 +1695,8 @@ class Asset(Referenceable):
 
     @property
     def sample_data_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sample_data_url
 
     @sample_data_url.setter
@@ -1505,6 +1707,8 @@ class Asset(Referenceable):
 
     @property
     def asset_tags(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_tags
 
     @asset_tags.setter
@@ -1515,6 +1719,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_incident_names
 
     @asset_mc_incident_names.setter
@@ -1525,6 +1731,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_incident_qualified_names
 
     @asset_mc_incident_qualified_names.setter
@@ -1539,6 +1747,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_monitor_names
 
     @asset_mc_monitor_names.setter
@@ -1549,6 +1759,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_monitor_qualified_names
 
     @asset_mc_monitor_qualified_names.setter
@@ -1563,6 +1775,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_statuses(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_monitor_statuses
 
     @asset_mc_monitor_statuses.setter
@@ -1573,6 +1787,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_types(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_monitor_types
 
     @asset_mc_monitor_types.setter
@@ -1583,6 +1799,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_monitor_schedule_types(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_monitor_schedule_types
 
     @asset_mc_monitor_schedule_types.setter
@@ -1597,6 +1815,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_types(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_incident_types
 
     @asset_mc_incident_types.setter
@@ -1607,6 +1827,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_sub_types(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_incident_sub_types
 
     @asset_mc_incident_sub_types.setter
@@ -1619,6 +1841,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_severities(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_incident_severities
 
     @asset_mc_incident_severities.setter
@@ -1631,6 +1855,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_incident_states(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_incident_states
 
     @asset_mc_incident_states.setter
@@ -1641,6 +1867,8 @@ class Asset(Referenceable):
 
     @property
     def asset_mc_last_sync_run_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset_mc_last_sync_run_at
 
     @asset_mc_last_sync_run_at.setter
@@ -1651,6 +1879,8 @@ class Asset(Referenceable):
 
     @property
     def mc_monitors(self) -> Optional[list[MCMonitor]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitors
 
     @mc_monitors.setter
@@ -1661,6 +1891,8 @@ class Asset(Referenceable):
 
     @property
     def files(self) -> Optional[list[File]]:
+        if self.attributes is None:
+            return None
         return self.attributes.files
 
     @files.setter
@@ -1671,6 +1903,8 @@ class Asset(Referenceable):
 
     @property
     def mc_incidents(self) -> Optional[list[MCIncident]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incidents
 
     @mc_incidents.setter
@@ -1681,6 +1915,8 @@ class Asset(Referenceable):
 
     @property
     def links(self) -> Optional[list[Link]]:
+        if self.attributes is None:
+            return None
         return self.attributes.links
 
     @links.setter
@@ -1691,6 +1927,8 @@ class Asset(Referenceable):
 
     @property
     def metrics(self) -> Optional[list[Metric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metrics
 
     @metrics.setter
@@ -1701,6 +1939,8 @@ class Asset(Referenceable):
 
     @property
     def readme(self) -> Optional[Readme]:
+        if self.attributes is None:
+            return None
         return self.attributes.readme
 
     @readme.setter
@@ -1711,6 +1951,8 @@ class Asset(Referenceable):
 
     @property
     def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.meanings
 
     @assigned_terms.setter
@@ -1723,6 +1965,15 @@ class Asset(Referenceable):
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    def trim_to_required(self: SelfAsset) -> SelfAsset:
+        return self.create_for_modification(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    @classmethod
+    def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
+        raise NotImplementedError("Only a subclasses should be created")
 
     @classmethod
     def create_for_modification(
@@ -2232,6 +2483,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.category
 
     @category.setter
@@ -2242,6 +2495,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def sub_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sub_category
 
     @sub_category.setter
@@ -2252,6 +2507,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def host(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.host
 
     @host.setter
@@ -2262,6 +2519,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def port(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.port
 
     @port.setter
@@ -2272,6 +2531,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def allow_query(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.allow_query
 
     @allow_query.setter
@@ -2282,6 +2543,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def allow_query_preview(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.allow_query_preview
 
     @allow_query_preview.setter
@@ -2292,6 +2555,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def query_preview_config(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_preview_config
 
     @query_preview_config.setter
@@ -2302,6 +2567,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def query_config(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_config
 
     @query_config.setter
@@ -2312,6 +2579,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def credential_strategy(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.credential_strategy
 
     @credential_strategy.setter
@@ -2322,6 +2591,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def preview_credential_strategy(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preview_credential_strategy
 
     @preview_credential_strategy.setter
@@ -2332,6 +2603,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def policy_strategy(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_strategy
 
     @policy_strategy.setter
@@ -2342,6 +2615,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def query_username_strategy(self) -> Optional[QueryUsernameStrategy]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_username_strategy
 
     @query_username_strategy.setter
@@ -2354,6 +2629,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def row_limit(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.row_limit
 
     @row_limit.setter
@@ -2364,6 +2641,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def default_credential_guid(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.default_credential_guid
 
     @default_credential_guid.setter
@@ -2374,6 +2653,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def connector_icon(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.connector_icon
 
     @connector_icon.setter
@@ -2384,6 +2665,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def connector_image(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.connector_image
 
     @connector_image.setter
@@ -2394,6 +2677,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def source_logo(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_logo
 
     @source_logo.setter
@@ -2404,6 +2689,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def is_sample_data_preview_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_sample_data_preview_enabled
 
     @is_sample_data_preview_enabled.setter
@@ -2416,6 +2703,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def popularity_insights_timeframe(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.popularity_insights_timeframe
 
     @popularity_insights_timeframe.setter
@@ -2428,6 +2717,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def has_popularity_insights(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.has_popularity_insights
 
     @has_popularity_insights.setter
@@ -2438,6 +2729,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def connection_dbt_environments(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.connection_dbt_environments
 
     @connection_dbt_environments.setter
@@ -2450,6 +2743,8 @@ class Connection(Asset, type_name="Connection"):
 
     @property
     def connection_s_s_o_credential_guid(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.connection_s_s_o_credential_guid
 
     @connection_s_s_o_credential_guid.setter
@@ -2601,6 +2896,8 @@ class Process(Asset, type_name="Process"):
 
     @property
     def inputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.inputs
 
     @inputs.setter
@@ -2611,6 +2908,8 @@ class Process(Asset, type_name="Process"):
 
     @property
     def outputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.outputs
 
     @outputs.setter
@@ -2621,6 +2920,8 @@ class Process(Asset, type_name="Process"):
 
     @property
     def code(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.code
 
     @code.setter
@@ -2631,6 +2932,8 @@ class Process(Asset, type_name="Process"):
 
     @property
     def sql(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql
 
     @sql.setter
@@ -2641,6 +2944,8 @@ class Process(Asset, type_name="Process"):
 
     @property
     def ast(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.ast
 
     @ast.setter
@@ -2651,6 +2956,8 @@ class Process(Asset, type_name="Process"):
 
     @property
     def column_processes(self) -> Optional[list[ColumnProcess]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_processes
 
     @column_processes.setter
@@ -2789,6 +3096,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def short_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.short_description
 
     @short_description.setter
@@ -2799,6 +3108,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def long_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.long_description
 
     @long_description.setter
@@ -2809,6 +3120,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def additional_attributes(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.additional_attributes
 
     @additional_attributes.setter
@@ -2819,6 +3132,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.terms
 
     @terms.setter
@@ -2829,6 +3144,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def anchor(self) -> AtlasGlossary:
+        if self.attributes is None:
+            return None
         return self.attributes.anchor
 
     @anchor.setter
@@ -2839,6 +3156,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def parent_category(self) -> Optional[AtlasGlossaryCategory]:
+        if self.attributes is None:
+            return None
         return self.attributes.parent_category
 
     @parent_category.setter
@@ -2849,6 +3168,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @property
     def children_categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        if self.attributes is None:
+            return None
         return self.attributes.children_categories
 
     @children_categories.setter
@@ -2955,6 +3276,8 @@ class Badge(Asset, type_name="Badge"):
 
     @property
     def badge_conditions(self) -> Optional[list[BadgeCondition]]:
+        if self.attributes is None:
+            return None
         return self.attributes.badge_conditions
 
     @badge_conditions.setter
@@ -2965,6 +3288,8 @@ class Badge(Asset, type_name="Badge"):
 
     @property
     def badge_metadata_attribute(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.badge_metadata_attribute
 
     @badge_metadata_attribute.setter
@@ -3060,6 +3385,8 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def is_access_control_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_access_control_enabled
 
     @is_access_control_enabled.setter
@@ -3070,6 +3397,8 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def deny_custom_metadata_guids(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.deny_custom_metadata_guids
 
     @deny_custom_metadata_guids.setter
@@ -3082,6 +3411,8 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def deny_asset_tabs(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.deny_asset_tabs
 
     @deny_asset_tabs.setter
@@ -3092,6 +3423,8 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def channel_link(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.channel_link
 
     @channel_link.setter
@@ -3102,6 +3435,8 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     @property
     def policies(self) -> Optional[list[AuthPolicy]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policies
 
     @policies.setter
@@ -3155,6 +3490,8 @@ class Namespace(Asset, type_name="Namespace"):
 
     @property
     def children_queries(self) -> Optional[list[Query]]:
+        if self.attributes is None:
+            return None
         return self.attributes.children_queries
 
     @children_queries.setter
@@ -3165,6 +3502,8 @@ class Namespace(Asset, type_name="Namespace"):
 
     @property
     def children_folders(self) -> Optional[list[Folder]]:
+        if self.attributes is None:
+            return None
         return self.attributes.children_folders
 
     @children_folders.setter
@@ -3211,6 +3550,8 @@ class Catalog(Asset, type_name="Catalog"):
 
     @property
     def input_to_processes(self) -> Optional[list[Process]]:
+        if self.attributes is None:
+            return None
         return self.attributes.input_to_processes
 
     @input_to_processes.setter
@@ -3221,6 +3562,8 @@ class Catalog(Asset, type_name="Catalog"):
 
     @property
     def output_from_processes(self) -> Optional[list[Process]]:
+        if self.attributes is None:
+            return None
         return self.attributes.output_from_processes
 
     @output_from_processes.setter
@@ -3272,6 +3615,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def short_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.short_description
 
     @short_description.setter
@@ -3282,6 +3627,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def long_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.long_description
 
     @long_description.setter
@@ -3292,6 +3639,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def language(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.language
 
     @language.setter
@@ -3302,6 +3651,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def usage(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.usage
 
     @usage.setter
@@ -3312,6 +3663,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def additional_attributes(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.additional_attributes
 
     @additional_attributes.setter
@@ -3322,6 +3675,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.terms
 
     @terms.setter
@@ -3332,6 +3687,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @property
     def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        if self.attributes is None:
+            return None
         return self.attributes.categories
 
     @categories.setter
@@ -3427,6 +3784,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_type(self) -> Optional[AuthPolicyType]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_type
 
     @policy_type.setter
@@ -3437,6 +3796,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_service_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_service_name
 
     @policy_service_name.setter
@@ -3447,6 +3808,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_category
 
     @policy_category.setter
@@ -3457,6 +3820,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_sub_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_sub_category
 
     @policy_sub_category.setter
@@ -3467,6 +3832,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_users(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_users
 
     @policy_users.setter
@@ -3477,6 +3844,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_groups(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_groups
 
     @policy_groups.setter
@@ -3487,6 +3856,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_roles(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_roles
 
     @policy_roles.setter
@@ -3497,6 +3868,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_actions(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_actions
 
     @policy_actions.setter
@@ -3507,6 +3880,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_resources(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_resources
 
     @policy_resources.setter
@@ -3517,6 +3892,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_resource_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_resource_category
 
     @policy_resource_category.setter
@@ -3527,6 +3904,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_priority(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_priority
 
     @policy_priority.setter
@@ -3537,6 +3916,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def is_policy_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_policy_enabled
 
     @is_policy_enabled.setter
@@ -3547,6 +3928,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_mask_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_mask_type
 
     @policy_mask_type.setter
@@ -3557,6 +3940,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_validity_schedule(self) -> Optional[list[AuthPolicyValiditySchedule]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_validity_schedule
 
     @policy_validity_schedule.setter
@@ -3569,6 +3954,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_resource_signature(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_resource_signature
 
     @policy_resource_signature.setter
@@ -3579,6 +3966,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_delegate_admin(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_delegate_admin
 
     @policy_delegate_admin.setter
@@ -3589,6 +3978,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def policy_conditions(self) -> Optional[list[AuthPolicyCondition]]:
+        if self.attributes is None:
+            return None
         return self.attributes.policy_conditions
 
     @policy_conditions.setter
@@ -3599,6 +3990,8 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @property
     def access_control(self) -> Optional[AccessControl]:
+        if self.attributes is None:
+            return None
         return self.attributes.access_control
 
     @access_control.setter
@@ -3732,6 +4125,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def short_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.short_description
 
     @short_description.setter
@@ -3742,6 +4137,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def long_description(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.long_description
 
     @long_description.setter
@@ -3752,6 +4149,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def examples(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.examples
 
     @examples.setter
@@ -3762,6 +4161,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def abbreviation(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.abbreviation
 
     @abbreviation.setter
@@ -3772,6 +4173,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def usage(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.usage
 
     @usage.setter
@@ -3782,6 +4185,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def additional_attributes(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.additional_attributes
 
     @additional_attributes.setter
@@ -3792,6 +4197,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.translation_terms
 
     @translation_terms.setter
@@ -3802,6 +4209,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.valid_values_for
 
     @valid_values_for.setter
@@ -3812,6 +4221,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.synonyms
 
     @synonyms.setter
@@ -3822,6 +4233,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.replaced_by
 
     @replaced_by.setter
@@ -3832,6 +4245,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def valid_values(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.valid_values
 
     @valid_values.setter
@@ -3842,6 +4257,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.replacement_terms
 
     @replacement_terms.setter
@@ -3852,6 +4269,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def see_also(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.see_also
 
     @see_also.setter
@@ -3862,6 +4281,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.translated_terms
 
     @translated_terms.setter
@@ -3872,6 +4293,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def is_a(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_a
 
     @is_a.setter
@@ -3882,6 +4305,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def anchor(self) -> AtlasGlossary:
+        if self.attributes is None:
+            return None
         return self.attributes.anchor
 
     @anchor.setter
@@ -3892,6 +4317,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def antonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.antonyms
 
     @antonyms.setter
@@ -3902,6 +4329,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def assigned_entities(self) -> Optional[list[Referenceable]]:
+        if self.attributes is None:
+            return None
         return self.attributes.assigned_entities
 
     @assigned_entities.setter
@@ -3912,6 +4341,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def classifies(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.classifies
 
     @classifies.setter
@@ -3922,6 +4353,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def categories(self) -> Optional[list[AtlasGlossaryCategory]]:
+        if self.attributes is None:
+            return None
         return self.attributes.categories
 
     @categories.setter
@@ -3932,6 +4365,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def preferred_to_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.preferred_to_terms
 
     @preferred_to_terms.setter
@@ -3942,6 +4377,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @property
     def preferred_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        if self.attributes is None:
+            return None
         return self.attributes.preferred_terms
 
     @preferred_terms.setter
@@ -4087,6 +4524,13 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
         )
 
+    def trim_to_required(self) -> AtlasGlossaryTerm:
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
+
     @classmethod
     def create_for_modification(
         cls: type[SelfAsset],
@@ -4125,6 +4569,8 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def auth_service_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.auth_service_type
 
     @auth_service_type.setter
@@ -4135,6 +4581,8 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def tag_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_service
 
     @tag_service.setter
@@ -4145,6 +4593,8 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def auth_service_is_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.auth_service_is_enabled
 
     @auth_service_is_enabled.setter
@@ -4155,6 +4605,8 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def auth_service_config(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.auth_service_config
 
     @auth_service_config.setter
@@ -4165,6 +4617,8 @@ class AuthService(Asset, type_name="AuthService"):
 
     @property
     def auth_service_policy_last_sync(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.auth_service_policy_last_sync
 
     @auth_service_policy_last_sync.setter
@@ -4258,6 +4712,8 @@ class BIProcess(Process):
 
     @property
     def outputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.outputs
 
     @outputs.setter
@@ -4268,6 +4724,8 @@ class BIProcess(Process):
 
     @property
     def inputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.inputs
 
     @inputs.setter
@@ -4315,6 +4773,8 @@ class ColumnProcess(Process):
 
     @property
     def outputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.outputs
 
     @outputs.setter
@@ -4325,6 +4785,8 @@ class ColumnProcess(Process):
 
     @property
     def process(self) -> Optional[Process]:
+        if self.attributes is None:
+            return None
         return self.attributes.process
 
     @process.setter
@@ -4335,6 +4797,8 @@ class ColumnProcess(Process):
 
     @property
     def inputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.inputs
 
     @inputs.setter
@@ -4385,6 +4849,8 @@ class Persona(AccessControl):
 
     @property
     def persona_groups(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.persona_groups
 
     @persona_groups.setter
@@ -4395,6 +4861,8 @@ class Persona(AccessControl):
 
     @property
     def persona_users(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.persona_users
 
     @persona_users.setter
@@ -4405,6 +4873,8 @@ class Persona(AccessControl):
 
     @property
     def role_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.role_id
 
     @role_id.setter
@@ -4451,6 +4921,8 @@ class Purpose(AccessControl):
 
     @property
     def purpose_classifications(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.purpose_classifications
 
     @purpose_classifications.setter
@@ -4494,6 +4966,8 @@ class Collection(Namespace):
 
     @property
     def icon(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.icon
 
     @icon.setter
@@ -4504,6 +4978,8 @@ class Collection(Namespace):
 
     @property
     def icon_type(self) -> Optional[IconType]:
+        if self.attributes is None:
+            return None
         return self.attributes.icon_type
 
     @icon_type.setter
@@ -4547,6 +5023,8 @@ class Folder(Namespace):
 
     @property
     def parent_qualified_name(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.parent_qualified_name
 
     @parent_qualified_name.setter
@@ -4557,6 +5035,8 @@ class Folder(Namespace):
 
     @property
     def collection_qualified_name(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.collection_qualified_name
 
     @collection_qualified_name.setter
@@ -4567,6 +5047,8 @@ class Folder(Namespace):
 
     @property
     def parent(self) -> Namespace:
+        if self.attributes is None:
+            return None
         return self.attributes.parent
 
     @parent.setter
@@ -4725,6 +5207,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_alias
 
     @dbt_alias.setter
@@ -4735,6 +5219,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_meta(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_meta
 
     @dbt_meta.setter
@@ -4745,6 +5231,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_unique_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_unique_id
 
     @dbt_unique_id.setter
@@ -4755,6 +5243,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_account_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_account_name
 
     @dbt_account_name.setter
@@ -4765,6 +5255,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_project_name
 
     @dbt_project_name.setter
@@ -4775,6 +5267,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_package_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_package_name
 
     @dbt_package_name.setter
@@ -4785,6 +5279,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_name
 
     @dbt_job_name.setter
@@ -4795,6 +5291,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_schedule(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule
 
     @dbt_job_schedule.setter
@@ -4805,6 +5303,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_status
 
     @dbt_job_status.setter
@@ -4815,6 +5315,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule_cron_humanized
 
     @dbt_job_schedule_cron_humanized.setter
@@ -4829,6 +5331,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_last_run
 
     @dbt_job_last_run.setter
@@ -4839,6 +5343,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_next_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run
 
     @dbt_job_next_run.setter
@@ -4849,6 +5355,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run_humanized
 
     @dbt_job_next_run_humanized.setter
@@ -4859,6 +5367,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_environment_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_name
 
     @dbt_environment_name.setter
@@ -4869,6 +5379,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_dbt_version
 
     @dbt_environment_dbt_version.setter
@@ -4879,6 +5391,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_tags(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_tags
 
     @dbt_tags.setter
@@ -4889,6 +5403,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_connection_context
 
     @dbt_connection_context.setter
@@ -4899,6 +5415,8 @@ class Dbt(Catalog):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_semantic_layer_proxy_url
 
     @dbt_semantic_layer_proxy_url.setter
@@ -4985,6 +5503,8 @@ class Resource(Catalog):
 
     @property
     def link(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.link
 
     @link.setter
@@ -4995,6 +5515,8 @@ class Resource(Catalog):
 
     @property
     def is_global(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_global
 
     @is_global.setter
@@ -5005,6 +5527,8 @@ class Resource(Catalog):
 
     @property
     def reference(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.reference
 
     @reference.setter
@@ -5015,6 +5539,8 @@ class Resource(Catalog):
 
     @property
     def resource_metadata(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.resource_metadata
 
     @resource_metadata.setter
@@ -5084,6 +5610,8 @@ class API(Catalog):
 
     @property
     def api_spec_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_type
 
     @api_spec_type.setter
@@ -5094,6 +5622,8 @@ class API(Catalog):
 
     @property
     def api_spec_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_version
 
     @api_spec_version.setter
@@ -5104,6 +5634,8 @@ class API(Catalog):
 
     @property
     def api_spec_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_name
 
     @api_spec_name.setter
@@ -5114,6 +5646,8 @@ class API(Catalog):
 
     @property
     def api_spec_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_qualified_name
 
     @api_spec_qualified_name.setter
@@ -5124,6 +5658,8 @@ class API(Catalog):
 
     @property
     def api_external_docs(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_external_docs
 
     @api_external_docs.setter
@@ -5134,6 +5670,8 @@ class API(Catalog):
 
     @property
     def api_is_auth_optional(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_is_auth_optional
 
     @api_is_auth_optional.setter
@@ -5190,6 +5728,8 @@ class Tag(Catalog):
 
     @property
     def tag_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_id
 
     @tag_id.setter
@@ -5200,6 +5740,8 @@ class Tag(Catalog):
 
     @property
     def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_attributes
 
     @tag_attributes.setter
@@ -5210,6 +5752,8 @@ class Tag(Catalog):
 
     @property
     def tag_allowed_values(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_allowed_values
 
     @tag_allowed_values.setter
@@ -5220,6 +5764,8 @@ class Tag(Catalog):
 
     @property
     def mapped_classification_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mapped_classification_name
 
     @mapped_classification_name.setter
@@ -5286,6 +5832,8 @@ class SQL(Catalog):
 
     @property
     def query_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_count
 
     @query_count.setter
@@ -5296,6 +5844,8 @@ class SQL(Catalog):
 
     @property
     def query_user_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_user_count
 
     @query_user_count.setter
@@ -5306,6 +5856,8 @@ class SQL(Catalog):
 
     @property
     def query_user_map(self) -> Optional[dict[str, int]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_user_map
 
     @query_user_map.setter
@@ -5316,6 +5868,8 @@ class SQL(Catalog):
 
     @property
     def query_count_updated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_count_updated_at
 
     @query_count_updated_at.setter
@@ -5326,6 +5880,8 @@ class SQL(Catalog):
 
     @property
     def database_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.database_name
 
     @database_name.setter
@@ -5336,6 +5892,8 @@ class SQL(Catalog):
 
     @property
     def database_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.database_qualified_name
 
     @database_qualified_name.setter
@@ -5346,6 +5904,8 @@ class SQL(Catalog):
 
     @property
     def schema_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.schema_name
 
     @schema_name.setter
@@ -5356,6 +5916,8 @@ class SQL(Catalog):
 
     @property
     def schema_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.schema_qualified_name
 
     @schema_qualified_name.setter
@@ -5366,6 +5928,8 @@ class SQL(Catalog):
 
     @property
     def table_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.table_name
 
     @table_name.setter
@@ -5376,6 +5940,8 @@ class SQL(Catalog):
 
     @property
     def table_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.table_qualified_name
 
     @table_qualified_name.setter
@@ -5386,6 +5952,8 @@ class SQL(Catalog):
 
     @property
     def view_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.view_name
 
     @view_name.setter
@@ -5396,6 +5964,8 @@ class SQL(Catalog):
 
     @property
     def view_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.view_qualified_name
 
     @view_qualified_name.setter
@@ -5406,6 +5976,8 @@ class SQL(Catalog):
 
     @property
     def is_profiled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_profiled
 
     @is_profiled.setter
@@ -5416,6 +5988,8 @@ class SQL(Catalog):
 
     @property
     def last_profiled_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.last_profiled_at
 
     @last_profiled_at.setter
@@ -5426,6 +6000,8 @@ class SQL(Catalog):
 
     @property
     def dbt_sources(self) -> Optional[list[DbtSource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_sources
 
     @dbt_sources.setter
@@ -5436,6 +6012,8 @@ class SQL(Catalog):
 
     @property
     def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_dbt_models
 
     @sql_dbt_models.setter
@@ -5446,6 +6024,8 @@ class SQL(Catalog):
 
     @property
     def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_dbt_sources
 
     @sql_dbt_sources.setter
@@ -5456,6 +6036,8 @@ class SQL(Catalog):
 
     @property
     def dbt_models(self) -> Optional[list[DbtModel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_models
 
     @dbt_models.setter
@@ -5544,6 +6126,8 @@ class Google(Cloud):
 
     @property
     def google_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_service
 
     @google_service.setter
@@ -5554,6 +6138,8 @@ class Google(Cloud):
 
     @property
     def google_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_name
 
     @google_project_name.setter
@@ -5564,6 +6150,8 @@ class Google(Cloud):
 
     @property
     def google_project_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_id
 
     @google_project_id.setter
@@ -5574,6 +6162,8 @@ class Google(Cloud):
 
     @property
     def google_project_number(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_number
 
     @google_project_number.setter
@@ -5584,6 +6174,8 @@ class Google(Cloud):
 
     @property
     def google_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location
 
     @google_location.setter
@@ -5594,6 +6186,8 @@ class Google(Cloud):
 
     @property
     def google_location_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location_type
 
     @google_location_type.setter
@@ -5604,6 +6198,8 @@ class Google(Cloud):
 
     @property
     def google_labels(self) -> Optional[list[GoogleLabel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_labels
 
     @google_labels.setter
@@ -5614,6 +6210,8 @@ class Google(Cloud):
 
     @property
     def google_tags(self) -> Optional[list[GoogleTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_tags
 
     @google_tags.setter
@@ -5680,6 +6278,8 @@ class Azure(Cloud):
 
     @property
     def azure_resource_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.azure_resource_id
 
     @azure_resource_id.setter
@@ -5690,6 +6290,8 @@ class Azure(Cloud):
 
     @property
     def azure_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.azure_location
 
     @azure_location.setter
@@ -5700,6 +6302,8 @@ class Azure(Cloud):
 
     @property
     def adls_account_secondary_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_secondary_location
 
     @adls_account_secondary_location.setter
@@ -5714,6 +6318,8 @@ class Azure(Cloud):
 
     @property
     def azure_tags(self) -> Optional[list[AzureTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.azure_tags
 
     @azure_tags.setter
@@ -5773,6 +6379,8 @@ class AWS(Cloud):
 
     @property
     def aws_arn(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_arn
 
     @aws_arn.setter
@@ -5783,6 +6391,8 @@ class AWS(Cloud):
 
     @property
     def aws_partition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_partition
 
     @aws_partition.setter
@@ -5793,6 +6403,8 @@ class AWS(Cloud):
 
     @property
     def aws_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_service
 
     @aws_service.setter
@@ -5803,6 +6415,8 @@ class AWS(Cloud):
 
     @property
     def aws_region(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_region
 
     @aws_region.setter
@@ -5813,6 +6427,8 @@ class AWS(Cloud):
 
     @property
     def aws_account_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_account_id
 
     @aws_account_id.setter
@@ -5823,6 +6439,8 @@ class AWS(Cloud):
 
     @property
     def aws_resource_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_resource_id
 
     @aws_resource_id.setter
@@ -5833,6 +6451,8 @@ class AWS(Cloud):
 
     @property
     def aws_owner_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_owner_name
 
     @aws_owner_name.setter
@@ -5843,6 +6463,8 @@ class AWS(Cloud):
 
     @property
     def aws_owner_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_owner_id
 
     @aws_owner_id.setter
@@ -5853,6 +6475,8 @@ class AWS(Cloud):
 
     @property
     def aws_tags(self) -> Optional[list[AwsTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_tags
 
     @aws_tags.setter
@@ -5932,6 +6556,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_column_process_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_column_process_job_status
 
     @dbt_column_process_job_status.setter
@@ -5944,6 +6570,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_alias
 
     @dbt_alias.setter
@@ -5954,6 +6582,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_meta(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_meta
 
     @dbt_meta.setter
@@ -5964,6 +6594,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_unique_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_unique_id
 
     @dbt_unique_id.setter
@@ -5974,6 +6606,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_account_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_account_name
 
     @dbt_account_name.setter
@@ -5984,6 +6618,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_project_name
 
     @dbt_project_name.setter
@@ -5994,6 +6630,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_package_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_package_name
 
     @dbt_package_name.setter
@@ -6004,6 +6642,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_name
 
     @dbt_job_name.setter
@@ -6014,6 +6654,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_schedule(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule
 
     @dbt_job_schedule.setter
@@ -6024,6 +6666,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_status
 
     @dbt_job_status.setter
@@ -6034,6 +6678,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule_cron_humanized
 
     @dbt_job_schedule_cron_humanized.setter
@@ -6048,6 +6694,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_last_run
 
     @dbt_job_last_run.setter
@@ -6058,6 +6706,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_next_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run
 
     @dbt_job_next_run.setter
@@ -6068,6 +6718,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run_humanized
 
     @dbt_job_next_run_humanized.setter
@@ -6078,6 +6730,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_environment_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_name
 
     @dbt_environment_name.setter
@@ -6088,6 +6742,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_dbt_version
 
     @dbt_environment_dbt_version.setter
@@ -6098,6 +6754,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_tags(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_tags
 
     @dbt_tags.setter
@@ -6108,6 +6766,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_connection_context
 
     @dbt_connection_context.setter
@@ -6118,6 +6778,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_semantic_layer_proxy_url
 
     @dbt_semantic_layer_proxy_url.setter
@@ -6128,6 +6790,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def inputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.inputs
 
     @inputs.setter
@@ -6138,6 +6802,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def outputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.outputs
 
     @outputs.setter
@@ -6148,6 +6814,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def code(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.code
 
     @code.setter
@@ -6158,6 +6826,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def sql(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql
 
     @sql.setter
@@ -6168,6 +6838,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def ast(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.ast
 
     @ast.setter
@@ -6178,6 +6850,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def process(self) -> Optional[Process]:
+        if self.attributes is None:
+            return None
         return self.attributes.process
 
     @process.setter
@@ -6188,6 +6862,8 @@ class DbtColumnProcess(Dbt):
 
     @property
     def column_processes(self) -> Optional[list[ColumnProcess]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_processes
 
     @column_processes.setter
@@ -6314,6 +6990,8 @@ class S3(ObjectStore):
 
     @property
     def s3_e_tag(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_e_tag
 
     @s3_e_tag.setter
@@ -6324,6 +7002,8 @@ class S3(ObjectStore):
 
     @property
     def s3_encryption(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_encryption
 
     @s3_encryption.setter
@@ -6334,6 +7014,8 @@ class S3(ObjectStore):
 
     @property
     def aws_arn(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_arn
 
     @aws_arn.setter
@@ -6344,6 +7026,8 @@ class S3(ObjectStore):
 
     @property
     def aws_partition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_partition
 
     @aws_partition.setter
@@ -6354,6 +7038,8 @@ class S3(ObjectStore):
 
     @property
     def aws_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_service
 
     @aws_service.setter
@@ -6364,6 +7050,8 @@ class S3(ObjectStore):
 
     @property
     def aws_region(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_region
 
     @aws_region.setter
@@ -6374,6 +7062,8 @@ class S3(ObjectStore):
 
     @property
     def aws_account_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_account_id
 
     @aws_account_id.setter
@@ -6384,6 +7074,8 @@ class S3(ObjectStore):
 
     @property
     def aws_resource_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_resource_id
 
     @aws_resource_id.setter
@@ -6394,6 +7086,8 @@ class S3(ObjectStore):
 
     @property
     def aws_owner_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_owner_name
 
     @aws_owner_name.setter
@@ -6404,6 +7098,8 @@ class S3(ObjectStore):
 
     @property
     def aws_owner_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_owner_id
 
     @aws_owner_id.setter
@@ -6414,6 +7110,8 @@ class S3(ObjectStore):
 
     @property
     def aws_tags(self) -> Optional[list[AwsTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.aws_tags
 
     @aws_tags.setter
@@ -6474,6 +7172,8 @@ class ADLS(ObjectStore):
 
     @property
     def adls_account_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_qualified_name
 
     @adls_account_qualified_name.setter
@@ -6484,6 +7184,8 @@ class ADLS(ObjectStore):
 
     @property
     def azure_resource_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.azure_resource_id
 
     @azure_resource_id.setter
@@ -6494,6 +7196,8 @@ class ADLS(ObjectStore):
 
     @property
     def azure_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.azure_location
 
     @azure_location.setter
@@ -6504,6 +7208,8 @@ class ADLS(ObjectStore):
 
     @property
     def adls_account_secondary_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_secondary_location
 
     @adls_account_secondary_location.setter
@@ -6518,6 +7224,8 @@ class ADLS(ObjectStore):
 
     @property
     def azure_tags(self) -> Optional[list[AzureTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.azure_tags
 
     @azure_tags.setter
@@ -6587,6 +7295,8 @@ class GCS(Google):
 
     @property
     def gcs_storage_class(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_storage_class
 
     @gcs_storage_class.setter
@@ -6597,6 +7307,8 @@ class GCS(Google):
 
     @property
     def gcs_encryption_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_encryption_type
 
     @gcs_encryption_type.setter
@@ -6607,6 +7319,8 @@ class GCS(Google):
 
     @property
     def gcs_e_tag(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_e_tag
 
     @gcs_e_tag.setter
@@ -6617,6 +7331,8 @@ class GCS(Google):
 
     @property
     def gcs_requester_pays(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_requester_pays
 
     @gcs_requester_pays.setter
@@ -6627,6 +7343,8 @@ class GCS(Google):
 
     @property
     def gcs_access_control(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_access_control
 
     @gcs_access_control.setter
@@ -6637,6 +7355,8 @@ class GCS(Google):
 
     @property
     def gcs_meta_generation_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_meta_generation_id
 
     @gcs_meta_generation_id.setter
@@ -6647,6 +7367,8 @@ class GCS(Google):
 
     @property
     def google_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_service
 
     @google_service.setter
@@ -6657,6 +7379,8 @@ class GCS(Google):
 
     @property
     def google_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_name
 
     @google_project_name.setter
@@ -6667,6 +7391,8 @@ class GCS(Google):
 
     @property
     def google_project_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_id
 
     @google_project_id.setter
@@ -6677,6 +7403,8 @@ class GCS(Google):
 
     @property
     def google_project_number(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_number
 
     @google_project_number.setter
@@ -6687,6 +7415,8 @@ class GCS(Google):
 
     @property
     def google_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location
 
     @google_location.setter
@@ -6697,6 +7427,8 @@ class GCS(Google):
 
     @property
     def google_location_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location_type
 
     @google_location_type.setter
@@ -6707,6 +7439,8 @@ class GCS(Google):
 
     @property
     def google_labels(self) -> Optional[list[GoogleLabel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_labels
 
     @google_labels.setter
@@ -6717,6 +7451,8 @@ class GCS(Google):
 
     @property
     def google_tags(self) -> Optional[list[GoogleTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_tags
 
     @google_tags.setter
@@ -6727,6 +7463,8 @@ class GCS(Google):
 
     @property
     def input_to_processes(self) -> Optional[list[Process]]:
+        if self.attributes is None:
+            return None
         return self.attributes.input_to_processes
 
     @input_to_processes.setter
@@ -6737,6 +7475,8 @@ class GCS(Google):
 
     @property
     def output_from_processes(self) -> Optional[list[Process]]:
+        if self.attributes is None:
+            return None
         return self.attributes.output_from_processes
 
     @output_from_processes.setter
@@ -6823,6 +7563,8 @@ class MonteCarlo(DataQuality):
 
     @property
     def mc_labels(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_labels
 
     @mc_labels.setter
@@ -6833,6 +7575,8 @@ class MonteCarlo(DataQuality):
 
     @property
     def mc_asset_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_asset_qualified_names
 
     @mc_asset_qualified_names.setter
@@ -6882,6 +7626,8 @@ class Metric(DataQuality):
 
     @property
     def metric_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_type
 
     @metric_type.setter
@@ -6892,6 +7638,8 @@ class Metric(DataQuality):
 
     @property
     def metric_s_q_l(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_s_q_l
 
     @metric_s_q_l.setter
@@ -6902,6 +7650,8 @@ class Metric(DataQuality):
 
     @property
     def metric_filters(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_filters
 
     @metric_filters.setter
@@ -6912,6 +7662,8 @@ class Metric(DataQuality):
 
     @property
     def metric_time_grains(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_time_grains
 
     @metric_time_grains.setter
@@ -6922,6 +7674,8 @@ class Metric(DataQuality):
 
     @property
     def assets(self) -> Optional[list[Asset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.assets
 
     @assets.setter
@@ -6932,6 +7686,8 @@ class Metric(DataQuality):
 
     @property
     def metric_dimension_columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_dimension_columns
 
     @metric_dimension_columns.setter
@@ -6944,6 +7700,8 @@ class Metric(DataQuality):
 
     @property
     def metric_timestamp_column(self) -> Optional[Column]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_timestamp_column
 
     @metric_timestamp_column.setter
@@ -7003,6 +7761,8 @@ class Preset(BI):
 
     @property
     def preset_workspace_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_id
 
     @preset_workspace_id.setter
@@ -7013,6 +7773,8 @@ class Preset(BI):
 
     @property
     def preset_workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_qualified_name
 
     @preset_workspace_qualified_name.setter
@@ -7027,6 +7789,8 @@ class Preset(BI):
 
     @property
     def preset_dashboard_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_id
 
     @preset_dashboard_id.setter
@@ -7037,6 +7801,8 @@ class Preset(BI):
 
     @property
     def preset_dashboard_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_qualified_name
 
     @preset_dashboard_qualified_name.setter
@@ -7100,6 +7866,8 @@ class Mode(BI):
 
     @property
     def mode_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_id
 
     @mode_id.setter
@@ -7110,6 +7878,8 @@ class Mode(BI):
 
     @property
     def mode_token(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_token
 
     @mode_token.setter
@@ -7120,6 +7890,8 @@ class Mode(BI):
 
     @property
     def mode_workspace_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_workspace_name
 
     @mode_workspace_name.setter
@@ -7130,6 +7902,8 @@ class Mode(BI):
 
     @property
     def mode_workspace_username(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_workspace_username
 
     @mode_workspace_username.setter
@@ -7140,6 +7914,8 @@ class Mode(BI):
 
     @property
     def mode_workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_workspace_qualified_name
 
     @mode_workspace_qualified_name.setter
@@ -7152,6 +7928,8 @@ class Mode(BI):
 
     @property
     def mode_report_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_report_name
 
     @mode_report_name.setter
@@ -7162,6 +7940,8 @@ class Mode(BI):
 
     @property
     def mode_report_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_report_qualified_name
 
     @mode_report_qualified_name.setter
@@ -7172,6 +7952,8 @@ class Mode(BI):
 
     @property
     def mode_query_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_query_name
 
     @mode_query_name.setter
@@ -7182,6 +7964,8 @@ class Mode(BI):
 
     @property
     def mode_query_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_query_qualified_name
 
     @mode_query_qualified_name.setter
@@ -7249,6 +8033,8 @@ class Sigma(BI):
 
     @property
     def sigma_workbook_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_workbook_qualified_name
 
     @sigma_workbook_qualified_name.setter
@@ -7261,6 +8047,8 @@ class Sigma(BI):
 
     @property
     def sigma_workbook_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_workbook_name
 
     @sigma_workbook_name.setter
@@ -7271,6 +8059,8 @@ class Sigma(BI):
 
     @property
     def sigma_page_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_page_qualified_name
 
     @sigma_page_qualified_name.setter
@@ -7281,6 +8071,8 @@ class Sigma(BI):
 
     @property
     def sigma_page_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_page_name
 
     @sigma_page_name.setter
@@ -7291,6 +8083,8 @@ class Sigma(BI):
 
     @property
     def sigma_data_element_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_qualified_name
 
     @sigma_data_element_qualified_name.setter
@@ -7305,6 +8099,8 @@ class Sigma(BI):
 
     @property
     def sigma_data_element_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_name
 
     @sigma_data_element_name.setter
@@ -7400,6 +8196,8 @@ class Redash(BI):
 
     @property
     def redash_is_published(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_is_published
 
     @redash_is_published.setter
@@ -7451,6 +8249,8 @@ class DataStudio(Google):
 
     @property
     def google_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_service
 
     @google_service.setter
@@ -7461,6 +8261,8 @@ class DataStudio(Google):
 
     @property
     def google_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_name
 
     @google_project_name.setter
@@ -7471,6 +8273,8 @@ class DataStudio(Google):
 
     @property
     def google_project_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_id
 
     @google_project_id.setter
@@ -7481,6 +8285,8 @@ class DataStudio(Google):
 
     @property
     def google_project_number(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_number
 
     @google_project_number.setter
@@ -7491,6 +8297,8 @@ class DataStudio(Google):
 
     @property
     def google_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location
 
     @google_location.setter
@@ -7501,6 +8309,8 @@ class DataStudio(Google):
 
     @property
     def google_location_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location_type
 
     @google_location_type.setter
@@ -7511,6 +8321,8 @@ class DataStudio(Google):
 
     @property
     def google_labels(self) -> Optional[list[GoogleLabel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_labels
 
     @google_labels.setter
@@ -7521,6 +8333,8 @@ class DataStudio(Google):
 
     @property
     def google_tags(self) -> Optional[list[GoogleTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_tags
 
     @google_tags.setter
@@ -7531,6 +8345,8 @@ class DataStudio(Google):
 
     @property
     def input_to_processes(self) -> Optional[list[Process]]:
+        if self.attributes is None:
+            return None
         return self.attributes.input_to_processes
 
     @input_to_processes.setter
@@ -7541,6 +8357,8 @@ class DataStudio(Google):
 
     @property
     def output_from_processes(self) -> Optional[list[Process]]:
+        if self.attributes is None:
+            return None
         return self.attributes.output_from_processes
 
     @output_from_processes.setter
@@ -7611,6 +8429,8 @@ class Metabase(BI):
 
     @property
     def metabase_collection_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_collection_name
 
     @metabase_collection_name.setter
@@ -7621,6 +8441,8 @@ class Metabase(BI):
 
     @property
     def metabase_collection_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_collection_qualified_name
 
     @metabase_collection_qualified_name.setter
@@ -7672,6 +8494,8 @@ class QuickSight(BI):
 
     @property
     def quick_sight_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_id
 
     @quick_sight_id.setter
@@ -7682,6 +8506,8 @@ class QuickSight(BI):
 
     @property
     def quick_sight_sheet_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_sheet_id
 
     @quick_sight_sheet_id.setter
@@ -7692,6 +8518,8 @@ class QuickSight(BI):
 
     @property
     def quick_sight_sheet_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_sheet_name
 
     @quick_sight_sheet_name.setter
@@ -7741,6 +8569,8 @@ class Thoughtspot(BI):
 
     @property
     def thoughtspot_chart_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.thoughtspot_chart_type
 
     @thoughtspot_chart_type.setter
@@ -7751,6 +8581,8 @@ class Thoughtspot(BI):
 
     @property
     def thoughtspot_question_text(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.thoughtspot_question_text
 
     @thoughtspot_question_text.setter
@@ -7799,6 +8631,8 @@ class PowerBI(BI):
 
     @property
     def power_b_i_is_hidden(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_is_hidden
 
     @power_b_i_is_hidden.setter
@@ -7809,6 +8643,8 @@ class PowerBI(BI):
 
     @property
     def power_b_i_table_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_table_qualified_name
 
     @power_b_i_table_qualified_name.setter
@@ -7821,6 +8657,8 @@ class PowerBI(BI):
 
     @property
     def power_b_i_format_string(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_format_string
 
     @power_b_i_format_string.setter
@@ -7831,6 +8669,8 @@ class PowerBI(BI):
 
     @property
     def power_b_i_endorsement(self) -> Optional[PowerbiEndorsement]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_endorsement
 
     @power_b_i_endorsement.setter
@@ -7893,6 +8733,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project_qualified_name
 
     @micro_strategy_project_qualified_name.setter
@@ -7907,6 +8749,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project_name
 
     @micro_strategy_project_name.setter
@@ -7917,6 +8761,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_cube_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cube_qualified_names
 
     @micro_strategy_cube_qualified_names.setter
@@ -7931,6 +8777,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_cube_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cube_names
 
     @micro_strategy_cube_names.setter
@@ -7941,6 +8789,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_report_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_report_qualified_names
 
     @micro_strategy_report_qualified_names.setter
@@ -7955,6 +8805,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_report_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_report_names
 
     @micro_strategy_report_names.setter
@@ -7967,6 +8819,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_is_certified(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_is_certified
 
     @micro_strategy_is_certified.setter
@@ -7977,6 +8831,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_certified_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_certified_by
 
     @micro_strategy_certified_by.setter
@@ -7987,6 +8843,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_certified_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_certified_at
 
     @micro_strategy_certified_at.setter
@@ -7999,6 +8857,8 @@ class MicroStrategy(BI):
 
     @property
     def micro_strategy_location(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_location
 
     @micro_strategy_location.setter
@@ -8077,6 +8937,8 @@ class Qlik(BI):
 
     @property
     def qlik_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_id
 
     @qlik_id.setter
@@ -8087,6 +8949,8 @@ class Qlik(BI):
 
     @property
     def qlik_q_r_i(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_q_r_i
 
     @qlik_q_r_i.setter
@@ -8097,6 +8961,8 @@ class Qlik(BI):
 
     @property
     def qlik_space_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_space_id
 
     @qlik_space_id.setter
@@ -8107,6 +8973,8 @@ class Qlik(BI):
 
     @property
     def qlik_space_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_space_qualified_name
 
     @qlik_space_qualified_name.setter
@@ -8117,6 +8985,8 @@ class Qlik(BI):
 
     @property
     def qlik_app_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_app_id
 
     @qlik_app_id.setter
@@ -8127,6 +8997,8 @@ class Qlik(BI):
 
     @property
     def qlik_app_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_app_qualified_name
 
     @qlik_app_qualified_name.setter
@@ -8137,6 +9009,8 @@ class Qlik(BI):
 
     @property
     def qlik_owner_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_owner_id
 
     @qlik_owner_id.setter
@@ -8147,6 +9021,8 @@ class Qlik(BI):
 
     @property
     def qlik_is_published(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_is_published
 
     @qlik_is_published.setter
@@ -8201,6 +9077,8 @@ class Salesforce(SaaS):
 
     @property
     def organization_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.organization_qualified_name
 
     @organization_qualified_name.setter
@@ -8211,6 +9089,8 @@ class Salesforce(SaaS):
 
     @property
     def api_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_name
 
     @api_name.setter
@@ -8259,6 +9139,8 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_qualified_name
 
     @dbt_model_qualified_name.setter
@@ -8269,6 +9151,8 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_column_data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_column_data_type
 
     @dbt_model_column_data_type.setter
@@ -8279,6 +9163,8 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_column_order(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_column_order
 
     @dbt_model_column_order.setter
@@ -8289,6 +9175,8 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_column_sql_columns
 
     @dbt_model_column_sql_columns.setter
@@ -8301,6 +9189,8 @@ class DbtModelColumn(Dbt):
 
     @property
     def sql_column(self) -> Optional[Column]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_column
 
     @sql_column.setter
@@ -8311,6 +9201,8 @@ class DbtModelColumn(Dbt):
 
     @property
     def dbt_model(self) -> Optional[DbtModel]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model
 
     @dbt_model.setter
@@ -8384,6 +9276,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_status
 
     @dbt_status.setter
@@ -8394,6 +9288,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_error(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_error
 
     @dbt_error.setter
@@ -8404,6 +9300,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_raw_s_q_l(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_raw_s_q_l
 
     @dbt_raw_s_q_l.setter
@@ -8414,6 +9312,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_compiled_s_q_l(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_compiled_s_q_l
 
     @dbt_compiled_s_q_l.setter
@@ -8424,6 +9324,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_stats(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_stats
 
     @dbt_stats.setter
@@ -8434,6 +9336,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_materialization_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_materialization_type
 
     @dbt_materialization_type.setter
@@ -8444,6 +9348,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_compile_started_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_compile_started_at
 
     @dbt_model_compile_started_at.setter
@@ -8456,6 +9362,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_compile_completed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_compile_completed_at
 
     @dbt_model_compile_completed_at.setter
@@ -8468,6 +9376,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_execute_started_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_execute_started_at
 
     @dbt_model_execute_started_at.setter
@@ -8480,6 +9390,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_execute_completed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_execute_completed_at
 
     @dbt_model_execute_completed_at.setter
@@ -8492,6 +9404,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_execution_time(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_execution_time
 
     @dbt_model_execution_time.setter
@@ -8502,6 +9416,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_run_generated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_run_generated_at
 
     @dbt_model_run_generated_at.setter
@@ -8514,6 +9430,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_run_elapsed_time(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_run_elapsed_time
 
     @dbt_model_run_elapsed_time.setter
@@ -8524,6 +9442,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_metrics
 
     @dbt_metrics.setter
@@ -8534,6 +9454,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_sql_assets(self) -> Optional[list[SQL]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_sql_assets
 
     @dbt_model_sql_assets.setter
@@ -8544,6 +9466,8 @@ class DbtModel(Dbt):
 
     @property
     def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_columns
 
     @dbt_model_columns.setter
@@ -8554,6 +9478,8 @@ class DbtModel(Dbt):
 
     @property
     def sql_asset(self) -> Optional[SQL]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_asset
 
     @sql_asset.setter
@@ -8663,6 +9589,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_metric_filters(self) -> Optional[list[DbtMetricFilter]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_metric_filters
 
     @dbt_metric_filters.setter
@@ -8673,6 +9601,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_alias
 
     @dbt_alias.setter
@@ -8683,6 +9613,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_meta(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_meta
 
     @dbt_meta.setter
@@ -8693,6 +9625,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_unique_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_unique_id
 
     @dbt_unique_id.setter
@@ -8703,6 +9637,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_account_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_account_name
 
     @dbt_account_name.setter
@@ -8713,6 +9649,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_project_name
 
     @dbt_project_name.setter
@@ -8723,6 +9661,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_package_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_package_name
 
     @dbt_package_name.setter
@@ -8733,6 +9673,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_name
 
     @dbt_job_name.setter
@@ -8743,6 +9685,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_schedule(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule
 
     @dbt_job_schedule.setter
@@ -8753,6 +9697,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_status
 
     @dbt_job_status.setter
@@ -8763,6 +9709,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule_cron_humanized
 
     @dbt_job_schedule_cron_humanized.setter
@@ -8777,6 +9725,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_last_run
 
     @dbt_job_last_run.setter
@@ -8787,6 +9737,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_next_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run
 
     @dbt_job_next_run.setter
@@ -8797,6 +9749,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run_humanized
 
     @dbt_job_next_run_humanized.setter
@@ -8807,6 +9761,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_environment_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_name
 
     @dbt_environment_name.setter
@@ -8817,6 +9773,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_dbt_version
 
     @dbt_environment_dbt_version.setter
@@ -8827,6 +9785,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_tags(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_tags
 
     @dbt_tags.setter
@@ -8837,6 +9797,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_connection_context
 
     @dbt_connection_context.setter
@@ -8847,6 +9809,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_semantic_layer_proxy_url
 
     @dbt_semantic_layer_proxy_url.setter
@@ -8857,6 +9821,8 @@ class DbtMetric(Dbt):
 
     @property
     def metric_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_type
 
     @metric_type.setter
@@ -8867,6 +9833,8 @@ class DbtMetric(Dbt):
 
     @property
     def metric_s_q_l(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_s_q_l
 
     @metric_s_q_l.setter
@@ -8877,6 +9845,8 @@ class DbtMetric(Dbt):
 
     @property
     def metric_filters(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_filters
 
     @metric_filters.setter
@@ -8887,6 +9857,8 @@ class DbtMetric(Dbt):
 
     @property
     def metric_time_grains(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_time_grains
 
     @metric_time_grains.setter
@@ -8897,6 +9869,8 @@ class DbtMetric(Dbt):
 
     @property
     def metric_timestamp_column(self) -> Optional[Column]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_timestamp_column
 
     @metric_timestamp_column.setter
@@ -8907,6 +9881,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_model(self) -> Optional[DbtModel]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model
 
     @dbt_model.setter
@@ -8917,6 +9893,8 @@ class DbtMetric(Dbt):
 
     @property
     def assets(self) -> Optional[list[Asset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.assets
 
     @assets.setter
@@ -8927,6 +9905,8 @@ class DbtMetric(Dbt):
 
     @property
     def metric_dimension_columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_dimension_columns
 
     @metric_dimension_columns.setter
@@ -8939,6 +9919,8 @@ class DbtMetric(Dbt):
 
     @property
     def dbt_metric_filter_columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_metric_filter_columns
 
     @dbt_metric_filter_columns.setter
@@ -9053,6 +10035,8 @@ class DbtSource(Dbt):
 
     @property
     def dbt_state(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_state
 
     @dbt_state.setter
@@ -9063,6 +10047,8 @@ class DbtSource(Dbt):
 
     @property
     def dbt_freshness_criteria(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_freshness_criteria
 
     @dbt_freshness_criteria.setter
@@ -9073,6 +10059,8 @@ class DbtSource(Dbt):
 
     @property
     def sql_assets(self) -> Optional[list[SQL]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_assets
 
     @sql_assets.setter
@@ -9083,6 +10071,8 @@ class DbtSource(Dbt):
 
     @property
     def sql_asset(self) -> Optional[SQL]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_asset
 
     @sql_asset.setter
@@ -9156,6 +10146,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_process_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_process_job_status
 
     @dbt_process_job_status.setter
@@ -9166,6 +10158,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_alias
 
     @dbt_alias.setter
@@ -9176,6 +10170,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_meta(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_meta
 
     @dbt_meta.setter
@@ -9186,6 +10182,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_unique_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_unique_id
 
     @dbt_unique_id.setter
@@ -9196,6 +10194,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_account_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_account_name
 
     @dbt_account_name.setter
@@ -9206,6 +10206,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_project_name
 
     @dbt_project_name.setter
@@ -9216,6 +10218,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_package_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_package_name
 
     @dbt_package_name.setter
@@ -9226,6 +10230,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_name
 
     @dbt_job_name.setter
@@ -9236,6 +10242,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_schedule(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule
 
     @dbt_job_schedule.setter
@@ -9246,6 +10254,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_status
 
     @dbt_job_status.setter
@@ -9256,6 +10266,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_schedule_cron_humanized
 
     @dbt_job_schedule_cron_humanized.setter
@@ -9270,6 +10282,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_last_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_last_run
 
     @dbt_job_last_run.setter
@@ -9280,6 +10294,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_next_run(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run
 
     @dbt_job_next_run.setter
@@ -9290,6 +10306,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_job_next_run_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_job_next_run_humanized
 
     @dbt_job_next_run_humanized.setter
@@ -9300,6 +10318,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_environment_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_name
 
     @dbt_environment_name.setter
@@ -9310,6 +10330,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_environment_dbt_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_environment_dbt_version
 
     @dbt_environment_dbt_version.setter
@@ -9320,6 +10342,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_tags(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_tags
 
     @dbt_tags.setter
@@ -9330,6 +10354,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_connection_context(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_connection_context
 
     @dbt_connection_context.setter
@@ -9340,6 +10366,8 @@ class DbtProcess(Dbt):
 
     @property
     def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_semantic_layer_proxy_url
 
     @dbt_semantic_layer_proxy_url.setter
@@ -9350,6 +10378,8 @@ class DbtProcess(Dbt):
 
     @property
     def inputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.inputs
 
     @inputs.setter
@@ -9360,6 +10390,8 @@ class DbtProcess(Dbt):
 
     @property
     def outputs(self) -> Optional[list[Catalog]]:
+        if self.attributes is None:
+            return None
         return self.attributes.outputs
 
     @outputs.setter
@@ -9370,6 +10402,8 @@ class DbtProcess(Dbt):
 
     @property
     def code(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.code
 
     @code.setter
@@ -9380,6 +10414,8 @@ class DbtProcess(Dbt):
 
     @property
     def sql(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql
 
     @sql.setter
@@ -9390,6 +10426,8 @@ class DbtProcess(Dbt):
 
     @property
     def ast(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.ast
 
     @ast.setter
@@ -9400,6 +10438,8 @@ class DbtProcess(Dbt):
 
     @property
     def column_processes(self) -> Optional[list[ColumnProcess]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_processes
 
     @column_processes.setter
@@ -9495,6 +10535,8 @@ class ReadmeTemplate(Resource):
 
     @property
     def icon(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.icon
 
     @icon.setter
@@ -9505,6 +10547,8 @@ class ReadmeTemplate(Resource):
 
     @property
     def icon_type(self) -> Optional[IconType]:
+        if self.attributes is None:
+            return None
         return self.attributes.icon_type
 
     @icon_type.setter
@@ -9548,6 +10592,8 @@ class Readme(Resource):
 
     @property
     def internal(self) -> Optional[Internal]:
+        if self.attributes is None:
+            return None
         return self.attributes.internal
 
     @internal.setter
@@ -9558,6 +10604,8 @@ class Readme(Resource):
 
     @property
     def asset(self) -> Optional[Asset]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset
 
     @asset.setter
@@ -9568,6 +10616,8 @@ class Readme(Resource):
 
     @property
     def see_also(self) -> Optional[list[Readme]]:
+        if self.attributes is None:
+            return None
         return self.attributes.see_also
 
     @see_also.setter
@@ -9666,6 +10716,8 @@ class File(Resource):
 
     @property
     def file_type(self) -> Optional[FileType]:
+        if self.attributes is None:
+            return None
         return self.attributes.file_type
 
     @file_type.setter
@@ -9676,6 +10728,8 @@ class File(Resource):
 
     @property
     def file_path(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.file_path
 
     @file_path.setter
@@ -9686,6 +10740,8 @@ class File(Resource):
 
     @property
     def file_assets(self) -> Optional[Asset]:
+        if self.attributes is None:
+            return None
         return self.attributes.file_assets
 
     @file_assets.setter
@@ -9733,6 +10789,8 @@ class Link(Resource):
 
     @property
     def icon(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.icon
 
     @icon.setter
@@ -9743,6 +10801,8 @@ class Link(Resource):
 
     @property
     def icon_type(self) -> Optional[IconType]:
+        if self.attributes is None:
+            return None
         return self.attributes.icon_type
 
     @icon_type.setter
@@ -9753,6 +10813,8 @@ class Link(Resource):
 
     @property
     def internal(self) -> Optional[Internal]:
+        if self.attributes is None:
+            return None
         return self.attributes.internal
 
     @internal.setter
@@ -9763,6 +10825,8 @@ class Link(Resource):
 
     @property
     def asset(self) -> Optional[Asset]:
+        if self.attributes is None:
+            return None
         return self.attributes.asset
 
     @asset.setter
@@ -9818,6 +10882,8 @@ class APISpec(API):
 
     @property
     def api_spec_terms_of_service_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_terms_of_service_url
 
     @api_spec_terms_of_service_url.setter
@@ -9830,6 +10896,8 @@ class APISpec(API):
 
     @property
     def api_spec_contact_email(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_contact_email
 
     @api_spec_contact_email.setter
@@ -9840,6 +10908,8 @@ class APISpec(API):
 
     @property
     def api_spec_contact_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_contact_name
 
     @api_spec_contact_name.setter
@@ -9850,6 +10920,8 @@ class APISpec(API):
 
     @property
     def api_spec_contact_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_contact_url
 
     @api_spec_contact_url.setter
@@ -9860,6 +10932,8 @@ class APISpec(API):
 
     @property
     def api_spec_license_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_license_name
 
     @api_spec_license_name.setter
@@ -9870,6 +10944,8 @@ class APISpec(API):
 
     @property
     def api_spec_license_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_license_url
 
     @api_spec_license_url.setter
@@ -9880,6 +10956,8 @@ class APISpec(API):
 
     @property
     def api_spec_contract_version(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_contract_version
 
     @api_spec_contract_version.setter
@@ -9890,6 +10968,8 @@ class APISpec(API):
 
     @property
     def api_spec_service_alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec_service_alias
 
     @api_spec_service_alias.setter
@@ -9900,6 +10980,8 @@ class APISpec(API):
 
     @property
     def api_paths(self) -> Optional[list[APIPath]]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_paths
 
     @api_paths.setter
@@ -9972,6 +11054,8 @@ class APIPath(API):
 
     @property
     def api_path_summary(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_path_summary
 
     @api_path_summary.setter
@@ -9982,6 +11066,8 @@ class APIPath(API):
 
     @property
     def api_path_raw_u_r_i(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_path_raw_u_r_i
 
     @api_path_raw_u_r_i.setter
@@ -9992,6 +11078,8 @@ class APIPath(API):
 
     @property
     def api_path_is_templated(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_path_is_templated
 
     @api_path_is_templated.setter
@@ -10002,6 +11090,8 @@ class APIPath(API):
 
     @property
     def api_path_available_operations(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_path_available_operations
 
     @api_path_available_operations.setter
@@ -10014,6 +11104,8 @@ class APIPath(API):
 
     @property
     def api_path_available_response_codes(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_path_available_response_codes
 
     @api_path_available_response_codes.setter
@@ -10028,6 +11120,8 @@ class APIPath(API):
 
     @property
     def api_path_is_ingress_exposed(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_path_is_ingress_exposed
 
     @api_path_is_ingress_exposed.setter
@@ -10038,6 +11132,8 @@ class APIPath(API):
 
     @property
     def api_spec(self) -> Optional[APISpec]:
+        if self.attributes is None:
+            return None
         return self.attributes.api_spec
 
     @api_spec.setter
@@ -10120,6 +11216,8 @@ class SnowflakeTag(Tag):
 
     @property
     def tag_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_id
 
     @tag_id.setter
@@ -10130,6 +11228,8 @@ class SnowflakeTag(Tag):
 
     @property
     def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_attributes
 
     @tag_attributes.setter
@@ -10140,6 +11240,8 @@ class SnowflakeTag(Tag):
 
     @property
     def tag_allowed_values(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tag_allowed_values
 
     @tag_allowed_values.setter
@@ -10150,6 +11252,8 @@ class SnowflakeTag(Tag):
 
     @property
     def mapped_classification_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mapped_classification_name
 
     @mapped_classification_name.setter
@@ -10160,6 +11264,8 @@ class SnowflakeTag(Tag):
 
     @property
     def query_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_count
 
     @query_count.setter
@@ -10170,6 +11276,8 @@ class SnowflakeTag(Tag):
 
     @property
     def query_user_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_user_count
 
     @query_user_count.setter
@@ -10180,6 +11288,8 @@ class SnowflakeTag(Tag):
 
     @property
     def query_user_map(self) -> Optional[dict[str, int]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_user_map
 
     @query_user_map.setter
@@ -10190,6 +11300,8 @@ class SnowflakeTag(Tag):
 
     @property
     def query_count_updated_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_count_updated_at
 
     @query_count_updated_at.setter
@@ -10200,6 +11312,8 @@ class SnowflakeTag(Tag):
 
     @property
     def database_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.database_name
 
     @database_name.setter
@@ -10210,6 +11324,8 @@ class SnowflakeTag(Tag):
 
     @property
     def database_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.database_qualified_name
 
     @database_qualified_name.setter
@@ -10220,6 +11336,8 @@ class SnowflakeTag(Tag):
 
     @property
     def schema_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.schema_name
 
     @schema_name.setter
@@ -10230,6 +11348,8 @@ class SnowflakeTag(Tag):
 
     @property
     def schema_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.schema_qualified_name
 
     @schema_qualified_name.setter
@@ -10240,6 +11360,8 @@ class SnowflakeTag(Tag):
 
     @property
     def table_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.table_name
 
     @table_name.setter
@@ -10250,6 +11372,8 @@ class SnowflakeTag(Tag):
 
     @property
     def table_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.table_qualified_name
 
     @table_qualified_name.setter
@@ -10260,6 +11384,8 @@ class SnowflakeTag(Tag):
 
     @property
     def view_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.view_name
 
     @view_name.setter
@@ -10270,6 +11396,8 @@ class SnowflakeTag(Tag):
 
     @property
     def view_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.view_qualified_name
 
     @view_qualified_name.setter
@@ -10280,6 +11408,8 @@ class SnowflakeTag(Tag):
 
     @property
     def is_profiled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_profiled
 
     @is_profiled.setter
@@ -10290,6 +11420,8 @@ class SnowflakeTag(Tag):
 
     @property
     def last_profiled_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.last_profiled_at
 
     @last_profiled_at.setter
@@ -10300,6 +11432,8 @@ class SnowflakeTag(Tag):
 
     @property
     def dbt_sources(self) -> Optional[list[DbtSource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_sources
 
     @dbt_sources.setter
@@ -10310,6 +11444,8 @@ class SnowflakeTag(Tag):
 
     @property
     def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_dbt_models
 
     @sql_dbt_models.setter
@@ -10320,6 +11456,8 @@ class SnowflakeTag(Tag):
 
     @property
     def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_dbt_sources
 
     @sql_dbt_sources.setter
@@ -10330,6 +11468,8 @@ class SnowflakeTag(Tag):
 
     @property
     def dbt_models(self) -> Optional[list[DbtModel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_models
 
     @dbt_models.setter
@@ -10340,6 +11480,8 @@ class SnowflakeTag(Tag):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -10450,6 +11592,8 @@ class TablePartition(SQL):
 
     @property
     def constraint(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.constraint
 
     @constraint.setter
@@ -10460,6 +11604,8 @@ class TablePartition(SQL):
 
     @property
     def column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_count
 
     @column_count.setter
@@ -10470,6 +11616,8 @@ class TablePartition(SQL):
 
     @property
     def row_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.row_count
 
     @row_count.setter
@@ -10480,6 +11628,8 @@ class TablePartition(SQL):
 
     @property
     def size_bytes(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.size_bytes
 
     @size_bytes.setter
@@ -10490,6 +11640,8 @@ class TablePartition(SQL):
 
     @property
     def alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.alias
 
     @alias.setter
@@ -10500,6 +11652,8 @@ class TablePartition(SQL):
 
     @property
     def is_temporary(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_temporary
 
     @is_temporary.setter
@@ -10510,6 +11664,8 @@ class TablePartition(SQL):
 
     @property
     def is_query_preview(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_query_preview
 
     @is_query_preview.setter
@@ -10520,6 +11676,8 @@ class TablePartition(SQL):
 
     @property
     def query_preview_config(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_preview_config
 
     @query_preview_config.setter
@@ -10530,6 +11688,8 @@ class TablePartition(SQL):
 
     @property
     def external_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.external_location
 
     @external_location.setter
@@ -10540,6 +11700,8 @@ class TablePartition(SQL):
 
     @property
     def external_location_region(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.external_location_region
 
     @external_location_region.setter
@@ -10550,6 +11712,8 @@ class TablePartition(SQL):
 
     @property
     def external_location_format(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.external_location_format
 
     @external_location_format.setter
@@ -10560,6 +11724,8 @@ class TablePartition(SQL):
 
     @property
     def is_partitioned(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_partitioned
 
     @is_partitioned.setter
@@ -10570,6 +11736,8 @@ class TablePartition(SQL):
 
     @property
     def partition_strategy(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_strategy
 
     @partition_strategy.setter
@@ -10580,6 +11748,8 @@ class TablePartition(SQL):
 
     @property
     def partition_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_count
 
     @partition_count.setter
@@ -10590,6 +11760,8 @@ class TablePartition(SQL):
 
     @property
     def partition_list(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_list
 
     @partition_list.setter
@@ -10600,6 +11772,8 @@ class TablePartition(SQL):
 
     @property
     def columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.columns
 
     @columns.setter
@@ -10610,6 +11784,8 @@ class TablePartition(SQL):
 
     @property
     def parent_table(self) -> Optional[Table]:
+        if self.attributes is None:
+            return None
         return self.attributes.parent_table
 
     @parent_table.setter
@@ -10707,6 +11883,8 @@ class Table(SQL):
 
     @property
     def column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_count
 
     @column_count.setter
@@ -10717,6 +11895,8 @@ class Table(SQL):
 
     @property
     def row_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.row_count
 
     @row_count.setter
@@ -10727,6 +11907,8 @@ class Table(SQL):
 
     @property
     def size_bytes(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.size_bytes
 
     @size_bytes.setter
@@ -10737,6 +11919,8 @@ class Table(SQL):
 
     @property
     def alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.alias
 
     @alias.setter
@@ -10747,6 +11931,8 @@ class Table(SQL):
 
     @property
     def is_temporary(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_temporary
 
     @is_temporary.setter
@@ -10757,6 +11943,8 @@ class Table(SQL):
 
     @property
     def is_query_preview(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_query_preview
 
     @is_query_preview.setter
@@ -10767,6 +11955,8 @@ class Table(SQL):
 
     @property
     def query_preview_config(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_preview_config
 
     @query_preview_config.setter
@@ -10777,6 +11967,8 @@ class Table(SQL):
 
     @property
     def external_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.external_location
 
     @external_location.setter
@@ -10787,6 +11979,8 @@ class Table(SQL):
 
     @property
     def external_location_region(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.external_location_region
 
     @external_location_region.setter
@@ -10797,6 +11991,8 @@ class Table(SQL):
 
     @property
     def external_location_format(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.external_location_format
 
     @external_location_format.setter
@@ -10807,6 +12003,8 @@ class Table(SQL):
 
     @property
     def is_partitioned(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_partitioned
 
     @is_partitioned.setter
@@ -10817,6 +12015,8 @@ class Table(SQL):
 
     @property
     def partition_strategy(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_strategy
 
     @partition_strategy.setter
@@ -10827,6 +12027,8 @@ class Table(SQL):
 
     @property
     def partition_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_count
 
     @partition_count.setter
@@ -10837,6 +12039,8 @@ class Table(SQL):
 
     @property
     def partition_list(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_list
 
     @partition_list.setter
@@ -10847,6 +12051,8 @@ class Table(SQL):
 
     @property
     def partitions(self) -> Optional[list[TablePartition]]:
+        if self.attributes is None:
+            return None
         return self.attributes.partitions
 
     @partitions.setter
@@ -10857,6 +12063,8 @@ class Table(SQL):
 
     @property
     def columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.columns
 
     @columns.setter
@@ -10867,6 +12075,8 @@ class Table(SQL):
 
     @property
     def queries(self) -> Optional[list[Query]]:
+        if self.attributes is None:
+            return None
         return self.attributes.queries
 
     @queries.setter
@@ -10877,6 +12087,8 @@ class Table(SQL):
 
     @property
     def facts(self) -> Optional[list[Table]]:
+        if self.attributes is None:
+            return None
         return self.attributes.facts
 
     @facts.setter
@@ -10887,6 +12099,8 @@ class Table(SQL):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -10897,6 +12111,8 @@ class Table(SQL):
 
     @property
     def dimensions(self) -> Optional[list[Table]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dimensions
 
     @dimensions.setter
@@ -11035,6 +12251,8 @@ class Query(SQL):
 
     @property
     def raw_query(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.raw_query
 
     @raw_query.setter
@@ -11045,6 +12263,8 @@ class Query(SQL):
 
     @property
     def default_schema_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.default_schema_qualified_name
 
     @default_schema_qualified_name.setter
@@ -11057,6 +12277,8 @@ class Query(SQL):
 
     @property
     def default_database_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.default_database_qualified_name
 
     @default_database_qualified_name.setter
@@ -11071,6 +12293,8 @@ class Query(SQL):
 
     @property
     def variables_schema_base64(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.variables_schema_base64
 
     @variables_schema_base64.setter
@@ -11081,6 +12305,8 @@ class Query(SQL):
 
     @property
     def is_private(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_private
 
     @is_private.setter
@@ -11091,6 +12317,8 @@ class Query(SQL):
 
     @property
     def is_sql_snippet(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_sql_snippet
 
     @is_sql_snippet.setter
@@ -11101,6 +12329,8 @@ class Query(SQL):
 
     @property
     def parent_qualified_name(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.parent_qualified_name
 
     @parent_qualified_name.setter
@@ -11111,6 +12341,8 @@ class Query(SQL):
 
     @property
     def collection_qualified_name(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.collection_qualified_name
 
     @collection_qualified_name.setter
@@ -11121,6 +12353,8 @@ class Query(SQL):
 
     @property
     def is_visual_query(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_visual_query
 
     @is_visual_query.setter
@@ -11131,6 +12365,8 @@ class Query(SQL):
 
     @property
     def visual_builder_schema_base64(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.visual_builder_schema_base64
 
     @visual_builder_schema_base64.setter
@@ -11141,6 +12377,8 @@ class Query(SQL):
 
     @property
     def parent(self) -> Namespace:
+        if self.attributes is None:
+            return None
         return self.attributes.parent
 
     @parent.setter
@@ -11151,6 +12389,8 @@ class Query(SQL):
 
     @property
     def columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.columns
 
     @columns.setter
@@ -11161,6 +12401,8 @@ class Query(SQL):
 
     @property
     def tables(self) -> Optional[list[Table]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tables
 
     @tables.setter
@@ -11171,6 +12413,8 @@ class Query(SQL):
 
     @property
     def views(self) -> Optional[list[View]]:
+        if self.attributes is None:
+            return None
         return self.attributes.views
 
     @views.setter
@@ -11302,6 +12546,8 @@ class Column(SQL):
 
     @property
     def data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_type
 
     @data_type.setter
@@ -11312,6 +12558,8 @@ class Column(SQL):
 
     @property
     def sub_data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sub_data_type
 
     @sub_data_type.setter
@@ -11322,6 +12570,8 @@ class Column(SQL):
 
     @property
     def order(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.order
 
     @order.setter
@@ -11332,6 +12582,8 @@ class Column(SQL):
 
     @property
     def is_partition(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_partition
 
     @is_partition.setter
@@ -11342,6 +12594,8 @@ class Column(SQL):
 
     @property
     def partition_order(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.partition_order
 
     @partition_order.setter
@@ -11352,6 +12606,8 @@ class Column(SQL):
 
     @property
     def is_clustered(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_clustered
 
     @is_clustered.setter
@@ -11362,6 +12618,8 @@ class Column(SQL):
 
     @property
     def is_primary(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_primary
 
     @is_primary.setter
@@ -11372,6 +12630,8 @@ class Column(SQL):
 
     @property
     def is_foreign(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_foreign
 
     @is_foreign.setter
@@ -11382,6 +12642,8 @@ class Column(SQL):
 
     @property
     def is_indexed(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_indexed
 
     @is_indexed.setter
@@ -11392,6 +12654,8 @@ class Column(SQL):
 
     @property
     def is_sort(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_sort
 
     @is_sort.setter
@@ -11402,6 +12666,8 @@ class Column(SQL):
 
     @property
     def is_dist(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_dist
 
     @is_dist.setter
@@ -11412,6 +12678,8 @@ class Column(SQL):
 
     @property
     def is_pinned(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_pinned
 
     @is_pinned.setter
@@ -11422,6 +12690,8 @@ class Column(SQL):
 
     @property
     def pinned_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.pinned_by
 
     @pinned_by.setter
@@ -11432,6 +12702,8 @@ class Column(SQL):
 
     @property
     def pinned_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.pinned_at
 
     @pinned_at.setter
@@ -11442,6 +12714,8 @@ class Column(SQL):
 
     @property
     def precision(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.precision
 
     @precision.setter
@@ -11452,6 +12726,8 @@ class Column(SQL):
 
     @property
     def default_value(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.default_value
 
     @default_value.setter
@@ -11462,6 +12738,8 @@ class Column(SQL):
 
     @property
     def is_nullable(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_nullable
 
     @is_nullable.setter
@@ -11472,6 +12750,8 @@ class Column(SQL):
 
     @property
     def numeric_scale(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.numeric_scale
 
     @numeric_scale.setter
@@ -11482,6 +12762,8 @@ class Column(SQL):
 
     @property
     def max_length(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.max_length
 
     @max_length.setter
@@ -11492,6 +12774,8 @@ class Column(SQL):
 
     @property
     def validations(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.validations
 
     @validations.setter
@@ -11502,6 +12786,8 @@ class Column(SQL):
 
     @property
     def column_distinct_values_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_distinct_values_count
 
     @column_distinct_values_count.setter
@@ -11512,6 +12798,8 @@ class Column(SQL):
 
     @property
     def column_distinct_values_count_long(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_distinct_values_count_long
 
     @column_distinct_values_count_long.setter
@@ -11526,6 +12814,8 @@ class Column(SQL):
 
     @property
     def column_histogram(self) -> Optional[Histogram]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_histogram
 
     @column_histogram.setter
@@ -11536,6 +12826,8 @@ class Column(SQL):
 
     @property
     def column_max(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_max
 
     @column_max.setter
@@ -11546,6 +12838,8 @@ class Column(SQL):
 
     @property
     def column_min(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_min
 
     @column_min.setter
@@ -11556,6 +12850,8 @@ class Column(SQL):
 
     @property
     def column_mean(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_mean
 
     @column_mean.setter
@@ -11566,6 +12862,8 @@ class Column(SQL):
 
     @property
     def column_sum(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_sum
 
     @column_sum.setter
@@ -11576,6 +12874,8 @@ class Column(SQL):
 
     @property
     def column_median(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_median
 
     @column_median.setter
@@ -11586,6 +12886,8 @@ class Column(SQL):
 
     @property
     def column_standard_deviation(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_standard_deviation
 
     @column_standard_deviation.setter
@@ -11596,6 +12898,8 @@ class Column(SQL):
 
     @property
     def column_unique_values_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_unique_values_count
 
     @column_unique_values_count.setter
@@ -11606,6 +12910,8 @@ class Column(SQL):
 
     @property
     def column_unique_values_count_long(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_unique_values_count_long
 
     @column_unique_values_count_long.setter
@@ -11620,6 +12926,8 @@ class Column(SQL):
 
     @property
     def column_average(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_average
 
     @column_average.setter
@@ -11630,6 +12938,8 @@ class Column(SQL):
 
     @property
     def column_average_length(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_average_length
 
     @column_average_length.setter
@@ -11640,6 +12950,8 @@ class Column(SQL):
 
     @property
     def column_duplicate_values_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_duplicate_values_count
 
     @column_duplicate_values_count.setter
@@ -11652,6 +12964,8 @@ class Column(SQL):
 
     @property
     def column_duplicate_values_count_long(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_duplicate_values_count_long
 
     @column_duplicate_values_count_long.setter
@@ -11666,6 +12980,8 @@ class Column(SQL):
 
     @property
     def column_maximum_string_length(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_maximum_string_length
 
     @column_maximum_string_length.setter
@@ -11676,6 +12992,8 @@ class Column(SQL):
 
     @property
     def column_maxs(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_maxs
 
     @column_maxs.setter
@@ -11686,6 +13004,8 @@ class Column(SQL):
 
     @property
     def column_minimum_string_length(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_minimum_string_length
 
     @column_minimum_string_length.setter
@@ -11696,6 +13016,8 @@ class Column(SQL):
 
     @property
     def column_mins(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_mins
 
     @column_mins.setter
@@ -11706,6 +13028,8 @@ class Column(SQL):
 
     @property
     def column_missing_values_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_missing_values_count
 
     @column_missing_values_count.setter
@@ -11716,6 +13040,8 @@ class Column(SQL):
 
     @property
     def column_missing_values_count_long(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_missing_values_count_long
 
     @column_missing_values_count_long.setter
@@ -11730,6 +13056,8 @@ class Column(SQL):
 
     @property
     def column_missing_values_percentage(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_missing_values_percentage
 
     @column_missing_values_percentage.setter
@@ -11744,6 +13072,8 @@ class Column(SQL):
 
     @property
     def column_uniqueness_percentage(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_uniqueness_percentage
 
     @column_uniqueness_percentage.setter
@@ -11756,6 +13086,8 @@ class Column(SQL):
 
     @property
     def column_variance(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_variance
 
     @column_variance.setter
@@ -11766,6 +13098,8 @@ class Column(SQL):
 
     @property
     def column_top_values(self) -> Optional[list[ColumnValueFrequencyMap]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_top_values
 
     @column_top_values.setter
@@ -11778,6 +13112,8 @@ class Column(SQL):
 
     @property
     def view(self) -> Optional[View]:
+        if self.attributes is None:
+            return None
         return self.attributes.view
 
     @view.setter
@@ -11788,6 +13124,8 @@ class Column(SQL):
 
     @property
     def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_quality_metric_dimensions
 
     @data_quality_metric_dimensions.setter
@@ -11800,6 +13138,8 @@ class Column(SQL):
 
     @property
     def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_model_columns
 
     @dbt_model_columns.setter
@@ -11810,6 +13150,8 @@ class Column(SQL):
 
     @property
     def table(self) -> Optional[Table]:
+        if self.attributes is None:
+            return None
         return self.attributes.table
 
     @table.setter
@@ -11820,6 +13162,8 @@ class Column(SQL):
 
     @property
     def column_dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_dbt_model_columns
 
     @column_dbt_model_columns.setter
@@ -11832,6 +13176,8 @@ class Column(SQL):
 
     @property
     def materialised_view(self) -> Optional[MaterialisedView]:
+        if self.attributes is None:
+            return None
         return self.attributes.materialised_view
 
     @materialised_view.setter
@@ -11842,6 +13188,8 @@ class Column(SQL):
 
     @property
     def queries(self) -> Optional[list[Query]]:
+        if self.attributes is None:
+            return None
         return self.attributes.queries
 
     @queries.setter
@@ -11852,6 +13200,8 @@ class Column(SQL):
 
     @property
     def metric_timestamps(self) -> Optional[list[Metric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metric_timestamps
 
     @metric_timestamps.setter
@@ -11862,6 +13212,8 @@ class Column(SQL):
 
     @property
     def foreign_key_to(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.foreign_key_to
 
     @foreign_key_to.setter
@@ -11872,6 +13224,8 @@ class Column(SQL):
 
     @property
     def foreign_key_from(self) -> Optional[Column]:
+        if self.attributes is None:
+            return None
         return self.attributes.foreign_key_from
 
     @foreign_key_from.setter
@@ -11882,6 +13236,8 @@ class Column(SQL):
 
     @property
     def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dbt_metrics
 
     @dbt_metrics.setter
@@ -11892,6 +13248,8 @@ class Column(SQL):
 
     @property
     def table_partition(self) -> Optional[TablePartition]:
+        if self.attributes is None:
+            return None
         return self.attributes.table_partition
 
     @table_partition.setter
@@ -12124,6 +13482,8 @@ class Schema(SQL):
 
     @property
     def table_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.table_count
 
     @table_count.setter
@@ -12134,6 +13494,8 @@ class Schema(SQL):
 
     @property
     def views_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.views_count
 
     @views_count.setter
@@ -12144,6 +13506,8 @@ class Schema(SQL):
 
     @property
     def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_tags
 
     @snowflake_tags.setter
@@ -12154,6 +13518,8 @@ class Schema(SQL):
 
     @property
     def materialised_views(self) -> Optional[list[MaterialisedView]]:
+        if self.attributes is None:
+            return None
         return self.attributes.materialised_views
 
     @materialised_views.setter
@@ -12164,6 +13530,8 @@ class Schema(SQL):
 
     @property
     def tables(self) -> Optional[list[Table]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tables
 
     @tables.setter
@@ -12174,6 +13542,8 @@ class Schema(SQL):
 
     @property
     def database(self) -> Optional[Database]:
+        if self.attributes is None:
+            return None
         return self.attributes.database
 
     @database.setter
@@ -12184,6 +13554,8 @@ class Schema(SQL):
 
     @property
     def snowflake_pipes(self) -> Optional[list[SnowflakePipe]]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_pipes
 
     @snowflake_pipes.setter
@@ -12194,6 +13566,8 @@ class Schema(SQL):
 
     @property
     def snowflake_streams(self) -> Optional[list[SnowflakeStream]]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_streams
 
     @snowflake_streams.setter
@@ -12204,6 +13578,8 @@ class Schema(SQL):
 
     @property
     def procedures(self) -> Optional[list[Procedure]]:
+        if self.attributes is None:
+            return None
         return self.attributes.procedures
 
     @procedures.setter
@@ -12214,6 +13590,8 @@ class Schema(SQL):
 
     @property
     def views(self) -> Optional[list[View]]:
+        if self.attributes is None:
+            return None
         return self.attributes.views
 
     @views.setter
@@ -12322,6 +13700,8 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_stream_type
 
     @snowflake_stream_type.setter
@@ -12332,6 +13712,8 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_source_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_stream_source_type
 
     @snowflake_stream_source_type.setter
@@ -12342,6 +13724,8 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_mode(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_stream_mode
 
     @snowflake_stream_mode.setter
@@ -12352,6 +13736,8 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_is_stale(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_stream_is_stale
 
     @snowflake_stream_is_stale.setter
@@ -12362,6 +13748,8 @@ class SnowflakeStream(SQL):
 
     @property
     def snowflake_stream_stale_after(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_stream_stale_after
 
     @snowflake_stream_stale_after.setter
@@ -12374,6 +13762,8 @@ class SnowflakeStream(SQL):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -12434,6 +13824,8 @@ class SnowflakePipe(SQL):
 
     @property
     def definition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.definition
 
     @definition.setter
@@ -12444,6 +13836,8 @@ class SnowflakePipe(SQL):
 
     @property
     def snowflake_pipe_is_auto_ingest_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_pipe_is_auto_ingest_enabled
 
     @snowflake_pipe_is_auto_ingest_enabled.setter
@@ -12458,6 +13852,8 @@ class SnowflakePipe(SQL):
 
     @property
     def snowflake_pipe_notification_channel_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.snowflake_pipe_notification_channel_name
 
     @snowflake_pipe_notification_channel_name.setter
@@ -12472,6 +13868,8 @@ class SnowflakePipe(SQL):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -12522,6 +13920,8 @@ class Database(SQL):
 
     @property
     def schema_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.schema_count
 
     @schema_count.setter
@@ -12532,6 +13932,8 @@ class Database(SQL):
 
     @property
     def schemas(self) -> Optional[list[Schema]]:
+        if self.attributes is None:
+            return None
         return self.attributes.schemas
 
     @schemas.setter
@@ -12623,6 +14025,8 @@ class Procedure(SQL):
 
     @property
     def definition(self) -> str:
+        if self.attributes is None:
+            return None
         return self.attributes.definition
 
     @definition.setter
@@ -12633,6 +14037,8 @@ class Procedure(SQL):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -12686,6 +14092,8 @@ class View(SQL):
 
     @property
     def column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_count
 
     @column_count.setter
@@ -12696,6 +14104,8 @@ class View(SQL):
 
     @property
     def row_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.row_count
 
     @row_count.setter
@@ -12706,6 +14116,8 @@ class View(SQL):
 
     @property
     def size_bytes(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.size_bytes
 
     @size_bytes.setter
@@ -12716,6 +14128,8 @@ class View(SQL):
 
     @property
     def is_query_preview(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_query_preview
 
     @is_query_preview.setter
@@ -12726,6 +14140,8 @@ class View(SQL):
 
     @property
     def query_preview_config(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_preview_config
 
     @query_preview_config.setter
@@ -12736,6 +14152,8 @@ class View(SQL):
 
     @property
     def alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.alias
 
     @alias.setter
@@ -12746,6 +14164,8 @@ class View(SQL):
 
     @property
     def is_temporary(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_temporary
 
     @is_temporary.setter
@@ -12756,6 +14176,8 @@ class View(SQL):
 
     @property
     def definition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.definition
 
     @definition.setter
@@ -12766,6 +14188,8 @@ class View(SQL):
 
     @property
     def columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.columns
 
     @columns.setter
@@ -12776,6 +14200,8 @@ class View(SQL):
 
     @property
     def queries(self) -> Optional[list[Query]]:
+        if self.attributes is None:
+            return None
         return self.attributes.queries
 
     @queries.setter
@@ -12786,6 +14212,8 @@ class View(SQL):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -12895,6 +14323,8 @@ class MaterialisedView(SQL):
 
     @property
     def refresh_mode(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.refresh_mode
 
     @refresh_mode.setter
@@ -12905,6 +14335,8 @@ class MaterialisedView(SQL):
 
     @property
     def refresh_method(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.refresh_method
 
     @refresh_method.setter
@@ -12915,6 +14347,8 @@ class MaterialisedView(SQL):
 
     @property
     def staleness(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.staleness
 
     @staleness.setter
@@ -12925,6 +14359,8 @@ class MaterialisedView(SQL):
 
     @property
     def stale_since_date(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.stale_since_date
 
     @stale_since_date.setter
@@ -12935,6 +14371,8 @@ class MaterialisedView(SQL):
 
     @property
     def column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.column_count
 
     @column_count.setter
@@ -12945,6 +14383,8 @@ class MaterialisedView(SQL):
 
     @property
     def row_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.row_count
 
     @row_count.setter
@@ -12955,6 +14395,8 @@ class MaterialisedView(SQL):
 
     @property
     def size_bytes(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.size_bytes
 
     @size_bytes.setter
@@ -12965,6 +14407,8 @@ class MaterialisedView(SQL):
 
     @property
     def is_query_preview(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_query_preview
 
     @is_query_preview.setter
@@ -12975,6 +14419,8 @@ class MaterialisedView(SQL):
 
     @property
     def query_preview_config(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_preview_config
 
     @query_preview_config.setter
@@ -12985,6 +14431,8 @@ class MaterialisedView(SQL):
 
     @property
     def alias(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.alias
 
     @alias.setter
@@ -12995,6 +14443,8 @@ class MaterialisedView(SQL):
 
     @property
     def is_temporary(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_temporary
 
     @is_temporary.setter
@@ -13005,6 +14455,8 @@ class MaterialisedView(SQL):
 
     @property
     def definition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.definition
 
     @definition.setter
@@ -13015,6 +14467,8 @@ class MaterialisedView(SQL):
 
     @property
     def columns(self) -> Optional[list[Column]]:
+        if self.attributes is None:
+            return None
         return self.attributes.columns
 
     @columns.setter
@@ -13025,6 +14479,8 @@ class MaterialisedView(SQL):
 
     @property
     def atlan_schema(self) -> Optional[Schema]:
+        if self.attributes is None:
+            return None
         return self.attributes.atlan_schema
 
     @atlan_schema.setter
@@ -13139,6 +14595,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_studio_asset_type
 
     @data_studio_asset_type.setter
@@ -13151,6 +14609,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def data_studio_asset_title(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_studio_asset_title
 
     @data_studio_asset_title.setter
@@ -13161,6 +14621,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def data_studio_asset_owner(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_studio_asset_owner
 
     @data_studio_asset_owner.setter
@@ -13171,6 +14633,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def is_trashed_data_studio_asset(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_trashed_data_studio_asset
 
     @is_trashed_data_studio_asset.setter
@@ -13183,6 +14647,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_service(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_service
 
     @google_service.setter
@@ -13193,6 +14659,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_name
 
     @google_project_name.setter
@@ -13203,6 +14671,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_project_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_id
 
     @google_project_id.setter
@@ -13213,6 +14683,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_project_number(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_project_number
 
     @google_project_number.setter
@@ -13223,6 +14695,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_location(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location
 
     @google_location.setter
@@ -13233,6 +14707,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_location_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_location_type
 
     @google_location_type.setter
@@ -13243,6 +14719,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_labels(self) -> Optional[list[GoogleLabel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_labels
 
     @google_labels.setter
@@ -13253,6 +14731,8 @@ class DataStudioAsset(DataStudio):
 
     @property
     def google_tags(self) -> Optional[list[GoogleTag]]:
+        if self.attributes is None:
+            return None
         return self.attributes.google_tags
 
     @google_tags.setter
@@ -13336,6 +14816,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_is_internal(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_is_internal
 
     @kafka_topic_is_internal.setter
@@ -13346,6 +14828,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_compression_type
 
     @kafka_topic_compression_type.setter
@@ -13358,6 +14842,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_replication_factor(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_replication_factor
 
     @kafka_topic_replication_factor.setter
@@ -13370,6 +14856,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_segment_bytes(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_segment_bytes
 
     @kafka_topic_segment_bytes.setter
@@ -13380,6 +14868,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_partitions_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_partitions_count
 
     @kafka_topic_partitions_count.setter
@@ -13390,6 +14880,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_size_in_bytes(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_size_in_bytes
 
     @kafka_topic_size_in_bytes.setter
@@ -13400,6 +14892,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_record_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_record_count
 
     @kafka_topic_record_count.setter
@@ -13410,6 +14904,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_cleanup_policy
 
     @kafka_topic_cleanup_policy.setter
@@ -13422,6 +14918,8 @@ class KafkaTopic(Kafka):
 
     @property
     def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_consumer_groups
 
     @kafka_consumer_groups.setter
@@ -13496,6 +14994,8 @@ class KafkaConsumerGroup(Kafka):
     def kafka_consumer_group_topic_consumption_properties(
         self,
     ) -> Optional[list[KafkaTopicConsumption]]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_consumer_group_topic_consumption_properties
 
     @kafka_consumer_group_topic_consumption_properties.setter
@@ -13513,6 +15013,8 @@ class KafkaConsumerGroup(Kafka):
 
     @property
     def kafka_consumer_group_member_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_consumer_group_member_count
 
     @kafka_consumer_group_member_count.setter
@@ -13527,6 +15029,8 @@ class KafkaConsumerGroup(Kafka):
 
     @property
     def kafka_topic_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_names
 
     @kafka_topic_names.setter
@@ -13537,6 +15041,8 @@ class KafkaConsumerGroup(Kafka):
 
     @property
     def kafka_topic_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topic_qualified_names
 
     @kafka_topic_qualified_names.setter
@@ -13549,6 +15055,8 @@ class KafkaConsumerGroup(Kafka):
 
     @property
     def kafka_topics(self) -> Optional[list[KafkaTopic]]:
+        if self.attributes is None:
+            return None
         return self.attributes.kafka_topics
 
     @kafka_topics.setter
@@ -13607,6 +15115,8 @@ class S3Bucket(S3):
 
     @property
     def s3_object_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_count
 
     @s3_object_count.setter
@@ -13617,6 +15127,8 @@ class S3Bucket(S3):
 
     @property
     def s3_bucket_versioning_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_bucket_versioning_enabled
 
     @s3_bucket_versioning_enabled.setter
@@ -13629,6 +15141,8 @@ class S3Bucket(S3):
 
     @property
     def objects(self) -> Optional[list[S3Object]]:
+        if self.attributes is None:
+            return None
         return self.attributes.objects
 
     @objects.setter
@@ -13730,6 +15244,8 @@ class S3Object(S3):
 
     @property
     def s3_object_last_modified_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_last_modified_time
 
     @s3_object_last_modified_time.setter
@@ -13742,6 +15258,8 @@ class S3Object(S3):
 
     @property
     def s3_bucket_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_bucket_name
 
     @s3_bucket_name.setter
@@ -13752,6 +15270,8 @@ class S3Object(S3):
 
     @property
     def s3_bucket_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_bucket_qualified_name
 
     @s3_bucket_qualified_name.setter
@@ -13762,6 +15282,8 @@ class S3Object(S3):
 
     @property
     def s3_object_size(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_size
 
     @s3_object_size.setter
@@ -13772,6 +15294,8 @@ class S3Object(S3):
 
     @property
     def s3_object_storage_class(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_storage_class
 
     @s3_object_storage_class.setter
@@ -13782,6 +15306,8 @@ class S3Object(S3):
 
     @property
     def s3_object_key(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_key
 
     @s3_object_key.setter
@@ -13792,6 +15318,8 @@ class S3Object(S3):
 
     @property
     def s3_object_content_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_content_type
 
     @s3_object_content_type.setter
@@ -13802,6 +15330,8 @@ class S3Object(S3):
 
     @property
     def s3_object_content_disposition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_content_disposition
 
     @s3_object_content_disposition.setter
@@ -13814,6 +15344,8 @@ class S3Object(S3):
 
     @property
     def s3_object_version_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.s3_object_version_id
 
     @s3_object_version_id.setter
@@ -13824,6 +15356,8 @@ class S3Object(S3):
 
     @property
     def bucket(self) -> Optional[S3Bucket]:
+        if self.attributes is None:
+            return None
         return self.attributes.bucket
 
     @bucket.setter
@@ -13957,6 +15491,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_e_tag(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_e_tag
 
     @adls_e_tag.setter
@@ -13967,6 +15503,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_encryption_type(self) -> Optional[ADLSEncryptionTypes]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_encryption_type
 
     @adls_encryption_type.setter
@@ -13977,6 +15515,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_resource_group(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_resource_group
 
     @adls_account_resource_group.setter
@@ -13987,6 +15527,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_subscription(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_subscription
 
     @adls_account_subscription.setter
@@ -13997,6 +15539,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_performance(self) -> Optional[ADLSPerformance]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_performance
 
     @adls_account_performance.setter
@@ -14009,6 +15553,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_replication(self) -> Optional[ADLSReplicationType]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_replication
 
     @adls_account_replication.setter
@@ -14021,6 +15567,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_kind(self) -> Optional[ADLSStorageKind]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_kind
 
     @adls_account_kind.setter
@@ -14031,6 +15579,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_primary_disk_state(self) -> Optional[ADLSAccountStatus]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_primary_disk_state
 
     @adls_primary_disk_state.setter
@@ -14043,6 +15593,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_provision_state(self) -> Optional[ADLSProvisionState]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_provision_state
 
     @adls_account_provision_state.setter
@@ -14055,6 +15607,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_account_access_tier(self) -> Optional[ADLSAccessTier]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account_access_tier
 
     @adls_account_access_tier.setter
@@ -14067,6 +15621,8 @@ class ADLSAccount(ADLS):
 
     @property
     def adls_containers(self) -> Optional[list[ADLSContainer]]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_containers
 
     @adls_containers.setter
@@ -14144,6 +15700,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_container_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container_url
 
     @adls_container_url.setter
@@ -14154,6 +15712,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_container_lease_state(self) -> Optional[ADLSLeaseState]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container_lease_state
 
     @adls_container_lease_state.setter
@@ -14166,6 +15726,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_container_lease_status(self) -> Optional[ADLSLeaseStatus]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container_lease_status
 
     @adls_container_lease_status.setter
@@ -14178,6 +15740,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_container_encryption_scope(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container_encryption_scope
 
     @adls_container_encryption_scope.setter
@@ -14192,6 +15756,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_container_version_level_immutability_support(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container_version_level_immutability_support
 
     @adls_container_version_level_immutability_support.setter
@@ -14206,6 +15772,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_object_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_count
 
     @adls_object_count.setter
@@ -14216,6 +15784,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_objects(self) -> Optional[list[ADLSObject]]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_objects
 
     @adls_objects.setter
@@ -14226,6 +15796,8 @@ class ADLSContainer(ADLS):
 
     @property
     def adls_account(self) -> Optional[ADLSAccount]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_account
 
     @adls_account.setter
@@ -14306,6 +15878,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_url
 
     @adls_object_url.setter
@@ -14316,6 +15890,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_version_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_version_id
 
     @adls_object_version_id.setter
@@ -14326,6 +15902,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_type(self) -> Optional[ADLSObjectType]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_type
 
     @adls_object_type.setter
@@ -14336,6 +15914,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_size(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_size
 
     @adls_object_size.setter
@@ -14346,6 +15926,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_access_tier(self) -> Optional[ADLSAccessTier]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_access_tier
 
     @adls_object_access_tier.setter
@@ -14358,6 +15940,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_access_tier_last_modified_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_access_tier_last_modified_time
 
     @adls_object_access_tier_last_modified_time.setter
@@ -14372,6 +15956,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_archive_status(self) -> Optional[ADLSObjectArchiveStatus]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_archive_status
 
     @adls_object_archive_status.setter
@@ -14384,6 +15970,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_server_encrypted(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_server_encrypted
 
     @adls_object_server_encrypted.setter
@@ -14396,6 +15984,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_version_level_immutability_support(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_version_level_immutability_support
 
     @adls_object_version_level_immutability_support.setter
@@ -14410,6 +16000,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_cache_control(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_cache_control
 
     @adls_object_cache_control.setter
@@ -14420,6 +16012,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_content_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_content_type
 
     @adls_object_content_type.setter
@@ -14430,6 +16024,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_content_m_d5_hash(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_content_m_d5_hash
 
     @adls_object_content_m_d5_hash.setter
@@ -14442,6 +16038,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_content_language(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_content_language
 
     @adls_object_content_language.setter
@@ -14452,6 +16050,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_lease_status(self) -> Optional[ADLSLeaseStatus]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_lease_status
 
     @adls_object_lease_status.setter
@@ -14464,6 +16064,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_lease_state(self) -> Optional[ADLSLeaseState]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_lease_state
 
     @adls_object_lease_state.setter
@@ -14476,6 +16078,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_object_metadata(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_object_metadata
 
     @adls_object_metadata.setter
@@ -14486,6 +16090,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_container_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container_qualified_name
 
     @adls_container_qualified_name.setter
@@ -14498,6 +16104,8 @@ class ADLSObject(ADLS):
 
     @property
     def adls_container(self) -> Optional[ADLSContainer]:
+        if self.attributes is None:
+            return None
         return self.attributes.adls_container
 
     @adls_container.setter
@@ -14606,6 +16214,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_bucket_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_name
 
     @gcs_bucket_name.setter
@@ -14616,6 +16226,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_bucket_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_qualified_name
 
     @gcs_bucket_qualified_name.setter
@@ -14626,6 +16238,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_size(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_size
 
     @gcs_object_size.setter
@@ -14636,6 +16250,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_key(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_key
 
     @gcs_object_key.setter
@@ -14646,6 +16262,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_media_link(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_media_link
 
     @gcs_object_media_link.setter
@@ -14656,6 +16274,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_hold_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_hold_type
 
     @gcs_object_hold_type.setter
@@ -14666,6 +16286,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_generation_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_generation_id
 
     @gcs_object_generation_id.setter
@@ -14676,6 +16298,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_c_r_c32_c_hash
 
     @gcs_object_c_r_c32_c_hash.setter
@@ -14686,6 +16310,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_m_d5_hash(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_m_d5_hash
 
     @gcs_object_m_d5_hash.setter
@@ -14696,6 +16322,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_data_last_modified_time
 
     @gcs_object_data_last_modified_time.setter
@@ -14710,6 +16338,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_content_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_content_type
 
     @gcs_object_content_type.setter
@@ -14720,6 +16350,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_content_encoding(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_content_encoding
 
     @gcs_object_content_encoding.setter
@@ -14730,6 +16362,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_content_disposition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_content_disposition
 
     @gcs_object_content_disposition.setter
@@ -14742,6 +16376,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_content_language(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_content_language
 
     @gcs_object_content_language.setter
@@ -14752,6 +16388,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_retention_expiration_date
 
     @gcs_object_retention_expiration_date.setter
@@ -14766,6 +16404,8 @@ class GCSObject(GCS):
 
     @property
     def gcs_bucket(self) -> Optional[GCSBucket]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket
 
     @gcs_bucket.setter
@@ -14860,6 +16500,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_object_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_object_count
 
     @gcs_object_count.setter
@@ -14870,6 +16512,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_versioning_enabled
 
     @gcs_bucket_versioning_enabled.setter
@@ -14882,6 +16526,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_locked(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_retention_locked
 
     @gcs_bucket_retention_locked.setter
@@ -14892,6 +16538,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_period(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_retention_period
 
     @gcs_bucket_retention_period.setter
@@ -14902,6 +16550,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_retention_effective_time
 
     @gcs_bucket_retention_effective_time.setter
@@ -14916,6 +16566,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_lifecycle_rules
 
     @gcs_bucket_lifecycle_rules.setter
@@ -14926,6 +16578,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_bucket_retention_policy(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_bucket_retention_policy
 
     @gcs_bucket_retention_policy.setter
@@ -14936,6 +16590,8 @@ class GCSBucket(GCS):
 
     @property
     def gcs_objects(self) -> Optional[list[GCSObject]]:
+        if self.attributes is None:
+            return None
         return self.attributes.gcs_objects
 
     @gcs_objects.setter
@@ -15006,6 +16662,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_id
 
     @mc_incident_id.setter
@@ -15016,6 +16674,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_type
 
     @mc_incident_type.setter
@@ -15026,6 +16686,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_sub_types(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_sub_types
 
     @mc_incident_sub_types.setter
@@ -15036,6 +16698,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_severity(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_severity
 
     @mc_incident_severity.setter
@@ -15046,6 +16710,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_state(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_state
 
     @mc_incident_state.setter
@@ -15056,6 +16722,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_warehouse(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_warehouse
 
     @mc_incident_warehouse.setter
@@ -15066,6 +16734,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_incident_assets(self) -> Optional[list[Asset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_incident_assets
 
     @mc_incident_assets.setter
@@ -15076,6 +16746,8 @@ class MCIncident(MonteCarlo):
 
     @property
     def mc_monitor(self) -> Optional[MCMonitor]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor
 
     @mc_monitor.setter
@@ -15156,6 +16828,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_id
 
     @mc_monitor_id.setter
@@ -15166,6 +16840,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_status
 
     @mc_monitor_status.setter
@@ -15176,6 +16852,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_type
 
     @mc_monitor_type.setter
@@ -15186,6 +16864,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_warehouse(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_warehouse
 
     @mc_monitor_warehouse.setter
@@ -15196,6 +16876,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_schedule_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_schedule_type
 
     @mc_monitor_schedule_type.setter
@@ -15206,6 +16888,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_namespace(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_namespace
 
     @mc_monitor_namespace.setter
@@ -15216,6 +16900,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_type
 
     @mc_monitor_rule_type.setter
@@ -15226,6 +16912,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_custom_sql(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_custom_sql
 
     @mc_monitor_rule_custom_sql.setter
@@ -15236,6 +16924,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_schedule_config(self) -> Optional[MCRuleSchedule]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_schedule_config
 
     @mc_monitor_rule_schedule_config.setter
@@ -15250,6 +16940,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_schedule_config_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_schedule_config_humanized
 
     @mc_monitor_rule_schedule_config_humanized.setter
@@ -15264,6 +16956,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_alert_condition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_alert_condition
 
     @mc_monitor_alert_condition.setter
@@ -15274,6 +16968,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_next_execution_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_next_execution_time
 
     @mc_monitor_rule_next_execution_time.setter
@@ -15288,6 +16984,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_previous_execution_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_previous_execution_time
 
     @mc_monitor_rule_previous_execution_time.setter
@@ -15302,6 +17000,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_comparisons(self) -> Optional[list[MCRuleComparison]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_comparisons
 
     @mc_monitor_rule_comparisons.setter
@@ -15314,6 +17014,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_rule_is_snoozed(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_rule_is_snoozed
 
     @mc_monitor_rule_is_snoozed.setter
@@ -15324,6 +17026,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_breach_rate(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_breach_rate
 
     @mc_monitor_breach_rate.setter
@@ -15334,6 +17038,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_incident_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_incident_count
 
     @mc_monitor_incident_count.setter
@@ -15344,6 +17050,8 @@ class MCMonitor(MonteCarlo):
 
     @property
     def mc_monitor_assets(self) -> Optional[list[Asset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mc_monitor_assets
 
     @mc_monitor_assets.setter
@@ -15437,6 +17145,8 @@ class PresetChart(Preset):
 
     @property
     def preset_chart_description_markdown(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_chart_description_markdown
 
     @preset_chart_description_markdown.setter
@@ -15451,6 +17161,8 @@ class PresetChart(Preset):
 
     @property
     def preset_chart_form_data(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_chart_form_data
 
     @preset_chart_form_data.setter
@@ -15461,6 +17173,8 @@ class PresetChart(Preset):
 
     @property
     def preset_dashboard(self) -> Optional[PresetDashboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard
 
     @preset_dashboard.setter
@@ -15512,6 +17226,8 @@ class PresetDataset(Preset):
 
     @property
     def preset_dataset_datasource_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dataset_datasource_name
 
     @preset_dataset_datasource_name.setter
@@ -15524,6 +17240,8 @@ class PresetDataset(Preset):
 
     @property
     def preset_dataset_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dataset_id
 
     @preset_dataset_id.setter
@@ -15534,6 +17252,8 @@ class PresetDataset(Preset):
 
     @property
     def preset_dataset_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dataset_type
 
     @preset_dataset_type.setter
@@ -15544,6 +17264,8 @@ class PresetDataset(Preset):
 
     @property
     def preset_dashboard(self) -> Optional[PresetDashboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard
 
     @preset_dashboard.setter
@@ -15603,6 +17325,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_changed_by_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_changed_by_name
 
     @preset_dashboard_changed_by_name.setter
@@ -15617,6 +17341,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_changed_by_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_changed_by_url
 
     @preset_dashboard_changed_by_url.setter
@@ -15631,6 +17357,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_is_managed_externally(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_is_managed_externally
 
     @preset_dashboard_is_managed_externally.setter
@@ -15645,6 +17373,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_is_published(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_is_published
 
     @preset_dashboard_is_published.setter
@@ -15657,6 +17387,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_thumbnail_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_thumbnail_url
 
     @preset_dashboard_thumbnail_url.setter
@@ -15669,6 +17401,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_dashboard_chart_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboard_chart_count
 
     @preset_dashboard_chart_count.setter
@@ -15679,6 +17413,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_datasets(self) -> Optional[list[PresetDataset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_datasets
 
     @preset_datasets.setter
@@ -15689,6 +17425,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_charts(self) -> Optional[list[PresetChart]]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_charts
 
     @preset_charts.setter
@@ -15699,6 +17437,8 @@ class PresetDashboard(Preset):
 
     @property
     def preset_workspace(self) -> Optional[PresetWorkspace]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace
 
     @preset_workspace.setter
@@ -15774,6 +17514,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_public_dashboards_allowed
 
     @preset_workspace_public_dashboards_allowed.setter
@@ -15788,6 +17530,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_cluster_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_cluster_id
 
     @preset_workspace_cluster_id.setter
@@ -15798,6 +17542,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_hostname(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_hostname
 
     @preset_workspace_hostname.setter
@@ -15808,6 +17554,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_is_in_maintenance_mode(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_is_in_maintenance_mode
 
     @preset_workspace_is_in_maintenance_mode.setter
@@ -15822,6 +17570,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_region(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_region
 
     @preset_workspace_region.setter
@@ -15832,6 +17582,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_status(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_status
 
     @preset_workspace_status.setter
@@ -15842,6 +17594,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_deployment_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_deployment_id
 
     @preset_workspace_deployment_id.setter
@@ -15854,6 +17608,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_dashboard_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_dashboard_count
 
     @preset_workspace_dashboard_count.setter
@@ -15868,6 +17624,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_workspace_dataset_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_workspace_dataset_count
 
     @preset_workspace_dataset_count.setter
@@ -15880,6 +17638,8 @@ class PresetWorkspace(Preset):
 
     @property
     def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.preset_dashboards
 
     @preset_dashboards.setter
@@ -15957,6 +17717,8 @@ class ModeReport(Mode):
 
     @property
     def mode_collection_token(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_collection_token
 
     @mode_collection_token.setter
@@ -15967,6 +17729,8 @@ class ModeReport(Mode):
 
     @property
     def mode_report_published_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_report_published_at
 
     @mode_report_published_at.setter
@@ -15977,6 +17741,8 @@ class ModeReport(Mode):
 
     @property
     def mode_query_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_query_count
 
     @mode_query_count.setter
@@ -15987,6 +17753,8 @@ class ModeReport(Mode):
 
     @property
     def mode_chart_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_chart_count
 
     @mode_chart_count.setter
@@ -15997,6 +17765,8 @@ class ModeReport(Mode):
 
     @property
     def mode_query_preview(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_query_preview
 
     @mode_query_preview.setter
@@ -16007,6 +17777,8 @@ class ModeReport(Mode):
 
     @property
     def mode_is_public(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_is_public
 
     @mode_is_public.setter
@@ -16017,6 +17789,8 @@ class ModeReport(Mode):
 
     @property
     def mode_is_shared(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_is_shared
 
     @mode_is_shared.setter
@@ -16027,6 +17801,8 @@ class ModeReport(Mode):
 
     @property
     def mode_collections(self) -> Optional[list[ModeCollection]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_collections
 
     @mode_collections.setter
@@ -16037,6 +17813,8 @@ class ModeReport(Mode):
 
     @property
     def mode_queries(self) -> Optional[list[ModeQuery]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_queries
 
     @mode_queries.setter
@@ -16106,6 +17884,8 @@ class ModeQuery(Mode):
 
     @property
     def mode_raw_query(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_raw_query
 
     @mode_raw_query.setter
@@ -16116,6 +17896,8 @@ class ModeQuery(Mode):
 
     @property
     def mode_report_import_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_report_import_count
 
     @mode_report_import_count.setter
@@ -16126,6 +17908,8 @@ class ModeQuery(Mode):
 
     @property
     def mode_charts(self) -> Optional[list[ModeChart]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_charts
 
     @mode_charts.setter
@@ -16136,6 +17920,8 @@ class ModeQuery(Mode):
 
     @property
     def mode_report(self) -> Optional[ModeReport]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_report
 
     @mode_report.setter
@@ -16188,6 +17974,8 @@ class ModeChart(Mode):
 
     @property
     def mode_chart_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_chart_type
 
     @mode_chart_type.setter
@@ -16198,6 +17986,8 @@ class ModeChart(Mode):
 
     @property
     def mode_query(self) -> Optional[ModeQuery]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_query
 
     @mode_query.setter
@@ -16244,6 +18034,8 @@ class ModeWorkspace(Mode):
 
     @property
     def mode_collection_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_collection_count
 
     @mode_collection_count.setter
@@ -16254,6 +18046,8 @@ class ModeWorkspace(Mode):
 
     @property
     def mode_collections(self) -> Optional[list[ModeCollection]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_collections
 
     @mode_collections.setter
@@ -16302,6 +18096,8 @@ class ModeCollection(Mode):
 
     @property
     def mode_collection_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_collection_type
 
     @mode_collection_type.setter
@@ -16312,6 +18108,8 @@ class ModeCollection(Mode):
 
     @property
     def mode_collection_state(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_collection_state
 
     @mode_collection_state.setter
@@ -16322,6 +18120,8 @@ class ModeCollection(Mode):
 
     @property
     def mode_workspace(self) -> Optional[ModeWorkspace]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_workspace
 
     @mode_workspace.setter
@@ -16332,6 +18132,8 @@ class ModeCollection(Mode):
 
     @property
     def mode_reports(self) -> Optional[list[ModeReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.mode_reports
 
     @mode_reports.setter
@@ -16385,6 +18187,8 @@ class SigmaDatasetColumn(Sigma):
 
     @property
     def sigma_dataset_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_dataset_qualified_name
 
     @sigma_dataset_qualified_name.setter
@@ -16395,6 +18199,8 @@ class SigmaDatasetColumn(Sigma):
 
     @property
     def sigma_dataset_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_dataset_name
 
     @sigma_dataset_name.setter
@@ -16405,6 +18211,8 @@ class SigmaDatasetColumn(Sigma):
 
     @property
     def sigma_dataset(self) -> Optional[SigmaDataset]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_dataset
 
     @sigma_dataset.setter
@@ -16454,6 +18262,8 @@ class SigmaDataset(Sigma):
 
     @property
     def sigma_dataset_column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_dataset_column_count
 
     @sigma_dataset_column_count.setter
@@ -16464,6 +18274,8 @@ class SigmaDataset(Sigma):
 
     @property
     def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_dataset_columns
 
     @sigma_dataset_columns.setter
@@ -16512,6 +18324,8 @@ class SigmaWorkbook(Sigma):
 
     @property
     def sigma_page_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_page_count
 
     @sigma_page_count.setter
@@ -16522,6 +18336,8 @@ class SigmaWorkbook(Sigma):
 
     @property
     def sigma_pages(self) -> Optional[list[SigmaPage]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_pages
 
     @sigma_pages.setter
@@ -16569,6 +18385,8 @@ class SigmaDataElementField(Sigma):
 
     @property
     def sigma_data_element_field_is_hidden(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_field_is_hidden
 
     @sigma_data_element_field_is_hidden.setter
@@ -16583,6 +18401,8 @@ class SigmaDataElementField(Sigma):
 
     @property
     def sigma_data_element_field_formula(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_field_formula
 
     @sigma_data_element_field_formula.setter
@@ -16597,6 +18417,8 @@ class SigmaDataElementField(Sigma):
 
     @property
     def sigma_data_element(self) -> Optional[SigmaDataElement]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element
 
     @sigma_data_element.setter
@@ -16647,6 +18469,8 @@ class SigmaPage(Sigma):
 
     @property
     def sigma_data_element_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_count
 
     @sigma_data_element_count.setter
@@ -16657,6 +18481,8 @@ class SigmaPage(Sigma):
 
     @property
     def sigma_data_elements(self) -> Optional[list[SigmaDataElement]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_elements
 
     @sigma_data_elements.setter
@@ -16669,6 +18495,8 @@ class SigmaPage(Sigma):
 
     @property
     def sigma_workbook(self) -> Optional[SigmaWorkbook]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_workbook
 
     @sigma_workbook.setter
@@ -16721,6 +18549,8 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_query(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_query
 
     @sigma_data_element_query.setter
@@ -16731,6 +18561,8 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_type
 
     @sigma_data_element_type.setter
@@ -16741,6 +18573,8 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_field_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_field_count
 
     @sigma_data_element_field_count.setter
@@ -16753,6 +18587,8 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_page(self) -> Optional[SigmaPage]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_page
 
     @sigma_page.setter
@@ -16763,6 +18599,8 @@ class SigmaDataElement(Sigma):
 
     @property
     def sigma_data_element_fields(self) -> Optional[list[SigmaDataElementField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.sigma_data_element_fields
 
     @sigma_data_element_fields.setter
@@ -16827,6 +18665,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -16837,6 +18677,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -16847,6 +18689,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def top_level_project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_name
 
     @top_level_project_name.setter
@@ -16857,6 +18701,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -16871,6 +18717,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -16881,6 +18729,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def project(self) -> Optional[TableauProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -16891,6 +18741,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def dashboards(self) -> Optional[list[TableauDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboards
 
     @dashboards.setter
@@ -16901,6 +18753,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        if self.attributes is None:
+            return None
         return self.attributes.worksheets
 
     @worksheets.setter
@@ -16911,6 +18765,8 @@ class TableauWorkbook(Tableau):
 
     @property
     def datasources(self) -> Optional[list[TableauDatasource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasources
 
     @datasources.setter
@@ -16994,6 +18850,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -17004,6 +18862,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -17014,6 +18874,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -17028,6 +18890,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
@@ -17038,6 +18902,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def datasource_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasource_qualified_name
 
     @datasource_qualified_name.setter
@@ -17048,6 +18914,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -17058,6 +18926,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def fully_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.fully_qualified_name
 
     @fully_qualified_name.setter
@@ -17068,6 +18938,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def tableau_datasource_field_data_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tableau_datasource_field_data_category
 
     @tableau_datasource_field_data_category.setter
@@ -17082,6 +18954,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def tableau_datasource_field_role(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tableau_datasource_field_role
 
     @tableau_datasource_field_role.setter
@@ -17094,6 +18968,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def tableau_datasource_field_data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tableau_datasource_field_data_type
 
     @tableau_datasource_field_data_type.setter
@@ -17108,6 +18984,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.upstream_tables
 
     @upstream_tables.setter
@@ -17118,6 +18996,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def tableau_datasource_field_formula(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tableau_datasource_field_formula
 
     @tableau_datasource_field_formula.setter
@@ -17132,6 +19012,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def tableau_datasource_field_bin_size(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tableau_datasource_field_bin_size
 
     @tableau_datasource_field_bin_size.setter
@@ -17146,6 +19028,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def upstream_columns(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.upstream_columns
 
     @upstream_columns.setter
@@ -17156,6 +19040,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.upstream_fields
 
     @upstream_fields.setter
@@ -17166,6 +19052,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def datasource_field_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasource_field_type
 
     @datasource_field_type.setter
@@ -17176,6 +19064,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        if self.attributes is None:
+            return None
         return self.attributes.worksheets
 
     @worksheets.setter
@@ -17186,6 +19076,8 @@ class TableauDatasourceField(Tableau):
 
     @property
     def datasource(self) -> Optional[TableauDatasource]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasource
 
     @datasource.setter
@@ -17291,6 +19183,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -17301,6 +19195,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -17311,6 +19207,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -17325,6 +19223,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
@@ -17335,6 +19235,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def datasource_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasource_qualified_name
 
     @datasource_qualified_name.setter
@@ -17345,6 +19247,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -17355,6 +19259,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def data_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_category
 
     @data_category.setter
@@ -17365,6 +19271,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def role(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.role
 
     @role.setter
@@ -17375,6 +19283,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def tableau_data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.tableau_data_type
 
     @tableau_data_type.setter
@@ -17385,6 +19295,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def formula(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.formula
 
     @formula.setter
@@ -17395,6 +19307,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def upstream_fields(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.upstream_fields
 
     @upstream_fields.setter
@@ -17405,6 +19319,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        if self.attributes is None:
+            return None
         return self.attributes.worksheets
 
     @worksheets.setter
@@ -17415,6 +19331,8 @@ class TableauCalculatedField(Tableau):
 
     @property
     def datasource(self) -> Optional[TableauDatasource]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasource
 
     @datasource.setter
@@ -17496,6 +19414,8 @@ class TableauProject(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -17506,6 +19426,8 @@ class TableauProject(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -17520,6 +19442,8 @@ class TableauProject(Tableau):
 
     @property
     def is_top_level_project(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_top_level_project
 
     @is_top_level_project.setter
@@ -17530,6 +19454,8 @@ class TableauProject(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -17540,6 +19466,8 @@ class TableauProject(Tableau):
 
     @property
     def parent_project(self) -> Optional[TableauProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.parent_project
 
     @parent_project.setter
@@ -17550,6 +19478,8 @@ class TableauProject(Tableau):
 
     @property
     def workbooks(self) -> Optional[list[TableauWorkbook]]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbooks
 
     @workbooks.setter
@@ -17560,6 +19490,8 @@ class TableauProject(Tableau):
 
     @property
     def site(self) -> Optional[TableauSite]:
+        if self.attributes is None:
+            return None
         return self.attributes.site
 
     @site.setter
@@ -17570,6 +19502,8 @@ class TableauProject(Tableau):
 
     @property
     def datasources(self) -> Optional[list[TableauDatasource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasources
 
     @datasources.setter
@@ -17580,6 +19514,8 @@ class TableauProject(Tableau):
 
     @property
     def flows(self) -> Optional[list[TableauFlow]]:
+        if self.attributes is None:
+            return None
         return self.attributes.flows
 
     @flows.setter
@@ -17590,6 +19526,8 @@ class TableauProject(Tableau):
 
     @property
     def child_projects(self) -> Optional[list[TableauProject]]:
+        if self.attributes is None:
+            return None
         return self.attributes.child_projects
 
     @child_projects.setter
@@ -17663,6 +19601,8 @@ class TableauMetric(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -17673,6 +19613,8 @@ class TableauMetric(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -17683,6 +19625,8 @@ class TableauMetric(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -17697,6 +19641,8 @@ class TableauMetric(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -17707,6 +19653,8 @@ class TableauMetric(Tableau):
 
     @property
     def project(self) -> Optional[TableauProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -17761,6 +19709,8 @@ class TableauSite(Tableau):
 
     @property
     def projects(self) -> Optional[list[TableauProject]]:
+        if self.attributes is None:
+            return None
         return self.attributes.projects
 
     @projects.setter
@@ -17818,6 +19768,8 @@ class TableauDatasource(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -17828,6 +19780,8 @@ class TableauDatasource(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -17838,6 +19792,8 @@ class TableauDatasource(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -17852,6 +19808,8 @@ class TableauDatasource(Tableau):
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
@@ -17862,6 +19820,8 @@ class TableauDatasource(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -17872,6 +19832,8 @@ class TableauDatasource(Tableau):
 
     @property
     def is_published(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_published
 
     @is_published.setter
@@ -17882,6 +19844,8 @@ class TableauDatasource(Tableau):
 
     @property
     def has_extracts(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.has_extracts
 
     @has_extracts.setter
@@ -17892,6 +19856,8 @@ class TableauDatasource(Tableau):
 
     @property
     def is_certified(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_certified
 
     @is_certified.setter
@@ -17902,6 +19868,8 @@ class TableauDatasource(Tableau):
 
     @property
     def certifier(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.certifier
 
     @certifier.setter
@@ -17912,6 +19880,8 @@ class TableauDatasource(Tableau):
 
     @property
     def certification_note(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.certification_note
 
     @certification_note.setter
@@ -17922,6 +19892,8 @@ class TableauDatasource(Tableau):
 
     @property
     def certifier_display_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.certifier_display_name
 
     @certifier_display_name.setter
@@ -17932,6 +19904,8 @@ class TableauDatasource(Tableau):
 
     @property
     def upstream_tables(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.upstream_tables
 
     @upstream_tables.setter
@@ -17942,6 +19916,8 @@ class TableauDatasource(Tableau):
 
     @property
     def upstream_datasources(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.upstream_datasources
 
     @upstream_datasources.setter
@@ -17954,6 +19930,8 @@ class TableauDatasource(Tableau):
 
     @property
     def workbook(self) -> Optional[TableauWorkbook]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook
 
     @workbook.setter
@@ -17964,6 +19942,8 @@ class TableauDatasource(Tableau):
 
     @property
     def project(self) -> Optional[TableauProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -17974,6 +19954,8 @@ class TableauDatasource(Tableau):
 
     @property
     def fields(self) -> Optional[list[TableauDatasourceField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -18061,6 +20043,8 @@ class TableauDashboard(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -18071,6 +20055,8 @@ class TableauDashboard(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -18081,6 +20067,8 @@ class TableauDashboard(Tableau):
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
@@ -18091,6 +20079,8 @@ class TableauDashboard(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -18105,6 +20095,8 @@ class TableauDashboard(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -18115,6 +20107,8 @@ class TableauDashboard(Tableau):
 
     @property
     def workbook(self) -> Optional[TableauWorkbook]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook
 
     @workbook.setter
@@ -18125,6 +20119,8 @@ class TableauDashboard(Tableau):
 
     @property
     def worksheets(self) -> Optional[list[TableauWorksheet]]:
+        if self.attributes is None:
+            return None
         return self.attributes.worksheets
 
     @worksheets.setter
@@ -18192,6 +20188,8 @@ class TableauFlow(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -18202,6 +20200,8 @@ class TableauFlow(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -18212,6 +20212,8 @@ class TableauFlow(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -18226,6 +20228,8 @@ class TableauFlow(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -18236,6 +20240,8 @@ class TableauFlow(Tableau):
 
     @property
     def input_fields(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.input_fields
 
     @input_fields.setter
@@ -18246,6 +20252,8 @@ class TableauFlow(Tableau):
 
     @property
     def output_fields(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.output_fields
 
     @output_fields.setter
@@ -18256,6 +20264,8 @@ class TableauFlow(Tableau):
 
     @property
     def output_steps(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.output_steps
 
     @output_steps.setter
@@ -18266,6 +20276,8 @@ class TableauFlow(Tableau):
 
     @property
     def project(self) -> Optional[TableauProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -18337,6 +20349,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def site_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.site_qualified_name
 
     @site_qualified_name.setter
@@ -18347,6 +20361,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_qualified_name
 
     @project_qualified_name.setter
@@ -18357,6 +20373,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def top_level_project_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.top_level_project_qualified_name
 
     @top_level_project_qualified_name.setter
@@ -18371,6 +20389,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def project_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_hierarchy
 
     @project_hierarchy.setter
@@ -18381,6 +20401,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def workbook_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook_qualified_name
 
     @workbook_qualified_name.setter
@@ -18391,6 +20413,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def workbook(self) -> Optional[TableauWorkbook]:
+        if self.attributes is None:
+            return None
         return self.attributes.workbook
 
     @workbook.setter
@@ -18401,6 +20425,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def datasource_fields(self) -> Optional[list[TableauDatasourceField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasource_fields
 
     @datasource_fields.setter
@@ -18413,6 +20439,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def calculated_fields(self) -> Optional[list[TableauCalculatedField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.calculated_fields
 
     @calculated_fields.setter
@@ -18425,6 +20453,8 @@ class TableauWorksheet(Tableau):
 
     @property
     def dashboards(self) -> Optional[list[TableauDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboards
 
     @dashboards.setter
@@ -18504,6 +20534,8 @@ class LookerLook(Looker):
 
     @property
     def folder_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.folder_name
 
     @folder_name.setter
@@ -18514,6 +20546,8 @@ class LookerLook(Looker):
 
     @property
     def source_user_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_user_id
 
     @source_user_id.setter
@@ -18524,6 +20558,8 @@ class LookerLook(Looker):
 
     @property
     def source_view_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_view_count
 
     @source_view_count.setter
@@ -18534,6 +20570,8 @@ class LookerLook(Looker):
 
     @property
     def sourcelast_updater_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.sourcelast_updater_id
 
     @sourcelast_updater_id.setter
@@ -18544,6 +20582,8 @@ class LookerLook(Looker):
 
     @property
     def source_last_accessed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_last_accessed_at
 
     @source_last_accessed_at.setter
@@ -18554,6 +20594,8 @@ class LookerLook(Looker):
 
     @property
     def source_last_viewed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_last_viewed_at
 
     @source_last_viewed_at.setter
@@ -18564,6 +20606,8 @@ class LookerLook(Looker):
 
     @property
     def source_content_metadata_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_content_metadata_id
 
     @source_content_metadata_id.setter
@@ -18574,6 +20618,8 @@ class LookerLook(Looker):
 
     @property
     def source_query_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_query_id
 
     @source_query_id.setter
@@ -18584,6 +20630,8 @@ class LookerLook(Looker):
 
     @property
     def model_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.model_name
 
     @model_name.setter
@@ -18594,6 +20642,8 @@ class LookerLook(Looker):
 
     @property
     def query(self) -> Optional[LookerQuery]:
+        if self.attributes is None:
+            return None
         return self.attributes.query
 
     @query.setter
@@ -18604,6 +20654,8 @@ class LookerLook(Looker):
 
     @property
     def folder(self) -> Optional[LookerFolder]:
+        if self.attributes is None:
+            return None
         return self.attributes.folder
 
     @folder.setter
@@ -18614,6 +20666,8 @@ class LookerLook(Looker):
 
     @property
     def tile(self) -> Optional[LookerTile]:
+        if self.attributes is None:
+            return None
         return self.attributes.tile
 
     @tile.setter
@@ -18624,6 +20678,8 @@ class LookerLook(Looker):
 
     @property
     def model(self) -> Optional[LookerModel]:
+        if self.attributes is None:
+            return None
         return self.attributes.model
 
     @model.setter
@@ -18634,6 +20690,8 @@ class LookerLook(Looker):
 
     @property
     def dashboard(self) -> Optional[LookerDashboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboard
 
     @dashboard.setter
@@ -18720,6 +20778,8 @@ class LookerDashboard(Looker):
 
     @property
     def folder_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.folder_name
 
     @folder_name.setter
@@ -18730,6 +20790,8 @@ class LookerDashboard(Looker):
 
     @property
     def source_user_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_user_id
 
     @source_user_id.setter
@@ -18740,6 +20802,8 @@ class LookerDashboard(Looker):
 
     @property
     def source_view_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_view_count
 
     @source_view_count.setter
@@ -18750,6 +20814,8 @@ class LookerDashboard(Looker):
 
     @property
     def source_metadata_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_metadata_id
 
     @source_metadata_id.setter
@@ -18760,6 +20826,8 @@ class LookerDashboard(Looker):
 
     @property
     def sourcelast_updater_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.sourcelast_updater_id
 
     @sourcelast_updater_id.setter
@@ -18770,6 +20838,8 @@ class LookerDashboard(Looker):
 
     @property
     def source_last_accessed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_last_accessed_at
 
     @source_last_accessed_at.setter
@@ -18780,6 +20850,8 @@ class LookerDashboard(Looker):
 
     @property
     def source_last_viewed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_last_viewed_at
 
     @source_last_viewed_at.setter
@@ -18790,6 +20862,8 @@ class LookerDashboard(Looker):
 
     @property
     def tiles(self) -> Optional[list[LookerTile]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tiles
 
     @tiles.setter
@@ -18800,6 +20874,8 @@ class LookerDashboard(Looker):
 
     @property
     def looks(self) -> Optional[list[LookerLook]]:
+        if self.attributes is None:
+            return None
         return self.attributes.looks
 
     @looks.setter
@@ -18810,6 +20886,8 @@ class LookerDashboard(Looker):
 
     @property
     def folder(self) -> Optional[LookerFolder]:
+        if self.attributes is None:
+            return None
         return self.attributes.folder
 
     @folder.setter
@@ -18882,6 +20960,8 @@ class LookerFolder(Looker):
 
     @property
     def source_content_metadata_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_content_metadata_id
 
     @source_content_metadata_id.setter
@@ -18892,6 +20972,8 @@ class LookerFolder(Looker):
 
     @property
     def source_creator_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_creator_id
 
     @source_creator_id.setter
@@ -18902,6 +20984,8 @@ class LookerFolder(Looker):
 
     @property
     def source_child_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_child_count
 
     @source_child_count.setter
@@ -18912,6 +20996,8 @@ class LookerFolder(Looker):
 
     @property
     def source_parent_i_d(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_parent_i_d
 
     @source_parent_i_d.setter
@@ -18922,6 +21008,8 @@ class LookerFolder(Looker):
 
     @property
     def looks(self) -> Optional[list[LookerLook]]:
+        if self.attributes is None:
+            return None
         return self.attributes.looks
 
     @looks.setter
@@ -18932,6 +21020,8 @@ class LookerFolder(Looker):
 
     @property
     def dashboards(self) -> Optional[list[LookerDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboards
 
     @dashboards.setter
@@ -18998,6 +21088,8 @@ class LookerTile(Looker):
 
     @property
     def lookml_link_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.lookml_link_id
 
     @lookml_link_id.setter
@@ -19008,6 +21100,8 @@ class LookerTile(Looker):
 
     @property
     def merge_result_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.merge_result_id
 
     @merge_result_id.setter
@@ -19018,6 +21112,8 @@ class LookerTile(Looker):
 
     @property
     def note_text(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.note_text
 
     @note_text.setter
@@ -19028,6 +21124,8 @@ class LookerTile(Looker):
 
     @property
     def query_i_d(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.query_i_d
 
     @query_i_d.setter
@@ -19038,6 +21136,8 @@ class LookerTile(Looker):
 
     @property
     def result_maker_i_d(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.result_maker_i_d
 
     @result_maker_i_d.setter
@@ -19048,6 +21148,8 @@ class LookerTile(Looker):
 
     @property
     def subtitle_text(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.subtitle_text
 
     @subtitle_text.setter
@@ -19058,6 +21160,8 @@ class LookerTile(Looker):
 
     @property
     def look_id(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.look_id
 
     @look_id.setter
@@ -19068,6 +21172,8 @@ class LookerTile(Looker):
 
     @property
     def query(self) -> Optional[LookerQuery]:
+        if self.attributes is None:
+            return None
         return self.attributes.query
 
     @query.setter
@@ -19078,6 +21184,8 @@ class LookerTile(Looker):
 
     @property
     def look(self) -> Optional[LookerLook]:
+        if self.attributes is None:
+            return None
         return self.attributes.look
 
     @look.setter
@@ -19088,6 +21196,8 @@ class LookerTile(Looker):
 
     @property
     def dashboard(self) -> Optional[LookerDashboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboard
 
     @dashboard.setter
@@ -19154,6 +21264,8 @@ class LookerModel(Looker):
 
     @property
     def project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_name
 
     @project_name.setter
@@ -19164,6 +21276,8 @@ class LookerModel(Looker):
 
     @property
     def explores(self) -> Optional[list[LookerExplore]]:
+        if self.attributes is None:
+            return None
         return self.attributes.explores
 
     @explores.setter
@@ -19174,6 +21288,8 @@ class LookerModel(Looker):
 
     @property
     def project(self) -> Optional[LookerProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -19184,6 +21300,8 @@ class LookerModel(Looker):
 
     @property
     def look(self) -> Optional[LookerLook]:
+        if self.attributes is None:
+            return None
         return self.attributes.look
 
     @look.setter
@@ -19194,6 +21312,8 @@ class LookerModel(Looker):
 
     @property
     def queries(self) -> Optional[list[LookerQuery]]:
+        if self.attributes is None:
+            return None
         return self.attributes.queries
 
     @queries.setter
@@ -19204,6 +21324,8 @@ class LookerModel(Looker):
 
     @property
     def fields(self) -> Optional[list[LookerField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -19266,6 +21388,8 @@ class LookerExplore(Looker):
 
     @property
     def project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_name
 
     @project_name.setter
@@ -19276,6 +21400,8 @@ class LookerExplore(Looker):
 
     @property
     def model_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.model_name
 
     @model_name.setter
@@ -19286,6 +21412,8 @@ class LookerExplore(Looker):
 
     @property
     def source_connection_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_connection_name
 
     @source_connection_name.setter
@@ -19296,6 +21424,8 @@ class LookerExplore(Looker):
 
     @property
     def view_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.view_name
 
     @view_name.setter
@@ -19306,6 +21436,8 @@ class LookerExplore(Looker):
 
     @property
     def sql_table_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.sql_table_name
 
     @sql_table_name.setter
@@ -19316,6 +21448,8 @@ class LookerExplore(Looker):
 
     @property
     def project(self) -> Optional[LookerProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -19326,6 +21460,8 @@ class LookerExplore(Looker):
 
     @property
     def model(self) -> Optional[LookerModel]:
+        if self.attributes is None:
+            return None
         return self.attributes.model
 
     @model.setter
@@ -19336,6 +21472,8 @@ class LookerExplore(Looker):
 
     @property
     def fields(self) -> Optional[list[LookerField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -19396,6 +21534,8 @@ class LookerProject(Looker):
 
     @property
     def models(self) -> Optional[list[LookerModel]]:
+        if self.attributes is None:
+            return None
         return self.attributes.models
 
     @models.setter
@@ -19406,6 +21546,8 @@ class LookerProject(Looker):
 
     @property
     def explores(self) -> Optional[list[LookerExplore]]:
+        if self.attributes is None:
+            return None
         return self.attributes.explores
 
     @explores.setter
@@ -19416,6 +21558,8 @@ class LookerProject(Looker):
 
     @property
     def fields(self) -> Optional[list[LookerField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -19426,6 +21570,8 @@ class LookerProject(Looker):
 
     @property
     def views(self) -> Optional[list[LookerView]]:
+        if self.attributes is None:
+            return None
         return self.attributes.views
 
     @views.setter
@@ -19483,6 +21629,8 @@ class LookerQuery(Looker):
 
     @property
     def source_definition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_definition
 
     @source_definition.setter
@@ -19493,6 +21641,8 @@ class LookerQuery(Looker):
 
     @property
     def source_definition_database(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_definition_database
 
     @source_definition_database.setter
@@ -19503,6 +21653,8 @@ class LookerQuery(Looker):
 
     @property
     def source_definition_schema(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_definition_schema
 
     @source_definition_schema.setter
@@ -19513,6 +21665,8 @@ class LookerQuery(Looker):
 
     @property
     def fields(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -19523,6 +21677,8 @@ class LookerQuery(Looker):
 
     @property
     def tiles(self) -> Optional[list[LookerTile]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tiles
 
     @tiles.setter
@@ -19533,6 +21689,8 @@ class LookerQuery(Looker):
 
     @property
     def looks(self) -> Optional[list[LookerLook]]:
+        if self.attributes is None:
+            return None
         return self.attributes.looks
 
     @looks.setter
@@ -19543,6 +21701,8 @@ class LookerQuery(Looker):
 
     @property
     def model(self) -> Optional[LookerModel]:
+        if self.attributes is None:
+            return None
         return self.attributes.model
 
     @model.setter
@@ -19611,6 +21771,8 @@ class LookerField(Looker):
 
     @property
     def project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_name
 
     @project_name.setter
@@ -19621,6 +21783,8 @@ class LookerField(Looker):
 
     @property
     def looker_explore_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.looker_explore_qualified_name
 
     @looker_explore_qualified_name.setter
@@ -19633,6 +21797,8 @@ class LookerField(Looker):
 
     @property
     def looker_view_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.looker_view_qualified_name
 
     @looker_view_qualified_name.setter
@@ -19643,6 +21809,8 @@ class LookerField(Looker):
 
     @property
     def model_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.model_name
 
     @model_name.setter
@@ -19653,6 +21821,8 @@ class LookerField(Looker):
 
     @property
     def source_definition(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_definition
 
     @source_definition.setter
@@ -19663,6 +21833,8 @@ class LookerField(Looker):
 
     @property
     def looker_field_data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.looker_field_data_type
 
     @looker_field_data_type.setter
@@ -19673,6 +21845,8 @@ class LookerField(Looker):
 
     @property
     def looker_times_used(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.looker_times_used
 
     @looker_times_used.setter
@@ -19683,6 +21857,8 @@ class LookerField(Looker):
 
     @property
     def explore(self) -> Optional[LookerExplore]:
+        if self.attributes is None:
+            return None
         return self.attributes.explore
 
     @explore.setter
@@ -19693,6 +21869,8 @@ class LookerField(Looker):
 
     @property
     def project(self) -> Optional[LookerProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -19703,6 +21881,8 @@ class LookerField(Looker):
 
     @property
     def view(self) -> Optional[LookerView]:
+        if self.attributes is None:
+            return None
         return self.attributes.view
 
     @view.setter
@@ -19713,6 +21893,8 @@ class LookerField(Looker):
 
     @property
     def model(self) -> Optional[LookerModel]:
+        if self.attributes is None:
+            return None
         return self.attributes.model
 
     @model.setter
@@ -19783,6 +21965,8 @@ class LookerView(Looker):
 
     @property
     def project_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.project_name
 
     @project_name.setter
@@ -19793,6 +21977,8 @@ class LookerView(Looker):
 
     @property
     def project(self) -> Optional[LookerProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.project
 
     @project.setter
@@ -19803,6 +21989,8 @@ class LookerView(Looker):
 
     @property
     def fields(self) -> Optional[list[LookerField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -19849,6 +22037,8 @@ class RedashDashboard(Redash):
 
     @property
     def redash_dashboard_widget_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_dashboard_widget_count
 
     @redash_dashboard_widget_count.setter
@@ -19899,6 +22089,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_query_s_q_l(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_s_q_l
 
     @redash_query_s_q_l.setter
@@ -19909,6 +22101,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_query_parameters(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_parameters
 
     @redash_query_parameters.setter
@@ -19919,6 +22113,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_query_schedule(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_schedule
 
     @redash_query_schedule.setter
@@ -19929,6 +22125,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_query_last_execution_runtime(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_last_execution_runtime
 
     @redash_query_last_execution_runtime.setter
@@ -19943,6 +22141,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_query_last_executed_at(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_last_executed_at
 
     @redash_query_last_executed_at.setter
@@ -19955,6 +22155,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_query_schedule_humanized(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_schedule_humanized
 
     @redash_query_schedule_humanized.setter
@@ -19969,6 +22171,8 @@ class RedashQuery(Redash):
 
     @property
     def redash_visualizations(self) -> Optional[list[RedashVisualization]]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_visualizations
 
     @redash_visualizations.setter
@@ -20034,6 +22238,8 @@ class RedashVisualization(Redash):
 
     @property
     def redash_visualization_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_visualization_type
 
     @redash_visualization_type.setter
@@ -20044,6 +22250,8 @@ class RedashVisualization(Redash):
 
     @property
     def redash_query_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_name
 
     @redash_query_name.setter
@@ -20054,6 +22262,8 @@ class RedashVisualization(Redash):
 
     @property
     def redash_query_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query_qualified_name
 
     @redash_query_qualified_name.setter
@@ -20064,6 +22274,8 @@ class RedashVisualization(Redash):
 
     @property
     def redash_query(self) -> Optional[RedashQuery]:
+        if self.attributes is None:
+            return None
         return self.attributes.redash_query
 
     @redash_query.setter
@@ -20119,6 +22331,8 @@ class MetabaseQuestion(Metabase):
 
     @property
     def metabase_dashboard_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_dashboard_count
 
     @metabase_dashboard_count.setter
@@ -20129,6 +22343,8 @@ class MetabaseQuestion(Metabase):
 
     @property
     def metabase_query_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_query_type
 
     @metabase_query_type.setter
@@ -20139,6 +22355,8 @@ class MetabaseQuestion(Metabase):
 
     @property
     def metabase_query(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_query
 
     @metabase_query.setter
@@ -20149,6 +22367,8 @@ class MetabaseQuestion(Metabase):
 
     @property
     def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_dashboards
 
     @metabase_dashboards.setter
@@ -20161,6 +22381,8 @@ class MetabaseQuestion(Metabase):
 
     @property
     def metabase_collection(self) -> Optional[MetabaseCollection]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_collection
 
     @metabase_collection.setter
@@ -20220,6 +22442,8 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_slug(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_slug
 
     @metabase_slug.setter
@@ -20230,6 +22454,8 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_color(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_color
 
     @metabase_color.setter
@@ -20240,6 +22466,8 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_namespace(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_namespace
 
     @metabase_namespace.setter
@@ -20250,6 +22478,8 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_is_personal_collection(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_is_personal_collection
 
     @metabase_is_personal_collection.setter
@@ -20264,6 +22494,8 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_dashboards
 
     @metabase_dashboards.setter
@@ -20276,6 +22508,8 @@ class MetabaseCollection(Metabase):
 
     @property
     def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_questions
 
     @metabase_questions.setter
@@ -20333,6 +22567,8 @@ class MetabaseDashboard(Metabase):
 
     @property
     def metabase_question_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_question_count
 
     @metabase_question_count.setter
@@ -20343,6 +22579,8 @@ class MetabaseDashboard(Metabase):
 
     @property
     def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_questions
 
     @metabase_questions.setter
@@ -20353,6 +22591,8 @@ class MetabaseDashboard(Metabase):
 
     @property
     def metabase_collection(self) -> Optional[MetabaseCollection]:
+        if self.attributes is None:
+            return None
         return self.attributes.metabase_collection
 
     @metabase_collection.setter
@@ -20405,6 +22645,8 @@ class QuickSightFolder(QuickSight):
 
     @property
     def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_folder_type
 
     @quick_sight_folder_type.setter
@@ -20417,6 +22659,8 @@ class QuickSightFolder(QuickSight):
 
     @property
     def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_folder_hierarchy
 
     @quick_sight_folder_hierarchy.setter
@@ -20429,6 +22673,8 @@ class QuickSightFolder(QuickSight):
 
     @property
     def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboards
 
     @quick_sight_dashboards.setter
@@ -20441,6 +22687,8 @@ class QuickSightFolder(QuickSight):
 
     @property
     def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analyses
 
     @quick_sight_analyses.setter
@@ -20453,6 +22701,8 @@ class QuickSightFolder(QuickSight):
 
     @property
     def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_datasets
 
     @quick_sight_datasets.setter
@@ -20510,6 +22760,8 @@ class QuickSightDashboardVisual(QuickSight):
 
     @property
     def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboard_qualified_name
 
     @quick_sight_dashboard_qualified_name.setter
@@ -20524,6 +22776,8 @@ class QuickSightDashboardVisual(QuickSight):
 
     @property
     def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboard
 
     @quick_sight_dashboard.setter
@@ -20572,6 +22826,8 @@ class QuickSightAnalysisVisual(QuickSight):
 
     @property
     def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_qualified_name
 
     @quick_sight_analysis_qualified_name.setter
@@ -20586,6 +22842,8 @@ class QuickSightAnalysisVisual(QuickSight):
 
     @property
     def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis
 
     @quick_sight_analysis.setter
@@ -20633,6 +22891,8 @@ class QuickSightDatasetField(QuickSight):
 
     @property
     def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset_field_type
 
     @quick_sight_dataset_field_type.setter
@@ -20645,6 +22905,8 @@ class QuickSightDatasetField(QuickSight):
 
     @property
     def quick_sight_dataset_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset_qualified_name
 
     @quick_sight_dataset_qualified_name.setter
@@ -20659,6 +22921,8 @@ class QuickSightDatasetField(QuickSight):
 
     @property
     def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset
 
     @quick_sight_dataset.setter
@@ -20712,6 +22976,8 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_status
 
     @quick_sight_analysis_status.setter
@@ -20724,6 +22990,8 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_calculated_fields
 
     @quick_sight_analysis_calculated_fields.setter
@@ -20738,6 +23006,8 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_parameter_declarations
 
     @quick_sight_analysis_parameter_declarations.setter
@@ -20752,6 +23022,8 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_filter_groups
 
     @quick_sight_analysis_filter_groups.setter
@@ -20766,6 +23038,8 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_visuals
 
     @quick_sight_analysis_visuals.setter
@@ -20778,6 +23052,8 @@ class QuickSightAnalysis(QuickSight):
 
     @property
     def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_analysis_folders
 
     @quick_sight_analysis_folders.setter
@@ -20840,6 +23116,8 @@ class QuickSightDashboard(QuickSight):
 
     @property
     def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboard_published_version_number
 
     @quick_sight_dashboard_published_version_number.setter
@@ -20854,6 +23132,8 @@ class QuickSightDashboard(QuickSight):
 
     @property
     def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboard_last_published_time
 
     @quick_sight_dashboard_last_published_time.setter
@@ -20868,6 +23148,8 @@ class QuickSightDashboard(QuickSight):
 
     @property
     def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboard_folders
 
     @quick_sight_dashboard_folders.setter
@@ -20882,6 +23164,8 @@ class QuickSightDashboard(QuickSight):
     def quick_sight_dashboard_visuals(
         self,
     ) -> Optional[list[QuickSightDashboardVisual]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dashboard_visuals
 
     @quick_sight_dashboard_visuals.setter
@@ -20940,6 +23224,8 @@ class QuickSightDataset(QuickSight):
 
     @property
     def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset_import_mode
 
     @quick_sight_dataset_import_mode.setter
@@ -20954,6 +23240,8 @@ class QuickSightDataset(QuickSight):
 
     @property
     def quick_sight_dataset_column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset_column_count
 
     @quick_sight_dataset_column_count.setter
@@ -20968,6 +23256,8 @@ class QuickSightDataset(QuickSight):
 
     @property
     def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset_folders
 
     @quick_sight_dataset_folders.setter
@@ -20980,6 +23270,8 @@ class QuickSightDataset(QuickSight):
 
     @property
     def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.quick_sight_dataset_fields
 
     @quick_sight_dataset_fields.setter
@@ -21033,6 +23325,8 @@ class ThoughtspotLiveboard(Thoughtspot):
 
     @property
     def thoughtspot_dashlets(self) -> Optional[list[ThoughtspotDashlet]]:
+        if self.attributes is None:
+            return None
         return self.attributes.thoughtspot_dashlets
 
     @thoughtspot_dashlets.setter
@@ -21079,6 +23373,8 @@ class ThoughtspotDashlet(Thoughtspot):
 
     @property
     def thoughtspot_liveboard_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.thoughtspot_liveboard_name
 
     @thoughtspot_liveboard_name.setter
@@ -21089,6 +23385,8 @@ class ThoughtspotDashlet(Thoughtspot):
 
     @property
     def thoughtspot_liveboard_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.thoughtspot_liveboard_qualified_name
 
     @thoughtspot_liveboard_qualified_name.setter
@@ -21103,6 +23401,8 @@ class ThoughtspotDashlet(Thoughtspot):
 
     @property
     def thoughtspot_liveboard(self) -> Optional[ThoughtspotLiveboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.thoughtspot_liveboard
 
     @thoughtspot_liveboard.setter
@@ -21179,6 +23479,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -21189,6 +23491,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset_qualified_name
 
     @dataset_qualified_name.setter
@@ -21199,6 +23503,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def web_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.web_url
 
     @web_url.setter
@@ -21209,6 +23515,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def page_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.page_count
 
     @page_count.setter
@@ -21219,6 +23527,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace
 
     @workspace.setter
@@ -21229,6 +23539,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def tiles(self) -> Optional[list[PowerBITile]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tiles
 
     @tiles.setter
@@ -21239,6 +23551,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def pages(self) -> Optional[list[PowerBIPage]]:
+        if self.attributes is None:
+            return None
         return self.attributes.pages
 
     @pages.setter
@@ -21249,6 +23563,8 @@ class PowerBIReport(PowerBI):
 
     @property
     def dataset(self) -> Optional[PowerBIDataset]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset
 
     @dataset.setter
@@ -21312,6 +23628,8 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -21322,6 +23640,8 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset_qualified_name
 
     @dataset_qualified_name.setter
@@ -21332,6 +23652,8 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def power_b_i_measure_expression(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_measure_expression
 
     @power_b_i_measure_expression.setter
@@ -21342,6 +23664,8 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def power_b_i_is_external_measure(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_is_external_measure
 
     @power_b_i_is_external_measure.setter
@@ -21354,6 +23678,8 @@ class PowerBIMeasure(PowerBI):
 
     @property
     def table(self) -> Optional[PowerBITable]:
+        if self.attributes is None:
+            return None
         return self.attributes.table
 
     @table.setter
@@ -21414,6 +23740,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -21424,6 +23752,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset_qualified_name
 
     @dataset_qualified_name.setter
@@ -21434,6 +23764,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_column_data_category(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_column_data_category
 
     @power_b_i_column_data_category.setter
@@ -21446,6 +23778,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_column_data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_column_data_type
 
     @power_b_i_column_data_type.setter
@@ -21456,6 +23790,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_sort_by_column(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_sort_by_column
 
     @power_b_i_sort_by_column.setter
@@ -21466,6 +23802,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def power_b_i_column_summarize_by(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_column_summarize_by
 
     @power_b_i_column_summarize_by.setter
@@ -21478,6 +23816,8 @@ class PowerBIColumn(PowerBI):
 
     @property
     def table(self) -> Optional[PowerBITable]:
+        if self.attributes is None:
+            return None
         return self.attributes.table
 
     @table.setter
@@ -21545,6 +23885,8 @@ class PowerBITable(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -21555,6 +23897,8 @@ class PowerBITable(PowerBI):
 
     @property
     def dataset_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset_qualified_name
 
     @dataset_qualified_name.setter
@@ -21565,6 +23909,8 @@ class PowerBITable(PowerBI):
 
     @property
     def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_table_source_expressions
 
     @power_b_i_table_source_expressions.setter
@@ -21579,6 +23925,8 @@ class PowerBITable(PowerBI):
 
     @property
     def power_b_i_table_column_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_table_column_count
 
     @power_b_i_table_column_count.setter
@@ -21589,6 +23937,8 @@ class PowerBITable(PowerBI):
 
     @property
     def power_b_i_table_measure_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.power_b_i_table_measure_count
 
     @power_b_i_table_measure_count.setter
@@ -21601,6 +23951,8 @@ class PowerBITable(PowerBI):
 
     @property
     def measures(self) -> Optional[list[PowerBIMeasure]]:
+        if self.attributes is None:
+            return None
         return self.attributes.measures
 
     @measures.setter
@@ -21611,6 +23963,8 @@ class PowerBITable(PowerBI):
 
     @property
     def columns(self) -> Optional[list[PowerBIColumn]]:
+        if self.attributes is None:
+            return None
         return self.attributes.columns
 
     @columns.setter
@@ -21621,6 +23975,8 @@ class PowerBITable(PowerBI):
 
     @property
     def dataset(self) -> Optional[PowerBIDataset]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset
 
     @dataset.setter
@@ -21688,6 +24044,8 @@ class PowerBITile(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -21698,6 +24056,8 @@ class PowerBITile(PowerBI):
 
     @property
     def dashboard_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboard_qualified_name
 
     @dashboard_qualified_name.setter
@@ -21708,6 +24068,8 @@ class PowerBITile(PowerBI):
 
     @property
     def report(self) -> Optional[PowerBIReport]:
+        if self.attributes is None:
+            return None
         return self.attributes.report
 
     @report.setter
@@ -21718,6 +24080,8 @@ class PowerBITile(PowerBI):
 
     @property
     def dataset(self) -> Optional[PowerBIDataset]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset
 
     @dataset.setter
@@ -21728,6 +24092,8 @@ class PowerBITile(PowerBI):
 
     @property
     def dashboard(self) -> Optional[PowerBIDashboard]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboard
 
     @dashboard.setter
@@ -21783,6 +24149,8 @@ class PowerBIDatasource(PowerBI):
 
     @property
     def connection_details(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.connection_details
 
     @connection_details.setter
@@ -21793,6 +24161,8 @@ class PowerBIDatasource(PowerBI):
 
     @property
     def datasets(self) -> Optional[list[PowerBIDataset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasets
 
     @datasets.setter
@@ -21846,6 +24216,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def web_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.web_url
 
     @web_url.setter
@@ -21856,6 +24228,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def report_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.report_count
 
     @report_count.setter
@@ -21866,6 +24240,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def dashboard_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboard_count
 
     @dashboard_count.setter
@@ -21876,6 +24252,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def dataset_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataset_count
 
     @dataset_count.setter
@@ -21886,6 +24264,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def dataflow_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataflow_count
 
     @dataflow_count.setter
@@ -21896,6 +24276,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def reports(self) -> Optional[list[PowerBIReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.reports
 
     @reports.setter
@@ -21906,6 +24288,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def datasets(self) -> Optional[list[PowerBIDataset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasets
 
     @datasets.setter
@@ -21916,6 +24300,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def dashboards(self) -> Optional[list[PowerBIDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboards
 
     @dashboards.setter
@@ -21926,6 +24312,8 @@ class PowerBIWorkspace(PowerBI):
 
     @property
     def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataflows
 
     @dataflows.setter
@@ -21993,6 +24381,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -22003,6 +24393,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def web_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.web_url
 
     @web_url.setter
@@ -22013,6 +24405,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def reports(self) -> Optional[list[PowerBIReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.reports
 
     @reports.setter
@@ -22023,6 +24417,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace
 
     @workspace.setter
@@ -22033,6 +24429,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def dataflows(self) -> Optional[list[PowerBIDataflow]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dataflows
 
     @dataflows.setter
@@ -22043,6 +24441,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def tiles(self) -> Optional[list[PowerBITile]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tiles
 
     @tiles.setter
@@ -22053,6 +24453,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def tables(self) -> Optional[list[PowerBITable]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tables
 
     @tables.setter
@@ -22063,6 +24465,8 @@ class PowerBIDataset(PowerBI):
 
     @property
     def datasources(self) -> Optional[list[PowerBIDatasource]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasources
 
     @datasources.setter
@@ -22128,6 +24532,8 @@ class PowerBIDashboard(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -22138,6 +24544,8 @@ class PowerBIDashboard(PowerBI):
 
     @property
     def web_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.web_url
 
     @web_url.setter
@@ -22148,6 +24556,8 @@ class PowerBIDashboard(PowerBI):
 
     @property
     def tile_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.tile_count
 
     @tile_count.setter
@@ -22158,6 +24568,8 @@ class PowerBIDashboard(PowerBI):
 
     @property
     def tiles(self) -> Optional[list[PowerBITile]]:
+        if self.attributes is None:
+            return None
         return self.attributes.tiles
 
     @tiles.setter
@@ -22168,6 +24580,8 @@ class PowerBIDashboard(PowerBI):
 
     @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace
 
     @workspace.setter
@@ -22221,6 +24635,8 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -22231,6 +24647,8 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def web_url(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.web_url
 
     @web_url.setter
@@ -22241,6 +24659,8 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace
 
     @workspace.setter
@@ -22251,6 +24671,8 @@ class PowerBIDataflow(PowerBI):
 
     @property
     def datasets(self) -> Optional[list[PowerBIDataset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.datasets
 
     @datasets.setter
@@ -22302,6 +24724,8 @@ class PowerBIPage(PowerBI):
 
     @property
     def workspace_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.workspace_qualified_name
 
     @workspace_qualified_name.setter
@@ -22312,6 +24736,8 @@ class PowerBIPage(PowerBI):
 
     @property
     def report_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.report_qualified_name
 
     @report_qualified_name.setter
@@ -22322,6 +24748,8 @@ class PowerBIPage(PowerBI):
 
     @property
     def report(self) -> Optional[PowerBIReport]:
+        if self.attributes is None:
+            return None
         return self.attributes.report
 
     @report.setter
@@ -22373,6 +24801,8 @@ class MicroStrategyReport(MicroStrategy):
 
     @property
     def micro_strategy_report_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_report_type
 
     @micro_strategy_report_type.setter
@@ -22383,6 +24813,8 @@ class MicroStrategyReport(MicroStrategy):
 
     @property
     def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metrics
 
     @micro_strategy_metrics.setter
@@ -22395,6 +24827,8 @@ class MicroStrategyReport(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -22407,6 +24841,8 @@ class MicroStrategyReport(MicroStrategy):
 
     @property
     def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attributes
 
     @micro_strategy_attributes.setter
@@ -22467,6 +24903,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_reports
 
     @micro_strategy_reports.setter
@@ -22479,6 +24917,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_facts
 
     @micro_strategy_facts.setter
@@ -22491,6 +24931,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metrics
 
     @micro_strategy_metrics.setter
@@ -22505,6 +24947,8 @@ class MicroStrategyProject(MicroStrategy):
     def micro_strategy_visualizations(
         self,
     ) -> Optional[list[MicroStrategyVisualization]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_visualizations
 
     @micro_strategy_visualizations.setter
@@ -22517,6 +24961,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_documents(self) -> Optional[list[MicroStrategyDocument]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_documents
 
     @micro_strategy_documents.setter
@@ -22529,6 +24975,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cubes
 
     @micro_strategy_cubes.setter
@@ -22541,6 +24989,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_dossiers(self) -> Optional[list[MicroStrategyDossier]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_dossiers
 
     @micro_strategy_dossiers.setter
@@ -22553,6 +25003,8 @@ class MicroStrategyProject(MicroStrategy):
 
     @property
     def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attributes
 
     @micro_strategy_attributes.setter
@@ -22633,6 +25085,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_expression(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metric_expression
 
     @micro_strategy_metric_expression.setter
@@ -22647,6 +25101,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_attribute_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attribute_qualified_names
 
     @micro_strategy_attribute_qualified_names.setter
@@ -22661,6 +25117,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_attribute_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attribute_names
 
     @micro_strategy_attribute_names.setter
@@ -22673,6 +25131,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_fact_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_fact_qualified_names
 
     @micro_strategy_fact_qualified_names.setter
@@ -22687,6 +25147,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_fact_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_fact_names
 
     @micro_strategy_fact_names.setter
@@ -22697,6 +25159,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_parent_qualified_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metric_parent_qualified_names
 
     @micro_strategy_metric_parent_qualified_names.setter
@@ -22711,6 +25175,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_parent_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metric_parent_names
 
     @micro_strategy_metric_parent_names.setter
@@ -22725,6 +25191,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_parents(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metric_parents
 
     @micro_strategy_metric_parents.setter
@@ -22737,6 +25205,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_facts
 
     @micro_strategy_facts.setter
@@ -22749,6 +25219,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_reports
 
     @micro_strategy_reports.setter
@@ -22761,6 +25233,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cubes
 
     @micro_strategy_cubes.setter
@@ -22773,6 +25247,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_metric_children(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metric_children
 
     @micro_strategy_metric_children.setter
@@ -22785,6 +25261,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -22797,6 +25275,8 @@ class MicroStrategyMetric(MicroStrategy):
 
     @property
     def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attributes
 
     @micro_strategy_attributes.setter
@@ -22884,6 +25364,8 @@ class MicroStrategyCube(MicroStrategy):
 
     @property
     def micro_strategy_cube_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cube_type
 
     @micro_strategy_cube_type.setter
@@ -22894,6 +25376,8 @@ class MicroStrategyCube(MicroStrategy):
 
     @property
     def micro_strategy_cube_query(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cube_query
 
     @micro_strategy_cube_query.setter
@@ -22904,6 +25388,8 @@ class MicroStrategyCube(MicroStrategy):
 
     @property
     def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metrics
 
     @micro_strategy_metrics.setter
@@ -22916,6 +25402,8 @@ class MicroStrategyCube(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -22928,6 +25416,8 @@ class MicroStrategyCube(MicroStrategy):
 
     @property
     def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attributes
 
     @micro_strategy_attributes.setter
@@ -22986,6 +25476,8 @@ class MicroStrategyDossier(MicroStrategy):
 
     @property
     def micro_strategy_dossier_chapter_names(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_dossier_chapter_names
 
     @micro_strategy_dossier_chapter_names.setter
@@ -23000,6 +25492,8 @@ class MicroStrategyDossier(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -23014,6 +25508,8 @@ class MicroStrategyDossier(MicroStrategy):
     def micro_strategy_visualizations(
         self,
     ) -> Optional[list[MicroStrategyVisualization]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_visualizations
 
     @micro_strategy_visualizations.setter
@@ -23068,6 +25564,8 @@ class MicroStrategyFact(MicroStrategy):
 
     @property
     def micro_strategy_fact_expressions(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_fact_expressions
 
     @micro_strategy_fact_expressions.setter
@@ -23082,6 +25580,8 @@ class MicroStrategyFact(MicroStrategy):
 
     @property
     def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metrics
 
     @micro_strategy_metrics.setter
@@ -23094,6 +25594,8 @@ class MicroStrategyFact(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -23144,6 +25646,8 @@ class MicroStrategyDocument(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -23192,6 +25696,8 @@ class MicroStrategyAttribute(MicroStrategy):
 
     @property
     def micro_strategy_attribute_forms(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_attribute_forms
 
     @micro_strategy_attribute_forms.setter
@@ -23204,6 +25710,8 @@ class MicroStrategyAttribute(MicroStrategy):
 
     @property
     def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_reports
 
     @micro_strategy_reports.setter
@@ -23216,6 +25724,8 @@ class MicroStrategyAttribute(MicroStrategy):
 
     @property
     def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_metrics
 
     @micro_strategy_metrics.setter
@@ -23228,6 +25738,8 @@ class MicroStrategyAttribute(MicroStrategy):
 
     @property
     def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_cubes
 
     @micro_strategy_cubes.setter
@@ -23240,6 +25752,8 @@ class MicroStrategyAttribute(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -23300,6 +25814,8 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_visualization_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_visualization_type
 
     @micro_strategy_visualization_type.setter
@@ -23314,6 +25830,8 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_dossier_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_dossier_qualified_name
 
     @micro_strategy_dossier_qualified_name.setter
@@ -23328,6 +25846,8 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_dossier_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_dossier_name
 
     @micro_strategy_dossier_name.setter
@@ -23338,6 +25858,8 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_dossier(self) -> Optional[MicroStrategyDossier]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_dossier
 
     @micro_strategy_dossier.setter
@@ -23350,6 +25872,8 @@ class MicroStrategyVisualization(MicroStrategy):
 
     @property
     def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        if self.attributes is None:
+            return None
         return self.attributes.micro_strategy_project
 
     @micro_strategy_project.setter
@@ -23408,6 +25932,8 @@ class QlikSpace(Qlik):
 
     @property
     def qlik_space_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_space_type
 
     @qlik_space_type.setter
@@ -23418,6 +25944,8 @@ class QlikSpace(Qlik):
 
     @property
     def qlik_datasets(self) -> Optional[list[QlikDataset]]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_datasets
 
     @qlik_datasets.setter
@@ -23428,6 +25956,8 @@ class QlikSpace(Qlik):
 
     @property
     def qlik_apps(self) -> Optional[list[QlikApp]]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_apps
 
     @qlik_apps.setter
@@ -23482,6 +26012,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_has_section_access(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_has_section_access
 
     @qlik_has_section_access.setter
@@ -23492,6 +26024,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_origin_app_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_origin_app_id
 
     @qlik_origin_app_id.setter
@@ -23502,6 +26036,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_is_encrypted(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_is_encrypted
 
     @qlik_is_encrypted.setter
@@ -23512,6 +26048,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_is_direct_query_mode(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_is_direct_query_mode
 
     @qlik_is_direct_query_mode.setter
@@ -23522,6 +26060,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_app_static_byte_size(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_app_static_byte_size
 
     @qlik_app_static_byte_size.setter
@@ -23532,6 +26072,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_space(self) -> Optional[QlikSpace]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_space
 
     @qlik_space.setter
@@ -23542,6 +26084,8 @@ class QlikApp(Qlik):
 
     @property
     def qlik_sheets(self) -> Optional[list[QlikSheet]]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_sheets
 
     @qlik_sheets.setter
@@ -23606,6 +26150,8 @@ class QlikChart(Qlik):
 
     @property
     def qlik_chart_subtitle(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_chart_subtitle
 
     @qlik_chart_subtitle.setter
@@ -23616,6 +26162,8 @@ class QlikChart(Qlik):
 
     @property
     def qlik_chart_footnote(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_chart_footnote
 
     @qlik_chart_footnote.setter
@@ -23626,6 +26174,8 @@ class QlikChart(Qlik):
 
     @property
     def qlik_chart_orientation(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_chart_orientation
 
     @qlik_chart_orientation.setter
@@ -23636,6 +26186,8 @@ class QlikChart(Qlik):
 
     @property
     def qlik_chart_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_chart_type
 
     @qlik_chart_type.setter
@@ -23646,6 +26198,8 @@ class QlikChart(Qlik):
 
     @property
     def qlik_sheet(self) -> Optional[QlikSheet]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_sheet
 
     @qlik_sheet.setter
@@ -23704,6 +26258,8 @@ class QlikDataset(Qlik):
 
     @property
     def qlik_dataset_technical_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_dataset_technical_name
 
     @qlik_dataset_technical_name.setter
@@ -23714,6 +26270,8 @@ class QlikDataset(Qlik):
 
     @property
     def qlik_dataset_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_dataset_type
 
     @qlik_dataset_type.setter
@@ -23724,6 +26282,8 @@ class QlikDataset(Qlik):
 
     @property
     def qlik_dataset_uri(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_dataset_uri
 
     @qlik_dataset_uri.setter
@@ -23734,6 +26294,8 @@ class QlikDataset(Qlik):
 
     @property
     def qlik_dataset_subtype(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_dataset_subtype
 
     @qlik_dataset_subtype.setter
@@ -23744,6 +26306,8 @@ class QlikDataset(Qlik):
 
     @property
     def qlik_space(self) -> Optional[QlikSpace]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_space
 
     @qlik_space.setter
@@ -23800,6 +26364,8 @@ class QlikSheet(Qlik):
 
     @property
     def qlik_sheet_is_approved(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_sheet_is_approved
 
     @qlik_sheet_is_approved.setter
@@ -23810,6 +26376,8 @@ class QlikSheet(Qlik):
 
     @property
     def qlik_app(self) -> Optional[QlikApp]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_app
 
     @qlik_app.setter
@@ -23820,6 +26388,8 @@ class QlikSheet(Qlik):
 
     @property
     def qlik_charts(self) -> Optional[list[QlikChart]]:
+        if self.attributes is None:
+            return None
         return self.attributes.qlik_charts
 
     @qlik_charts.setter
@@ -23874,6 +26444,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def is_custom(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_custom
 
     @is_custom.setter
@@ -23884,6 +26456,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def is_mergable(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_mergable
 
     @is_mergable.setter
@@ -23894,6 +26468,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def is_queryable(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_queryable
 
     @is_queryable.setter
@@ -23904,6 +26480,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def field_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.field_count
 
     @field_count.setter
@@ -23914,6 +26492,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def organization(self) -> Optional[SalesforceOrganization]:
+        if self.attributes is None:
+            return None
         return self.attributes.organization
 
     @organization.setter
@@ -23924,6 +26504,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def lookup_fields(self) -> Optional[list[SalesforceField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.lookup_fields
 
     @lookup_fields.setter
@@ -23934,6 +26516,8 @@ class SalesforceObject(Salesforce):
 
     @property
     def fields(self) -> Optional[list[SalesforceField]]:
+        if self.attributes is None:
+            return None
         return self.attributes.fields
 
     @fields.setter
@@ -24003,6 +26587,8 @@ class SalesforceField(Salesforce):
 
     @property
     def data_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.data_type
 
     @data_type.setter
@@ -24013,6 +26599,8 @@ class SalesforceField(Salesforce):
 
     @property
     def object_qualified_name(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.object_qualified_name
 
     @object_qualified_name.setter
@@ -24023,6 +26611,8 @@ class SalesforceField(Salesforce):
 
     @property
     def order(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.order
 
     @order.setter
@@ -24033,6 +26623,8 @@ class SalesforceField(Salesforce):
 
     @property
     def inline_help_text(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.inline_help_text
 
     @inline_help_text.setter
@@ -24043,6 +26635,8 @@ class SalesforceField(Salesforce):
 
     @property
     def is_calculated(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_calculated
 
     @is_calculated.setter
@@ -24053,6 +26647,8 @@ class SalesforceField(Salesforce):
 
     @property
     def formula(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.formula
 
     @formula.setter
@@ -24063,6 +26659,8 @@ class SalesforceField(Salesforce):
 
     @property
     def is_case_sensitive(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_case_sensitive
 
     @is_case_sensitive.setter
@@ -24073,6 +26671,8 @@ class SalesforceField(Salesforce):
 
     @property
     def is_encrypted(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_encrypted
 
     @is_encrypted.setter
@@ -24083,6 +26683,8 @@ class SalesforceField(Salesforce):
 
     @property
     def max_length(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.max_length
 
     @max_length.setter
@@ -24093,6 +26695,8 @@ class SalesforceField(Salesforce):
 
     @property
     def is_nullable(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_nullable
 
     @is_nullable.setter
@@ -24103,6 +26707,8 @@ class SalesforceField(Salesforce):
 
     @property
     def precision(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.precision
 
     @precision.setter
@@ -24113,6 +26719,8 @@ class SalesforceField(Salesforce):
 
     @property
     def numeric_scale(self) -> Optional[float]:
+        if self.attributes is None:
+            return None
         return self.attributes.numeric_scale
 
     @numeric_scale.setter
@@ -24123,6 +26731,8 @@ class SalesforceField(Salesforce):
 
     @property
     def is_unique(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_unique
 
     @is_unique.setter
@@ -24133,6 +26743,8 @@ class SalesforceField(Salesforce):
 
     @property
     def picklist_values(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.picklist_values
 
     @picklist_values.setter
@@ -24143,6 +26755,8 @@ class SalesforceField(Salesforce):
 
     @property
     def is_polymorphic_foreign_key(self) -> Optional[bool]:
+        if self.attributes is None:
+            return None
         return self.attributes.is_polymorphic_foreign_key
 
     @is_polymorphic_foreign_key.setter
@@ -24153,6 +26767,8 @@ class SalesforceField(Salesforce):
 
     @property
     def default_value_formula(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.default_value_formula
 
     @default_value_formula.setter
@@ -24163,6 +26779,8 @@ class SalesforceField(Salesforce):
 
     @property
     def lookup_objects(self) -> Optional[list[SalesforceObject]]:
+        if self.attributes is None:
+            return None
         return self.attributes.lookup_objects
 
     @lookup_objects.setter
@@ -24173,6 +26791,8 @@ class SalesforceField(Salesforce):
 
     @property
     def object(self) -> Optional[SalesforceObject]:
+        if self.attributes is None:
+            return None
         return self.attributes.object
 
     @object.setter
@@ -24253,6 +26873,8 @@ class SalesforceOrganization(Salesforce):
 
     @property
     def source_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_id
 
     @source_id.setter
@@ -24263,6 +26885,8 @@ class SalesforceOrganization(Salesforce):
 
     @property
     def reports(self) -> Optional[list[SalesforceReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.reports
 
     @reports.setter
@@ -24273,6 +26897,8 @@ class SalesforceOrganization(Salesforce):
 
     @property
     def objects(self) -> Optional[list[SalesforceObject]]:
+        if self.attributes is None:
+            return None
         return self.attributes.objects
 
     @objects.setter
@@ -24283,6 +26909,8 @@ class SalesforceOrganization(Salesforce):
 
     @property
     def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboards
 
     @dashboards.setter
@@ -24336,6 +26964,8 @@ class SalesforceDashboard(Salesforce):
 
     @property
     def source_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_id
 
     @source_id.setter
@@ -24346,6 +26976,8 @@ class SalesforceDashboard(Salesforce):
 
     @property
     def dashboard_type(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboard_type
 
     @dashboard_type.setter
@@ -24356,6 +26988,8 @@ class SalesforceDashboard(Salesforce):
 
     @property
     def report_count(self) -> Optional[int]:
+        if self.attributes is None:
+            return None
         return self.attributes.report_count
 
     @report_count.setter
@@ -24366,6 +27000,8 @@ class SalesforceDashboard(Salesforce):
 
     @property
     def reports(self) -> Optional[list[SalesforceReport]]:
+        if self.attributes is None:
+            return None
         return self.attributes.reports
 
     @reports.setter
@@ -24376,6 +27012,8 @@ class SalesforceDashboard(Salesforce):
 
     @property
     def organization(self) -> Optional[SalesforceOrganization]:
+        if self.attributes is None:
+            return None
         return self.attributes.organization
 
     @organization.setter
@@ -24430,6 +27068,8 @@ class SalesforceReport(Salesforce):
 
     @property
     def source_id(self) -> Optional[str]:
+        if self.attributes is None:
+            return None
         return self.attributes.source_id
 
     @source_id.setter
@@ -24440,6 +27080,8 @@ class SalesforceReport(Salesforce):
 
     @property
     def report_type(self) -> Optional[dict[str, str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.report_type
 
     @report_type.setter
@@ -24450,6 +27092,8 @@ class SalesforceReport(Salesforce):
 
     @property
     def detail_columns(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
         return self.attributes.detail_columns
 
     @detail_columns.setter
@@ -24460,6 +27104,8 @@ class SalesforceReport(Salesforce):
 
     @property
     def organization(self) -> Optional[SalesforceOrganization]:
+        if self.attributes is None:
+            return None
         return self.attributes.organization
 
     @organization.setter
@@ -24470,6 +27116,8 @@ class SalesforceReport(Salesforce):
 
     @property
     def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+        if self.attributes is None:
+            return None
         return self.attributes.dashboards
 
     @dashboards.setter

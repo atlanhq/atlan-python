@@ -11,6 +11,8 @@
     {%- set property_name =  'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case %}
     @property
     def {{ property_name }}(self)->{{ property_type }}:
+        if self.attributes is None:
+            return None
         return self.attributes.{{ attribute_name }}
 
     @{{ property_name }}.setter

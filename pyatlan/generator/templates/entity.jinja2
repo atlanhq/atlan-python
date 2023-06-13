@@ -7,7 +7,7 @@ import hashlib
 import sys
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, TypeVar
+from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -238,6 +238,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    def trim_to_required(self:SelfAsset) -> SelfAsset:
+        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name)
+
+    @classmethod
+    def create(cls:Type[SelfAsset], *args, **kwargs)->SelfAsset:
+        raise NotImplementedError("Only a subclasses should be created")
 
     @classmethod
     def create_for_modification(
@@ -924,6 +931,8 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 name=name, anchor=anchor, glossary_qualified_name=glossary_qualified_name,  glossary_guid = glossary_guid, categories=categories
             )
         )
+    def trim_to_required(self) -> AtlasGlossaryTerm:
+        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name, glossary_guid = self.anchor.guid)
 
     @classmethod
     def create_for_modification(

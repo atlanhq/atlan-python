@@ -103,6 +103,15 @@ class TestConnection:
         response = upsert(connection)
         verify_asset_updated(response, Connection)
 
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestConnection.connection
+        connection = TestConnection.connection.trim_to_required()
+        response = upsert(connection)
+        assert response.mutated_entities is None
+
 
 @pytest.mark.order(after="TestConnection")
 class TestDatabase:
@@ -143,6 +152,15 @@ class TestDatabase:
         database.description = description
         response = upsert(database)
         verify_asset_updated(response, Database)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestDatabase.database
+        database = TestDatabase.database.trim_to_required()
+        response = upsert(database)
+        assert response.mutated_entities is None
 
 
 @pytest.mark.order(after="TestDatabase")
@@ -187,6 +205,15 @@ class TestSchema:
         response = upsert(schema)
         verify_asset_updated(response, Schema)
 
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestSchema.schema
+        schema = TestSchema.schema.trim_to_required()
+        response = upsert(schema)
+        assert response.mutated_entities is None
+
 
 @pytest.mark.order(after="TestSchema")
 class TestTable:
@@ -230,6 +257,15 @@ class TestTable:
         response = upsert(table)
         verify_asset_updated(response, Table)
 
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestTable.table
+        table = TestTable.table.trim_to_required()
+        response = upsert(table)
+        assert response.mutated_entities is None
+
 
 @pytest.mark.order(after="TestTable")
 class TestView:
@@ -268,6 +304,15 @@ class TestView:
         view.description = description
         response = upsert(view)
         verify_asset_updated(response, View)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestView.view
+        view = TestView.view.trim_to_required()
+        response = upsert(view)
+        assert response.mutated_entities is None
 
 
 @pytest.mark.order(after="TestView")
@@ -312,6 +357,15 @@ class TestColumn:
         response = upsert(column)
         verify_asset_updated(response, Column)
 
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestColumn.column
+        column = TestColumn.column.trim_to_required()
+        response = upsert(column)
+        assert response.mutated_entities is None
+
 
 @pytest.mark.order(after="TestColumn")
 class TestReadme:
@@ -345,3 +399,13 @@ class TestReadme:
         readme.description = description
         response = upsert(readme)
         verify_asset_updated(response, Readme)
+
+    @pytest.mark.order(after="test_create")
+    def test_trim_to_required(
+        self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
+    ):
+        assert TestReadme.readme
+        readme = TestReadme.readme
+        readme = readme.trim_to_required()
+        response = upsert(readme)
+        assert response.mutated_entities is None
