@@ -5,8 +5,6 @@ import pytest
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
 
-IT = Connection.create_for_modification(qualified_name="abc/def", name="connection")
-
 
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles, message",
