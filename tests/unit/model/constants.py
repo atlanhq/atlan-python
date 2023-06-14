@@ -1,6 +1,7 @@
 DEFAULT = "default"
 CONNECTOR_TYPE = "snowflake"
 TIME_STAMP = "1686532494"
+CONNECTION_NAME = "MyConnection"
 DATABASE_NAME = "MyDB"
 SCHEMA_NAME = "MySchema"
 TABLE_NAME = "MyTable"

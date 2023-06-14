@@ -4,15 +4,16 @@ import pytest
 
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
+from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
 
 
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles, message",
     [
         (None, AtlanConnectorType.SNOWFLAKE, [], [], [], "name cannot be blank"),
-        ("Connection", None, [], [], [], "connector_type is required"),
+        (CONNECTION_NAME, None, [], [], [], "connector_type is required"),
         (
-            "Connection",
+            CONNECTION_NAME,
             AtlanConnectorType.SNOWFLAKE,
             [],
             [],
@@ -20,7 +21,7 @@ from pyatlan.model.enums import AtlanConnectorType
             "One of admin_user, admin_groups or admin_roles is required",
         ),
         (
-            "Connection",
+            CONNECTION_NAME,
             AtlanConnectorType.SNOWFLAKE,
             ["bad"],
             [],
@@ -28,7 +29,7 @@ from pyatlan.model.enums import AtlanConnectorType
             "Provided username bad was not found in Atlan.",
         ),
         (
-            "Connection",
+            CONNECTION_NAME,
             AtlanConnectorType.SNOWFLAKE,
             [],
             ["bad"],
@@ -36,7 +37,7 @@ from pyatlan.model.enums import AtlanConnectorType
             "Provided group name bad was not found in Atlan.",
         ),
         (
-            "Connection",
+            CONNECTION_NAME,
             AtlanConnectorType.SNOWFLAKE,
             [],
             [],
@@ -78,9 +79,9 @@ def test_create_with_missing_parameters_raise_value_error(
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles",
     [
-        ("MyConnection", AtlanConnectorType.SNOWFLAKE, ["ernest"], [], []),
-        ("MyConnection", AtlanConnectorType.SNOWFLAKE, [], ["ernest"], []),
-        ("MyConnection", AtlanConnectorType.SNOWFLAKE, [], [], ["ernest"]),
+        (CONNECTION_NAME, AtlanConnectorType.SNOWFLAKE, ["ernest"], [], []),
+        (CONNECTION_NAME, AtlanConnectorType.SNOWFLAKE, [], ["ernest"], []),
+        (CONNECTION_NAME, AtlanConnectorType.SNOWFLAKE, [], [], ["ernest"]),
     ],
 )
 def test_create(
@@ -116,8 +117,8 @@ def test_create(
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [
-        (None, "abc/def", "qualified_name is required"),
-        ("MyConnection", None, "name is required"),
+        (None, CONNECTION_QUALIFIED_NAME, "qualified_name is required"),
+        (CONNECTION_NAME, None, "name is required"),
     ],
 )
 def test_create_for_modification_with_invalid_parameter_raises_value_error(
@@ -128,22 +129,20 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-    name = "MyConnection"
-    qualified_name = "abc/def"
 
-    sut = Connection.create_for_modification(qualified_name=qualified_name, name=name)
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    )
 
-    assert sut.qualified_name == qualified_name
-    assert sut.name == name
+    assert sut.qualified_name == CONNECTION_QUALIFIED_NAME
+    assert sut.name == CONNECTION_NAME
 
 
 def test_trim_to_required():
-    name = "MyConnection"
-    qualified_name = "abc/def"
 
     sut = Connection.create_for_modification(
-        qualified_name=qualified_name, name=name
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
     ).trim_to_required()
 
-    assert sut.qualified_name == qualified_name
-    assert sut.name == name
+    assert sut.qualified_name == CONNECTION_QUALIFIED_NAME
+    assert sut.name == CONNECTION_NAME
