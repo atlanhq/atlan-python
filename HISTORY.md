@@ -1,3 +1,7 @@
+## 0.1.2 (June 14, 2023)
+
+* Fix problem with badge creation by setting status to active
+*
 ## 0.1.1 (June 12, 2023)
 
 * Adds icons and images for classifications
