@@ -399,6 +399,7 @@ class Asset(Referenceable):
         "asset_mc_incident_severities",
         "asset_mc_incident_states",
         "asset_mc_last_sync_run_at",
+        "starred_by",
         "mc_monitors",
         "files",
         "mc_incidents",
@@ -1878,6 +1879,18 @@ class Asset(Referenceable):
         self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
 
     @property
+    def starred_by(self) -> Optional[set[str]]:
+        if self.attributes is None:
+            return None
+        return self.attributes.starred_by
+
+    @starred_by.setter
+    def starred_by(self, starred_by: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.starred_by = starred_by
+
+    @property
     def mc_monitors(self) -> Optional[list[MCMonitor]]:
         if self.attributes is None:
             return None
@@ -2342,6 +2355,7 @@ class Asset(Referenceable):
         asset_mc_last_sync_run_at: Optional[datetime] = Field(
             None, description="", alias="assetMcLastSyncRunAt"
         )
+        starred_by: Optional[set[str]] = Field(None, description="", alias="starredBy")
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -13400,9 +13414,10 @@ class Column(SQL):
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
         ) -> Column.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["parent_qualified_name"], [parent_qualified_name])
+            validate_required_fields(
+                ["name", "parent_qualified_name", "parent_type", "order"],
+                [name, parent_qualified_name, parent_type, order],
+            )
             fields = parent_qualified_name.split("/")
             if len(fields) != 6:
                 raise ValueError("Invalid parent_qualified_name")
@@ -13410,6 +13425,8 @@ class Column(SQL):
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
             except ValueError as e:
                 raise ValueError("Invalid parent_qualified_name") from e
+            if order < 0:
+                raise ValueError("Order must be be a positive integer")
             ret_value = Column.Attributes(
                 name=name,
                 qualified_name=f"{parent_qualified_name}/{name}",
@@ -13424,14 +13441,17 @@ class Column(SQL):
             if parent_type == Table:
                 ret_value.table_qualified_name = parent_qualified_name
                 ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
+                ret_value.table_name = fields[5]
             elif parent_type == View:
                 ret_value.view_qualified_name = parent_qualified_name
                 ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
+                ret_value.view_name = fields[5]
             elif parent_type == MaterialisedView:
                 ret_value.view_qualified_name = parent_qualified_name
                 ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
                     parent_qualified_name
                 )
+                ret_value.view_name = fields[5]
             else:
                 raise ValueError(
                     "parent_type must be either Table, View or MaterializeView"

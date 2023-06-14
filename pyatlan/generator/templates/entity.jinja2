@@ -574,9 +574,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
         ) -> Column.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["parent_qualified_name"], [parent_qualified_name])
+            validate_required_fields(
+                ["name", "parent_qualified_name", "parent_type", "order"],
+                [name, parent_qualified_name, parent_type, order],
+            )
             fields = parent_qualified_name.split("/")
             if len(fields) != 6:
                 raise ValueError("Invalid parent_qualified_name")
@@ -584,6 +585,8 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
             except ValueError as e:
                 raise ValueError("Invalid parent_qualified_name") from e
+            if order < 0:
+                raise ValueError("Order must be be a positive integer")
             ret_value = Column.Attributes(
                 name=name,
                 qualified_name=f"{parent_qualified_name}/{name}",
@@ -598,14 +601,17 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             if parent_type == Table:
                 ret_value.table_qualified_name = parent_qualified_name
                 ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
+                ret_value.table_name = fields[5]
             elif parent_type == View:
                 ret_value.view_qualified_name = parent_qualified_name
                 ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
+                ret_value.view_name = fields[5]
             elif parent_type == MaterialisedView:
                 ret_value.view_qualified_name = parent_qualified_name
                 ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
                     parent_qualified_name
                 )
+                ret_value.view_name = fields[5]
             else:
                 raise ValueError(
                     "parent_type must be either Table, View or MaterializeView"
