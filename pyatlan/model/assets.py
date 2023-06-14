@@ -33,7 +33,6 @@ from pyatlan.model.enums import (
     EntityStatus,
     FileType,
     GoogleDatastudioAssetType,
-    GuacamoleTemperature,
     IconType,
     KafkaTopicCompressionType,
     PowerbiEndorsement,
@@ -24522,162 +24521,6 @@ class SalesforceReport(Salesforce):
     )
 
 
-class GuacamoleTable(Table):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in GuacamoleTable._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "guacamole_size",
-        "guacamole_temperature",
-        "guacamole_archived",
-        "guacamole_columns",
-    ]
-
-    @property
-    def guacamole_size(self) -> Optional[int]:
-        return self.attributes.guacamole_size
-
-    @guacamole_size.setter
-    def guacamole_size(self, guacamole_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_size = guacamole_size
-
-    @property
-    def guacamole_temperature(self) -> Optional[GuacamoleTemperature]:
-        return self.attributes.guacamole_temperature
-
-    @guacamole_temperature.setter
-    def guacamole_temperature(
-        self, guacamole_temperature: Optional[GuacamoleTemperature]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_temperature = guacamole_temperature
-
-    @property
-    def guacamole_archived(self) -> Optional[bool]:
-        return self.attributes.guacamole_archived
-
-    @guacamole_archived.setter
-    def guacamole_archived(self, guacamole_archived: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_archived = guacamole_archived
-
-    @property
-    def guacamole_columns(self) -> Optional[list[GuacamoleColumn]]:
-        return self.attributes.guacamole_columns
-
-    @guacamole_columns.setter
-    def guacamole_columns(self, guacamole_columns: Optional[list[GuacamoleColumn]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_columns = guacamole_columns
-
-    type_name: str = Field("GuacamoleTable", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "GuacamoleTable":
-            raise ValueError("must be GuacamoleTable")
-        return v
-
-    class Attributes(Table.Attributes):
-        guacamole_size: Optional[int] = Field(
-            None, description="", alias="guacamoleSize"
-        )
-        guacamole_temperature: Optional[GuacamoleTemperature] = Field(
-            None, description="", alias="guacamoleTemperature"
-        )
-        guacamole_archived: Optional[bool] = Field(
-            None, description="", alias="guacamoleArchived"
-        )
-        guacamole_columns: Optional[list[GuacamoleColumn]] = Field(
-            None, description="", alias="guacamoleColumns"
-        )  # relationship
-
-    attributes: "GuacamoleTable.Attributes" = Field(
-        default_factory=lambda: GuacamoleTable.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class GuacamoleColumn(Column):
-    """Description"""
-
-    def __setattr__(self, name, value):
-        if name in GuacamoleColumn._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "guacamole_width",
-        "guacamole_conceptualized",
-        "guacamole_table",
-    ]
-
-    @property
-    def guacamole_width(self) -> Optional[int]:
-        return self.attributes.guacamole_width
-
-    @guacamole_width.setter
-    def guacamole_width(self, guacamole_width: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_width = guacamole_width
-
-    @property
-    def guacamole_conceptualized(self) -> Optional[datetime]:
-        return self.attributes.guacamole_conceptualized
-
-    @guacamole_conceptualized.setter
-    def guacamole_conceptualized(self, guacamole_conceptualized: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_conceptualized = guacamole_conceptualized
-
-    @property
-    def guacamole_table(self) -> Optional[GuacamoleTable]:
-        return self.attributes.guacamole_table
-
-    @guacamole_table.setter
-    def guacamole_table(self, guacamole_table: Optional[GuacamoleTable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.guacamole_table = guacamole_table
-
-    type_name: str = Field("GuacamoleColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "GuacamoleColumn":
-            raise ValueError("must be GuacamoleColumn")
-        return v
-
-    class Attributes(Column.Attributes):
-        guacamole_width: Optional[int] = Field(
-            None, description="", alias="guacamoleWidth"
-        )
-        guacamole_conceptualized: Optional[datetime] = Field(
-            None, description="", alias="guacamoleConceptualized"
-        )
-        guacamole_table: Optional[GuacamoleTable] = Field(
-            None, description="", alias="guacamoleTable"
-        )  # relationship
-
-    attributes: "GuacamoleColumn.Attributes" = Field(
-        default_factory=lambda: GuacamoleColumn.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class QlikStream(QlikSpace):
     """Description"""
 
@@ -25047,9 +24890,5 @@ SalesforceOrganization.Attributes.update_forward_refs()
 SalesforceDashboard.Attributes.update_forward_refs()
 
 SalesforceReport.Attributes.update_forward_refs()
-
-GuacamoleTable.Attributes.update_forward_refs()
-
-GuacamoleColumn.Attributes.update_forward_refs()
 
 QlikStream.Attributes.update_forward_refs()
