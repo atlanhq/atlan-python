@@ -3331,12 +3331,13 @@ class Badge(Asset, type_name="Badge"):
         badge_conditions: list[BadgeCondition],
     ) -> Badge:
         return cls(
+            status=EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
                 name=name,
                 cm_name=cm_name,
                 cm_attribute=cm_attribute,
                 badge_conditions=badge_conditions,
-            )
+            ),
         )
 
     class Attributes(Asset.Attributes):
