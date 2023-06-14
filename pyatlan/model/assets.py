@@ -391,6 +391,7 @@ class Asset(Referenceable):
         "asset_mc_incident_severities",
         "asset_mc_incident_states",
         "asset_mc_last_sync_run_at",
+        "starred_by",
         "mc_monitors",
         "files",
         "mc_incidents",
@@ -1650,6 +1651,16 @@ class Asset(Referenceable):
         self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
 
     @property
+    def starred_by(self) -> Optional[set[str]]:
+        return self.attributes.starred_by
+
+    @starred_by.setter
+    def starred_by(self, starred_by: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.starred_by = starred_by
+
+    @property
     def mc_monitors(self) -> Optional[list[MCMonitor]]:
         return self.attributes.mc_monitors
 
@@ -2091,6 +2102,7 @@ class Asset(Referenceable):
         asset_mc_last_sync_run_at: Optional[datetime] = Field(
             None, description="", alias="assetMcLastSyncRunAt"
         )
+        starred_by: Optional[set[str]] = Field(None, description="", alias="starredBy")
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -2992,12 +3004,13 @@ class Badge(Asset, type_name="Badge"):
         badge_conditions: list[BadgeCondition],
     ) -> Badge:
         return cls(
+            status=EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
                 name=name,
                 cm_name=cm_name,
                 cm_attribute=cm_attribute,
                 badge_conditions=badge_conditions,
-            )
+            ),
         )
 
     class Attributes(Asset.Attributes):

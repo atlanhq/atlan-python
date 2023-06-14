@@ -14,6 +14,7 @@ from pyatlan.model.enums import (
     AtlanTypeCategory,
     BadgeComparisonOperator,
     BadgeConditionColor,
+    EntityStatus,
 )
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
@@ -969,6 +970,7 @@ def test_add_badge_cm_dq(
         ],
     )
     badge.user_description = "How many data quality checks ran against this asset."
+    assert badge.status == EntityStatus.ACTIVE
     response = client.upsert(badge)
     assert (badges := response.assets_created(asset_type=Badge))
     assert len(badges) == 1

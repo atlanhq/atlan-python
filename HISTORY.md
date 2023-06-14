@@ -1,3 +1,7 @@
+## 0.1.2 (June 14, 2023)
+
+* Set status to Active when Badge is created
+
 ## 0.1.1 (June 12, 2023)
 
 * Adds icons and images for classifications
