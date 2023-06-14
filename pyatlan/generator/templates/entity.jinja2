@@ -33,6 +33,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     FileType,
     GoogleDatastudioAssetType,
+    GuacamoleTemperature,
     IconType,
     KafkaTopicCompressionType,
     PowerbiEndorsement,
@@ -312,6 +313,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         badge_conditions: list[BadgeCondition],
     ) -> Badge:
         return cls(
+            status = EntityStatus.ACTIVE,
             attributes=Badge.Attributes.create(
                 name=name,
                 cm_name=cm_name,

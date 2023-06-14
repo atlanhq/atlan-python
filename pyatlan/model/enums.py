@@ -1665,3 +1665,9 @@ class AtlanIcon(str, Enum):
     X_SQUARE = "PhXSquare"
     YIN_YANG = "PhYinYang"
     YOUTUBE_LOGO = "PhYoutubeLogo"
+
+
+class GuacamoleTemperature(str, Enum):
+    HOT = "hot"
+    MILD = "Mild"
+    COLD = "Cold"
