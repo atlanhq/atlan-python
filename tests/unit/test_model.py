@@ -53,8 +53,6 @@ from pyatlan.model.assets import (
     GCSObject,
     GoogleLabel,
     GoogleTag,
-    GuacamoleColumn,
-    GuacamoleTable,
     Histogram,
     Internal,
     KafkaConsumerGroup,
@@ -178,7 +176,6 @@ from pyatlan.model.enums import (
     CertificateStatus,
     FileType,
     GoogleDatastudioAssetType,
-    GuacamoleTemperature,
     IconType,
     KafkaTopicCompressionType,
     PowerbiEndorsement,
@@ -442,9 +439,6 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[AccessControl]": AccessControl(),
     "Optional[list[AuthPolicyCondition]]": [AuthPolicyCondition()],
     "Optional[list[AuthPolicyValiditySchedule]]": [AuthPolicyValiditySchedule()],
-    "Optional[list[GuacamoleColumn]]": [GuacamoleColumn()],
-    "Optional[GuacamoleTemperature]": GuacamoleTemperature.HOT,
-    "Optional[GuacamoleTable]": GuacamoleTable(),
 }
 
 
