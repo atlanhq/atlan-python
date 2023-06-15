@@ -1679,61 +1679,6 @@ class Test_Badge_Attributes:
         assert badge.badge_conditions == [BADGE_CONDITION]
 
 
-class Test_Badge:
-    @pytest.mark.parametrize(
-        "name, cm_name, cm_attribute, badge_conditions, message",
-        [
-            (None, "Bob", "Dave", [BADGE_CONDITION], "name is required"),
-            ("Bob", None, "Dave", [BADGE_CONDITION], "cm_name is required"),
-            ("Bob", "", "Dave", [BADGE_CONDITION], "cm_name cannot be blank"),
-            ("Bob", "Dave", None, [BADGE_CONDITION], "cm_attribute is required"),
-            ("Bob", "Dave", "", [BADGE_CONDITION], "cm_attribute cannot be blank"),
-            ("Bob", "tom", "Dave", None, "badge_conditions is required"),
-            ("Bob", "tom", "Dave", [], "badge_conditions cannot be an empty list"),
-        ],
-    )
-    def test_create_when_required_parameters_are_missing_raises_value_error(
-        self, name, cm_name, cm_attribute, badge_conditions, message
-    ):
-        with pytest.raises(ValueError, match=message):
-            Badge.create(
-                name=name,
-                cm_name=cm_name,
-                cm_attribute=cm_attribute,
-                badge_conditions=badge_conditions,
-            )
-
-    def test_create(self, monkeypatch):
-        def get_attr_id_for_name(set_name: str, attr_name: str):
-            return CM_ATTR_ID
-
-        def get_id_for_name(value):
-            return CM_ID
-
-        monkeypatch.setattr(
-            pyatlan.cache.custom_metadata_cache.CustomMetadataCache,
-            "get_id_for_name",
-            get_id_for_name,
-        )
-
-        monkeypatch.setattr(
-            pyatlan.cache.custom_metadata_cache.CustomMetadataCache,
-            "get_attr_id_for_name",
-            get_attr_id_for_name,
-        )
-
-        badge = Badge.create(
-            name="bob",
-            cm_name="Monte Carlo",
-            cm_attribute="dummy",
-            badge_conditions=[BADGE_CONDITION],
-        )
-        assert badge.name == "bob"
-        assert badge.qualified_name == f"badges/global/{CM_ID}.{CM_ATTR_ID}"
-        assert badge.badge_metadata_attribute == f"{CM_ID}.{CM_ATTR_ID}"
-        assert badge.badge_conditions == [BADGE_CONDITION]
-
-
 class Test_BadgeCondition:
     @pytest.mark.parametrize(
         "condition_operator, condition_value, condition_colorhex, message",

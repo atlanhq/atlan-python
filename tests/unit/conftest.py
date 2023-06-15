@@ -19,3 +19,9 @@ def mock_user_cache():
 def mock_group_cache():
     with patch("pyatlan.cache.group_cache.GroupCache") as cache:
         yield cache
+
+
+@pytest.fixture()
+def mock_custom_metadata_cache():
+    with patch("pyatlan.cache.custom_metadata_cache.CustomMetadataCache") as cache:
+        yield cache
