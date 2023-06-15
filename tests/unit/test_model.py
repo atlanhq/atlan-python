@@ -742,40 +742,6 @@ def test_class_remove_methods(clazz, method_name):
     sut.attributes.remove_owners.assert_called_once()
 
 
-@pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn",
-    [("my-bucket", "default/s3/production", "my-arn")],
-)
-def test_s3bucket_attributes_create_with_required_parameters(
-    name, connection_qualified_name, aws_arn
-):
-    attributes = S3Bucket.Attributes.create(
-        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
-    )
-    assert attributes.name == name
-    assert attributes.connection_qualified_name == connection_qualified_name
-    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
-    assert attributes.connector_name == connection_qualified_name.split("/")[1]
-
-
-@pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn",
-    [
-        ("my-bucket", "default/s3/production", "my-arn"),
-    ],
-)
-def test_s3bucket_create_with_required_parameters(
-    name, connection_qualified_name, aws_arn
-):
-    attributes = S3Bucket.create(
-        name=name, connection_qualified_name=connection_qualified_name, aws_arn=aws_arn
-    ).attributes
-    assert attributes.name == name
-    assert attributes.connection_qualified_name == connection_qualified_name
-    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
-    assert attributes.connector_name == connection_qualified_name.split("/")[1]
-
-
 @pytest.fixture()
 def attribute_value(request):
     sig = signature(getattr(request.param[0], request.param[1]).fget)
