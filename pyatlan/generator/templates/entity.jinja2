@@ -920,6 +920,28 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 name=name, anchor=anchor, parent_category=parent_category
             )
         )
+
+    def trim_to_required(self) -> AtlasGlossaryCategory:
+        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name, glossary_guid = self.anchor.guid)
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
+        )
     {% elif entity_def.name == "AtlasGlossaryTerm"%}
     @classmethod
     # @validate_arguments()

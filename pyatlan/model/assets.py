@@ -3206,6 +3206,32 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
         )
 
+    def trim_to_required(self) -> AtlasGlossaryCategory:
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
+        )
+
 
 class Badge(Asset, type_name="Badge"):
     """Description"""

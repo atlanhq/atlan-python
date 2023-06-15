@@ -86,7 +86,7 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 @pytest.mark.parametrize(
-    "name, anchor, glossary_qualified_name, glossary_guid, categories",
+    "anchor, glossary_qualified_name, glossary_guid, categories",
     [
         (ANCHOR, None, None, None),
         (None, GLOSSARY_QUALIFIED_NAME, None, None),
@@ -96,13 +96,13 @@ def test_create_with_missing_parameters_raise_value_error(
             GLOSSARY_GUID,
             [
                 AtlasGlossaryCategory.create_for_modification(
-                    qualified_name="123", name="Category"
+                    qualified_name="123", name="Category", glossary_guid=GLOSSARY_GUID
                 )
             ],
         ),
     ],
 )
-def create(
+def test_create(
     anchor: AtlasGlossary,
     glossary_qualified_name: str,
     glossary_guid: str,
@@ -122,7 +122,9 @@ def create(
     if anchor:
         assert sut.anchor == anchor
     if glossary_qualified_name:
-        assert sut.anchor.qualified_name == glossary_qualified_name
+        assert sut.anchor.unique_attributes == {
+            "qualifiedName": glossary_qualified_name
+        }
     if glossary_guid:
         assert sut.anchor.guid == glossary_guid
 
