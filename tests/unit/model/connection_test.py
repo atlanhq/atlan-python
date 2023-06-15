@@ -58,9 +58,7 @@ def test_create_with_missing_parameters_raise_value_error(
     mock_group_cache,
 ):
     def side_effect(*args, **kwargs):
-        if args and args[0] == "bad":
-            return None
-        return "123"
+        return None if args and args[0] == "bad" else "123"
 
     mock_role_cache.get_name_for_id.side_effect = side_effect
     mock_user_cache.get_id_for_name.side_effect = side_effect

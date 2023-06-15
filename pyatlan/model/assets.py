@@ -1960,7 +1960,10 @@ class Asset(Referenceable):
 
     @classmethod
     def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
-        raise NotImplementedError("Only a subclasses should be created")
+        raise NotImplementedError(
+            "Create has not been implemented for this class. Please submit an enhancement"
+            "request if you need it implemented."
+        )
 
     @classmethod
     def create_for_modification(

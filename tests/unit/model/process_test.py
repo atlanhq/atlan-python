@@ -93,8 +93,10 @@ def test_create_without_required_parameter_raises_value_error(
 def test__create(
     name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
 ):
-    if not process_id:
-        expected_value = md5(expected_value.encode()).hexdigest()
+
+    expected_value = (
+        expected_value if process_id else md5(expected_value.encode()).hexdigest()
+    )
 
     process = Process.create(
         name=name,
@@ -231,8 +233,9 @@ def test_process_attributes_generate_qualified_name_without_required_parameter_r
 def test_process_attributes_generate_qualified_name(
     name, connection_qualified_name, process_id, inputs, outputs, parent, expected_value
 ):
-    if not process_id:
-        expected_value = md5(expected_value.encode()).hexdigest()
+    expected_value = (
+        expected_value if process_id else md5(expected_value.encode()).hexdigest()
+    )
 
     assert (
         Process.Attributes.generate_qualified_name(

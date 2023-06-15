@@ -119,14 +119,15 @@ def test_create(
     assert sut.name == GLOSSARY_TERM_NAME
     assert sut.qualified_name
     assert sut.categories == categories
-    if anchor:
-        assert sut.anchor == anchor
-    if glossary_qualified_name:
-        assert sut.anchor.unique_attributes == {
-            "qualifiedName": glossary_qualified_name
-        }
-    if glossary_guid:
-        assert sut.anchor.guid == glossary_guid
+    assert (
+        (anchor and sut.anchor == anchor)
+        or (
+            glossary_qualified_name
+            and sut.anchor.unique_attributes
+            == {"qualifiedName": glossary_qualified_name}
+        )
+        or (glossary_guid and sut.anchor.guid == glossary_guid)
+    )
 
 
 @pytest.mark.parametrize(
