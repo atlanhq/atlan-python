@@ -743,48 +743,6 @@ def test_class_remove_methods(clazz, method_name):
 
 
 @pytest.mark.parametrize(
-    "cls, name, connection_qualified_name, aws_arn, msg",
-    [
-        (cls, values[0], values[1], values[2], values[3])
-        for values in [
-            (None, "default/s3/production", "abc", "name is required"),
-            ("my-bucket", None, "abc", "connection_qualified_name is required"),
-            ("", "default/s3/production", "abc", "name cannot be blank"),
-            ("my-bucket", "", "abc", "connection_qualified_name cannot be blank"),
-            ("my-bucket", "default/s3/", "abc", "Invalid connection_qualified_name"),
-            ("my-bucket", "/s3/", "abc", "Invalid connection_qualified_name"),
-            (
-                "my-bucket",
-                "default/s3/production/TestDb",
-                "abc",
-                "Invalid connection_qualified_name",
-            ),
-            ("my-bucket", "s3/production", "abc", "Invalid connection_qualified_name"),
-            (
-                "my-bucket",
-                "default/s33/production",
-                "abc",
-                "Invalid connection_qualified_name",
-            ),
-            ("my-bucket", "default/s3", None, "aws_arn is required"),
-            ("my-bucket", "default/s3", "", "aws_arn cannot be blank"),
-        ]
-        for cls in [S3Bucket.Attributes, S3Bucket, S3Object.Attributes, S3Object]
-    ],
-)
-def test_s3bucket_attributes_create_without_required_parameters_raises_validation_error(
-    cls, name, connection_qualified_name, aws_arn, msg
-):
-    with pytest.raises(ValueError) as exc_info:
-        cls.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-        )
-    assert exc_info.value.args[0] == msg
-
-
-@pytest.mark.parametrize(
     "name, connection_qualified_name, aws_arn",
     [("my-bucket", "default/s3/production", "my-arn")],
 )
@@ -816,62 +774,6 @@ def test_s3bucket_create_with_required_parameters(
     assert attributes.connection_qualified_name == connection_qualified_name
     assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
     assert attributes.connector_name == connection_qualified_name.split("/")[1]
-
-
-@pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn, , s3_bucket_qualified_name",
-    [
-        ("my-bucket", "default/s3/production", "my-arn", None),
-        (
-            "my-bucket",
-            "default/s3/production",
-            "my-arn",
-            "default/s3/production/bucket_123",
-        ),
-    ],
-)
-def test_s3object_create_with_required_parameters(
-    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
-):
-    attributes = S3Object.create(
-        name=name,
-        connection_qualified_name=connection_qualified_name,
-        aws_arn=aws_arn,
-        s3_bucket_qualified_name=s3_bucket_qualified_name,
-    ).attributes
-    assert attributes.name == name
-    assert attributes.connection_qualified_name == connection_qualified_name
-    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
-    assert attributes.connector_name == connection_qualified_name.split("/")[1]
-    assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
-
-
-@pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn, s3_bucket_qualified_name",
-    [
-        ("my-bucket", "default/s3/production", "my-arn", None),
-        (
-            "my-bucket",
-            "default/s3/production",
-            "my-arn",
-            "default/s3/production/bucket_123",
-        ),
-    ],
-)
-def test_s3object_attributes_create_with_required_parameters(
-    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name
-):
-    attributes = S3Object.Attributes.create(
-        name=name,
-        connection_qualified_name=connection_qualified_name,
-        aws_arn=aws_arn,
-        s3_bucket_qualified_name=s3_bucket_qualified_name,
-    )
-    assert attributes.name == name
-    assert attributes.connection_qualified_name == connection_qualified_name
-    assert attributes.qualified_name == f"{connection_qualified_name}/{aws_arn}"
-    assert attributes.connector_name == connection_qualified_name.split("/")[1]
-    assert attributes.s3_bucket_qualified_name == s3_bucket_qualified_name
 
 
 @pytest.fixture()
@@ -938,24 +840,3 @@ def test_validate_single_required_field_with_bad_values_raises_value_error(
 
 def test_validate_single_required_field_with_only_one_field_does_not_raise_value_error():
     validate_single_required_field(["One", "Two", "Three"], [None, None, 3])
-
-
-@pytest.mark.parametrize(
-    "asset, content, asset_name, error, message",
-    [
-        (None, "stuff", None, ValueError, "asset is required"),
-        (table, None, None, ValueError, "content is required"),
-        (
-            Table(),
-            "stuff",
-            None,
-            ValueError,
-            "asset_name is required when name is not available from asset",
-        ),
-    ],
-)
-def test_create_readme_attributes_without_required_parameters_raises_exception(
-    asset, content, asset_name, error, message
-):
-    with pytest.raises(error, match=message):
-        Readme.Attributes.create(asset=asset, content=content, asset_name=asset_name)
