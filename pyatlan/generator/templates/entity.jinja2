@@ -794,9 +794,9 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             qualified_name=connector_type.to_qualified_name(),
             connector_name=connector_type.value,
             category=connector_type.category.value,
-            admin_users=admin_users if admin_users else [],
-            admin_groups=admin_groups if admin_groups else [],
-            admin_roles=admin_roles if admin_roles else [],
+            admin_users=admin_users or [],
+            admin_groups=admin_groups or [],
+            admin_roles=admin_roles or [],
         )
         return cls(attributes=attr)
     {%- elif entity_def.name == "Process" %}
