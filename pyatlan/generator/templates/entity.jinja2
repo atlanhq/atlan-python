@@ -923,7 +923,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         )
 
     def trim_to_required(self) -> AtlasGlossaryCategory:
-        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name, glossary_guid = self.anchor.guid)
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
 
     @classmethod
     def create_for_modification(
@@ -962,7 +968,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             )
         )
     def trim_to_required(self) -> AtlasGlossaryTerm:
-        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name, glossary_guid = self.anchor.guid)
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
 
     @classmethod
     def create_for_modification(

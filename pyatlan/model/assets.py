@@ -3210,6 +3210,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         )
 
     def trim_to_required(self) -> AtlasGlossaryCategory:
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
             qualified_name=self.qualified_name,
             name=self.name,
@@ -4417,6 +4419,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )
 
     def trim_to_required(self) -> AtlasGlossaryTerm:
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
             qualified_name=self.qualified_name,
             name=self.name,

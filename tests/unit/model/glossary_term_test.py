@@ -174,3 +174,19 @@ def test_trim_to_required():
     assert sut.name == GLOSSARY_TERM_NAME
     assert sut.qualified_name == GLOSSARY_TERM_QUALIFIED_NAME
     assert sut.anchor.guid == GLOSSARY_GUID
+
+
+@pytest.mark.parametrize(
+    "anchor",
+    [(None), (AtlasGlossary())],
+)
+def test_trim_to_required_raises_value_error_when_anchor_is_none(anchor):
+    sut = AtlasGlossaryTerm.create_for_modification(
+        qualified_name=GLOSSARY_TERM_QUALIFIED_NAME,
+        name=GLOSSARY_TERM_NAME,
+        glossary_guid=GLOSSARY_GUID,
+    )
+    sut.anchor = anchor
+
+    with pytest.raises(ValueError, match="anchor.guid must be available"):
+        sut.trim_to_required()
