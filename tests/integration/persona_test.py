@@ -129,20 +129,20 @@ def test_add_policies_to_persona(
         persona_id=persona.guid,
         policy_type=AuthPolicyType.ALLOW,
         actions={PersonaMetadataAction.READ},
-        resources=[f"entity:{connection.qualified_name}"],
+        resources={f"entity:{connection.qualified_name}"},
     )
     data = Persona.create_data_policy(
         name="Allow access to data",
         persona_id=persona.guid,
         policy_type=AuthPolicyType.ALLOW,
-        resources=[f"entity:{connection.qualified_name}"],
+        resources={f"entity:{connection.qualified_name}"},
     )
     glossary_policy = Persona.create_glossary_policy(
         name="All glossaries",
         persona_id=persona.guid,
         policy_type=AuthPolicyType.ALLOW,
         actions={PersonaGlossaryAction.CREATE, PersonaGlossaryAction.UPDATE},
-        resources=[f"entity:{glossary.qualified_name}"],
+        resources={f"entity:{glossary.qualified_name}"},
     )
     response = client.upsert([metadata, data, glossary_policy])
     assert response

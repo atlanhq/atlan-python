@@ -107,7 +107,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 return object.__setattr__(self, name, value)
             super().__setattr__( name, value)
 
-    {{ gen_properties(entity_def.attribute_defs + entity_def.relationship_attribute_defs, list_overrides) }}
+    {{ gen_properties(entity_def.attribute_defs + entity_def.relationship_attribute_defs) }}
 
 {%- if entity_def.name == "Referenceable"  %}
 
@@ -363,7 +363,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{% if attribute_def.name in list_overrides %}{{list_overrides.get(attribute_def.name)}}{% else %}{{type}}{% endif %}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='' , alias='{{attribute_def.name}}')
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
@@ -947,7 +947,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     @classmethod
     # @validate_arguments()
-    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], resources: list[str]) -> AuthPolicy:
+    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
         policy = AuthPolicy.create(name=name)
         policy.policy_actions = {x.value for x in actions}
@@ -964,14 +964,14 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     @classmethod
     # @validate_arguments()
-    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, resources: list[str]) -> AuthPolicy:
+    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "resources"], [name, persona_id, policy_type, resources])
         policy = AuthPolicy.create(name=name)
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
         policy.policy_resources = resources
-        policy.policy_resources.append("entity-type:*")
+        policy.policy_resources.add("entity-type:*")
         policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value
         policy.policy_service_name = "heka"
         policy.policy_sub_category = "data"
@@ -982,7 +982,7 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     @classmethod
     # @validate_arguments()
-    def create_glossary_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaGlossaryAction], resources: list[str]) -> AuthPolicy:
+    def create_glossary_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaGlossaryAction], resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
         policy = AuthPolicy.create(name=name)
         policy.policy_actions = {x.value for x in actions}

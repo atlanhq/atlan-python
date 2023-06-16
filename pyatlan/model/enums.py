@@ -456,6 +456,7 @@ class PurposeMetadataAction(str, Enum):
     DELETE = "entity-delete"
     UPDATE_CUSTOM_METADATA = "entity-update-business-metadata"
     ADD_ATLAN_TAG = "entity-add-classification"
+    READ_ATLAN_TAG = "entity-read-classification"
     UPDATE_ATLAN_TAG = "entity-update-classification"
     REMOVE_ATLAN_TAG = "entity-remove-classification"
 
