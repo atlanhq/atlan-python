@@ -99,6 +99,35 @@ class SourceTagAttachment(AtlanObject):
     )
 
 
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    source_tag_name: Optional["str"] = Field(
+        None, description="", alias="sourceTagName"
+    )
+    source_tag_qualified_name: Optional["str"] = Field(
+        None, description="", alias="sourceTagQualifiedName"
+    )
+    source_tag_guid: Optional["str"] = Field(
+        None, description="", alias="sourceTagGuid"
+    )
+    source_tag_connector_name: Optional["str"] = Field(
+        None, description="", alias="sourceTagConnectorName"
+    )
+    source_tag_value: Optional["list[SourceTagAttachmentValue]"] = Field(
+        None, description="", alias="sourceTagValue"
+    )
+    is_source_tag_synced: Optional["bool"] = Field(
+        None, description="", alias="isSourceTagSynced"
+    )
+    source_tag_sync_timestamp: Optional["datetime"] = Field(
+        None, description="", alias="sourceTagSyncTimestamp"
+    )
+    source_tag_sync_error: Optional["str"] = Field(
+        None, description="", alias="sourceTagSyncError"
+    )
+
+
 class BadgeCondition(AtlanObject):
     """Description"""
 
@@ -135,17 +164,6 @@ class BadgeCondition(AtlanObject):
     )
     badge_condition_colorhex: Optional["str"] = Field(
         None, description="", alias="badgeConditionColorhex"
-    )
-
-
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentKey"
-    )
-    tag_attachment_value: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentValue"
     )
 
 
