@@ -114,3 +114,24 @@ def test_read_glossary(
     terms = g.terms
     assert terms
     assert len(terms) == 2
+
+
+@pytest.mark.order(after="test_read_glossary")
+def test_trim_to_required_glossary(
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+):
+    glossary = glossary.trim_to_required()
+    response = client.upsert(glossary)
+    assert response.mutated_entities is None
+
+
+@pytest.mark.order(after="test_term1")
+def test_term_trim_to_required(
+    client: AtlanClient,
+    term1: AtlasGlossaryTerm,
+):
+    term1 = client.get_asset_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    term1 = term1.trim_to_required()
+    response = client.upsert(term1)
+    assert response.mutated_entities is None

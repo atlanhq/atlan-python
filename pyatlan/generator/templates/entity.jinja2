@@ -7,7 +7,7 @@ import hashlib
 import sys
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, TypeVar
+from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -238,6 +238,14 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    def trim_to_required(self:SelfAsset) -> SelfAsset:
+        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name)
+
+    @classmethod
+    def create(cls:Type[SelfAsset], *args, **kwargs)->SelfAsset:
+        raise NotImplementedError("Create has not been implemented for this class. Please submit an enhancement"
+                                  "request if you need it implemented.")
 
     @classmethod
     def create_for_modification(
@@ -568,9 +576,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
         ) -> Column.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["parent_qualified_name"], [parent_qualified_name])
+            validate_required_fields(
+                ["name", "parent_qualified_name", "parent_type", "order"],
+                [name, parent_qualified_name, parent_type, order],
+            )
             fields = parent_qualified_name.split("/")
             if len(fields) != 6:
                 raise ValueError("Invalid parent_qualified_name")
@@ -578,6 +587,8 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
             except ValueError as e:
                 raise ValueError("Invalid parent_qualified_name") from e
+            if order < 0:
+                raise ValueError("Order must be be a positive integer")
             ret_value = Column.Attributes(
                 name=name,
                 qualified_name=f"{parent_qualified_name}/{name}",
@@ -592,14 +603,17 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             if parent_type == Table:
                 ret_value.table_qualified_name = parent_qualified_name
                 ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
+                ret_value.table_name = fields[5]
             elif parent_type == View:
                 ret_value.view_qualified_name = parent_qualified_name
                 ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
+                ret_value.view_name = fields[5]
             elif parent_type == MaterialisedView:
                 ret_value.view_qualified_name = parent_qualified_name
                 ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
                     parent_qualified_name
                 )
+                ret_value.view_name = fields[5]
             else:
                 raise ValueError(
                     "parent_type must be either Table, View or MaterializeView"
@@ -781,9 +795,9 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             qualified_name=connector_type.to_qualified_name(),
             connector_name=connector_type.value,
             category=connector_type.category.value,
-            admin_users=admin_users if admin_users else [],
-            admin_groups=admin_groups if admin_groups else [],
-            admin_roles=admin_roles if admin_roles else [],
+            admin_users=admin_users or [],
+            admin_groups=admin_groups or [],
+            admin_roles=admin_roles or [],
         )
         return cls(attributes=attr)
     {%- elif entity_def.name == "Process" %}
@@ -907,6 +921,34 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 name=name, anchor=anchor, parent_category=parent_category
             )
         )
+
+    def trim_to_required(self) -> AtlasGlossaryCategory:
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
+        )
     {% elif entity_def.name == "AtlasGlossaryTerm"%}
     @classmethod
     # @validate_arguments()
@@ -924,6 +966,14 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             attributes=AtlasGlossaryTerm.Attributes.create(
                 name=name, anchor=anchor, glossary_qualified_name=glossary_qualified_name,  glossary_guid = glossary_guid, categories=categories
             )
+        )
+    def trim_to_required(self) -> AtlasGlossaryTerm:
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
         )
 
     @classmethod
