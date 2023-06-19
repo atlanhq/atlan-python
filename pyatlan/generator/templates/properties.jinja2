@@ -1,0 +1,7 @@
+
+    def __setattr__(self, name, value):
+            if name in {{ entity_def.name }}._convience_properties:
+                return object.__setattr__(self, name, value)
+            super().__setattr__( name, value)
+
+    {{ gen_properties(entity_def.attribute_defs + entity_def.relationship_attribute_defs) }}

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+
 from __future__ import annotations
 
 import hashlib
@@ -93,6 +94,19 @@ class Referenceable(AtlanObject):
     def json(self, *args, **kwargs) -> str:
         self.business_attributes = self._metadata_proxy.business_attributes
         return super().json(**kwargs)
+
+    def validate_required(self):
+        if not self.create_time or self.created_by:
+            self.attributes.validate_required()
+
+    def get_custom_metadata(self, name: str) -> CustomMetadataDict:
+        return self._metadata_proxy.get_custom_metadata(name=name)
+
+    def set_custom_metadata(self, custom_metadata: CustomMetadataDict):
+        return self._metadata_proxy.set_custom_metadata(custom_metadata=custom_metadata)
+
+    def flush_custom_metadata(self):
+        self.business_attributes = self._metadata_proxy.business_attributes
 
     def __setattr__(self, name, value):
         if name in Referenceable._convience_properties:
@@ -258,22 +272,125 @@ class Referenceable(AtlanObject):
 
     unique_attributes: Optional[dict[str, Any]] = Field(None)
 
-    def validate_required(self):
-        if not self.create_time or self.created_by:
-            self.attributes.validate_required()
-
-    def get_custom_metadata(self, name: str) -> CustomMetadataDict:
-        return self._metadata_proxy.get_custom_metadata(name=name)
-
-    def set_custom_metadata(self, custom_metadata: CustomMetadataDict):
-        return self._metadata_proxy.set_custom_metadata(custom_metadata=custom_metadata)
-
-    def flush_custom_metadata(self):
-        self.business_attributes = self._metadata_proxy.business_attributes
-
 
 class Asset(Referenceable):
     """Description"""
+
+    _subtypes_: dict[str, type] = dict()
+
+    def __init_subclass__(cls, type_name=None):
+        cls._subtypes_[type_name or cls.__name__.lower()] = cls
+
+    def trim_to_required(self: SelfAsset) -> SelfAsset:
+        return self.create_for_modification(
+            qualified_name=self.qualified_name, name=self.name
+        )
+
+    @classmethod
+    def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
+        raise NotImplementedError(
+            "Create has not been implemented for this class. Please submit an enhancement"
+            "request if you need it implemented."
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset], qualified_name: str = "", name: str = ""
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name"],
+            [name, qualified_name],
+        )
+        return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
+
+    @classmethod
+    def ref_by_guid(cls: type[SelfAsset], guid: str) -> SelfAsset:
+        retval: SelfAsset = cls(attributes=cls.Attributes())
+        retval.guid = guid
+        return retval
+
+    @classmethod
+    def ref_by_qualified_name(cls: type[SelfAsset], qualified_name: str) -> SelfAsset:
+        ret_value: SelfAsset = cls(
+            attributes=cls.Attributes(qualified_name=qualified_name)
+        )
+        ret_value.unique_attributes = {"qualifiedName": qualified_name}
+        return ret_value
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._convert_to_real_type_
+
+    @classmethod
+    def _convert_to_real_type_(cls, data):
+
+        if isinstance(data, Asset):
+            return data
+
+        data_type = (
+            data.get("type_name") if "type_name" in data else data.get("typeName")
+        )
+
+        if data_type is None:
+            if issubclass(cls, Asset):
+                return cls(**data)
+            raise ValueError("Missing 'type' in Asset")
+
+        sub = cls._subtypes_.get(data_type)
+        if sub is None:
+            sub = getattr(sys.modules[__name__], data_type)
+
+        if sub is None:
+            raise TypeError(f"Unsupport sub-type: {data_type}")
+
+        return sub(**data)
+
+    def has_announcement(self) -> bool:
+        return bool(
+            self.attributes
+            and (
+                self.attributes.announcement_title or self.attributes.announcement_type
+            )
+        )
+
+    def set_announcement(self, announcement: Announcement) -> None:
+        self.attributes.announcement_type = announcement.announcement_type.value
+        self.attributes.announcement_title = announcement.announcement_title
+        self.attributes.announcement_message = announcement.announcement_message
+
+    def get_announcment(self) -> Optional[Announcement]:
+        if self.attributes.announcement_type and self.attributes.announcement_title:
+            return Announcement(
+                announcement_type=AnnouncementType[
+                    self.attributes.announcement_type.upper()
+                ],
+                announcement_title=self.attributes.announcement_title,
+                announcement_message=self.attributes.announcement_message,
+            )
+        return None
+
+    def remove_announcement(self):
+        self.attributes.remove_announcement()
+
+    def remove_description(self):
+        self.attributes.remove_description()
+
+    def remove_user_description(self):
+        self.attributes.remove_user_description()
+
+    def remove_owners(self):
+        self.attributes.remove_owners()
+
+    def remove_certificate(self):
+        self.attributes.remove_certificate()
+
+    type_name: str = Field("Asset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Asset":
+            raise ValueError("must be Asset")
+        return v
 
     def __setattr__(self, name, value):
         if name in Asset._convience_properties:
@@ -1948,83 +2065,6 @@ class Asset(Referenceable):
             self.attributes = self.Attributes()
         self.attributes.meanings = assigned_terms
 
-    _subtypes_: dict[str, type] = dict()
-
-    def __init_subclass__(cls, type_name=None):
-        cls._subtypes_[type_name or cls.__name__.lower()] = cls
-
-    def trim_to_required(self: SelfAsset) -> SelfAsset:
-        return self.create_for_modification(
-            qualified_name=self.qualified_name, name=self.name
-        )
-
-    @classmethod
-    def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
-        raise NotImplementedError(
-            "Create has not been implemented for this class. Please submit an enhancement"
-            "request if you need it implemented."
-        )
-
-    @classmethod
-    def create_for_modification(
-        cls: type[SelfAsset], qualified_name: str = "", name: str = ""
-    ) -> SelfAsset:
-        validate_required_fields(
-            ["name", "qualified_name"],
-            [name, qualified_name],
-        )
-        return cls(attributes=cls.Attributes(qualified_name=qualified_name, name=name))
-
-    @classmethod
-    def ref_by_guid(cls: type[SelfAsset], guid: str) -> SelfAsset:
-        retval: SelfAsset = cls(attributes=cls.Attributes())
-        retval.guid = guid
-        return retval
-
-    @classmethod
-    def ref_by_qualified_name(cls: type[SelfAsset], qualified_name: str) -> SelfAsset:
-        ret_value: SelfAsset = cls(
-            attributes=cls.Attributes(qualified_name=qualified_name)
-        )
-        ret_value.unique_attributes = {"qualifiedName": qualified_name}
-        return ret_value
-
-    @classmethod
-    def __get_validators__(cls):
-        yield cls._convert_to_real_type_
-
-    @classmethod
-    def _convert_to_real_type_(cls, data):
-
-        if isinstance(data, Asset):
-            return data
-
-        data_type = (
-            data.get("type_name") if "type_name" in data else data.get("typeName")
-        )
-
-        if data_type is None:
-            if issubclass(cls, Asset):
-                return cls(**data)
-            raise ValueError("Missing 'type' in Asset")
-
-        sub = cls._subtypes_.get(data_type)
-        if sub is None:
-            sub = getattr(sys.modules[__name__], data_type)
-
-        if sub is None:
-            raise TypeError(f"Unsupport sub-type: {data_type}")
-
-        return sub(**data)
-
-    type_name: str = Field("Asset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Asset":
-            raise ValueError("must be Asset")
-        return v
-
     class Attributes(Referenceable.Attributes):
         name: str = Field(None, description="", alias="name")
         display_name: Optional[str] = Field(None, description="", alias="displayName")
@@ -2380,55 +2420,9 @@ class Asset(Referenceable):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    def has_announcement(self) -> bool:
-        return bool(
-            self.attributes
-            and (
-                self.attributes.announcement_title or self.attributes.announcement_type
-            )
-        )
-
-    def set_announcement(self, announcement: Announcement) -> None:
-        self.attributes.announcement_type = announcement.announcement_type.value
-        self.attributes.announcement_title = announcement.announcement_title
-        self.attributes.announcement_message = announcement.announcement_message
-
-    def get_announcment(self) -> Optional[Announcement]:
-        if self.attributes.announcement_type and self.attributes.announcement_title:
-            return Announcement(
-                announcement_type=AnnouncementType[
-                    self.attributes.announcement_type.upper()
-                ],
-                announcement_title=self.attributes.announcement_title,
-                announcement_message=self.attributes.announcement_message,
-            )
-        return None
-
-    def remove_announcement(self):
-        self.attributes.remove_announcement()
-
-    def remove_description(self):
-        self.attributes.remove_description()
-
-    def remove_user_description(self):
-        self.attributes.remove_user_description()
-
-    def remove_owners(self):
-        self.attributes.remove_owners()
-
-    def remove_certificate(self):
-        self.attributes.remove_certificate()
-
 
 class DataSet(Asset, type_name="DataSet"):
     """Description"""
-
-    def __setattr__(self, name, value):
-        if name in DataSet._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
 
     type_name: str = Field("DataSet", allow_mutation=False)
 
@@ -2438,9 +2432,77 @@ class DataSet(Asset, type_name="DataSet"):
             raise ValueError("must be DataSet")
         return v
 
+    def __setattr__(self, name, value):
+        if name in DataSet._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class Connection(Asset, type_name="Connection"):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: str,
+        connector_type: AtlanConnectorType,
+        admin_users: Optional[list[str]] = None,
+        admin_groups: Optional[list[str]] = None,
+        admin_roles: Optional[list[str]] = None,
+    ) -> Connection:
+        if not name:
+            raise ValueError("name cannot be blank")
+        validate_required_fields(["connector_type"], [connector_type])
+        if not admin_users and not admin_groups and not admin_roles:
+            raise ValueError(
+                "One of admin_user, admin_groups or admin_roles is required"
+            )
+        if admin_roles:
+            from pyatlan.cache.role_cache import RoleCache
+
+            for role_id in admin_roles:
+                if not RoleCache.get_name_for_id(role_id):
+                    raise ValueError(
+                        f"Provided role ID {role_id} was not found in Atlan."
+                    )
+        if admin_groups:
+            from pyatlan.cache.group_cache import GroupCache
+
+            for group_alias in admin_groups:
+                if not GroupCache.get_id_for_alias(group_alias):
+                    raise ValueError(
+                        f"Provided group name {group_alias} was not found in Atlan."
+                    )
+        if admin_users:
+            from pyatlan.cache.user_cache import UserCache
+
+            for username in admin_users:
+                if not UserCache.get_id_for_name(username):
+                    raise ValueError(
+                        f"Provided username {username} was not found in Atlan."
+                    )
+        attr = cls.Attributes(
+            name=name,
+            qualified_name=connector_type.to_qualified_name(),
+            connector_name=connector_type.value,
+            category=connector_type.category.value,
+            admin_users=admin_users or [],
+            admin_groups=admin_groups or [],
+            admin_roles=admin_roles or [],
+        )
+        return cls(attributes=attr)
+
+    type_name: str = Field("Connection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Connection":
+            raise ValueError("must be Connection")
+        return v
 
     def __setattr__(self, name, value):
         if name in Connection._convience_properties:
@@ -2730,14 +2792,6 @@ class Connection(Asset, type_name="Connection"):
             connection_s_s_o_credential_guid
         )
 
-    type_name: str = Field("Connection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Connection":
-            raise ValueError("must be Connection")
-        return v
-
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
         sub_category: Optional[str] = Field(None, description="", alias="subCategory")
@@ -2796,62 +2850,38 @@ class Connection(Asset, type_name="Connection"):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: str,
-        connector_type: AtlanConnectorType,
-        admin_users: Optional[list[str]] = None,
-        admin_groups: Optional[list[str]] = None,
-        admin_roles: Optional[list[str]] = None,
-    ) -> Connection:
-        if not name:
-            raise ValueError("name cannot be blank")
-        validate_required_fields(["connector_type"], [connector_type])
-        if not admin_users and not admin_groups and not admin_roles:
-            raise ValueError(
-                "One of admin_user, admin_groups or admin_roles is required"
-            )
-        if admin_roles:
-            from pyatlan.cache.role_cache import RoleCache
-
-            for role_id in admin_roles:
-                if not RoleCache.get_name_for_id(role_id):
-                    raise ValueError(
-                        f"Provided role ID {role_id} was not found in Atlan."
-                    )
-        if admin_groups:
-            from pyatlan.cache.group_cache import GroupCache
-
-            for group_alias in admin_groups:
-                if not GroupCache.get_id_for_alias(group_alias):
-                    raise ValueError(
-                        f"Provided group name {group_alias} was not found in Atlan."
-                    )
-        if admin_users:
-            from pyatlan.cache.user_cache import UserCache
-
-            for username in admin_users:
-                if not UserCache.get_id_for_name(username):
-                    raise ValueError(
-                        f"Provided username {username} was not found in Atlan."
-                    )
-        attr = cls.Attributes(
-            name=name,
-            qualified_name=connector_type.to_qualified_name(),
-            connector_name=connector_type.value,
-            category=connector_type.category.value,
-            admin_users=admin_users or [],
-            admin_groups=admin_groups or [],
-            admin_roles=admin_roles or [],
-        )
-        return cls(attributes=attr)
-
 
 class Process(Asset, type_name="Process"):
     """Description"""
+
+    @classmethod
+    def create(
+        cls,
+        name: str,
+        connection_qualified_name: str,
+        inputs: list["Catalog"],
+        outputs: list["Catalog"],
+        process_id: Optional[str] = None,
+        parent: Optional[Process] = None,
+    ) -> Process:
+        return Process(
+            attributes=Process.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                process_id=process_id,
+                inputs=inputs,
+                outputs=outputs,
+                parent=parent,
+            )
+        )
+
+    type_name: str = Field("Process", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Process":
+            raise ValueError("must be Process")
+        return v
 
     def __setattr__(self, name, value):
         if name in Process._convience_properties:
@@ -2926,14 +2956,6 @@ class Process(Asset, type_name="Process"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
-
-    type_name: str = Field("Process", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Process":
-            raise ValueError("must be Process")
-        return v
 
     class Attributes(Asset.Attributes):
         inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
@@ -3015,30 +3037,71 @@ class Process(Asset, type_name="Process"):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    def create(
-        cls,
-        name: str,
-        connection_qualified_name: str,
-        inputs: list["Catalog"],
-        outputs: list["Catalog"],
-        process_id: Optional[str] = None,
-        parent: Optional[Process] = None,
-    ) -> Process:
-        return Process(
-            attributes=Process.Attributes.create(
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                process_id=process_id,
-                inputs=inputs,
-                outputs=outputs,
-                parent=parent,
-            )
-        )
-
 
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
+
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        anchor: AtlasGlossary,
+        parent_category: Optional[AtlasGlossaryCategory] = None,
+    ) -> AtlasGlossaryCategory:
+        validate_required_fields(["name", "anchor"], [name, anchor])
+        return cls(
+            attributes=AtlasGlossaryCategory.Attributes.create(
+                name=name, anchor=anchor, parent_category=parent_category
+            )
+        )
+
+    def trim_to_required(self) -> AtlasGlossaryCategory:
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
+        )
+
+    type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AtlasGlossaryCategory":
+            raise ValueError("must be AtlasGlossaryCategory")
+        return v
 
     def __setattr__(self, name, value):
         if name in AtlasGlossaryCategory._convience_properties:
@@ -3129,14 +3192,6 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             self.attributes = self.Attributes()
         self.attributes.children_categories = children_categories
 
-    type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AtlasGlossaryCategory":
-            raise ValueError("must be AtlasGlossaryCategory")
-        return v
-
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
             None, description="", alias="shortDescription"
@@ -3183,15 +3238,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @root_validator()
-    def update_qualified_name(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
-        return values
+
+class Badge(Asset, type_name="Badge"):
+    """Description"""
 
     @classmethod
     # @validate_arguments()
@@ -3199,47 +3248,27 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         cls,
         *,
         name: StrictStr,
-        anchor: AtlasGlossary,
-        parent_category: Optional[AtlasGlossaryCategory] = None,
-    ) -> AtlasGlossaryCategory:
-        validate_required_fields(["name", "anchor"], [name, anchor])
+        cm_name: str,
+        cm_attribute: str,
+        badge_conditions: list[BadgeCondition],
+    ) -> Badge:
         return cls(
-            attributes=AtlasGlossaryCategory.Attributes.create(
-                name=name, anchor=anchor, parent_category=parent_category
-            )
+            status=EntityStatus.ACTIVE,
+            attributes=Badge.Attributes.create(
+                name=name,
+                cm_name=cm_name,
+                cm_attribute=cm_attribute,
+                badge_conditions=badge_conditions,
+            ),
         )
 
-    def trim_to_required(self) -> AtlasGlossaryCategory:
-        if self.anchor is None or not self.anchor.guid:
-            raise ValueError("anchor.guid must be available")
-        return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
-            glossary_guid=self.anchor.guid,
-        )
+    type_name: str = Field("Badge", allow_mutation=False)
 
-    @classmethod
-    def create_for_modification(
-        cls: type[SelfAsset],
-        qualified_name: str = "",
-        name: str = "",
-        glossary_guid: str = "",
-    ) -> SelfAsset:
-        validate_required_fields(
-            ["name", "qualified_name", "glossary_guid"],
-            [name, qualified_name, glossary_guid],
-        )
-        glossary = AtlasGlossary()
-        glossary.guid = glossary_guid
-        return cls(
-            attributes=cls.Attributes(
-                qualified_name=qualified_name, name=name, anchor=glossary
-            )
-        )
-
-
-class Badge(Asset, type_name="Badge"):
-    """Description"""
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Badge":
+            raise ValueError("must be Badge")
+        return v
 
     def __setattr__(self, name, value):
         if name in Badge._convience_properties:
@@ -3274,34 +3303,6 @@ class Badge(Asset, type_name="Badge"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.badge_metadata_attribute = badge_metadata_attribute
-
-    type_name: str = Field("Badge", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Badge":
-            raise ValueError("must be Badge")
-        return v
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: StrictStr,
-        cm_name: str,
-        cm_attribute: str,
-        badge_conditions: list[BadgeCondition],
-    ) -> Badge:
-        return cls(
-            status=EntityStatus.ACTIVE,
-            attributes=Badge.Attributes.create(
-                name=name,
-                cm_name=cm_name,
-                cm_attribute=cm_attribute,
-                badge_conditions=badge_conditions,
-            ),
-        )
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
@@ -3347,6 +3348,14 @@ class Badge(Asset, type_name="Badge"):
 
 class AccessControl(Asset, type_name="AccessControl"):
     """Description"""
+
+    type_name: str = Field("AccessControl", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AccessControl":
+            raise ValueError("must be AccessControl")
+        return v
 
     def __setattr__(self, name, value):
         if name in AccessControl._convience_properties:
@@ -3421,14 +3430,6 @@ class AccessControl(Asset, type_name="AccessControl"):
             self.attributes = self.Attributes()
         self.attributes.policies = policies
 
-    type_name: str = Field("AccessControl", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AccessControl":
-            raise ValueError("must be AccessControl")
-        return v
-
     class Attributes(Asset.Attributes):
         is_access_control_enabled: Optional[bool] = Field(
             None, description="", alias="isAccessControlEnabled"
@@ -3453,6 +3454,14 @@ class AccessControl(Asset, type_name="AccessControl"):
 
 class Namespace(Asset, type_name="Namespace"):
     """Description"""
+
+    type_name: str = Field("Namespace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Namespace":
+            raise ValueError("must be Namespace")
+        return v
 
     def __setattr__(self, name, value):
         if name in Namespace._convience_properties:
@@ -3484,14 +3493,6 @@ class Namespace(Asset, type_name="Namespace"):
             self.attributes = self.Attributes()
         self.attributes.children_folders = children_folders
 
-    type_name: str = Field("Namespace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Namespace":
-            raise ValueError("must be Namespace")
-        return v
-
     class Attributes(Asset.Attributes):
         children_queries: Optional[list[Query]] = Field(
             None, description="", alias="childrenQueries"
@@ -3509,6 +3510,14 @@ class Namespace(Asset, type_name="Namespace"):
 
 class Catalog(Asset, type_name="Catalog"):
     """Description"""
+
+    type_name: str = Field("Catalog", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Catalog":
+            raise ValueError("must be Catalog")
+        return v
 
     def __setattr__(self, name, value):
         if name in Catalog._convience_properties:
@@ -3542,14 +3551,6 @@ class Catalog(Asset, type_name="Catalog"):
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
-    type_name: str = Field("Catalog", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Catalog":
-            raise ValueError("must be Catalog")
-        return v
-
     class Attributes(Asset.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
@@ -3567,6 +3568,30 @@ class Catalog(Asset, type_name="Catalog"):
 
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
+
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: StrictStr) -> AtlasGlossary:
+        validate_required_fields(["name"], [name])
+        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
+
+    type_name: str = Field("AtlasGlossary", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AtlasGlossary":
+            raise ValueError("must be AtlasGlossary")
+        return v
 
     def __setattr__(self, name, value):
         if name in AtlasGlossary._convience_properties:
@@ -3655,14 +3680,6 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             self.attributes = self.Attributes()
         self.attributes.categories = categories
 
-    type_name: str = Field("AtlasGlossary", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AtlasGlossary":
-            raise ValueError("must be AtlasGlossary")
-        return v
-
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
             None, description="", alias="shortDescription"
@@ -3694,25 +3711,17 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @root_validator()
-    def update_qualified_name(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
-        return values
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: StrictStr) -> AtlasGlossary:
-        validate_required_fields(["name"], [name])
-        return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
-
 
 class AuthPolicy(Asset, type_name="AuthPolicy"):
     """Description"""
+
+    type_name: str = Field("AuthPolicy", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AuthPolicy":
+            raise ValueError("must be AuthPolicy")
+        return v
 
     def __setattr__(self, name, value):
         if name in AuthPolicy._convience_properties:
@@ -3936,14 +3945,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             self.attributes = self.Attributes()
         self.attributes.access_control = access_control
 
-    type_name: str = Field("AuthPolicy", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AuthPolicy":
-            raise ValueError("must be AuthPolicy")
-        return v
-
     class Attributes(Asset.Attributes):
         policy_type: Optional[AuthPolicyType] = Field(
             None, description="", alias="policyType"
@@ -4010,13 +4011,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 class ProcessExecution(Asset, type_name="ProcessExecution"):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in ProcessExecution._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("ProcessExecution", allow_mutation=False)
 
     @validator("type_name")
@@ -4025,9 +4019,84 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
             raise ValueError("must be ProcessExecution")
         return v
 
+    def __setattr__(self, name, value):
+        if name in ProcessExecution._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
+
+    @root_validator()
+    def update_qualified_name(cls, values):
+        if (
+            "attributes" in values
+            and values["attributes"]
+            and not values["attributes"].qualified_name
+        ):
+            values["attributes"].qualified_name = values["guid"]
+        return values
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: StrictStr,
+        anchor: Optional[AtlasGlossary] = None,
+        glossary_qualified_name: Optional[StrictStr] = None,
+        glossary_guid: Optional[StrictStr] = None,
+        categories: Optional[list[AtlasGlossaryCategory]] = None,
+    ) -> AtlasGlossaryTerm:
+        validate_required_fields(["name"], [name])
+        return cls(
+            attributes=AtlasGlossaryTerm.Attributes.create(
+                name=name,
+                anchor=anchor,
+                glossary_qualified_name=glossary_qualified_name,
+                glossary_guid=glossary_guid,
+                categories=categories,
+            )
+        )
+
+    def trim_to_required(self) -> AtlasGlossaryTerm:
+        if self.anchor is None or not self.anchor.guid:
+            raise ValueError("anchor.guid must be available")
+        return self.create_for_modification(
+            qualified_name=self.qualified_name,
+            name=self.name,
+            glossary_guid=self.anchor.guid,
+        )
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        glossary_guid: str = "",
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "glossary_guid"],
+            [name, qualified_name, glossary_guid],
+        )
+        glossary = AtlasGlossary()
+        glossary.guid = glossary_guid
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name, name=name, anchor=glossary
+            )
+        )
+
+    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AtlasGlossaryTerm":
+            raise ValueError("must be AtlasGlossaryTerm")
+        return v
 
     def __setattr__(self, name, value):
         if name in AtlasGlossaryTerm._convience_properties:
@@ -4281,14 +4350,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             self.attributes = self.Attributes()
         self.attributes.preferred_terms = preferred_terms
 
-    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AtlasGlossaryTerm":
-            raise ValueError("must be AtlasGlossaryTerm")
-        return v
-
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
             None, description="", alias="shortDescription"
@@ -4386,69 +4447,17 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @root_validator()
-    def update_qualified_name(cls, values):
-        if (
-            "attributes" in values
-            and values["attributes"]
-            and not values["attributes"].qualified_name
-        ):
-            values["attributes"].qualified_name = values["guid"]
-        return values
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: StrictStr,
-        anchor: Optional[AtlasGlossary] = None,
-        glossary_qualified_name: Optional[StrictStr] = None,
-        glossary_guid: Optional[StrictStr] = None,
-        categories: Optional[list[AtlasGlossaryCategory]] = None,
-    ) -> AtlasGlossaryTerm:
-        validate_required_fields(["name"], [name])
-        return cls(
-            attributes=AtlasGlossaryTerm.Attributes.create(
-                name=name,
-                anchor=anchor,
-                glossary_qualified_name=glossary_qualified_name,
-                glossary_guid=glossary_guid,
-                categories=categories,
-            )
-        )
-
-    def trim_to_required(self) -> AtlasGlossaryTerm:
-        if self.anchor is None or not self.anchor.guid:
-            raise ValueError("anchor.guid must be available")
-        return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
-            glossary_guid=self.anchor.guid,
-        )
-
-    @classmethod
-    def create_for_modification(
-        cls: type[SelfAsset],
-        qualified_name: str = "",
-        name: str = "",
-        glossary_guid: str = "",
-    ) -> SelfAsset:
-        validate_required_fields(
-            ["name", "qualified_name", "glossary_guid"],
-            [name, qualified_name, glossary_guid],
-        )
-        glossary = AtlasGlossary()
-        glossary.guid = glossary_guid
-        return cls(
-            attributes=cls.Attributes(
-                qualified_name=qualified_name, name=name, anchor=glossary
-            )
-        )
-
 
 class AuthService(Asset, type_name="AuthService"):
     """Description"""
+
+    type_name: str = Field("AuthService", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AuthService":
+            raise ValueError("must be AuthService")
+        return v
 
     def __setattr__(self, name, value):
         if name in AuthService._convience_properties:
@@ -4521,14 +4530,6 @@ class AuthService(Asset, type_name="AuthService"):
             self.attributes = self.Attributes()
         self.attributes.auth_service_policy_last_sync = auth_service_policy_last_sync
 
-    type_name: str = Field("AuthService", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AuthService":
-            raise ValueError("must be AuthService")
-        return v
-
     class Attributes(Asset.Attributes):
         auth_service_type: Optional[str] = Field(
             None, description="", alias="authServiceType"
@@ -4554,13 +4555,6 @@ class AuthService(Asset, type_name="AuthService"):
 class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in Cloud._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("Cloud", allow_mutation=False)
 
     @validator("type_name")
@@ -4569,16 +4563,16 @@ class Cloud(Asset, type_name="Cloud"):
             raise ValueError("must be Cloud")
         return v
 
-
-class Infrastructure(Asset, type_name="Infrastructure"):
-    """Description"""
-
     def __setattr__(self, name, value):
-        if name in Infrastructure._convience_properties:
+        if name in Cloud._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
+
+
+class Infrastructure(Asset, type_name="Infrastructure"):
+    """Description"""
 
     type_name: str = Field("Infrastructure", allow_mutation=False)
 
@@ -4588,9 +4582,24 @@ class Infrastructure(Asset, type_name="Infrastructure"):
             raise ValueError("must be Infrastructure")
         return v
 
+    def __setattr__(self, name, value):
+        if name in Infrastructure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class BIProcess(Process):
     """Description"""
+
+    type_name: str = Field("BIProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "BIProcess":
+            raise ValueError("must be BIProcess")
+        return v
 
     def __setattr__(self, name, value):
         if name in BIProcess._convience_properties:
@@ -4622,14 +4631,6 @@ class BIProcess(Process):
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
-    type_name: str = Field("BIProcess", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "BIProcess":
-            raise ValueError("must be BIProcess")
-        return v
-
     class Attributes(Process.Attributes):
         outputs: Optional[list[Catalog]] = Field(
             None, description="", alias="outputs"
@@ -4647,6 +4648,14 @@ class BIProcess(Process):
 
 class ColumnProcess(Process):
     """Description"""
+
+    type_name: str = Field("ColumnProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ColumnProcess":
+            raise ValueError("must be ColumnProcess")
+        return v
 
     def __setattr__(self, name, value):
         if name in ColumnProcess._convience_properties:
@@ -4689,14 +4698,6 @@ class ColumnProcess(Process):
             self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
-    type_name: str = Field("ColumnProcess", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ColumnProcess":
-            raise ValueError("must be ColumnProcess")
-        return v
-
     class Attributes(Process.Attributes):
         outputs: Optional[list[Catalog]] = Field(
             None, description="", alias="outputs"
@@ -4717,6 +4718,14 @@ class ColumnProcess(Process):
 
 class Persona(AccessControl):
     """Description"""
+
+    type_name: str = Field("Persona", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Persona":
+            raise ValueError("must be Persona")
+        return v
 
     def __setattr__(self, name, value):
         if name in Persona._convience_properties:
@@ -4759,14 +4768,6 @@ class Persona(AccessControl):
             self.attributes = self.Attributes()
         self.attributes.role_id = role_id
 
-    type_name: str = Field("Persona", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Persona":
-            raise ValueError("must be Persona")
-        return v
-
     class Attributes(AccessControl.Attributes):
         persona_groups: Optional[set[str]] = Field(
             None, description="", alias="personaGroups"
@@ -4785,6 +4786,14 @@ class Persona(AccessControl):
 
 class Purpose(AccessControl):
     """Description"""
+
+    type_name: str = Field("Purpose", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Purpose":
+            raise ValueError("must be Purpose")
+        return v
 
     def __setattr__(self, name, value):
         if name in Purpose._convience_properties:
@@ -4807,14 +4816,6 @@ class Purpose(AccessControl):
             self.attributes = self.Attributes()
         self.attributes.purpose_classifications = purpose_classifications
 
-    type_name: str = Field("Purpose", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Purpose":
-            raise ValueError("must be Purpose")
-        return v
-
     class Attributes(AccessControl.Attributes):
         purpose_classifications: Optional[set[str]] = Field(
             None, description="", alias="purposeClassifications"
@@ -4829,6 +4830,14 @@ class Purpose(AccessControl):
 
 class Collection(Namespace):
     """Description"""
+
+    type_name: str = Field("Collection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Collection":
+            raise ValueError("must be Collection")
+        return v
 
     def __setattr__(self, name, value):
         if name in Collection._convience_properties:
@@ -4860,14 +4869,6 @@ class Collection(Namespace):
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
 
-    type_name: str = Field("Collection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Collection":
-            raise ValueError("must be Collection")
-        return v
-
     class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
@@ -4881,6 +4882,14 @@ class Collection(Namespace):
 
 class Folder(Namespace):
     """Description"""
+
+    type_name: str = Field("Folder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Folder":
+            raise ValueError("must be Folder")
+        return v
 
     def __setattr__(self, name, value):
         if name in Folder._convience_properties:
@@ -4929,14 +4938,6 @@ class Folder(Namespace):
             self.attributes = self.Attributes()
         self.attributes.parent = parent
 
-    type_name: str = Field("Folder", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Folder":
-            raise ValueError("must be Folder")
-        return v
-
     class Attributes(Namespace.Attributes):
         parent_qualified_name: str = Field(
             None, description="", alias="parentQualifiedName"
@@ -4956,13 +4957,6 @@ class Folder(Namespace):
 class EventStore(Catalog):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in EventStore._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("EventStore", allow_mutation=False)
 
     @validator("type_name")
@@ -4971,16 +4965,16 @@ class EventStore(Catalog):
             raise ValueError("must be EventStore")
         return v
 
-
-class ObjectStore(Catalog):
-    """Description"""
-
     def __setattr__(self, name, value):
-        if name in ObjectStore._convience_properties:
+        if name in EventStore._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
+
+
+class ObjectStore(Catalog):
+    """Description"""
 
     type_name: str = Field("ObjectStore", allow_mutation=False)
 
@@ -4990,16 +4984,16 @@ class ObjectStore(Catalog):
             raise ValueError("must be ObjectStore")
         return v
 
-
-class DataQuality(Catalog):
-    """Description"""
-
     def __setattr__(self, name, value):
-        if name in DataQuality._convience_properties:
+        if name in ObjectStore._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
+
+
+class DataQuality(Catalog):
+    """Description"""
 
     type_name: str = Field("DataQuality", allow_mutation=False)
 
@@ -5009,16 +5003,16 @@ class DataQuality(Catalog):
             raise ValueError("must be DataQuality")
         return v
 
-
-class BI(Catalog):
-    """Description"""
-
     def __setattr__(self, name, value):
-        if name in BI._convience_properties:
+        if name in DataQuality._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
+
+
+class BI(Catalog):
+    """Description"""
 
     type_name: str = Field("BI", allow_mutation=False)
 
@@ -5028,16 +5022,16 @@ class BI(Catalog):
             raise ValueError("must be BI")
         return v
 
-
-class SaaS(Catalog):
-    """Description"""
-
     def __setattr__(self, name, value):
-        if name in SaaS._convience_properties:
+        if name in BI._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
+
+
+class SaaS(Catalog):
+    """Description"""
 
     type_name: str = Field("SaaS", allow_mutation=False)
 
@@ -5047,9 +5041,24 @@ class SaaS(Catalog):
             raise ValueError("must be SaaS")
         return v
 
+    def __setattr__(self, name, value):
+        if name in SaaS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class Dbt(Catalog):
     """Description"""
+
+    type_name: str = Field("Dbt", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Dbt":
+            raise ValueError("must be Dbt")
+        return v
 
     def __setattr__(self, name, value):
         if name in Dbt._convience_properties:
@@ -5279,14 +5288,6 @@ class Dbt(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
-    type_name: str = Field("Dbt", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Dbt":
-            raise ValueError("must be Dbt")
-        return v
-
     class Attributes(Catalog.Attributes):
         dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
         dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
@@ -5343,6 +5344,14 @@ class Dbt(Catalog):
 class Resource(Catalog):
     """Description"""
 
+    type_name: str = Field("Resource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Resource":
+            raise ValueError("must be Resource")
+        return v
+
     def __setattr__(self, name, value):
         if name in Resource._convience_properties:
             return object.__setattr__(self, name, value)
@@ -5395,14 +5404,6 @@ class Resource(Catalog):
             self.attributes = self.Attributes()
         self.attributes.resource_metadata = resource_metadata
 
-    type_name: str = Field("Resource", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Resource":
-            raise ValueError("must be Resource")
-        return v
-
     class Attributes(Catalog.Attributes):
         link: Optional[str] = Field(None, description="", alias="link")
         is_global: Optional[bool] = Field(None, description="", alias="isGlobal")
@@ -5421,13 +5422,6 @@ class Resource(Catalog):
 class Insight(Catalog):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in Insight._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("Insight", allow_mutation=False)
 
     @validator("type_name")
@@ -5436,9 +5430,24 @@ class Insight(Catalog):
             raise ValueError("must be Insight")
         return v
 
+    def __setattr__(self, name, value):
+        if name in Insight._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class API(Catalog):
     """Description"""
+
+    type_name: str = Field("API", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "API":
+            raise ValueError("must be API")
+        return v
 
     def __setattr__(self, name, value):
         if name in API._convience_properties:
@@ -5516,14 +5525,6 @@ class API(Catalog):
             self.attributes = self.Attributes()
         self.attributes.api_is_auth_optional = api_is_auth_optional
 
-    type_name: str = Field("API", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "API":
-            raise ValueError("must be API")
-        return v
-
     class Attributes(Catalog.Attributes):
         api_spec_type: Optional[str] = Field(None, description="", alias="apiSpecType")
         api_spec_version: Optional[str] = Field(
@@ -5549,6 +5550,14 @@ class API(Catalog):
 
 class Tag(Catalog):
     """Description"""
+
+    type_name: str = Field("Tag", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Tag":
+            raise ValueError("must be Tag")
+        return v
 
     def __setattr__(self, name, value):
         if name in Tag._convience_properties:
@@ -5606,14 +5615,6 @@ class Tag(Catalog):
             self.attributes = self.Attributes()
         self.attributes.mapped_classification_name = mapped_classification_name
 
-    type_name: str = Field("Tag", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Tag":
-            raise ValueError("must be Tag")
-        return v
-
     class Attributes(Catalog.Attributes):
         tag_id: Optional[str] = Field(None, description="", alias="tagId")
         tag_attributes: Optional[list[SourceTagAttribute]] = Field(
@@ -5635,6 +5636,14 @@ class Tag(Catalog):
 
 class SQL(Catalog):
     """Description"""
+
+    type_name: str = Field("SQL", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SQL":
+            raise ValueError("must be SQL")
+        return v
 
     def __setattr__(self, name, value):
         if name in SQL._convience_properties:
@@ -5848,14 +5857,6 @@ class SQL(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
-    type_name: str = Field("SQL", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SQL":
-            raise ValueError("must be SQL")
-        return v
-
     class Attributes(Catalog.Attributes):
         query_count: Optional[int] = Field(None, description="", alias="queryCount")
         query_user_count: Optional[int] = Field(
@@ -5909,6 +5910,14 @@ class SQL(Catalog):
 
 class Google(Cloud):
     """Description"""
+
+    type_name: str = Field("Google", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Google":
+            raise ValueError("must be Google")
+        return v
 
     def __setattr__(self, name, value):
         if name in Google._convience_properties:
@@ -6008,14 +6017,6 @@ class Google(Cloud):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
-    type_name: str = Field("Google", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Google":
-            raise ValueError("must be Google")
-        return v
-
     class Attributes(Cloud.Attributes):
         google_service: Optional[str] = Field(
             None, description="", alias="googleService"
@@ -6051,6 +6052,14 @@ class Google(Cloud):
 
 class Azure(Cloud):
     """Description"""
+
+    type_name: str = Field("Azure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Azure":
+            raise ValueError("must be Azure")
+        return v
 
     def __setattr__(self, name, value):
         if name in Azure._convience_properties:
@@ -6112,14 +6121,6 @@ class Azure(Cloud):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    type_name: str = Field("Azure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Azure":
-            raise ValueError("must be Azure")
-        return v
-
     class Attributes(Cloud.Attributes):
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
@@ -6143,6 +6144,14 @@ class Azure(Cloud):
 
 class AWS(Cloud):
     """Description"""
+
+    type_name: str = Field("AWS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AWS":
+            raise ValueError("must be AWS")
+        return v
 
     def __setattr__(self, name, value):
         if name in AWS._convience_properties:
@@ -6251,14 +6260,6 @@ class AWS(Cloud):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
-    type_name: str = Field("AWS", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "AWS":
-            raise ValueError("must be AWS")
-        return v
-
     class Attributes(Cloud.Attributes):
         aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
         aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
@@ -6285,6 +6286,14 @@ class AWS(Cloud):
 
 class DbtColumnProcess(Dbt):
     """Description"""
+
+    type_name: str = Field("DbtColumnProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtColumnProcess":
+            raise ValueError("must be DbtColumnProcess")
+        return v
 
     def __setattr__(self, name, value):
         if name in DbtColumnProcess._convience_properties:
@@ -6608,14 +6617,6 @@ class DbtColumnProcess(Dbt):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
-    type_name: str = Field("DbtColumnProcess", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DbtColumnProcess":
-            raise ValueError("must be DbtColumnProcess")
-        return v
-
     class Attributes(Dbt.Attributes):
         dbt_column_process_job_status: Optional[str] = Field(
             None, description="", alias="dbtColumnProcessJobStatus"
@@ -6686,13 +6687,6 @@ class DbtColumnProcess(Dbt):
 class Kafka(EventStore):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in Kafka._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("Kafka", allow_mutation=False)
 
     @validator("type_name")
@@ -6701,9 +6695,24 @@ class Kafka(EventStore):
             raise ValueError("must be Kafka")
         return v
 
+    def __setattr__(self, name, value):
+        if name in Kafka._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class S3(ObjectStore):
     """Description"""
+
+    type_name: str = Field("S3", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3":
+            raise ValueError("must be S3")
+        return v
 
     def __setattr__(self, name, value):
         if name in S3._convience_properties:
@@ -6834,14 +6843,6 @@ class S3(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
-    type_name: str = Field("S3", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "S3":
-            raise ValueError("must be S3")
-        return v
-
     class Attributes(ObjectStore.Attributes):
         s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
         s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
@@ -6870,6 +6871,14 @@ class S3(ObjectStore):
 
 class ADLS(ObjectStore):
     """Description"""
+
+    type_name: str = Field("ADLS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLS":
+            raise ValueError("must be ADLS")
+        return v
 
     def __setattr__(self, name, value):
         if name in ADLS._convience_properties:
@@ -6946,14 +6955,6 @@ class ADLS(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    type_name: str = Field("ADLS", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ADLS":
-            raise ValueError("must be ADLS")
-        return v
-
     class Attributes(ObjectStore.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
             None, description="", alias="adlsAccountQualifiedName"
@@ -6980,6 +6981,14 @@ class ADLS(ObjectStore):
 
 class GCS(Google):
     """Description"""
+
+    type_name: str = Field("GCS", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCS":
+            raise ValueError("must be GCS")
+        return v
 
     def __setattr__(self, name, value):
         if name in GCS._convience_properties:
@@ -7171,14 +7180,6 @@ class GCS(Google):
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
-    type_name: str = Field("GCS", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "GCS":
-            raise ValueError("must be GCS")
-        return v
-
     class Attributes(Google.Attributes):
         gcs_storage_class: Optional[str] = Field(
             None, description="", alias="gcsStorageClass"
@@ -7237,6 +7238,14 @@ class GCS(Google):
 class MonteCarlo(DataQuality):
     """Description"""
 
+    type_name: str = Field("MonteCarlo", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MonteCarlo":
+            raise ValueError("must be MonteCarlo")
+        return v
+
     def __setattr__(self, name, value):
         if name in MonteCarlo._convience_properties:
             return object.__setattr__(self, name, value)
@@ -7271,14 +7280,6 @@ class MonteCarlo(DataQuality):
             self.attributes = self.Attributes()
         self.attributes.mc_asset_qualified_names = mc_asset_qualified_names
 
-    type_name: str = Field("MonteCarlo", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MonteCarlo":
-            raise ValueError("must be MonteCarlo")
-        return v
-
     class Attributes(DataQuality.Attributes):
         mc_labels: Optional[set[str]] = Field(None, description="", alias="mcLabels")
         mc_asset_qualified_names: Optional[set[str]] = Field(
@@ -7294,6 +7295,14 @@ class MonteCarlo(DataQuality):
 
 class Metric(DataQuality):
     """Description"""
+
+    type_name: str = Field("Metric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Metric":
+            raise ValueError("must be Metric")
+        return v
 
     def __setattr__(self, name, value):
         if name in Metric._convience_properties:
@@ -7388,14 +7397,6 @@ class Metric(DataQuality):
             self.attributes = self.Attributes()
         self.attributes.metric_timestamp_column = metric_timestamp_column
 
-    type_name: str = Field("Metric", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Metric":
-            raise ValueError("must be Metric")
-        return v
-
     class Attributes(DataQuality.Attributes):
         metric_type: Optional[str] = Field(None, description="", alias="metricType")
         metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
@@ -7424,6 +7425,14 @@ class Metric(DataQuality):
 
 class Preset(BI):
     """Description"""
+
+    type_name: str = Field("Preset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Preset":
+            raise ValueError("must be Preset")
+        return v
 
     def __setattr__(self, name, value):
         if name in Preset._convience_properties:
@@ -7493,14 +7502,6 @@ class Preset(BI):
             preset_dashboard_qualified_name
         )
 
-    type_name: str = Field("Preset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Preset":
-            raise ValueError("must be Preset")
-        return v
-
     class Attributes(BI.Attributes):
         preset_workspace_id: Optional[int] = Field(
             None, description="", alias="presetWorkspaceId"
@@ -7524,6 +7525,14 @@ class Preset(BI):
 
 class Mode(BI):
     """Description"""
+
+    type_name: str = Field("Mode", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Mode":
+            raise ValueError("must be Mode")
+        return v
 
     def __setattr__(self, name, value):
         if name in Mode._convience_properties:
@@ -7648,14 +7657,6 @@ class Mode(BI):
             self.attributes = self.Attributes()
         self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
-    type_name: str = Field("Mode", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Mode":
-            raise ValueError("must be Mode")
-        return v
-
     class Attributes(BI.Attributes):
         mode_id: Optional[str] = Field(None, description="", alias="modeId")
         mode_token: Optional[str] = Field(None, description="", alias="modeToken")
@@ -7690,6 +7691,14 @@ class Mode(BI):
 
 class Sigma(BI):
     """Description"""
+
+    type_name: str = Field("Sigma", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Sigma":
+            raise ValueError("must be Sigma")
+        return v
 
     def __setattr__(self, name, value):
         if name in Sigma._convience_properties:
@@ -7785,14 +7794,6 @@ class Sigma(BI):
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_name = sigma_data_element_name
 
-    type_name: str = Field("Sigma", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Sigma":
-            raise ValueError("must be Sigma")
-        return v
-
     class Attributes(BI.Attributes):
         sigma_workbook_qualified_name: Optional[str] = Field(
             None, description="", alias="sigmaWorkbookQualifiedName"
@@ -7823,13 +7824,6 @@ class Sigma(BI):
 class Tableau(BI):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in Tableau._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("Tableau", allow_mutation=False)
 
     @validator("type_name")
@@ -7838,16 +7832,16 @@ class Tableau(BI):
             raise ValueError("must be Tableau")
         return v
 
-
-class Looker(BI):
-    """Description"""
-
     def __setattr__(self, name, value):
-        if name in Looker._convience_properties:
+        if name in Tableau._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
+
+
+class Looker(BI):
+    """Description"""
 
     type_name: str = Field("Looker", allow_mutation=False)
 
@@ -7857,9 +7851,24 @@ class Looker(BI):
             raise ValueError("must be Looker")
         return v
 
+    def __setattr__(self, name, value):
+        if name in Looker._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class Redash(BI):
     """Description"""
+
+    type_name: str = Field("Redash", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Redash":
+            raise ValueError("must be Redash")
+        return v
 
     def __setattr__(self, name, value):
         if name in Redash._convience_properties:
@@ -7880,14 +7889,6 @@ class Redash(BI):
             self.attributes = self.Attributes()
         self.attributes.redash_is_published = redash_is_published
 
-    type_name: str = Field("Redash", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Redash":
-            raise ValueError("must be Redash")
-        return v
-
     class Attributes(BI.Attributes):
         redash_is_published: Optional[bool] = Field(
             None, description="", alias="redashIsPublished"
@@ -7902,6 +7903,14 @@ class Redash(BI):
 
 class DataStudio(Google):
     """Description"""
+
+    type_name: str = Field("DataStudio", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataStudio":
+            raise ValueError("must be DataStudio")
+        return v
 
     def __setattr__(self, name, value):
         if name in DataStudio._convience_properties:
@@ -8025,14 +8034,6 @@ class DataStudio(Google):
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
-    type_name: str = Field("DataStudio", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DataStudio":
-            raise ValueError("must be DataStudio")
-        return v
-
     class Attributes(Google.Attributes):
         google_service: Optional[str] = Field(
             None, description="", alias="googleService"
@@ -8074,6 +8075,14 @@ class DataStudio(Google):
 
 class Metabase(BI):
     """Description"""
+
+    type_name: str = Field("Metabase", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Metabase":
+            raise ValueError("must be Metabase")
+        return v
 
     def __setattr__(self, name, value):
         if name in Metabase._convience_properties:
@@ -8117,14 +8126,6 @@ class Metabase(BI):
             metabase_collection_qualified_name
         )
 
-    type_name: str = Field("Metabase", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Metabase":
-            raise ValueError("must be Metabase")
-        return v
-
     class Attributes(BI.Attributes):
         metabase_collection_name: Optional[str] = Field(
             None, description="", alias="metabaseCollectionName"
@@ -8142,6 +8143,14 @@ class Metabase(BI):
 
 class QuickSight(BI):
     """Description"""
+
+    type_name: str = Field("QuickSight", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSight":
+            raise ValueError("must be QuickSight")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSight._convience_properties:
@@ -8186,14 +8195,6 @@ class QuickSight(BI):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
 
-    type_name: str = Field("QuickSight", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSight":
-            raise ValueError("must be QuickSight")
-        return v
-
     class Attributes(BI.Attributes):
         quick_sight_id: Optional[str] = Field(
             None, description="", alias="quickSightId"
@@ -8214,6 +8215,14 @@ class QuickSight(BI):
 
 class Thoughtspot(BI):
     """Description"""
+
+    type_name: str = Field("Thoughtspot", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Thoughtspot":
+            raise ValueError("must be Thoughtspot")
+        return v
 
     def __setattr__(self, name, value):
         if name in Thoughtspot._convience_properties:
@@ -8251,14 +8260,6 @@ class Thoughtspot(BI):
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_question_text = thoughtspot_question_text
 
-    type_name: str = Field("Thoughtspot", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Thoughtspot":
-            raise ValueError("must be Thoughtspot")
-        return v
-
     class Attributes(BI.Attributes):
         thoughtspot_chart_type: Optional[str] = Field(
             None, description="", alias="thoughtspotChartType"
@@ -8276,6 +8277,14 @@ class Thoughtspot(BI):
 
 class PowerBI(BI):
     """Description"""
+
+    type_name: str = Field("PowerBI", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBI":
+            raise ValueError("must be PowerBI")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBI._convience_properties:
@@ -8341,14 +8350,6 @@ class PowerBI(BI):
             self.attributes = self.Attributes()
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
-    type_name: str = Field("PowerBI", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBI":
-            raise ValueError("must be PowerBI")
-        return v
-
     class Attributes(BI.Attributes):
         power_b_i_is_hidden: Optional[bool] = Field(
             None, description="", alias="powerBIIsHidden"
@@ -8372,6 +8373,14 @@ class PowerBI(BI):
 
 class MicroStrategy(BI):
     """Description"""
+
+    type_name: str = Field("MicroStrategy", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategy":
+            raise ValueError("must be MicroStrategy")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategy._convience_properties:
@@ -8547,14 +8556,6 @@ class MicroStrategy(BI):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_location = micro_strategy_location
 
-    type_name: str = Field("MicroStrategy", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategy":
-            raise ValueError("must be MicroStrategy")
-        return v
-
     class Attributes(BI.Attributes):
         micro_strategy_project_qualified_name: Optional[str] = Field(
             None, description="", alias="microStrategyProjectQualifiedName"
@@ -8596,6 +8597,14 @@ class MicroStrategy(BI):
 
 class Qlik(BI):
     """Description"""
+
+    type_name: str = Field("Qlik", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Qlik":
+            raise ValueError("must be Qlik")
+        return v
 
     def __setattr__(self, name, value):
         if name in Qlik._convience_properties:
@@ -8699,14 +8708,6 @@ class Qlik(BI):
             self.attributes = self.Attributes()
         self.attributes.qlik_is_published = qlik_is_published
 
-    type_name: str = Field("Qlik", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Qlik":
-            raise ValueError("must be Qlik")
-        return v
-
     class Attributes(BI.Attributes):
         qlik_id: Optional[str] = Field(None, description="", alias="qlikId")
         qlik_q_r_i: Optional[str] = Field(None, description="", alias="qlikQRI")
@@ -8732,6 +8733,14 @@ class Qlik(BI):
 
 class Salesforce(SaaS):
     """Description"""
+
+    type_name: str = Field("Salesforce", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Salesforce":
+            raise ValueError("must be Salesforce")
+        return v
 
     def __setattr__(self, name, value):
         if name in Salesforce._convience_properties:
@@ -8767,14 +8776,6 @@ class Salesforce(SaaS):
             self.attributes = self.Attributes()
         self.attributes.api_name = api_name
 
-    type_name: str = Field("Salesforce", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Salesforce":
-            raise ValueError("must be Salesforce")
-        return v
-
     class Attributes(SaaS.Attributes):
         organization_qualified_name: Optional[str] = Field(
             None, description="", alias="organizationQualifiedName"
@@ -8790,6 +8791,14 @@ class Salesforce(SaaS):
 
 class DbtModelColumn(Dbt):
     """Description"""
+
+    type_name: str = Field("DbtModelColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtModelColumn":
+            raise ValueError("must be DbtModelColumn")
+        return v
 
     def __setattr__(self, name, value):
         if name in DbtModelColumn._convience_properties:
@@ -8881,14 +8890,6 @@ class DbtModelColumn(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_model = dbt_model
 
-    type_name: str = Field("DbtModelColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DbtModelColumn":
-            raise ValueError("must be DbtModelColumn")
-        return v
-
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
             None, description="", alias="dbtModelQualifiedName"
@@ -8918,6 +8919,14 @@ class DbtModelColumn(Dbt):
 
 class DbtModel(Dbt):
     """Description"""
+
+    type_name: str = Field("DbtModel", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtModel":
+            raise ValueError("must be DbtModel")
+        return v
 
     def __setattr__(self, name, value):
         if name in DbtModel._convience_properties:
@@ -9156,14 +9165,6 @@ class DbtModel(Dbt):
             self.attributes = self.Attributes()
         self.attributes.sql_asset = sql_asset
 
-    type_name: str = Field("DbtModel", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DbtModel":
-            raise ValueError("must be DbtModel")
-        return v
-
     class Attributes(Dbt.Attributes):
         dbt_status: Optional[str] = Field(None, description="", alias="dbtStatus")
         dbt_error: Optional[str] = Field(None, description="", alias="dbtError")
@@ -9218,6 +9219,14 @@ class DbtModel(Dbt):
 
 class DbtMetric(Dbt):
     """Description"""
+
+    type_name: str = Field("DbtMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtMetric":
+            raise ValueError("must be DbtMetric")
+        return v
 
     def __setattr__(self, name, value):
         if name in DbtMetric._convience_properties:
@@ -9571,14 +9580,6 @@ class DbtMetric(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_metric_filter_columns = dbt_metric_filter_columns
 
-    type_name: str = Field("DbtMetric", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DbtMetric":
-            raise ValueError("must be DbtMetric")
-        return v
-
     class Attributes(Dbt.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
             None, description="", alias="dbtMetricFilters"
@@ -9661,6 +9662,14 @@ class DbtMetric(Dbt):
 class DbtSource(Dbt):
     """Description"""
 
+    type_name: str = Field("DbtSource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtSource":
+            raise ValueError("must be DbtSource")
+        return v
+
     def __setattr__(self, name, value):
         if name in DbtSource._convience_properties:
             return object.__setattr__(self, name, value)
@@ -9715,14 +9724,6 @@ class DbtSource(Dbt):
             self.attributes = self.Attributes()
         self.attributes.sql_asset = sql_asset
 
-    type_name: str = Field("DbtSource", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DbtSource":
-            raise ValueError("must be DbtSource")
-        return v
-
     class Attributes(Dbt.Attributes):
         dbt_state: Optional[str] = Field(None, description="", alias="dbtState")
         dbt_freshness_criteria: Optional[str] = Field(
@@ -9744,6 +9745,14 @@ class DbtSource(Dbt):
 
 class DbtProcess(Dbt):
     """Description"""
+
+    type_name: str = Field("DbtProcess", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtProcess":
+            raise ValueError("must be DbtProcess")
+        return v
 
     def __setattr__(self, name, value):
         if name in DbtProcess._convience_properties:
@@ -10052,14 +10061,6 @@ class DbtProcess(Dbt):
             self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
-    type_name: str = Field("DbtProcess", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DbtProcess":
-            raise ValueError("must be DbtProcess")
-        return v
-
     class Attributes(Dbt.Attributes):
         dbt_process_job_status: Optional[str] = Field(
             None, description="", alias="dbtProcessJobStatus"
@@ -10127,6 +10128,14 @@ class DbtProcess(Dbt):
 class ReadmeTemplate(Resource):
     """Description"""
 
+    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ReadmeTemplate":
+            raise ValueError("must be ReadmeTemplate")
+        return v
+
     def __setattr__(self, name, value):
         if name in ReadmeTemplate._convience_properties:
             return object.__setattr__(self, name, value)
@@ -10157,14 +10166,6 @@ class ReadmeTemplate(Resource):
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
 
-    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ReadmeTemplate":
-            raise ValueError("must be ReadmeTemplate")
-        return v
-
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
@@ -10178,6 +10179,38 @@ class ReadmeTemplate(Resource):
 
 class Readme(Resource):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
+        return Readme(
+            attributes=Readme.Attributes.create(
+                asset=asset, content=content, asset_name=asset_name
+            )
+        )
+
+    @property
+    def description(self) -> Optional[str]:
+        ret_value = self.attributes.description
+        return unquote(ret_value) if ret_value is not None else ret_value
+
+    @description.setter
+    def description(self, description: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.description = (
+            quote(description) if description is not None else description
+        )
+
+    type_name: str = Field("Readme", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Readme":
+            raise ValueError("must be Readme")
+        return v
 
     def __setattr__(self, name, value):
         if name in Readme._convience_properties:
@@ -10219,38 +10252,6 @@ class Readme(Resource):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.see_also = see_also
-
-    type_name: str = Field("Readme", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Readme":
-            raise ValueError("must be Readme")
-        return v
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
-    ) -> Readme:
-        return Readme(
-            attributes=Readme.Attributes.create(
-                asset=asset, content=content, asset_name=asset_name
-            )
-        )
-
-    @property
-    def description(self) -> Optional[str]:
-        ret_value = self.attributes.description
-        return unquote(ret_value) if ret_value is not None else ret_value
-
-    @description.setter
-    def description(self, description: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.description = (
-            quote(description) if description is not None else description
-        )
 
     class Attributes(Resource.Attributes):
         internal: Optional[Internal] = Field(
@@ -10297,6 +10298,14 @@ class Readme(Resource):
 class File(Resource):
     """Description"""
 
+    type_name: str = Field("File", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "File":
+            raise ValueError("must be File")
+        return v
+
     def __setattr__(self, name, value):
         if name in File._convience_properties:
             return object.__setattr__(self, name, value)
@@ -10338,14 +10347,6 @@ class File(Resource):
             self.attributes = self.Attributes()
         self.attributes.file_assets = file_assets
 
-    type_name: str = Field("File", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "File":
-            raise ValueError("must be File")
-        return v
-
     class Attributes(Resource.Attributes):
         file_type: Optional[FileType] = Field(None, description="", alias="fileType")
         file_path: Optional[str] = Field(None, description="", alias="filePath")
@@ -10362,6 +10363,14 @@ class File(Resource):
 
 class Link(Resource):
     """Description"""
+
+    type_name: str = Field("Link", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Link":
+            raise ValueError("must be Link")
+        return v
 
     def __setattr__(self, name, value):
         if name in Link._convience_properties:
@@ -10415,14 +10424,6 @@ class Link(Resource):
             self.attributes = self.Attributes()
         self.attributes.asset = asset
 
-    type_name: str = Field("Link", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Link":
-            raise ValueError("must be Link")
-        return v
-
     class Attributes(Resource.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
@@ -10442,6 +10443,14 @@ class Link(Resource):
 
 class APISpec(API):
     """Description"""
+
+    type_name: str = Field("APISpec", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "APISpec":
+            raise ValueError("must be APISpec")
+        return v
 
     def __setattr__(self, name, value):
         if name in APISpec._convience_properties:
@@ -10568,14 +10577,6 @@ class APISpec(API):
             self.attributes = self.Attributes()
         self.attributes.api_paths = api_paths
 
-    type_name: str = Field("APISpec", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "APISpec":
-            raise ValueError("must be APISpec")
-        return v
-
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
             None, description="", alias="apiSpecTermsOfServiceURL"
@@ -10614,6 +10615,14 @@ class APISpec(API):
 
 class APIPath(API):
     """Description"""
+
+    type_name: str = Field("APIPath", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "APIPath":
+            raise ValueError("must be APIPath")
+        return v
 
     def __setattr__(self, name, value):
         if name in APIPath._convience_properties:
@@ -10720,14 +10729,6 @@ class APIPath(API):
             self.attributes = self.Attributes()
         self.attributes.api_spec = api_spec
 
-    type_name: str = Field("APIPath", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "APIPath":
-            raise ValueError("must be APIPath")
-        return v
-
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
             None, description="", alias="apiPathSummary"
@@ -10760,6 +10761,14 @@ class APIPath(API):
 
 class SnowflakeTag(Tag):
     """Description"""
+
+    type_name: str = Field("SnowflakeTag", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeTag":
+            raise ValueError("must be SnowflakeTag")
+        return v
 
     def __setattr__(self, name, value):
         if name in SnowflakeTag._convience_properties:
@@ -11032,14 +11041,6 @@ class SnowflakeTag(Tag):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
-    type_name: str = Field("SnowflakeTag", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SnowflakeTag":
-            raise ValueError("must be SnowflakeTag")
-        return v
-
     class Attributes(Tag.Attributes):
         tag_id: Optional[str] = Field(None, description="", alias="tagId")
         tag_attributes: Optional[list[SourceTagAttribute]] = Field(
@@ -11106,6 +11107,14 @@ class SnowflakeTag(Tag):
 
 class TablePartition(SQL):
     """Description"""
+
+    type_name: str = Field("TablePartition", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TablePartition":
+            raise ValueError("must be TablePartition")
+        return v
 
     def __setattr__(self, name, value):
         if name in TablePartition._convience_properties:
@@ -11310,14 +11319,6 @@ class TablePartition(SQL):
             self.attributes = self.Attributes()
         self.attributes.parent_table = parent_table
 
-    type_name: str = Field("TablePartition", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TablePartition":
-            raise ValueError("must be TablePartition")
-        return v
-
     class Attributes(SQL.Attributes):
         constraint: Optional[str] = Field(None, description="", alias="constraint")
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
@@ -11368,6 +11369,25 @@ class TablePartition(SQL):
 
 class Table(SQL):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        attributes = Table.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Table", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Table":
+            raise ValueError("must be Table")
+        return v
 
     def __setattr__(self, name, value):
         if name in Table._convience_properties:
@@ -11605,14 +11625,6 @@ class Table(SQL):
             self.attributes = self.Attributes()
         self.attributes.dimensions = dimensions
 
-    type_name: str = Field("Table", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Table":
-            raise ValueError("must be Table")
-        return v
-
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
         row_count: Optional[int] = Field(None, description="", alias="rowCount")
@@ -11696,20 +11708,17 @@ class Table(SQL):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-        attributes = Table.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
-        )
-        return cls(attributes=attributes)
-
 
 class Query(SQL):
     """Description"""
+
+    type_name: str = Field("Query", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Query":
+            raise ValueError("must be Query")
+        return v
 
     def __setattr__(self, name, value):
         if name in Query._convience_properties:
@@ -11899,14 +11908,6 @@ class Query(SQL):
             self.attributes = self.Attributes()
         self.attributes.views = views
 
-    type_name: str = Field("Query", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Query":
-            raise ValueError("must be Query")
-        return v
-
     class Attributes(SQL.Attributes):
         raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
         default_schema_qualified_name: Optional[str] = Field(
@@ -11954,6 +11955,28 @@ class Query(SQL):
 
 class Column(SQL):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
+        return Column(
+            attributes=Column.Attributes.create(
+                name=name,
+                parent_qualified_name=parent_qualified_name,
+                parent_type=parent_type,
+                order=order,
+            )
+        )
+
+    type_name: str = Field("Column", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Column":
+            raise ValueError("must be Column")
+        return v
 
     def __setattr__(self, name, value):
         if name in Column._convience_properties:
@@ -12682,14 +12705,6 @@ class Column(SQL):
             self.attributes = self.Attributes()
         self.attributes.table_partition = table_partition
 
-    type_name: str = Field("Column", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Column":
-            raise ValueError("must be Column")
-        return v
-
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
         sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
@@ -12868,20 +12883,6 @@ class Column(SQL):
                 )
             return ret_value
 
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
-    ) -> Column:
-        return Column(
-            attributes=Column.Attributes.create(
-                name=name,
-                parent_qualified_name=parent_qualified_name,
-                parent_type=parent_type,
-                order=order,
-            )
-        )
-
     attributes: "Column.Attributes" = Field(
         default_factory=lambda: Column.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -12891,6 +12892,25 @@ class Column(SQL):
 
 class Schema(SQL):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
+        validate_required_fields(
+            ["name", "database_qualified_name"], [name, database_qualified_name]
+        )
+        attributes = Schema.Attributes.create(
+            name=name, database_qualified_name=database_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Schema", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Schema":
+            raise ValueError("must be Schema")
+        return v
 
     def __setattr__(self, name, value):
         if name in Schema._convience_properties:
@@ -13010,14 +13030,6 @@ class Schema(SQL):
             self.attributes = self.Attributes()
         self.attributes.views = views
 
-    type_name: str = Field("Schema", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Schema":
-            raise ValueError("must be Schema")
-        return v
-
     class Attributes(SQL.Attributes):
         table_count: Optional[int] = Field(None, description="", alias="tableCount")
         views_count: Optional[int] = Field(None, description="", alias="viewsCount")
@@ -13079,20 +13091,17 @@ class Schema(SQL):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
-        validate_required_fields(
-            ["name", "database_qualified_name"], [name, database_qualified_name]
-        )
-        attributes = Schema.Attributes.create(
-            name=name, database_qualified_name=database_qualified_name
-        )
-        return cls(attributes=attributes)
-
 
 class SnowflakeStream(SQL):
     """Description"""
+
+    type_name: str = Field("SnowflakeStream", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeStream":
+            raise ValueError("must be SnowflakeStream")
+        return v
 
     def __setattr__(self, name, value):
         if name in SnowflakeStream._convience_properties:
@@ -13186,14 +13195,6 @@ class SnowflakeStream(SQL):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
-    type_name: str = Field("SnowflakeStream", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SnowflakeStream":
-            raise ValueError("must be SnowflakeStream")
-        return v
-
     class Attributes(SQL.Attributes):
         snowflake_stream_type: Optional[str] = Field(
             None, description="", alias="snowflakeStreamType"
@@ -13223,6 +13224,14 @@ class SnowflakeStream(SQL):
 
 class SnowflakePipe(SQL):
     """Description"""
+
+    type_name: str = Field("SnowflakePipe", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakePipe":
+            raise ValueError("must be SnowflakePipe")
+        return v
 
     def __setattr__(self, name, value):
         if name in SnowflakePipe._convience_properties:
@@ -13292,14 +13301,6 @@ class SnowflakePipe(SQL):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
-    type_name: str = Field("SnowflakePipe", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SnowflakePipe":
-            raise ValueError("must be SnowflakePipe")
-        return v
-
     class Attributes(SQL.Attributes):
         definition: Optional[str] = Field(None, description="", alias="definition")
         snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
@@ -13321,6 +13322,37 @@ class SnowflakePipe(SQL):
 
 class Database(SQL):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
+        if not name:
+            raise ValueError("name cannot be blank")
+        validate_required_fields(
+            ["connection_qualified_name"], [connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
 
     def __setattr__(self, name, value):
         if name in Database._convience_properties:
@@ -13351,14 +13383,6 @@ class Database(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.schemas = schemas
-
-    type_name: str = Field("Database", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Database":
-            raise ValueError("must be Database")
-        return v
 
     class Attributes(SQL.Attributes):
         schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
@@ -13396,32 +13420,17 @@ class Database(SQL):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
-        if not name:
-            raise ValueError("name cannot be blank")
-        validate_required_fields(
-            ["connection_qualified_name"], [connection_qualified_name]
-        )
-        fields = connection_qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError("Invalid connection_qualified_name")
-        try:
-            connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError as e:
-            raise ValueError("Invalid connection_qualified_name") from e
-        attributes = Database.Attributes(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=connector_type.value,
-        )
-        return cls(attributes=attributes)
-
 
 class Procedure(SQL):
     """Description"""
+
+    type_name: str = Field("Procedure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Procedure":
+            raise ValueError("must be Procedure")
+        return v
 
     def __setattr__(self, name, value):
         if name in Procedure._convience_properties:
@@ -13453,14 +13462,6 @@ class Procedure(SQL):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
-    type_name: str = Field("Procedure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Procedure":
-            raise ValueError("must be Procedure")
-        return v
-
     class Attributes(SQL.Attributes):
         definition: str = Field(None, description="", alias="definition")
         atlan_schema: Optional[Schema] = Field(
@@ -13476,6 +13477,25 @@ class Procedure(SQL):
 
 class View(SQL):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str) -> View:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        attributes = View.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("View", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "View":
+            raise ValueError("must be View")
+        return v
 
     def __setattr__(self, name, value):
         if name in View._convience_properties:
@@ -13606,14 +13626,6 @@ class View(SQL):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
-    type_name: str = Field("View", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "View":
-            raise ValueError("must be View")
-        return v
-
     class Attributes(SQL.Attributes):
         column_count: Optional[int] = Field(None, description="", alias="columnCount")
         row_count: Optional[int] = Field(None, description="", alias="rowCount")
@@ -13668,20 +13680,28 @@ class View(SQL):
         "type, so are described in the sub-types of this schema.\n",
     )
 
+
+class MaterialisedView(SQL):
+    """Description"""
+
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> View:
+    def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
         )
-        attributes = View.Attributes.create(
+        attributes = MaterialisedView.Attributes.create(
             name=name, schema_qualified_name=schema_qualified_name
         )
         return cls(attributes=attributes)
 
+    type_name: str = Field("MaterialisedView", allow_mutation=False)
 
-class MaterialisedView(SQL):
-    """Description"""
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MaterialisedView":
+            raise ValueError("must be MaterialisedView")
+        return v
 
     def __setattr__(self, name, value):
         if name in MaterialisedView._convience_properties:
@@ -13845,14 +13865,6 @@ class MaterialisedView(SQL):
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
-    type_name: str = Field("MaterialisedView", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MaterialisedView":
-            raise ValueError("must be MaterialisedView")
-        return v
-
     class Attributes(SQL.Attributes):
         refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
         refresh_method: Optional[str] = Field(
@@ -13914,20 +13926,17 @@ class MaterialisedView(SQL):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-        attributes = MaterialisedView.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
-        )
-        return cls(attributes=attributes)
-
 
 class DataStudioAsset(DataStudio):
     """Description"""
+
+    type_name: str = Field("DataStudioAsset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DataStudioAsset":
+            raise ValueError("must be DataStudioAsset")
+        return v
 
     def __setattr__(self, name, value):
         if name in DataStudioAsset._convience_properties:
@@ -14085,14 +14094,6 @@ class DataStudioAsset(DataStudio):
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
-    type_name: str = Field("DataStudioAsset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "DataStudioAsset":
-            raise ValueError("must be DataStudioAsset")
-        return v
-
     class Attributes(DataStudio.Attributes):
         data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
             None, description="", alias="dataStudioAssetType"
@@ -14140,6 +14141,14 @@ class DataStudioAsset(DataStudio):
 
 class KafkaTopic(Kafka):
     """Description"""
+
+    type_name: str = Field("KafkaTopic", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaTopic":
+            raise ValueError("must be KafkaTopic")
+        return v
 
     def __setattr__(self, name, value):
         if name in KafkaTopic._convience_properties:
@@ -14288,14 +14297,6 @@ class KafkaTopic(Kafka):
             self.attributes = self.Attributes()
         self.attributes.kafka_consumer_groups = kafka_consumer_groups
 
-    type_name: str = Field("KafkaTopic", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "KafkaTopic":
-            raise ValueError("must be KafkaTopic")
-        return v
-
     class Attributes(Kafka.Attributes):
         kafka_topic_is_internal: Optional[bool] = Field(
             None, description="", alias="kafkaTopicIsInternal"
@@ -14334,6 +14335,14 @@ class KafkaTopic(Kafka):
 
 class KafkaConsumerGroup(Kafka):
     """Description"""
+
+    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaConsumerGroup":
+            raise ValueError("must be KafkaConsumerGroup")
+        return v
 
     def __setattr__(self, name, value):
         if name in KafkaConsumerGroup._convience_properties:
@@ -14425,14 +14434,6 @@ class KafkaConsumerGroup(Kafka):
             self.attributes = self.Attributes()
         self.attributes.kafka_topics = kafka_topics
 
-    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "KafkaConsumerGroup":
-            raise ValueError("must be KafkaConsumerGroup")
-        return v
-
     class Attributes(Kafka.Attributes):
         kafka_consumer_group_topic_consumption_properties: Optional[
             list[KafkaTopicConsumption]
@@ -14461,6 +14462,30 @@ class KafkaConsumerGroup(Kafka):
 
 class S3Bucket(S3):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("S3Bucket", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3Bucket":
+            raise ValueError("must be S3Bucket")
+        return v
 
     def __setattr__(self, name, value):
         if name in S3Bucket._convience_properties:
@@ -14509,14 +14534,6 @@ class S3Bucket(S3):
             self.attributes = self.Attributes()
         self.attributes.objects = objects
 
-    type_name: str = Field("S3Bucket", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "S3Bucket":
-            raise ValueError("must be S3Bucket")
-        return v
-
     class Attributes(S3.Attributes):
         s3_object_count: Optional[int] = Field(
             None, description="", alias="s3ObjectCount"
@@ -14562,25 +14579,39 @@ class S3Bucket(S3):
         "type, so are described in the sub-types of this schema.\n",
     )
 
+
+class S3Object(S3):
+    """Description"""
+
     @classmethod
     # @validate_arguments()
     def create(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: str
-    ) -> S3Bucket:
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: Optional[str] = None,
+    ) -> S3Object:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
             [name, connection_qualified_name, aws_arn],
         )
-        attributes = S3Bucket.Attributes.create(
+        attributes = S3Object.Attributes.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
         return cls(attributes=attributes)
 
+    type_name: str = Field("S3Object", allow_mutation=False)
 
-class S3Object(S3):
-    """Description"""
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "S3Object":
+            raise ValueError("must be S3Object")
+        return v
 
     def __setattr__(self, name, value):
         if name in S3Object._convience_properties:
@@ -14720,14 +14751,6 @@ class S3Object(S3):
             self.attributes = self.Attributes()
         self.attributes.bucket = bucket
 
-    type_name: str = Field("S3Object", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "S3Object":
-            raise ValueError("must be S3Object")
-        return v
-
     class Attributes(S3.Attributes):
         s3_object_last_modified_time: Optional[datetime] = Field(
             None, description="", alias="s3ObjectLastModifiedTime"
@@ -14798,31 +14821,17 @@ class S3Object(S3):
         "type, so are described in the sub-types of this schema.\n",
     )
 
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        aws_arn: str,
-        s3_bucket_qualified_name: Optional[str] = None,
-    ) -> S3Object:
-        validate_required_fields(
-            ["name", "connection_qualified_name", "aws_arn"],
-            [name, connection_qualified_name, aws_arn],
-        )
-        attributes = S3Object.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-            s3_bucket_qualified_name=s3_bucket_qualified_name,
-        )
-        return cls(attributes=attributes)
-
 
 class ADLSAccount(ADLS):
     """Description"""
+
+    type_name: str = Field("ADLSAccount", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSAccount":
+            raise ValueError("must be ADLSAccount")
+        return v
 
     def __setattr__(self, name, value):
         if name in ADLSAccount._convience_properties:
@@ -14989,14 +14998,6 @@ class ADLSAccount(ADLS):
             self.attributes = self.Attributes()
         self.attributes.adls_containers = adls_containers
 
-    type_name: str = Field("ADLSAccount", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ADLSAccount":
-            raise ValueError("must be ADLSAccount")
-        return v
-
     class Attributes(ADLS.Attributes):
         adls_e_tag: Optional[str] = Field(None, description="", alias="adlsETag")
         adls_encryption_type: Optional[ADLSEncryptionTypes] = Field(
@@ -15039,6 +15040,14 @@ class ADLSAccount(ADLS):
 
 class ADLSContainer(ADLS):
     """Description"""
+
+    type_name: str = Field("ADLSContainer", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSContainer":
+            raise ValueError("must be ADLSContainer")
+        return v
 
     def __setattr__(self, name, value):
         if name in ADLSContainer._convience_properties:
@@ -15164,14 +15173,6 @@ class ADLSContainer(ADLS):
             self.attributes = self.Attributes()
         self.attributes.adls_account = adls_account
 
-    type_name: str = Field("ADLSContainer", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ADLSContainer":
-            raise ValueError("must be ADLSContainer")
-        return v
-
     class Attributes(ADLS.Attributes):
         adls_container_url: Optional[str] = Field(
             None, description="", alias="adlsContainerUrl"
@@ -15207,6 +15208,14 @@ class ADLSContainer(ADLS):
 
 class ADLSObject(ADLS):
     """Description"""
+
+    type_name: str = Field("ADLSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ADLSObject":
+            raise ValueError("must be ADLSObject")
+        return v
 
     def __setattr__(self, name, value):
         if name in ADLSObject._convience_properties:
@@ -15482,14 +15491,6 @@ class ADLSObject(ADLS):
             self.attributes = self.Attributes()
         self.attributes.adls_container = adls_container
 
-    type_name: str = Field("ADLSObject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ADLSObject":
-            raise ValueError("must be ADLSObject")
-        return v
-
     class Attributes(ADLS.Attributes):
         adls_object_url: Optional[str] = Field(
             None, description="", alias="adlsObjectUrl"
@@ -15555,6 +15556,14 @@ class ADLSObject(ADLS):
 
 class GCSObject(GCS):
     """Description"""
+
+    type_name: str = Field("GCSObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
+        return v
 
     def __setattr__(self, name, value):
         if name in GCSObject._convience_properties:
@@ -15786,14 +15795,6 @@ class GCSObject(GCS):
             self.attributes = self.Attributes()
         self.attributes.gcs_bucket = gcs_bucket
 
-    type_name: str = Field("GCSObject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "GCSObject":
-            raise ValueError("must be GCSObject")
-        return v
-
     class Attributes(GCS.Attributes):
         gcs_bucket_name: Optional[str] = Field(
             None, description="", alias="gcsBucketName"
@@ -15853,6 +15854,14 @@ class GCSObject(GCS):
 
 class GCSBucket(GCS):
     """Description"""
+
+    type_name: str = Field("GCSBucket", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
+        return v
 
     def __setattr__(self, name, value):
         if name in GCSBucket._convience_properties:
@@ -15980,14 +15989,6 @@ class GCSBucket(GCS):
             self.attributes = self.Attributes()
         self.attributes.gcs_objects = gcs_objects
 
-    type_name: str = Field("GCSBucket", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "GCSBucket":
-            raise ValueError("must be GCSBucket")
-        return v
-
     class Attributes(GCS.Attributes):
         gcs_object_count: Optional[int] = Field(
             None, description="", alias="gcsObjectCount"
@@ -16023,6 +16024,14 @@ class GCSBucket(GCS):
 
 class MCIncident(MonteCarlo):
     """Description"""
+
+    type_name: str = Field("MCIncident", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MCIncident":
+            raise ValueError("must be MCIncident")
+        return v
 
     def __setattr__(self, name, value):
         if name in MCIncident._convience_properties:
@@ -16124,14 +16133,6 @@ class MCIncident(MonteCarlo):
             self.attributes = self.Attributes()
         self.attributes.mc_monitor = mc_monitor
 
-    type_name: str = Field("MCIncident", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MCIncident":
-            raise ValueError("must be MCIncident")
-        return v
-
     class Attributes(MonteCarlo.Attributes):
         mc_incident_id: Optional[str] = Field(
             None, description="", alias="mcIncidentId"
@@ -16167,6 +16168,14 @@ class MCIncident(MonteCarlo):
 
 class MCMonitor(MonteCarlo):
     """Description"""
+
+    type_name: str = Field("MCMonitor", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MCMonitor":
+            raise ValueError("must be MCMonitor")
+        return v
 
     def __setattr__(self, name, value):
         if name in MCMonitor._convience_properties:
@@ -16434,14 +16443,6 @@ class MCMonitor(MonteCarlo):
             self.attributes = self.Attributes()
         self.attributes.mc_monitor_assets = mc_monitor_assets
 
-    type_name: str = Field("MCMonitor", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MCMonitor":
-            raise ValueError("must be MCMonitor")
-        return v
-
     class Attributes(MonteCarlo.Attributes):
         mc_monitor_id: Optional[str] = Field(None, description="", alias="mcMonitorId")
         mc_monitor_status: Optional[str] = Field(
@@ -16506,6 +16507,14 @@ class MCMonitor(MonteCarlo):
 class PresetChart(Preset):
     """Description"""
 
+    type_name: str = Field("PresetChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetChart":
+            raise ValueError("must be PresetChart")
+        return v
+
     def __setattr__(self, name, value):
         if name in PresetChart._convience_properties:
             return object.__setattr__(self, name, value)
@@ -16557,14 +16566,6 @@ class PresetChart(Preset):
             self.attributes = self.Attributes()
         self.attributes.preset_dashboard = preset_dashboard
 
-    type_name: str = Field("PresetChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetChart":
-            raise ValueError("must be PresetChart")
-        return v
-
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
             None, description="", alias="presetChartDescriptionMarkdown"
@@ -16585,6 +16586,14 @@ class PresetChart(Preset):
 
 class PresetDataset(Preset):
     """Description"""
+
+    type_name: str = Field("PresetDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetDataset":
+            raise ValueError("must be PresetDataset")
+        return v
 
     def __setattr__(self, name, value):
         if name in PresetDataset._convience_properties:
@@ -16644,14 +16653,6 @@ class PresetDataset(Preset):
             self.attributes = self.Attributes()
         self.attributes.preset_dashboard = preset_dashboard
 
-    type_name: str = Field("PresetDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetDataset":
-            raise ValueError("must be PresetDataset")
-        return v
-
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
             None, description="", alias="presetDatasetDatasourceName"
@@ -16675,6 +16676,14 @@ class PresetDataset(Preset):
 
 class PresetDashboard(Preset):
     """Description"""
+
+    type_name: str = Field("PresetDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetDashboard":
+            raise ValueError("must be PresetDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in PresetDashboard._convience_properties:
@@ -16823,14 +16832,6 @@ class PresetDashboard(Preset):
             self.attributes = self.Attributes()
         self.attributes.preset_workspace = preset_workspace
 
-    type_name: str = Field("PresetDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetDashboard":
-            raise ValueError("must be PresetDashboard")
-        return v
-
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
             None, description="", alias="presetDashboardChangedByName"
@@ -16869,6 +16870,14 @@ class PresetDashboard(Preset):
 
 class PresetWorkspace(Preset):
     """Description"""
+
+    type_name: str = Field("PresetWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PresetWorkspace":
+            raise ValueError("must be PresetWorkspace")
+        return v
 
     def __setattr__(self, name, value):
         if name in PresetWorkspace._convience_properties:
@@ -17036,14 +17045,6 @@ class PresetWorkspace(Preset):
             self.attributes = self.Attributes()
         self.attributes.preset_dashboards = preset_dashboards
 
-    type_name: str = Field("PresetWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetWorkspace":
-            raise ValueError("must be PresetWorkspace")
-        return v
-
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
             None, description="", alias="presetWorkspacePublicDashboardsAllowed"
@@ -17085,6 +17086,14 @@ class PresetWorkspace(Preset):
 
 class ModeReport(Mode):
     """Description"""
+
+    type_name: str = Field("ModeReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeReport":
+            raise ValueError("must be ModeReport")
+        return v
 
     def __setattr__(self, name, value):
         if name in ModeReport._convience_properties:
@@ -17199,14 +17208,6 @@ class ModeReport(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_queries = mode_queries
 
-    type_name: str = Field("ModeReport", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeReport":
-            raise ValueError("must be ModeReport")
-        return v
-
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
             None, description="", alias="modeCollectionToken"
@@ -17245,6 +17246,14 @@ class ModeReport(Mode):
 
 class ModeQuery(Mode):
     """Description"""
+
+    type_name: str = Field("ModeQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeQuery":
+            raise ValueError("must be ModeQuery")
+        return v
 
     def __setattr__(self, name, value):
         if name in ModeQuery._convience_properties:
@@ -17302,14 +17311,6 @@ class ModeQuery(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_report = mode_report
 
-    type_name: str = Field("ModeQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeQuery":
-            raise ValueError("must be ModeQuery")
-        return v
-
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
             None, description="", alias="modeRawQuery"
@@ -17333,6 +17334,14 @@ class ModeQuery(Mode):
 
 class ModeChart(Mode):
     """Description"""
+
+    type_name: str = Field("ModeChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeChart":
+            raise ValueError("must be ModeChart")
+        return v
 
     def __setattr__(self, name, value):
         if name in ModeChart._convience_properties:
@@ -17364,14 +17373,6 @@ class ModeChart(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_query = mode_query
 
-    type_name: str = Field("ModeChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeChart":
-            raise ValueError("must be ModeChart")
-        return v
-
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
             None, description="", alias="modeChartType"
@@ -17389,6 +17390,14 @@ class ModeChart(Mode):
 
 class ModeWorkspace(Mode):
     """Description"""
+
+    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeWorkspace":
+            raise ValueError("must be ModeWorkspace")
+        return v
 
     def __setattr__(self, name, value):
         if name in ModeWorkspace._convience_properties:
@@ -17422,14 +17431,6 @@ class ModeWorkspace(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_collections = mode_collections
 
-    type_name: str = Field("ModeWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeWorkspace":
-            raise ValueError("must be ModeWorkspace")
-        return v
-
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(
             None, description="", alias="modeCollectionCount"
@@ -17447,6 +17448,14 @@ class ModeWorkspace(Mode):
 
 class ModeCollection(Mode):
     """Description"""
+
+    type_name: str = Field("ModeCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ModeCollection":
+            raise ValueError("must be ModeCollection")
+        return v
 
     def __setattr__(self, name, value):
         if name in ModeCollection._convience_properties:
@@ -17502,14 +17511,6 @@ class ModeCollection(Mode):
             self.attributes = self.Attributes()
         self.attributes.mode_reports = mode_reports
 
-    type_name: str = Field("ModeCollection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeCollection":
-            raise ValueError("must be ModeCollection")
-        return v
-
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
             None, description="", alias="modeCollectionType"
@@ -17533,6 +17534,14 @@ class ModeCollection(Mode):
 
 class SigmaDatasetColumn(Sigma):
     """Description"""
+
+    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDatasetColumn":
+            raise ValueError("must be SigmaDatasetColumn")
+        return v
 
     def __setattr__(self, name, value):
         if name in SigmaDatasetColumn._convience_properties:
@@ -17579,14 +17588,6 @@ class SigmaDatasetColumn(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset = sigma_dataset
 
-    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDatasetColumn":
-            raise ValueError("must be SigmaDatasetColumn")
-        return v
-
     class Attributes(Sigma.Attributes):
         sigma_dataset_qualified_name: Optional[str] = Field(
             None, description="", alias="sigmaDatasetQualifiedName"
@@ -17607,6 +17608,14 @@ class SigmaDatasetColumn(Sigma):
 
 class SigmaDataset(Sigma):
     """Description"""
+
+    type_name: str = Field("SigmaDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataset":
+            raise ValueError("must be SigmaDataset")
+        return v
 
     def __setattr__(self, name, value):
         if name in SigmaDataset._convience_properties:
@@ -17646,14 +17655,6 @@ class SigmaDataset(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
-    type_name: str = Field("SigmaDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataset":
-            raise ValueError("must be SigmaDataset")
-        return v
-
     class Attributes(Sigma.Attributes):
         sigma_dataset_column_count: Optional[int] = Field(
             None, description="", alias="sigmaDatasetColumnCount"
@@ -17671,6 +17672,14 @@ class SigmaDataset(Sigma):
 
 class SigmaWorkbook(Sigma):
     """Description"""
+
+    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaWorkbook":
+            raise ValueError("must be SigmaWorkbook")
+        return v
 
     def __setattr__(self, name, value):
         if name in SigmaWorkbook._convience_properties:
@@ -17702,14 +17711,6 @@ class SigmaWorkbook(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_pages = sigma_pages
 
-    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaWorkbook":
-            raise ValueError("must be SigmaWorkbook")
-        return v
-
     class Attributes(Sigma.Attributes):
         sigma_page_count: Optional[int] = Field(
             None, description="", alias="sigmaPageCount"
@@ -17727,6 +17728,14 @@ class SigmaWorkbook(Sigma):
 
 class SigmaDataElementField(Sigma):
     """Description"""
+
+    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElementField":
+            raise ValueError("must be SigmaDataElementField")
+        return v
 
     def __setattr__(self, name, value):
         if name in SigmaDataElementField._convience_properties:
@@ -17785,14 +17794,6 @@ class SigmaDataElementField(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element = sigma_data_element
 
-    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataElementField":
-            raise ValueError("must be SigmaDataElementField")
-        return v
-
     class Attributes(Sigma.Attributes):
         sigma_data_element_field_is_hidden: Optional[bool] = Field(
             None, description="", alias="sigmaDataElementFieldIsHidden"
@@ -17813,6 +17814,14 @@ class SigmaDataElementField(Sigma):
 
 class SigmaPage(Sigma):
     """Description"""
+
+    type_name: str = Field("SigmaPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaPage":
+            raise ValueError("must be SigmaPage")
+        return v
 
     def __setattr__(self, name, value):
         if name in SigmaPage._convience_properties:
@@ -17861,14 +17870,6 @@ class SigmaPage(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_workbook = sigma_workbook
 
-    type_name: str = Field("SigmaPage", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaPage":
-            raise ValueError("must be SigmaPage")
-        return v
-
     class Attributes(Sigma.Attributes):
         sigma_data_element_count: Optional[int] = Field(
             None, description="", alias="sigmaDataElementCount"
@@ -17889,6 +17890,14 @@ class SigmaPage(Sigma):
 
 class SigmaDataElement(Sigma):
     """Description"""
+
+    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SigmaDataElement":
+            raise ValueError("must be SigmaDataElement")
+        return v
 
     def __setattr__(self, name, value):
         if name in SigmaDataElement._convience_properties:
@@ -17971,14 +17980,6 @@ class SigmaDataElement(Sigma):
             self.attributes = self.Attributes()
         self.attributes.sigma_data_element_fields = sigma_data_element_fields
 
-    type_name: str = Field("SigmaDataElement", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SigmaDataElement":
-            raise ValueError("must be SigmaDataElement")
-        return v
-
     class Attributes(Sigma.Attributes):
         sigma_data_element_query: Optional[str] = Field(
             None, description="", alias="sigmaDataElementQuery"
@@ -18005,6 +18006,14 @@ class SigmaDataElement(Sigma):
 
 class TableauWorkbook(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauWorkbook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauWorkbook":
+            raise ValueError("must be TableauWorkbook")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauWorkbook._convience_properties:
@@ -18125,14 +18134,6 @@ class TableauWorkbook(Tableau):
             self.attributes = self.Attributes()
         self.attributes.datasources = datasources
 
-    type_name: str = Field("TableauWorkbook", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauWorkbook":
-            raise ValueError("must be TableauWorkbook")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -18171,6 +18172,14 @@ class TableauWorkbook(Tableau):
 
 class TableauDatasourceField(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDatasourceField":
+            raise ValueError("must be TableauDatasourceField")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauDatasourceField._convience_properties:
@@ -18434,14 +18443,6 @@ class TableauDatasourceField(Tableau):
             self.attributes = self.Attributes()
         self.attributes.datasource = datasource
 
-    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauDatasourceField":
-            raise ValueError("must be TableauDatasourceField")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -18507,6 +18508,14 @@ class TableauDatasourceField(Tableau):
 
 class TableauCalculatedField(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauCalculatedField":
+            raise ValueError("must be TableauCalculatedField")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauCalculatedField._convience_properties:
@@ -18675,14 +18684,6 @@ class TableauCalculatedField(Tableau):
             self.attributes = self.Attributes()
         self.attributes.datasource = datasource
 
-    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauCalculatedField":
-            raise ValueError("must be TableauCalculatedField")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -18727,6 +18728,14 @@ class TableauCalculatedField(Tableau):
 
 class TableauProject(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauProject":
+            raise ValueError("must be TableauProject")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauProject._convience_properties:
@@ -18854,14 +18863,6 @@ class TableauProject(Tableau):
             self.attributes = self.Attributes()
         self.attributes.child_projects = child_projects
 
-    type_name: str = Field("TableauProject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauProject":
-            raise ValueError("must be TableauProject")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -18903,6 +18904,14 @@ class TableauProject(Tableau):
 
 class TableauMetric(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauMetric":
+            raise ValueError("must be TableauMetric")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauMetric._convience_properties:
@@ -18977,14 +18986,6 @@ class TableauMetric(Tableau):
             self.attributes = self.Attributes()
         self.attributes.project = project
 
-    type_name: str = Field("TableauMetric", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauMetric":
-            raise ValueError("must be TableauMetric")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -19012,6 +19013,14 @@ class TableauMetric(Tableau):
 class TableauSite(Tableau):
     """Description"""
 
+    type_name: str = Field("TableauSite", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauSite":
+            raise ValueError("must be TableauSite")
+        return v
+
     def __setattr__(self, name, value):
         if name in TableauSite._convience_properties:
             return object.__setattr__(self, name, value)
@@ -19031,14 +19040,6 @@ class TableauSite(Tableau):
             self.attributes = self.Attributes()
         self.attributes.projects = projects
 
-    type_name: str = Field("TableauSite", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauSite":
-            raise ValueError("must be TableauSite")
-        return v
-
     class Attributes(Tableau.Attributes):
         projects: Optional[list[TableauProject]] = Field(
             None, description="", alias="projects"
@@ -19053,6 +19054,14 @@ class TableauSite(Tableau):
 
 class TableauDatasource(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDatasource":
+            raise ValueError("must be TableauDatasource")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauDatasource._convience_properties:
@@ -19254,14 +19263,6 @@ class TableauDatasource(Tableau):
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    type_name: str = Field("TableauDatasource", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauDatasource":
-            raise ValueError("must be TableauDatasource")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -19315,6 +19316,14 @@ class TableauDatasource(Tableau):
 
 class TableauDashboard(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauDashboard":
+            raise ValueError("must be TableauDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauDashboard._convience_properties:
@@ -19413,14 +19422,6 @@ class TableauDashboard(Tableau):
             self.attributes = self.Attributes()
         self.attributes.worksheets = worksheets
 
-    type_name: str = Field("TableauDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauDashboard":
-            raise ValueError("must be TableauDashboard")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -19453,6 +19454,14 @@ class TableauDashboard(Tableau):
 
 class TableauFlow(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauFlow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauFlow":
+            raise ValueError("must be TableauFlow")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauFlow._convience_properties:
@@ -19560,14 +19569,6 @@ class TableauFlow(Tableau):
             self.attributes = self.Attributes()
         self.attributes.project = project
 
-    type_name: str = Field("TableauFlow", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauFlow":
-            raise ValueError("must be TableauFlow")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -19603,6 +19604,14 @@ class TableauFlow(Tableau):
 
 class TableauWorksheet(Tableau):
     """Description"""
+
+    type_name: str = Field("TableauWorksheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TableauWorksheet":
+            raise ValueError("must be TableauWorksheet")
+        return v
 
     def __setattr__(self, name, value):
         if name in TableauWorksheet._convience_properties:
@@ -19727,14 +19736,6 @@ class TableauWorksheet(Tableau):
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
-    type_name: str = Field("TableauWorksheet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TableauWorksheet":
-            raise ValueError("must be TableauWorksheet")
-        return v
-
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
             None, description="", alias="siteQualifiedName"
@@ -19773,6 +19774,14 @@ class TableauWorksheet(Tableau):
 
 class LookerLook(Looker):
     """Description"""
+
+    type_name: str = Field("LookerLook", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerLook":
+            raise ValueError("must be LookerLook")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerLook._convience_properties:
@@ -19946,14 +19955,6 @@ class LookerLook(Looker):
             self.attributes = self.Attributes()
         self.attributes.dashboard = dashboard
 
-    type_name: str = Field("LookerLook", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerLook":
-            raise ValueError("must be LookerLook")
-        return v
-
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
         source_user_id: Optional[int] = Field(
@@ -20003,6 +20004,14 @@ class LookerLook(Looker):
 
 class LookerDashboard(Looker):
     """Description"""
+
+    type_name: str = Field("LookerDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerDashboard":
+            raise ValueError("must be LookerDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerDashboard._convience_properties:
@@ -20128,14 +20137,6 @@ class LookerDashboard(Looker):
             self.attributes = self.Attributes()
         self.attributes.folder = folder
 
-    type_name: str = Field("LookerDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerDashboard":
-            raise ValueError("must be LookerDashboard")
-        return v
-
     class Attributes(Looker.Attributes):
         folder_name: Optional[str] = Field(None, description="", alias="folderName")
         source_user_id: Optional[int] = Field(
@@ -20175,6 +20176,14 @@ class LookerDashboard(Looker):
 
 class LookerFolder(Looker):
     """Description"""
+
+    type_name: str = Field("LookerFolder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerFolder":
+            raise ValueError("must be LookerFolder")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerFolder._convience_properties:
@@ -20254,14 +20263,6 @@ class LookerFolder(Looker):
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
-    type_name: str = Field("LookerFolder", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerFolder":
-            raise ValueError("must be LookerFolder")
-        return v
-
     class Attributes(Looker.Attributes):
         source_content_metadata_id: Optional[int] = Field(
             None, description="", alias="sourceContentMetadataId"
@@ -20291,6 +20292,14 @@ class LookerFolder(Looker):
 
 class LookerTile(Looker):
     """Description"""
+
+    type_name: str = Field("LookerTile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerTile":
+            raise ValueError("must be LookerTile")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerTile._convience_properties:
@@ -20410,14 +20419,6 @@ class LookerTile(Looker):
             self.attributes = self.Attributes()
         self.attributes.dashboard = dashboard
 
-    type_name: str = Field("LookerTile", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerTile":
-            raise ValueError("must be LookerTile")
-        return v
-
     class Attributes(Looker.Attributes):
         lookml_link_id: Optional[str] = Field(
             None, description="", alias="lookmlLinkId"
@@ -20451,6 +20452,14 @@ class LookerTile(Looker):
 
 class LookerModel(Looker):
     """Description"""
+
+    type_name: str = Field("LookerModel", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerModel":
+            raise ValueError("must be LookerModel")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerModel._convience_properties:
@@ -20526,14 +20535,6 @@ class LookerModel(Looker):
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    type_name: str = Field("LookerModel", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerModel":
-            raise ValueError("must be LookerModel")
-        return v
-
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
         explores: Optional[list[LookerExplore]] = Field(
@@ -20561,6 +20562,14 @@ class LookerModel(Looker):
 
 class LookerExplore(Looker):
     """Description"""
+
+    type_name: str = Field("LookerExplore", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerExplore":
+            raise ValueError("must be LookerExplore")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerExplore._convience_properties:
@@ -20660,14 +20669,6 @@ class LookerExplore(Looker):
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    type_name: str = Field("LookerExplore", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerExplore":
-            raise ValueError("must be LookerExplore")
-        return v
-
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
         model_name: Optional[str] = Field(None, description="", alias="modelName")
@@ -20697,6 +20698,14 @@ class LookerExplore(Looker):
 
 class LookerProject(Looker):
     """Description"""
+
+    type_name: str = Field("LookerProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerProject":
+            raise ValueError("must be LookerProject")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerProject._convience_properties:
@@ -20750,14 +20759,6 @@ class LookerProject(Looker):
             self.attributes = self.Attributes()
         self.attributes.views = views
 
-    type_name: str = Field("LookerProject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerProject":
-            raise ValueError("must be LookerProject")
-        return v
-
     class Attributes(Looker.Attributes):
         models: Optional[list[LookerModel]] = Field(
             None, description="", alias="models"
@@ -20781,6 +20782,14 @@ class LookerProject(Looker):
 
 class LookerQuery(Looker):
     """Description"""
+
+    type_name: str = Field("LookerQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerQuery":
+            raise ValueError("must be LookerQuery")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerQuery._convience_properties:
@@ -20875,14 +20884,6 @@ class LookerQuery(Looker):
             self.attributes = self.Attributes()
         self.attributes.model = model
 
-    type_name: str = Field("LookerQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerQuery":
-            raise ValueError("must be LookerQuery")
-        return v
-
     class Attributes(Looker.Attributes):
         source_definition: Optional[str] = Field(
             None, description="", alias="sourceDefinition"
@@ -20913,6 +20914,14 @@ class LookerQuery(Looker):
 
 class LookerField(Looker):
     """Description"""
+
+    type_name: str = Field("LookerField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerField":
+            raise ValueError("must be LookerField")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerField._convience_properties:
@@ -21055,14 +21064,6 @@ class LookerField(Looker):
             self.attributes = self.Attributes()
         self.attributes.model = model
 
-    type_name: str = Field("LookerField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerField":
-            raise ValueError("must be LookerField")
-        return v
-
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
         looker_explore_qualified_name: Optional[str] = Field(
@@ -21103,6 +21104,14 @@ class LookerField(Looker):
 
 class LookerView(Looker):
     """Description"""
+
+    type_name: str = Field("LookerView", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "LookerView":
+            raise ValueError("must be LookerView")
+        return v
 
     def __setattr__(self, name, value):
         if name in LookerView._convience_properties:
@@ -21145,14 +21154,6 @@ class LookerView(Looker):
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    type_name: str = Field("LookerView", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "LookerView":
-            raise ValueError("must be LookerView")
-        return v
-
     class Attributes(Looker.Attributes):
         project_name: Optional[str] = Field(None, description="", alias="projectName")
         project: Optional[LookerProject] = Field(
@@ -21171,6 +21172,14 @@ class LookerView(Looker):
 
 class RedashDashboard(Redash):
     """Description"""
+
+    type_name: str = Field("RedashDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "RedashDashboard":
+            raise ValueError("must be RedashDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in RedashDashboard._convience_properties:
@@ -21197,14 +21206,6 @@ class RedashDashboard(Redash):
             self.attributes = self.Attributes()
         self.attributes.redash_dashboard_widget_count = redash_dashboard_widget_count
 
-    type_name: str = Field("RedashDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "RedashDashboard":
-            raise ValueError("must be RedashDashboard")
-        return v
-
     class Attributes(Redash.Attributes):
         redash_dashboard_widget_count: Optional[int] = Field(
             None, description="", alias="redashDashboardWidgetCount"
@@ -21219,6 +21220,14 @@ class RedashDashboard(Redash):
 
 class RedashQuery(Redash):
     """Description"""
+
+    type_name: str = Field("RedashQuery", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "RedashQuery":
+            raise ValueError("must be RedashQuery")
+        return v
 
     def __setattr__(self, name, value):
         if name in RedashQuery._convience_properties:
@@ -21335,14 +21344,6 @@ class RedashQuery(Redash):
             self.attributes = self.Attributes()
         self.attributes.redash_visualizations = redash_visualizations
 
-    type_name: str = Field("RedashQuery", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "RedashQuery":
-            raise ValueError("must be RedashQuery")
-        return v
-
     class Attributes(Redash.Attributes):
         redash_query_s_q_l: Optional[str] = Field(
             None, description="", alias="redashQuerySQL"
@@ -21375,6 +21376,14 @@ class RedashQuery(Redash):
 
 class RedashVisualization(Redash):
     """Description"""
+
+    type_name: str = Field("RedashVisualization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "RedashVisualization":
+            raise ValueError("must be RedashVisualization")
+        return v
 
     def __setattr__(self, name, value):
         if name in RedashVisualization._convience_properties:
@@ -21436,14 +21445,6 @@ class RedashVisualization(Redash):
             self.attributes = self.Attributes()
         self.attributes.redash_query = redash_query
 
-    type_name: str = Field("RedashVisualization", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "RedashVisualization":
-            raise ValueError("must be RedashVisualization")
-        return v
-
     class Attributes(Redash.Attributes):
         redash_visualization_type: Optional[str] = Field(
             None, description="", alias="redashVisualizationType"
@@ -21467,6 +21468,14 @@ class RedashVisualization(Redash):
 
 class MetabaseQuestion(Metabase):
     """Description"""
+
+    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseQuestion":
+            raise ValueError("must be MetabaseQuestion")
+        return v
 
     def __setattr__(self, name, value):
         if name in MetabaseQuestion._convience_properties:
@@ -21537,14 +21546,6 @@ class MetabaseQuestion(Metabase):
             self.attributes = self.Attributes()
         self.attributes.metabase_collection = metabase_collection
 
-    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseQuestion":
-            raise ValueError("must be MetabaseQuestion")
-        return v
-
     class Attributes(Metabase.Attributes):
         metabase_dashboard_count: Optional[int] = Field(
             None, description="", alias="metabaseDashboardCount"
@@ -21571,6 +21572,14 @@ class MetabaseQuestion(Metabase):
 
 class MetabaseCollection(Metabase):
     """Description"""
+
+    type_name: str = Field("MetabaseCollection", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseCollection":
+            raise ValueError("must be MetabaseCollection")
+        return v
 
     def __setattr__(self, name, value):
         if name in MetabaseCollection._convience_properties:
@@ -21656,14 +21665,6 @@ class MetabaseCollection(Metabase):
             self.attributes = self.Attributes()
         self.attributes.metabase_questions = metabase_questions
 
-    type_name: str = Field("MetabaseCollection", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseCollection":
-            raise ValueError("must be MetabaseCollection")
-        return v
-
     class Attributes(Metabase.Attributes):
         metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
         metabase_color: Optional[str] = Field(
@@ -21691,6 +21692,14 @@ class MetabaseCollection(Metabase):
 
 class MetabaseDashboard(Metabase):
     """Description"""
+
+    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MetabaseDashboard":
+            raise ValueError("must be MetabaseDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in MetabaseDashboard._convience_properties:
@@ -21735,14 +21744,6 @@ class MetabaseDashboard(Metabase):
             self.attributes = self.Attributes()
         self.attributes.metabase_collection = metabase_collection
 
-    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MetabaseDashboard":
-            raise ValueError("must be MetabaseDashboard")
-        return v
-
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(
             None, description="", alias="metabaseQuestionCount"
@@ -21763,6 +21764,14 @@ class MetabaseDashboard(Metabase):
 
 class QuickSightFolder(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightFolder":
+            raise ValueError("must be QuickSightFolder")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightFolder._convience_properties:
@@ -21845,14 +21854,6 @@ class QuickSightFolder(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_datasets = quick_sight_datasets
 
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightFolder":
-            raise ValueError("must be QuickSightFolder")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
             None, description="", alias="quickSightFolderType"
@@ -21879,6 +21880,14 @@ class QuickSightFolder(QuickSight):
 
 class QuickSightDashboardVisual(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboardVisual":
+            raise ValueError("must be QuickSightDashboardVisual")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightDashboardVisual._convience_properties:
@@ -21922,14 +21931,6 @@ class QuickSightDashboardVisual(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboard = quick_sight_dashboard
 
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDashboardVisual":
-            raise ValueError("must be QuickSightDashboardVisual")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightDashboardQualifiedName"
@@ -21947,6 +21948,14 @@ class QuickSightDashboardVisual(QuickSight):
 
 class QuickSightAnalysisVisual(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysisVisual":
+            raise ValueError("must be QuickSightAnalysisVisual")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightAnalysisVisual._convience_properties:
@@ -21986,14 +21995,6 @@ class QuickSightAnalysisVisual(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analysis = quick_sight_analysis
 
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightAnalysisVisual":
-            raise ValueError("must be QuickSightAnalysisVisual")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_qualified_name: Optional[str] = Field(
             None, description="", alias="quickSightAnalysisQualifiedName"
@@ -22011,6 +22012,14 @@ class QuickSightAnalysisVisual(QuickSight):
 
 class QuickSightDatasetField(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDatasetField":
+            raise ValueError("must be QuickSightDatasetField")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightDatasetField._convience_properties:
@@ -22067,14 +22076,6 @@ class QuickSightDatasetField(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dataset = quick_sight_dataset
 
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDatasetField":
-            raise ValueError("must be QuickSightDatasetField")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
             None, description="", alias="quickSightDatasetFieldType"
@@ -22095,6 +22096,14 @@ class QuickSightDatasetField(QuickSight):
 
 class QuickSightAnalysis(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysis":
+            raise ValueError("must be QuickSightAnalysis")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightAnalysis._convience_properties:
@@ -22212,14 +22221,6 @@ class QuickSightAnalysis(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
 
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightAnalysis":
-            raise ValueError("must be QuickSightAnalysis")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
             None, description="", alias="quickSightAnalysisStatus"
@@ -22249,6 +22250,14 @@ class QuickSightAnalysis(QuickSight):
 
 class QuickSightDashboard(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDashboard":
+            raise ValueError("must be QuickSightDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightDashboard._convience_properties:
@@ -22332,14 +22341,6 @@ class QuickSightDashboard(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
 
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDashboard":
-            raise ValueError("must be QuickSightDashboard")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_published_version_number: Optional[int] = Field(
             None, description="", alias="quickSightDashboardPublishedVersionNumber"
@@ -22365,6 +22366,14 @@ class QuickSightDashboard(QuickSight):
 
 class QuickSightDataset(QuickSight):
     """Description"""
+
+    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightDataset":
+            raise ValueError("must be QuickSightDataset")
+        return v
 
     def __setattr__(self, name, value):
         if name in QuickSightDataset._convience_properties:
@@ -22446,14 +22455,6 @@ class QuickSightDataset(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
 
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDataset":
-            raise ValueError("must be QuickSightDataset")
-        return v
-
     class Attributes(QuickSight.Attributes):
         quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
             None, description="", alias="quickSightDatasetImportMode"
@@ -22478,6 +22479,14 @@ class QuickSightDataset(QuickSight):
 class ThoughtspotLiveboard(Thoughtspot):
     """Description"""
 
+    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotLiveboard":
+            raise ValueError("must be ThoughtspotLiveboard")
+        return v
+
     def __setattr__(self, name, value):
         if name in ThoughtspotLiveboard._convience_properties:
             return object.__setattr__(self, name, value)
@@ -22499,14 +22508,6 @@ class ThoughtspotLiveboard(Thoughtspot):
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
 
-    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ThoughtspotLiveboard":
-            raise ValueError("must be ThoughtspotLiveboard")
-        return v
-
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
             None, description="", alias="thoughtspotDashlets"
@@ -22521,6 +22522,14 @@ class ThoughtspotLiveboard(Thoughtspot):
 
 class ThoughtspotDashlet(Thoughtspot):
     """Description"""
+
+    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ThoughtspotDashlet":
+            raise ValueError("must be ThoughtspotDashlet")
+        return v
 
     def __setattr__(self, name, value):
         if name in ThoughtspotDashlet._convience_properties:
@@ -22579,14 +22588,6 @@ class ThoughtspotDashlet(Thoughtspot):
             self.attributes = self.Attributes()
         self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
 
-    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ThoughtspotDashlet":
-            raise ValueError("must be ThoughtspotDashlet")
-        return v
-
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_liveboard_name: Optional[str] = Field(
             None, description="", alias="thoughtspotLiveboardName"
@@ -22608,13 +22609,6 @@ class ThoughtspotDashlet(Thoughtspot):
 class ThoughtspotAnswer(Thoughtspot):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in ThoughtspotAnswer._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
 
     @validator("type_name")
@@ -22623,9 +22617,24 @@ class ThoughtspotAnswer(Thoughtspot):
             raise ValueError("must be ThoughtspotAnswer")
         return v
 
+    def __setattr__(self, name, value):
+        if name in ThoughtspotAnswer._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
 
 class PowerBIReport(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIReport":
+            raise ValueError("must be PowerBIReport")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIReport._convience_properties:
@@ -22729,14 +22738,6 @@ class PowerBIReport(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.dataset = dataset
 
-    type_name: str = Field("PowerBIReport", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIReport":
-            raise ValueError("must be PowerBIReport")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -22768,6 +22769,14 @@ class PowerBIReport(PowerBI):
 
 class PowerBIMeasure(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIMeasure":
+            raise ValueError("must be PowerBIMeasure")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIMeasure._convience_properties:
@@ -22848,14 +22857,6 @@ class PowerBIMeasure(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.table = table
 
-    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIMeasure":
-            raise ValueError("must be PowerBIMeasure")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -22882,6 +22883,14 @@ class PowerBIMeasure(PowerBI):
 
 class PowerBIColumn(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIColumn", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIColumn":
+            raise ValueError("must be PowerBIColumn")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIColumn._convience_properties:
@@ -22994,14 +23003,6 @@ class PowerBIColumn(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.table = table
 
-    type_name: str = Field("PowerBIColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIColumn":
-            raise ValueError("must be PowerBIColumn")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23034,6 +23035,14 @@ class PowerBIColumn(PowerBI):
 
 class PowerBITable(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBITable", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITable":
+            raise ValueError("must be PowerBITable")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBITable._convience_properties:
@@ -23155,14 +23164,6 @@ class PowerBITable(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.dataset = dataset
 
-    type_name: str = Field("PowerBITable", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBITable":
-            raise ValueError("must be PowerBITable")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23198,6 +23199,14 @@ class PowerBITable(PowerBI):
 
 class PowerBITile(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBITile", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBITile":
+            raise ValueError("must be PowerBITile")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBITile._convience_properties:
@@ -23270,14 +23279,6 @@ class PowerBITile(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.dashboard = dashboard
 
-    type_name: str = Field("PowerBITile", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBITile":
-            raise ValueError("must be PowerBITile")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23304,6 +23305,14 @@ class PowerBITile(PowerBI):
 
 class PowerBIDatasource(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDatasource":
+            raise ValueError("must be PowerBIDatasource")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIDatasource._convience_properties:
@@ -23335,14 +23344,6 @@ class PowerBIDatasource(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.datasets = datasets
 
-    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDatasource":
-            raise ValueError("must be PowerBIDatasource")
-        return v
-
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
             None, description="", alias="connectionDetails"
@@ -23360,6 +23361,14 @@ class PowerBIDatasource(PowerBI):
 
 class PowerBIWorkspace(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIWorkspace":
+            raise ValueError("must be PowerBIWorkspace")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIWorkspace._convience_properties:
@@ -23468,14 +23477,6 @@ class PowerBIWorkspace(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.dataflows = dataflows
 
-    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIWorkspace":
-            raise ValueError("must be PowerBIWorkspace")
-        return v
-
     class Attributes(PowerBI.Attributes):
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
         report_count: Optional[int] = Field(None, description="", alias="reportCount")
@@ -23508,6 +23509,14 @@ class PowerBIWorkspace(PowerBI):
 
 class PowerBIDataset(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataset":
+            raise ValueError("must be PowerBIDataset")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIDataset._convience_properties:
@@ -23609,14 +23618,6 @@ class PowerBIDataset(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.datasources = datasources
 
-    type_name: str = Field("PowerBIDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDataset":
-            raise ValueError("must be PowerBIDataset")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23650,6 +23651,14 @@ class PowerBIDataset(PowerBI):
 
 class PowerBIDashboard(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDashboard":
+            raise ValueError("must be PowerBIDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIDashboard._convience_properties:
@@ -23718,14 +23727,6 @@ class PowerBIDashboard(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.workspace = workspace
 
-    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDashboard":
-            raise ValueError("must be PowerBIDashboard")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23748,6 +23749,14 @@ class PowerBIDashboard(PowerBI):
 
 class PowerBIDataflow(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIDataflow":
+            raise ValueError("must be PowerBIDataflow")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIDataflow._convience_properties:
@@ -23805,14 +23814,6 @@ class PowerBIDataflow(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.datasets = datasets
 
-    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDataflow":
-            raise ValueError("must be PowerBIDataflow")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23834,6 +23835,14 @@ class PowerBIDataflow(PowerBI):
 
 class PowerBIPage(PowerBI):
     """Description"""
+
+    type_name: str = Field("PowerBIPage", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "PowerBIPage":
+            raise ValueError("must be PowerBIPage")
+        return v
 
     def __setattr__(self, name, value):
         if name in PowerBIPage._convience_properties:
@@ -23882,14 +23891,6 @@ class PowerBIPage(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.report = report
 
-    type_name: str = Field("PowerBIPage", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIPage":
-            raise ValueError("must be PowerBIPage")
-        return v
-
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
@@ -23910,6 +23911,14 @@ class PowerBIPage(PowerBI):
 
 class MicroStrategyReport(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyReport":
+            raise ValueError("must be MicroStrategyReport")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyReport._convience_properties:
@@ -23981,14 +23990,6 @@ class MicroStrategyReport(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
-    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyReport":
-            raise ValueError("must be MicroStrategyReport")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_report_type: Optional[str] = Field(
             None, description="", alias="microStrategyReportType"
@@ -24012,6 +24013,14 @@ class MicroStrategyReport(MicroStrategy):
 
 class MicroStrategyProject(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyProject":
+            raise ValueError("must be MicroStrategyProject")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyProject._convience_properties:
@@ -24145,14 +24154,6 @@ class MicroStrategyProject(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
-    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyProject":
-            raise ValueError("must be MicroStrategyProject")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
             None, description="", alias="microStrategyReports"
@@ -24190,6 +24191,14 @@ class MicroStrategyProject(MicroStrategy):
 
 class MicroStrategyMetric(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyMetric":
+            raise ValueError("must be MicroStrategyMetric")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyMetric._convience_properties:
@@ -24433,14 +24442,6 @@ class MicroStrategyMetric(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
-    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyMetric":
-            raise ValueError("must be MicroStrategyMetric")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_metric_expression: Optional[str] = Field(
             None, description="", alias="microStrategyMetricExpression"
@@ -24494,6 +24495,14 @@ class MicroStrategyMetric(MicroStrategy):
 
 class MicroStrategyCube(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyCube":
+            raise ValueError("must be MicroStrategyCube")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyCube._convience_properties:
@@ -24580,14 +24589,6 @@ class MicroStrategyCube(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
-    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyCube":
-            raise ValueError("must be MicroStrategyCube")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_cube_type: Optional[str] = Field(
             None, description="", alias="microStrategyCubeType"
@@ -24614,6 +24615,14 @@ class MicroStrategyCube(MicroStrategy):
 
 class MicroStrategyDossier(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDossier":
+            raise ValueError("must be MicroStrategyDossier")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyDossier._convience_properties:
@@ -24676,14 +24685,6 @@ class MicroStrategyDossier(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
-    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyDossier":
-            raise ValueError("must be MicroStrategyDossier")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
             None, description="", alias="microStrategyDossierChapterNames"
@@ -24706,6 +24707,14 @@ class MicroStrategyDossier(MicroStrategy):
 
 class MicroStrategyFact(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyFact":
+            raise ValueError("must be MicroStrategyFact")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyFact._convience_properties:
@@ -24764,14 +24773,6 @@ class MicroStrategyFact(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
-    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyFact":
-            raise ValueError("must be MicroStrategyFact")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_fact_expressions: Optional[set[str]] = Field(
             None, description="", alias="microStrategyFactExpressions"
@@ -24792,6 +24793,14 @@ class MicroStrategyFact(MicroStrategy):
 
 class MicroStrategyDocument(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDocument":
+            raise ValueError("must be MicroStrategyDocument")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyDocument._convience_properties:
@@ -24816,14 +24825,6 @@ class MicroStrategyDocument(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
-    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyDocument":
-            raise ValueError("must be MicroStrategyDocument")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
             None, description="", alias="microStrategyProject"
@@ -24838,6 +24839,14 @@ class MicroStrategyDocument(MicroStrategy):
 
 class MicroStrategyAttribute(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyAttribute":
+            raise ValueError("must be MicroStrategyAttribute")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyAttribute._convience_properties:
@@ -24922,14 +24931,6 @@ class MicroStrategyAttribute(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
-    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyAttribute":
-            raise ValueError("must be MicroStrategyAttribute")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_attribute_forms: Optional[str] = Field(
             None, description="", alias="microStrategyAttributeForms"
@@ -24956,6 +24957,14 @@ class MicroStrategyAttribute(MicroStrategy):
 
 class MicroStrategyVisualization(MicroStrategy):
     """Description"""
+
+    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyVisualization":
+            raise ValueError("must be MicroStrategyVisualization")
+        return v
 
     def __setattr__(self, name, value):
         if name in MicroStrategyVisualization._convience_properties:
@@ -25048,14 +25057,6 @@ class MicroStrategyVisualization(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_project = micro_strategy_project
 
-    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MicroStrategyVisualization":
-            raise ValueError("must be MicroStrategyVisualization")
-        return v
-
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_visualization_type: Optional[str] = Field(
             None, description="", alias="microStrategyVisualizationType"
@@ -25082,6 +25083,14 @@ class MicroStrategyVisualization(MicroStrategy):
 
 class QlikSpace(Qlik):
     """Description"""
+
+    type_name: str = Field("QlikSpace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSpace":
+            raise ValueError("must be QlikSpace")
+        return v
 
     def __setattr__(self, name, value):
         if name in QlikSpace._convience_properties:
@@ -25124,14 +25133,6 @@ class QlikSpace(Qlik):
             self.attributes = self.Attributes()
         self.attributes.qlik_apps = qlik_apps
 
-    type_name: str = Field("QlikSpace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikSpace":
-            raise ValueError("must be QlikSpace")
-        return v
-
     class Attributes(Qlik.Attributes):
         qlik_space_type: Optional[str] = Field(
             None, description="", alias="qlikSpaceType"
@@ -25152,6 +25153,14 @@ class QlikSpace(Qlik):
 
 class QlikApp(Qlik):
     """Description"""
+
+    type_name: str = Field("QlikApp", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikApp":
+            raise ValueError("must be QlikApp")
+        return v
 
     def __setattr__(self, name, value):
         if name in QlikApp._convience_properties:
@@ -25248,14 +25257,6 @@ class QlikApp(Qlik):
             self.attributes = self.Attributes()
         self.attributes.qlik_sheets = qlik_sheets
 
-    type_name: str = Field("QlikApp", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikApp":
-            raise ValueError("must be QlikApp")
-        return v
-
     class Attributes(Qlik.Attributes):
         qlik_has_section_access: Optional[bool] = Field(
             None, description="", alias="qlikHasSectionAccess"
@@ -25288,6 +25289,14 @@ class QlikApp(Qlik):
 
 class QlikChart(Qlik):
     """Description"""
+
+    type_name: str = Field("QlikChart", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikChart":
+            raise ValueError("must be QlikChart")
+        return v
 
     def __setattr__(self, name, value):
         if name in QlikChart._convience_properties:
@@ -25354,14 +25363,6 @@ class QlikChart(Qlik):
             self.attributes = self.Attributes()
         self.attributes.qlik_sheet = qlik_sheet
 
-    type_name: str = Field("QlikChart", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikChart":
-            raise ValueError("must be QlikChart")
-        return v
-
     class Attributes(Qlik.Attributes):
         qlik_chart_subtitle: Optional[str] = Field(
             None, description="", alias="qlikChartSubtitle"
@@ -25388,6 +25389,14 @@ class QlikChart(Qlik):
 
 class QlikDataset(Qlik):
     """Description"""
+
+    type_name: str = Field("QlikDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikDataset":
+            raise ValueError("must be QlikDataset")
+        return v
 
     def __setattr__(self, name, value):
         if name in QlikDataset._convience_properties:
@@ -25456,14 +25465,6 @@ class QlikDataset(Qlik):
             self.attributes = self.Attributes()
         self.attributes.qlik_space = qlik_space
 
-    type_name: str = Field("QlikDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikDataset":
-            raise ValueError("must be QlikDataset")
-        return v
-
     class Attributes(Qlik.Attributes):
         qlik_dataset_technical_name: Optional[str] = Field(
             None, description="", alias="qlikDatasetTechnicalName"
@@ -25490,6 +25491,14 @@ class QlikDataset(Qlik):
 
 class QlikSheet(Qlik):
     """Description"""
+
+    type_name: str = Field("QlikSheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSheet":
+            raise ValueError("must be QlikSheet")
+        return v
 
     def __setattr__(self, name, value):
         if name in QlikSheet._convience_properties:
@@ -25534,14 +25543,6 @@ class QlikSheet(Qlik):
             self.attributes = self.Attributes()
         self.attributes.qlik_charts = qlik_charts
 
-    type_name: str = Field("QlikSheet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikSheet":
-            raise ValueError("must be QlikSheet")
-        return v
-
     class Attributes(Qlik.Attributes):
         qlik_sheet_is_approved: Optional[bool] = Field(
             None, description="", alias="qlikSheetIsApproved"
@@ -25562,6 +25563,14 @@ class QlikSheet(Qlik):
 
 class SalesforceObject(Salesforce):
     """Description"""
+
+    type_name: str = Field("SalesforceObject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceObject":
+            raise ValueError("must be SalesforceObject")
+        return v
 
     def __setattr__(self, name, value):
         if name in SalesforceObject._convience_properties:
@@ -25648,14 +25657,6 @@ class SalesforceObject(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.fields = fields
 
-    type_name: str = Field("SalesforceObject", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceObject":
-            raise ValueError("must be SalesforceObject")
-        return v
-
     class Attributes(Salesforce.Attributes):
         is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
         is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
@@ -25680,6 +25681,14 @@ class SalesforceObject(Salesforce):
 
 class SalesforceField(Salesforce):
     """Description"""
+
+    type_name: str = Field("SalesforceField", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceField":
+            raise ValueError("must be SalesforceField")
+        return v
 
     def __setattr__(self, name, value):
         if name in SalesforceField._convience_properties:
@@ -25895,14 +25904,6 @@ class SalesforceField(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.object = object
 
-    type_name: str = Field("SalesforceField", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceField":
-            raise ValueError("must be SalesforceField")
-        return v
-
     class Attributes(Salesforce.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
         object_qualified_name: Optional[str] = Field(
@@ -25952,6 +25953,14 @@ class SalesforceField(Salesforce):
 
 class SalesforceOrganization(Salesforce):
     """Description"""
+
+    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceOrganization":
+            raise ValueError("must be SalesforceOrganization")
+        return v
 
     def __setattr__(self, name, value):
         if name in SalesforceOrganization._convience_properties:
@@ -26005,14 +26014,6 @@ class SalesforceOrganization(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
-    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceOrganization":
-            raise ValueError("must be SalesforceOrganization")
-        return v
-
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
         reports: Optional[list[SalesforceReport]] = Field(
@@ -26034,6 +26035,14 @@ class SalesforceOrganization(Salesforce):
 
 class SalesforceDashboard(Salesforce):
     """Description"""
+
+    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceDashboard":
+            raise ValueError("must be SalesforceDashboard")
+        return v
 
     def __setattr__(self, name, value):
         if name in SalesforceDashboard._convience_properties:
@@ -26098,14 +26107,6 @@ class SalesforceDashboard(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.organization = organization
 
-    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceDashboard":
-            raise ValueError("must be SalesforceDashboard")
-        return v
-
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
         dashboard_type: Optional[str] = Field(
@@ -26128,6 +26129,14 @@ class SalesforceDashboard(Salesforce):
 
 class SalesforceReport(Salesforce):
     """Description"""
+
+    type_name: str = Field("SalesforceReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceReport":
+            raise ValueError("must be SalesforceReport")
+        return v
 
     def __setattr__(self, name, value):
         if name in SalesforceReport._convience_properties:
@@ -26192,14 +26201,6 @@ class SalesforceReport(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
-    type_name: str = Field("SalesforceReport", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SalesforceReport":
-            raise ValueError("must be SalesforceReport")
-        return v
-
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
         report_type: Optional[dict[str, str]] = Field(
@@ -26225,13 +26226,6 @@ class SalesforceReport(Salesforce):
 class QlikStream(QlikSpace):
     """Description"""
 
-    def __setattr__(self, name, value):
-        if name in QlikStream._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = []
-
     type_name: str = Field("QlikStream", allow_mutation=False)
 
     @validator("type_name")
@@ -26239,6 +26233,13 @@ class QlikStream(QlikSpace):
         if v != "QlikStream":
             raise ValueError("must be QlikStream")
         return v
+
+    def __setattr__(self, name, value):
+        if name in QlikStream._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
 
 
 Referenceable.update_forward_refs()
