@@ -7,7 +7,7 @@ import hashlib
 import sys
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
+from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -28,14 +28,20 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    AuthPolicyCategory,
+    AuthPolicyResourceCategory,
     AuthPolicyType,
     CertificateStatus,
+    DataAction,
     EntityStatus,
     FileType,
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
+    PersonaGlossaryAction,
+    PersonaMetadataAction,
     PowerbiEndorsement,
+    PurposeMetadataAction,
     QueryUsernameStrategy,
     QuickSightAnalysisStatus,
     QuickSightDatasetFieldType,
@@ -2461,6 +2467,7 @@ class Connection(Asset, type_name="Connection"):
         "policy_strategy",
         "query_username_strategy",
         "row_limit",
+        "query_timeout",
         "default_credential_guid",
         "connector_icon",
         "connector_image",
@@ -2609,6 +2616,16 @@ class Connection(Asset, type_name="Connection"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.row_limit = row_limit
+
+    @property
+    def query_timeout(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_timeout
+
+    @query_timeout.setter
+    def query_timeout(self, query_timeout: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_timeout = query_timeout
 
     @property
     def default_credential_guid(self) -> Optional[str]:
@@ -2764,6 +2781,7 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="queryUsernameStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
+        query_timeout: Optional[int] = Field(None, description="", alias="queryTimeout")
         default_credential_guid: Optional[str] = Field(
             None, description="", alias="defaultCredentialGuid"
         )
@@ -4000,11 +4018,28 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             None, description="", alias="accessControl"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> AuthPolicy.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return AuthPolicy.Attributes(
+                qualified_name=name, name=name, display_name=""
+            )
+
     attributes: "AuthPolicy.Attributes" = Field(
         default_factory=lambda: AuthPolicy.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> AuthPolicy:
+        validate_required_fields(["name"], [name])
+        attributes = AuthPolicy.Attributes.create(name=name)
+        return cls(attributes=attributes)
 
 
 class ProcessExecution(Asset, type_name="ProcessExecution"):
@@ -4776,11 +4811,139 @@ class Persona(AccessControl):
         )
         role_id: Optional[str] = Field(None, description="", alias="roleId")
 
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> Persona.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return Persona.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description="",
+            )
+
     attributes: "Persona.Attributes" = Field(
         default_factory=lambda: Persona.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> Persona:
+        validate_required_fields(["name"], [name])
+        attributes = Persona.Attributes.create(name=name)
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    def create_metadata_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PersonaMetadataAction],
+        connection_qualified_name: str,
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "actions", "resources"],
+            [name, persona_id, policy_type, actions, resources],
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "metadata"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_data_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        connection_qualified_name: str,
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "resources"],
+            [name, persona_id, policy_type, resources],
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resources.add("entity-type:*")
+        policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value
+        policy.policy_service_name = "heka"
+        policy.policy_sub_category = "data"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_glossary_policy(
+        cls,
+        *,
+        name: str,
+        persona_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PersonaGlossaryAction],
+        resources: Set[str],
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "persona_id", "policy_type", "actions", "resources"],
+            [name, persona_id, policy_type, actions, resources],
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "glossary"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                is_access_control_enabled=is_enabled,
+            )
+        )
 
 
 class Purpose(AccessControl):
@@ -4820,11 +4983,173 @@ class Purpose(AccessControl):
             None, description="", alias="purposeClassifications"
         )
 
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str, classifications: list[str]) -> Purpose.Attributes:
+            validate_required_fields(
+                ["name", "classifications"], [name, classifications]
+            )
+            return Purpose.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description="",
+                purpose_classifications=classifications,
+            )
+
     attributes: "Purpose.Attributes" = Field(
         default_factory=lambda: Purpose.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, classifications: list[str]) -> Purpose:
+        validate_required_fields(["name", "classifications"], [name, classifications])
+        attributes = Purpose.Attributes.create(
+            name=name, classifications=classifications
+        )
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    def create_metadata_policy(
+        cls,
+        *,
+        name: str,
+        purpose_id: str,
+        policy_type: AuthPolicyType,
+        actions: Set[PurposeMetadataAction],
+        policy_groups: Optional[Set[str]] = None,
+        policy_users: Optional[Set[str]] = None,
+        all_users: bool = False,
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "purpose_id", "policy_type", "actions"],
+            [name, purpose_id, policy_type, actions],
+        )
+        target_found = False
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PURPOSE.value
+        policy.policy_type = policy_type
+        policy.policy_resource_category = AuthPolicyResourceCategory.TAG.value
+        policy.policy_service_name = "atlas_tag"
+        policy.policy_sub_category = "metadata"
+        purpose = Purpose()
+        purpose.guid = purpose_id
+        policy.access_control = purpose
+        if all_users:
+            target_found = True
+            policy.policy_groups = {"public"}
+        else:
+            if policy_groups:
+                from pyatlan.cache.group_cache import GroupCache
+
+                for group_alias in policy_groups:
+                    if not GroupCache.get_id_for_alias(group_alias):
+                        raise ValueError(
+                            f"Provided group name {group_alias} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_groups = policy_groups
+            else:
+                policy.policy_groups = None
+            if policy_users:
+                from pyatlan.cache.user_cache import UserCache
+
+                for username in policy_users:
+                    if not UserCache.get_id_for_name(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_users = policy_users
+            else:
+                policy.policy_users = None
+        if target_found:
+            return policy
+        else:
+            raise ValueError("No user or group specified for the policy.")
+
+    @classmethod
+    # @validate_arguments()
+    def create_data_policy(
+        cls,
+        *,
+        name: str,
+        purpose_id: str,
+        policy_type: AuthPolicyType,
+        policy_groups: Optional[Set[str]] = None,
+        policy_users: Optional[Set[str]] = None,
+        all_users: bool = False,
+    ) -> AuthPolicy:
+        validate_required_fields(
+            ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
+        )
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PURPOSE.value
+        policy.policy_type = policy_type
+        policy.policy_resource_category = AuthPolicyResourceCategory.TAG.value
+        policy.policy_service_name = "atlas_tag"
+        policy.policy_sub_category = "data"
+        purpose = Purpose()
+        purpose.guid = purpose_id
+        policy.access_control = purpose
+        if all_users:
+            target_found = True
+            policy.policy_groups = {"public"}
+        else:
+            if policy_groups:
+                from pyatlan.cache.group_cache import GroupCache
+
+                for group_alias in policy_groups:
+                    if not GroupCache.get_id_for_alias(group_alias):
+                        raise ValueError(
+                            f"Provided group name {group_alias} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_groups = policy_groups
+            else:
+                policy.policy_groups = None
+            if policy_users:
+                from pyatlan.cache.user_cache import UserCache
+
+                for username in policy_users:
+                    if not UserCache.get_id_for_name(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_users = policy_users
+            else:
+                policy.policy_users = None
+        if target_found:
+            return policy
+        else:
+            raise ValueError("No user or group specified for the policy.")
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                is_access_control_enabled=is_enabled,
+            )
+        )
 
 
 class Collection(Namespace):
@@ -11963,7 +12288,9 @@ class Column(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "data_type",
         "sub_data_type",
+        "raw_data_type_definition",
         "order",
+        "nested_column_count",
         "is_partition",
         "partition_order",
         "is_clustered",
@@ -11981,6 +12308,8 @@ class Column(SQL):
         "numeric_scale",
         "max_length",
         "validations",
+        "parent_column_qualified_name",
+        "parent_column_name",
         "column_distinct_values_count",
         "column_distinct_values_count_long",
         "column_histogram",
@@ -12006,12 +12335,15 @@ class Column(SQL):
         "column_uniqueness_percentage",
         "column_variance",
         "column_top_values",
+        "column_depth_level",
         "view",
+        "nested_columns",
         "data_quality_metric_dimensions",
         "dbt_model_columns",
         "table",
         "column_dbt_model_columns",
         "materialised_view",
+        "parent_column",
         "queries",
         "metric_timestamps",
         "foreign_key_to",
@@ -12041,6 +12373,20 @@ class Column(SQL):
         self.attributes.sub_data_type = sub_data_type
 
     @property
+    def raw_data_type_definition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.raw_data_type_definition
+        )
+
+    @raw_data_type_definition.setter
+    def raw_data_type_definition(self, raw_data_type_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.raw_data_type_definition = raw_data_type_definition
+
+    @property
     def order(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.order
 
@@ -12049,6 +12395,16 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.order = order
+
+    @property
+    def nested_column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.nested_column_count
+
+    @nested_column_count.setter
+    def nested_column_count(self, nested_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_column_count = nested_column_count
 
     @property
     def is_partition(self) -> Optional[bool]:
@@ -12219,6 +12575,30 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.validations = validations
+
+    @property
+    def parent_column_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.parent_column_qualified_name
+        )
+
+    @parent_column_qualified_name.setter
+    def parent_column_qualified_name(self, parent_column_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column_qualified_name = parent_column_qualified_name
+
+    @property
+    def parent_column_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.parent_column_name
+
+    @parent_column_name.setter
+    def parent_column_name(self, parent_column_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column_name = parent_column_name
 
     @property
     def column_distinct_values_count(self) -> Optional[int]:
@@ -12551,6 +12931,16 @@ class Column(SQL):
         self.attributes.column_top_values = column_top_values
 
     @property
+    def column_depth_level(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_depth_level
+
+    @column_depth_level.setter
+    def column_depth_level(self, column_depth_level: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_depth_level = column_depth_level
+
+    @property
     def view(self) -> Optional[View]:
         return None if self.attributes is None else self.attributes.view
 
@@ -12559,6 +12949,16 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.view = view
+
+    @property
+    def nested_columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.nested_columns
+
+    @nested_columns.setter
+    def nested_columns(self, nested_columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_columns = nested_columns
 
     @property
     def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
@@ -12621,6 +13021,16 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.materialised_view = materialised_view
+
+    @property
+    def parent_column(self) -> Optional[Column]:
+        return None if self.attributes is None else self.attributes.parent_column
+
+    @parent_column.setter
+    def parent_column(self, parent_column: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column = parent_column
 
     @property
     def queries(self) -> Optional[list[Query]]:
@@ -12693,7 +13103,13 @@ class Column(SQL):
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
         sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
+        raw_data_type_definition: Optional[str] = Field(
+            None, description="", alias="rawDataTypeDefinition"
+        )
         order: Optional[int] = Field(None, description="", alias="order")
+        nested_column_count: Optional[int] = Field(
+            None, description="", alias="nestedColumnCount"
+        )
         is_partition: Optional[bool] = Field(None, description="", alias="isPartition")
         partition_order: Optional[int] = Field(
             None, description="", alias="partitionOrder"
@@ -12716,6 +13132,12 @@ class Column(SQL):
         max_length: Optional[int] = Field(None, description="", alias="maxLength")
         validations: Optional[dict[str, str]] = Field(
             None, description="", alias="validations"
+        )
+        parent_column_qualified_name: Optional[str] = Field(
+            None, description="", alias="parentColumnQualifiedName"
+        )
+        parent_column_name: Optional[str] = Field(
+            None, description="", alias="parentColumnName"
         )
         column_distinct_values_count: Optional[int] = Field(
             None, description="", alias="columnDistinctValuesCount"
@@ -12784,7 +13206,13 @@ class Column(SQL):
         column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
             None, description="", alias="columnTopValues"
         )
+        column_depth_level: Optional[int] = Field(
+            None, description="", alias="columnDepthLevel"
+        )
         view: Optional[View] = Field(None, description="", alias="view")  # relationship
+        nested_columns: Optional[list[Column]] = Field(
+            None, description="", alias="nestedColumns"
+        )  # relationship
         data_quality_metric_dimensions: Optional[list[Metric]] = Field(
             None, description="", alias="dataQualityMetricDimensions"
         )  # relationship
@@ -12799,6 +13227,9 @@ class Column(SQL):
         )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
             None, description="", alias="materialisedView"
+        )  # relationship
+        parent_column: Optional[Column] = Field(
+            None, description="", alias="parentColumn"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"

@@ -7,7 +7,7 @@ import hashlib
 import sys
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
+from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -28,14 +28,20 @@ from pyatlan.model.enums import (
     ADLSStorageKind,
     AnnouncementType,
     AtlanConnectorType,
+    AuthPolicyCategory,
+    AuthPolicyResourceCategory,
     AuthPolicyType,
     CertificateStatus,
+    DataAction,
     EntityStatus,
     FileType,
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
+    PersonaGlossaryAction,
+    PersonaMetadataAction,
     PowerbiEndorsement,
+    PurposeMetadataAction,
     QueryUsernameStrategy,
     QuickSightAnalysisStatus,
     QuickSightDatasetFieldType,
@@ -744,6 +750,45 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
                 categories=categories,
                 qualified_name=next_id(),
             )
+        {%- elif entity_def.name == "Persona"  %}
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> {{ entity_def.name }}.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return Persona.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description=""
+            )
+        {%- elif entity_def.name == "Purpose"  %}
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str, classifications: list[str]) -> {{ entity_def.name }}.Attributes:
+            validate_required_fields(["name", "classifications"], [name, classifications])
+            return Purpose.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description="",
+                purpose_classifications=classifications
+            )
+        {%- elif entity_def.name == "AuthPolicy"  %}
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> {{ entity_def.name }}.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return AuthPolicy.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=""
+            )
         {%- endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
         default_factory = lambda: {{entity_def.name}}.Attributes(),
@@ -892,6 +937,196 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             s3_bucket_qualified_name=s3_bucket_qualified_name
         )
         return cls(attributes=attributes)
+    {%- elif entity_def.name == "Persona" %}
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> {{ entity_def.name }}:
+        validate_required_fields(["name"], [name])
+        attributes = Persona.Attributes.create(name=name)
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "metadata"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "resources"], [name, persona_id, policy_type, resources])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resources.add("entity-type:*")
+        policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value
+        policy.policy_service_name = "heka"
+        policy.policy_sub_category = "data"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_glossary_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaGlossaryAction], resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "glossary"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+    {%- elif entity_def.name == "Purpose" %}
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, classifications: list[str]) -> {{ entity_def.name }}:
+        validate_required_fields(["name", "classifications"], [name, classifications])
+        attributes = Purpose.Attributes.create(name=name, classifications=classifications)
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
+        validate_required_fields(["name", "purpose_id", "policy_type", "actions"], [name, purpose_id, policy_type, actions])
+        target_found = False
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PURPOSE.value
+        policy.policy_type = policy_type
+        policy.policy_resource_category = AuthPolicyResourceCategory.TAG.value
+        policy.policy_service_name = "atlas_tag"
+        policy.policy_sub_category = "metadata"
+        purpose = Purpose()
+        purpose.guid = purpose_id
+        policy.access_control = purpose
+        if all_users:
+            target_found = True
+            policy.policy_groups = {"public"}
+        else:
+            if policy_groups:
+                from pyatlan.cache.group_cache import GroupCache
+                for group_alias in policy_groups:
+                    if not GroupCache.get_id_for_alias(group_alias):
+                        raise ValueError(
+                            f"Provided group name {group_alias} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_groups = policy_groups
+            else:
+                policy.policy_groups = None
+            if policy_users:
+                from pyatlan.cache.user_cache import UserCache
+                for username in policy_users:
+                    if not UserCache.get_id_for_name(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_users = policy_users
+            else:
+                policy.policy_users = None
+        if target_found:
+            return policy
+        else:
+            raise ValueError(
+                "No user or group specified for the policy."
+            )
+
+    @classmethod
+    # @validate_arguments()
+    def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
+        validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PURPOSE.value
+        policy.policy_type = policy_type
+        policy.policy_resource_category = AuthPolicyResourceCategory.TAG.value
+        policy.policy_service_name = "atlas_tag"
+        policy.policy_sub_category = "data"
+        purpose = Purpose()
+        purpose.guid = purpose_id
+        policy.access_control = purpose
+        if all_users:
+            target_found = True
+            policy.policy_groups = {"public"}
+        else:
+            if policy_groups:
+                from pyatlan.cache.group_cache import GroupCache
+                for group_alias in policy_groups:
+                    if not GroupCache.get_id_for_alias(group_alias):
+                        raise ValueError(
+                            f"Provided group name {group_alias} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_groups = policy_groups
+            else:
+                policy.policy_groups = None
+            if policy_users:
+                from pyatlan.cache.user_cache import UserCache
+                for username in policy_users:
+                    if not UserCache.get_id_for_name(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
+                target_found = True
+                policy.policy_users = policy_users
+            else:
+                policy.policy_users = None
+        if target_found:
+            return policy
+        else:
+            raise ValueError(
+                "No user or group specified for the policy."
+            )
+    {%- elif entity_def.name == "AuthPolicy" %}
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> {{ entity_def.name }}:
+        validate_required_fields(["name"], [name])
+        attributes = AuthPolicy.Attributes.create(name=name)
+        return cls(attributes=attributes)
+    {%- endif %}
+    {% if entity_def.name == "Persona" or entity_def.name == "Purpose" %}
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                is_access_control_enabled=is_enabled
+            )
+        )
     {%- endif %}
     {% if entity_def.name.startswith("AtlasGlossary") %}
     @root_validator()
