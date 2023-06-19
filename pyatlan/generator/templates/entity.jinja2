@@ -13,35 +13,11 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {% include 'properties.jinja2' %}
     {% include 'referenceable_attributes.jinja2' %}
 {%- else %}
-    {%- if entity_def.name == "Asset" %}
-        {% include 'methods/asset/asset.jinja2' %}
-    {%- elif entity_def.name == "Badge" %}
-        {% include 'methods/asset/badge.jinja2' %}
-    {%- elif entity_def.name == "Readme" %}
-        {% include 'methods/asset/readme.jinja2' %}
-     {%- elif entity_def.name == "Column" %}
-        {% include 'methods/asset/column.jinja2' %}
-    {%- elif entity_def.name == "Connection" %}
-        {% include 'methods/asset/connection.jinja2' %}
-    {%- elif entity_def.name == "Process" %}
-        {% include 'methods/asset/process.jinja2' %}
-    {%- elif entity_def.name == "Database" %}
-        {% include 'methods/asset/database.jinja2' %}
-    {%- elif entity_def.name == "Schema" %}
-        {% include 'methods/asset/schema.jinja2' %}
-    {%- elif entity_def.name == "Table" or entity_def.name == "View" or entity_def.name == "MaterialisedView" %}
-        {% include 'methods/asset/table.jinja2' %}
-    {%- elif entity_def.name == "S3Bucket" %}
-        {% include 'methods/asset/s3bucket.jinja2' %}
-    {%- elif entity_def.name == "S3Object" %}
-        {% include 'methods/asset/s3object.jinja2' %}
-    {%- elif entity_def.name == "AtlasGlossary" %}
-        {% include 'methods/asset/atlas_glossary.jinja2' %}
-    {%- elif entity_def.name == "AtlasGlossaryCategory" %}
-        {% include 'methods/asset/atlas_glossary_category.jinja2' %}
-    {%- elif entity_def.name == "AtlasGlossaryTerm" %}
-        {% include 'methods/asset/atlas_glossary_term.jinja2' %}
-    {%- endif %}
+    {% set file_name = 'methods/asset/' + entity_def.name | to_snake_case + '.jinja2' %}
+    {%  if existz('templates/' + file_name) %}
+        {% include file_name %}
+    {% endif %}
+
     type_name: str = Field("{{ entity_def.name }}", allow_mutation=False)
 
     @validator('type_name')
@@ -61,34 +37,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {%- set type = attribute_def.typeName | get_type %}
         {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
-        {%- if entity_def.name == "Asset"  %}
-            {% include 'methods/attribute/' + entity_def.name  + '.jinja2' %}
-        {%- endif  %}
-        {%- if entity_def.name == "Process" %}
-            {% include 'methods/attribute/process.jinja2' %}
-        {%- elif entity_def.name == "Badge"  %}
-            {% include 'methods/attribute/badge.jinja2' %}
-        {%- elif entity_def.name == "Readme"  %}
-            {% include 'methods/attribute/readme.jinja2' %}
-        {%- elif entity_def.name == "Database"  %}
-            {% include 'methods/attribute/database.jinja2' %}
-        {%-  elif entity_def.name == "Schema" %}
-            {% include 'methods/attribute/schema.jinja2' %}
-        {%- elif entity_def.name == "Table" or entity_def.name == "View" or entity_def.name == "MaterialisedView" %}
-            {% include 'methods/attribute/table.jinja2' %}
-        {%- elif entity_def.name == "Column" %}
-            {% include 'methods/attribute/column.jinja2' %}
-        {%- elif entity_def.name == "S3Bucket" %}
-            {% include 'methods/attribute/s3bucket.jinja2' %}
-        {%- elif entity_def.name == "S3Object" %}
-            {% include 'methods/attribute/s3object.jinja2' %}
-        {%- elif entity_def.name == "AtlasGlossary" %}
-            {% include 'methods/attribute/atlas_glossary.jinja2' %}
-        {%- elif entity_def.name == "AtlasGlossaryCategory" %}
-            {% include 'methods/attribute/atlas_glossary_category.jinja2' %}
-        {%- elif entity_def.name == "AtlasGlossaryTerm" %}
-            {% include 'methods/attribute/atlas_glossary_term.jinja2' %}
-        {%- endif %}
+        {% set file_name = 'methods/attribute/' + entity_def.name | to_snake_case + '.jinja2' %}
+        {%  if existz('templates/' + file_name) %}
+            {% include file_name %}
+        {% endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
         default_factory = lambda: {{entity_def.name}}.Attributes(),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
