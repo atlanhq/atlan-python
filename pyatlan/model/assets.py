@@ -4847,6 +4847,7 @@ class Persona(AccessControl):
         persona_id: str,
         policy_type: AuthPolicyType,
         actions: Set[PersonaMetadataAction],
+        connection_qualified_name: str,
         resources: Set[str],
     ) -> AuthPolicy:
         validate_required_fields(
@@ -4857,6 +4858,7 @@ class Persona(AccessControl):
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
         policy.policy_resources = resources
         policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
         policy.policy_service_name = "atlas"
@@ -4874,6 +4876,7 @@ class Persona(AccessControl):
         name: str,
         persona_id: str,
         policy_type: AuthPolicyType,
+        connection_qualified_name: str,
         resources: Set[str],
     ) -> AuthPolicy:
         validate_required_fields(
@@ -4884,6 +4887,7 @@ class Persona(AccessControl):
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
         policy.policy_resources = resources
         policy.policy_resources.add("entity-type:*")
         policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value

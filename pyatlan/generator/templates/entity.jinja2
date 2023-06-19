@@ -947,12 +947,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     @classmethod
     # @validate_arguments()
-    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], resources: Set[str]) -> AuthPolicy:
+    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
         policy = AuthPolicy.create(name=name)
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
         policy.policy_resources = resources
         policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
         policy.policy_service_name = "atlas"
@@ -964,12 +965,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
 
     @classmethod
     # @validate_arguments()
-    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, resources: Set[str]) -> AuthPolicy:
+    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
         validate_required_fields(["name", "persona_id", "policy_type", "resources"], [name, persona_id, policy_type, resources])
         policy = AuthPolicy.create(name=name)
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
         policy.policy_resources = resources
         policy.policy_resources.add("entity-type:*")
         policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value

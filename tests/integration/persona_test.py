@@ -129,12 +129,14 @@ def test_add_policies_to_persona(
         persona_id=persona.guid,
         policy_type=AuthPolicyType.ALLOW,
         actions={PersonaMetadataAction.READ},
+        connection_qualified_name=connection.qualified_name,
         resources={f"entity:{connection.qualified_name}"},
     )
     data = Persona.create_data_policy(
         name="Allow access to data",
         persona_id=persona.guid,
         policy_type=AuthPolicyType.ALLOW,
+        connection_qualified_name=connection.qualified_name,
         resources={f"entity:{connection.qualified_name}"},
     )
     glossary_policy = Persona.create_glossary_policy(
