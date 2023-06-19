@@ -1,3 +1,8 @@
+## 0.1.3 (June 19, 2023)
+
+* Adds new persona and purpose policy handling
+* Added trim_to_required method to assets
+
 ## 0.1.2 (June 14, 2023)
 
 * Set status to Active when Badge is created
