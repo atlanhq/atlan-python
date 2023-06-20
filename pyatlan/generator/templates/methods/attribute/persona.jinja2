@@ -1,0 +1,14 @@
+
+        @classmethod
+        # @validate_arguments()
+        def create(cls, name: str) -> {{ entity_def.name }}.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["name"], [name])
+            return Persona.Attributes(
+                qualified_name=name,
+                name=name,
+                display_name=name,
+                is_access_control_enabled=True,
+                description=""
+            )

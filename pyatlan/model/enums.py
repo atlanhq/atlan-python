@@ -399,6 +399,14 @@ class AuthPolicyType(str, Enum):
     ROWFILTER = "rowFilter"
 
 
+class DataMaskingType(str, Enum):
+    SHOW_FIRST_4 = "MASK_SHOW_FIRST_4"
+    SHOW_LAST_4 = "MASK_SHOW_LAST_4"
+    HASH = "MASK_HASH"
+    NULLIFY = "MASK_NULL"
+    REDACT = "MASK_REDACT"
+
+
 class AuthPolicyCategory(str, Enum):
     BOOTSTRAP = "bootstrap"
     PERSONA = "persona"
@@ -412,6 +420,69 @@ class AuthPolicyResourceCategory(str, Enum):
     CUSTOM = "CUSTOM"
     TYPEDEFS = "TYPEDEFS"
     ADMIN = "ADMIN"
+
+
+class AssetSidebarTab(str, Enum):
+    INCIDENTS = "Incidents"
+    VISUALS = "Visuals"
+    COLUMNS = "Columns"
+    RUNS = "Runs"
+    TASKS = "Tasks"
+    USAGE = "Usage"
+    OBJECTS = "Objects"
+    LINEAGE = "Lineage"
+    FIELDS = "Fields"
+    VISUALIZATIONS = "Visualizations"
+    RELATIONS = "Relations"
+    PROFILE = "Profile"
+    ASSETS = "Assets"
+    ACTIVITY = "Activity"
+    SCHEDULES = "Schedules"
+    RESOURCES = "Resources"
+    QUERIES = "Queries"
+    REQUESTS = "Requests"
+    PROPERTIES = "Properties"
+    MONTE_CARLO = "Monte Carlo"
+
+
+class DataAction(str, Enum):
+    SELECT = "select"
+
+
+class PurposeMetadataAction(str, Enum):
+    CREATE = "entity-create"
+    READ = "entity-read"
+    UPDATE = "entity-update"
+    DELETE = "entity-delete"
+    UPDATE_CUSTOM_METADATA = "entity-update-business-metadata"
+    ADD_ATLAN_TAG = "entity-add-classification"
+    READ_ATLAN_TAG = "entity-read-classification"
+    UPDATE_ATLAN_TAG = "entity-update-classification"
+    REMOVE_ATLAN_TAG = "entity-remove-classification"
+
+
+class PersonaMetadataAction(str, Enum):
+    CREATE = "persona-api-create"
+    READ = "persona-asset-read"
+    UPDATE = "persona-asset-update"
+    DELETE = "persona-api-delete"
+    UPDATE_CUSTOM_METADATA = "persona-business-update-metadata"
+    ADD_ATLAN_TAG = "persona-entity-add-classification"
+    UPDATE_ATLAN_TAG = "persona-entity-update-classification"
+    REMOVE_ATLAN_TAG = "persona-entity-remove-classification"
+    ATTACH_TERMS = "persona-add-terms"
+    DETACH_TERMS = "persona-remove-terms"
+
+
+class PersonaGlossaryAction(str, Enum):
+    CREATE = "persona-glossary-create"
+    READ = "persona-glossary-read"
+    UPDATE = "persona-glossary-update"
+    DELETE = "persona-glossary-delete"
+    UPDATE_CUSTOM_METADATA = "persona-glossary-update-custom-metadata"
+    ADD_ATLAN_TAG = "persona-glossary-add-classifications"
+    UPDATE_ATLAN_TAG = "persona-glossary-update-classifications"
+    REMOVE_ATLAN_TAG = "persona-glossary-delete-classifications"
 
 
 class AtlanIcon(str, Enum):

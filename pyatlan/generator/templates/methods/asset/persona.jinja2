@@ -1,0 +1,80 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str) -> {{ entity_def.name }}:
+        validate_required_fields(["name"], [name])
+        attributes = Persona.Attributes.create(name=name)
+        return cls(attributes=attributes)
+
+    @classmethod
+    # @validate_arguments()
+    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "metadata"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "resources"], [name, persona_id, policy_type, resources])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {DataAction.SELECT.value}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.connection_qualified_name = connection_qualified_name
+        policy.policy_resources = resources
+        policy.policy_resources.add("entity-type:*")
+        policy.policy_resource_category = AuthPolicyResourceCategory.ENTITY.value
+        policy.policy_service_name = "heka"
+        policy.policy_sub_category = "data"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    # @validate_arguments()
+    def create_glossary_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaGlossaryAction], resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
+        policy = AuthPolicy.create(name=name)
+        policy.policy_actions = {x.value for x in actions}
+        policy.policy_category = AuthPolicyCategory.PERSONA.value
+        policy.policy_type = policy_type
+        policy.policy_resources = resources
+        policy.policy_resource_category = AuthPolicyResourceCategory.CUSTOM.value
+        policy.policy_service_name = "atlas"
+        policy.policy_sub_category = "glossary"
+        persona = Persona()
+        persona.guid = persona_id
+        policy.access_control = persona
+        return policy
+
+    @classmethod
+    def create_for_modification(
+        cls: type[SelfAsset],
+        qualified_name: str = "",
+        name: str = "",
+        is_enabled: bool = True,
+    ) -> SelfAsset:
+        validate_required_fields(
+            ["name", "qualified_name", "is_enabled"],
+            [name, qualified_name, is_enabled],
+        )
+        return cls(
+            attributes=cls.Attributes(
+                qualified_name=qualified_name,
+                name=name,
+                is_access_control_enabled=is_enabled
+            )
+        )
