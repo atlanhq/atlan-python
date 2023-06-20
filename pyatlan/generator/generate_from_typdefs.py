@@ -108,7 +108,6 @@ class Generator:
                 "struct_defs": self.type_defs.struct_defs,
                 "entity_defs": entity_defs,
                 "existz": os.path.exists,
-                "getcwd": os.getcwd,
             }
         )
         with (PARENT.parent / "model" / "assets.py").open("w") as script:
