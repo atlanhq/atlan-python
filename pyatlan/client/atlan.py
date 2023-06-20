@@ -77,9 +77,9 @@ from pyatlan.model.core import (
     AssetRequest,
     AssetResponse,
     AtlanObject,
+    AtlanTagName,
     BulkRequest,
     Classification,
-    ClassificationName,
     Classifications,
 )
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataRequest
@@ -208,9 +208,9 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
 
 def _refresh_caches(typedef: TypeDef) -> None:
     if isinstance(typedef, ClassificationDef):
-        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        ClassificationCache.refresh_cache()
+        AtlanTagCache.refresh_cache()
     if isinstance(typedef, CustomMetadataDef):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
@@ -905,9 +905,9 @@ class AtlanClient(BaseSettings):
         elif typedef_type == EnumDef:
             internal_name = name
         elif typedef_type == ClassificationDef:
-            from pyatlan.cache.classification_cache import ClassificationCache
+            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-            internal_name = str(ClassificationCache.get_id_for_name(name))
+            internal_name = str(AtlanTagCache.get_id_for_name(name))
         else:
             raise InvalidRequestException(
                 message=f"Unable to purge type definitions of type: {typedef_type}",
@@ -932,9 +932,9 @@ class AtlanClient(BaseSettings):
 
             EnumCache.refresh_cache()
         elif typedef_type == ClassificationDef:
-            from pyatlan.cache.classification_cache import ClassificationCache
+            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-            ClassificationCache.refresh_cache()
+            AtlanTagCache.refresh_cache()
 
     @validate_arguments()
     def add_classifications(
@@ -949,7 +949,7 @@ class AtlanClient(BaseSettings):
         classifications = Classifications(
             __root__=[
                 Classification(
-                    type_name=ClassificationName(display_text=name),
+                    type_name=AtlanTagName(display_text=name),
                     propagate=propagate,
                     remove_propagations_on_entity_delete=remove_propagation_on_delete,
                     restrict_propagation_through_lineage=restrict_lineage_propagation,
@@ -970,9 +970,9 @@ class AtlanClient(BaseSettings):
     def remove_classification(
         self, asset_type: Type[A], qualified_name: str, classification_name: str
     ) -> None:
-        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        classification_id = ClassificationCache.get_id_for_name(classification_name)
+        classification_id = AtlanTagCache.get_id_for_name(classification_name)
         if not classification_id:
             raise ValueError(f"{classification_name} is not a valid Classification")
         query_params = {"attr:qualifiedName": qualified_name}

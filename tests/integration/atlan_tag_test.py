@@ -8,7 +8,7 @@ from typing import Callable, Generator
 import pytest
 from retry import retry
 
-from pyatlan.cache.classification_cache import ClassificationCache
+from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
@@ -25,7 +25,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope="module")
-def make_classification(
+def make_atlan_tag(
     client: AtlanClient,
 ) -> Generator[Callable[[str], ClassificationDef], None, None]:
     created_names = []
@@ -116,10 +116,10 @@ def test_classification_with_image(classification_with_image: ClassificationDef)
 
 def test_classification_cache(classification_with_image: ClassificationDef):
     cls_name = CLS_IMAGE
-    cls_id = ClassificationCache.get_id_for_name(cls_name)
+    cls_id = AtlanTagCache.get_id_for_name(cls_name)
     assert cls_id
     assert cls_id == classification_with_image.name
-    cls_name_found = ClassificationCache.get_name_for_id(cls_id)
+    cls_name_found = AtlanTagCache.get_name_for_id(cls_id)
     assert cls_name_found
     assert cls_name_found == cls_name
 
