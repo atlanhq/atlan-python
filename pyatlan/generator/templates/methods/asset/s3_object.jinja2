@@ -1,0 +1,22 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: Optional[str] = None,
+    ) -> S3Object:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Object.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name
+        )
+        return cls(attributes=attributes)

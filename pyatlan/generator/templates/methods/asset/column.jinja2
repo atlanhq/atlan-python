@@ -1,0 +1,14 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
+        return Column(
+            attributes=Column.Attributes.create(
+                name=name,
+                parent_qualified_name=parent_qualified_name,
+                parent_type=parent_type,
+                order=order,
+            )
+        )
