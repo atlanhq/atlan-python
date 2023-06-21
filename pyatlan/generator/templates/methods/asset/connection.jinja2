@@ -10,9 +10,7 @@
         admin_groups: Optional[list[str]] = None,
         admin_roles: Optional[list[str]] = None,
     )->{{ entity_def.name }}:
-        if not name:
-            raise ValueError("name cannot be blank")
-        validate_required_fields(["connector_type"], [connector_type])
+        validate_required_fields(["name, connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
