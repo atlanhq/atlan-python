@@ -466,7 +466,7 @@ class StructDef(TypeDef):
     )
 
 
-class ClassificationDef(TypeDef):
+class AtlanTagDef(TypeDef):
     attribute_defs: Optional[List[Dict[str, Any]]] = Field(description="Unused.")
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
     display_name: str = Field(
@@ -499,7 +499,7 @@ class ClassificationDef(TypeDef):
         color: AtlanClassificationColor,
         icon: AtlanIcon = AtlanIcon.ATLAN_TAG,
         image: Optional[AtlanImage] = None,
-    ) -> ClassificationDef:
+    ) -> AtlanTagDef:
         from pyatlan.model.assets import validate_required_fields
 
         validate_required_fields(
@@ -518,7 +518,7 @@ class ClassificationDef(TypeDef):
             cls_options["iconType"] = IconType.ICON.value
 
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
-        return ClassificationDef(
+        return AtlanTagDef(
             category=AtlanTypeCategory.CLASSIFICATION,
             name=name,
             display_name=name,
@@ -660,8 +660,10 @@ class TypeDefResponse(AtlanObject):
     struct_defs: List[StructDef] = Field(
         [], description="List of struct type definitions."
     )
-    classification_defs: List[ClassificationDef] = Field(
-        [], description="List of classification type definitions."
+    atlan_tag_defs: List[AtlanTagDef] = Field(
+        [],
+        description="List of classification type definitions.",
+        alias="classificationDefs",
     )
     entity_defs: List[EntityDef] = Field(
         [], description="List of entity type_ definitions."

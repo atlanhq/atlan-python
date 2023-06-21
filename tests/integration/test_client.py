@@ -246,7 +246,7 @@ def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
 
 
 def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
-    client.add_classifications(
+    client.add_atlan_tags(
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
     glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)

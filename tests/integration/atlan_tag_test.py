@@ -13,7 +13,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.enums import AtlanClassificationColor, AtlanIcon, IconType
-from pyatlan.model.typedef import ClassificationDef
+from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId
 
 MODULE_NAME = TestId.make_unique("CLS")
@@ -27,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 @pytest.fixture(scope="module")
 def make_atlan_tag(
     client: AtlanClient,
-) -> Generator[Callable[[str], ClassificationDef], None, None]:
+) -> Generator[Callable[[str], AtlanTagDef], None, None]:
     created_names = []
 
     @retry(
@@ -40,14 +40,14 @@ def make_atlan_tag(
         logger=LOGGER,
     )
     def _wait_for_successful_purge(name: str):
-        client.purge_typedef(name, typedef_type=ClassificationDef)
+        client.purge_typedef(name, typedef_type=AtlanTagDef)
 
-    def _make_classification(name: str) -> ClassificationDef:
-        classification_def = ClassificationDef.create(
+    def _make_classification(name: str) -> AtlanTagDef:
+        classification_def = AtlanTagDef.create(
             name=name, color=AtlanClassificationColor.GREEN
         )
         r = client.create_typedef(classification_def)
-        c = r.classification_defs[0]
+        c = r.atlan_tag_defs[0]
         created_names.append(c.display_name)
         return c
 
@@ -76,28 +76,28 @@ def image(client: AtlanClient) -> Generator[AtlanImage, None, None]:
 def classification_with_image(
     client: AtlanClient,
     image: AtlanImage,
-) -> Generator[ClassificationDef, None, None]:
-    cls = ClassificationDef.create(
+) -> Generator[AtlanTagDef, None, None]:
+    cls = AtlanTagDef.create(
         name=CLS_IMAGE, color=AtlanClassificationColor.YELLOW, image=image
     )
-    yield client.create_typedef(cls).classification_defs[0]
-    client.purge_typedef(CLS_IMAGE, typedef_type=ClassificationDef)
+    yield client.create_typedef(cls).atlan_tag_defs[0]
+    client.purge_typedef(CLS_IMAGE, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")
 def classification_with_icon(
     client: AtlanClient,
-) -> Generator[ClassificationDef, None, None]:
-    cls = ClassificationDef.create(
+) -> Generator[AtlanTagDef, None, None]:
+    cls = AtlanTagDef.create(
         name=CLS_ICON,
         color=AtlanClassificationColor.YELLOW,
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
-    yield client.create_typedef(cls).classification_defs[0]
-    client.purge_typedef(CLS_ICON, typedef_type=ClassificationDef)
+    yield client.create_typedef(cls).atlan_tag_defs[0]
+    client.purge_typedef(CLS_ICON, typedef_type=AtlanTagDef)
 
 
-def test_classification_with_image(classification_with_image: ClassificationDef):
+def test_classification_with_image(classification_with_image: AtlanTagDef):
     assert classification_with_image
     assert classification_with_image.guid
     assert classification_with_image.display_name == CLS_IMAGE
@@ -114,7 +114,7 @@ def test_classification_with_image(classification_with_image: ClassificationDef)
     assert classification_with_image.options.get("iconType") == IconType.IMAGE.value
 
 
-def test_classification_cache(classification_with_image: ClassificationDef):
+def test_classification_cache(classification_with_image: AtlanTagDef):
     cls_name = CLS_IMAGE
     cls_id = AtlanTagCache.get_id_for_name(cls_name)
     assert cls_id
@@ -124,7 +124,7 @@ def test_classification_cache(classification_with_image: ClassificationDef):
     assert cls_name_found == cls_name
 
 
-def test_classification_with_icon(classification_with_icon: ClassificationDef):
+def test_classification_with_icon(classification_with_icon: AtlanTagDef):
     assert classification_with_icon
     assert classification_with_icon.guid
     assert classification_with_icon.display_name == CLS_ICON

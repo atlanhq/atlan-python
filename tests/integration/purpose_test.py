@@ -15,7 +15,7 @@ from pyatlan.model.enums import (
     DataMaskingType,
     PurposeMetadataAction,
 )
-from pyatlan.model.typedef import ClassificationDef
+from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId, delete_asset
 
 MODULE_NAME = TestId.make_unique("Purpose")
@@ -24,18 +24,18 @@ MODULE_NAME = TestId.make_unique("Purpose")
 @pytest.fixture(scope="module")
 def atlan_tag(
     client: AtlanClient,
-) -> Generator[ClassificationDef, None, None]:
-    classification_def = ClassificationDef.create(
+) -> Generator[AtlanTagDef, None, None]:
+    classification_def = AtlanTagDef.create(
         name=MODULE_NAME, color=AtlanClassificationColor.GREEN
     )
-    yield client.create_typedef(classification_def).classification_defs[0]
-    client.purge_typedef(MODULE_NAME, typedef_type=ClassificationDef)
+    yield client.create_typedef(classification_def).atlan_tag_defs[0]
+    client.purge_typedef(MODULE_NAME, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")
 def purpose(
     client: AtlanClient,
-    atlan_tag: ClassificationDef,
+    atlan_tag: AtlanTagDef,
 ) -> Generator[Purpose, None, None]:
     to_create = Purpose.create(
         name=MODULE_NAME, classifications=[atlan_tag.display_name]

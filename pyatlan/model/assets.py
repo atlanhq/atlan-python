@@ -12,7 +12,7 @@ from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
+from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
     ADLSAccessTier,
@@ -224,7 +224,7 @@ class Referenceable(AtlanObject):
     version: Optional[int] = Field(
         None, description="Version of this object.\n", example=2
     )
-    classifications: Optional[list[Classification]] = Field(
+    classifications: Optional[list[AtlanTag]] = Field(
         None, description="classifications"
     )
     classification_names: Optional[list[str]] = Field(

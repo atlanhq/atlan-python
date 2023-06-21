@@ -3,11 +3,11 @@
 from typing import Optional
 
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.model.typedef import ClassificationDef
+from pyatlan.model.typedef import AtlanTagDef
 
 
 class AtlanTagCache:
-    cache_by_id: dict[str, ClassificationDef] = dict()
+    cache_by_id: dict[str, AtlanTagDef] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_name_to_id: dict[str, str] = dict()
     deleted_ids: set[str] = set()
@@ -25,7 +25,7 @@ class AtlanTagCache:
             cls.cache_by_id = {}
             cls.map_id_to_name = {}
             cls.map_name_to_id = {}
-            for classification in response.classification_defs:
+            for classification in response.atlan_tag_defs:
                 classification_id = classification.name
                 classification_name = classification.display_name
                 cls.cache_by_id[classification_id] = classification

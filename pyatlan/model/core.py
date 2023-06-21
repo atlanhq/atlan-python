@@ -116,7 +116,7 @@ class Announcement:
     announcement_type: AnnouncementType
 
 
-class Classification(AtlanObject):
+class AtlanTag(AtlanObject):
     type_name: Optional[AtlanTagName] = Field(
         None,
         description="Name of the type definition that defines this instance.\n",
@@ -144,8 +144,8 @@ class Classification(AtlanObject):
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
 
 
-class Classifications(AtlanObject):
-    __root__: list[Classification] = Field(
+class AtlanTags(AtlanObject):
+    __root__: list[AtlanTag] = Field(
         default_factory=list, description="classifications"
     )
 
