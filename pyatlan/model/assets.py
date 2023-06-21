@@ -3060,7 +3060,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
 
     @root_validator()
-    def update_qualified_name(cls, values):
+    def _set_qualified_name_fallback(cls, values):
         if (
             "attributes" in values
             and values["attributes"]
@@ -3588,7 +3588,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
     @root_validator()
-    def update_qualified_name(cls, values):
+    def _set_qualified_name_fallback(cls, values):
         if (
             "attributes" in values
             and values["attributes"]
@@ -4066,7 +4066,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
 
     @root_validator()
-    def update_qualified_name(cls, values):
+    def _set_qualified_name_fallback(cls, values):
         if (
             "attributes" in values
             and values["attributes"]
