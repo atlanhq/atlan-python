@@ -104,7 +104,11 @@ class Generator:
             if i >= len(entity_defs):
                 break
         content = self.template.render(
-            {"struct_defs": self.type_defs.struct_defs, "entity_defs": entity_defs}
+            {
+                "struct_defs": self.type_defs.struct_defs,
+                "entity_defs": entity_defs,
+                "existz": os.path.exists,
+            }
         )
         with (PARENT.parent / "model" / "assets.py").open("w") as script:
             script.write(content)

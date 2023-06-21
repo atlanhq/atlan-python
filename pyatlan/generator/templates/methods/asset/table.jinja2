@@ -1,0 +1,7 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str)->{{ entity_def.name }}:
+        validate_required_fields(["name", "schema_qualified_name"], [name, schema_qualified_name])
+        attributes = {{ entity_def.name }}.Attributes.create(name=name, schema_qualified_name=schema_qualified_name)
+        return cls(attributes=attributes)
