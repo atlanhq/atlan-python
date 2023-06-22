@@ -25,12 +25,12 @@ class AtlanTagCache:
             cls.cache_by_id = {}
             cls.map_id_to_name = {}
             cls.map_name_to_id = {}
-            for classification in response.atlan_tag_defs:
-                classification_id = classification.name
-                classification_name = classification.display_name
-                cls.cache_by_id[classification_id] = classification
-                cls.map_id_to_name[classification_id] = classification_name
-                cls.map_name_to_id[classification_name] = classification_id
+            for atlan_tag in response.atlan_tag_defs:
+                atlan_tag_id = atlan_tag.name
+                atlan_tag_name = atlan_tag.display_name
+                cls.cache_by_id[atlan_tag_id] = atlan_tag
+                cls.map_id_to_name[atlan_tag_id] = atlan_tag_name
+                cls.map_name_to_id[atlan_tag_name] = atlan_tag_id
 
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
