@@ -11,7 +11,7 @@ from tests.unit.model.constants import (
 @pytest.mark.parametrize(
     "name, connection_qualified_name, message",
     [
-        (None, "connection/name", "name cannot be blank"),
+        (None, "connection/name", "name is required"),
         (DATABASE_NAME, None, "connection_qualified_name is required"),
         (DATABASE_NAME, "abc", "Invalid connection_qualified_name"),
         (DATABASE_NAME, "default/snowflake", "Invalid connection_qualified_name"),
