@@ -11,7 +11,7 @@
     def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
         validate_required_fields(["name", "purpose_id", "policy_type", "actions"], [name, purpose_id, policy_type, actions])
         target_found = False
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -58,7 +58,7 @@
     # @validate_arguments()
     def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
         validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
