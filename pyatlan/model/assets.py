@@ -238,8 +238,8 @@ class Referenceable(AtlanObject):
     version: Optional[int] = Field(
         None, description="Version of this object.\n", example=2
     )
-    classifications: Optional[list[AtlanTag]] = Field(
-        None, description="classifications"
+    atlan_tags: Optional[list[AtlanTag]] = Field(
+        None, description="classifications", alias="classifications"
     )
     classification_names: Optional[list[str]] = Field(
         None, description="The names of the classifications that exist on the asset."
@@ -4948,11 +4948,9 @@ class Purpose(AccessControl):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: str, classifications: list[str]) -> Purpose:
-        validate_required_fields(["name", "classifications"], [name, classifications])
-        attributes = Purpose.Attributes.create(
-            name=name, classifications=classifications
-        )
+    def create(cls, *, name: str, atlan_tags: list[str]) -> Purpose:
+        validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
+        attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
 
     @classmethod
@@ -5129,17 +5127,15 @@ class Purpose(AccessControl):
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, classifications: list[str]) -> Purpose.Attributes:
-            validate_required_fields(
-                ["name", "classifications"], [name, classifications]
-            )
+        def create(cls, name: str, atlan_tags: list[str]) -> Purpose.Attributes:
+            validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(
                 qualified_name=name,
                 name=name,
                 display_name=name,
                 is_access_control_enabled=True,
                 description="",
-                purpose_classifications=classifications,
+                purpose_classifications=atlan_tags,
             )
 
     attributes: "Purpose.Attributes" = Field(

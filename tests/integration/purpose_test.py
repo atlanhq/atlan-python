@@ -28,7 +28,8 @@ def atlan_tag(
     classification_def = AtlanTagDef.create(
         name=MODULE_NAME, color=AtlanClassificationColor.GREEN
     )
-    yield client.create_typedef(classification_def).atlan_tag_defs[0]
+    typedef = client.create_typedef(classification_def)
+    yield typedef.atlan_tag_defs[0]
     client.purge_typedef(MODULE_NAME, typedef_type=AtlanTagDef)
 
 
@@ -37,9 +38,7 @@ def purpose(
     client: AtlanClient,
     atlan_tag: AtlanTagDef,
 ) -> Generator[Purpose, None, None]:
-    to_create = Purpose.create(
-        name=MODULE_NAME, classifications=[atlan_tag.display_name]
-    )
+    to_create = Purpose.create(name=MODULE_NAME, atlan_tags=[atlan_tag.display_name])
     response = client.upsert(to_create)
     p = response.assets_created(asset_type=Purpose)[0]
     yield p

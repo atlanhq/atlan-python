@@ -250,9 +250,9 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
     glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
-    assert glossary_term.classifications
-    assert len(glossary_term.classifications) == 1
-    classification = glossary_term.classifications[0]
+    assert glossary_term.atlan_tags
+    assert len(glossary_term.atlan_tags) == 1
+    classification = glossary_term.atlan_tags[0]
     assert str(classification.type_name) == CLASSIFICATION_NAME
 
 
@@ -262,7 +262,7 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
     glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
-    assert not glossary_term.classifications
+    assert not glossary_term.atlan_tags
 
 
 def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):

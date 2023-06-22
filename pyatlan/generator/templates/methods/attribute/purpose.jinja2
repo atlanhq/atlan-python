@@ -1,13 +1,13 @@
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, classifications: list[str]) -> {{ entity_def.name }}.Attributes:
-            validate_required_fields(["name", "classifications"], [name, classifications])
+        def create(cls, name: str, atlan_tags: list[str]) -> {{ entity_def.name }}.Attributes:
+            validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(
                 qualified_name=name,
                 name=name,
                 display_name=name,
                 is_access_control_enabled=True,
                 description="",
-                purpose_classifications=classifications
+                purpose_classifications=atlan_tags
             )

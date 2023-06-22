@@ -72,8 +72,8 @@
     version: Optional[int] = Field(
         None, description='Version of this object.\n', example=2
     )
-    classifications: Optional[list[AtlanTag]] = Field(
-        None, description="classifications"
+    atlan_tags: Optional[list[AtlanTag]] = Field(
+        None, description="classifications", alias="classifications"
     )
     classification_names: Optional[list[str]] = Field(
         None, description="The names of the classifications that exist on the asset."
