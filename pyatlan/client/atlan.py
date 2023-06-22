@@ -967,14 +967,14 @@ class AtlanClient(BaseSettings):
         )
 
     @validate_arguments()
-    def remove_classification(
-        self, asset_type: Type[A], qualified_name: str, classification_name: str
+    def remove_atlan_tag(
+        self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
     ) -> None:
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        classification_id = AtlanTagCache.get_id_for_name(classification_name)
+        classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
         if not classification_id:
-            raise ValueError(f"{classification_name} is not a valid Classification")
+            raise ValueError(f"{atlan_tag_name} is not a valid AtlanTag")
         query_params = {"attr:qualifiedName": qualified_name}
         self._call_api(
             DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(

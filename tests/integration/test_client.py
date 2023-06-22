@@ -258,7 +258,7 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 
 @pytest.mark.order(after="test_add_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
-    client.remove_classification(
+    client.remove_atlan_tag(
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
     glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
