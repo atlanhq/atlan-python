@@ -10,7 +10,7 @@ from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAM
 @pytest.mark.parametrize(
     "name, connector_type, admin_users, admin_groups, admin_roles, message",
     [
-        (None, AtlanConnectorType.SNOWFLAKE, [], [], [], "name cannot be blank"),
+        (None, AtlanConnectorType.SNOWFLAKE, [], [], [], "name is required"),
         (CONNECTION_NAME, None, [], [], [], "connector_type is required"),
         (
             CONNECTION_NAME,

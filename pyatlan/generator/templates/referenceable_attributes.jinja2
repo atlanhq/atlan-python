@@ -72,7 +72,7 @@
     version: Optional[int] = Field(
         None, description='Version of this object.\n', example=2
     )
-    classifications: Optional[list[Classification]] = Field(
+    classifications: Optional[list[AtlanTag]] = Field(
         None, description="classifications"
     )
     classification_names: Optional[list[str]] = Field(

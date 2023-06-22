@@ -2460,9 +2460,7 @@ class Connection(Asset, type_name="Connection"):
         admin_groups: Optional[list[str]] = None,
         admin_roles: Optional[list[str]] = None,
     ) -> Connection:
-        if not name:
-            raise ValueError("name cannot be blank")
-        validate_required_fields(["connector_type"], [connector_type])
+        validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
@@ -3735,9 +3733,9 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: str) -> AuthPolicy:
+    def __create(cls, *, name: str) -> AuthPolicy:
         validate_required_fields(["name"], [name])
-        attributes = AuthPolicy.Attributes.create(name=name)
+        attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore
         return cls(attributes=attributes)
 
     type_name: str = Field("AuthPolicy", allow_mutation=False)
@@ -4028,7 +4026,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str) -> AuthPolicy.Attributes:
+        def __create(cls, name: str) -> AuthPolicy.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
             validate_required_fields(["name"], [name])
@@ -4777,7 +4775,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "policy_type", "actions", "resources"],
             [name, persona_id, policy_type, actions, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -4806,7 +4804,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "policy_type", "resources"],
             [name, persona_id, policy_type, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -4836,7 +4834,7 @@ class Persona(AccessControl):
             ["name", "persona_id", "policy_type", "actions", "resources"],
             [name, persona_id, policy_type, actions, resources],
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -4977,7 +4975,7 @@ class Purpose(AccessControl):
             [name, purpose_id, policy_type, actions],
         )
         target_found = False
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -5035,7 +5033,7 @@ class Purpose(AccessControl):
         validate_required_fields(
             ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
         )
-        policy = AuthPolicy.create(name=name)
+        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -13757,10 +13755,8 @@ class Database(SQL):
     @classmethod
     # @validate_arguments()
     def create(cls, *, name: str, connection_qualified_name: str) -> Database:
-        if not name:
-            raise ValueError("name cannot be blank")
         validate_required_fields(
-            ["connection_qualified_name"], [connection_qualified_name]
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
         )
         fields = connection_qualified_name.split("/")
         if len(fields) != 3:
@@ -13826,10 +13822,8 @@ class Database(SQL):
         def create(
             cls, name: str, connection_qualified_name: str
         ) -> Database.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
             validate_required_fields(
-                ["connection_qualified_name"], [connection_qualified_name]
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
             )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
