@@ -4027,8 +4027,6 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         @classmethod
         # @validate_arguments()
         def __create(cls, name: str) -> AuthPolicy.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
             validate_required_fields(["name"], [name])
             return AuthPolicy.Attributes(
                 qualified_name=name, name=name, display_name=""
