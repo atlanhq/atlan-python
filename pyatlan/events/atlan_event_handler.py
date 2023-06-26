@@ -92,7 +92,10 @@ def has_lineage(asset: Asset) -> bool:
 
 
 class AtlanEventHandler:
-    def validate_prerequisites(self, client: AtlanClient, event: AtlanEvent) -> bool:
+    def __init__(self, client: AtlanClient):
+        self.client = client
+
+    def validate_prerequisites(self, event: AtlanEvent) -> bool:
         """
         Validate the prerequisites expected by the event handler. These should generally run before
         trying to do any other actions.
@@ -105,19 +108,15 @@ class AtlanEventHandler:
             and isinstance(event.payload.asset, Asset)
         )
 
-    def get_current_state(
-        self, client: AtlanClient, from_event: Asset
-    ) -> Optional[Asset]:
+    def get_current_state(self, from_event: Asset) -> Optional[Asset]:
         """
         Retrieve the current state of the asset, with minimal required info to handle any logic
         the event handler requires to make its decisions.
         This default implementation will only really check that the asset still exists in Atlan.
         """
-        return get_current_view_of_asset(client, from_event)
+        return get_current_view_of_asset(self.client, from_event)
 
-    def calculate_changes(
-        self, client: AtlanClient, current_view: Asset
-    ) -> List[Asset]:
+    def calculate_changes(self, current_view: Asset) -> List[Asset]:
         """
         Calculate any changes to apply to assets, and return a collection of the minimally-updated form of the assets
         with those changes applied (in-memory). Typically, you will want to call trim_to_required()
@@ -143,10 +142,10 @@ class AtlanEventHandler:
         """
         return current == modified
 
-    def upsert_changes(self, client: AtlanClient, changed_assets: List[Asset]):
+    def upsert_changes(self, changed_assets: List[Asset]):
         """
         Actually send the changed assets to Atlan so that they are persisted.
         """
         # TODO: Migrate to an AssetBatch once implemented
         for one in changed_assets:
-            client.upsert_merging_cm(one)
+            self.client.upsert_merging_cm(one)

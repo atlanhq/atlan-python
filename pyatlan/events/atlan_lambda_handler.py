@@ -3,7 +3,6 @@
 import json
 import os
 
-from pyatlan.client.atlan import AtlanClient
 from pyatlan.events.atlan_event_handler import (
     AtlanEventHandler,
     is_validation_request,
@@ -15,23 +14,7 @@ from pyatlan.model.events import AtlanEvent, AtlanEventPayload
 SIGNING_SECRET = str(os.environ.get("SIGNING_SECRET"))
 
 
-def process_event(
-    handler: AtlanEventHandler, client: AtlanClient, event: AtlanEvent, context
-):
-    if handler.validate_prerequisites(client, event):
-        if isinstance(event.payload, AtlanEventPayload) and isinstance(
-            event.payload.asset, Asset
-        ):
-            current = handler.get_current_state(client, event.payload.asset)
-            if current is not None:
-                updated = handler.calculate_changes(client, current)
-                if updated is not None:
-                    handler.upsert_changes(client, updated)
-
-
-def abstract_lambda_handler(
-    handler: AtlanEventHandler, client: AtlanClient, event, context
-):
+def process_event(handler: AtlanEventHandler, event, context):
     body = event.get("body")
     if is_validation_request(body):
         print("Matches a validation request - doing nothing and succeeding.")
@@ -39,7 +22,16 @@ def abstract_lambda_handler(
     else:
         if valid_signature(SIGNING_SECRET, event.get("headers")):
             atlan_event = json.loads(body)
-            process_event(handler, client, AtlanEvent(**atlan_event), context)
+            atlan_event = AtlanEvent(**atlan_event)
+            if handler.validate_prerequisites(atlan_event):
+                if isinstance(atlan_event.payload, AtlanEventPayload) and isinstance(
+                    atlan_event.payload.asset, Asset
+                ):
+                    current = handler.get_current_state(atlan_event.payload.asset)
+                    if current is not None:
+                        updated = handler.calculate_changes(current)
+                        if updated is not None:
+                            handler.upsert_changes(updated)
         else:
             raise IOError(
                 "Invalid signing secret received - will not process this request."
