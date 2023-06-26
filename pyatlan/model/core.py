@@ -21,6 +21,8 @@ CAMEL_CASE_OVERRIDES = {
     "sourceUrl": "sourceURL",
     "sourceEmbedUrl": "sourceEmbedURL",
     "sql_dbt_sources": "sqlDBTSources",
+    "purpose_atlan_tags": "purposeClassifications",
+    "mapped_atlan_tag_name": "mappedClassificationName",
 }
 
 
@@ -40,6 +42,10 @@ def to_camel_case(value: str) -> str:
 def to_snake_case(value):
     if value.startswith("__"):
         value = value[2:]
+    if value == "purposeClassifications":
+        return "purpose_atlan_tags"
+    elif value == "mappedClassificationName":
+        return "mapped_atlan_tag_name"
     res = [value[0].lower()]
     for c in (
         value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]

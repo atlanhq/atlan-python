@@ -5093,23 +5093,21 @@ class Purpose(AccessControl):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "purpose_classifications",
+        "purpose_atlan_tags",
     ]
 
     @property
-    def purpose_classifications(self) -> Optional[set[str]]:
-        return (
-            None if self.attributes is None else self.attributes.purpose_classifications
-        )
+    def purpose_atlan_tags(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.purpose_atlan_tags
 
-    @purpose_classifications.setter
-    def purpose_classifications(self, purpose_classifications: Optional[set[str]]):
+    @purpose_atlan_tags.setter
+    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.purpose_classifications = purpose_classifications
+        self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
-        purpose_classifications: Optional[set[str]] = Field(
+        purpose_atlan_tags: Optional[set[str]] = Field(
             None, description="", alias="purposeClassifications"
         )
 
@@ -5123,7 +5121,7 @@ class Purpose(AccessControl):
                 display_name=name,
                 is_access_control_enabled=True,
                 description="",
-                purpose_classifications=atlan_tags,
+                purpose_atlan_tags=atlan_tags,
             )
 
     attributes: "Purpose.Attributes" = Field(
@@ -5873,7 +5871,7 @@ class Tag(Catalog):
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
-        "mapped_classification_name",
+        "mapped_atlan_tag_name",
     ]
 
     @property
@@ -5907,18 +5905,16 @@ class Tag(Catalog):
         self.attributes.tag_allowed_values = tag_allowed_values
 
     @property
-    def mapped_classification_name(self) -> Optional[str]:
+    def mapped_atlan_tag_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.mapped_classification_name
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
         )
 
-    @mapped_classification_name.setter
-    def mapped_classification_name(self, mapped_classification_name: Optional[str]):
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mapped_classification_name = mapped_classification_name
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     class Attributes(Catalog.Attributes):
         tag_id: Optional[str] = Field(None, description="", alias="tagId")
@@ -5928,7 +5924,7 @@ class Tag(Catalog):
         tag_allowed_values: Optional[set[str]] = Field(
             None, description="", alias="tagAllowedValues"
         )
-        mapped_classification_name: Optional[str] = Field(
+        mapped_atlan_tag_name: Optional[str] = Field(
             None, description="", alias="mappedClassificationName"
         )
 
@@ -11084,7 +11080,7 @@ class SnowflakeTag(Tag):
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
-        "mapped_classification_name",
+        "mapped_atlan_tag_name",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -11137,18 +11133,16 @@ class SnowflakeTag(Tag):
         self.attributes.tag_allowed_values = tag_allowed_values
 
     @property
-    def mapped_classification_name(self) -> Optional[str]:
+    def mapped_atlan_tag_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.mapped_classification_name
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
         )
 
-    @mapped_classification_name.setter
-    def mapped_classification_name(self, mapped_classification_name: Optional[str]):
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mapped_classification_name = mapped_classification_name
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     @property
     def query_count(self) -> Optional[int]:
@@ -11354,7 +11348,7 @@ class SnowflakeTag(Tag):
         tag_allowed_values: Optional[set[str]] = Field(
             None, description="", alias="tagAllowedValues"
         )
-        mapped_classification_name: Optional[str] = Field(
+        mapped_atlan_tag_name: Optional[str] = Field(
             None, description="", alias="mappedClassificationName"
         )
         query_count: Optional[int] = Field(None, description="", alias="queryCount")
