@@ -10599,6 +10599,19 @@ class Readme(Resource):
 class File(Resource):
     """Description"""
 
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, connection_qualified_name: str, file_type: FileType
+    ) -> File:
+        return File(
+            attributes=File.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                file_type=file_type,
+            )
+        )
+
     type_name: str = Field("File", allow_mutation=False)
 
     @validator("type_name")
@@ -10654,6 +10667,22 @@ class File(Resource):
         file_assets: Optional[Asset] = Field(
             None, description="", alias="fileAssets"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str, file_type: FileType
+        ) -> File.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "file_type"],
+                [name, connection_qualified_name, file_type],
+            )
+            return File.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                file_type=file_type,
+            )
 
     attributes: "File.Attributes" = Field(
         default_factory=lambda: File.Attributes(),
