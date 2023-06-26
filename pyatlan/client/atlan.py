@@ -77,10 +77,10 @@ from pyatlan.model.core import (
     AssetRequest,
     AssetResponse,
     AtlanObject,
+    AtlanTag,
+    AtlanTagName,
+    AtlanTags,
     BulkRequest,
-    Classification,
-    ClassificationName,
-    Classifications,
 )
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataRequest
 from pyatlan.model.enums import (
@@ -108,7 +108,7 @@ from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
 from pyatlan.model.search import DSL, IndexSearchRequest, Term
 from pyatlan.model.typedef import (
-    ClassificationDef,
+    AtlanTagDef,
     CustomMetadataDef,
     EnumDef,
     TypeDef,
@@ -167,10 +167,10 @@ def get_session():
 
 
 def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
-    if isinstance(typedef, ClassificationDef):
+    if isinstance(typedef, AtlanTagDef):
         # Set up the request payload...
         payload = TypeDefResponse(
-            classification_defs=[typedef],
+            atlan_tag_defs=[typedef],
             enum_defs=[],
             struct_defs=[],
             entity_defs=[],
@@ -180,7 +180,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
     elif isinstance(typedef, CustomMetadataDef):
         # Set up the request payload...
         payload = TypeDefResponse(
-            classification_defs=[],
+            atlan_tag_defs=[],
             enum_defs=[],
             struct_defs=[],
             entity_defs=[],
@@ -190,7 +190,7 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
     elif isinstance(typedef, EnumDef):
         # Set up the request payload...
         payload = TypeDefResponse(
-            classification_defs=[],
+            atlan_tag_defs=[],
             enum_defs=[typedef],
             struct_defs=[],
             entity_defs=[],
@@ -207,10 +207,10 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
 
 
 def _refresh_caches(typedef: TypeDef) -> None:
-    if isinstance(typedef, ClassificationDef):
-        from pyatlan.cache.classification_cache import ClassificationCache
+    if isinstance(typedef, AtlanTagDef):
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        ClassificationCache.refresh_cache()
+        AtlanTagCache.refresh_cache()
     if isinstance(typedef, CustomMetadataDef):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
@@ -774,12 +774,12 @@ class AtlanClient(BaseSettings):
     def upsert(
         self,
         entity: Union[Asset, list[Asset]],
-        replace_classifications: bool = False,
+        replace_atlan_tags: bool = False,
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
         query_params = {
-            "replaceClassifications": replace_classifications,
+            "replaceClassifications": replace_atlan_tags,
             "replaceBusinessAttributes": replace_custom_metadata,
             "overwriteBusinessAttributes": overwrite_custom_metadata,
         }
@@ -795,10 +795,10 @@ class AtlanClient(BaseSettings):
         return AssetMutationResponse(**raw_json)
 
     def upsert_merging_cm(
-        self, entity: Union[Asset, list[Asset]], replace_classifications: bool = False
+        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         query_params = {
-            "replaceClassifications": replace_classifications,
+            "replaceClassifications": replace_atlan_tags,
             "replaceBusinessAttributes": True,
             "overwriteBusinessAttributes": False,
         }
@@ -814,10 +814,10 @@ class AtlanClient(BaseSettings):
         return AssetMutationResponse(**raw_json)
 
     def upsert_replacing_cm(
-        self, entity: Union[Asset, list[Asset]], replace_classifications: bool = False
+        self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
         query_params = {
-            "replaceClassifications": replace_classifications,
+            "replaceClassifications": replace_atlan_tagss,
             "replaceBusinessAttributes": True,
             "overwriteBusinessAttributes": True,
         }
@@ -904,10 +904,10 @@ class AtlanClient(BaseSettings):
             internal_name = CustomMetadataCache.get_id_for_name(name)
         elif typedef_type == EnumDef:
             internal_name = name
-        elif typedef_type == ClassificationDef:
-            from pyatlan.cache.classification_cache import ClassificationCache
+        elif typedef_type == AtlanTagDef:
+            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-            internal_name = str(ClassificationCache.get_id_for_name(name))
+            internal_name = str(AtlanTagCache.get_id_for_name(name))
         else:
             raise InvalidRequestException(
                 message=f"Unable to purge type definitions of type: {typedef_type}",
@@ -931,30 +931,30 @@ class AtlanClient(BaseSettings):
             from pyatlan.cache.enum_cache import EnumCache
 
             EnumCache.refresh_cache()
-        elif typedef_type == ClassificationDef:
-            from pyatlan.cache.classification_cache import ClassificationCache
+        elif typedef_type == AtlanTagDef:
+            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-            ClassificationCache.refresh_cache()
+            AtlanTagCache.refresh_cache()
 
     @validate_arguments()
-    def add_classifications(
+    def add_atlan_tags(
         self,
         asset_type: Type[A],
         qualified_name: str,
-        classification_names: list[str],
+        atlan_tag_names: list[str],
         propagate: bool = True,
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
     ) -> None:
-        classifications = Classifications(
+        atlan_tags = AtlanTags(
             __root__=[
-                Classification(
-                    type_name=ClassificationName(display_text=name),
+                AtlanTag(
+                    type_name=AtlanTagName(display_text=name),
                     propagate=propagate,
                     remove_propagations_on_entity_delete=remove_propagation_on_delete,
                     restrict_propagation_through_lineage=restrict_lineage_propagation,
                 )
-                for name in classification_names
+                for name in atlan_tag_names
             ]
         )
         query_params = {"attr:qualifiedName": qualified_name}
@@ -963,18 +963,18 @@ class AtlanClient(BaseSettings):
                 asset_type.__name__, "classifications"
             ),
             query_params,
-            classifications,
+            atlan_tags,
         )
 
     @validate_arguments()
-    def remove_classification(
-        self, asset_type: Type[A], qualified_name: str, classification_name: str
+    def remove_atlan_tag(
+        self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
     ) -> None:
-        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        classification_id = ClassificationCache.get_id_for_name(classification_name)
+        classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
         if not classification_id:
-            raise ValueError(f"{classification_name} is not a valid Classification")
+            raise ValueError(f"{atlan_tag_name} is not a valid AtlanTag")
         query_params = {"attr:qualifiedName": qualified_name}
         self._call_api(
             DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(

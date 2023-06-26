@@ -21,6 +21,8 @@ CAMEL_CASE_OVERRIDES = {
     "sourceUrl": "sourceURL",
     "sourceEmbedUrl": "sourceEmbedURL",
     "sql_dbt_sources": "sqlDBTSources",
+    "purpose_atlan_tags": "purposeClassifications",
+    "mapped_atlan_tag_name": "mappedClassificationName",
 }
 
 
@@ -40,6 +42,10 @@ def to_camel_case(value: str) -> str:
 def to_snake_case(value):
     if value.startswith("__"):
         value = value[2:]
+    if value == "purposeClassifications":
+        return "purpose_atlan_tags"
+    elif value == "mappedClassificationName":
+        return "mapped_atlan_tag_name"
     res = [value[0].lower()]
     for c in (
         value.replace("URL", "Url").replace("DBT", "Dbt").replace("GDPR", "Gdpr")[1:]
@@ -52,11 +58,11 @@ def to_snake_case(value):
     return "".join(res).replace(" _", "_").replace(" ", "_")
 
 
-class ClassificationName:
+class AtlanTagName:
     def __init__(self, display_text: str):
-        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        if not ClassificationCache.get_id_for_name(display_text):
+        if not AtlanTagCache.get_id_for_name(display_text):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
 
@@ -68,33 +74,33 @@ class ClassificationName:
         return self._display_text
 
     def __repr__(self):
-        return f"ClassificationName({self._display_text.__repr__()})"
+        return f"AtlanTagName({self._display_text.__repr__()})"
 
     def __hash__(self):
         return self._display_text.__hash__()
 
     def __eq__(self, other):
         return (
-            isinstance(other, ClassificationName)
+            isinstance(other, AtlanTagName)
             and self._display_text == other._display_text
         )
 
     @classmethod
     def _convert_to_display_text(cls, data):
-        from pyatlan.cache.classification_cache import ClassificationCache
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        if isinstance(data, ClassificationName):
+        if isinstance(data, AtlanTagName):
             return data
-        if display_text := ClassificationCache.get_name_for_id(data):
-            return ClassificationName(display_text)
+        if display_text := AtlanTagCache.get_name_for_id(data):
+            return AtlanTagName(display_text)
         else:
-            raise ValueError(f"{data} is not a valid Classification")
+            raise ValueError(f"{data} is not a valid AtlanTag")
 
     @staticmethod
-    def json_encode_classification(classification_name: "ClassificationName"):
-        from pyatlan.cache.classification_cache import ClassificationCache
+    def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
-        return ClassificationCache.get_id_for_name(classification_name._display_text)
+        return AtlanTagCache.get_id_for_name(atlan_tag_name._display_text)
 
 
 class AtlanObject(BaseModel):
@@ -104,7 +110,7 @@ class AtlanObject(BaseModel):
         extra = Extra.ignore
         json_encoders = {
             datetime: lambda v: int(v.timestamp() * 1000),
-            "ClassificationName": ClassificationName.json_encode_classification,
+            "AtlanTagName": AtlanTagName.json_encode_atlan_tag,
         }
         validate_assignment = True
 
@@ -116,8 +122,8 @@ class Announcement:
     announcement_type: AnnouncementType
 
 
-class Classification(AtlanObject):
-    type_name: Optional[ClassificationName] = Field(
+class AtlanTag(AtlanObject):
+    type_name: Optional[AtlanTagName] = Field(
         None,
         description="Name of the type definition that defines this instance.\n",
         alias="typeName",
@@ -144,8 +150,8 @@ class Classification(AtlanObject):
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
 
 
-class Classifications(AtlanObject):
-    __root__: list[Classification] = Field(
+class AtlanTags(AtlanObject):
+    __root__: list[AtlanTag] = Field(
         default_factory=list, description="classifications"
     )
 

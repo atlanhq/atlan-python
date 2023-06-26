@@ -8,7 +8,7 @@ import pytest
 from pyatlan.model.core import to_camel_case, to_snake_case
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import (
-    ClassificationDef,
+    AtlanTagDef,
     CustomMetadataDef,
     EntityDef,
     EnumDef,
@@ -211,7 +211,7 @@ def test_create_struct_def():
 
 def test_classification_def(type_defs):
     for classification_def_json in type_defs["classificationDefs"]:
-        classification_def = ClassificationDef(**classification_def_json)
+        classification_def = AtlanTagDef(**classification_def_json)
         assert classification_def.category == AtlanTypeCategory.CLASSIFICATION
         check_type_def_properties(classification_def, classification_def_json)
         check_has_attributes(classification_def, classification_def_json)

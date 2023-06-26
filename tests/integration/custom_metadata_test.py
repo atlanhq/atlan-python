@@ -754,7 +754,7 @@ def test_update_replacing_cm(
         qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
     )
     to_update.set_custom_metadata(custom_metadata=raci)
-    response = client.upsert_replacing_cm(to_update, replace_classifications=False)
+    response = client.upsert_replacing_cm(to_update, replace_atlan_tagss=False)
     assert response
     assert len(response.assets_deleted(asset_type=AtlasGlossaryTerm)) == 0
     assert len(response.assets_created(asset_type=AtlasGlossaryTerm)) == 0

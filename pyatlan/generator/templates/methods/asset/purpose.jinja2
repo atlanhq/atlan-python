@@ -1,9 +1,9 @@
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: str, classifications: list[str]) -> {{ entity_def.name }}:
-        validate_required_fields(["name", "classifications"], [name, classifications])
-        attributes = Purpose.Attributes.create(name=name, classifications=classifications)
+    def create(cls, *, name: str, atlan_tags: list[str]) -> {{ entity_def.name }}:
+        validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
+        attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
 
     @classmethod
