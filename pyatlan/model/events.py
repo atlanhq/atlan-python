@@ -5,7 +5,7 @@ from typing import Any, Optional
 from pydantic import Field
 
 from pyatlan.model.assets import Asset
-from pyatlan.model.core import AtlanObject, Classification
+from pyatlan.model.core import AtlanObject, AtlanTag
 
 
 class AtlanEventPayload(AtlanObject):
@@ -69,7 +69,7 @@ class AtlanTagAddPayload(
     AtlanEventPayload,
     operation_type="CLASSIFICATION_ADD",
 ):
-    mutated_details: Optional[Classification] = Field(
+    mutated_details: Optional[AtlanTag] = Field(
         description="Atlan tags that were added to the asset by this event."
     )
 
@@ -78,7 +78,7 @@ class AtlanTagDeletePayload(
     AtlanEventPayload,
     operation_type="CLASSIFICATION_DELETE",
 ):
-    mutated_details: Optional[Classification] = Field(
+    mutated_details: Optional[AtlanTag] = Field(
         description="Atlan tags that were removed from the asset by this event."
     )
 
