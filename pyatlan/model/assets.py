@@ -13,7 +13,7 @@ from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, Classification, Meaning
+from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
     ADLSAccessTier,
@@ -238,8 +238,8 @@ class Referenceable(AtlanObject):
     version: Optional[int] = Field(
         None, description="Version of this object.\n", example=2
     )
-    classifications: Optional[list[Classification]] = Field(
-        None, description="classifications"
+    atlan_tags: Optional[list[AtlanTag]] = Field(
+        None, description="Atlan tags", alias="classifications"
     )
     classification_names: Optional[list[str]] = Field(
         None, description="The names of the classifications that exist on the asset."
@@ -2527,7 +2527,6 @@ class Connection(Asset, type_name="Connection"):
         "policy_strategy",
         "query_username_strategy",
         "row_limit",
-        "query_timeout",
         "default_credential_guid",
         "connector_icon",
         "connector_image",
@@ -2678,16 +2677,6 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.row_limit = row_limit
 
     @property
-    def query_timeout(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_timeout
-
-    @query_timeout.setter
-    def query_timeout(self, query_timeout: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_timeout = query_timeout
-
-    @property
     def default_credential_guid(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.default_credential_guid
@@ -2833,7 +2822,6 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="queryUsernameStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
-        query_timeout: Optional[int] = Field(None, description="", alias="queryTimeout")
         default_credential_guid: Optional[str] = Field(
             None, description="", alias="defaultCredentialGuid"
         )
@@ -4948,11 +4936,9 @@ class Purpose(AccessControl):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: str, classifications: list[str]) -> Purpose:
-        validate_required_fields(["name", "classifications"], [name, classifications])
-        attributes = Purpose.Attributes.create(
-            name=name, classifications=classifications
-        )
+    def create(cls, *, name: str, atlan_tags: list[str]) -> Purpose:
+        validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
+        attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
         return cls(attributes=attributes)
 
     @classmethod
@@ -5107,39 +5093,35 @@ class Purpose(AccessControl):
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "purpose_classifications",
+        "purpose_atlan_tags",
     ]
 
     @property
-    def purpose_classifications(self) -> Optional[set[str]]:
-        return (
-            None if self.attributes is None else self.attributes.purpose_classifications
-        )
+    def purpose_atlan_tags(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.purpose_atlan_tags
 
-    @purpose_classifications.setter
-    def purpose_classifications(self, purpose_classifications: Optional[set[str]]):
+    @purpose_atlan_tags.setter
+    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.purpose_classifications = purpose_classifications
+        self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
-        purpose_classifications: Optional[set[str]] = Field(
+        purpose_atlan_tags: Optional[set[str]] = Field(
             None, description="", alias="purposeClassifications"
         )
 
         @classmethod
         # @validate_arguments()
-        def create(cls, name: str, classifications: list[str]) -> Purpose.Attributes:
-            validate_required_fields(
-                ["name", "classifications"], [name, classifications]
-            )
+        def create(cls, name: str, atlan_tags: list[str]) -> Purpose.Attributes:
+            validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(
                 qualified_name=name,
                 name=name,
                 display_name=name,
                 is_access_control_enabled=True,
                 description="",
-                purpose_classifications=classifications,
+                purpose_atlan_tags=atlan_tags,
             )
 
     attributes: "Purpose.Attributes" = Field(
@@ -5889,7 +5871,7 @@ class Tag(Catalog):
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
-        "mapped_classification_name",
+        "mapped_atlan_tag_name",
     ]
 
     @property
@@ -5923,18 +5905,16 @@ class Tag(Catalog):
         self.attributes.tag_allowed_values = tag_allowed_values
 
     @property
-    def mapped_classification_name(self) -> Optional[str]:
+    def mapped_atlan_tag_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.mapped_classification_name
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
         )
 
-    @mapped_classification_name.setter
-    def mapped_classification_name(self, mapped_classification_name: Optional[str]):
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mapped_classification_name = mapped_classification_name
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     class Attributes(Catalog.Attributes):
         tag_id: Optional[str] = Field(None, description="", alias="tagId")
@@ -5944,7 +5924,7 @@ class Tag(Catalog):
         tag_allowed_values: Optional[set[str]] = Field(
             None, description="", alias="tagAllowedValues"
         )
-        mapped_classification_name: Optional[str] = Field(
+        mapped_atlan_tag_name: Optional[str] = Field(
             None, description="", alias="mappedClassificationName"
         )
 
@@ -10619,6 +10599,19 @@ class Readme(Resource):
 class File(Resource):
     """Description"""
 
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, connection_qualified_name: str, file_type: FileType
+    ) -> File:
+        return File(
+            attributes=File.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                file_type=file_type,
+            )
+        )
+
     type_name: str = Field("File", allow_mutation=False)
 
     @validator("type_name")
@@ -10674,6 +10667,22 @@ class File(Resource):
         file_assets: Optional[Asset] = Field(
             None, description="", alias="fileAssets"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str, file_type: FileType
+        ) -> File.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "file_type"],
+                [name, connection_qualified_name, file_type],
+            )
+            return File.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                file_type=file_type,
+            )
 
     attributes: "File.Attributes" = Field(
         default_factory=lambda: File.Attributes(),
@@ -11100,7 +11109,7 @@ class SnowflakeTag(Tag):
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
-        "mapped_classification_name",
+        "mapped_atlan_tag_name",
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -11153,18 +11162,16 @@ class SnowflakeTag(Tag):
         self.attributes.tag_allowed_values = tag_allowed_values
 
     @property
-    def mapped_classification_name(self) -> Optional[str]:
+    def mapped_atlan_tag_name(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.mapped_classification_name
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
         )
 
-    @mapped_classification_name.setter
-    def mapped_classification_name(self, mapped_classification_name: Optional[str]):
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mapped_classification_name = mapped_classification_name
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     @property
     def query_count(self) -> Optional[int]:
@@ -11370,7 +11377,7 @@ class SnowflakeTag(Tag):
         tag_allowed_values: Optional[set[str]] = Field(
             None, description="", alias="tagAllowedValues"
         )
-        mapped_classification_name: Optional[str] = Field(
+        mapped_atlan_tag_name: Optional[str] = Field(
             None, description="", alias="mappedClassificationName"
         )
         query_count: Optional[int] = Field(None, description="", alias="queryCount")
@@ -12307,9 +12314,7 @@ class Column(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "data_type",
         "sub_data_type",
-        "raw_data_type_definition",
         "order",
-        "nested_column_count",
         "is_partition",
         "partition_order",
         "is_clustered",
@@ -12327,8 +12332,6 @@ class Column(SQL):
         "numeric_scale",
         "max_length",
         "validations",
-        "parent_column_qualified_name",
-        "parent_column_name",
         "column_distinct_values_count",
         "column_distinct_values_count_long",
         "column_histogram",
@@ -12354,15 +12357,12 @@ class Column(SQL):
         "column_uniqueness_percentage",
         "column_variance",
         "column_top_values",
-        "column_depth_level",
         "view",
-        "nested_columns",
         "data_quality_metric_dimensions",
         "dbt_model_columns",
         "table",
         "column_dbt_model_columns",
         "materialised_view",
-        "parent_column",
         "queries",
         "metric_timestamps",
         "foreign_key_to",
@@ -12392,20 +12392,6 @@ class Column(SQL):
         self.attributes.sub_data_type = sub_data_type
 
     @property
-    def raw_data_type_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.raw_data_type_definition
-        )
-
-    @raw_data_type_definition.setter
-    def raw_data_type_definition(self, raw_data_type_definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.raw_data_type_definition = raw_data_type_definition
-
-    @property
     def order(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.order
 
@@ -12414,16 +12400,6 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.order = order
-
-    @property
-    def nested_column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.nested_column_count
-
-    @nested_column_count.setter
-    def nested_column_count(self, nested_column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.nested_column_count = nested_column_count
 
     @property
     def is_partition(self) -> Optional[bool]:
@@ -12594,30 +12570,6 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.validations = validations
-
-    @property
-    def parent_column_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.parent_column_qualified_name
-        )
-
-    @parent_column_qualified_name.setter
-    def parent_column_qualified_name(self, parent_column_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_column_qualified_name = parent_column_qualified_name
-
-    @property
-    def parent_column_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.parent_column_name
-
-    @parent_column_name.setter
-    def parent_column_name(self, parent_column_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_column_name = parent_column_name
 
     @property
     def column_distinct_values_count(self) -> Optional[int]:
@@ -12950,16 +12902,6 @@ class Column(SQL):
         self.attributes.column_top_values = column_top_values
 
     @property
-    def column_depth_level(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_depth_level
-
-    @column_depth_level.setter
-    def column_depth_level(self, column_depth_level: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_depth_level = column_depth_level
-
-    @property
     def view(self) -> Optional[View]:
         return None if self.attributes is None else self.attributes.view
 
@@ -12968,16 +12910,6 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.view = view
-
-    @property
-    def nested_columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.nested_columns
-
-    @nested_columns.setter
-    def nested_columns(self, nested_columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.nested_columns = nested_columns
 
     @property
     def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
@@ -13042,16 +12974,6 @@ class Column(SQL):
         self.attributes.materialised_view = materialised_view
 
     @property
-    def parent_column(self) -> Optional[Column]:
-        return None if self.attributes is None else self.attributes.parent_column
-
-    @parent_column.setter
-    def parent_column(self, parent_column: Optional[Column]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_column = parent_column
-
-    @property
     def queries(self) -> Optional[list[Query]]:
         return None if self.attributes is None else self.attributes.queries
 
@@ -13114,13 +13036,7 @@ class Column(SQL):
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
         sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
-        raw_data_type_definition: Optional[str] = Field(
-            None, description="", alias="rawDataTypeDefinition"
-        )
         order: Optional[int] = Field(None, description="", alias="order")
-        nested_column_count: Optional[int] = Field(
-            None, description="", alias="nestedColumnCount"
-        )
         is_partition: Optional[bool] = Field(None, description="", alias="isPartition")
         partition_order: Optional[int] = Field(
             None, description="", alias="partitionOrder"
@@ -13143,12 +13059,6 @@ class Column(SQL):
         max_length: Optional[int] = Field(None, description="", alias="maxLength")
         validations: Optional[dict[str, str]] = Field(
             None, description="", alias="validations"
-        )
-        parent_column_qualified_name: Optional[str] = Field(
-            None, description="", alias="parentColumnQualifiedName"
-        )
-        parent_column_name: Optional[str] = Field(
-            None, description="", alias="parentColumnName"
         )
         column_distinct_values_count: Optional[int] = Field(
             None, description="", alias="columnDistinctValuesCount"
@@ -13217,13 +13127,7 @@ class Column(SQL):
         column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
             None, description="", alias="columnTopValues"
         )
-        column_depth_level: Optional[int] = Field(
-            None, description="", alias="columnDepthLevel"
-        )
         view: Optional[View] = Field(None, description="", alias="view")  # relationship
-        nested_columns: Optional[list[Column]] = Field(
-            None, description="", alias="nestedColumns"
-        )  # relationship
         data_quality_metric_dimensions: Optional[list[Metric]] = Field(
             None, description="", alias="dataQualityMetricDimensions"
         )  # relationship
@@ -13238,9 +13142,6 @@ class Column(SQL):
         )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
             None, description="", alias="materialisedView"
-        )  # relationship
-        parent_column: Optional[Column] = Field(
-            None, description="", alias="parentColumn"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
