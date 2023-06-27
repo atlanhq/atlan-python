@@ -638,3 +638,95 @@ def test_find_category_fast_by_name(mock_search, caplog):
     assert isinstance(term4, Term) is True
     assert term4.field == "__glossary"
     assert term4.value == GLOSSARY_QUALIFIED_NAME
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@pytest.mark.parametrize(
+    "name, glossary_name, attributes, message",
+    [
+        (
+            None,
+            GLOSSARY_NAME,
+            None,
+            "1 validation error for FindCategoryByName\nname\n  none is not an allowed value",
+        ),
+        (
+            " ",
+            GLOSSARY_NAME,
+            None,
+            "1 validation error for FindCategoryByName\nname\n  ensure this value has at least 1 characters",
+        ),
+        (
+            1,
+            GLOSSARY_NAME,
+            None,
+            "1 validation error for FindCategoryByName\nname\n  str type expected",
+        ),
+        (
+            GLOSSARY_CATEGORY_NAME,
+            None,
+            None,
+            "1 validation error for FindCategoryByName\nglossary_name\n  none is not an allowed value",
+        ),
+        (
+            GLOSSARY_CATEGORY_NAME,
+            " ",
+            None,
+            "1 validation error for FindCategoryByName\nglossary_name\n  ensure this value has at least 1 characters",
+        ),
+        (
+            GLOSSARY_CATEGORY_NAME,
+            1,
+            None,
+            "1 validation error for FindCategoryByName\nglossary_name\n  str type expected",
+        ),
+        (
+            GLOSSARY_CATEGORY_NAME,
+            GLOSSARY_NAME,
+            1,
+            "1 validation error for FindCategoryByName\nattributes\n  value is not a valid list",
+        ),
+    ],
+)
+def test_find_category_by_name_when_bad_parameter_raises_value_error(
+    name, glossary_name, attributes, message
+):
+    sut = AtlanClient()
+
+    with pytest.raises(ValueError, match=message):
+        sut.find_category_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
+        )
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+def test_find_category_by_name():
+    attributes = ["name"]
+    with patch.multiple(
+        AtlanClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT
+    ) as values:
+        mock_find_glossary_by_name = values["find_glossary_by_name"]
+        mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
+        mock_find_category_fast_by_name = values["find_category_fast_by_name"]
+
+        sut = AtlanClient()
+
+        category = sut.find_category_by_name(
+            name=GLOSSARY_CATEGORY_NAME,
+            glossary_name=GLOSSARY_NAME,
+            attributes=attributes,
+        )
+
+        mock_find_glossary_by_name.assert_called_with(name=GLOSSARY_NAME)
+        mock_find_category_fast_by_name.assert_called_with(
+            name=GLOSSARY_CATEGORY_NAME,
+            glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
+            attributes=attributes,
+        )
+        assert mock_find_category_fast_by_name.return_value == category

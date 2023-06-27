@@ -1352,3 +1352,17 @@ class AtlanClient(BaseSettings):
             f"The AtlasGlossaryCategory asset could not be found by name: {name}.",
             "ATLAN-PYTHON-404-014",
         )
+
+    @validate_arguments()
+    def find_category_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),
+        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),
+        attributes: Optional[list[StrictStr]] = None,
+    ):
+        glossary = self.find_glossary_by_name(name=glossary_name)
+        return self.find_category_fast_by_name(
+            name=name,
+            glossary_qualified_name=glossary.qualified_name,
+            attributes=attributes,
+        )
