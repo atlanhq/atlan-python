@@ -15,6 +15,7 @@ from pydantic import (
     PrivateAttr,
     StrictStr,
     ValidationError,
+    constr,
     parse_obj_as,
     validate_arguments,
 )
@@ -107,7 +108,7 @@ from pyatlan.model.lineage import (
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
-from pyatlan.model.search import DSL, IndexSearchRequest, Term
+from pyatlan.model.search import DSL, IndexSearchRequest, Query, Term
 from pyatlan.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
@@ -1283,15 +1284,13 @@ class AtlanClient(BaseSettings):
 
     @validate_arguments()
     def find_glossary_by_name(
-        self, name: StrictStr, attributes: Optional[list[StrictStr]] = None
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),
+        attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossary:
         if attributes is None:
             attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("AtlasGlossary")
-            + Term.with_name(name)
-        )
+        query = Query.with_active_glossary(name=name)
         dsl = DSL(query=query)
         search_request = IndexSearchRequest(
             dsl=dsl,

@@ -367,6 +367,11 @@ def test_reset_client():
             1,
             "1 validation error for FindGlossaryByName\nattributes\n  value is not a valid list",
         ),
+        (
+            " ",
+            None,
+            "1 validation error for FindGlossaryByName\nname\n  ensure this value has at least 1 characters",
+        ),
     ],
 )
 @patch.dict(

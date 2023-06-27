@@ -14,6 +14,7 @@ from pydantic import (
     StrictFloat,
     StrictInt,
     StrictStr,
+    constr,
     validate_arguments,
     validator,
 )
@@ -90,6 +91,15 @@ def get_with_string(attribute: TermAttributes):
 
 @dataclass
 class Query(ABC):
+    @staticmethod
+    def with_active_glossary(name: StrictStr) -> "Bool":
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("AtlasGlossary")
+            + Term.with_name(name)
+        )
+        return query
+
     def __add__(self, other):
         # make sure we give queries that know how to combine themselves
         # preference
@@ -402,7 +412,7 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_name(cls, value: StrictStr):
+    def with_name(cls, value: constr(strip_whitespace=True, min_length=1, strict=True)):
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
