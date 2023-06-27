@@ -13,6 +13,7 @@ from pydantic import (
     BaseSettings,
     HttpUrl,
     PrivateAttr,
+    StrictStr,
     ValidationError,
     parse_obj_as,
     validate_arguments,
@@ -1260,7 +1261,6 @@ class AtlanClient(BaseSettings):
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Persona)]
 
-    @validate_arguments()
     def find_purposes_by_name(
         self,
         name: str,
@@ -1280,3 +1280,38 @@ class AtlanClient(BaseSettings):
         )
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Purpose)]
+
+    @validate_arguments()
+    def find_glossary_by_name(
+        self, name: StrictStr, attributes: Optional[list[StrictStr]] = None
+    ) -> AtlasGlossary:
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("AtlasGlossary")
+            + Term.with_name(name)
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        if results.count > 0 and (
+            assets := [
+                asset
+                for asset in results.current_page()
+                if isinstance(asset, AtlasGlossary)
+            ]
+        ):
+            if len(assets) > 1:
+                LOGGER.warning(
+                    "Multiple glossaries found with the name '%s', returning only the first.",
+                    name,
+                )
+            return assets[0]
+        raise NotFoundError(
+            f"The AtlasGlossy asset could not be found by name: {name}.",
+            "ATLAN-PYTHON-404-014",
+        )

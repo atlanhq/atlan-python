@@ -1,11 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from unittest.mock import DEFAULT, patch
+import os
+from unittest.mock import DEFAULT, Mock, patch
 
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AtlasGlossaryTerm, Table
+from pyatlan.error import NotFoundError
+from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Table
+from pyatlan.model.search import Bool, Term
+
+GLOSSARY_NAME = "MyGlossary"
+GLOSSARY = AtlasGlossary.create(name=GLOSSARY_NAME)
 
 
 @pytest.mark.parametrize(
@@ -341,3 +347,119 @@ def test_reset_client():
     AtlanClient.register_client(client)
     AtlanClient.reset_default_client()
     assert AtlanClient.get_default_client() is None
+
+
+@pytest.mark.parametrize(
+    "name, attributes, message",
+    [
+        (
+            1,
+            None,
+            "1 validation error for FindGlossaryByName\nname\n  str type expected",
+        ),
+        (
+            None,
+            None,
+            "1 validation error for FindGlossaryByName\nname\n  none is not an allowed value",
+        ),
+        (
+            "Bob",
+            1,
+            "1 validation error for FindGlossaryByName\nattributes\n  value is not a valid list",
+        ),
+    ],
+)
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+def test_find_glossary_by_name_with_bad_values_raises_value_error(
+    name, attributes, message
+):
+    client = AtlanClient()
+    with pytest.raises(ValueError, match=message):
+        client.find_glossary_by_name(name=name, attributes=attributes)
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@patch.object(AtlanClient, "search")
+def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
+
+    mock_search.return_value.count = 0
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The AtlasGlossy asset could not be found by name: {GLOSSARY_NAME}.",
+    ):
+        client.find_glossary_by_name(GLOSSARY_NAME)
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@patch.object(AtlanClient, "search")
+def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_search):
+
+    mock_search.return_value.count = 1
+    mock_search.return_value.current_page.return_value = [Table()]
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The AtlasGlossy asset could not be found by name: {GLOSSARY_NAME}.",
+    ):
+        client.find_glossary_by_name(GLOSSARY_NAME)
+    mock_search.return_value.current_page.assert_called_once()
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@patch.object(AtlanClient, "search")
+def test_find_glossary(mock_search, caplog):
+    request = None
+    attributes = ["name"]
+
+    def get_request(*args, **kwargs):
+        nonlocal request
+        request = args[0]
+        mock = Mock()
+        mock.count = 1
+        mock.current_page.return_value = [GLOSSARY, GLOSSARY]
+        return mock
+
+    mock_search.side_effect = get_request
+
+    client = AtlanClient()
+
+    assert GLOSSARY == client.find_glossary_by_name(
+        name=GLOSSARY_NAME, attributes=attributes
+    )
+    assert (
+        f"Multiple glossaries found with the name '{GLOSSARY_NAME}', returning only the first."
+        in caplog.text
+    )
+    assert request
+    assert request.attributes
+    assert attributes == request.attributes
+    assert request.dsl
+    assert request.dsl.query
+    assert isinstance(request.dsl.query, Bool) is True
+    assert request.dsl.query.must
+    assert 3 == len(request.dsl.query.must)
+    term1, term2, term3 = request.dsl.query.must
+    assert isinstance(term1, Term) is True
+    assert term1.field == "__state"
+    assert term1.value == "ACTIVE"
+    assert isinstance(term2, Term) is True
+    assert term2.field == "__typeName.keyword"
+    assert term2.value == "AtlasGlossary"
+    assert isinstance(term3, Term) is True
+    assert term3.field == "name.keyword"
+    assert term3.value == GLOSSARY_NAME
