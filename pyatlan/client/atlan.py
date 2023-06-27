@@ -1311,6 +1311,44 @@ class AtlanClient(BaseSettings):
                 )
             return assets[0]
         raise NotFoundError(
-            f"The AtlasGlossy asset could not be found by name: {name}.",
+            f"The AtlasGlossary asset could not be found by name: {name}.",
+            "ATLAN-PYTHON-404-014",
+        )
+
+    @validate_arguments()
+    def find_category_fast_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),
+        glossary_qualified_name: constr(
+            strip_whitespace=True, min_length=1, strict=True
+        ),
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> AtlasGlossaryCategory:
+        if attributes is None:
+            attributes = []
+        query = Query.with_active_category(
+            name=name, glossary_qualified_name=glossary_qualified_name
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        if results.count > 0 and (
+            assets := [
+                asset
+                for asset in results.current_page()
+                if isinstance(asset, AtlasGlossaryCategory)
+            ]
+        ):
+            if len(assets) > 1:
+                LOGGER.warning(
+                    "Multiple categories found with the name '%s', returning only the first.",
+                    name,
+                )
+            return assets[0]
+        raise NotFoundError(
+            f"The AtlasGlossaryCategory asset could not be found by name: {name}.",
             "ATLAN-PYTHON-404-014",
         )
