@@ -17,6 +17,7 @@ from pyatlan.model.search import (
     MatchAll,
     MatchNone,
     Prefix,
+    Query,
     Range,
     Regexp,
     SortItem,
@@ -25,6 +26,11 @@ from pyatlan.model.search import (
     TermAttributes,
     Terms,
     Wildcard,
+)
+from tests.unit.model.constants import (
+    GLOSSARY_CATEGORY_NAME,
+    GLOSSARY_NAME,
+    GLOSSARY_QUALIFIED_NAME,
 )
 
 NOW = datetime.now()
@@ -1212,3 +1218,96 @@ def test_match_to_string(
         ).to_dict()
         == expected
     )
+
+
+class TestQuery:
+    @pytest.mark.parametrize(
+        "name, message",
+        [
+            (
+                None,
+                "1 validation error for WithName\nvalue\n  none is not an allowed value",
+            ),
+            (
+                " ",
+                "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
+            ),
+        ],
+    )
+    def test_with_active_glossary_when_invalid_parameter_raises_value_error(
+        self, name, message
+    ):
+        with pytest.raises(ValueError, match=message):
+            Query.with_active_glossary(name)
+
+    def test_with_active_glossary(self):
+
+        sut = Query.with_active_glossary(name=GLOSSARY_NAME)
+
+        assert sut.must
+        assert 3 == len(sut.must)
+        term1, term2, term3 = sut.must
+        assert isinstance(term1, Term) is True
+        assert term1.field == "__state"
+        assert term1.value == "ACTIVE"
+        assert isinstance(term2, Term) is True
+        assert term2.field == "__typeName.keyword"
+        assert term2.value == "AtlasGlossary"
+        assert isinstance(term3, Term) is True
+        assert term3.field == "name.keyword"
+        assert term3.value == GLOSSARY_NAME
+
+    @pytest.mark.parametrize(
+        "name, glossary_qualified_name, message",
+        [
+            (
+                None,
+                GLOSSARY_QUALIFIED_NAME,
+                "1 validation error for WithName\nvalue\n  none is not an allowed value",
+            ),
+            (
+                " ",
+                GLOSSARY_QUALIFIED_NAME,
+                "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
+            ),
+            (
+                GLOSSARY_CATEGORY_NAME,
+                None,
+                "1 validation error for WithGlossary\nvalue\n  none is not an allowed value",
+            ),
+            (
+                GLOSSARY_CATEGORY_NAME,
+                " ",
+                "1 validation error for WithGlossary\nvalue\n  ensure this value has at least 1 characters",
+            ),
+        ],
+    )
+    def test_with_active_category_when_invalid_parameter_raises_value_error(
+        self, name, glossary_qualified_name, message
+    ):
+        with pytest.raises(ValueError, match=message):
+            Query.with_active_category(
+                name=name, glossary_qualified_name=glossary_qualified_name
+            )
+
+    def test_with_active_category(self):
+
+        sut = Query.with_active_category(
+            name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+        )
+
+        assert sut.must
+        assert 4 == len(sut.must)
+        term1, term2, term3, term4 = sut.must
+        assert isinstance(term1, Term) is True
+        assert term1.field == "__state"
+        assert term1.value == "ACTIVE"
+        assert isinstance(term2, Term) is True
+        assert term2.field == "__typeName.keyword"
+        assert term2.value == "AtlasGlossaryCategory"
+        assert isinstance(term3, Term) is True
+        assert term3.field == "name.keyword"
+        assert term3.value == GLOSSARY_CATEGORY_NAME
+        assert isinstance(term4, Term) is True
+        assert term4.field == "__glossary"
+        assert term4.value == GLOSSARY_QUALIFIED_NAME

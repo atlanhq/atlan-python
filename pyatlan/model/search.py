@@ -100,6 +100,21 @@ class Query(ABC):
         )
         return query
 
+    @staticmethod
+    def with_active_category(
+        name: constr(strip_whitespace=True, min_length=1, strict=True),
+        glossary_qualified_name: constr(
+            strip_whitespace=True, min_length=1, strict=True
+        ),
+    ):
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("AtlasGlossaryCategory")
+            + Term.with_name(name)
+            + Term.with_glossary(glossary_qualified_name)
+        )
+        return query
+
     def __add__(self, other):
         # make sure we give queries that know how to combine themselves
         # preference
@@ -380,7 +395,9 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_glossary(cls, value: StrictStr):
+    def with_glossary(
+        cls, value: constr(strip_whitespace=True, min_length=1, strict=True)
+    ):
         return cls(field=TermAttributes.GLOSSARY.value, value=value)
 
     @classmethod
