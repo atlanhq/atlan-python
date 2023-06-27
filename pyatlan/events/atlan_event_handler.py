@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
+from abc import ABC
 from typing import Iterable, List, Optional
 
 from pyatlan.client.atlan import AtlanClient
@@ -20,9 +21,8 @@ def valid_signature(expected: str, headers: dict[str, str]) -> bool:
     """
     if not headers:
         return False
-    else:
-        found = headers.get("x-atlan-signing-secret")
-        return found is not None and found == expected
+    found = headers.get("x-atlan-signing-secret")
+    return found is not None and found == expected
 
 
 def get_current_view_of_asset(
@@ -56,18 +56,14 @@ def get_current_view_of_asset(
         exclude_atlan_tags=~include_atlan_tags,
     )
     response = client.search(criteria=request)
-    if result := response.current_page()[0]:
-        return result
-    return None
+    return result if (result := response.current_page()[0]) else None
 
 
 def has_description(asset: Asset) -> bool:
     """
     Check if the asset has either a user-provided or system-provided description.
     """
-    description = asset.user_description
-    if not description:
-        description = asset.description
+    description = asset.user_description or asset.description
     return description is not None and description != ""
 
 
@@ -91,7 +87,7 @@ def has_lineage(asset: Asset) -> bool:
         return bool(asset.has_lineage)
 
 
-class AtlanEventHandler:
+class AtlanEventHandler(ABC):  # noqa: B024
     def __init__(self, client: AtlanClient):
         self.client = client
 
