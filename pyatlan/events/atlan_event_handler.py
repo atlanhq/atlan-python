@@ -45,7 +45,7 @@ def get_current_view_of_asset(
     have_qn = Term.with_qualified_name(from_event.qualified_name)
     query = Bool(must=[be_active, be_of_type, have_qn])
     dsl = DSL(query=query)
-    attributes = ["name", "anchor", "aws_arn"]
+    attributes = ["name", "anchor", "awsArn"]
     if limited_to_attributes:
         attributes.extend(limited_to_attributes)
     request = IndexSearchRequest(
