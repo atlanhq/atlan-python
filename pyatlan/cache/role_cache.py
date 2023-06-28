@@ -16,7 +16,7 @@ class RoleCache:
         client = AtlanClient.get_default_client()
         if client is None:
             client = AtlanClient()
-        response = client.get_all_roles()
+        response = client.get_roles(limit=100, post_filter='{"name":{"$ilike":"$%"}}')
         if response is not None:
             cls.cache_by_id = {}
             cls.map_id_to_name = {}
