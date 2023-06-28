@@ -17,7 +17,6 @@ from pyatlan.model.search import (
     MatchAll,
     MatchNone,
     Prefix,
-    Query,
     Range,
     Regexp,
     SortItem,
@@ -26,6 +25,8 @@ from pyatlan.model.search import (
     TermAttributes,
     Terms,
     Wildcard,
+    with_active_category,
+    with_active_glossary,
 )
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
@@ -490,7 +491,7 @@ def test_bool_and(q1, q2, expected):
 @pytest.fixture()
 def with_name(request):
     attribute = request.param
-    return "with_" + attribute.name.lower()
+    return f"with_{attribute.name.lower()}"
 
 
 def test_terms_to_dict():
@@ -821,7 +822,7 @@ def test_fuzzy_to_dict(
     "name, value, fuzziness, max_expansions, prefix_length, transpositions, rewrite, attributes, incompatable",
     [
         (
-            "with_" + a.name.lower(),
+            f"with_{a.name.lower()}",
             "ki",
             "AUTO",
             3,
@@ -1238,11 +1239,11 @@ class TestQuery:
         self, name, message
     ):
         with pytest.raises(ValueError, match=message):
-            Query.with_active_glossary(name)
+            with_active_glossary(name)
 
     def test_with_active_glossary(self):
 
-        sut = Query.with_active_glossary(name=GLOSSARY_NAME)
+        sut = with_active_glossary(name=GLOSSARY_NAME)
 
         assert sut.must
         assert 3 == len(sut.must)
@@ -1286,13 +1287,13 @@ class TestQuery:
         self, name, glossary_qualified_name, message
     ):
         with pytest.raises(ValueError, match=message):
-            Query.with_active_category(
+            with_active_category(
                 name=name, glossary_qualified_name=glossary_qualified_name
             )
 
     def test_with_active_category(self):
 
-        sut = Query.with_active_category(
+        sut = with_active_category(
             name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
         )
 

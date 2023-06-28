@@ -7,6 +7,7 @@ from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
     Announcement,
     AtlasGlossary,
+    AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Connection,
     Database,
@@ -313,3 +314,29 @@ def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
     )
     glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
     assert glossary.get_announcment() is None
+
+
+def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
+    assert glossary.guid == client.find_glossary_by_name(name=glossary.name).guid
+
+
+def test_find_category_fast_by_name(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    assert (
+        category.guid
+        == client.find_category_fast_by_name(
+            name=category.name, glossary_qualified_name=glossary.qualified_name
+        ).guid
+    )
+
+
+def test_find_category_by_name(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    assert (
+        category.guid
+        == client.find_category_by_name(
+            name=category.name, glossary_name=glossary.name
+        ).guid
+    )

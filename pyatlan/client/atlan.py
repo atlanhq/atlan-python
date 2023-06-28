@@ -108,7 +108,13 @@ from pyatlan.model.lineage import (
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
-from pyatlan.model.search import DSL, IndexSearchRequest, Query, Term
+from pyatlan.model.search import (
+    DSL,
+    IndexSearchRequest,
+    Term,
+    with_active_category,
+    with_active_glossary,
+)
 from pyatlan.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
@@ -1285,12 +1291,12 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_glossary_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossary:
         if attributes is None:
             attributes = []
-        query = Query.with_active_glossary(name=name)
+        query = with_active_glossary(name=name)
         dsl = DSL(query=query)
         search_request = IndexSearchRequest(
             dsl=dsl,
@@ -1318,15 +1324,13 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_category_fast_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),
-        glossary_qualified_name: constr(
-            strip_whitespace=True, min_length=1, strict=True
-        ),
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryCategory:
         if attributes is None:
             attributes = []
-        query = Query.with_active_category(
+        query = with_active_category(
             name=name, glossary_qualified_name=glossary_qualified_name
         )
         dsl = DSL(query=query)
@@ -1356,8 +1360,8 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_category_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),
-        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ):
         glossary = self.find_glossary_by_name(name=glossary_name)
