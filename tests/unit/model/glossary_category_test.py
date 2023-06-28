@@ -2,10 +2,10 @@ import pytest
 
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory
 from tests.unit.model.constants import (
+    GLOSSARY_CATEGORY_NAME,
+    GLOSSARY_CATEGORY_QUALIFIED_NAME,
     GLOSSARY_NAME,
     GLOSSARY_QUALIFIED_NAME,
-    GLOSSARY_TERM_NAME,
-    GLOSSARY_TERM_QUALIFIED_NAME,
 )
 
 ANCHOR = AtlasGlossary.create_for_modification(
@@ -54,12 +54,12 @@ def test_create(
     parent_category: AtlasGlossaryCategory,
 ):
     sut = AtlasGlossaryCategory.create(
-        name=GLOSSARY_TERM_NAME,
+        name=GLOSSARY_CATEGORY_NAME,
         anchor=anchor,
         parent_category=parent_category,
     )
 
-    assert sut.name == GLOSSARY_TERM_NAME
+    assert sut.name == GLOSSARY_CATEGORY_NAME
     assert sut.qualified_name
     assert sut.parent_category == parent_category
     assert sut.anchor == anchor
@@ -68,11 +68,11 @@ def test_create(
 @pytest.mark.parametrize(
     "name, qualified_name, glossary_guid, message",
     [
-        (None, GLOSSARY_TERM_QUALIFIED_NAME, GLOSSARY_GUID, "name is required"),
-        (GLOSSARY_TERM_NAME, None, GLOSSARY_GUID, "qualified_name is required"),
+        (None, GLOSSARY_CATEGORY_QUALIFIED_NAME, GLOSSARY_GUID, "name is required"),
+        (GLOSSARY_CATEGORY_NAME, None, GLOSSARY_GUID, "qualified_name is required"),
         (
-            GLOSSARY_TERM_NAME,
-            GLOSSARY_TERM_QUALIFIED_NAME,
+            GLOSSARY_CATEGORY_NAME,
+            GLOSSARY_CATEGORY_QUALIFIED_NAME,
             None,
             "glossary_guid is required",
         ),
@@ -89,25 +89,25 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 def test_create_for_modification():
     sut = AtlasGlossaryCategory.create_for_modification(
-        qualified_name=GLOSSARY_TERM_QUALIFIED_NAME,
-        name=GLOSSARY_TERM_NAME,
+        qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,
+        name=GLOSSARY_CATEGORY_NAME,
         glossary_guid=GLOSSARY_GUID,
     )
 
-    assert sut.name == GLOSSARY_TERM_NAME
-    assert sut.qualified_name == GLOSSARY_TERM_QUALIFIED_NAME
+    assert sut.name == GLOSSARY_CATEGORY_NAME
+    assert sut.qualified_name == GLOSSARY_CATEGORY_QUALIFIED_NAME
     assert sut.anchor.guid == GLOSSARY_GUID
 
 
 def test_trim_to_required():
     sut = AtlasGlossaryCategory.create_for_modification(
-        qualified_name=GLOSSARY_TERM_QUALIFIED_NAME,
-        name=GLOSSARY_TERM_NAME,
+        qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,
+        name=GLOSSARY_CATEGORY_NAME,
         glossary_guid=GLOSSARY_GUID,
     ).trim_to_required()
 
-    assert sut.name == GLOSSARY_TERM_NAME
-    assert sut.qualified_name == GLOSSARY_TERM_QUALIFIED_NAME
+    assert sut.name == GLOSSARY_CATEGORY_NAME
+    assert sut.qualified_name == GLOSSARY_CATEGORY_QUALIFIED_NAME
     assert sut.anchor.guid == GLOSSARY_GUID
 
 
@@ -117,8 +117,8 @@ def test_trim_to_required():
 )
 def test_trim_to_required_raises_value_error_when_anchor_is_none(anchor):
     sut = AtlasGlossaryCategory.create_for_modification(
-        qualified_name=GLOSSARY_TERM_QUALIFIED_NAME,
-        name=GLOSSARY_TERM_NAME,
+        qualified_name=GLOSSARY_CATEGORY_QUALIFIED_NAME,
+        name=GLOSSARY_CATEGORY_NAME,
         glossary_guid=GLOSSARY_GUID,
     )
     sut.anchor = anchor
