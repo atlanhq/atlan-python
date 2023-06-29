@@ -14,6 +14,7 @@ from pydantic import (
     StrictFloat,
     StrictInt,
     StrictStr,
+    constr,
     validate_arguments,
     validator,
 )
@@ -370,8 +371,10 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_glossary(cls, value: StrictStr):
-        return cls(field=TermAttributes.GLOSSARY.value, value=value)
+    def with_glossary(
+        cls, qualified_name: constr(strip_whitespace=True, min_length=1, strict=True)  # type: ignore
+    ):
+        return cls(field=TermAttributes.GLOSSARY.value, value=qualified_name)
 
     @classmethod
     @validate_arguments()
@@ -402,7 +405,7 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_name(cls, value: StrictStr):
+    def with_name(cls, value: constr(strip_whitespace=True, min_length=1, strict=True)):  # type: ignore
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
@@ -573,7 +576,7 @@ class Bool(Query):
                         Bool(should=qx.should, minimum_should_match=min_should_match)
                     )
         else:
-            if not (q.must or q.filter) and q.should:
+            if not q.must and not q.filter and q.should:
                 q.minimum_should_match = 1
             q.must.append(other)
         return q
@@ -1747,9 +1750,8 @@ class SortItem:
 
     @validator("order", always=True)
     def validate_order(cls, v, values):
-        if not v:
-            if "field" in values:
-                v = SortOrder.ASCENDING
+        if not v and "field" in values:
+            v = SortOrder.ASCENDING
         return v
 
 
@@ -1770,9 +1772,10 @@ class DSL(AtlanObject):
 
     @validator("query", always=True)
     def validate_query(cls, v, values):
-        if not v and ("post_filter" not in values or not values["post_filter"]):
+        if v or "post_filter" in values and values["post_filter"]:
+            return v
+        else:
             raise ValueError("Either query or post_filter is required")
-        return v
 
 
 class IndexSearchRequest(AtlanObject):
@@ -1784,3 +1787,23 @@ class IndexSearchRequest(AtlanObject):
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+
+
+def with_active_glossary(name: StrictStr) -> "Bool":
+    return (
+        Term.with_state("ACTIVE")
+        + Term.with_type_name("AtlasGlossary")
+        + Term.with_name(name)
+    )
+
+
+def with_active_category(
+    name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+    glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+):
+    return (
+        Term.with_state("ACTIVE")
+        + Term.with_type_name("AtlasGlossaryCategory")
+        + Term.with_name(name)
+        + Term.with_glossary(glossary_qualified_name)
+    )

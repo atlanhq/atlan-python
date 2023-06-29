@@ -1,13 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import logging
 from typing import Generator
 
 import pytest
 from pydantic import StrictStr
+from retry import retry
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm
+from pyatlan.error import NotFoundError
+from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
 from tests.integration.client import TestId, delete_asset
+
+LOGGER = logging.getLogger(__name__)
 
 MODULE_NAME = TestId.make_unique("GLS")
 
@@ -19,6 +24,13 @@ def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
     g = AtlasGlossary.create(name=StrictStr(name))
     r = client.upsert(g)
     return r.assets_created(AtlasGlossary)[0]
+
+
+def create_category(
+    client: AtlanClient, name: str, glossary: AtlasGlossary
+) -> AtlasGlossaryCategory:
+    c = AtlasGlossaryCategory.create(name=name, anchor=glossary)
+    return client.upsert(c).assets_created(AtlasGlossaryCategory)[0]
 
 
 def create_term(
@@ -47,6 +59,28 @@ def test_glossary(
     assert glossary.name == MODULE_NAME
     assert glossary.qualified_name
     assert glossary.qualified_name != MODULE_NAME
+
+
+@pytest.fixture(scope="module")
+def category(
+    client: AtlanClient, glossary: AtlasGlossary
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(client, MODULE_NAME, glossary)
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+def test_category(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    assert category.guid
+    assert category.name == MODULE_NAME
+    assert category.qualified_name
+    c = client.get_asset_by_guid(category.guid, AtlasGlossaryCategory)
+    assert c
+    assert c.guid == category.guid
+    assert c.anchor
+    assert c.anchor.guid == glossary.guid
 
 
 @pytest.fixture(scope="module")
@@ -135,3 +169,33 @@ def test_term_trim_to_required(
     term1 = term1.trim_to_required()
     response = client.upsert(term1)
     assert response.mutated_entities is None
+
+
+def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
+    assert glossary.guid == client.find_glossary_by_name(name=glossary.name).guid
+
+
+def test_find_category_fast_by_name(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    @retry(NotFoundError, tries=3, delay=2, logger=LOGGER)
+    def check_it():
+        assert (
+            category.guid
+            == client.find_category_fast_by_name(
+                name=category.name, glossary_qualified_name=glossary.qualified_name
+            ).guid
+        )
+
+    check_it()
+
+
+def test_find_category_by_name(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    assert (
+        category.guid
+        == client.find_category_by_name(
+            name=category.name, glossary_name=glossary.name
+        ).guid
+    )

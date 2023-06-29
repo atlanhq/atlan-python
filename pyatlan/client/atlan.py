@@ -13,7 +13,9 @@ from pydantic import (
     BaseSettings,
     HttpUrl,
     PrivateAttr,
+    StrictStr,
     ValidationError,
+    constr,
     parse_obj_as,
     validate_arguments,
 )
@@ -106,7 +108,13 @@ from pyatlan.model.lineage import (
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
-from pyatlan.model.search import DSL, IndexSearchRequest, Term
+from pyatlan.model.search import (
+    DSL,
+    IndexSearchRequest,
+    Term,
+    with_active_category,
+    with_active_glossary,
+)
 from pyatlan.model.typedef import (
     AtlanTagDef,
     CustomMetadataDef,
@@ -1258,7 +1266,6 @@ class AtlanClient(BaseSettings):
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Persona)]
 
-    @validate_arguments()
     def find_purposes_by_name(
         self,
         name: str,
@@ -1278,3 +1285,86 @@ class AtlanClient(BaseSettings):
         )
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Purpose)]
+
+    @validate_arguments()
+    def find_glossary_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> AtlasGlossary:
+        if attributes is None:
+            attributes = []
+        query = with_active_glossary(name=name)
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        if results.count > 0 and (
+            assets := [
+                asset
+                for asset in results.current_page()
+                if isinstance(asset, AtlasGlossary)
+            ]
+        ):
+            if len(assets) > 1:
+                LOGGER.warning(
+                    "Multiple glossaries found with the name '%s', returning only the first.",
+                    name,
+                )
+            return assets[0]
+        raise NotFoundError(
+            f"The AtlasGlossary asset could not be found by name: {name}.",
+            "ATLAN-PYTHON-404-014",
+        )
+
+    @validate_arguments()
+    def find_category_fast_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> AtlasGlossaryCategory:
+        if attributes is None:
+            attributes = []
+        query = with_active_category(
+            name=name, glossary_qualified_name=glossary_qualified_name
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        if results.count > 0 and (
+            assets := [
+                asset
+                for asset in results.current_page()
+                if isinstance(asset, AtlasGlossaryCategory)
+            ]
+        ):
+            if len(assets) > 1:
+                LOGGER.warning(
+                    "Multiple categories found with the name '%s', returning only the first.",
+                    name,
+                )
+            return assets[0]
+        raise NotFoundError(
+            f"The AtlasGlossaryCategory asset could not be found by name: {name}.",
+            "ATLAN-PYTHON-404-014",
+        )
+
+    @validate_arguments()
+    def find_category_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ):
+        glossary = self.find_glossary_by_name(name=glossary_name)
+        return self.find_category_fast_by_name(
+            name=name,
+            glossary_qualified_name=glossary.qualified_name,
+            attributes=attributes,
+        )

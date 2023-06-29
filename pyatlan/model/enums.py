@@ -220,7 +220,7 @@ class AtlanConnectorType(str, Enum):
         return obj
 
     def to_qualified_name(self):
-        return f"default/{self.value}/{int(datetime.now().timestamp() * 1000)}"
+        return f"default/{self.value}/{int(datetime.now().timestamp())}"
 
     SNOWFLAKE = ("snowflake", AtlanConnectionCategory.WAREHOUSE)
     TABLEAU = ("tableau", AtlanConnectionCategory.BI)
