@@ -1,13 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import logging
 from typing import Generator
 
 import pytest
 from pydantic import StrictStr
+from retry import retry
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.error import NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
 from tests.integration.client import TestId, delete_asset
+
+LOGGER = logging.getLogger(__name__)
 
 MODULE_NAME = TestId.make_unique("GLS")
 
@@ -164,3 +169,33 @@ def test_term_trim_to_required(
     term1 = term1.trim_to_required()
     response = client.upsert(term1)
     assert response.mutated_entities is None
+
+
+def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
+    assert glossary.guid == client.find_glossary_by_name(name=glossary.name).guid
+
+
+def test_find_category_fast_by_name(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    @retry(NotFoundError, tries=3, delay=2, logger=LOGGER)
+    def check_it():
+        assert (
+            category.guid
+            == client.find_category_fast_by_name(
+                name=category.name, glossary_qualified_name=glossary.qualified_name
+            ).guid
+        )
+
+    check_it()
+
+
+def test_find_category_by_name(
+    client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
+):
+    assert (
+        category.guid
+        == client.find_category_by_name(
+            name=category.name, glossary_name=glossary.name
+        ).guid
+    )
