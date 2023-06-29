@@ -1,6 +1,8 @@
+import logging
 from typing import Generator
 
 import pytest
+from retry import retry
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
@@ -16,6 +18,8 @@ from pyatlan.model.assets import (
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
+
+LOGGER = logging.getLogger(__name__)
 
 CLASSIFICATION_NAME = "Issue"
 
@@ -323,12 +327,16 @@ def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
 def test_find_category_fast_by_name(
     client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
 ):
-    assert (
-        category.guid
-        == client.find_category_fast_by_name(
-            name=category.name, glossary_qualified_name=glossary.qualified_name
-        ).guid
-    )
+    @retry(NotFoundError, tries=3, delay=2, logger=LOGGER)
+    def check_it():
+        assert (
+            category.guid
+            == client.find_category_fast_by_name(
+                name=category.name, glossary_qualified_name=glossary.qualified_name
+            ).guid
+        )
+
+    check_it()
 
 
 def test_find_category_by_name(
