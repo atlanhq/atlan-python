@@ -404,17 +404,15 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> RoleResponse:
-        if post_filter is None:
-            post_filter = ""
-        if sort is None:
-            sort = ""
-        query_params = {
-            "filter": post_filter,
-            "sort": sort,
-            "count": count,
-            "offset": offset,
-            "limit": limit,
+        query_params: dict[str, str] = {
+            "count": str(count),
+            "offset": str(offset),
+            "limit": str(limit),
         }
+        if post_filter:
+            query_params["filter"] = post_filter
+        if sort:
+            query_params["sort"] = sort
         raw_json = self._call_api(GET_ROLES.format_path_with_params(), query_params)
         return RoleResponse(**raw_json)
 
