@@ -1273,12 +1273,12 @@ def test_with_active_glossary():
         (
             GLOSSARY_CATEGORY_NAME,
             None,
-            "1 validation error for WithGlossary\nvalue\n  none is not an allowed value",
+            "1 validation error for WithGlossary\nqualified_name\n  none is not an allowed value",
         ),
         (
             GLOSSARY_CATEGORY_NAME,
             " ",
-            "1 validation error for WithGlossary\nvalue\n  ensure this value has at least 1 characters",
+            "1 validation error for WithGlossary\nqualified_name\n  ensure this value has at least 1 characters",
         ),
     ],
 )

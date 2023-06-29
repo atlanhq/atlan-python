@@ -372,9 +372,9 @@ class Term(Query):
     @classmethod
     @validate_arguments()
     def with_glossary(
-        cls, value: constr(strip_whitespace=True, min_length=1, strict=True)  # type: ignore
+        cls, qualified_name: constr(strip_whitespace=True, min_length=1, strict=True)  # type: ignore
     ):
-        return cls(field=TermAttributes.GLOSSARY.value, value=value)
+        return cls(field=TermAttributes.GLOSSARY.value, value=qualified_name)
 
     @classmethod
     @validate_arguments()
