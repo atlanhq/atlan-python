@@ -27,11 +27,13 @@ from pyatlan.model.search import (
     Wildcard,
     with_active_category,
     with_active_glossary,
+    with_active_term,
 )
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
     GLOSSARY_QUALIFIED_NAME,
+    GLOSSARY_TERM_NAME,
 )
 
 NOW = datetime.now()
@@ -1307,6 +1309,61 @@ def test_with_active_category():
     assert isinstance(term3, Term) is True
     assert term3.field == "name.keyword"
     assert term3.value == GLOSSARY_CATEGORY_NAME
+    assert isinstance(term4, Term) is True
+    assert term4.field == "__glossary"
+    assert term4.value == GLOSSARY_QUALIFIED_NAME
+
+
+@pytest.mark.parametrize(
+    "name, glossary_qualified_name, message",
+    [
+        (
+            None,
+            GLOSSARY_QUALIFIED_NAME,
+            "1 validation error for WithName\nvalue\n  none is not an allowed value",
+        ),
+        (
+            " ",
+            GLOSSARY_QUALIFIED_NAME,
+            "1 validation error for WithName\nvalue\n  ensure this value has at least 1 characters",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            None,
+            "1 validation error for WithGlossary\nqualified_name\n  none is not an allowed value",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            " ",
+            "1 validation error for WithGlossary\nqualified_name\n  ensure this value has at least 1 characters",
+        ),
+    ],
+)
+def test_with_active_term_when_invalid_parameter_raises_value_error(
+    name, glossary_qualified_name, message
+):
+    with pytest.raises(ValueError, match=message):
+        with_active_term(name=name, glossary_qualified_name=glossary_qualified_name)
+
+
+def test_with_active_term():
+
+    sut = with_active_term(
+        name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+    )
+
+    assert sut.must
+    assert 4 == len(sut.must)
+    term1, term2, term3, term4 = sut.must
+    assert isinstance(term1, Term) is True
+    assert term1.field == "__state"
+    assert term1.value == "ACTIVE"
+    assert isinstance(term2, Term) is True
+    assert term2.field == "__typeName.keyword"
+    assert term2.value == "AtlasGlossaryTerm"
+    assert isinstance(term3, Term) is True
+    assert term3.field == "name.keyword"
+    assert term3.value == GLOSSARY_TERM_NAME
     assert isinstance(term4, Term) is True
     assert term4.field == "__glossary"
     assert term4.value == GLOSSARY_QUALIFIED_NAME
