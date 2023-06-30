@@ -1800,10 +1800,22 @@ def with_active_glossary(name: StrictStr) -> "Bool":
 def with_active_category(
     name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
     glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-):
+) -> Bool:
     return (
         Term.with_state("ACTIVE")
         + Term.with_type_name("AtlasGlossaryCategory")
+        + Term.with_name(name)
+        + Term.with_glossary(glossary_qualified_name)
+    )
+
+
+def with_active_term(
+    name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+    glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+) -> Bool:
+    return (
+        Term.with_state("ACTIVE")
+        + Term.with_type_name("AtlasGlossaryTerm")
         + Term.with_name(name)
         + Term.with_glossary(glossary_qualified_name)
     )

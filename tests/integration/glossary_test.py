@@ -199,3 +199,27 @@ def test_find_category_by_name(
             name=category.name, glossary_name=glossary.name
         ).guid
     )
+
+
+def test_find_term_fast_by_name(
+    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
+):
+    @retry(NotFoundError, tries=3, delay=2, logger=LOGGER)
+    def check_it():
+        assert (
+            term1.guid
+            == client.find_term_fast_by_name(
+                name=term1.name, glossary_qualified_name=glossary.qualified_name
+            ).guid
+        )
+
+    check_it()
+
+
+def test_find_term_by_name(
+    client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
+):
+    assert (
+        term1.guid
+        == client.find_term_by_name(name=term1.name, glossary_name=glossary.name).guid
+    )

@@ -18,12 +18,14 @@ from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
     GLOSSARY_QUALIFIED_NAME,
+    GLOSSARY_TERM_NAME,
 )
 
 GLOSSARY = AtlasGlossary.create(name=GLOSSARY_NAME)
 GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(
     name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY
 )
+GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSARY)
 
 
 @pytest.mark.parametrize(
@@ -459,7 +461,7 @@ def test_find_glossary(mock_search, caplog):
         name=GLOSSARY_NAME, attributes=attributes
     )
     assert (
-        f"Multiple glossaries found with the name '{GLOSSARY_NAME}', returning only the first."
+        f"More than 1 AtlasGlossary found with the name '{GLOSSARY_NAME}', returning only the first."
         in caplog.text
     )
     assert request
@@ -615,7 +617,7 @@ def test_find_category_fast_by_name(mock_search, caplog):
         attributes=attributes,
     )
     assert (
-        f"Multiple categories found with the name '{GLOSSARY_CATEGORY_NAME}', returning only the first."
+        f"More than 1 AtlasGlossaryCategory found with the name '{GLOSSARY_CATEGORY_NAME}', returning only the first."
         in caplog.text
     )
     assert request
@@ -730,3 +732,253 @@ def test_find_category_by_name():
             attributes=attributes,
         )
         assert mock_find_category_fast_by_name.return_value == category
+
+
+@pytest.mark.parametrize(
+    "name, glossary_qualified_name, attributes, message",
+    [
+        (
+            1,
+            GLOSSARY_QUALIFIED_NAME,
+            None,
+            "1 validation error for FindTermFastByName\nname\n  str type expected",
+        ),
+        (
+            None,
+            GLOSSARY_QUALIFIED_NAME,
+            None,
+            "1 validation error for FindTermFastByName\nname\n  none is not an allowed value",
+        ),
+        (
+            " ",
+            GLOSSARY_QUALIFIED_NAME,
+            None,
+            "1 validation error for FindTermFastByName\nname\n  ensure this value has at least 1 characters",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            None,
+            None,
+            "1 validation error for FindTermFastByName\nglossary_qualified_name\n  none is not an allowed value",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            " ",
+            None,
+            "1 validation error for FindTermFastByName\nglossary_qualified_name\n  ensure this value has at "
+            "least 1 characters",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            1,
+            None,
+            "1 validation error for FindTermFastByName\nglossary_qualified_name\n  str type expected",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            GLOSSARY_QUALIFIED_NAME,
+            1,
+            "1 validation error for FindTermFastByName\nattributes\n  value is not a valid list",
+        ),
+    ],
+)
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+def test_find_term_fast_by_name_with_bad_values_raises_value_error(
+    name, glossary_qualified_name, attributes, message
+):
+    client = AtlanClient()
+    with pytest.raises(ValueError, match=message):
+        client.find_term_fast_by_name(
+            name=name,
+            glossary_qualified_name=glossary_qualified_name,
+            attributes=attributes,
+        )
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@patch.object(AtlanClient, "search")
+def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_search):
+
+    mock_search.return_value.count = 0
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The AtlasGlossaryTerm asset could not be found by name: {GLOSSARY_TERM_NAME}.",
+    ):
+        client.find_term_fast_by_name(
+            name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+        )
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@patch.object(AtlanClient, "search")
+def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
+    mock_search,
+):
+
+    mock_search.return_value.count = 1
+    mock_search.return_value.current_page.return_value = [Table()]
+
+    client = AtlanClient()
+    with pytest.raises(
+        NotFoundError,
+        match=f"The AtlasGlossaryTerm asset could not be found by name: {GLOSSARY_TERM_NAME}.",
+    ):
+        client.find_term_fast_by_name(
+            name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
+        )
+    mock_search.return_value.current_page.assert_called_once()
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@patch.object(AtlanClient, "search")
+def test_find_term_fast_by_name(mock_search, caplog):
+    request = None
+    attributes = ["name"]
+
+    def get_request(*args, **kwargs):
+        nonlocal request
+        request = args[0]
+        mock = Mock()
+        mock.count = 1
+        mock.current_page.return_value = [GLOSSARY_TERM, GLOSSARY_TERM]
+        return mock
+
+    mock_search.side_effect = get_request
+
+    client = AtlanClient()
+
+    assert GLOSSARY_TERM == client.find_term_fast_by_name(
+        name=GLOSSARY_TERM_NAME,
+        glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
+        attributes=attributes,
+    )
+    assert (
+        f"More than 1 AtlasGlossaryTerm found with the name '{GLOSSARY_TERM_NAME}', returning only the first."
+        in caplog.text
+    )
+    assert request
+    assert request.attributes
+    assert attributes == request.attributes
+    assert request.dsl
+    assert request.dsl.query
+    assert isinstance(request.dsl.query, Bool) is True
+    assert request.dsl.query.must
+    assert 4 == len(request.dsl.query.must)
+    term1, term2, term3, term4 = request.dsl.query.must
+    assert term1.field == "__state"
+    assert term1.value == "ACTIVE"
+    assert isinstance(term2, Term) is True
+    assert term2.field == "__typeName.keyword"
+    assert term2.value == "AtlasGlossaryTerm"
+    assert isinstance(term3, Term) is True
+    assert term3.field == "name.keyword"
+    assert term3.value == GLOSSARY_TERM_NAME
+    assert isinstance(term4, Term) is True
+    assert term4.field == "__glossary"
+    assert term4.value == GLOSSARY_QUALIFIED_NAME
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+@pytest.mark.parametrize(
+    "name, glossary_name, attributes, message",
+    [
+        (
+            None,
+            GLOSSARY_NAME,
+            None,
+            "1 validation error for FindTermByName\nname\n  none is not an allowed value",
+        ),
+        (
+            " ",
+            GLOSSARY_NAME,
+            None,
+            "1 validation error for FindTermByName\nname\n  ensure this value has at least 1 characters",
+        ),
+        (
+            1,
+            GLOSSARY_NAME,
+            None,
+            "1 validation error for FindTermByName\nname\n  str type expected",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            None,
+            None,
+            "1 validation error for FindTermByName\nglossary_name\n  none is not an allowed value",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            " ",
+            None,
+            "1 validation error for FindTermByName\nglossary_name\n  ensure this value has at least 1 characters",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            1,
+            None,
+            "1 validation error for FindTermByName\nglossary_name\n  str type expected",
+        ),
+        (
+            GLOSSARY_TERM_NAME,
+            GLOSSARY_NAME,
+            1,
+            "1 validation error for FindTermByName\nattributes\n  value is not a valid list",
+        ),
+    ],
+)
+def test_find_term_by_name_when_bad_parameter_raises_value_error(
+    name, glossary_name, attributes, message
+):
+    sut = AtlanClient()
+
+    with pytest.raises(ValueError, match=message):
+        sut.find_term_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
+        )
+
+
+@patch.dict(
+    os.environ,
+    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
+)
+def test_find_term_by_name():
+    attributes = ["name"]
+    with patch.multiple(
+        AtlanClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT
+    ) as values:
+        mock_find_glossary_by_name = values["find_glossary_by_name"]
+        mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
+        mock_find_term_fast_by_name = values["find_term_fast_by_name"]
+
+        sut = AtlanClient()
+
+        term = sut.find_term_by_name(
+            name=GLOSSARY_TERM_NAME,
+            glossary_name=GLOSSARY_NAME,
+            attributes=attributes,
+        )
+
+        mock_find_glossary_by_name.assert_called_with(name=GLOSSARY_NAME)
+        mock_find_term_fast_by_name.assert_called_with(
+            name=GLOSSARY_TERM_NAME,
+            glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
+            attributes=attributes,
+        )
+        assert mock_find_term_fast_by_name.return_value == term
