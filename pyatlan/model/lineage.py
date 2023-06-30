@@ -311,16 +311,3 @@ class LineageListRequest(AtlanObject):
             exclude_meanings=True,
             exclude_classifications=True,
         )
-
-
-class LineageListResponse(AtlanObject):
-    entities: List[Asset] = Field(description="Entities in the lineage requested.")
-    has_more: bool = Field(
-        description="Whether there are more entities present in lineage that can be traversed (true) or not (false)."
-    )
-    entity_count: int = Field(
-        description="Total count of entities returned, equal to the size of the entities list."
-    )
-    search_parameters: LineageListRequest = Field(
-        description="Request used to produce this lineage."
-    )

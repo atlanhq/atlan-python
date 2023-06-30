@@ -99,12 +99,7 @@ from pyatlan.model.group import (
     GroupResponse,
     RemoveFromGroupRequest,
 )
-from pyatlan.model.lineage import (
-    LineageListRequest,
-    LineageListResponse,
-    LineageRequest,
-    LineageResponse,
-)
+from pyatlan.model.lineage import LineageListRequest, LineageRequest, LineageResponse
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
@@ -279,6 +274,56 @@ class AtlanClient(BaseSettings):
                 self._assets = []
                 return False
             self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+            return True
+
+        def __iter__(self) -> Generator[Asset, None, None]:
+            while True:
+                yield from self.current_page()
+                if not self.next_page():
+                    break
+
+    class LineageResults:
+        def __init__(
+            self,
+            client: "AtlanClient",
+            criteria: LineageListRequest,
+            start: int,
+            size: int,
+            has_more: bool,
+            assets: list[Asset],
+        ):
+            self._client = client
+            self._criteria = criteria
+            self._start = start
+            self._size = size
+            self._has_more = has_more
+            self._assets = assets
+
+        def has_more(self) -> bool:
+            return self._has_more
+
+        def current_page(self) -> list[Asset]:
+            return self._assets
+
+        def next_page(self, start=None, size=None) -> bool:
+            self._start = start or self._start + self._size
+            if size:
+                self._size = size
+            return self._get_next_page() if self._assets else False
+
+        # TODO Rename this here and in `next_page`
+        def _get_next_page(self):
+            self._criteria.offset = self._start
+            self._criteria.size = self._size
+            raw_json = self._client._call_api(
+                GET_LINEAGE_LIST,
+                request_obj=self._criteria,
+            )
+            if "entities" not in raw_json:
+                self._assets = []
+                return False
+            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+            self._has_more = parse_obj_as(bool, raw_json["hasMore"])
             return True
 
         def __iter__(self) -> Generator[Asset, None, None]:
@@ -1235,17 +1280,32 @@ class AtlanClient(BaseSettings):
         )
         return LineageResponse(**raw_json)
 
-    def get_lineage_list(
-        self, lineage_request: LineageListRequest
-    ) -> LineageListResponse:
+    def get_lineage_list(self, lineage_request: LineageListRequest) -> LineageResults:
         if lineage_request.direction == LineageDirection.BOTH:
             raise InvalidRequestException(
                 message="Unable to request both directions of lineage at the same time through the lineage list API.",
             )
         raw_json = self._call_api(
-            GET_LINEAGE_LIST, None, lineage_request, exclude_unset=True
+            GET_LINEAGE_LIST, None, request_obj=lineage_request, exclude_unset=True
         )
-        return LineageListResponse(**raw_json)
+        if "entities" in raw_json:
+            try:
+                assets = parse_obj_as(list[Asset], raw_json["entities"])
+                has_more = parse_obj_as(bool, raw_json["hasMore"])
+            except ValidationError as err:
+                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
+                raise err
+        else:
+            assets = []
+            has_more = False
+        return AtlanClient.LineageResults(
+            client=self,
+            criteria=lineage_request,
+            start=lineage_request.offset or 0,
+            size=lineage_request.size or 10,
+            has_more=has_more,
+            assets=assets,
+        )
 
     @validate_arguments()
     def find_personas_by_name(
