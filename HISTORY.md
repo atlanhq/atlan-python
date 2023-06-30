@@ -1,3 +1,15 @@
+## 0.2.0 (June 30, 2023)
+
+* Renamed all references to Classification and classification to Tag and tag (TagDef, Tag, tags, tagNames, etc):
+* Add ability to create Files as an asset directly on Atlan.
+* Add Event-handling abstractions
+* Add the following methods to pyatlan.client.atlan.AtlanClient
+  * find_glossary_by_name
+  * find_category_fast_by_name
+  * find_category_by_name
+  * find_term_fast_by_name
+  * find_term_by_name
+
 ## 0.1.3 (June 19, 2023)
 
 * Adds new persona and purpose policy handling
