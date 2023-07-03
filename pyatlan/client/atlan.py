@@ -299,6 +299,7 @@ class AtlanClient(BaseSettings):
             self._has_more = has_more
             self._assets = assets
 
+        @property
         def has_more(self) -> bool:
             return self._has_more
 

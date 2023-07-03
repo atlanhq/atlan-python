@@ -416,7 +416,7 @@ def test_fetch_lineage_start_list(
     lineage.direction = LineageDirection.UPSTREAM
     response = client.get_lineage_list(lineage)
     assert response
-    assert not response.has_more()
+    assert not response.has_more
 
 
 def test_fetch_lineage_middle(
@@ -574,7 +574,7 @@ def test_fetch_lineage_end_list(
     lineage.size = 10
     response = client.get_lineage_list(lineage)
     assert response
-    assert not response.has_more()
+    assert not response.has_more
     lineage = LineageListRequest.create(guid=view.guid)
     lineage.direction = LineageDirection.UPSTREAM
     response = client.get_lineage_list(lineage)
