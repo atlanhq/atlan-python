@@ -42,14 +42,14 @@ def make_atlan_tag(
     def _wait_for_successful_purge(name: str):
         client.purge_typedef(name, typedef_type=AtlanTagDef)
 
-    def _make_classification(name: str) -> AtlanTagDef:
-        classification_def = AtlanTagDef.create(name=name, color=AtlanTagColor.GREEN)
-        r = client.create_typedef(classification_def)
+    def _make_atlan_tag(name: str) -> AtlanTagDef:
+        atlan_tag_def = AtlanTagDef.create(name=name, color=AtlanTagColor.GREEN)
+        r = client.create_typedef(atlan_tag_def)
         c = r.atlan_tag_defs[0]
         created_names.append(c.display_name)
         return c
 
-    yield _make_classification
+    yield _make_atlan_tag
 
     for n in created_names:
         try:
@@ -71,7 +71,7 @@ def image(client: AtlanClient) -> Generator[AtlanImage, None, None]:
 
 
 @pytest.fixture(scope="module")
-def classification_with_image(
+def atlan_tag_with_image(
     client: AtlanClient,
     image: AtlanImage,
 ) -> Generator[AtlanTagDef, None, None]:
@@ -81,7 +81,7 @@ def classification_with_image(
 
 
 @pytest.fixture(scope="module")
-def classification_with_icon(
+def atlan_tag_with_icon(
     client: AtlanClient,
 ) -> Generator[AtlanTagDef, None, None]:
     cls = AtlanTagDef.create(
@@ -93,38 +93,38 @@ def classification_with_icon(
     client.purge_typedef(CLS_ICON, typedef_type=AtlanTagDef)
 
 
-def test_classification_with_image(classification_with_image: AtlanTagDef):
-    assert classification_with_image
-    assert classification_with_image.guid
-    assert classification_with_image.display_name == CLS_IMAGE
-    assert classification_with_image.name != CLS_IMAGE
-    assert classification_with_image.options
-    assert "color" in classification_with_image.options.keys()
-    assert classification_with_image.options.get("color") == AtlanTagColor.YELLOW.value
-    assert "imageID" in classification_with_image.options.keys()
-    assert classification_with_image.options.get("imageID")
-    assert "iconType" in classification_with_image.options.keys()
-    assert classification_with_image.options.get("iconType") == IconType.IMAGE.value
+def test_atlan_tag_with_image(atlan_tag_with_image):
+    assert atlan_tag_with_image
+    assert atlan_tag_with_image.guid
+    assert atlan_tag_with_image.display_name == CLS_IMAGE
+    assert atlan_tag_with_image.name != CLS_IMAGE
+    assert atlan_tag_with_image.options
+    assert "color" in atlan_tag_with_image.options.keys()
+    assert atlan_tag_with_image.options.get("color") == AtlanTagColor.YELLOW.value
+    assert "imageID" in atlan_tag_with_image.options.keys()
+    assert atlan_tag_with_image.options.get("imageID")
+    assert "iconType" in atlan_tag_with_image.options.keys()
+    assert atlan_tag_with_image.options.get("iconType") == IconType.IMAGE.value
 
 
-def test_classification_cache(classification_with_image: AtlanTagDef):
+def test_atlan_tag_cache(atlan_tag_with_image):
     cls_name = CLS_IMAGE
     cls_id = AtlanTagCache.get_id_for_name(cls_name)
     assert cls_id
-    assert cls_id == classification_with_image.name
+    assert cls_id == atlan_tag_with_image.name
     cls_name_found = AtlanTagCache.get_name_for_id(cls_id)
     assert cls_name_found
     assert cls_name_found == cls_name
 
 
-def test_classification_with_icon(classification_with_icon: AtlanTagDef):
-    assert classification_with_icon
-    assert classification_with_icon.guid
-    assert classification_with_icon.display_name == CLS_ICON
-    assert classification_with_icon.name != CLS_ICON
-    assert classification_with_icon.options
-    assert "color" in classification_with_icon.options.keys()
-    assert classification_with_icon.options.get("color") == AtlanTagColor.YELLOW.value
-    assert not classification_with_icon.options.get("imageID")
-    assert "iconType" in classification_with_icon.options.keys()
-    assert classification_with_icon.options.get("iconType") == IconType.ICON.value
+def test_atlan_tag_with_icon(atlan_tag_with_icon):
+    assert atlan_tag_with_icon
+    assert atlan_tag_with_icon.guid
+    assert atlan_tag_with_icon.display_name == CLS_ICON
+    assert atlan_tag_with_icon.name != CLS_ICON
+    assert atlan_tag_with_icon.options
+    assert "color" in atlan_tag_with_icon.options.keys()
+    assert atlan_tag_with_icon.options.get("color") == AtlanTagColor.YELLOW.value
+    assert not atlan_tag_with_icon.options.get("imageID")
+    assert "iconType" in atlan_tag_with_icon.options.keys()
+    assert atlan_tag_with_icon.options.get("iconType") == IconType.ICON.value
