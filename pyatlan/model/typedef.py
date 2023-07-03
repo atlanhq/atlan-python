@@ -8,9 +8,9 @@ from pydantic import Field
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import (
-    AtlanClassificationColor,
     AtlanCustomAttributePrimitiveType,
     AtlanIcon,
+    AtlanTagColor,
     AtlanTypeCategory,
     Cardinality,
     IconType,
@@ -496,7 +496,7 @@ class AtlanTagDef(TypeDef):
     @staticmethod
     def create(
         name: str,
-        color: AtlanClassificationColor,
+        color: AtlanTagColor,
         icon: AtlanIcon = AtlanIcon.ATLAN_TAG,
         image: Optional[AtlanImage] = None,
     ) -> AtlanTagDef:

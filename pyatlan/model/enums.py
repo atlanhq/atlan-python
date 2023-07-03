@@ -368,7 +368,7 @@ class FileType(str, Enum):
     ZIP = "zip"
 
 
-class AtlanClassificationColor(str, Enum):
+class AtlanTagColor(str, Enum):
     GREEN = "Green"
     YELLOW = "Yellow"
     RED = "Red"

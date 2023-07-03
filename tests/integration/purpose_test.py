@@ -9,7 +9,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AuthPolicy, Purpose
 from pyatlan.model.enums import (
     AssetSidebarTab,
-    AtlanClassificationColor,
+    AtlanTagColor,
     AuthPolicyType,
     DataAction,
     DataMaskingType,
@@ -25,9 +25,7 @@ MODULE_NAME = TestId.make_unique("Purpose")
 def atlan_tag(
     client: AtlanClient,
 ) -> Generator[AtlanTagDef, None, None]:
-    atlan_tag_def = AtlanTagDef.create(
-        name=MODULE_NAME, color=AtlanClassificationColor.GREEN
-    )
+    atlan_tag_def = AtlanTagDef.create(name=MODULE_NAME, color=AtlanTagColor.GREEN)
     typedef = client.create_typedef(atlan_tag_def)
     yield typedef.atlan_tag_defs[0]
     client.purge_typedef(MODULE_NAME, typedef_type=AtlanTagDef)
