@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+import abc
 import contextlib
 import copy
 import json
 import logging
 import os
+from abc import ABC
 from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
 import requests
@@ -83,6 +85,7 @@ from pyatlan.model.core import (
     AtlanTagName,
     AtlanTags,
     BulkRequest,
+    SearchRequest,
 )
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataRequest
 from pyatlan.model.enums import (
@@ -128,7 +131,7 @@ from pyatlan.model.user import (
     UserResponse,
 )
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import HTTPStatus, get_logger
+from pyatlan.utils import API, HTTPStatus, get_logger
 
 LOGGER = get_logger()
 T = TypeVar("T", bound=Referenceable)
@@ -236,7 +239,55 @@ class AtlanClient(BaseSettings):
     class Config:
         env_prefix = "atlan_"
 
-    class SearchResults:
+    class SearchResults(ABC):
+        def __init__(
+            self,
+            client: "AtlanClient",
+            endpoint: API,
+            criteria: SearchRequest,
+            start: int,
+            size: int,
+            assets: list[Asset],
+        ):
+            self._client = client
+            self._endpoint = endpoint
+            self._criteria = criteria
+            self._start = start
+            self._size = size
+            self._assets = assets
+
+        def current_page(self) -> list[Asset]:
+            return self._assets
+
+        def next_page(self, start=None, size=None) -> bool:
+            self._start = start or self._start + self._size
+            if size:
+                self._size = size
+            return self._get_next_page() if self._assets else False
+
+        @abc.abstractmethod
+        def _get_next_page(self):
+            pass
+
+        # TODO Rename this here and in `next_page`
+        def _get_next_page_json(self):
+            raw_json = self._client._call_api(
+                self._endpoint,
+                request_obj=self._criteria,
+            )
+            if "entities" not in raw_json:
+                self._assets = []
+                return None
+            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+            return raw_json
+
+        def __iter__(self) -> Generator[Asset, None, None]:
+            while True:
+                yield from self.current_page()
+                if not self.next_page():
+                    break
+
+    class IndexSearchResults(SearchResults):
         def __init__(
             self,
             client: "AtlanClient",
@@ -246,43 +297,26 @@ class AtlanClient(BaseSettings):
             count: int,
             assets: list[Asset],
         ):
-            self._client = client
-            self._criteria = criteria
-            self._start = start
-            self._size = size
-            self.count = count
-            self._assets = assets
+            super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
+            self._count = count
 
-        def current_page(self) -> list[Asset]:
-            return self._assets
-
-        def next_page(self, start=None, size=None) -> bool:
-            self._start = start or self._start + self._size
-            if size:
-                self._size = size
-            return self._get_next_page() if self._assets else False
-
-        # TODO Rename this here and in `next_page`
         def _get_next_page(self):
             self._criteria.dsl.from_ = self._start
             self._criteria.dsl.size = self._size
-            raw_json = self._client._call_api(
-                INDEX_SEARCH,
-                request_obj=self._criteria,
-            )
-            if "entities" not in raw_json:
-                self._assets = []
-                return False
-            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
-            return True
+            if raw_json := super()._get_next_page_json():
+                self._count = (
+                    raw_json["approximateCount"]
+                    if "approximateCount" in raw_json
+                    else 0
+                )
+                return True
+            return False
 
-        def __iter__(self) -> Generator[Asset, None, None]:
-            while True:
-                yield from self.current_page()
-                if not self.next_page():
-                    break
+        @property
+        def count(self) -> int:
+            return self._count
 
-    class LineageResults:
+    class LineageListResults(SearchResults):
         def __init__(
             self,
             client: "AtlanClient",
@@ -292,46 +326,20 @@ class AtlanClient(BaseSettings):
             has_more: bool,
             assets: list[Asset],
         ):
-            self._client = client
-            self._criteria = criteria
-            self._start = start
-            self._size = size
+            super().__init__(client, GET_LINEAGE_LIST, criteria, start, size, assets)
             self._has_more = has_more
-            self._assets = assets
+
+        def _get_next_page(self):
+            self._criteria.offset = self._start
+            self._criteria.size = self._size
+            if raw_json := super()._get_next_page_json():
+                self._has_more = parse_obj_as(bool, raw_json["hasMore"])
+                return True
+            return False
 
         @property
         def has_more(self) -> bool:
             return self._has_more
-
-        def current_page(self) -> list[Asset]:
-            return self._assets
-
-        def next_page(self, start=None, size=None) -> bool:
-            self._start = start or self._start + self._size
-            if size:
-                self._size = size
-            return self._get_next_page() if self._assets else False
-
-        # TODO Rename this here and in `next_page`
-        def _get_next_page(self):
-            self._criteria.offset = self._start
-            self._criteria.size = self._size
-            raw_json = self._client._call_api(
-                GET_LINEAGE_LIST,
-                request_obj=self._criteria,
-            )
-            if "entities" not in raw_json:
-                self._assets = []
-                return False
-            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
-            self._has_more = parse_obj_as(bool, raw_json["hasMore"])
-            return True
-
-        def __iter__(self) -> Generator[Asset, None, None]:
-            while True:
-                yield from self.current_page()
-                if not self.next_page():
-                    break
 
     @classmethod
     def register_client(cls, client: "AtlanClient"):
@@ -900,7 +908,7 @@ class AtlanClient(BaseSettings):
         )
         return AssetMutationResponse(**raw_json)
 
-    def search(self, criteria: IndexSearchRequest) -> SearchResults:
+    def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
         raw_json = self._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
@@ -914,7 +922,7 @@ class AtlanClient(BaseSettings):
         else:
             assets = []
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
-        return AtlanClient.SearchResults(
+        return AtlanClient.IndexSearchResults(
             client=self,
             criteria=criteria,
             start=criteria.dsl.from_,
@@ -1281,7 +1289,9 @@ class AtlanClient(BaseSettings):
         )
         return LineageResponse(**raw_json)
 
-    def get_lineage_list(self, lineage_request: LineageListRequest) -> LineageResults:
+    def get_lineage_list(
+        self, lineage_request: LineageListRequest
+    ) -> LineageListResults:
         if lineage_request.direction == LineageDirection.BOTH:
             raise InvalidRequestException(
                 message="Unable to request both directions of lineage at the same time through the lineage list API.",
@@ -1299,7 +1309,7 @@ class AtlanClient(BaseSettings):
         else:
             assets = []
             has_more = False
-        return AtlanClient.LineageResults(
+        return AtlanClient.LineageListResults(
             client=self,
             criteria=lineage_request,
             start=lineage_request.offset or 0,

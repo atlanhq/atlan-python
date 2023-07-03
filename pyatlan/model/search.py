@@ -19,7 +19,7 @@ from pydantic import (
     validator,
 )
 
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanConnectorType, SortOrder
 
 if TYPE_CHECKING:
@@ -1778,9 +1778,8 @@ class DSL(AtlanObject):
             raise ValueError("Either query or post_filter is required")
 
 
-class IndexSearchRequest(AtlanObject):
+class IndexSearchRequest(SearchRequest):
     dsl: DSL
-    attributes: list[str] = Field(default_factory=list)
     relation_attributes: list[str] = Field(
         default_factory=list, alias="relationAttributes"
     )

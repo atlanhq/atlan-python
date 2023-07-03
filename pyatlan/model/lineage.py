@@ -13,7 +13,7 @@ else:
 
 from pyatlan.error import InvalidRequestError
 from pyatlan.model.assets import Asset
-from pyatlan.model.core import AtlanObject
+from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
 
 
@@ -247,7 +247,7 @@ class FilterList(AtlanObject):
     )
 
 
-class LineageListRequest(AtlanObject):
+class LineageListRequest(SearchRequest):
     guid: str = Field(
         description="Unique identifier of the asset for which to retrieve lineage."
     )
@@ -275,9 +275,6 @@ class LineageListRequest(AtlanObject):
         description="Filters to apply for skipping traversal based on relationships."
         "Any sub-graphs beyond the relationships filtered out by these filters will not be included"
         "in the lineage result."
-    )
-    attributes: Optional[List[str]] = Field(
-        description="List of attributes to be returned for each asset."
     )
     offset: Optional[int] = Field(
         description="Starting point for pagination.", alias="from"
