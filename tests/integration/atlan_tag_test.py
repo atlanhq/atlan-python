@@ -12,7 +12,7 @@ from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
-from pyatlan.model.enums import AtlanClassificationColor, AtlanIcon, IconType
+from pyatlan.model.enums import AtlanIcon, AtlanTagColor, IconType
 from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId
 
@@ -43,9 +43,7 @@ def make_atlan_tag(
         client.purge_typedef(name, typedef_type=AtlanTagDef)
 
     def _make_classification(name: str) -> AtlanTagDef:
-        classification_def = AtlanTagDef.create(
-            name=name, color=AtlanClassificationColor.GREEN
-        )
+        classification_def = AtlanTagDef.create(name=name, color=AtlanTagColor.GREEN)
         r = client.create_typedef(classification_def)
         c = r.atlan_tag_defs[0]
         created_names.append(c.display_name)
@@ -77,9 +75,7 @@ def classification_with_image(
     client: AtlanClient,
     image: AtlanImage,
 ) -> Generator[AtlanTagDef, None, None]:
-    cls = AtlanTagDef.create(
-        name=CLS_IMAGE, color=AtlanClassificationColor.YELLOW, image=image
-    )
+    cls = AtlanTagDef.create(name=CLS_IMAGE, color=AtlanTagColor.YELLOW, image=image)
     yield client.create_typedef(cls).atlan_tag_defs[0]
     client.purge_typedef(CLS_IMAGE, typedef_type=AtlanTagDef)
 
@@ -90,7 +86,7 @@ def classification_with_icon(
 ) -> Generator[AtlanTagDef, None, None]:
     cls = AtlanTagDef.create(
         name=CLS_ICON,
-        color=AtlanClassificationColor.YELLOW,
+        color=AtlanTagColor.YELLOW,
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
     yield client.create_typedef(cls).atlan_tag_defs[0]
@@ -104,10 +100,7 @@ def test_classification_with_image(classification_with_image: AtlanTagDef):
     assert classification_with_image.name != CLS_IMAGE
     assert classification_with_image.options
     assert "color" in classification_with_image.options.keys()
-    assert (
-        classification_with_image.options.get("color")
-        == AtlanClassificationColor.YELLOW.value
-    )
+    assert classification_with_image.options.get("color") == AtlanTagColor.YELLOW.value
     assert "imageID" in classification_with_image.options.keys()
     assert classification_with_image.options.get("imageID")
     assert "iconType" in classification_with_image.options.keys()
@@ -131,10 +124,7 @@ def test_classification_with_icon(classification_with_icon: AtlanTagDef):
     assert classification_with_icon.name != CLS_ICON
     assert classification_with_icon.options
     assert "color" in classification_with_icon.options.keys()
-    assert (
-        classification_with_icon.options.get("color")
-        == AtlanClassificationColor.YELLOW.value
-    )
+    assert classification_with_icon.options.get("color") == AtlanTagColor.YELLOW.value
     assert not classification_with_icon.options.get("imageID")
     assert "iconType" in classification_with_icon.options.keys()
     assert classification_with_icon.options.get("iconType") == IconType.ICON.value

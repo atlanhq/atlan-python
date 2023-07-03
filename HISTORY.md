@@ -1,3 +1,7 @@
+## 0.3.0 (July 3, 2023)
+
+* Renamed AtlanClassificationColor to AtlanTagColor
+
 ## 0.2.0 (June 30, 2023)
 
 * Renamed all references to Classification and classification to Tag and tag (TagDef, Tag, tags, tagNames, etc):
