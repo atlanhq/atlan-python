@@ -131,7 +131,12 @@ from pyatlan.model.user import (
     UserResponse,
 )
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import API, HTTPStatus, get_logger
+from pyatlan.utils import (
+    API,
+    HTTPStatus,
+    get_logger,
+    unflatten_custom_metadata_for_entity,
+)
 
 LOGGER = get_logger()
 T = TypeVar("T", bound=Referenceable)
@@ -915,6 +920,10 @@ class AtlanClient(BaseSettings):
         )
         if "entities" in raw_json:
             try:
+                for entity in raw_json["entities"]:
+                    unflatten_custom_metadata_for_entity(
+                        entity=entity, attributes=criteria.attributes
+                    )
                 assets = parse_obj_as(list[Asset], raw_json["entities"])
             except ValidationError as err:
                 LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
