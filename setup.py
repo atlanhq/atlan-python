@@ -24,7 +24,12 @@ import os
 from setuptools import find_packages, setup
 
 # External dependencies
-requirements = ["requests>=2.24", "pydantic>=1.10.8", "jinja2>=3.1.2"]
+with open("requirements.txt") as f:
+    requirements = f.read().splitlines()
+
+# Development dependencies
+with open("requirements-dev.txt") as f:
+    extra = f.read().splitlines()
 
 
 def read(file_name):
@@ -57,22 +62,7 @@ setup(
     ],
     packages=find_packages(),
     install_requires=requirements,
-    extra_requires={
-        "dev": [
-            "pytest>=7.3.1",
-            "flake8>=5.0.4",
-            "mypy>=0.991",
-            "black>=22.10.0",
-            "types-requests>=2.28.11.17",
-            "pre-commit>=2.20.0",
-            "deepdiff>=6.2.1",
-            "pytest-cov>=4.0.0",
-            "pytest-order==1.1.0",
-            "retry==0.9.2",
-            "types-retry==0.9.9.3",
-            "twine>=4.0.2",
-        ]
-    },
+    extra_requires={"dev": extra},
     include_package_data=True,
     zip_safe=False,
     keywords="atlan client",

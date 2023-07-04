@@ -1,3 +1,9 @@
+## 0.4.0 (July 4, 2023)
+
+* Pin dependency on pydantic==1.10.8
+* Facilitate inclusion of custom metadata in index search
+* Change lineage list response into a lazy-fetching generator
+
 ## 0.3.0 (July 3, 2023)
 
 * Renamed AtlanClassificationColor to AtlanTagColor
