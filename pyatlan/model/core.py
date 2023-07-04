@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import TYPE_CHECKING
+from abc import ABC
+from typing import TYPE_CHECKING, List
 
 from pydantic import BaseModel, Extra, Field, validator
 
@@ -113,6 +114,19 @@ class AtlanObject(BaseModel):
             "AtlanTagName": AtlanTagName.json_encode_atlan_tag,
         }
         validate_assignment = True
+
+
+class SearchRequest(AtlanObject, ABC):
+    attributes: Optional[List[str]] = Field(
+        description="List of attributes to be returned for each result.",
+        default_factory=list,
+    )
+    offset: Optional[int] = Field(
+        description="Starting point for pagination.", alias="from"
+    )
+    size: Optional[int] = Field(
+        description="How many results to include in each page of results."
+    )
 
 
 @dataclass

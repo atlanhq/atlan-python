@@ -399,22 +399,23 @@ def test_fetch_lineage_start_list(
 ):
     lineage = LineageListRequest.create(guid=table.guid)
     lineage.attributes = ["name"]
+    lineage.size = 1
     response = client.get_lineage_list(lineage)
     assert response
-    assert response.entities
-    assert len(response.entities) == 4
-    assert response.entity_count == 4
-    assert isinstance(response.entities[0], Process)
-    assert isinstance(response.entities[1], MaterialisedView)
-    assert isinstance(response.entities[2], Process)
-    assert isinstance(response.entities[3], View)
-    one = response.entities[3]
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 4
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], MaterialisedView)
+    assert isinstance(results[2], Process)
+    assert isinstance(results[3], View)
+    one = results[3]
     assert one.guid == view.guid
     lineage = LineageListRequest.create(guid=table.guid)
     lineage.direction = LineageDirection.UPSTREAM
     response = client.get_lineage_list(lineage)
     assert response
-    assert not response.entities
     assert not response.has_more
 
 
@@ -490,24 +491,28 @@ def test_fetch_lineage_middle_list(
 ):
     lineage = LineageListRequest.create(guid=mview.guid)
     lineage.attributes = ["name"]
+    lineage.size = 5
     response = client.get_lineage_list(lineage)
     assert response
-    assert response.entities
-    assert len(response.entities) == 2
-    assert response.entity_count == 2
-    assert isinstance(response.entities[0], Process)
-    assert isinstance(response.entities[1], View)
-    assert response.entities[1].guid == view.guid
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 2
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], View)
+    assert results[1].guid == view.guid
     lineage = LineageListRequest.create(guid=mview.guid)
     lineage.direction = LineageDirection.UPSTREAM
+    lineage.size = 5
     response = client.get_lineage_list(lineage)
     assert response
-    assert response.entities
-    assert len(response.entities) == 2
-    assert response.entity_count == 2
-    assert isinstance(response.entities[0], Process)
-    assert isinstance(response.entities[1], Table)
-    assert response.entities[1].guid == table.guid
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 2
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], Table)
+    assert results[1].guid == table.guid
 
 
 def test_fetch_lineage_end(
@@ -566,22 +571,23 @@ def test_fetch_lineage_end_list(
 ):
     lineage = LineageListRequest.create(guid=view.guid)
     lineage.attributes = ["name"]
+    lineage.size = 10
     response = client.get_lineage_list(lineage)
     assert response
-    assert not response.entities
     assert not response.has_more
     lineage = LineageListRequest.create(guid=view.guid)
     lineage.direction = LineageDirection.UPSTREAM
     response = client.get_lineage_list(lineage)
     assert response
-    assert response.entities
-    assert len(response.entities) == 4
-    assert response.entity_count == 4
-    assert isinstance(response.entities[0], Process)
-    assert isinstance(response.entities[1], MaterialisedView)
-    assert isinstance(response.entities[2], Process)
-    assert isinstance(response.entities[3], Table)
-    one = response.entities[3]
+    results = []
+    for a in response:
+        results.append(a)
+    assert len(results) == 4
+    assert isinstance(results[0], Process)
+    assert isinstance(results[1], MaterialisedView)
+    assert isinstance(results[2], Process)
+    assert isinstance(results[3], Table)
+    one = results[3]
     assert one.guid == table.guid
 
 
