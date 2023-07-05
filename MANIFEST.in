@@ -1,1 +1,3 @@
 include pyatlan/version.txt
+include requirements.txt
+include requirements-dev.txt
