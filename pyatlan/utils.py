@@ -3,6 +3,7 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 import enum
 import logging
+import re
 import time
 from functools import reduce
 from typing import Any, Optional
@@ -184,3 +185,29 @@ class HTTPStatus:
     NO_CONTENT = 204
     NOT_FOUND = 404
     SERVICE_UNAVAILABLE = 503
+
+
+def unflatten_custom_metadata(
+    attributes: Optional[list[str]], asset_attributes: Optional[dict[str, Any]]
+) -> Optional[dict[str, Any]]:
+    if not attributes or not asset_attributes:
+        return None
+    retval: dict[str, Any] = {}
+    metadata_attribute = re.compile(r"(\w+)[.](\w+)")
+    for attribute_of_interest in attributes:
+        if matched := metadata_attribute.match(attribute_of_interest):
+            if attribute_of_interest in asset_attributes:
+                key = matched[1]
+                if key not in retval:
+                    retval[key] = {}
+                retval[key][matched[2]] = asset_attributes[attribute_of_interest]
+    return retval
+
+
+def unflatten_custom_metadata_for_entity(
+    entity: dict[str, Any], attributes: Optional[list[str]]
+):
+    if custom_metadata := unflatten_custom_metadata(
+        attributes=attributes, asset_attributes=entity.get("attributes", None)
+    ):
+        entity["businessAttributes"] = custom_metadata

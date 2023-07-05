@@ -511,8 +511,14 @@ def test_search_by_any_accountable(
     )
     query = Bool(must=[be_active, be_a_term, have_attr])
     dsl = DSL(query=query)
+    attributes = ["name", "anchor"]
+    cm_attributes = CustomMetadataCache.get_attributes_for_search_results(
+        set_name=CM_RACI
+    )
+    assert cm_attributes
+    attributes.extend(cm_attributes)
     request = IndexSearchRequest(
-        dsl=dsl, attributes=["name", "anchor"], relation_attributes=["name"]
+        dsl=dsl, attributes=attributes, relation_attributes=["name"]
     )
     response = client.search(criteria=request)
     assert response
@@ -530,6 +536,9 @@ def test_search_by_any_accountable(
         anchor = t.attributes.anchor
         assert anchor
         assert anchor.name == glossary.name
+        _validate_raci_attributes_replacement(
+            client, t.get_custom_metadata(name=CM_RACI)
+        )
 
 
 @pytest.mark.order(after="test_replace_term_cm_ipr")
