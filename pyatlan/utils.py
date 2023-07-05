@@ -208,6 +208,6 @@ def unflatten_custom_metadata_for_entity(
     entity: dict[str, Any], attributes: Optional[list[str]]
 ):
     if custom_metadata := unflatten_custom_metadata(
-        attributes=attributes, asset_attributes=entity["attributes"]
+        attributes=attributes, asset_attributes=entity.get("attributes", None)
     ):
         entity["businessAttributes"] = custom_metadata

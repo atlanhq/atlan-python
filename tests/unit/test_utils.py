@@ -110,17 +110,17 @@ def test_unflatten_custom_metadata_for_entity_when_empty_dict_returned_does_not_
     )
 
 
+@pytest.mark.parametrize("entity", [({"attributes": {"name": "dave"}}), ({})])
 @patch("pyatlan.utils.unflatten_custom_metadata")
 def test_unflatten_custom_metadata_for_entity_when_none_returned_does_not_modify(
-    mock_unflatten_custom_metadata,
+    mock_unflatten_custom_metadata, entity
 ):
     mock_unflatten_custom_metadata.return_value = None
-    entity = {"attributes": {"name": "dave"}}
     attributes = ["name"]
 
     unflatten_custom_metadata_for_entity(entity=entity, attributes=attributes)
 
     assert "businessAttributes" not in entity
     assert mock_unflatten_custom_metadata.callled_once_with(
-        attributes=attributes, asset_attrubtes=entity["attributes"]
+        attributes=attributes, asset_attrubtes=entity.get("attributes", None)
     )

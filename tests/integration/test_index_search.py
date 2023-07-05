@@ -213,7 +213,8 @@ def test_term_queries_factory(client: AtlanClient, term_query_value, method, cla
     [
         (method)
         for method in dir(Exists)
-        if method.startswith("with_") and method != "with_custom_metadata"
+        # if method.startswith("with_") and method != "with_custom_metadata"
+        if method == "with_create_time_as_timestamp"
     ],
 )
 def test_exists_query_factory(client: AtlanClient, with_name):

@@ -1,4 +1,4 @@
-## 0.4.0 (July 4, 2023)
+## 0.4.0 (July 5, 2023)
 
 * Pin dependency on pydantic==1.10.8
 * Facilitate inclusion of custom metadata in index search
