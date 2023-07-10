@@ -44,8 +44,7 @@ jobs:
       - name: Build Lambda layer
         run: |
           pip install --target=python .
-          zip -r lambda-layer.zip ./python
       - uses: actions/upload-artifact@v3
         with:
           name: lambda-layer
-          path: lambda-layer.zip
+          path: ./python
