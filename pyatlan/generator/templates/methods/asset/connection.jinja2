@@ -12,7 +12,7 @@
         client: Optional[AtlanClient] = None,
     )->{{ entity_def.name }}:
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
+            client = AtlanClient.get_default_client()
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
@@ -20,19 +20,19 @@
             )
         if admin_roles:
             for role_id in admin_roles:
-                if not client.role_cache.get_name_for_id(role_id):
+                if not client.role_cache.get_name_for_id(role_id):  # type: ignore
                     raise ValueError(
                         f"Provided role ID {role_id} was not found in Atlan."
                     )
         if admin_groups:
             for group_alias in admin_groups:
-                if not client.group_cache.get_id_for_alias(group_alias):
+                if not client.group_cache.get_id_for_alias(group_alias):  # type: ignore
                     raise ValueError(
                         f"Provided group name {group_alias} was not found in Atlan."
                     )
         if admin_users:
             for username in admin_users:
-                if not client.user_cache.get_id_for_name(username):
+                if not client.user_cache.get_id_for_name(username):  # type: ignore
                     raise ValueError(
                         f"Provided username {username} was not found in Atlan."
                     )

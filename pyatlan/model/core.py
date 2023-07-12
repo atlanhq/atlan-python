@@ -60,8 +60,8 @@ class AtlanTagName:
         client: Optional[AtlanClient] = None,
     ):
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
-        if not client.atlan_tag_cache.get_id_for_name(display_text):
+            client = AtlanClient.get_default_client()
+        if not client.atlan_tag_cache.get_id_for_name(display_text):  # type: ignore
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
 
@@ -88,13 +88,11 @@ class AtlanTagName:
     def _convert_to_display_text(
         cls,
         data,
-        client: Optional[AtlanClient] = None,
     ):
         if isinstance(data, AtlanTagName):
             return data
-        if not client:
-            client = AtlanClient.get_default_client_or_fail()
-        if display_text := client.atlan_tag_cache.get_name_for_id(data):
+        client = AtlanClient.get_default_client()
+        if display_text := client.atlan_tag_cache.get_name_for_id(data):  # type: ignore
             return AtlanTagName(display_text, client=client)
         else:
             raise ValueError(f"{data} is not a valid AtlanTag")
@@ -105,8 +103,8 @@ class AtlanTagName:
         client: Optional[AtlanClient] = None,
     ):
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
-        return client.atlan_tag_cache.get_id_for_name(atlan_tag_name._display_text)
+            client = AtlanClient.get_default_client()
+        return client.atlan_tag_cache.get_id_for_name(atlan_tag_name._display_text)  # type: ignore
 
 
 class AtlanObject(BaseModel):

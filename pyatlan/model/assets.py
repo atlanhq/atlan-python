@@ -2479,7 +2479,7 @@ class Connection(Asset, type_name="Connection"):
         client: Optional[AtlanClient] = None,
     ) -> Connection:
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
+            client = AtlanClient.get_default_client()
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
@@ -2487,19 +2487,19 @@ class Connection(Asset, type_name="Connection"):
             )
         if admin_roles:
             for role_id in admin_roles:
-                if not client.role_cache.get_name_for_id(role_id):
+                if not client.role_cache.get_name_for_id(role_id):  # type: ignore
                     raise ValueError(
                         f"Provided role ID {role_id} was not found in Atlan."
                     )
         if admin_groups:
             for group_alias in admin_groups:
-                if not client.group_cache.get_id_for_alias(group_alias):
+                if not client.group_cache.get_id_for_alias(group_alias):  # type: ignore
                     raise ValueError(
                         f"Provided group name {group_alias} was not found in Atlan."
                     )
         if admin_users:
             for username in admin_users:
-                if not client.user_cache.get_id_for_name(username):
+                if not client.user_cache.get_id_for_name(username):  # type: ignore
                     raise ValueError(
                         f"Provided username {username} was not found in Atlan."
                     )
@@ -3358,9 +3358,9 @@ class Badge(Asset, type_name="Badge"):
                 [name, cm_name, cm_attribute, badge_conditions],
             )
             if not client:
-                client = AtlanClient.get_default_client_or_fail()
-            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
-            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
+                client = AtlanClient.get_default_client()
+            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)  # type: ignore
+            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(  # type: ignore
                 set_name=cm_name, attr_name=cm_attribute
             )
             return Badge.Attributes(
@@ -4987,7 +4987,7 @@ class Purpose(AccessControl):
             [name, purpose_id, policy_type, actions],
         )
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
+            client = AtlanClient.get_default_client()
         target_found = False
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {x.value for x in actions}
@@ -5005,7 +5005,7 @@ class Purpose(AccessControl):
         else:
             if policy_groups:
                 for group_alias in policy_groups:
-                    if not client.group_cache.get_id_for_alias(group_alias):
+                    if not client.group_cache.get_id_for_alias(group_alias):  # type: ignore
                         raise ValueError(
                             f"Provided group name {group_alias} was not found in Atlan."
                         )
@@ -5015,7 +5015,7 @@ class Purpose(AccessControl):
                 policy.policy_groups = None
             if policy_users:
                 for username in policy_users:
-                    if not client.user_cache.get_id_for_name(username):
+                    if not client.user_cache.get_id_for_name(username):  # type: ignore
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )
@@ -5045,7 +5045,7 @@ class Purpose(AccessControl):
             ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
         )
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
+            client = AtlanClient.get_default_client()
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
@@ -5062,7 +5062,7 @@ class Purpose(AccessControl):
         else:
             if policy_groups:
                 for group_alias in policy_groups:
-                    if not client.group_cache.get_id_for_alias(group_alias):
+                    if not client.group_cache.get_id_for_alias(group_alias):  # type: ignore
                         raise ValueError(
                             f"Provided group name {group_alias} was not found in Atlan."
                         )
@@ -5072,7 +5072,7 @@ class Purpose(AccessControl):
                 policy.policy_groups = None
             if policy_users:
                 for username in policy_users:
-                    if not client.user_cache.get_id_for_name(username):
+                    if not client.user_cache.get_id_for_name(username):  # type: ignore
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )

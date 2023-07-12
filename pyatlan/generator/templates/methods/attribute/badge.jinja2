@@ -15,9 +15,9 @@
                 [name, cm_name, cm_attribute, badge_conditions],
             )
             if not client:
-                client = AtlanClient.get_default_client_or_fail()
-            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
-            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
+                client = AtlanClient.get_default_client()
+            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)  # type: ignore
+            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(  # type: ignore
                 set_name=cm_name, attr_name=cm_attribute
             )
             return Badge.Attributes(

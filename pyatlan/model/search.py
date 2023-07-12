@@ -186,8 +186,8 @@ class Exists(Query):
         client: Optional[AtlanClient] = None,
     ):
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
-        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(
+            client = AtlanClient.get_default_client()
+        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(  # type: ignore
             set_name=set_name, attr_name=attr_name
         ):
             return cls(field=attr_id)
@@ -355,8 +355,8 @@ class Term(Query):
         client: Optional[AtlanClient] = None,
     ):
         if not client:
-            client = AtlanClient.get_default_client_or_fail()
-        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(
+            client = AtlanClient.get_default_client()
+        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(  # type: ignore
             set_name=set_name, attr_name=attr_name
         ):
             return cls(field=attr_id, value=value)

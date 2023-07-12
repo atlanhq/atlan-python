@@ -694,12 +694,6 @@ class AtlanClient(BaseSettings):
         return cls._default_client
 
     @classmethod
-    def get_default_client_or_fail(cls) -> "AtlanClient":
-        if not cls._default_client:
-            raise ValueError("No default client configured.")
-        return cls._default_client
-
-    @classmethod
     def reset_default_client(cls):
         """Sets the default_client to None"""
         cls._default_client = None

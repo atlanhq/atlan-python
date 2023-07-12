@@ -436,8 +436,8 @@ class AttributeDef(AtlanObject):
             attr_def.type_name = base_type
         if add_enum_values:
             if not client:
-                client = AtlanClient.get_default_client_or_fail()
-            if enum_def := client.enum_cache.get_by_name(str(options_name)):
+                client = AtlanClient.get_default_client()
+            if enum_def := client.enum_cache.get_by_name(str(options_name)):  # type: ignore
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []
