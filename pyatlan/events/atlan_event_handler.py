@@ -56,7 +56,15 @@ def get_current_view_of_asset(
         exclude_atlan_tags=~include_atlan_tags,
     )
     response = client.search(criteria=request)
-    return result if (result := response.current_page()[0]) else None
+    return (
+        result
+        if (
+            result := response.current_page()[0]
+            if len(response.current_page()) > 0
+            else None
+        )
+        else None
+    )
 
 
 def has_description(asset: Asset) -> bool:
