@@ -10,7 +10,7 @@ import json
 import logging
 import os
 from abc import ABC
-from typing import ClassVar, Generator, List, Optional, Type, TypeVar, Union
+from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
 import requests
 from pydantic import (
@@ -1543,7 +1543,7 @@ class AtlanClient(BaseSettings):
     def append_terms(
         self,
         asset_type: Type[A],
-        terms: List[AtlasGlossaryTerm],
+        terms: list[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1561,7 +1561,7 @@ class AtlanClient(BaseSettings):
             raise ValueError("Either guid or qualified name must be specified")
         if not terms:
             return asset
-        replacement_terms: List[AtlasGlossaryTerm] = []
+        replacement_terms: list[AtlasGlossaryTerm] = []
         if existing_terms := asset.assigned_terms:
             replacement_terms.extend(
                 term for term in existing_terms if term.relationship_status != "DELETED"
@@ -1577,7 +1577,7 @@ class AtlanClient(BaseSettings):
     def replace_terms(
         self,
         asset_type: Type[A],
-        terms: List[AtlasGlossaryTerm],
+        terms: list[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1603,7 +1603,7 @@ class AtlanClient(BaseSettings):
     def remove_terms(
         self,
         asset_type: Type[A],
-        terms: List[AtlasGlossaryTerm],
+        terms: list[AtlasGlossaryTerm],
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
@@ -1621,7 +1621,7 @@ class AtlanClient(BaseSettings):
             )
         else:
             raise ValueError("Either guid or qualified name must be specified")
-        replacement_terms: List[AtlasGlossaryTerm] = []
+        replacement_terms: list[AtlasGlossaryTerm] = []
         guids_to_be_removed = {t.guid for t in terms}
         if existing_terms := asset.assigned_terms:
             replacement_terms.extend(
@@ -1642,7 +1642,7 @@ class AtlanClient(BaseSettings):
         name: str,
         connector_type: AtlanConnectorType,
         attributes: Optional[list[str]] = None,
-    ) -> List[Connection]:
+    ) -> list[Connection]:
         if attributes is None:
             attributes = []
         query = (
@@ -1699,7 +1699,7 @@ class AtlanClient(BaseSettings):
         self,
         name: str,
         attributes: Optional[list[str]] = None,
-    ) -> List[Persona]:
+    ) -> list[Persona]:
         if attributes is None:
             attributes = []
         query = (
