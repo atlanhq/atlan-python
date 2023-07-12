@@ -1393,6 +1393,7 @@ class AtlanClient(BaseSettings):
                     propagate=propagate,
                     remove_propagations_on_entity_delete=remove_propagation_on_delete,
                     restrict_propagation_through_lineage=restrict_lineage_propagation,
+                    client=self,
                 )
                 for name in atlan_tag_names
             ]

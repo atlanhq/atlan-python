@@ -57,10 +57,11 @@ class AtlanTagName:
     def __init__(
         self,
         display_text: str,
+        client: Optional[AtlanClient] = None,
     ):
-        if not AtlanClient.get_default_client_or_fail().atlan_tag_cache.get_id_for_name(
-            display_text
-        ):
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
+        if not client.atlan_tag_cache.get_id_for_name(display_text):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
 
@@ -87,23 +88,25 @@ class AtlanTagName:
     def _convert_to_display_text(
         cls,
         data,
+        client: Optional[AtlanClient] = None,
     ):
         if isinstance(data, AtlanTagName):
             return data
-        if display_text := AtlanClient.get_default_client_or_fail().atlan_tag_cache.get_name_for_id(
-            data
-        ):
-            return AtlanTagName(display_text)
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
+        if display_text := client.atlan_tag_cache.get_name_for_id(data):
+            return AtlanTagName(display_text, client=client)
         else:
             raise ValueError(f"{data} is not a valid AtlanTag")
 
     @staticmethod
     def json_encode_atlan_tag(
         atlan_tag_name: "AtlanTagName",
+        client: Optional[AtlanClient] = None,
     ):
-        return AtlanClient.get_default_client_or_fail().atlan_tag_cache.get_id_for_name(
-            atlan_tag_name._display_text
-        )
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
+        return client.atlan_tag_cache.get_id_for_name(atlan_tag_name._display_text)
 
 
 class AtlanObject(BaseModel):
