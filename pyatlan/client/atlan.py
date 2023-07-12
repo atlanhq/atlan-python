@@ -1850,14 +1850,9 @@ from pyatlan.model.assets import (  # noqa: E402
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Connection,
-    Database,
-    MaterialisedView,
     Persona,
     Purpose,
     Referenceable,
-    Schema,
-    Table,
-    View,
 )
 from pyatlan.model.atlan_image import AtlanImage  # noqa: E402
 from pyatlan.model.core import (  # noqa: E402
@@ -1914,29 +1909,6 @@ from pyatlan.model.user import (  # noqa: E402
     UserMinimalResponse,
     UserResponse,
 )
-
-# Assets = Union[
-#     AtlasGlossary,  # type: ignore
-#     AtlasGlossaryCategory,  # type: ignore
-#     AtlasGlossaryTerm,  # type: ignore
-#     Connection,  # type: ignore
-#     Database,  # type: ignore
-#     Schema,  # type: ignore
-#     Table,  # type: ignore
-#     View,  # type: ignore
-#     MaterialisedView,  # type: ignore
-# ]
-Asset_Types = Union[
-    Type[AtlasGlossary],  # type: ignore
-    Type[AtlasGlossaryCategory],  # type: ignore
-    Type[AtlasGlossaryTerm],  # type: ignore
-    Type[Connection],  # type: ignore
-    Type[Database],  # type: ignore
-    Type[Schema],  # type: ignore
-    Type[Table],  # type: ignore
-    Type[View],  # type: ignore
-    Type[MaterialisedView],  # type: ignore
-]
 
 AtlanClient.update_forward_refs()
 AssetResponse[A].update_forward_refs()
