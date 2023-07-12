@@ -8,7 +8,6 @@ from typing import Callable, Generator
 import pytest
 from retry import retry
 
-from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
@@ -107,12 +106,12 @@ def test_atlan_tag_with_image(atlan_tag_with_image):
     assert atlan_tag_with_image.options.get("iconType") == IconType.IMAGE.value
 
 
-def test_atlan_tag_cache(atlan_tag_with_image):
+def test_atlan_tag_cache(client: AtlanClient, atlan_tag_with_image):
     cls_name = CLS_IMAGE
-    cls_id = AtlanTagCache.get_id_for_name(cls_name)
+    cls_id = client.atlan_tag_cache.get_id_for_name(cls_name)
     assert cls_id
     assert cls_id == atlan_tag_with_image.name
-    cls_name_found = AtlanTagCache.get_name_for_id(cls_id)
+    cls_name_found = client.atlan_tag_cache.get_name_for_id(cls_id)
     assert cls_name_found
     assert cls_name_found == cls_name
 

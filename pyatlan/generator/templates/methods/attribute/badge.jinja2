@@ -8,15 +8,16 @@
             cm_name: str,
             cm_attribute: str,
             badge_conditions: list[BadgeCondition],
+            client: Optional[AtlanClient] = None,
         ) -> Badge.Attributes:
             validate_required_fields(
                 ["name", "cm_name", "cm_attribute", "badge_conditions"],
                 [name, cm_name, cm_attribute, badge_conditions],
             )
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            cm_id = CustomMetadataCache.get_id_for_name(cm_name)
-            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
+            if not client:
+                client = AtlanClient.get_default_client_or_fail()
+            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
+            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
                 set_name=cm_name, attr_name=cm_attribute
             )
             return Badge.Attributes(

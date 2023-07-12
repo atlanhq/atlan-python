@@ -153,7 +153,6 @@ from pyatlan.model.assets import (
     View,
     validate_single_required_field,
 )
-from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     ADLSAccessTier,
     ADLSLeaseState,
@@ -187,6 +186,7 @@ from pyatlan.model.structs import (
     SourceTagAttribute,
 )
 from pyatlan.model.typedef import TypeDefResponse
+from pyatlan.model.utils import Announcement
 
 CM_ATTR_ID = "WQ6XGXwq9o7UnZlkWyKhQN"
 

@@ -392,6 +392,7 @@ class AttributeDef(AtlanObject):
         attribute_type: AtlanCustomAttributePrimitiveType,
         multi_valued: bool = False,
         options_name: Optional[str] = None,
+        client: Optional[AtlanClient] = None,
     ) -> AttributeDef:
         from pyatlan.model.assets import validate_required_fields
 
@@ -434,9 +435,9 @@ class AttributeDef(AtlanObject):
         else:
             attr_def.type_name = base_type
         if add_enum_values:
-            from pyatlan.cache.enum_cache import EnumCache
-
-            if enum_def := EnumCache.get_by_name(str(options_name)):
+            if not client:
+                client = AtlanClient.get_default_client_or_fail()
+            if enum_def := client.enum_cache.get_by_name(str(options_name)):
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []
@@ -676,3 +677,8 @@ class TypeDefResponse(AtlanObject):
         description="List of custom metadata type_ definitions.",
         alias="businessMetadataDefs",
     )
+
+
+from pyatlan.client.atlan import AtlanClient  # noqa: E402
+
+AttributeDef.update_forward_refs()

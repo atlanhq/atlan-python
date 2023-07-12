@@ -5,7 +5,6 @@ from typing import Generator, List, Optional, Tuple
 
 import pytest
 
-from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Badge, BadgeCondition
 from pyatlan.model.custom_metadata import CustomMetadataDict
@@ -394,7 +393,7 @@ def test_add_term_cm_raci(
     groups: List[AtlanGroup],
 ):
     cm_name = CM_RACI
-    raci_attrs = CustomMetadataDict(cm_name)
+    raci_attrs = CustomMetadataDict(name=cm_name)
     _validate_raci_empty(raci_attrs)
     group1, group2 = _get_groups(client)
     raci_attrs[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
@@ -413,7 +412,7 @@ def test_add_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     cm_name = CM_IPR
-    ipr_attrs = CustomMetadataDict(cm_name)
+    ipr_attrs = CustomMetadataDict(name=cm_name)
     _validate_ipr_empty(ipr_attrs)
     ipr_attrs[CM_ATTR_IPR_LICENSE] = "CC BY"
     ipr_attrs[CM_ATTR_IPR_VERSION] = 2.0
@@ -433,7 +432,7 @@ def test_add_term_cm_dq(
     term: AtlasGlossaryTerm,
 ):
     cm_name = CM_QUALITY
-    dq_attrs = CustomMetadataDict(cm_name)
+    dq_attrs = CustomMetadataDict(name=cm_name)
     _validate_dq_empty(dq_attrs)
     dq_attrs[CM_ATTR_QUALITY_COUNT] = 42
     dq_attrs[CM_ATTR_QUALITY_SQL] = "SELECT * from SOMEWHERE;"
@@ -451,7 +450,7 @@ def test_update_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     cm_name = CM_IPR
-    ipr = CustomMetadataDict(cm_name)
+    ipr = CustomMetadataDict(name=cm_name)
     # Note: MUST access the getter / setter, not the underlying store
     ipr[CM_ATTR_IPR_MANDATORY] = False
     client.update_custom_metadata_attributes(term.guid, ipr)
@@ -468,7 +467,7 @@ def test_replace_term_cm_raci(
     cm_raci: CustomMetadataDef,
     term: AtlasGlossaryTerm,
 ):
-    raci = CustomMetadataDict(CM_RACI)
+    raci = CustomMetadataDict(name=CM_RACI)
     group1, group2 = _get_groups(client)
     raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
@@ -488,7 +487,7 @@ def test_replace_term_cm_ipr(
     cm_ipr: CustomMetadataDef,
     term: AtlasGlossaryTerm,
 ):
-    term_cm_ipr = CustomMetadataDict(CM_IPR)
+    term_cm_ipr = CustomMetadataDict(name=CM_IPR)
     client.replace_custom_metadata(term.guid, term_cm_ipr)
     t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
@@ -512,7 +511,7 @@ def test_search_by_any_accountable(
     query = Bool(must=[be_active, be_a_term, have_attr])
     dsl = DSL(query=query)
     attributes = ["name", "anchor"]
-    cm_attributes = CustomMetadataCache.get_attributes_for_search_results(
+    cm_attributes = client.custom_metadata_cache.get_attributes_for_search_results(
         set_name=CM_RACI
     )
     assert cm_attributes
@@ -612,7 +611,7 @@ def test_remove_term_cm_ipr(
 def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     global _removal_epoch
     cm_name = CM_RACI
-    existing = CustomMetadataCache.get_custom_metadata_def(name=cm_name)
+    existing = client.custom_metadata_cache.get_custom_metadata_def(name=cm_name)
     existing_attrs = existing.attribute_defs
     updated_attrs = []
     for existing_attr in existing_attrs:
@@ -646,7 +645,7 @@ def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
 @pytest.mark.order(after="test_remove_attribute")
 def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     global _removal_epoch
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes()
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
     assert CM_RACI in custom_attributes.keys()
@@ -654,7 +653,7 @@ def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
     assert CM_QUALITY in custom_attributes.keys()
     extra = _validate_raci_structure(custom_attributes.get(CM_RACI), 4)
     assert not extra
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes(
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes(
         include_deleted=True
     )
     assert custom_attributes
@@ -673,7 +672,7 @@ def test_retrieve_structures(client: AtlanClient, cm_raci: CustomMetadataDef):
 
 @pytest.mark.order(after="test_retrieve_structures")
 def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
-    existing = CustomMetadataCache.get_custom_metadata_def(name=CM_RACI)
+    existing = client.custom_metadata_cache.get_custom_metadata_def(name=CM_RACI)
     existing_attrs = existing.attribute_defs
     updated_attrs = []
     for existing_attr in existing_attrs:
@@ -707,7 +706,7 @@ def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
 def test_retrieve_structure_without_archived(
     client: AtlanClient, cm_raci: CustomMetadataDef
 ):
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes()
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes()
     assert custom_attributes
     assert len(custom_attributes) >= 3
     assert CM_RACI in custom_attributes.keys()
@@ -726,7 +725,7 @@ def test_retrieve_structure_without_archived(
 def test_retrieve_structure_with_archived(
     client: AtlanClient, cm_raci: CustomMetadataDef
 ):
-    custom_attributes = CustomMetadataCache.get_all_custom_attributes(
+    custom_attributes = client.custom_metadata_cache.get_all_custom_attributes(
         include_deleted=True
     )
     assert custom_attributes
@@ -752,7 +751,7 @@ def test_update_replacing_cm(
     cm_dq: CustomMetadataDef,
     client: AtlanClient,
 ):
-    raci = CustomMetadataDict(CM_RACI)
+    raci = CustomMetadataDict(name=CM_RACI)
     group1, group2 = _get_groups(client)
     raci[CM_ATTR_RACI_RESPONSIBLE] = [FIXED_USER]
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER

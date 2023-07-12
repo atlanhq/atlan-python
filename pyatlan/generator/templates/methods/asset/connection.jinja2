@@ -9,30 +9,30 @@
         admin_users: Optional[list[str]] = None,
         admin_groups: Optional[list[str]] = None,
         admin_roles: Optional[list[str]] = None,
+        client: Optional[AtlanClient] = None,
     )->{{ entity_def.name }}:
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
         if admin_roles:
-            from pyatlan.cache.role_cache import RoleCache
             for role_id in admin_roles:
-                if not RoleCache.get_name_for_id(role_id):
+                if not client.role_cache.get_name_for_id(role_id):
                     raise ValueError(
                         f"Provided role ID {role_id} was not found in Atlan."
                     )
         if admin_groups:
-            from pyatlan.cache.group_cache import GroupCache
             for group_alias in admin_groups:
-                if not GroupCache.get_id_for_alias(group_alias):
+                if not client.group_cache.get_id_for_alias(group_alias):
                     raise ValueError(
                         f"Provided group name {group_alias} was not found in Atlan."
                     )
         if admin_users:
-            from pyatlan.cache.user_cache import UserCache
             for username in admin_users:
-                if not UserCache.get_id_for_name(username):
+                if not client.user_cache.get_id_for_name(username):
                     raise ValueError(
                         f"Provided username {username} was not found in Atlan."
                     )

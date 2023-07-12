@@ -1,23 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from __future__ import absolute_import, division, print_function
+from __future__ import absolute_import, annotations, division, print_function
 
 from typing import Optional
-
-from pyatlan.model.core import AtlanObject
-
-
-class AtlanErrorObject(AtlanObject):
-    def __init__(
-        self,
-        error_code: Optional[str] = None,
-        error_message: Optional[str] = None,
-        entity_guid: Optional[str] = None,
-    ):
-        super(AtlanObject, self).__init__()
-        self.error_code = error_code
-        self.error_message = error_message
-        self.entity_guid = entity_guid
 
 
 class AtlanError(Exception):

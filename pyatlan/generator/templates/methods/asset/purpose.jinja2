@@ -8,8 +8,10 @@
 
     @classmethod
     # @validate_arguments()
-    def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
+    def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False, client: Optional[AtlanClient] = None) -> AuthPolicy:
         validate_required_fields(["name", "purpose_id", "policy_type", "actions"], [name, purpose_id, policy_type, actions])
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
         target_found = False
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {x.value for x in actions}
@@ -26,9 +28,8 @@
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.cache.group_cache import GroupCache
                 for group_alias in policy_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
+                    if not client.group_cache.get_id_for_alias(group_alias):
                         raise ValueError(
                             f"Provided group name {group_alias} was not found in Atlan."
                         )
@@ -37,9 +38,8 @@
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.cache.user_cache import UserCache
                 for username in policy_users:
-                    if not UserCache.get_id_for_name(username):
+                    if not client.user_cache.get_id_for_name(username):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )
@@ -56,8 +56,10 @@
 
     @classmethod
     # @validate_arguments()
-    def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
+    def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False, client: Optional[AtlanClient] = None) -> AuthPolicy:
         validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
         policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
@@ -73,9 +75,8 @@
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.cache.group_cache import GroupCache
                 for group_alias in policy_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
+                    if not client.group_cache.get_id_for_alias(group_alias):
                         raise ValueError(
                             f"Provided group name {group_alias} was not found in Atlan."
                         )
@@ -84,9 +85,8 @@
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.cache.user_cache import UserCache
                 for username in policy_users:
-                    if not UserCache.get_id_for_name(username):
+                    if not client.user_cache.get_id_for_name(username):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )

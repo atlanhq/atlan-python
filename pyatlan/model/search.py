@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
@@ -176,11 +178,16 @@ class Exists(Query):
     type_name: Literal["exists"] = "exists"
 
     @classmethod
-    @validate_arguments()
-    def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        if attr_id := CustomMetadataCache.get_attr_id_for_name(
+    # @validate_arguments()
+    def with_custom_metadata(
+        cls,
+        set_name: StrictStr,
+        attr_name: StrictStr,
+        client: Optional[AtlanClient] = None,
+    ):
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
+        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(
             set_name=set_name, attr_name=attr_name
         ):
             return cls(field=attr_id)
@@ -339,13 +346,17 @@ class Term(Query):
     type_name: Literal["term"] = "term"
 
     @classmethod
-    @validate_arguments()
+    # @validate_arguments()
     def with_custom_metadata(
-        cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType
+        cls,
+        set_name: StrictStr,
+        attr_name: StrictStr,
+        value: SearchFieldType,
+        client: Optional[AtlanClient] = None,
     ):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        if attr_id := CustomMetadataCache.get_attr_id_for_name(
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
+        if attr_id := client.custom_metadata_cache.get_attr_id_for_name(
             set_name=set_name, attr_name=attr_name
         ):
             return cls(field=attr_id, value=value)
@@ -1818,3 +1829,9 @@ def with_active_term(
         + Term.with_name(name)
         + Term.with_glossary(glossary_qualified_name)
     )
+
+
+from pyatlan.client.atlan import AtlanClient  # noqa: E402
+
+# Exists.update_forward_refs()
+# Term.update_forward_refs()

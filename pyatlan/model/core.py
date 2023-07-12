@@ -1,21 +1,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from __future__ import annotations
+
 from abc import ABC
-from typing import TYPE_CHECKING, List
+from datetime import datetime
+from typing import Any, Generic, List, Optional, TypeVar
 
 from pydantic import BaseModel, Extra, Field, validator
-
-if TYPE_CHECKING:
-    from dataclasses import dataclass
-else:
-    from pydantic.dataclasses import dataclass
-
-from datetime import datetime
-from typing import Any, Generic, Optional, TypeVar
-
 from pydantic.generics import GenericModel
 
-from pyatlan.model.enums import AnnouncementType, EntityStatus
+from pyatlan.model.enums import EntityStatus
 
 CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
@@ -60,10 +54,13 @@ def to_snake_case(value):
 
 
 class AtlanTagName:
-    def __init__(self, display_text: str):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-        if not AtlanTagCache.get_id_for_name(display_text):
+    def __init__(
+        self,
+        display_text: str,
+    ):
+        if not AtlanClient.get_default_client_or_fail().atlan_tag_cache.get_id_for_name(
+            display_text
+        ):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
 
@@ -87,21 +84,26 @@ class AtlanTagName:
         )
 
     @classmethod
-    def _convert_to_display_text(cls, data):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
+    def _convert_to_display_text(
+        cls,
+        data,
+    ):
         if isinstance(data, AtlanTagName):
             return data
-        if display_text := AtlanTagCache.get_name_for_id(data):
+        if display_text := AtlanClient.get_default_client_or_fail().atlan_tag_cache.get_name_for_id(
+            data
+        ):
             return AtlanTagName(display_text)
         else:
             raise ValueError(f"{data} is not a valid AtlanTag")
 
     @staticmethod
-    def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-        return AtlanTagCache.get_id_for_name(atlan_tag_name._display_text)
+    def json_encode_atlan_tag(
+        atlan_tag_name: "AtlanTagName",
+    ):
+        return AtlanClient.get_default_client_or_fail().atlan_tag_cache.get_id_for_name(
+            atlan_tag_name._display_text
+        )
 
 
 class AtlanObject(BaseModel):
@@ -116,6 +118,19 @@ class AtlanObject(BaseModel):
         validate_assignment = True
 
 
+class AtlanErrorObject(AtlanObject):
+    def __init__(
+        self,
+        error_code: Optional[str] = None,
+        error_message: Optional[str] = None,
+        entity_guid: Optional[str] = None,
+    ):
+        super(AtlanObject, self).__init__()
+        self.error_code = error_code
+        self.error_message = error_message
+        self.entity_guid = entity_guid
+
+
 class SearchRequest(AtlanObject, ABC):
     attributes: Optional[List[str]] = Field(
         description="List of attributes to be returned for each result.",
@@ -127,13 +142,6 @@ class SearchRequest(AtlanObject, ABC):
     size: Optional[int] = Field(
         description="How many results to include in each page of results."
     )
-
-
-@dataclass
-class Announcement:
-    announcement_title: str
-    announcement_message: Optional[str]
-    announcement_type: AnnouncementType
 
 
 class AtlanTag(AtlanObject):
@@ -223,3 +231,6 @@ class BulkRequest(AtlanObject, GenericModel, Generic[T]):
         if isinstance(v, Asset):
             v.flush_custom_metadata()
         return v
+
+
+from pyatlan.client.atlan import AtlanClient  # noqa: E402

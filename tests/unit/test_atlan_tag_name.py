@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import pytest
 
-import pyatlan.cache.atlan_tag_cache
+import pyatlan.client.atlan
 from pyatlan.model.core import AtlanTagName
 
 ATLAN_TAG_ID = "yiB7RLvdC2yeryLPjaDeHM"
@@ -15,7 +15,7 @@ def test_init_with_bad_atlan_tag_name_raises_value_error(monkeypatch):
         return None
 
     monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        pyatlan.client.atlan.AtlanClient.AtlanTagCache,
         "get_id_for_name",
         get_id_for_name,
     )
@@ -31,7 +31,7 @@ def good_atlan_tag(monkeypatch):
         return ATLAN_TAG_ID
 
     monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        pyatlan.client.atlan.AtlanClient.AtlanTagCache,
         "get_id_for_name",
         get_id_for_name,
     )
@@ -44,7 +44,7 @@ def test_init_with_good_name(monkeypatch):
         return GOOD_ATLAN_TAG_NAME
 
     monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        pyatlan.client.atlan.AtlanClient.AtlanTagCache,
         "get_id_for_name",
         get_id_for_name,
     )
@@ -67,7 +67,7 @@ def test_convert_to_display_text_when_bad_string_raises_value_error(monkeypatch)
         return None
 
     monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        pyatlan.client.atlan.AtlanClient.AtlanTagCache,
         "get_name_for_id",
         get_name_for_id,
     )
@@ -85,12 +85,12 @@ def test_convert_to_display_text_when_id(monkeypatch):
         return GOOD_ATLAN_TAG_NAME
 
     monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        pyatlan.client.atlan.AtlanClient.AtlanTagCache,
         "get_id_for_name",
         get_id_for_name,
     )
     monkeypatch.setattr(
-        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        pyatlan.client.atlan.AtlanClient.AtlanTagCache,
         "get_name_for_id",
         get_name_for_id,
     )

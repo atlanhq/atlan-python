@@ -49,8 +49,13 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- endif %}
 {% endif %}
 {% endfor %}
+from pyatlan.client.atlan import AtlanClient  # noqa: E402
+
+Connection.update_forward_refs()
+Purpose.update_forward_refs()
 Referenceable.update_forward_refs()
 AtlasGlossary.update_forward_refs()
+AtlasGlossaryTerm.update_forward_refs()
 {% for entity_def in entity_defs %}
 {{entity_def.name}}.Attributes.update_forward_refs()
 {% endfor %}

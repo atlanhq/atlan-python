@@ -3,7 +3,6 @@ from typing import Callable, Optional, Type
 
 import pytest
 
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
     Asset,
@@ -69,7 +68,7 @@ class TestConnection:
         client: AtlanClient,
         upsert: Callable[[Asset], AssetMutationResponse],
     ):
-        role = RoleCache.get_id_for_name("$admin")
+        role = client.role_cache.get_id_for_name("$admin")
         assert role
         connection_name = TestId.make_unique("INT")
         c = Connection.create(

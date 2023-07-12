@@ -5,7 +5,6 @@ from typing import Generator, Optional
 import pytest
 from pydantic import StrictStr
 
-from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.user import AtlanUser
@@ -33,8 +32,8 @@ def delete_group(client: AtlanClient, guid: str) -> None:
     client.purge_group(guid)
 
 
-def test_retrieve_roles():
-    admin_role_guid = RoleCache.get_id_for_name("$admin")
+def test_retrieve_roles(client: AtlanClient):
+    admin_role_guid = client.role_cache.get_id_for_name("$admin")
     assert admin_role_guid
 
 
@@ -192,7 +191,7 @@ def test_update_users(
     assert user1.id
     client.add_user_to_groups(guid=user1.id, group_ids=[group1.group])
     client.change_user_role(
-        guid=user1.id, role_id=str(RoleCache.get_id_for_name("$member"))
+        guid=user1.id, role_id=str(client.role_cache.get_id_for_name("$member"))
     )
     response = client.get_groups_for_user(guid=user1.id)
     assert response

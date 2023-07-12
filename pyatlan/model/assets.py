@@ -13,7 +13,7 @@ from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
+from pyatlan.model.core import AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
     ADLSAccessTier,
@@ -68,6 +68,7 @@ from pyatlan.model.structs import (
     PopularityInsights,
     SourceTagAttribute,
 )
+from pyatlan.model.utils import Announcement
 from pyatlan.utils import next_id, validate_required_fields
 
 
@@ -470,6 +471,7 @@ class Asset(Referenceable):
         "asset_dbt_job_name",
         "asset_dbt_job_schedule",
         "asset_dbt_job_status",
+        "asset_dbt_test_status",
         "asset_dbt_job_schedule_cron_humanized",
         "asset_dbt_job_last_run",
         "asset_dbt_job_last_run_url",
@@ -1284,6 +1286,18 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_status = asset_dbt_job_status
+
+    @property
+    def asset_dbt_test_status(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_test_status
+        )
+
+    @asset_dbt_test_status.setter
+    def asset_dbt_test_status(self, asset_dbt_test_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_dbt_test_status = asset_dbt_test_status
 
     @property
     def asset_dbt_job_schedule_cron_humanized(self) -> Optional[str]:
@@ -2248,6 +2262,9 @@ class Asset(Referenceable):
         asset_dbt_job_status: Optional[str] = Field(
             None, description="", alias="assetDbtJobStatus"
         )
+        asset_dbt_test_status: Optional[str] = Field(
+            None, description="", alias="assetDbtTestStatus"
+        )
         asset_dbt_job_schedule_cron_humanized: Optional[str] = Field(
             None, description="", alias="assetDbtJobScheduleCronHumanized"
         )
@@ -2459,33 +2476,30 @@ class Connection(Asset, type_name="Connection"):
         admin_users: Optional[list[str]] = None,
         admin_groups: Optional[list[str]] = None,
         admin_roles: Optional[list[str]] = None,
+        client: Optional[AtlanClient] = None,
     ) -> Connection:
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
         validate_required_fields(["name", "connector_type"], [name, connector_type])
         if not admin_users and not admin_groups and not admin_roles:
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
         if admin_roles:
-            from pyatlan.cache.role_cache import RoleCache
-
             for role_id in admin_roles:
-                if not RoleCache.get_name_for_id(role_id):
+                if not client.role_cache.get_name_for_id(role_id):
                     raise ValueError(
                         f"Provided role ID {role_id} was not found in Atlan."
                     )
         if admin_groups:
-            from pyatlan.cache.group_cache import GroupCache
-
             for group_alias in admin_groups:
-                if not GroupCache.get_id_for_alias(group_alias):
+                if not client.group_cache.get_id_for_alias(group_alias):
                     raise ValueError(
                         f"Provided group name {group_alias} was not found in Atlan."
                     )
         if admin_users:
-            from pyatlan.cache.user_cache import UserCache
-
             for username in admin_users:
-                if not UserCache.get_id_for_name(username):
+                if not client.user_cache.get_id_for_name(username):
                     raise ValueError(
                         f"Provided username {username} was not found in Atlan."
                     )
@@ -2527,6 +2541,7 @@ class Connection(Asset, type_name="Connection"):
         "policy_strategy",
         "query_username_strategy",
         "row_limit",
+        "query_timeout",
         "default_credential_guid",
         "connector_icon",
         "connector_image",
@@ -2677,6 +2692,16 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.row_limit = row_limit
 
     @property
+    def query_timeout(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_timeout
+
+    @query_timeout.setter
+    def query_timeout(self, query_timeout: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_timeout = query_timeout
+
+    @property
     def default_credential_guid(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.default_credential_guid
@@ -2822,6 +2847,7 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="queryUsernameStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
+        query_timeout: Optional[int] = Field(None, description="", alias="queryTimeout")
         default_credential_guid: Optional[str] = Field(
             None, description="", alias="defaultCredentialGuid"
         )
@@ -3325,15 +3351,16 @@ class Badge(Asset, type_name="Badge"):
             cm_name: str,
             cm_attribute: str,
             badge_conditions: list[BadgeCondition],
+            client: Optional[AtlanClient] = None,
         ) -> Badge.Attributes:
             validate_required_fields(
                 ["name", "cm_name", "cm_attribute", "badge_conditions"],
                 [name, cm_name, cm_attribute, badge_conditions],
             )
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            cm_id = CustomMetadataCache.get_id_for_name(cm_name)
-            cm_attr_id = CustomMetadataCache.get_attr_id_for_name(
+            if not client:
+                client = AtlanClient.get_default_client_or_fail()
+            cm_id = client.custom_metadata_cache.get_id_for_name(cm_name)
+            cm_attr_id = client.custom_metadata_cache.get_attr_id_for_name(
                 set_name=cm_name, attr_name=cm_attribute
             )
             return Badge.Attributes(
@@ -4953,11 +4980,14 @@ class Purpose(AccessControl):
         policy_groups: Optional[Set[str]] = None,
         policy_users: Optional[Set[str]] = None,
         all_users: bool = False,
+        client: Optional[AtlanClient] = None,
     ) -> AuthPolicy:
         validate_required_fields(
             ["name", "purpose_id", "policy_type", "actions"],
             [name, purpose_id, policy_type, actions],
         )
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
         target_found = False
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {x.value for x in actions}
@@ -4974,10 +5004,8 @@ class Purpose(AccessControl):
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.cache.group_cache import GroupCache
-
                 for group_alias in policy_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
+                    if not client.group_cache.get_id_for_alias(group_alias):
                         raise ValueError(
                             f"Provided group name {group_alias} was not found in Atlan."
                         )
@@ -4986,10 +5014,8 @@ class Purpose(AccessControl):
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.cache.user_cache import UserCache
-
                 for username in policy_users:
-                    if not UserCache.get_id_for_name(username):
+                    if not client.user_cache.get_id_for_name(username):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )
@@ -5013,10 +5039,13 @@ class Purpose(AccessControl):
         policy_groups: Optional[Set[str]] = None,
         policy_users: Optional[Set[str]] = None,
         all_users: bool = False,
+        client: Optional[AtlanClient] = None,
     ) -> AuthPolicy:
         validate_required_fields(
             ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
         )
+        if not client:
+            client = AtlanClient.get_default_client_or_fail()
         policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
@@ -5032,10 +5061,8 @@ class Purpose(AccessControl):
             policy.policy_groups = {"public"}
         else:
             if policy_groups:
-                from pyatlan.cache.group_cache import GroupCache
-
                 for group_alias in policy_groups:
-                    if not GroupCache.get_id_for_alias(group_alias):
+                    if not client.group_cache.get_id_for_alias(group_alias):
                         raise ValueError(
                             f"Provided group name {group_alias} was not found in Atlan."
                         )
@@ -5044,10 +5071,8 @@ class Purpose(AccessControl):
             else:
                 policy.policy_groups = None
             if policy_users:
-                from pyatlan.cache.user_cache import UserCache
-
                 for username in policy_users:
-                    if not UserCache.get_id_for_name(username):
+                    if not client.user_cache.get_id_for_name(username):
                         raise ValueError(
                             f"Provided username {username} was not found in Atlan."
                         )
@@ -5970,6 +5995,7 @@ class SQL(Catalog):
         "sql_dbt_models",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_tests",
     ]
 
     @property
@@ -6158,6 +6184,16 @@ class SQL(Catalog):
             self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
+    @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
     class Attributes(Catalog.Attributes):
         query_count: Optional[int] = Field(None, description="", alias="queryCount")
         query_user_count: Optional[int] = Field(
@@ -6200,6 +6236,9 @@ class SQL(Catalog):
         )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
         )  # relationship
 
     attributes: "SQL.Attributes" = Field(
@@ -9110,9 +9149,10 @@ class DbtModelColumn(Dbt):
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
-        "dbt_model_column_sql_columns",
         "sql_column",
         "dbt_model",
+        "dbt_model_column_sql_columns",
+        "dbt_tests",
     ]
 
     @property
@@ -9156,22 +9196,6 @@ class DbtModelColumn(Dbt):
         self.attributes.dbt_model_column_order = dbt_model_column_order
 
     @property
-    def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_column_sql_columns
-        )
-
-    @dbt_model_column_sql_columns.setter
-    def dbt_model_column_sql_columns(
-        self, dbt_model_column_sql_columns: Optional[list[Column]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
-
-    @property
     def sql_column(self) -> Optional[Column]:
         return None if self.attributes is None else self.attributes.sql_column
 
@@ -9191,6 +9215,32 @@ class DbtModelColumn(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_model = dbt_model
 
+    @property
+    def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_model_column_sql_columns
+        )
+
+    @dbt_model_column_sql_columns.setter
+    def dbt_model_column_sql_columns(
+        self, dbt_model_column_sql_columns: Optional[list[Column]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
+
+    @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
             None, description="", alias="dbtModelQualifiedName"
@@ -9201,18 +9251,221 @@ class DbtModelColumn(Dbt):
         dbt_model_column_order: Optional[int] = Field(
             None, description="", alias="dbtModelColumnOrder"
         )
-        dbt_model_column_sql_columns: Optional[list[Column]] = Field(
-            None, description="", alias="dbtModelColumnSqlColumns"
-        )  # relationship
         sql_column: Optional[Column] = Field(
             None, description="", alias="sqlColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
         )  # relationship
+        dbt_model_column_sql_columns: Optional[list[Column]] = Field(
+            None, description="", alias="dbtModelColumnSqlColumns"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
+        )  # relationship
 
     attributes: "DbtModelColumn.Attributes" = Field(
         default_factory=lambda: DbtModelColumn.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DbtTest(Dbt):
+    """Description"""
+
+    type_name: str = Field("DbtTest", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtTest":
+            raise ValueError("must be DbtTest")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DbtTest._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_test_status",
+        "dbt_test_state",
+        "dbt_test_error",
+        "dbt_test_raw_s_q_l",
+        "dbt_test_compiled_s_q_l",
+        "dbt_test_raw_code",
+        "dbt_test_compiled_code",
+        "dbt_test_language",
+        "dbt_sources",
+        "sql_assets",
+        "dbt_models",
+        "dbt_model_columns",
+    ]
+
+    @property
+    def dbt_test_status(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_status
+
+    @dbt_test_status.setter
+    def dbt_test_status(self, dbt_test_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_status = dbt_test_status
+
+    @property
+    def dbt_test_state(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_state
+
+    @dbt_test_state.setter
+    def dbt_test_state(self, dbt_test_state: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_state = dbt_test_state
+
+    @property
+    def dbt_test_error(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_error
+
+    @dbt_test_error.setter
+    def dbt_test_error(self, dbt_test_error: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_error = dbt_test_error
+
+    @property
+    def dbt_test_raw_s_q_l(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_raw_s_q_l
+
+    @dbt_test_raw_s_q_l.setter
+    def dbt_test_raw_s_q_l(self, dbt_test_raw_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_raw_s_q_l = dbt_test_raw_s_q_l
+
+    @property
+    def dbt_test_compiled_s_q_l(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_test_compiled_s_q_l
+        )
+
+    @dbt_test_compiled_s_q_l.setter
+    def dbt_test_compiled_s_q_l(self, dbt_test_compiled_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_compiled_s_q_l = dbt_test_compiled_s_q_l
+
+    @property
+    def dbt_test_raw_code(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_raw_code
+
+    @dbt_test_raw_code.setter
+    def dbt_test_raw_code(self, dbt_test_raw_code: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_raw_code = dbt_test_raw_code
+
+    @property
+    def dbt_test_compiled_code(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_test_compiled_code
+        )
+
+    @dbt_test_compiled_code.setter
+    def dbt_test_compiled_code(self, dbt_test_compiled_code: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_compiled_code = dbt_test_compiled_code
+
+    @property
+    def dbt_test_language(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_language
+
+    @dbt_test_language.setter
+    def dbt_test_language(self, dbt_test_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_language = dbt_test_language
+
+    @property
+    def dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.dbt_sources
+
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_assets(self) -> Optional[list[SQL]]:
+        return None if self.attributes is None else self.attributes.sql_assets
+
+    @sql_assets.setter
+    def sql_assets(self, sql_assets: Optional[list[SQL]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_assets = sql_assets
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return None if self.attributes is None else self.attributes.dbt_model_columns
+
+    @dbt_model_columns.setter
+    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_columns = dbt_model_columns
+
+    class Attributes(Dbt.Attributes):
+        dbt_test_status: Optional[str] = Field(
+            None, description="", alias="dbtTestStatus"
+        )
+        dbt_test_state: Optional[str] = Field(
+            None, description="", alias="dbtTestState"
+        )
+        dbt_test_error: Optional[str] = Field(
+            None, description="", alias="dbtTestError"
+        )
+        dbt_test_raw_s_q_l: Optional[str] = Field(
+            None, description="", alias="dbtTestRawSQL"
+        )
+        dbt_test_compiled_s_q_l: Optional[str] = Field(
+            None, description="", alias="dbtTestCompiledSQL"
+        )
+        dbt_test_raw_code: Optional[str] = Field(
+            None, description="", alias="dbtTestRawCode"
+        )
+        dbt_test_compiled_code: Optional[str] = Field(
+            None, description="", alias="dbtTestCompiledCode"
+        )
+        dbt_test_language: Optional[str] = Field(
+            None, description="", alias="dbtTestLanguage"
+        )
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        sql_assets: Optional[list[SQL]] = Field(
+            None, description="", alias="sqlAssets"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+            None, description="", alias="dbtModelColumns"
+        )  # relationship
+
+    attributes: "DbtTest.Attributes" = Field(
+        default_factory=lambda: DbtTest.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9249,6 +9502,7 @@ class DbtModel(Dbt):
         "dbt_model_run_generated_at",
         "dbt_model_run_elapsed_time",
         "dbt_metrics",
+        "dbt_tests",
         "dbt_model_sql_assets",
         "dbt_model_columns",
         "sql_asset",
@@ -9437,6 +9691,16 @@ class DbtModel(Dbt):
         self.attributes.dbt_metrics = dbt_metrics
 
     @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
     def dbt_model_sql_assets(self) -> Optional[list[SQL]]:
         return None if self.attributes is None else self.attributes.dbt_model_sql_assets
 
@@ -9500,6 +9764,9 @@ class DbtModel(Dbt):
         )
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
         )  # relationship
         dbt_model_sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="dbtModelSqlAssets"
@@ -9979,6 +10246,7 @@ class DbtSource(Dbt):
     _convience_properties: ClassVar[list[str]] = [
         "dbt_state",
         "dbt_freshness_criteria",
+        "dbt_tests",
         "sql_assets",
         "sql_asset",
     ]
@@ -10006,6 +10274,16 @@ class DbtSource(Dbt):
         self.attributes.dbt_freshness_criteria = dbt_freshness_criteria
 
     @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
     def sql_assets(self) -> Optional[list[SQL]]:
         return None if self.attributes is None else self.attributes.sql_assets
 
@@ -10030,6 +10308,9 @@ class DbtSource(Dbt):
         dbt_freshness_criteria: Optional[str] = Field(
             None, description="", alias="dbtFreshnessCriteria"
         )
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
+        )  # relationship
         sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="sqlAssets"
         )  # relationship
@@ -11128,6 +11409,7 @@ class SnowflakeTag(Tag):
         "sql_dbt_models",
         "sql_dbt_sources",
         "dbt_models",
+        "dbt_tests",
         "atlan_schema",
     ]
 
@@ -11360,6 +11642,16 @@ class SnowflakeTag(Tag):
         self.attributes.dbt_models = dbt_models
 
     @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
     def atlan_schema(self) -> Optional[Schema]:
         return None if self.attributes is None else self.attributes.atlan_schema
 
@@ -11421,6 +11713,9 @@ class SnowflakeTag(Tag):
         )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
             None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
@@ -12314,7 +12609,9 @@ class Column(SQL):
     _convience_properties: ClassVar[list[str]] = [
         "data_type",
         "sub_data_type",
+        "raw_data_type_definition",
         "order",
+        "nested_column_count",
         "is_partition",
         "partition_order",
         "is_clustered",
@@ -12332,6 +12629,8 @@ class Column(SQL):
         "numeric_scale",
         "max_length",
         "validations",
+        "parent_column_qualified_name",
+        "parent_column_name",
         "column_distinct_values_count",
         "column_distinct_values_count_long",
         "column_histogram",
@@ -12357,12 +12656,15 @@ class Column(SQL):
         "column_uniqueness_percentage",
         "column_variance",
         "column_top_values",
+        "column_depth_level",
         "view",
+        "nested_columns",
         "data_quality_metric_dimensions",
         "dbt_model_columns",
         "table",
         "column_dbt_model_columns",
         "materialised_view",
+        "parent_column",
         "queries",
         "metric_timestamps",
         "foreign_key_to",
@@ -12392,6 +12694,20 @@ class Column(SQL):
         self.attributes.sub_data_type = sub_data_type
 
     @property
+    def raw_data_type_definition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.raw_data_type_definition
+        )
+
+    @raw_data_type_definition.setter
+    def raw_data_type_definition(self, raw_data_type_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.raw_data_type_definition = raw_data_type_definition
+
+    @property
     def order(self) -> Optional[int]:
         return None if self.attributes is None else self.attributes.order
 
@@ -12400,6 +12716,16 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.order = order
+
+    @property
+    def nested_column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.nested_column_count
+
+    @nested_column_count.setter
+    def nested_column_count(self, nested_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_column_count = nested_column_count
 
     @property
     def is_partition(self) -> Optional[bool]:
@@ -12570,6 +12896,30 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.validations = validations
+
+    @property
+    def parent_column_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.parent_column_qualified_name
+        )
+
+    @parent_column_qualified_name.setter
+    def parent_column_qualified_name(self, parent_column_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column_qualified_name = parent_column_qualified_name
+
+    @property
+    def parent_column_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.parent_column_name
+
+    @parent_column_name.setter
+    def parent_column_name(self, parent_column_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column_name = parent_column_name
 
     @property
     def column_distinct_values_count(self) -> Optional[int]:
@@ -12902,6 +13252,16 @@ class Column(SQL):
         self.attributes.column_top_values = column_top_values
 
     @property
+    def column_depth_level(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_depth_level
+
+    @column_depth_level.setter
+    def column_depth_level(self, column_depth_level: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_depth_level = column_depth_level
+
+    @property
     def view(self) -> Optional[View]:
         return None if self.attributes is None else self.attributes.view
 
@@ -12910,6 +13270,16 @@ class Column(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.view = view
+
+    @property
+    def nested_columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.nested_columns
+
+    @nested_columns.setter
+    def nested_columns(self, nested_columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_columns = nested_columns
 
     @property
     def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
@@ -12974,6 +13344,16 @@ class Column(SQL):
         self.attributes.materialised_view = materialised_view
 
     @property
+    def parent_column(self) -> Optional[Column]:
+        return None if self.attributes is None else self.attributes.parent_column
+
+    @parent_column.setter
+    def parent_column(self, parent_column: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column = parent_column
+
+    @property
     def queries(self) -> Optional[list[Query]]:
         return None if self.attributes is None else self.attributes.queries
 
@@ -13036,7 +13416,13 @@ class Column(SQL):
     class Attributes(SQL.Attributes):
         data_type: Optional[str] = Field(None, description="", alias="dataType")
         sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
+        raw_data_type_definition: Optional[str] = Field(
+            None, description="", alias="rawDataTypeDefinition"
+        )
         order: Optional[int] = Field(None, description="", alias="order")
+        nested_column_count: Optional[int] = Field(
+            None, description="", alias="nestedColumnCount"
+        )
         is_partition: Optional[bool] = Field(None, description="", alias="isPartition")
         partition_order: Optional[int] = Field(
             None, description="", alias="partitionOrder"
@@ -13059,6 +13445,12 @@ class Column(SQL):
         max_length: Optional[int] = Field(None, description="", alias="maxLength")
         validations: Optional[dict[str, str]] = Field(
             None, description="", alias="validations"
+        )
+        parent_column_qualified_name: Optional[str] = Field(
+            None, description="", alias="parentColumnQualifiedName"
+        )
+        parent_column_name: Optional[str] = Field(
+            None, description="", alias="parentColumnName"
         )
         column_distinct_values_count: Optional[int] = Field(
             None, description="", alias="columnDistinctValuesCount"
@@ -13127,7 +13519,13 @@ class Column(SQL):
         column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
             None, description="", alias="columnTopValues"
         )
+        column_depth_level: Optional[int] = Field(
+            None, description="", alias="columnDepthLevel"
+        )
         view: Optional[View] = Field(None, description="", alias="view")  # relationship
+        nested_columns: Optional[list[Column]] = Field(
+            None, description="", alias="nestedColumns"
+        )  # relationship
         data_quality_metric_dimensions: Optional[list[Metric]] = Field(
             None, description="", alias="dataQualityMetricDimensions"
         )  # relationship
@@ -13142,6 +13540,9 @@ class Column(SQL):
         )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
             None, description="", alias="materialisedView"
+        )  # relationship
+        parent_column: Optional[Column] = Field(
+            None, description="", alias="parentColumn"
         )  # relationship
         queries: Optional[list[Query]] = Field(
             None, description="", alias="queries"
@@ -26566,8 +26967,13 @@ class QlikStream(QlikSpace):
     _convience_properties: ClassVar[list[str]] = []
 
 
+from pyatlan.client.atlan import AtlanClient  # noqa: E402
+
+Connection.update_forward_refs()
+Purpose.update_forward_refs()
 Referenceable.update_forward_refs()
 AtlasGlossary.update_forward_refs()
+AtlasGlossaryTerm.update_forward_refs()
 
 Referenceable.Attributes.update_forward_refs()
 
@@ -26686,6 +27092,8 @@ Qlik.Attributes.update_forward_refs()
 Salesforce.Attributes.update_forward_refs()
 
 DbtModelColumn.Attributes.update_forward_refs()
+
+DbtTest.Attributes.update_forward_refs()
 
 DbtModel.Attributes.update_forward_refs()
 

@@ -6,13 +6,13 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Connection, File
-from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
     AtlanConnectorType,
     CertificateStatus,
     FileType,
 )
+from pyatlan.model.utils import Announcement
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
 
