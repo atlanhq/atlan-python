@@ -1539,7 +1539,7 @@ class AtlanClient(BaseSettings):
             custom_metadata_request,
         )
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def append_terms(
         self,
         asset_type: Type[A],
@@ -1573,7 +1573,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return asset
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def replace_terms(
         self,
         asset_type: Type[A],
@@ -1599,7 +1599,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return asset
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def remove_terms(
         self,
         asset_type: Type[A],
@@ -1636,7 +1636,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return asset
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def find_connections_by_name(
         self,
         name: str,
@@ -1694,7 +1694,7 @@ class AtlanClient(BaseSettings):
             assets=assets,
         )
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def find_personas_by_name(
         self,
         name: str,
@@ -1735,7 +1735,7 @@ class AtlanClient(BaseSettings):
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Purpose)]
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def find_glossary_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1748,7 +1748,7 @@ class AtlanClient(BaseSettings):
             query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
         )
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def find_category_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
@@ -1813,7 +1813,7 @@ class AtlanClient(BaseSettings):
             "ATLAN-PYTHON-404-014",
         )
 
-    # @validate_arguments()
+    # @validate_arguments()  # Does not work with forward references: https://github.com/pydantic/pydantic/issues/2901
     def find_term_fast_by_name(
         self,
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
