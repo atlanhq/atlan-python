@@ -7,6 +7,7 @@ import copy
 import json
 import logging
 import os
+import uuid
 from abc import ABC
 from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
@@ -443,8 +444,10 @@ class AtlanClient(BaseSettings):
     ):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.base_url, api.path)
+        request_id = uuid.uuid4()
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
+        params["headers"]["X-Atlan-Request-Id"] = request_id
         if query_params is not None:
             params["params"] = query_params
         if request_obj is not None:
@@ -459,6 +462,7 @@ class AtlanClient(BaseSettings):
             LOGGER.debug("Call         : %s %s", api.method, path)
             LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
+            LOGGER.debug("Request ID   : %s", request_id)
         return params, path
 
     def upload_image(self, file, filename: str) -> AtlanImage:
