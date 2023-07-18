@@ -444,7 +444,7 @@ class AtlanClient(BaseSettings):
     ):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.base_url, api.path)
-        request_id = uuid.uuid4()
+        request_id = str(uuid.uuid4())
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
         params["headers"]["X-Atlan-Request-Id"] = request_id
