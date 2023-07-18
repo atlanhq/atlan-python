@@ -1334,12 +1334,11 @@ class AtlanClient(BaseSettings):
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
     ) -> KeycloakEventResponse:
-        raw_json = self._call_api(
+        if raw_json := self._call_api(
             KEYCLOAK_EVENTS,
             query_params=keycloak_request.query_params,
             exclude_unset=True,
-        )
-        if raw_json:
+        ):
             try:
                 events = parse_obj_as(list[KeycloakEvent], raw_json)
             except ValidationError as err:
@@ -1356,10 +1355,9 @@ class AtlanClient(BaseSettings):
         )
 
     def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
-        raw_json = self._call_api(
+        if raw_json := self._call_api(
             ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
-        )
-        if raw_json:
+        ):
             try:
                 events = parse_obj_as(list[AdminEvent], raw_json)
             except ValidationError as err:

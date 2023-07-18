@@ -106,8 +106,8 @@ class KeycloakEventRequest(AtlanObject):
             d["dateFrom"] = self.date_from
         if self.date_to:
             d["dateTo"] = self.date_to
-        d["first"] = self.offset if self.offset else 0
-        d["max"] = self.size if self.size else 100
+        d["first"] = self.offset or 0
+        d["max"] = self.size or 100
         if self.types:
             d["type"] = self.types
         if self.user_id:
@@ -209,8 +209,8 @@ class AdminEventRequest(AtlanObject):
             d["dateFrom"] = self.date_from
         if self.date_to:
             d["dateTo"] = self.date_to
-        d["first"] = self.offset if self.offset else 0
-        d["max"] = self.size if self.size else 100
+        d["first"] = self.offset or 0
+        d["max"] = self.size or 100
         if self.operation_types:
             d["operationTypes"] = self.operation_types
         if self.resource_path:
