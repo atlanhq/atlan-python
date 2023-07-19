@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+from __future__ import annotations
+
 import abc
 import contextlib
 import copy
@@ -27,6 +29,7 @@ from urllib3.util.retry import Retry
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     ADD_USER_TO_GROUPS,
+    ADMIN_EVENTS,
     BULK_UPDATE,
     CHANGE_USER_ROLE,
     CREATE_GROUP,
@@ -49,6 +52,7 @@ from pyatlan.client.constants import (
     GET_USER_GROUPS,
     GET_USERS,
     INDEX_SEARCH,
+    KEYCLOAK_EVENTS,
     PARSE_QUERY,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
     REMOVE_USERS_FROM_GROUP,
@@ -1324,6 +1328,48 @@ class AtlanClient(BaseSettings):
             assets=assets,
         )
 
+    def get_keycloak_events(
+        self, keycloak_request: KeycloakEventRequest
+    ) -> KeycloakEventResponse:
+        if raw_json := self._call_api(
+            KEYCLOAK_EVENTS,
+            query_params=keycloak_request.query_params,
+            exclude_unset=True,
+        ):
+            try:
+                events = parse_obj_as(list[KeycloakEvent], raw_json)
+            except ValidationError as err:
+                LOGGER.error("Problem parsing JSON: %s", raw_json)
+                raise err
+        else:
+            events = []
+        return KeycloakEventResponse(
+            client=self,
+            criteria=keycloak_request,
+            start=keycloak_request.offset or 0,
+            size=keycloak_request.size or 100,
+            events=events,
+        )
+
+    def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
+        if raw_json := self._call_api(
+            ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
+        ):
+            try:
+                events = parse_obj_as(list[AdminEvent], raw_json)
+            except ValidationError as err:
+                LOGGER.error("Problem parsing JSON: %s", raw_json)
+                raise err
+        else:
+            events = []
+        return AdminEventResponse(
+            client=self,
+            criteria=admin_request,
+            start=admin_request.offset or 0,
+            size=admin_request.size or 100,
+            events=events,
+        )
+
     @validate_arguments()
     def find_personas_by_name(
         self,
@@ -1472,3 +1518,13 @@ class AtlanClient(BaseSettings):
             glossary_qualified_name=glossary.qualified_name,
             attributes=attributes,
         )
+
+
+from pyatlan.model.keycloak_events import (  # noqa: E402
+    AdminEvent,
+    AdminEventRequest,
+    AdminEventResponse,
+    KeycloakEvent,
+    KeycloakEventRequest,
+    KeycloakEventResponse,
+)

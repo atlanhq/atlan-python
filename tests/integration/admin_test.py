@@ -8,6 +8,7 @@ from pydantic import StrictStr
 from pyatlan.cache.role_cache import RoleCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
+from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventRequest
 from pyatlan.model.user import AtlanUser
 from tests.integration.client import TestId
 
@@ -278,3 +279,31 @@ def test_final_user_state(
         or len(response.records) == 0
         or len(response.records) == _default_group_count
     )
+
+
+@pytest.mark.order(after="test_final_user_state")
+def test_retrieve_logs(
+    client: AtlanClient,
+    users: list[AtlanUser],
+):
+    request = KeycloakEventRequest(date_from="2023-07-12", date_to="2023-07-13")
+    events = client.get_keycloak_events(request)
+    assert events
+    count = 0
+    for _ in events:
+        count += 1
+    assert count > 0
+
+
+@pytest.mark.order(after="test_final_user_state")
+def test_retrieve_admin_logs(
+    client: AtlanClient,
+    users: list[AtlanUser],
+):
+    request = AdminEventRequest(date_from="2023-07-12", date_to="2023-07-13")
+    events = client.get_admin_events(request)
+    assert events
+    count = 0
+    for _ in events:
+        count += 1
+    assert count > 0

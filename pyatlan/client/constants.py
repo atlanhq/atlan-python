@@ -18,6 +18,7 @@ GROUP_API = f"{ADMIN_URI}groups"
 USER_API = f"{ADMIN_URI}users"
 QUERY_API = f"{SQL_URI}query"
 IMAGE_API = f"{ADMIN_URI}images"
+LOGS_API = f"{ADMIN_URI}events"
 
 # Role APIs
 GET_ROLES = API(ROLE_API, HTTPMethod.GET, HTTPStatus.OK)
@@ -53,6 +54,10 @@ PARSE_QUERY = API(f"{QUERY_API}/parse", HTTPMethod.POST, HTTPStatus.OK)
 
 # File upload APIs
 UPLOAD_IMAGE = API(IMAGE_API, HTTPMethod.POST, HTTPStatus.OK)
+
+# Keycloak event APIs
+KEYCLOAK_EVENTS = API(f"{LOGS_API}/login", HTTPMethod.GET, HTTPStatus.OK)
+ADMIN_EVENTS = API(f"{LOGS_API}/main", HTTPMethod.GET, HTTPStatus.OK)
 
 ENTITY_API = f"{BASE_URI}entity/"
 PREFIX_ATTR = "attr:"
