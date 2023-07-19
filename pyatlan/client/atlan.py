@@ -770,9 +770,6 @@ class AtlanClient(BaseSettings):
                 ),
                 query_params,
             )
-            raw_json["entity"]["attributes"].update(
-                raw_json["entity"]["relationshipAttributes"]
-            )
             asset = self.handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
