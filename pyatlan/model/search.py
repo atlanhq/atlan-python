@@ -435,7 +435,7 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
@@ -667,7 +667,7 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
@@ -930,7 +930,7 @@ class Wildcard(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
@@ -1022,7 +1022,7 @@ class Regexp(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
