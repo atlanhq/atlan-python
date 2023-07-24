@@ -41,7 +41,7 @@ VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
     StrictStr: "abc",
     StrictBool: True,
     datetime: NOW,
-    Literal["ACTIVE", "DELETED"]: "ACTIVE",
+    Literal["ACTIVE", "DELETED", "PURGED"]: "ACTIVE",
     float: 1.0,
     AtlanConnectorType: AtlanConnectorType.SNOWFLAKE,
 }

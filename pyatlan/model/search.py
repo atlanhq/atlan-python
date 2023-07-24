@@ -58,7 +58,7 @@ class TermAttributes(Attributes):
     PARENT_CATEGORY = ("__parentCategory", StrictStr)
     POPULARITY_SCORE = ("popularityScore", float)
     QUALIFIED_NAME = ("qualifiedName", StrictStr)
-    STATE = ("__state", Literal["ACTIVE", "DELETED"])
+    STATE = ("__state", Literal["ACTIVE", "DELETED", "PURGED"])
     SUPER_TYPE_NAMES = ("__superTypeNames.keyword", StrictStr)
     TYPE_NAME = ("__typeName.keyword", StrictStr)
     UPDATE_TIME_AS_TIMESTAMP = ("__modificationTimestamp", datetime)
@@ -435,7 +435,7 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
@@ -667,7 +667,7 @@ class Prefix(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
@@ -930,7 +930,7 @@ class Wildcard(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
@@ -1022,7 +1022,7 @@ class Regexp(Query):
 
     @classmethod
     @validate_arguments()
-    def with_state(cls, value: Literal["ACTIVE", "DELETE"]):
+    def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
