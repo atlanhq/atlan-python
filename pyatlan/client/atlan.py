@@ -287,8 +287,16 @@ class AtlanClient(BaseSettings):
             if "entities" not in raw_json:
                 self._assets = []
                 return None
-            self._assets = parse_obj_as(list[Asset], raw_json["entities"])
-            return raw_json
+            try:
+                for entity in raw_json["entities"]:
+                    unflatten_custom_metadata_for_entity(
+                        entity=entity, attributes=self._criteria.attributes
+                    )
+                self._assets = parse_obj_as(list[Asset], raw_json["entities"])
+                return raw_json
+            except ValidationError as err:
+                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
+                raise err
 
         def __iter__(self) -> Generator[Asset, None, None]:
             while True:
