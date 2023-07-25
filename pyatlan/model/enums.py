@@ -305,6 +305,7 @@ class AtlanConnectorType(str, Enum):
     STARBURST_GALAXY = ("starburst-galaxy", AtlanConnectionCategory.WAREHOUSE)
     REDIS = ("redis", AtlanConnectionCategory.DATABASE)
     GRAPHQL = ("graphql", AtlanConnectionCategory.DATABASE)
+    ALTERYX = ("alteryx", AtlanConnectionCategory.API)
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
