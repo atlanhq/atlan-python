@@ -1,3 +1,16 @@
+## 0.4.2 (July 25, 2023)
+
+* Add Alteyx to AtlanConnectorType enums
+
+## 0.4.1 (July 24, 2023)
+
+* Correct issue where custom metadata wasn't being returned after the first page in mult-page index search
+* Avoid double zipping when producing lambda layer in build
+* Correct problem with indexing error
+* Removed redundant code related to custom metadata
+* Add handling for log events
+* Add constant for archived asset retrieval
+
 ## 0.4.0 (July 5, 2023)
 
 * Pin dependency on pydantic==1.10.8
