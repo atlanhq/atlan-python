@@ -232,7 +232,7 @@ def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
 
 
 def test_upsert_when_no_changes(client: AtlanClient, glossary: AtlasGlossary):
-    response = client.upsert(glossary)
+    response = client.save(glossary)
     assert not response.guid_assignments
     assert not response.mutated_entities
 

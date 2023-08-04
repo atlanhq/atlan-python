@@ -37,7 +37,7 @@ def bucket(
         connection_qualified_name=connection.qualified_name,
         aws_arn=BUCKET_ARN,
     )
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     result = response.assets_created(asset_type=S3Bucket)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=S3Bucket)

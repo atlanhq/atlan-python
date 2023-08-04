@@ -50,7 +50,7 @@ def persona(
     glossary: AtlasGlossary,
 ) -> Generator[Persona, None, None]:
     to_create = Persona.create(name=MODULE_NAME)
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     p = response.assets_created(asset_type=Persona)[0]
     yield p
     delete_asset(client, guid=p.guid, asset_type=Persona)
@@ -86,7 +86,7 @@ def test_update_persona(
         AssetSidebarTab.RELATIONS.value,
         AssetSidebarTab.QUERIES.value,
     }
-    response = client.upsert(to_update)
+    response = client.save(to_update)
     assert response
     updated = response.assets_updated(asset_type=Persona)
     assert updated
@@ -146,7 +146,7 @@ def test_add_policies_to_persona(
         actions={PersonaGlossaryAction.CREATE, PersonaGlossaryAction.UPDATE},
         resources={f"entity:{glossary.qualified_name}"},
     )
-    response = client.upsert([metadata, data, glossary_policy])
+    response = client.save([metadata, data, glossary_policy])
     assert response
     personas = response.assets_updated(asset_type=Persona)
     assert personas
