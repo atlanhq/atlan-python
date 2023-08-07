@@ -112,7 +112,7 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
     ) as mock_methods:
         table = Table()
         mock_methods["get_asset_by_guid"].return_value = table
-        mock_methods["upsert"].return_value.assets_updated.return_value = [table]
+        mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
         terms = [AtlasGlossaryTerm()]
@@ -137,7 +137,7 @@ def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_gi
         term.relationship_status = "DELETED"
         table.attributes.meanings = [term]
         mock_methods["get_asset_by_guid"].return_value = table
-        mock_methods["upsert"].return_value.assets_updated.return_value = [table]
+        mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
         terms = [AtlasGlossaryTerm()]
@@ -161,7 +161,7 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
         exisiting_term = AtlasGlossaryTerm()
         table.attributes.meanings = [exisiting_term]
         mock_methods["get_asset_by_guid"].return_value = table
-        mock_methods["upsert"].return_value.assets_updated.return_value = [table]
+        mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
 
@@ -242,7 +242,7 @@ def test_replace_terms(
     ) as mock_methods:
         table = Table()
         mock_methods["get_asset_by_guid"].return_value = table
-        mock_methods["upsert"].return_value.assets_updated.return_value = [table]
+        mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
         terms = [AtlasGlossaryTerm()]
@@ -330,7 +330,7 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
         other_term.guid = "b267858d-8316-4c41-a56a-6e9b840cef4a"
         table.attributes.meanings = [exisiting_term, other_term]
         mock_methods["get_asset_by_guid"].return_value = table
-        mock_methods["upsert"].return_value.assets_updated.return_value = [table]
+        mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
 
