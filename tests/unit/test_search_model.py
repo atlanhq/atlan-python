@@ -84,7 +84,10 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
 @pytest.mark.parametrize(
     "parameters, expected",
     [
-        ({}, "__init__() missing 2 required positional arguments: 'field' and 'value'"),
+        (
+            {},
+            "__init__() missing 2 required positional arguments: 'field' and 'value'",
+        ),
         (
             [
                 {"field": "bob"},

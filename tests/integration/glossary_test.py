@@ -22,7 +22,7 @@ TERM_NAME2 = f"{MODULE_NAME}2"
 
 def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
     g = AtlasGlossary.create(name=StrictStr(name))
-    r = client.upsert(g)
+    r = client.save(g)
     return r.assets_created(AtlasGlossary)[0]
 
 
@@ -30,7 +30,7 @@ def create_category(
     client: AtlanClient, name: str, glossary: AtlasGlossary
 ) -> AtlasGlossaryCategory:
     c = AtlasGlossaryCategory.create(name=name, anchor=glossary)
-    return client.upsert(c).assets_created(AtlasGlossaryCategory)[0]
+    return client.save(c).assets_created(AtlasGlossaryCategory)[0]
 
 
 def create_term(
@@ -39,7 +39,7 @@ def create_term(
     t = AtlasGlossaryTerm.create(
         name=StrictStr(name), glossary_guid=StrictStr(glossary_guid)
     )
-    r = client.upsert(t)
+    r = client.save(t)
     return r.assets_created(AtlasGlossaryTerm)[0]
 
 
@@ -90,6 +90,21 @@ def term1(
     t = create_term(client, name=TERM_NAME1, glossary_guid=glossary.guid)
     yield t
     delete_asset(client, guid=t.guid, asset_type=AtlasGlossaryTerm)
+
+
+def test_term_failure(
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+):
+    with pytest.raises(
+        NotFoundError,
+        match="Instance AtlasGlossaryTerm with unique attribute .* does not exist",
+    ):
+        client.update_merging_cm(
+            AtlasGlossaryTerm.create(
+                name=f"{TERM_NAME1} X", glossary_guid=glossary.guid
+            )
+        )
 
 
 def test_term1(
@@ -156,7 +171,7 @@ def test_trim_to_required_glossary(
     glossary: AtlasGlossary,
 ):
     glossary = glossary.trim_to_required()
-    response = client.upsert(glossary)
+    response = client.save(glossary)
     assert response.mutated_entities is None
 
 
@@ -167,7 +182,7 @@ def test_term_trim_to_required(
 ):
     term1 = client.get_asset_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
     term1 = term1.trim_to_required()
-    response = client.upsert(term1)
+    response = client.save(term1)
     assert response.mutated_entities is None
 
 

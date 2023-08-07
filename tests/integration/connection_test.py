@@ -18,7 +18,7 @@ def create_connection(
     to_create = Connection.create(
         name=name, connector_type=connector_type, admin_roles=[admin_role_guid]
     )
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     result = response.assets_created(asset_type=Connection)[0]
     return client.get_asset_by_guid(result.guid, asset_type=Connection)
 

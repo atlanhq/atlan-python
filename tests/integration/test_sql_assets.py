@@ -27,7 +27,7 @@ def upsert(client: AtlanClient):
     guids: list[str] = []
 
     def _upsert(asset: Asset) -> AssetMutationResponse:
-        _response = client.upsert(asset)
+        _response = client.save(asset)
         if (
             _response
             and _response.mutated_entities
@@ -332,7 +332,7 @@ class TestColumn:
             parent_type=Table,
             order=1,
         )
-        response = client.upsert(column)
+        response = client.save(column)
         assert (columns := response.assets_created(asset_type=Column))
         assert len(columns) == 1
         column = client.get_asset_by_guid(asset_type=Column, guid=columns[0].guid)

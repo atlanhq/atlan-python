@@ -64,7 +64,7 @@ def create_database(client, connection, database_name: str):
     to_create = Database.create(
         name=database_name, connection_qualified_name=connection.qualified_name
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     return result.assets_created(asset_type=Database)[0]
 
 
@@ -77,7 +77,7 @@ def schema(
     to_create = Schema.create(
         name=SCHEMA_NAME, database_qualified_name=database.qualified_name
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     sch = result.assets_created(asset_type=Schema)[0]
     yield sch
     delete_asset(client, guid=sch.guid, asset_type=Schema)
@@ -93,7 +93,7 @@ def table(
     to_create = Table.create(
         name=TABLE_NAME, schema_qualified_name=schema.qualified_name
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     tbl = result.assets_created(asset_type=Table)[0]
     yield tbl
     delete_asset(client, guid=tbl.guid, asset_type=Table)
@@ -109,7 +109,7 @@ def mview(
     to_create = MaterialisedView.create(
         name=MVIEW_NAME, schema_qualified_name=schema.qualified_name
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     mv = result.assets_created(asset_type=MaterialisedView)[0]
     yield mv
     delete_asset(client, guid=mv.guid, asset_type=MaterialisedView)
@@ -123,7 +123,7 @@ def view(
     schema: Schema,
 ) -> Generator[View, None, None]:
     to_create = View.create(name=VIEW_NAME, schema_qualified_name=schema.qualified_name)
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     v = result.assets_created(asset_type=View)[0]
     yield v
     delete_asset(client, guid=v.guid, asset_type=View)
@@ -143,7 +143,7 @@ def column1(
         parent_qualified_name=table.qualified_name,
         order=1,
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     c = result.assets_created(asset_type=Column)[0]
     yield c
     delete_asset(client, guid=c.guid, asset_type=Column)
@@ -163,7 +163,7 @@ def column2(
         parent_qualified_name=table.qualified_name,
         order=2,
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     c = result.assets_created(asset_type=Column)[0]
     yield c
     delete_asset(client, guid=c.guid, asset_type=Column)
@@ -183,7 +183,7 @@ def column3(
         parent_qualified_name=mview.qualified_name,
         order=1,
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     c = result.assets_created(asset_type=Column)[0]
     yield c
     delete_asset(client, guid=c.guid, asset_type=Column)
@@ -203,7 +203,7 @@ def column4(
         parent_qualified_name=mview.qualified_name,
         order=2,
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     c = result.assets_created(asset_type=Column)[0]
     yield c
     delete_asset(client, guid=c.guid, asset_type=Column)
@@ -223,7 +223,7 @@ def column5(
         parent_qualified_name=view.qualified_name,
         order=1,
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     c = result.assets_created(asset_type=Column)[0]
     yield c
     delete_asset(client, guid=c.guid, asset_type=Column)
@@ -243,7 +243,7 @@ def column6(
         parent_qualified_name=view.qualified_name,
         order=2,
     )
-    result = client.upsert(to_create)
+    result = client.save(to_create)
     c = result.assets_created(asset_type=Column)[0]
     yield c
     delete_asset(client, guid=c.guid, asset_type=Column)
@@ -266,7 +266,7 @@ def lineage_start(
         inputs=[Table.ref_by_guid(table.guid)],
         outputs=[MaterialisedView.ref_by_guid(mview.guid)],
     )
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     ls = response.assets_created(asset_type=Process)[0]
     yield ls
     delete_asset(client, guid=ls.guid, asset_type=Process)
@@ -315,7 +315,7 @@ def lineage_end(
         inputs=[MaterialisedView.ref_by_guid(mview.guid)],
         outputs=[View.ref_by_guid(view.guid)],
     )
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     ls = response.assets_created(asset_type=Process)[0]
     yield ls
     delete_asset(client, guid=ls.guid, asset_type=Process)
@@ -686,7 +686,7 @@ def test_restore_lineage(
         lineage_start.qualified_name, lineage_start.name
     )
     to_restore.status = EntityStatus.ACTIVE
-    client.upsert(to_restore)
+    client.save(to_restore)
     restored = client.get_asset_by_guid(lineage_start.guid, asset_type=Process)
     assert restored
     count = 0

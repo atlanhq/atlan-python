@@ -854,6 +854,30 @@ class AtlanClient(BaseSettings):
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
+        """Deprecated - use save() instead."""
+        return self.save(
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            replace_custom_metadata=replace_custom_metadata,
+            overwrite_custom_metadata=overwrite_custom_metadata,
+        )
+
+    def save(
+        self,
+        entity: Union[Asset, list[Asset]],
+        replace_atlan_tags: bool = False,
+        replace_custom_metadata: bool = False,
+        overwrite_custom_metadata: bool = False,
+    ) -> AssetMutationResponse:
+        """If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.
+        If an asset does exist, opertionally overwrites any Atlan tags. Custom metadata will either be
+        overwritten or merged depending on the options provided.
+
+        :param entity: one or more assets to save
+        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
+        :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
+        """
         query_params = {
             "replaceClassifications": replace_atlan_tags,
             "replaceBusinessAttributes": replace_custom_metadata,
@@ -873,27 +897,75 @@ class AtlanClient(BaseSettings):
     def upsert_merging_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
-        query_params = {
-            "replaceClassifications": replace_atlan_tags,
-            "replaceBusinessAttributes": True,
-            "overwriteBusinessAttributes": False,
-        }
-        entities: list[Asset] = []
-        if isinstance(entity, list):
-            entities.extend(entity)
-        else:
-            entities.append(entity)
-        for asset in entities:
-            asset.validate_required()
-        request = BulkRequest[Asset](entities=entities)
-        raw_json = self._call_api(BULK_UPDATE, query_params, request)
-        return AssetMutationResponse(**raw_json)
+        """Deprecated - use save_merging_cm() instead."""
+        return self.save_merging_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
+
+    def save_merging_cm(
+        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
+        """If no asset exists, has the same behavior as the upsert() method, while also setting
+        any custom metadata provided. If an asset does exist, optionally overwrites any Atlan tags.
+        Will merge any provided custom metadata with any custom metadata that already exists on the asset.
+
+        :param entity: one or more assets to save
+        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :returns: details of the created or updated assets
+        """
+        return self.save(
+            entity=entity,
+            replace_atlan_tags=replace_atlan_tags,
+            replace_custom_metadata=True,
+            overwrite_custom_metadata=False,
+        )
+
+    def update_merging_cm(
+        self, entity: Asset, replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
+        """If no asset exists, fails with a NotFoundError. Will merge any provided
+        custom metadata with any custom metadata that already exists on the asset.
+        If an asset does exist, optionally overwrites any Atlan tags.
+
+        :param entity: the asset to update
+        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :returns: details of the updated asset
+        :raises NotFoundError: if the asset does not exist (will not create it)
+        """
+        self.get_asset_by_qualified_name(
+            qualified_name=entity.qualified_name,
+            asset_type=type(entity),
+            min_ext_info=True,
+            ignore_relationships=True,
+        )  # Allow this to throw the NotFoundError if the entity does not exist
+        return self.save_merging_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
     def upsert_replacing_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
+        """Deprecated - use save_replacing_cm() instead."""
+        return self.save_replacing_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tagss
+        )
+
+    def save_replacing_cm(
+        self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
+        """If no asset exists, has the same behavior as the upsert() method, while also setting
+        any custom metadata provided.
+        If an asset does exist, optionally overwrites any Atlan tags.
+        Will overwrite all custom metadata on any existing asset with only the custom metadata provided
+        (wiping out any other custom metadata on an existing asset that is not provided in the request).
+
+        :param entity: one or more assets to save
+        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :returns: details of the created or updated assets
+        """
+
         query_params = {
-            "replaceClassifications": replace_atlan_tagss,
+            "replaceClassifications": replace_atlan_tags,
             "replaceBusinessAttributes": True,
             "overwriteBusinessAttributes": True,
         }
@@ -907,6 +979,30 @@ class AtlanClient(BaseSettings):
         request = BulkRequest[Asset](entities=entities)
         raw_json = self._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
+
+    def update_replacing_cm(
+        self, entity: Asset, replace_atlan_tags: bool = False
+    ) -> AssetMutationResponse:
+        """If no asset exists, fails with a NotFoundException.
+        Will overwrite all custom metadata on any existing asset with only the custom metadata provided
+        (wiping out any other custom metadata on an existing asset that is not provided in the request).
+        If an asset does exist, optionally overwrites any Atlan tags.
+
+        :param entity: the asset to update
+        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
+        :returns: details of the updated asset
+        :raises NotFoundError: if the asset does not exist (will not create it)
+        """
+
+        self.get_asset_by_qualified_name(
+            qualified_name=entity.qualified_name,
+            asset_type=type(entity),
+            min_ext_info=True,
+            ignore_relationships=True,
+        )  # Allow this to throw the NotFoundError if the entity does not exist
+        return self.save_replacing_cm(
+            entity=entity, replace_atlan_tags=replace_atlan_tags
+        )
 
     def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
         raw_json = self._call_api(
@@ -1210,7 +1306,7 @@ class AtlanClient(BaseSettings):
             )
         replacement_terms.extend(terms)
         asset.assigned_terms = replacement_terms
-        response = self.upsert(entity=asset)
+        response = self.save(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return asset
@@ -1236,7 +1332,7 @@ class AtlanClient(BaseSettings):
         else:
             raise ValueError("Either guid or qualified name must be specified")
         asset.assigned_terms = terms
-        response = self.upsert(entity=asset)
+        response = self.save(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return asset
@@ -1273,7 +1369,7 @@ class AtlanClient(BaseSettings):
                 and term.guid not in guids_to_be_removed
             )
         asset.assigned_terms = replacement_terms
-        response = self.upsert(entity=asset)
+        response = self.save(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
             return assets[0]
         return asset
