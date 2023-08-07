@@ -108,7 +108,7 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     asset_type = Table
     with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, upsert=DEFAULT
+        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
     ) as mock_methods:
         table = Table()
         mock_methods["get_asset_by_guid"].return_value = table
@@ -130,7 +130,7 @@ def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_gi
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     asset_type = Table
     with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, upsert=DEFAULT
+        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
     ) as mock_methods:
         table = Table(attributes=Table.Attributes())
         term = AtlasGlossaryTerm()
@@ -155,7 +155,7 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     asset_type = Table
     with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, upsert=DEFAULT
+        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
     ) as mock_methods:
         table = Table(attributes=Table.Attributes())
         exisiting_term = AtlasGlossaryTerm()
@@ -238,7 +238,7 @@ def test_replace_terms(
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     asset_type = Table
     with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, upsert=DEFAULT
+        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
     ) as mock_methods:
         table = Table()
         mock_methods["get_asset_by_guid"].return_value = table
@@ -321,7 +321,7 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     asset_type = Table
     with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, upsert=DEFAULT
+        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
     ) as mock_methods:
         table = Table(attributes=Table.Attributes())
         exisiting_term = AtlasGlossaryTerm()
