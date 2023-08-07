@@ -86,18 +86,18 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
     [
         (
             {},
-            "Term.__init__() missing 2 required positional arguments: 'field' and 'value'",
+            "__init__() missing 2 required positional arguments: 'field' and 'value'",
         ),
         (
             [
                 {"field": "bob"},
-                "Term.__init__() missing 1 required positional argument: 'value'",
+                "__init__() missing 1 required positional argument: 'value'",
             ]
         ),
         (
             [
                 {"value": "bob"},
-                "Term.__init__() missing 1 required positional argument: 'field'",
+                "__init__() missing 1 required positional argument: 'field'",
             ]
         ),
     ],
