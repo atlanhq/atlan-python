@@ -9,6 +9,7 @@ import copy
 import json
 import logging
 import os
+import time
 from abc import ABC
 from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
@@ -35,8 +36,8 @@ from pyatlan.client.constants import (
     CREATE_GROUP,
     CREATE_TYPE_DEFS,
     CREATE_USERS,
+    DELETE_ENTITIES_BY_GUIDS,
     DELETE_ENTITY_BY_ATTRIBUTE,
-    DELETE_ENTITY_BY_GUID,
     DELETE_GROUP,
     DELETE_TYPE_DEF_BY_NAME,
     DELETE_USER,
@@ -97,6 +98,7 @@ from pyatlan.model.enums import (
     AtlanDeleteType,
     AtlanTypeCategory,
     CertificateStatus,
+    EntityStatus,
     LineageDirection,
 )
 from pyatlan.model.group import (
@@ -1004,18 +1006,83 @@ class AtlanClient(BaseSettings):
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
-    def purge_entity_by_guid(self, guid) -> AssetMutationResponse:
-        raw_json = self._call_api(
-            DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
-            {"deleteType": AtlanDeleteType.HARD.value},
-        )
+    def purge_entity_by_guid(
+        self, guid: Union[str, list[str]]
+    ) -> AssetMutationResponse:
+        """
+        Hard-deletes (purges) one or more assets by their unique identifier (GUID).
+        This operation is irreversible.
+
+        :param guid: unique identifier(s) (GUIDs) of one or more assets to hard-delete
+        :returns: details of the hard-deleted asset(s)
+        """
+        guids: list[str] = []
+        if isinstance(guid, list):
+            guids.extend(guid)
+        else:
+            guids.append(guid)
+        query_params = {"deleteType": AtlanDeleteType.PURGE.value, "guid": guids}
+        raw_json = self._call_api(DELETE_ENTITIES_BY_GUIDS, query_params=query_params)
         return AssetMutationResponse(**raw_json)
 
-    def delete_entity_by_guid(self, guid) -> AssetMutationResponse:
-        raw_json = self._call_api(
-            DELETE_ENTITY_BY_GUID.format_path_with_params(guid),
-            {"deleteType": AtlanDeleteType.SOFT.value},
+    def delete_entity_by_guid(
+        self, guid: Union[str, list[str]]
+    ) -> AssetMutationResponse:
+        """
+        Soft-deletes (archives) one or more assets by their unique identifier (GUID).
+        This operation can be reversed by updating the asset and its status to ACTIVE.
+
+        :param guid: unique identifier(s) (GUIDs) of one or more assets to soft-delete
+        :returns: details of the soft-deleted asset(s)
+        """
+        guids: list[str] = []
+        if isinstance(guid, list):
+            guids.extend(guid)
+        else:
+            guids.append(guid)
+        query_params = {"deleteType": AtlanDeleteType.SOFT.value, "guid": guids}
+        raw_json = self._call_api(DELETE_ENTITIES_BY_GUIDS, query_params=query_params)
+        return AssetMutationResponse(**raw_json)
+
+    def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
+        """
+        Restore an archived (soft-deleted) asset to active.
+
+        :param asset_type: type of the asset to restore
+        :param qualified_name: of the asset to restore
+        :returns: true if the asset is now restored, or false if not
+        """
+        return self._restore(asset_type, qualified_name, 0)
+
+    def _restore(self, asset_type: Type[A], qualified_name: str, retries: int) -> bool:
+        existing = self.get_asset_by_qualified_name(
+            asset_type=asset_type, qualified_name=qualified_name
         )
+        if not existing:
+            # Nothing to restore, so cannot be restored
+            return False
+        elif existing.status is EntityStatus.ACTIVE:
+            # Already active, but could be due to the async nature of delete handlers
+            if retries < 10:
+                time.sleep(2)
+                return self._restore(asset_type, qualified_name, retries + 1)
+            else:
+                # If we have exhausted the retries, though, we will short-circuit
+                return True
+        else:
+            response = self._restore_asset(existing)
+            return response is not None and response.guid_assignments is not None
+
+    def _restore_asset(self, asset: Asset) -> AssetMutationResponse:
+        to_restore = asset.trim_to_required()
+        to_restore.status = EntityStatus.ACTIVE
+        query_params = {
+            "replaceClassifications": False,
+            "replaceBusinessAttributes": False,
+            "overwriteBusinessAttributes": False,
+        }
+        request = BulkRequest[Asset](entities=[to_restore])
+        raw_json = self._call_api(BULK_UPDATE, query_params, request)
         return AssetMutationResponse(**raw_json)
 
     def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:

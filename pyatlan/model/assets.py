@@ -39,6 +39,7 @@ from pyatlan.model.enums import (
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
+    OpenLineageRunState,
     PersonaGlossaryAction,
     PersonaMetadataAction,
     PowerbiEndorsement,
@@ -48,6 +49,8 @@ from pyatlan.model.enums import (
     QuickSightDatasetFieldType,
     QuickSightDatasetImportMode,
     QuickSightFolderType,
+    SchemaRegistrySchemaCompatibility,
+    SchemaRegistrySchemaType,
     SourceCostUnitType,
 )
 from pyatlan.model.internal import AtlasServer, Internal
@@ -67,6 +70,7 @@ from pyatlan.model.structs import (
     MCRuleSchedule,
     PopularityInsights,
     SourceTagAttribute,
+    StarredDetails,
 )
 from pyatlan.utils import next_id, validate_required_fields
 
@@ -470,6 +474,7 @@ class Asset(Referenceable):
         "asset_dbt_job_name",
         "asset_dbt_job_schedule",
         "asset_dbt_job_status",
+        "asset_dbt_test_status",
         "asset_dbt_job_schedule_cron_humanized",
         "asset_dbt_job_last_run",
         "asset_dbt_job_last_run_url",
@@ -515,12 +520,22 @@ class Asset(Referenceable):
         "asset_mc_incident_states",
         "asset_mc_last_sync_run_at",
         "starred_by",
+        "starred_details_list",
+        "starred_count",
+        "asset_soda_d_q_status",
+        "asset_soda_check_count",
+        "asset_soda_last_sync_run_at",
+        "asset_soda_last_scan_at",
+        "asset_soda_check_statuses",
+        "asset_soda_source_url",
+        "schema_registry_subjects",
         "mc_monitors",
         "files",
         "mc_incidents",
         "links",
         "metrics",
         "readme",
+        "soda_checks",
         "assigned_terms",
     ]
 
@@ -1286,6 +1301,18 @@ class Asset(Referenceable):
         self.attributes.asset_dbt_job_status = asset_dbt_job_status
 
     @property
+    def asset_dbt_test_status(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.asset_dbt_test_status
+        )
+
+    @asset_dbt_test_status.setter
+    def asset_dbt_test_status(self, asset_dbt_test_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_dbt_test_status = asset_dbt_test_status
+
+    @property
     def asset_dbt_job_schedule_cron_humanized(self) -> Optional[str]:
         return (
             None
@@ -2002,6 +2029,122 @@ class Asset(Referenceable):
         self.attributes.starred_by = starred_by
 
     @property
+    def starred_details_list(self) -> Optional[list[StarredDetails]]:
+        return None if self.attributes is None else self.attributes.starred_details_list
+
+    @starred_details_list.setter
+    def starred_details_list(
+        self, starred_details_list: Optional[list[StarredDetails]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.starred_details_list = starred_details_list
+
+    @property
+    def starred_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.starred_count
+
+    @starred_count.setter
+    def starred_count(self, starred_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.starred_count = starred_count
+
+    @property
+    def asset_soda_d_q_status(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_d_q_status
+        )
+
+    @asset_soda_d_q_status.setter
+    def asset_soda_d_q_status(self, asset_soda_d_q_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_soda_d_q_status = asset_soda_d_q_status
+
+    @property
+    def asset_soda_check_count(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_check_count
+        )
+
+    @asset_soda_check_count.setter
+    def asset_soda_check_count(self, asset_soda_check_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_soda_check_count = asset_soda_check_count
+
+    @property
+    def asset_soda_last_sync_run_at(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_soda_last_sync_run_at
+        )
+
+    @asset_soda_last_sync_run_at.setter
+    def asset_soda_last_sync_run_at(
+        self, asset_soda_last_sync_run_at: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_soda_last_sync_run_at = asset_soda_last_sync_run_at
+
+    @property
+    def asset_soda_last_scan_at(self) -> Optional[datetime]:
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_last_scan_at
+        )
+
+    @asset_soda_last_scan_at.setter
+    def asset_soda_last_scan_at(self, asset_soda_last_scan_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_soda_last_scan_at = asset_soda_last_scan_at
+
+    @property
+    def asset_soda_check_statuses(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.asset_soda_check_statuses
+        )
+
+    @asset_soda_check_statuses.setter
+    def asset_soda_check_statuses(self, asset_soda_check_statuses: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_soda_check_statuses = asset_soda_check_statuses
+
+    @property
+    def asset_soda_source_url(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.asset_soda_source_url
+        )
+
+    @asset_soda_source_url.setter
+    def asset_soda_source_url(self, asset_soda_source_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset_soda_source_url = asset_soda_source_url
+
+    @property
+    def schema_registry_subjects(self) -> Optional[list[SchemaRegistrySubject]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.schema_registry_subjects
+        )
+
+    @schema_registry_subjects.setter
+    def schema_registry_subjects(
+        self, schema_registry_subjects: Optional[list[SchemaRegistrySubject]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_registry_subjects = schema_registry_subjects
+
+    @property
     def mc_monitors(self) -> Optional[list[MCMonitor]]:
         return None if self.attributes is None else self.attributes.mc_monitors
 
@@ -2060,6 +2203,16 @@ class Asset(Referenceable):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.readme = readme
+
+    @property
+    def soda_checks(self) -> Optional[list[SodaCheck]]:
+        return None if self.attributes is None else self.attributes.soda_checks
+
+    @soda_checks.setter
+    def soda_checks(self, soda_checks: Optional[list[SodaCheck]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_checks = soda_checks
 
     @property
     def assigned_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -2248,6 +2401,9 @@ class Asset(Referenceable):
         asset_dbt_job_status: Optional[str] = Field(
             None, description="", alias="assetDbtJobStatus"
         )
+        asset_dbt_test_status: Optional[str] = Field(
+            None, description="", alias="assetDbtTestStatus"
+        )
         asset_dbt_job_schedule_cron_humanized: Optional[str] = Field(
             None, description="", alias="assetDbtJobScheduleCronHumanized"
         )
@@ -2379,6 +2535,31 @@ class Asset(Referenceable):
             None, description="", alias="assetMcLastSyncRunAt"
         )
         starred_by: Optional[set[str]] = Field(None, description="", alias="starredBy")
+        starred_details_list: Optional[list[StarredDetails]] = Field(
+            None, description="", alias="starredDetailsList"
+        )
+        starred_count: Optional[int] = Field(None, description="", alias="starredCount")
+        asset_soda_d_q_status: Optional[str] = Field(
+            None, description="", alias="assetSodaDQStatus"
+        )
+        asset_soda_check_count: Optional[int] = Field(
+            None, description="", alias="assetSodaCheckCount"
+        )
+        asset_soda_last_sync_run_at: Optional[datetime] = Field(
+            None, description="", alias="assetSodaLastSyncRunAt"
+        )
+        asset_soda_last_scan_at: Optional[datetime] = Field(
+            None, description="", alias="assetSodaLastScanAt"
+        )
+        asset_soda_check_statuses: Optional[str] = Field(
+            None, description="", alias="assetSodaCheckStatuses"
+        )
+        asset_soda_source_url: Optional[str] = Field(
+            None, description="", alias="assetSodaSourceURL"
+        )
+        schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
+            None, description="", alias="schemaRegistrySubjects"
+        )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
             None, description="", alias="mcMonitors"
         )  # relationship
@@ -2396,6 +2577,9 @@ class Asset(Referenceable):
         )  # relationship
         readme: Optional[Readme] = Field(
             None, description="", alias="readme"
+        )  # relationship
+        soda_checks: Optional[list[SodaCheck]] = Field(
+            None, description="", alias="sodaChecks"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
@@ -2527,6 +2711,7 @@ class Connection(Asset, type_name="Connection"):
         "policy_strategy",
         "query_username_strategy",
         "row_limit",
+        "query_timeout",
         "default_credential_guid",
         "connector_icon",
         "connector_image",
@@ -2677,6 +2862,16 @@ class Connection(Asset, type_name="Connection"):
         self.attributes.row_limit = row_limit
 
     @property
+    def query_timeout(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_timeout
+
+    @query_timeout.setter
+    def query_timeout(self, query_timeout: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_timeout = query_timeout
+
+    @property
     def default_credential_guid(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.default_credential_guid
@@ -2822,6 +3017,7 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="queryUsernameStrategy"
         )
         row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
+        query_timeout: Optional[int] = Field(None, description="", alias="queryTimeout")
         default_credential_guid: Optional[str] = Field(
             None, description="", alias="defaultCredentialGuid"
         )
@@ -2898,6 +3094,7 @@ class Process(Asset, type_name="Process"):
         "code",
         "sql",
         "ast",
+        "airflow_tasks",
         "column_processes",
     ]
 
@@ -2952,6 +3149,16 @@ class Process(Asset, type_name="Process"):
         self.attributes.ast = ast
 
     @property
+    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return None if self.attributes is None else self.attributes.airflow_tasks
+
+    @airflow_tasks.setter
+    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tasks = airflow_tasks
+
+    @property
     def column_processes(self) -> Optional[list[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
@@ -2967,6 +3174,9 @@ class Process(Asset, type_name="Process"):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
+        airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="airflowTasks"
+        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
         )  # relationship
@@ -4129,22 +4339,22 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         "abbreviation",
         "usage",
         "additional_attributes",
-        "translation_terms",
         "valid_values_for",
-        "synonyms",
-        "replaced_by",
         "valid_values",
-        "replacement_terms",
         "see_also",
-        "translated_terms",
         "is_a",
-        "anchor",
         "antonyms",
         "assigned_entities",
         "classifies",
         "categories",
         "preferred_to_terms",
         "preferred_terms",
+        "translation_terms",
+        "synonyms",
+        "replaced_by",
+        "replacement_terms",
+        "translated_terms",
+        "anchor",
     ]
 
     @property
@@ -4210,16 +4420,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.additional_attributes = additional_attributes
 
     @property
-    def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.translation_terms
-
-    @translation_terms.setter
-    def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.translation_terms = translation_terms
-
-    @property
     def valid_values_for(self) -> Optional[list[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.valid_values_for
 
@@ -4228,26 +4428,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.valid_values_for = valid_values_for
-
-    @property
-    def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.synonyms
-
-    @synonyms.setter
-    def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.synonyms = synonyms
-
-    @property
-    def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.replaced_by
-
-    @replaced_by.setter
-    def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.replaced_by = replaced_by
 
     @property
     def valid_values(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -4260,16 +4440,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.valid_values = valid_values
 
     @property
-    def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.replacement_terms
-
-    @replacement_terms.setter
-    def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.replacement_terms = replacement_terms
-
-    @property
     def see_also(self) -> Optional[list[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.see_also
 
@@ -4280,16 +4450,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.see_also = see_also
 
     @property
-    def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
-        return None if self.attributes is None else self.attributes.translated_terms
-
-    @translated_terms.setter
-    def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.translated_terms = translated_terms
-
-    @property
     def is_a(self) -> Optional[list[AtlasGlossaryTerm]]:
         return None if self.attributes is None else self.attributes.is_a
 
@@ -4298,16 +4458,6 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.is_a = is_a
-
-    @property
-    def anchor(self) -> AtlasGlossary:
-        return None if self.attributes is None else self.attributes.anchor
-
-    @anchor.setter
-    def anchor(self, anchor: AtlasGlossary):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.anchor = anchor
 
     @property
     def antonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
@@ -4369,6 +4519,66 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             self.attributes = self.Attributes()
         self.attributes.preferred_terms = preferred_terms
 
+    @property
+    def translation_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.translation_terms
+
+    @translation_terms.setter
+    def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.translation_terms = translation_terms
+
+    @property
+    def synonyms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.synonyms
+
+    @synonyms.setter
+    def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.synonyms = synonyms
+
+    @property
+    def replaced_by(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.replaced_by
+
+    @replaced_by.setter
+    def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.replaced_by = replaced_by
+
+    @property
+    def replacement_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.replacement_terms
+
+    @replacement_terms.setter
+    def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.replacement_terms = replacement_terms
+
+    @property
+    def translated_terms(self) -> Optional[list[AtlasGlossaryTerm]]:
+        return None if self.attributes is None else self.attributes.translated_terms
+
+    @translated_terms.setter
+    def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.translated_terms = translated_terms
+
+    @property
+    def anchor(self) -> AtlasGlossary:
+        return None if self.attributes is None else self.attributes.anchor
+
+    @anchor.setter
+    def anchor(self, anchor: AtlasGlossary):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.anchor = anchor
+
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
             None, description="", alias="shortDescription"
@@ -4382,35 +4592,17 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         additional_attributes: Optional[dict[str, str]] = Field(
             None, description="", alias="additionalAttributes"
         )
-        translation_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="translationTerms"
-        )  # relationship
         valid_values_for: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="validValuesFor"
-        )  # relationship
-        synonyms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="synonyms"
-        )  # relationship
-        replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="replacedBy"
         )  # relationship
         valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="validValues"
         )  # relationship
-        replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="replacementTerms"
-        )  # relationship
         see_also: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="seeAlso"
         )  # relationship
-        translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="translatedTerms"
-        )  # relationship
         is_a: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="isA"
-        )  # relationship
-        anchor: AtlasGlossary = Field(
-            None, description="", alias="anchor"
         )  # relationship
         antonyms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="antonyms"
@@ -4429,6 +4621,24 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         )  # relationship
         preferred_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="preferredTerms"
+        )  # relationship
+        translation_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="translationTerms"
+        )  # relationship
+        synonyms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="synonyms"
+        )  # relationship
+        replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="replacedBy"
+        )  # relationship
+        replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="replacementTerms"
+        )  # relationship
+        translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
+            None, description="", alias="translatedTerms"
+        )  # relationship
+        anchor: AtlasGlossary = Field(
+            None, description="", alias="anchor"
         )  # relationship
 
         @classmethod
@@ -5257,23 +5467,160 @@ class Folder(Namespace):
     )
 
 
-class EventStore(Catalog):
+class Airflow(Catalog):
     """Description"""
 
-    type_name: str = Field("EventStore", allow_mutation=False)
+    type_name: str = Field("Airflow", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "EventStore":
-            raise ValueError("must be EventStore")
+        if v != "Airflow":
+            raise ValueError("must be Airflow")
         return v
 
     def __setattr__(self, name, value):
-        if name in EventStore._convience_properties:
+        if name in Airflow._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "airflow_tags",
+        "airflow_run_version",
+        "airflow_run_open_lineage_version",
+        "airflow_run_name",
+        "airflow_run_type",
+        "airflow_run_start_time",
+        "airflow_run_end_time",
+        "airflow_run_open_lineage_state",
+    ]
+
+    @property
+    def airflow_tags(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.airflow_tags
+
+    @airflow_tags.setter
+    def airflow_tags(self, airflow_tags: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tags = airflow_tags
+
+    @property
+    def airflow_run_version(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_run_version
+
+    @airflow_run_version.setter
+    def airflow_run_version(self, airflow_run_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_version = airflow_run_version
+
+    @property
+    def airflow_run_open_lineage_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_run_open_lineage_version
+        )
+
+    @airflow_run_open_lineage_version.setter
+    def airflow_run_open_lineage_version(
+        self, airflow_run_open_lineage_version: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_open_lineage_version = (
+            airflow_run_open_lineage_version
+        )
+
+    @property
+    def airflow_run_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_run_name
+
+    @airflow_run_name.setter
+    def airflow_run_name(self, airflow_run_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_name = airflow_run_name
+
+    @property
+    def airflow_run_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_run_type
+
+    @airflow_run_type.setter
+    def airflow_run_type(self, airflow_run_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_type = airflow_run_type
+
+    @property
+    def airflow_run_start_time(self) -> Optional[datetime]:
+        return (
+            None if self.attributes is None else self.attributes.airflow_run_start_time
+        )
+
+    @airflow_run_start_time.setter
+    def airflow_run_start_time(self, airflow_run_start_time: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_start_time = airflow_run_start_time
+
+    @property
+    def airflow_run_end_time(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.airflow_run_end_time
+
+    @airflow_run_end_time.setter
+    def airflow_run_end_time(self, airflow_run_end_time: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_end_time = airflow_run_end_time
+
+    @property
+    def airflow_run_open_lineage_state(self) -> Optional[OpenLineageRunState]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_run_open_lineage_state
+        )
+
+    @airflow_run_open_lineage_state.setter
+    def airflow_run_open_lineage_state(
+        self, airflow_run_open_lineage_state: Optional[OpenLineageRunState]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_run_open_lineage_state = airflow_run_open_lineage_state
+
+    class Attributes(Catalog.Attributes):
+        airflow_tags: Optional[set[str]] = Field(
+            None, description="", alias="airflowTags"
+        )
+        airflow_run_version: Optional[str] = Field(
+            None, description="", alias="airflowRunVersion"
+        )
+        airflow_run_open_lineage_version: Optional[str] = Field(
+            None, description="", alias="airflowRunOpenLineageVersion"
+        )
+        airflow_run_name: Optional[str] = Field(
+            None, description="", alias="airflowRunName"
+        )
+        airflow_run_type: Optional[str] = Field(
+            None, description="", alias="airflowRunType"
+        )
+        airflow_run_start_time: Optional[datetime] = Field(
+            None, description="", alias="airflowRunStartTime"
+        )
+        airflow_run_end_time: Optional[datetime] = Field(
+            None, description="", alias="airflowRunEndTime"
+        )
+        airflow_run_open_lineage_state: Optional[OpenLineageRunState] = Field(
+            None, description="", alias="airflowRunOpenLineageState"
+        )
+
+    attributes: "Airflow.Attributes" = Field(
+        default_factory=lambda: Airflow.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class ObjectStore(Catalog):
@@ -5346,6 +5693,391 @@ class SaaS(Catalog):
 
     def __setattr__(self, name, value):
         if name in SaaS._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+
+class Resource(Catalog):
+    """Description"""
+
+    type_name: str = Field("Resource", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Resource":
+            raise ValueError("must be Resource")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Resource._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "link",
+        "is_global",
+        "reference",
+        "resource_metadata",
+    ]
+
+    @property
+    def link(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.link
+
+    @link.setter
+    def link(self, link: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.link = link
+
+    @property
+    def is_global(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_global
+
+    @is_global.setter
+    def is_global(self, is_global: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_global = is_global
+
+    @property
+    def reference(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.reference
+
+    @reference.setter
+    def reference(self, reference: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reference = reference
+
+    @property
+    def resource_metadata(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.resource_metadata
+
+    @resource_metadata.setter
+    def resource_metadata(self, resource_metadata: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.resource_metadata = resource_metadata
+
+    class Attributes(Catalog.Attributes):
+        link: Optional[str] = Field(None, description="", alias="link")
+        is_global: Optional[bool] = Field(None, description="", alias="isGlobal")
+        reference: Optional[str] = Field(None, description="", alias="reference")
+        resource_metadata: Optional[dict[str, str]] = Field(
+            None, description="", alias="resourceMetadata"
+        )
+
+    attributes: "Resource.Attributes" = Field(
+        default_factory=lambda: Resource.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SQL(Catalog):
+    """Description"""
+
+    type_name: str = Field("SQL", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SQL":
+            raise ValueError("must be SQL")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SQL._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "query_count",
+        "query_user_count",
+        "query_user_map",
+        "query_count_updated_at",
+        "database_name",
+        "database_qualified_name",
+        "schema_name",
+        "schema_qualified_name",
+        "table_name",
+        "table_qualified_name",
+        "view_name",
+        "view_qualified_name",
+        "is_profiled",
+        "last_profiled_at",
+        "dbt_sources",
+        "sql_dbt_models",
+        "sql_dbt_sources",
+        "dbt_models",
+        "dbt_tests",
+    ]
+
+    @property
+    def query_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_count
+
+    @query_count.setter
+    def query_count(self, query_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count = query_count
+
+    @property
+    def query_user_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_user_count
+
+    @query_user_count.setter
+    def query_user_count(self, query_user_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_count = query_user_count
+
+    @property
+    def query_user_map(self) -> Optional[dict[str, int]]:
+        return None if self.attributes is None else self.attributes.query_user_map
+
+    @query_user_map.setter
+    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_map = query_user_map
+
+    @property
+    def query_count_updated_at(self) -> Optional[datetime]:
+        return (
+            None if self.attributes is None else self.attributes.query_count_updated_at
+        )
+
+    @query_count_updated_at.setter
+    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count_updated_at = query_count_updated_at
+
+    @property
+    def database_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.database_name
+
+    @database_name.setter
+    def database_name(self, database_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database_name = database_name
+
+    @property
+    def database_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.database_qualified_name
+        )
+
+    @database_qualified_name.setter
+    def database_qualified_name(self, database_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database_qualified_name = database_qualified_name
+
+    @property
+    def schema_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.schema_name
+
+    @schema_name.setter
+    def schema_name(self, schema_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_name = schema_name
+
+    @property
+    def schema_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.schema_qualified_name
+        )
+
+    @schema_qualified_name.setter
+    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_qualified_name = schema_qualified_name
+
+    @property
+    def table_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_name
+
+    @table_name.setter
+    def table_name(self, table_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_name = table_name
+
+    @property
+    def table_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_qualified_name
+
+    @table_qualified_name.setter
+    def table_qualified_name(self, table_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_qualified_name = table_qualified_name
+
+    @property
+    def view_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.view_name
+
+    @view_name.setter
+    def view_name(self, view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view_name = view_name
+
+    @property
+    def view_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.view_qualified_name
+
+    @view_qualified_name.setter
+    def view_qualified_name(self, view_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view_qualified_name = view_qualified_name
+
+    @property
+    def is_profiled(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_profiled
+
+    @is_profiled.setter
+    def is_profiled(self, is_profiled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_profiled = is_profiled
+
+    @property
+    def last_profiled_at(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.last_profiled_at
+
+    @last_profiled_at.setter
+    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.last_profiled_at = last_profiled_at
+
+    @property
+    def dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.dbt_sources
+
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_models
+
+    @sql_dbt_models.setter
+    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_models = sql_dbt_models
+
+    @property
+    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    class Attributes(Catalog.Attributes):
+        query_count: Optional[int] = Field(None, description="", alias="queryCount")
+        query_user_count: Optional[int] = Field(
+            None, description="", alias="queryUserCount"
+        )
+        query_user_map: Optional[dict[str, int]] = Field(
+            None, description="", alias="queryUserMap"
+        )
+        query_count_updated_at: Optional[datetime] = Field(
+            None, description="", alias="queryCountUpdatedAt"
+        )
+        database_name: Optional[str] = Field(None, description="", alias="databaseName")
+        database_qualified_name: Optional[str] = Field(
+            None, description="", alias="databaseQualifiedName"
+        )
+        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
+        schema_qualified_name: Optional[str] = Field(
+            None, description="", alias="schemaQualifiedName"
+        )
+        table_name: Optional[str] = Field(None, description="", alias="tableName")
+        table_qualified_name: Optional[str] = Field(
+            None, description="", alias="tableQualifiedName"
+        )
+        view_name: Optional[str] = Field(None, description="", alias="viewName")
+        view_qualified_name: Optional[str] = Field(
+            None, description="", alias="viewQualifiedName"
+        )
+        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+        last_profiled_at: Optional[datetime] = Field(
+            None, description="", alias="lastProfiledAt"
+        )
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
+        )  # relationship
+
+    attributes: "SQL.Attributes" = Field(
+        default_factory=lambda: SQL.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class EventStore(Catalog):
+    """Description"""
+
+    type_name: str = Field("EventStore", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "EventStore":
+            raise ValueError("must be EventStore")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in EventStore._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -5644,84 +6376,6 @@ class Dbt(Catalog):
     )
 
 
-class Resource(Catalog):
-    """Description"""
-
-    type_name: str = Field("Resource", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Resource":
-            raise ValueError("must be Resource")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Resource._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "link",
-        "is_global",
-        "reference",
-        "resource_metadata",
-    ]
-
-    @property
-    def link(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.link
-
-    @link.setter
-    def link(self, link: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.link = link
-
-    @property
-    def is_global(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_global
-
-    @is_global.setter
-    def is_global(self, is_global: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_global = is_global
-
-    @property
-    def reference(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.reference
-
-    @reference.setter
-    def reference(self, reference: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reference = reference
-
-    @property
-    def resource_metadata(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.resource_metadata
-
-    @resource_metadata.setter
-    def resource_metadata(self, resource_metadata: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.resource_metadata = resource_metadata
-
-    class Attributes(Catalog.Attributes):
-        link: Optional[str] = Field(None, description="", alias="link")
-        is_global: Optional[bool] = Field(None, description="", alias="isGlobal")
-        reference: Optional[str] = Field(None, description="", alias="reference")
-        resource_metadata: Optional[dict[str, str]] = Field(
-            None, description="", alias="resourceMetadata"
-        )
-
-    attributes: "Resource.Attributes" = Field(
-        default_factory=lambda: Resource.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Insight(Catalog):
     """Description"""
 
@@ -5935,275 +6589,67 @@ class Tag(Catalog):
     )
 
 
-class SQL(Catalog):
+class SchemaRegistry(Catalog):
     """Description"""
 
-    type_name: str = Field("SQL", allow_mutation=False)
+    type_name: str = Field("SchemaRegistry", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SQL":
-            raise ValueError("must be SQL")
+        if v != "SchemaRegistry":
+            raise ValueError("must be SchemaRegistry")
         return v
 
     def __setattr__(self, name, value):
-        if name in SQL._convience_properties:
+        if name in SchemaRegistry._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "query_count",
-        "query_user_count",
-        "query_user_map",
-        "query_count_updated_at",
-        "database_name",
-        "database_qualified_name",
-        "schema_name",
-        "schema_qualified_name",
-        "table_name",
-        "table_qualified_name",
-        "view_name",
-        "view_qualified_name",
-        "is_profiled",
-        "last_profiled_at",
-        "dbt_sources",
-        "sql_dbt_models",
-        "sql_dbt_sources",
-        "dbt_models",
+        "schema_registry_schema_type",
+        "schema_registry_schema_id",
     ]
 
     @property
-    def query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_count
-
-    @query_count.setter
-    def query_count(self, query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count = query_count
-
-    @property
-    def query_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_user_count
-
-    @query_user_count.setter
-    def query_user_count(self, query_user_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_count = query_user_count
-
-    @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
-        return None if self.attributes is None else self.attributes.query_user_map
-
-    @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_map = query_user_map
-
-    @property
-    def query_count_updated_at(self) -> Optional[datetime]:
+    def schema_registry_schema_type(self) -> Optional[SchemaRegistrySchemaType]:
         return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
+            None
+            if self.attributes is None
+            else self.attributes.schema_registry_schema_type
         )
 
-    @query_count_updated_at.setter
-    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
+    @schema_registry_schema_type.setter
+    def schema_registry_schema_type(
+        self, schema_registry_schema_type: Optional[SchemaRegistrySchemaType]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.query_count_updated_at = query_count_updated_at
+        self.attributes.schema_registry_schema_type = schema_registry_schema_type
 
     @property
-    def database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_name
-
-    @database_name.setter
-    def database_name(self, database_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_name = database_name
-
-    @property
-    def database_qualified_name(self) -> Optional[str]:
+    def schema_registry_schema_id(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.database_qualified_name
+            None
+            if self.attributes is None
+            else self.attributes.schema_registry_schema_id
         )
 
-    @database_qualified_name.setter
-    def database_qualified_name(self, database_qualified_name: Optional[str]):
+    @schema_registry_schema_id.setter
+    def schema_registry_schema_id(self, schema_registry_schema_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.database_qualified_name = database_qualified_name
-
-    @property
-    def schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_name
-
-    @schema_name.setter
-    def schema_name(self, schema_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_name = schema_name
-
-    @property
-    def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
-
-    @schema_qualified_name.setter
-    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_qualified_name = schema_qualified_name
-
-    @property
-    def table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_name
-
-    @table_name.setter
-    def table_name(self, table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_name = table_name
-
-    @property
-    def table_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_qualified_name
-
-    @table_qualified_name.setter
-    def table_qualified_name(self, table_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_qualified_name = table_qualified_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_qualified_name
-
-    @view_qualified_name.setter
-    def view_qualified_name(self, view_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_qualified_name = view_qualified_name
-
-    @property
-    def is_profiled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_profiled
-
-    @is_profiled.setter
-    def is_profiled(self, is_profiled: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_profiled = is_profiled
-
-    @property
-    def last_profiled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.last_profiled_at
-
-    @last_profiled_at.setter
-    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.last_profiled_at = last_profiled_at
-
-    @property
-    def dbt_sources(self) -> Optional[list[DbtSource]]:
-        return None if self.attributes is None else self.attributes.dbt_sources
-
-    @dbt_sources.setter
-    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_sources = dbt_sources
-
-    @property
-    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_models
-
-    @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_models = sql_dbt_models
-
-    @property
-    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
-    def dbt_models(self) -> Optional[list[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
+        self.attributes.schema_registry_schema_id = schema_registry_schema_id
 
     class Attributes(Catalog.Attributes):
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
+        schema_registry_schema_type: Optional[SchemaRegistrySchemaType] = Field(
+            None, description="", alias="schemaRegistrySchemaType"
         )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
+        schema_registry_schema_id: Optional[str] = Field(
+            None, description="", alias="schemaRegistrySchemaId"
         )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
-        )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
-        database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
-        )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
-        schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
-        )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
-        table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
 
-    attributes: "SQL.Attributes" = Field(
-        default_factory=lambda: SQL.Attributes(),
+    attributes: "SchemaRegistry.Attributes" = Field(
+        default_factory=lambda: SchemaRegistry.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6627,6 +7073,7 @@ class DbtColumnProcess(Dbt):
         "sql",
         "ast",
         "process",
+        "airflow_tasks",
         "column_processes",
     ]
 
@@ -6909,6 +7356,16 @@ class DbtColumnProcess(Dbt):
         self.attributes.process = process
 
     @property
+    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return None if self.attributes is None else self.attributes.airflow_tasks
+
+    @airflow_tasks.setter
+    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tasks = airflow_tasks
+
+    @property
     def column_processes(self) -> Optional[list[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
@@ -6974,6 +7431,9 @@ class DbtColumnProcess(Dbt):
         process: Optional[Process] = Field(
             None, description="", alias="process"
         )  # relationship
+        airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="airflowTasks"
+        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
         )  # relationship
@@ -6985,23 +7445,328 @@ class DbtColumnProcess(Dbt):
     )
 
 
-class Kafka(EventStore):
+class AirflowDag(Airflow):
     """Description"""
 
-    type_name: str = Field("Kafka", allow_mutation=False)
+    type_name: str = Field("AirflowDag", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Kafka":
-            raise ValueError("must be Kafka")
+        if v != "AirflowDag":
+            raise ValueError("must be AirflowDag")
         return v
 
     def __setattr__(self, name, value):
-        if name in Kafka._convience_properties:
+        if name in AirflowDag._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convience_properties: ClassVar[list[str]] = [
+        "airflow_dag_schedule",
+        "airflow_dag_schedule_delta",
+        "airflow_tasks",
+    ]
+
+    @property
+    def airflow_dag_schedule(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_dag_schedule
+
+    @airflow_dag_schedule.setter
+    def airflow_dag_schedule(self, airflow_dag_schedule: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_dag_schedule = airflow_dag_schedule
+
+    @property
+    def airflow_dag_schedule_delta(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_dag_schedule_delta
+        )
+
+    @airflow_dag_schedule_delta.setter
+    def airflow_dag_schedule_delta(self, airflow_dag_schedule_delta: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_dag_schedule_delta = airflow_dag_schedule_delta
+
+    @property
+    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return None if self.attributes is None else self.attributes.airflow_tasks
+
+    @airflow_tasks.setter
+    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tasks = airflow_tasks
+
+    class Attributes(Airflow.Attributes):
+        airflow_dag_schedule: Optional[str] = Field(
+            None, description="", alias="airflowDagSchedule"
+        )
+        airflow_dag_schedule_delta: Optional[int] = Field(
+            None, description="", alias="airflowDagScheduleDelta"
+        )
+        airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="airflowTasks"
+        )  # relationship
+
+    attributes: "AirflowDag.Attributes" = Field(
+        default_factory=lambda: AirflowDag.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class AirflowTask(Airflow):
+    """Description"""
+
+    type_name: str = Field("AirflowTask", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AirflowTask":
+            raise ValueError("must be AirflowTask")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in AirflowTask._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "airflow_task_operator_class",
+        "airflow_dag_name",
+        "airflow_dag_qualified_name",
+        "airflow_task_connection_id",
+        "airflow_task_sql",
+        "airflow_task_retry_number",
+        "airflow_task_pool",
+        "airflow_task_pool_slots",
+        "airflow_task_queue",
+        "airflow_task_priority_weight",
+        "airflow_task_trigger_rule",
+        "process",
+        "tables",
+        "airflow_dag",
+    ]
+
+    @property
+    def airflow_task_operator_class(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_operator_class
+        )
+
+    @airflow_task_operator_class.setter
+    def airflow_task_operator_class(self, airflow_task_operator_class: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_operator_class = airflow_task_operator_class
+
+    @property
+    def airflow_dag_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_dag_name
+
+    @airflow_dag_name.setter
+    def airflow_dag_name(self, airflow_dag_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_dag_name = airflow_dag_name
+
+    @property
+    def airflow_dag_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_dag_qualified_name
+        )
+
+    @airflow_dag_qualified_name.setter
+    def airflow_dag_qualified_name(self, airflow_dag_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_dag_qualified_name = airflow_dag_qualified_name
+
+    @property
+    def airflow_task_connection_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_connection_id
+        )
+
+    @airflow_task_connection_id.setter
+    def airflow_task_connection_id(self, airflow_task_connection_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_connection_id = airflow_task_connection_id
+
+    @property
+    def airflow_task_sql(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_task_sql
+
+    @airflow_task_sql.setter
+    def airflow_task_sql(self, airflow_task_sql: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_sql = airflow_task_sql
+
+    @property
+    def airflow_task_retry_number(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_retry_number
+        )
+
+    @airflow_task_retry_number.setter
+    def airflow_task_retry_number(self, airflow_task_retry_number: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_retry_number = airflow_task_retry_number
+
+    @property
+    def airflow_task_pool(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_task_pool
+
+    @airflow_task_pool.setter
+    def airflow_task_pool(self, airflow_task_pool: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_pool = airflow_task_pool
+
+    @property
+    def airflow_task_pool_slots(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.airflow_task_pool_slots
+        )
+
+    @airflow_task_pool_slots.setter
+    def airflow_task_pool_slots(self, airflow_task_pool_slots: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_pool_slots = airflow_task_pool_slots
+
+    @property
+    def airflow_task_queue(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.airflow_task_queue
+
+    @airflow_task_queue.setter
+    def airflow_task_queue(self, airflow_task_queue: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_queue = airflow_task_queue
+
+    @property
+    def airflow_task_priority_weight(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_priority_weight
+        )
+
+    @airflow_task_priority_weight.setter
+    def airflow_task_priority_weight(self, airflow_task_priority_weight: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_priority_weight = airflow_task_priority_weight
+
+    @property
+    def airflow_task_trigger_rule(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.airflow_task_trigger_rule
+        )
+
+    @airflow_task_trigger_rule.setter
+    def airflow_task_trigger_rule(self, airflow_task_trigger_rule: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task_trigger_rule = airflow_task_trigger_rule
+
+    @property
+    def process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.process
+
+    @process.setter
+    def process(self, process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.process = process
+
+    @property
+    def tables(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def airflow_dag(self) -> Optional[AirflowDag]:
+        return None if self.attributes is None else self.attributes.airflow_dag
+
+    @airflow_dag.setter
+    def airflow_dag(self, airflow_dag: Optional[AirflowDag]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_dag = airflow_dag
+
+    class Attributes(Airflow.Attributes):
+        airflow_task_operator_class: Optional[str] = Field(
+            None, description="", alias="airflowTaskOperatorClass"
+        )
+        airflow_dag_name: Optional[str] = Field(
+            None, description="", alias="airflowDagName"
+        )
+        airflow_dag_qualified_name: Optional[str] = Field(
+            None, description="", alias="airflowDagQualifiedName"
+        )
+        airflow_task_connection_id: Optional[str] = Field(
+            None, description="", alias="airflowTaskConnectionId"
+        )
+        airflow_task_sql: Optional[str] = Field(
+            None, description="", alias="airflowTaskSql"
+        )
+        airflow_task_retry_number: Optional[int] = Field(
+            None, description="", alias="airflowTaskRetryNumber"
+        )
+        airflow_task_pool: Optional[str] = Field(
+            None, description="", alias="airflowTaskPool"
+        )
+        airflow_task_pool_slots: Optional[int] = Field(
+            None, description="", alias="airflowTaskPoolSlots"
+        )
+        airflow_task_queue: Optional[str] = Field(
+            None, description="", alias="airflowTaskQueue"
+        )
+        airflow_task_priority_weight: Optional[int] = Field(
+            None, description="", alias="airflowTaskPriorityWeight"
+        )
+        airflow_task_trigger_rule: Optional[str] = Field(
+            None, description="", alias="airflowTaskTriggerRule"
+        )
+        process: Optional[Process] = Field(
+            None, description="", alias="process"
+        )  # relationship
+        tables: Optional[list[Table]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        airflow_dag: Optional[AirflowDag] = Field(
+            None, description="", alias="airflowDag"
+        )  # relationship
+
+    attributes: "AirflowTask.Attributes" = Field(
+        default_factory=lambda: AirflowTask.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
 class S3(ObjectStore):
@@ -7615,9 +8380,9 @@ class Metric(DataQuality):
         "metric_s_q_l",
         "metric_filters",
         "metric_time_grains",
+        "metric_timestamp_column",
         "assets",
         "metric_dimension_columns",
-        "metric_timestamp_column",
     ]
 
     @property
@@ -7661,6 +8426,18 @@ class Metric(DataQuality):
         self.attributes.metric_time_grains = metric_time_grains
 
     @property
+    def metric_timestamp_column(self) -> Optional[Column]:
+        return (
+            None if self.attributes is None else self.attributes.metric_timestamp_column
+        )
+
+    @metric_timestamp_column.setter
+    def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metric_timestamp_column = metric_timestamp_column
+
+    @property
     def assets(self) -> Optional[list[Asset]]:
         return None if self.attributes is None else self.attributes.assets
 
@@ -7686,18 +8463,6 @@ class Metric(DataQuality):
             self.attributes = self.Attributes()
         self.attributes.metric_dimension_columns = metric_dimension_columns
 
-    @property
-    def metric_timestamp_column(self) -> Optional[Column]:
-        return (
-            None if self.attributes is None else self.attributes.metric_timestamp_column
-        )
-
-    @metric_timestamp_column.setter
-    def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metric_timestamp_column = metric_timestamp_column
-
     class Attributes(DataQuality.Attributes):
         metric_type: Optional[str] = Field(None, description="", alias="metricType")
         metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
@@ -7707,14 +8472,14 @@ class Metric(DataQuality):
         metric_time_grains: Optional[set[str]] = Field(
             None, description="", alias="metricTimeGrains"
         )
+        metric_timestamp_column: Optional[Column] = Field(
+            None, description="", alias="metricTimestampColumn"
+        )  # relationship
         assets: Optional[list[Asset]] = Field(
             None, description="", alias="assets"
         )  # relationship
         metric_dimension_columns: Optional[list[Column]] = Field(
             None, description="", alias="metricDimensionColumns"
-        )  # relationship
-        metric_timestamp_column: Optional[Column] = Field(
-            None, description="", alias="metricTimestampColumn"
         )  # relationship
 
     attributes: "Metric.Attributes" = Field(
@@ -7722,6 +8487,25 @@ class Metric(DataQuality):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
+
+
+class Soda(DataQuality):
+    """Description"""
+
+    type_name: str = Field("Soda", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Soda":
+            raise ValueError("must be Soda")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Soda._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
 
 
 class Preset(BI):
@@ -9090,6 +9874,3834 @@ class Salesforce(SaaS):
     )
 
 
+class ReadmeTemplate(Resource):
+    """Description"""
+
+    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "ReadmeTemplate":
+            raise ValueError("must be ReadmeTemplate")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in ReadmeTemplate._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "icon",
+        "icon_type",
+    ]
+
+    @property
+    def icon(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.icon
+
+    @icon.setter
+    def icon(self, icon: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.icon = icon
+
+    @property
+    def icon_type(self) -> Optional[IconType]:
+        return None if self.attributes is None else self.attributes.icon_type
+
+    @icon_type.setter
+    def icon_type(self, icon_type: Optional[IconType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.icon_type = icon_type
+
+    class Attributes(Resource.Attributes):
+        icon: Optional[str] = Field(None, description="", alias="icon")
+        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+
+    attributes: "ReadmeTemplate.Attributes" = Field(
+        default_factory=lambda: ReadmeTemplate.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Readme(Resource):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+    ) -> Readme:
+        return Readme(
+            attributes=Readme.Attributes.create(
+                asset=asset, content=content, asset_name=asset_name
+            )
+        )
+
+    @property
+    def description(self) -> Optional[str]:
+        ret_value = self.attributes.description
+        return unquote(ret_value) if ret_value is not None else ret_value
+
+    @description.setter
+    def description(self, description: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.description = (
+            quote(description) if description is not None else description
+        )
+
+    type_name: str = Field("Readme", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Readme":
+            raise ValueError("must be Readme")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Readme._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "see_also",
+        "internal",
+        "asset",
+    ]
+
+    @property
+    def see_also(self) -> Optional[list[Readme]]:
+        return None if self.attributes is None else self.attributes.see_also
+
+    @see_also.setter
+    def see_also(self, see_also: Optional[list[Readme]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.see_also = see_also
+
+    @property
+    def internal(self) -> Optional[Internal]:
+        return None if self.attributes is None else self.attributes.internal
+
+    @internal.setter
+    def internal(self, internal: Optional[Internal]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.internal = internal
+
+    @property
+    def asset(self) -> Optional[Asset]:
+        return None if self.attributes is None else self.attributes.asset
+
+    @asset.setter
+    def asset(self, asset: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset = asset
+
+    class Attributes(Resource.Attributes):
+        see_also: Optional[list[Readme]] = Field(
+            None, description="", alias="seeAlso"
+        )  # relationship
+        internal: Optional[Internal] = Field(
+            None, description="", alias="__internal"
+        )  # relationship
+        asset: Optional[Asset] = Field(
+            None, description="", alias="asset"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
+        ) -> Readme.Attributes:
+            validate_required_fields(["asset", "content"], [asset, content])
+            if not asset.name:
+                if not asset_name:
+                    raise ValueError(
+                        "asset_name is required when name is not available from asset"
+                    )
+            elif asset_name:
+                raise ValueError(
+                    "asset_name can not be given when name is available from asset"
+                )
+            else:
+                asset_name = asset.name
+            return Readme.Attributes(
+                qualified_name=f"{asset.guid}/readme",
+                name=f"{asset_name} Readme",
+                asset=asset,
+                description=quote(content),
+            )
+
+    attributes: "Readme.Attributes" = Field(
+        default_factory=lambda: Readme.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class File(Resource):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, connection_qualified_name: str, file_type: FileType
+    ) -> File:
+        return File(
+            attributes=File.Attributes.create(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                file_type=file_type,
+            )
+        )
+
+    type_name: str = Field("File", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "File":
+            raise ValueError("must be File")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in File._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "file_type",
+        "file_path",
+        "file_assets",
+    ]
+
+    @property
+    def file_type(self) -> Optional[FileType]:
+        return None if self.attributes is None else self.attributes.file_type
+
+    @file_type.setter
+    def file_type(self, file_type: Optional[FileType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.file_type = file_type
+
+    @property
+    def file_path(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.file_path
+
+    @file_path.setter
+    def file_path(self, file_path: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.file_path = file_path
+
+    @property
+    def file_assets(self) -> Optional[Asset]:
+        return None if self.attributes is None else self.attributes.file_assets
+
+    @file_assets.setter
+    def file_assets(self, file_assets: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.file_assets = file_assets
+
+    class Attributes(Resource.Attributes):
+        file_type: Optional[FileType] = Field(None, description="", alias="fileType")
+        file_path: Optional[str] = Field(None, description="", alias="filePath")
+        file_assets: Optional[Asset] = Field(
+            None, description="", alias="fileAssets"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str, file_type: FileType
+        ) -> File.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "file_type"],
+                [name, connection_qualified_name, file_type],
+            )
+            return File.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                file_type=file_type,
+            )
+
+    attributes: "File.Attributes" = Field(
+        default_factory=lambda: File.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Link(Resource):
+    """Description"""
+
+    type_name: str = Field("Link", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Link":
+            raise ValueError("must be Link")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Link._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "icon",
+        "icon_type",
+        "internal",
+        "asset",
+    ]
+
+    @property
+    def icon(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.icon
+
+    @icon.setter
+    def icon(self, icon: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.icon = icon
+
+    @property
+    def icon_type(self) -> Optional[IconType]:
+        return None if self.attributes is None else self.attributes.icon_type
+
+    @icon_type.setter
+    def icon_type(self, icon_type: Optional[IconType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.icon_type = icon_type
+
+    @property
+    def internal(self) -> Optional[Internal]:
+        return None if self.attributes is None else self.attributes.internal
+
+    @internal.setter
+    def internal(self, internal: Optional[Internal]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.internal = internal
+
+    @property
+    def asset(self) -> Optional[Asset]:
+        return None if self.attributes is None else self.attributes.asset
+
+    @asset.setter
+    def asset(self, asset: Optional[Asset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.asset = asset
+
+    class Attributes(Resource.Attributes):
+        icon: Optional[str] = Field(None, description="", alias="icon")
+        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+        internal: Optional[Internal] = Field(
+            None, description="", alias="internal"
+        )  # relationship
+        asset: Optional[Asset] = Field(
+            None, description="", alias="asset"
+        )  # relationship
+
+    attributes: "Link.Attributes" = Field(
+        default_factory=lambda: Link.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Table(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        attributes = Table.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Table", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Table":
+            raise ValueError("must be Table")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Table._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "alias",
+        "is_temporary",
+        "is_query_preview",
+        "query_preview_config",
+        "external_location",
+        "external_location_region",
+        "external_location_format",
+        "is_partitioned",
+        "partition_strategy",
+        "partition_count",
+        "partition_list",
+        "partitions",
+        "columns",
+        "airflow_task",
+        "queries",
+        "facts",
+        "atlan_schema",
+        "dimensions",
+    ]
+
+    @property
+    def column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_count
+
+    @column_count.setter
+    def column_count(self, column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_count = column_count
+
+    @property
+    def row_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.row_count
+
+    @row_count.setter
+    def row_count(self, row_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.row_count = row_count
+
+    @property
+    def size_bytes(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.size_bytes
+
+    @size_bytes.setter
+    def size_bytes(self, size_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.size_bytes = size_bytes
+
+    @property
+    def alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.alias
+
+    @alias.setter
+    def alias(self, alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alias = alias
+
+    @property
+    def is_temporary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_temporary
+
+    @is_temporary.setter
+    def is_temporary(self, is_temporary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_temporary = is_temporary
+
+    @property
+    def is_query_preview(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_query_preview
+
+    @is_query_preview.setter
+    def is_query_preview(self, is_query_preview: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_query_preview = is_query_preview
+
+    @property
+    def query_preview_config(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.query_preview_config
+
+    @query_preview_config.setter
+    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_preview_config = query_preview_config
+
+    @property
+    def external_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.external_location
+
+    @external_location.setter
+    def external_location(self, external_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location = external_location
+
+    @property
+    def external_location_region(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_region
+        )
+
+    @external_location_region.setter
+    def external_location_region(self, external_location_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_region = external_location_region
+
+    @property
+    def external_location_format(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_format
+        )
+
+    @external_location_format.setter
+    def external_location_format(self, external_location_format: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_format = external_location_format
+
+    @property
+    def is_partitioned(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_partitioned
+
+    @is_partitioned.setter
+    def is_partitioned(self, is_partitioned: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_partitioned = is_partitioned
+
+    @property
+    def partition_strategy(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_strategy
+
+    @partition_strategy.setter
+    def partition_strategy(self, partition_strategy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_strategy = partition_strategy
+
+    @property
+    def partition_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.partition_count
+
+    @partition_count.setter
+    def partition_count(self, partition_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_count = partition_count
+
+    @property
+    def partition_list(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_list
+
+    @partition_list.setter
+    def partition_list(self, partition_list: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_list = partition_list
+
+    @property
+    def partitions(self) -> Optional[list[TablePartition]]:
+        return None if self.attributes is None else self.attributes.partitions
+
+    @partitions.setter
+    def partitions(self, partitions: Optional[list[TablePartition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partitions = partitions
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def airflow_task(self) -> Optional[AirflowTask]:
+        return None if self.attributes is None else self.attributes.airflow_task
+
+    @airflow_task.setter
+    def airflow_task(self, airflow_task: Optional[AirflowTask]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task = airflow_task
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def facts(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.facts
+
+    @facts.setter
+    def facts(self, facts: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.facts = facts
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def dimensions(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.dimensions
+
+    @dimensions.setter
+    def dimensions(self, dimensions: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dimensions = dimensions
+
+    class Attributes(SQL.Attributes):
+        column_count: Optional[int] = Field(None, description="", alias="columnCount")
+        row_count: Optional[int] = Field(None, description="", alias="rowCount")
+        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
+        alias: Optional[str] = Field(None, description="", alias="alias")
+        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        is_query_preview: Optional[bool] = Field(
+            None, description="", alias="isQueryPreview"
+        )
+        query_preview_config: Optional[dict[str, str]] = Field(
+            None, description="", alias="queryPreviewConfig"
+        )
+        external_location: Optional[str] = Field(
+            None, description="", alias="externalLocation"
+        )
+        external_location_region: Optional[str] = Field(
+            None, description="", alias="externalLocationRegion"
+        )
+        external_location_format: Optional[str] = Field(
+            None, description="", alias="externalLocationFormat"
+        )
+        is_partitioned: Optional[bool] = Field(
+            None, description="", alias="isPartitioned"
+        )
+        partition_strategy: Optional[str] = Field(
+            None, description="", alias="partitionStrategy"
+        )
+        partition_count: Optional[int] = Field(
+            None, description="", alias="partitionCount"
+        )
+        partition_list: Optional[str] = Field(
+            None, description="", alias="partitionList"
+        )
+        partitions: Optional[list[TablePartition]] = Field(
+            None, description="", alias="partitions"
+        )  # relationship
+        columns: Optional[list[Column]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        airflow_task: Optional[AirflowTask] = Field(
+            None, description="", alias="airflowTask"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
+        )  # relationship
+        facts: Optional[list[Table]] = Field(
+            None, description="", alias="facts"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+        dimensions: Optional[list[Table]] = Field(
+            None, description="", alias="dimensions"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
+            fields = schema_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid schema_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
+            return Table.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                qualified_name=f"{schema_qualified_name}/{name}",
+                schema_qualified_name=schema_qualified_name,
+                schema_name=fields[4],
+                connector_name=connector_type.value,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+            )
+
+    attributes: "Table.Attributes" = Field(
+        default_factory=lambda: Table.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Query(SQL):
+    """Description"""
+
+    type_name: str = Field("Query", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Query":
+            raise ValueError("must be Query")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Query._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "raw_query",
+        "default_schema_qualified_name",
+        "default_database_qualified_name",
+        "variables_schema_base64",
+        "is_private",
+        "is_sql_snippet",
+        "parent_qualified_name",
+        "collection_qualified_name",
+        "is_visual_query",
+        "visual_builder_schema_base64",
+        "parent",
+        "columns",
+        "tables",
+        "views",
+    ]
+
+    @property
+    def raw_query(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.raw_query
+
+    @raw_query.setter
+    def raw_query(self, raw_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.raw_query = raw_query
+
+    @property
+    def default_schema_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.default_schema_qualified_name
+        )
+
+    @default_schema_qualified_name.setter
+    def default_schema_qualified_name(
+        self, default_schema_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.default_schema_qualified_name = default_schema_qualified_name
+
+    @property
+    def default_database_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.default_database_qualified_name
+        )
+
+    @default_database_qualified_name.setter
+    def default_database_qualified_name(
+        self, default_database_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.default_database_qualified_name = (
+            default_database_qualified_name
+        )
+
+    @property
+    def variables_schema_base64(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.variables_schema_base64
+        )
+
+    @variables_schema_base64.setter
+    def variables_schema_base64(self, variables_schema_base64: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.variables_schema_base64 = variables_schema_base64
+
+    @property
+    def is_private(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_private
+
+    @is_private.setter
+    def is_private(self, is_private: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_private = is_private
+
+    @property
+    def is_sql_snippet(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_sql_snippet
+
+    @is_sql_snippet.setter
+    def is_sql_snippet(self, is_sql_snippet: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_sql_snippet = is_sql_snippet
+
+    @property
+    def parent_qualified_name(self) -> str:
+        return (
+            None if self.attributes is None else self.attributes.parent_qualified_name
+        )
+
+    @parent_qualified_name.setter
+    def parent_qualified_name(self, parent_qualified_name: str):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_qualified_name = parent_qualified_name
+
+    @property
+    def collection_qualified_name(self) -> str:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.collection_qualified_name
+        )
+
+    @collection_qualified_name.setter
+    def collection_qualified_name(self, collection_qualified_name: str):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.collection_qualified_name = collection_qualified_name
+
+    @property
+    def is_visual_query(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_visual_query
+
+    @is_visual_query.setter
+    def is_visual_query(self, is_visual_query: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_visual_query = is_visual_query
+
+    @property
+    def visual_builder_schema_base64(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.visual_builder_schema_base64
+        )
+
+    @visual_builder_schema_base64.setter
+    def visual_builder_schema_base64(self, visual_builder_schema_base64: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
+
+    @property
+    def parent(self) -> Namespace:
+        return None if self.attributes is None else self.attributes.parent
+
+    @parent.setter
+    def parent(self, parent: Namespace):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent = parent
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def tables(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def views(self) -> Optional[list[View]]:
+        return None if self.attributes is None else self.attributes.views
+
+    @views.setter
+    def views(self, views: Optional[list[View]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.views = views
+
+    class Attributes(SQL.Attributes):
+        raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
+        default_schema_qualified_name: Optional[str] = Field(
+            None, description="", alias="defaultSchemaQualifiedName"
+        )
+        default_database_qualified_name: Optional[str] = Field(
+            None, description="", alias="defaultDatabaseQualifiedName"
+        )
+        variables_schema_base64: Optional[str] = Field(
+            None, description="", alias="variablesSchemaBase64"
+        )
+        is_private: Optional[bool] = Field(None, description="", alias="isPrivate")
+        is_sql_snippet: Optional[bool] = Field(
+            None, description="", alias="isSqlSnippet"
+        )
+        parent_qualified_name: str = Field(
+            None, description="", alias="parentQualifiedName"
+        )
+        collection_qualified_name: str = Field(
+            None, description="", alias="collectionQualifiedName"
+        )
+        is_visual_query: Optional[bool] = Field(
+            None, description="", alias="isVisualQuery"
+        )
+        visual_builder_schema_base64: Optional[str] = Field(
+            None, description="", alias="visualBuilderSchemaBase64"
+        )
+        parent: Namespace = Field(None, description="", alias="parent")  # relationship
+        columns: Optional[list[Column]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        tables: Optional[list[Table]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        views: Optional[list[View]] = Field(
+            None, description="", alias="views"
+        )  # relationship
+
+    attributes: "Query.Attributes" = Field(
+        default_factory=lambda: Query.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Schema(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
+        validate_required_fields(
+            ["name", "database_qualified_name"], [name, database_qualified_name]
+        )
+        attributes = Schema.Attributes.create(
+            name=name, database_qualified_name=database_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Schema", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Schema":
+            raise ValueError("must be Schema")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Schema._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "table_count",
+        "views_count",
+        "snowflake_tags",
+        "functions",
+        "tables",
+        "database",
+        "procedures",
+        "views",
+        "materialised_views",
+        "snowflake_pipes",
+        "snowflake_streams",
+    ]
+
+    @property
+    def table_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.table_count
+
+    @table_count.setter
+    def table_count(self, table_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_count = table_count
+
+    @property
+    def views_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.views_count
+
+    @views_count.setter
+    def views_count(self, views_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.views_count = views_count
+
+    @property
+    def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
+        return None if self.attributes is None else self.attributes.snowflake_tags
+
+    @snowflake_tags.setter
+    def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_tags = snowflake_tags
+
+    @property
+    def functions(self) -> Optional[list[Function]]:
+        return None if self.attributes is None else self.attributes.functions
+
+    @functions.setter
+    def functions(self, functions: Optional[list[Function]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.functions = functions
+
+    @property
+    def tables(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.tables
+
+    @tables.setter
+    def tables(self, tables: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tables = tables
+
+    @property
+    def database(self) -> Optional[Database]:
+        return None if self.attributes is None else self.attributes.database
+
+    @database.setter
+    def database(self, database: Optional[Database]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database = database
+
+    @property
+    def procedures(self) -> Optional[list[Procedure]]:
+        return None if self.attributes is None else self.attributes.procedures
+
+    @procedures.setter
+    def procedures(self, procedures: Optional[list[Procedure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.procedures = procedures
+
+    @property
+    def views(self) -> Optional[list[View]]:
+        return None if self.attributes is None else self.attributes.views
+
+    @views.setter
+    def views(self, views: Optional[list[View]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.views = views
+
+    @property
+    def materialised_views(self) -> Optional[list[MaterialisedView]]:
+        return None if self.attributes is None else self.attributes.materialised_views
+
+    @materialised_views.setter
+    def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.materialised_views = materialised_views
+
+    @property
+    def snowflake_pipes(self) -> Optional[list[SnowflakePipe]]:
+        return None if self.attributes is None else self.attributes.snowflake_pipes
+
+    @snowflake_pipes.setter
+    def snowflake_pipes(self, snowflake_pipes: Optional[list[SnowflakePipe]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_pipes = snowflake_pipes
+
+    @property
+    def snowflake_streams(self) -> Optional[list[SnowflakeStream]]:
+        return None if self.attributes is None else self.attributes.snowflake_streams
+
+    @snowflake_streams.setter
+    def snowflake_streams(self, snowflake_streams: Optional[list[SnowflakeStream]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_streams = snowflake_streams
+
+    class Attributes(SQL.Attributes):
+        table_count: Optional[int] = Field(None, description="", alias="tableCount")
+        views_count: Optional[int] = Field(None, description="", alias="viewsCount")
+        snowflake_tags: Optional[list[SnowflakeTag]] = Field(
+            None, description="", alias="snowflakeTags"
+        )  # relationship
+        functions: Optional[list[Function]] = Field(
+            None, description="", alias="functions"
+        )  # relationship
+        tables: Optional[list[Table]] = Field(
+            None, description="", alias="tables"
+        )  # relationship
+        database: Optional[Database] = Field(
+            None, description="", alias="database"
+        )  # relationship
+        procedures: Optional[list[Procedure]] = Field(
+            None, description="", alias="procedures"
+        )  # relationship
+        views: Optional[list[View]] = Field(
+            None, description="", alias="views"
+        )  # relationship
+        materialised_views: Optional[list[MaterialisedView]] = Field(
+            None, description="", alias="materialisedViews"
+        )  # relationship
+        snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
+            None, description="", alias="snowflakePipes"
+        )  # relationship
+        snowflake_streams: Optional[list[SnowflakeStream]] = Field(
+            None, description="", alias="snowflakeStreams"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, database_qualified_name: str
+        ) -> Schema.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(
+                ["database_qualified_name"], [database_qualified_name]
+            )
+            fields = database_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid database_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid database_qualified_name") from e
+            return Schema.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=database_qualified_name,
+                qualified_name=f"{database_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                database=Database.ref_by_qualified_name(database_qualified_name),
+            )
+
+    attributes: "Schema.Attributes" = Field(
+        default_factory=lambda: Schema.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakePipe(SQL):
+    """Description"""
+
+    type_name: str = Field("SnowflakePipe", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakePipe":
+            raise ValueError("must be SnowflakePipe")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SnowflakePipe._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "definition",
+        "snowflake_pipe_is_auto_ingest_enabled",
+        "snowflake_pipe_notification_channel_name",
+        "atlan_schema",
+    ]
+
+    @property
+    def definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.definition
+
+    @definition.setter
+    def definition(self, definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.definition = definition
+
+    @property
+    def snowflake_pipe_is_auto_ingest_enabled(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_pipe_is_auto_ingest_enabled
+        )
+
+    @snowflake_pipe_is_auto_ingest_enabled.setter
+    def snowflake_pipe_is_auto_ingest_enabled(
+        self, snowflake_pipe_is_auto_ingest_enabled: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_pipe_is_auto_ingest_enabled = (
+            snowflake_pipe_is_auto_ingest_enabled
+        )
+
+    @property
+    def snowflake_pipe_notification_channel_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_pipe_notification_channel_name
+        )
+
+    @snowflake_pipe_notification_channel_name.setter
+    def snowflake_pipe_notification_channel_name(
+        self, snowflake_pipe_notification_channel_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_pipe_notification_channel_name = (
+            snowflake_pipe_notification_channel_name
+        )
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(SQL.Attributes):
+        definition: Optional[str] = Field(None, description="", alias="definition")
+        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
+            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
+        )
+        snowflake_pipe_notification_channel_name: Optional[str] = Field(
+            None, description="", alias="snowflakePipeNotificationChannelName"
+        )
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+    attributes: "SnowflakePipe.Attributes" = Field(
+        default_factory=lambda: SnowflakePipe.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class View(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str) -> View:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        attributes = View.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("View", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "View":
+            raise ValueError("must be View")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in View._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "is_query_preview",
+        "query_preview_config",
+        "alias",
+        "is_temporary",
+        "definition",
+        "columns",
+        "queries",
+        "atlan_schema",
+    ]
+
+    @property
+    def column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_count
+
+    @column_count.setter
+    def column_count(self, column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_count = column_count
+
+    @property
+    def row_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.row_count
+
+    @row_count.setter
+    def row_count(self, row_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.row_count = row_count
+
+    @property
+    def size_bytes(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.size_bytes
+
+    @size_bytes.setter
+    def size_bytes(self, size_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.size_bytes = size_bytes
+
+    @property
+    def is_query_preview(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_query_preview
+
+    @is_query_preview.setter
+    def is_query_preview(self, is_query_preview: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_query_preview = is_query_preview
+
+    @property
+    def query_preview_config(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.query_preview_config
+
+    @query_preview_config.setter
+    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_preview_config = query_preview_config
+
+    @property
+    def alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.alias
+
+    @alias.setter
+    def alias(self, alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alias = alias
+
+    @property
+    def is_temporary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_temporary
+
+    @is_temporary.setter
+    def is_temporary(self, is_temporary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_temporary = is_temporary
+
+    @property
+    def definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.definition
+
+    @definition.setter
+    def definition(self, definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.definition = definition
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(SQL.Attributes):
+        column_count: Optional[int] = Field(None, description="", alias="columnCount")
+        row_count: Optional[int] = Field(None, description="", alias="rowCount")
+        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
+        is_query_preview: Optional[bool] = Field(
+            None, description="", alias="isQueryPreview"
+        )
+        query_preview_config: Optional[dict[str, str]] = Field(
+            None, description="", alias="queryPreviewConfig"
+        )
+        alias: Optional[str] = Field(None, description="", alias="alias")
+        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        definition: Optional[str] = Field(None, description="", alias="definition")
+        columns: Optional[list[Column]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(cls, *, name: str, schema_qualified_name: str) -> View.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
+            fields = schema_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid schema_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
+            return View.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                qualified_name=f"{schema_qualified_name}/{name}",
+                schema_qualified_name=schema_qualified_name,
+                schema_name=fields[4],
+                connector_name=connector_type.value,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+            )
+
+    attributes: "View.Attributes" = Field(
+        default_factory=lambda: View.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MaterialisedView(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        attributes = MaterialisedView.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("MaterialisedView", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MaterialisedView":
+            raise ValueError("must be MaterialisedView")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MaterialisedView._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "refresh_mode",
+        "refresh_method",
+        "staleness",
+        "stale_since_date",
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "is_query_preview",
+        "query_preview_config",
+        "alias",
+        "is_temporary",
+        "definition",
+        "columns",
+        "atlan_schema",
+    ]
+
+    @property
+    def refresh_mode(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.refresh_mode
+
+    @refresh_mode.setter
+    def refresh_mode(self, refresh_mode: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.refresh_mode = refresh_mode
+
+    @property
+    def refresh_method(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.refresh_method
+
+    @refresh_method.setter
+    def refresh_method(self, refresh_method: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.refresh_method = refresh_method
+
+    @property
+    def staleness(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.staleness
+
+    @staleness.setter
+    def staleness(self, staleness: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.staleness = staleness
+
+    @property
+    def stale_since_date(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.stale_since_date
+
+    @stale_since_date.setter
+    def stale_since_date(self, stale_since_date: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.stale_since_date = stale_since_date
+
+    @property
+    def column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_count
+
+    @column_count.setter
+    def column_count(self, column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_count = column_count
+
+    @property
+    def row_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.row_count
+
+    @row_count.setter
+    def row_count(self, row_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.row_count = row_count
+
+    @property
+    def size_bytes(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.size_bytes
+
+    @size_bytes.setter
+    def size_bytes(self, size_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.size_bytes = size_bytes
+
+    @property
+    def is_query_preview(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_query_preview
+
+    @is_query_preview.setter
+    def is_query_preview(self, is_query_preview: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_query_preview = is_query_preview
+
+    @property
+    def query_preview_config(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.query_preview_config
+
+    @query_preview_config.setter
+    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_preview_config = query_preview_config
+
+    @property
+    def alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.alias
+
+    @alias.setter
+    def alias(self, alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alias = alias
+
+    @property
+    def is_temporary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_temporary
+
+    @is_temporary.setter
+    def is_temporary(self, is_temporary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_temporary = is_temporary
+
+    @property
+    def definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.definition
+
+    @definition.setter
+    def definition(self, definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.definition = definition
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(SQL.Attributes):
+        refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
+        refresh_method: Optional[str] = Field(
+            None, description="", alias="refreshMethod"
+        )
+        staleness: Optional[str] = Field(None, description="", alias="staleness")
+        stale_since_date: Optional[datetime] = Field(
+            None, description="", alias="staleSinceDate"
+        )
+        column_count: Optional[int] = Field(None, description="", alias="columnCount")
+        row_count: Optional[int] = Field(None, description="", alias="rowCount")
+        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
+        is_query_preview: Optional[bool] = Field(
+            None, description="", alias="isQueryPreview"
+        )
+        query_preview_config: Optional[dict[str, str]] = Field(
+            None, description="", alias="queryPreviewConfig"
+        )
+        alias: Optional[str] = Field(None, description="", alias="alias")
+        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        definition: Optional[str] = Field(None, description="", alias="definition")
+        columns: Optional[list[Column]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, schema_qualified_name: str
+        ) -> MaterialisedView.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
+            fields = schema_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid schema_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
+            return MaterialisedView.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                qualified_name=f"{schema_qualified_name}/{name}",
+                schema_qualified_name=schema_qualified_name,
+                schema_name=fields[4],
+                connector_name=connector_type.value,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+            )
+
+    attributes: "MaterialisedView.Attributes" = Field(
+        default_factory=lambda: MaterialisedView.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Function(SQL):
+    """Description"""
+
+    type_name: str = Field("Function", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Function":
+            raise ValueError("must be Function")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Function._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "function_definition",
+        "function_return_type",
+        "function_arguments",
+        "function_language",
+        "function_type",
+        "function_is_external",
+        "function_is_secure",
+        "function_is_memoizable",
+        "function_schema",
+    ]
+
+    @property
+    def function_definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.function_definition
+
+    @function_definition.setter
+    def function_definition(self, function_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_definition = function_definition
+
+    @property
+    def function_return_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.function_return_type
+
+    @function_return_type.setter
+    def function_return_type(self, function_return_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_return_type = function_return_type
+
+    @property
+    def function_arguments(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.function_arguments
+
+    @function_arguments.setter
+    def function_arguments(self, function_arguments: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_arguments = function_arguments
+
+    @property
+    def function_language(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.function_language
+
+    @function_language.setter
+    def function_language(self, function_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_language = function_language
+
+    @property
+    def function_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.function_type
+
+    @function_type.setter
+    def function_type(self, function_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_type = function_type
+
+    @property
+    def function_is_external(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.function_is_external
+
+    @function_is_external.setter
+    def function_is_external(self, function_is_external: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_is_external = function_is_external
+
+    @property
+    def function_is_secure(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.function_is_secure
+
+    @function_is_secure.setter
+    def function_is_secure(self, function_is_secure: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_is_secure = function_is_secure
+
+    @property
+    def function_is_memoizable(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.function_is_memoizable
+        )
+
+    @function_is_memoizable.setter
+    def function_is_memoizable(self, function_is_memoizable: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_is_memoizable = function_is_memoizable
+
+    @property
+    def function_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.function_schema
+
+    @function_schema.setter
+    def function_schema(self, function_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.function_schema = function_schema
+
+    class Attributes(SQL.Attributes):
+        function_definition: Optional[str] = Field(
+            None, description="", alias="functionDefinition"
+        )
+        function_return_type: Optional[str] = Field(
+            None, description="", alias="functionReturnType"
+        )
+        function_arguments: Optional[set[str]] = Field(
+            None, description="", alias="functionArguments"
+        )
+        function_language: Optional[str] = Field(
+            None, description="", alias="functionLanguage"
+        )
+        function_type: Optional[str] = Field(None, description="", alias="functionType")
+        function_is_external: Optional[bool] = Field(
+            None, description="", alias="functionIsExternal"
+        )
+        function_is_secure: Optional[bool] = Field(
+            None, description="", alias="functionIsSecure"
+        )
+        function_is_memoizable: Optional[bool] = Field(
+            None, description="", alias="functionIsMemoizable"
+        )
+        function_schema: Optional[Schema] = Field(
+            None, description="", alias="functionSchema"
+        )  # relationship
+
+    attributes: "Function.Attributes" = Field(
+        default_factory=lambda: Function.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class TablePartition(SQL):
+    """Description"""
+
+    type_name: str = Field("TablePartition", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "TablePartition":
+            raise ValueError("must be TablePartition")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in TablePartition._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "constraint",
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "alias",
+        "is_temporary",
+        "is_query_preview",
+        "query_preview_config",
+        "external_location",
+        "external_location_region",
+        "external_location_format",
+        "is_partitioned",
+        "partition_strategy",
+        "partition_count",
+        "partition_list",
+        "columns",
+        "parent_table",
+    ]
+
+    @property
+    def constraint(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.constraint
+
+    @constraint.setter
+    def constraint(self, constraint: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.constraint = constraint
+
+    @property
+    def column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_count
+
+    @column_count.setter
+    def column_count(self, column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_count = column_count
+
+    @property
+    def row_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.row_count
+
+    @row_count.setter
+    def row_count(self, row_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.row_count = row_count
+
+    @property
+    def size_bytes(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.size_bytes
+
+    @size_bytes.setter
+    def size_bytes(self, size_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.size_bytes = size_bytes
+
+    @property
+    def alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.alias
+
+    @alias.setter
+    def alias(self, alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alias = alias
+
+    @property
+    def is_temporary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_temporary
+
+    @is_temporary.setter
+    def is_temporary(self, is_temporary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_temporary = is_temporary
+
+    @property
+    def is_query_preview(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_query_preview
+
+    @is_query_preview.setter
+    def is_query_preview(self, is_query_preview: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_query_preview = is_query_preview
+
+    @property
+    def query_preview_config(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.query_preview_config
+
+    @query_preview_config.setter
+    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_preview_config = query_preview_config
+
+    @property
+    def external_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.external_location
+
+    @external_location.setter
+    def external_location(self, external_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location = external_location
+
+    @property
+    def external_location_region(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_region
+        )
+
+    @external_location_region.setter
+    def external_location_region(self, external_location_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_region = external_location_region
+
+    @property
+    def external_location_format(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_format
+        )
+
+    @external_location_format.setter
+    def external_location_format(self, external_location_format: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_format = external_location_format
+
+    @property
+    def is_partitioned(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_partitioned
+
+    @is_partitioned.setter
+    def is_partitioned(self, is_partitioned: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_partitioned = is_partitioned
+
+    @property
+    def partition_strategy(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_strategy
+
+    @partition_strategy.setter
+    def partition_strategy(self, partition_strategy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_strategy = partition_strategy
+
+    @property
+    def partition_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.partition_count
+
+    @partition_count.setter
+    def partition_count(self, partition_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_count = partition_count
+
+    @property
+    def partition_list(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_list
+
+    @partition_list.setter
+    def partition_list(self, partition_list: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_list = partition_list
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def parent_table(self) -> Optional[Table]:
+        return None if self.attributes is None else self.attributes.parent_table
+
+    @parent_table.setter
+    def parent_table(self, parent_table: Optional[Table]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_table = parent_table
+
+    class Attributes(SQL.Attributes):
+        constraint: Optional[str] = Field(None, description="", alias="constraint")
+        column_count: Optional[int] = Field(None, description="", alias="columnCount")
+        row_count: Optional[int] = Field(None, description="", alias="rowCount")
+        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
+        alias: Optional[str] = Field(None, description="", alias="alias")
+        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        is_query_preview: Optional[bool] = Field(
+            None, description="", alias="isQueryPreview"
+        )
+        query_preview_config: Optional[dict[str, str]] = Field(
+            None, description="", alias="queryPreviewConfig"
+        )
+        external_location: Optional[str] = Field(
+            None, description="", alias="externalLocation"
+        )
+        external_location_region: Optional[str] = Field(
+            None, description="", alias="externalLocationRegion"
+        )
+        external_location_format: Optional[str] = Field(
+            None, description="", alias="externalLocationFormat"
+        )
+        is_partitioned: Optional[bool] = Field(
+            None, description="", alias="isPartitioned"
+        )
+        partition_strategy: Optional[str] = Field(
+            None, description="", alias="partitionStrategy"
+        )
+        partition_count: Optional[int] = Field(
+            None, description="", alias="partitionCount"
+        )
+        partition_list: Optional[str] = Field(
+            None, description="", alias="partitionList"
+        )
+        columns: Optional[list[Column]] = Field(
+            None, description="", alias="columns"
+        )  # relationship
+        parent_table: Optional[Table] = Field(
+            None, description="", alias="parentTable"
+        )  # relationship
+
+    attributes: "TablePartition.Attributes" = Field(
+        default_factory=lambda: TablePartition.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Column(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+    ) -> Column:
+        return Column(
+            attributes=Column.Attributes.create(
+                name=name,
+                parent_qualified_name=parent_qualified_name,
+                parent_type=parent_type,
+                order=order,
+            )
+        )
+
+    type_name: str = Field("Column", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Column":
+            raise ValueError("must be Column")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Column._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "data_type",
+        "sub_data_type",
+        "raw_data_type_definition",
+        "order",
+        "nested_column_count",
+        "is_partition",
+        "partition_order",
+        "is_clustered",
+        "is_primary",
+        "is_foreign",
+        "is_indexed",
+        "is_sort",
+        "is_dist",
+        "is_pinned",
+        "pinned_by",
+        "pinned_at",
+        "precision",
+        "default_value",
+        "is_nullable",
+        "numeric_scale",
+        "max_length",
+        "validations",
+        "parent_column_qualified_name",
+        "parent_column_name",
+        "column_distinct_values_count",
+        "column_distinct_values_count_long",
+        "column_histogram",
+        "column_max",
+        "column_min",
+        "column_mean",
+        "column_sum",
+        "column_median",
+        "column_standard_deviation",
+        "column_unique_values_count",
+        "column_unique_values_count_long",
+        "column_average",
+        "column_average_length",
+        "column_duplicate_values_count",
+        "column_duplicate_values_count_long",
+        "column_maximum_string_length",
+        "column_maxs",
+        "column_minimum_string_length",
+        "column_mins",
+        "column_missing_values_count",
+        "column_missing_values_count_long",
+        "column_missing_values_percentage",
+        "column_uniqueness_percentage",
+        "column_variance",
+        "column_top_values",
+        "column_depth_level",
+        "view",
+        "nested_columns",
+        "data_quality_metric_dimensions",
+        "dbt_model_columns",
+        "table",
+        "column_dbt_model_columns",
+        "materialised_view",
+        "parent_column",
+        "queries",
+        "metric_timestamps",
+        "foreign_key_to",
+        "foreign_key_from",
+        "dbt_metrics",
+        "table_partition",
+    ]
+
+    @property
+    def data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_type
+
+    @data_type.setter
+    def data_type(self, data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_type = data_type
+
+    @property
+    def sub_data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sub_data_type
+
+    @sub_data_type.setter
+    def sub_data_type(self, sub_data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sub_data_type = sub_data_type
+
+    @property
+    def raw_data_type_definition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.raw_data_type_definition
+        )
+
+    @raw_data_type_definition.setter
+    def raw_data_type_definition(self, raw_data_type_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.raw_data_type_definition = raw_data_type_definition
+
+    @property
+    def order(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.order
+
+    @order.setter
+    def order(self, order: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.order = order
+
+    @property
+    def nested_column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.nested_column_count
+
+    @nested_column_count.setter
+    def nested_column_count(self, nested_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_column_count = nested_column_count
+
+    @property
+    def is_partition(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_partition
+
+    @is_partition.setter
+    def is_partition(self, is_partition: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_partition = is_partition
+
+    @property
+    def partition_order(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.partition_order
+
+    @partition_order.setter
+    def partition_order(self, partition_order: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_order = partition_order
+
+    @property
+    def is_clustered(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_clustered
+
+    @is_clustered.setter
+    def is_clustered(self, is_clustered: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_clustered = is_clustered
+
+    @property
+    def is_primary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_primary
+
+    @is_primary.setter
+    def is_primary(self, is_primary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_primary = is_primary
+
+    @property
+    def is_foreign(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_foreign
+
+    @is_foreign.setter
+    def is_foreign(self, is_foreign: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_foreign = is_foreign
+
+    @property
+    def is_indexed(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_indexed
+
+    @is_indexed.setter
+    def is_indexed(self, is_indexed: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_indexed = is_indexed
+
+    @property
+    def is_sort(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_sort
+
+    @is_sort.setter
+    def is_sort(self, is_sort: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_sort = is_sort
+
+    @property
+    def is_dist(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_dist
+
+    @is_dist.setter
+    def is_dist(self, is_dist: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_dist = is_dist
+
+    @property
+    def is_pinned(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_pinned
+
+    @is_pinned.setter
+    def is_pinned(self, is_pinned: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_pinned = is_pinned
+
+    @property
+    def pinned_by(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.pinned_by
+
+    @pinned_by.setter
+    def pinned_by(self, pinned_by: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.pinned_by = pinned_by
+
+    @property
+    def pinned_at(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.pinned_at
+
+    @pinned_at.setter
+    def pinned_at(self, pinned_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.pinned_at = pinned_at
+
+    @property
+    def precision(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.precision
+
+    @precision.setter
+    def precision(self, precision: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.precision = precision
+
+    @property
+    def default_value(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.default_value
+
+    @default_value.setter
+    def default_value(self, default_value: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.default_value = default_value
+
+    @property
+    def is_nullable(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_nullable
+
+    @is_nullable.setter
+    def is_nullable(self, is_nullable: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_nullable = is_nullable
+
+    @property
+    def numeric_scale(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.numeric_scale
+
+    @numeric_scale.setter
+    def numeric_scale(self, numeric_scale: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.numeric_scale = numeric_scale
+
+    @property
+    def max_length(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.max_length
+
+    @max_length.setter
+    def max_length(self, max_length: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.max_length = max_length
+
+    @property
+    def validations(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.validations
+
+    @validations.setter
+    def validations(self, validations: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.validations = validations
+
+    @property
+    def parent_column_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.parent_column_qualified_name
+        )
+
+    @parent_column_qualified_name.setter
+    def parent_column_qualified_name(self, parent_column_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column_qualified_name = parent_column_qualified_name
+
+    @property
+    def parent_column_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.parent_column_name
+
+    @parent_column_name.setter
+    def parent_column_name(self, parent_column_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column_name = parent_column_name
+
+    @property
+    def column_distinct_values_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distinct_values_count
+        )
+
+    @column_distinct_values_count.setter
+    def column_distinct_values_count(self, column_distinct_values_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_distinct_values_count = column_distinct_values_count
+
+    @property
+    def column_distinct_values_count_long(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_distinct_values_count_long
+        )
+
+    @column_distinct_values_count_long.setter
+    def column_distinct_values_count_long(
+        self, column_distinct_values_count_long: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_distinct_values_count_long = (
+            column_distinct_values_count_long
+        )
+
+    @property
+    def column_histogram(self) -> Optional[Histogram]:
+        return None if self.attributes is None else self.attributes.column_histogram
+
+    @column_histogram.setter
+    def column_histogram(self, column_histogram: Optional[Histogram]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_histogram = column_histogram
+
+    @property
+    def column_max(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_max
+
+    @column_max.setter
+    def column_max(self, column_max: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_max = column_max
+
+    @property
+    def column_min(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_min
+
+    @column_min.setter
+    def column_min(self, column_min: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_min = column_min
+
+    @property
+    def column_mean(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_mean
+
+    @column_mean.setter
+    def column_mean(self, column_mean: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_mean = column_mean
+
+    @property
+    def column_sum(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_sum
+
+    @column_sum.setter
+    def column_sum(self, column_sum: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_sum = column_sum
+
+    @property
+    def column_median(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_median
+
+    @column_median.setter
+    def column_median(self, column_median: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_median = column_median
+
+    @property
+    def column_standard_deviation(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_standard_deviation
+        )
+
+    @column_standard_deviation.setter
+    def column_standard_deviation(self, column_standard_deviation: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_standard_deviation = column_standard_deviation
+
+    @property
+    def column_unique_values_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_unique_values_count
+        )
+
+    @column_unique_values_count.setter
+    def column_unique_values_count(self, column_unique_values_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_unique_values_count = column_unique_values_count
+
+    @property
+    def column_unique_values_count_long(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_unique_values_count_long
+        )
+
+    @column_unique_values_count_long.setter
+    def column_unique_values_count_long(
+        self, column_unique_values_count_long: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_unique_values_count_long = (
+            column_unique_values_count_long
+        )
+
+    @property
+    def column_average(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_average
+
+    @column_average.setter
+    def column_average(self, column_average: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_average = column_average
+
+    @property
+    def column_average_length(self) -> Optional[float]:
+        return (
+            None if self.attributes is None else self.attributes.column_average_length
+        )
+
+    @column_average_length.setter
+    def column_average_length(self, column_average_length: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_average_length = column_average_length
+
+    @property
+    def column_duplicate_values_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_duplicate_values_count
+        )
+
+    @column_duplicate_values_count.setter
+    def column_duplicate_values_count(
+        self, column_duplicate_values_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_duplicate_values_count = column_duplicate_values_count
+
+    @property
+    def column_duplicate_values_count_long(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_duplicate_values_count_long
+        )
+
+    @column_duplicate_values_count_long.setter
+    def column_duplicate_values_count_long(
+        self, column_duplicate_values_count_long: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_duplicate_values_count_long = (
+            column_duplicate_values_count_long
+        )
+
+    @property
+    def column_maximum_string_length(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_maximum_string_length
+        )
+
+    @column_maximum_string_length.setter
+    def column_maximum_string_length(self, column_maximum_string_length: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_maximum_string_length = column_maximum_string_length
+
+    @property
+    def column_maxs(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.column_maxs
+
+    @column_maxs.setter
+    def column_maxs(self, column_maxs: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_maxs = column_maxs
+
+    @property
+    def column_minimum_string_length(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_minimum_string_length
+        )
+
+    @column_minimum_string_length.setter
+    def column_minimum_string_length(self, column_minimum_string_length: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_minimum_string_length = column_minimum_string_length
+
+    @property
+    def column_mins(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.column_mins
+
+    @column_mins.setter
+    def column_mins(self, column_mins: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_mins = column_mins
+
+    @property
+    def column_missing_values_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_missing_values_count
+        )
+
+    @column_missing_values_count.setter
+    def column_missing_values_count(self, column_missing_values_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_missing_values_count = column_missing_values_count
+
+    @property
+    def column_missing_values_count_long(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_missing_values_count_long
+        )
+
+    @column_missing_values_count_long.setter
+    def column_missing_values_count_long(
+        self, column_missing_values_count_long: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_missing_values_count_long = (
+            column_missing_values_count_long
+        )
+
+    @property
+    def column_missing_values_percentage(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_missing_values_percentage
+        )
+
+    @column_missing_values_percentage.setter
+    def column_missing_values_percentage(
+        self, column_missing_values_percentage: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_missing_values_percentage = (
+            column_missing_values_percentage
+        )
+
+    @property
+    def column_uniqueness_percentage(self) -> Optional[float]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_uniqueness_percentage
+        )
+
+    @column_uniqueness_percentage.setter
+    def column_uniqueness_percentage(
+        self, column_uniqueness_percentage: Optional[float]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_uniqueness_percentage = column_uniqueness_percentage
+
+    @property
+    def column_variance(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.column_variance
+
+    @column_variance.setter
+    def column_variance(self, column_variance: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_variance = column_variance
+
+    @property
+    def column_top_values(self) -> Optional[list[ColumnValueFrequencyMap]]:
+        return None if self.attributes is None else self.attributes.column_top_values
+
+    @column_top_values.setter
+    def column_top_values(
+        self, column_top_values: Optional[list[ColumnValueFrequencyMap]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_top_values = column_top_values
+
+    @property
+    def column_depth_level(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_depth_level
+
+    @column_depth_level.setter
+    def column_depth_level(self, column_depth_level: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_depth_level = column_depth_level
+
+    @property
+    def view(self) -> Optional[View]:
+        return None if self.attributes is None else self.attributes.view
+
+    @view.setter
+    def view(self, view: Optional[View]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view = view
+
+    @property
+    def nested_columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.nested_columns
+
+    @nested_columns.setter
+    def nested_columns(self, nested_columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.nested_columns = nested_columns
+
+    @property
+    def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.data_quality_metric_dimensions
+        )
+
+    @data_quality_metric_dimensions.setter
+    def data_quality_metric_dimensions(
+        self, data_quality_metric_dimensions: Optional[list[Metric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
+
+    @property
+    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return None if self.attributes is None else self.attributes.dbt_model_columns
+
+    @dbt_model_columns.setter
+    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_columns = dbt_model_columns
+
+    @property
+    def table(self) -> Optional[Table]:
+        return None if self.attributes is None else self.attributes.table
+
+    @table.setter
+    def table(self, table: Optional[Table]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table = table
+
+    @property
+    def column_dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.column_dbt_model_columns
+        )
+
+    @column_dbt_model_columns.setter
+    def column_dbt_model_columns(
+        self, column_dbt_model_columns: Optional[list[DbtModelColumn]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_dbt_model_columns = column_dbt_model_columns
+
+    @property
+    def materialised_view(self) -> Optional[MaterialisedView]:
+        return None if self.attributes is None else self.attributes.materialised_view
+
+    @materialised_view.setter
+    def materialised_view(self, materialised_view: Optional[MaterialisedView]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.materialised_view = materialised_view
+
+    @property
+    def parent_column(self) -> Optional[Column]:
+        return None if self.attributes is None else self.attributes.parent_column
+
+    @parent_column.setter
+    def parent_column(self, parent_column: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.parent_column = parent_column
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def metric_timestamps(self) -> Optional[list[Metric]]:
+        return None if self.attributes is None else self.attributes.metric_timestamps
+
+    @metric_timestamps.setter
+    def metric_timestamps(self, metric_timestamps: Optional[list[Metric]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metric_timestamps = metric_timestamps
+
+    @property
+    def foreign_key_to(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.foreign_key_to
+
+    @foreign_key_to.setter
+    def foreign_key_to(self, foreign_key_to: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.foreign_key_to = foreign_key_to
+
+    @property
+    def foreign_key_from(self) -> Optional[Column]:
+        return None if self.attributes is None else self.attributes.foreign_key_from
+
+    @foreign_key_from.setter
+    def foreign_key_from(self, foreign_key_from: Optional[Column]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.foreign_key_from = foreign_key_from
+
+    @property
+    def dbt_metrics(self) -> Optional[list[DbtMetric]]:
+        return None if self.attributes is None else self.attributes.dbt_metrics
+
+    @dbt_metrics.setter
+    def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_metrics = dbt_metrics
+
+    @property
+    def table_partition(self) -> Optional[TablePartition]:
+        return None if self.attributes is None else self.attributes.table_partition
+
+    @table_partition.setter
+    def table_partition(self, table_partition: Optional[TablePartition]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_partition = table_partition
+
+    class Attributes(SQL.Attributes):
+        data_type: Optional[str] = Field(None, description="", alias="dataType")
+        sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
+        raw_data_type_definition: Optional[str] = Field(
+            None, description="", alias="rawDataTypeDefinition"
+        )
+        order: Optional[int] = Field(None, description="", alias="order")
+        nested_column_count: Optional[int] = Field(
+            None, description="", alias="nestedColumnCount"
+        )
+        is_partition: Optional[bool] = Field(None, description="", alias="isPartition")
+        partition_order: Optional[int] = Field(
+            None, description="", alias="partitionOrder"
+        )
+        is_clustered: Optional[bool] = Field(None, description="", alias="isClustered")
+        is_primary: Optional[bool] = Field(None, description="", alias="isPrimary")
+        is_foreign: Optional[bool] = Field(None, description="", alias="isForeign")
+        is_indexed: Optional[bool] = Field(None, description="", alias="isIndexed")
+        is_sort: Optional[bool] = Field(None, description="", alias="isSort")
+        is_dist: Optional[bool] = Field(None, description="", alias="isDist")
+        is_pinned: Optional[bool] = Field(None, description="", alias="isPinned")
+        pinned_by: Optional[str] = Field(None, description="", alias="pinnedBy")
+        pinned_at: Optional[datetime] = Field(None, description="", alias="pinnedAt")
+        precision: Optional[int] = Field(None, description="", alias="precision")
+        default_value: Optional[str] = Field(None, description="", alias="defaultValue")
+        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
+        numeric_scale: Optional[float] = Field(
+            None, description="", alias="numericScale"
+        )
+        max_length: Optional[int] = Field(None, description="", alias="maxLength")
+        validations: Optional[dict[str, str]] = Field(
+            None, description="", alias="validations"
+        )
+        parent_column_qualified_name: Optional[str] = Field(
+            None, description="", alias="parentColumnQualifiedName"
+        )
+        parent_column_name: Optional[str] = Field(
+            None, description="", alias="parentColumnName"
+        )
+        column_distinct_values_count: Optional[int] = Field(
+            None, description="", alias="columnDistinctValuesCount"
+        )
+        column_distinct_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnDistinctValuesCountLong"
+        )
+        column_histogram: Optional[Histogram] = Field(
+            None, description="", alias="columnHistogram"
+        )
+        column_max: Optional[float] = Field(None, description="", alias="columnMax")
+        column_min: Optional[float] = Field(None, description="", alias="columnMin")
+        column_mean: Optional[float] = Field(None, description="", alias="columnMean")
+        column_sum: Optional[float] = Field(None, description="", alias="columnSum")
+        column_median: Optional[float] = Field(
+            None, description="", alias="columnMedian"
+        )
+        column_standard_deviation: Optional[float] = Field(
+            None, description="", alias="columnStandardDeviation"
+        )
+        column_unique_values_count: Optional[int] = Field(
+            None, description="", alias="columnUniqueValuesCount"
+        )
+        column_unique_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnUniqueValuesCountLong"
+        )
+        column_average: Optional[float] = Field(
+            None, description="", alias="columnAverage"
+        )
+        column_average_length: Optional[float] = Field(
+            None, description="", alias="columnAverageLength"
+        )
+        column_duplicate_values_count: Optional[int] = Field(
+            None, description="", alias="columnDuplicateValuesCount"
+        )
+        column_duplicate_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnDuplicateValuesCountLong"
+        )
+        column_maximum_string_length: Optional[int] = Field(
+            None, description="", alias="columnMaximumStringLength"
+        )
+        column_maxs: Optional[set[str]] = Field(
+            None, description="", alias="columnMaxs"
+        )
+        column_minimum_string_length: Optional[int] = Field(
+            None, description="", alias="columnMinimumStringLength"
+        )
+        column_mins: Optional[set[str]] = Field(
+            None, description="", alias="columnMins"
+        )
+        column_missing_values_count: Optional[int] = Field(
+            None, description="", alias="columnMissingValuesCount"
+        )
+        column_missing_values_count_long: Optional[int] = Field(
+            None, description="", alias="columnMissingValuesCountLong"
+        )
+        column_missing_values_percentage: Optional[float] = Field(
+            None, description="", alias="columnMissingValuesPercentage"
+        )
+        column_uniqueness_percentage: Optional[float] = Field(
+            None, description="", alias="columnUniquenessPercentage"
+        )
+        column_variance: Optional[float] = Field(
+            None, description="", alias="columnVariance"
+        )
+        column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
+            None, description="", alias="columnTopValues"
+        )
+        column_depth_level: Optional[int] = Field(
+            None, description="", alias="columnDepthLevel"
+        )
+        view: Optional[View] = Field(None, description="", alias="view")  # relationship
+        nested_columns: Optional[list[Column]] = Field(
+            None, description="", alias="nestedColumns"
+        )  # relationship
+        data_quality_metric_dimensions: Optional[list[Metric]] = Field(
+            None, description="", alias="dataQualityMetricDimensions"
+        )  # relationship
+        dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+            None, description="", alias="dbtModelColumns"
+        )  # relationship
+        table: Optional[Table] = Field(
+            None, description="", alias="table"
+        )  # relationship
+        column_dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+            None, description="", alias="columnDbtModelColumns"
+        )  # relationship
+        materialised_view: Optional[MaterialisedView] = Field(
+            None, description="", alias="materialisedView"
+        )  # relationship
+        parent_column: Optional[Column] = Field(
+            None, description="", alias="parentColumn"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
+        )  # relationship
+        metric_timestamps: Optional[list[Metric]] = Field(
+            None, description="", alias="metricTimestamps"
+        )  # relationship
+        foreign_key_to: Optional[list[Column]] = Field(
+            None, description="", alias="foreignKeyTo"
+        )  # relationship
+        foreign_key_from: Optional[Column] = Field(
+            None, description="", alias="foreignKeyFrom"
+        )  # relationship
+        dbt_metrics: Optional[list[DbtMetric]] = Field(
+            None, description="", alias="dbtMetrics"
+        )  # relationship
+        table_partition: Optional[TablePartition] = Field(
+            None, description="", alias="tablePartition"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
+        ) -> Column.Attributes:
+            validate_required_fields(
+                ["name", "parent_qualified_name", "parent_type", "order"],
+                [name, parent_qualified_name, parent_type, order],
+            )
+            fields = parent_qualified_name.split("/")
+            if len(fields) != 6:
+                raise ValueError("Invalid parent_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid parent_qualified_name") from e
+            if order < 0:
+                raise ValueError("Order must be be a positive integer")
+            ret_value = Column.Attributes(
+                name=name,
+                qualified_name=f"{parent_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                schema_name=fields[4],
+                schema_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
+                database_name=fields[3],
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                order=order,
+            )
+            if parent_type == Table:
+                ret_value.table_qualified_name = parent_qualified_name
+                ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
+                ret_value.table_name = fields[5]
+            elif parent_type == View:
+                ret_value.view_qualified_name = parent_qualified_name
+                ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
+                ret_value.view_name = fields[5]
+            elif parent_type == MaterialisedView:
+                ret_value.view_qualified_name = parent_qualified_name
+                ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
+                    parent_qualified_name
+                )
+                ret_value.view_name = fields[5]
+            else:
+                raise ValueError(
+                    "parent_type must be either Table, View or MaterializeView"
+                )
+            return ret_value
+
+    attributes: "Column.Attributes" = Field(
+        default_factory=lambda: Column.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakeStream(SQL):
+    """Description"""
+
+    type_name: str = Field("SnowflakeStream", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeStream":
+            raise ValueError("must be SnowflakeStream")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SnowflakeStream._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "snowflake_stream_type",
+        "snowflake_stream_source_type",
+        "snowflake_stream_mode",
+        "snowflake_stream_is_stale",
+        "snowflake_stream_stale_after",
+        "atlan_schema",
+    ]
+
+    @property
+    def snowflake_stream_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.snowflake_stream_type
+        )
+
+    @snowflake_stream_type.setter
+    def snowflake_stream_type(self, snowflake_stream_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stream_type = snowflake_stream_type
+
+    @property
+    def snowflake_stream_source_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_stream_source_type
+        )
+
+    @snowflake_stream_source_type.setter
+    def snowflake_stream_source_type(self, snowflake_stream_source_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stream_source_type = snowflake_stream_source_type
+
+    @property
+    def snowflake_stream_mode(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.snowflake_stream_mode
+        )
+
+    @snowflake_stream_mode.setter
+    def snowflake_stream_mode(self, snowflake_stream_mode: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stream_mode = snowflake_stream_mode
+
+    @property
+    def snowflake_stream_is_stale(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_stream_is_stale
+        )
+
+    @snowflake_stream_is_stale.setter
+    def snowflake_stream_is_stale(self, snowflake_stream_is_stale: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stream_is_stale = snowflake_stream_is_stale
+
+    @property
+    def snowflake_stream_stale_after(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_stream_stale_after
+        )
+
+    @snowflake_stream_stale_after.setter
+    def snowflake_stream_stale_after(
+        self, snowflake_stream_stale_after: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_stream_stale_after = snowflake_stream_stale_after
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(SQL.Attributes):
+        snowflake_stream_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamType"
+        )
+        snowflake_stream_source_type: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamSourceType"
+        )
+        snowflake_stream_mode: Optional[str] = Field(
+            None, description="", alias="snowflakeStreamMode"
+        )
+        snowflake_stream_is_stale: Optional[bool] = Field(
+            None, description="", alias="snowflakeStreamIsStale"
+        )
+        snowflake_stream_stale_after: Optional[datetime] = Field(
+            None, description="", alias="snowflakeStreamStaleAfter"
+        )
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+    attributes: "SnowflakeStream.Attributes" = Field(
+        default_factory=lambda: SnowflakeStream.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Database(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Database._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "schema_count",
+        "schemas",
+    ]
+
+    @property
+    def schema_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.schema_count
+
+    @schema_count.setter
+    def schema_count(self, schema_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_count = schema_count
+
+    @property
+    def schemas(self) -> Optional[list[Schema]]:
+        return None if self.attributes is None else self.attributes.schemas
+
+    @schemas.setter
+    def schemas(self, schemas: Optional[list[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schemas = schemas
+
+    class Attributes(SQL.Attributes):
+        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
+        schemas: Optional[list[Schema]] = Field(
+            None, description="", alias="schemas"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str
+        ) -> Database.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
+    attributes: "Database.Attributes" = Field(
+        default_factory=lambda: Database.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Procedure(SQL):
+    """Description"""
+
+    type_name: str = Field("Procedure", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Procedure":
+            raise ValueError("must be Procedure")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Procedure._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "definition",
+        "atlan_schema",
+    ]
+
+    @property
+    def definition(self) -> str:
+        return None if self.attributes is None else self.attributes.definition
+
+    @definition.setter
+    def definition(self, definition: str):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.definition = definition
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(SQL.Attributes):
+        definition: str = Field(None, description="", alias="definition")
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+    attributes: "Procedure.Attributes" = Field(
+        default_factory=lambda: Procedure.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakeTag(Tag):
+    """Description"""
+
+    type_name: str = Field("SnowflakeTag", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SnowflakeTag":
+            raise ValueError("must be SnowflakeTag")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SnowflakeTag._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "tag_id",
+        "tag_attributes",
+        "tag_allowed_values",
+        "mapped_atlan_tag_name",
+        "query_count",
+        "query_user_count",
+        "query_user_map",
+        "query_count_updated_at",
+        "database_name",
+        "database_qualified_name",
+        "schema_name",
+        "schema_qualified_name",
+        "table_name",
+        "table_qualified_name",
+        "view_name",
+        "view_qualified_name",
+        "is_profiled",
+        "last_profiled_at",
+        "dbt_sources",
+        "sql_dbt_models",
+        "sql_dbt_sources",
+        "dbt_models",
+        "dbt_tests",
+        "atlan_schema",
+    ]
+
+    @property
+    def tag_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.tag_id
+
+    @tag_id.setter
+    def tag_id(self, tag_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_id = tag_id
+
+    @property
+    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        return None if self.attributes is None else self.attributes.tag_attributes
+
+    @tag_attributes.setter
+    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_attributes = tag_attributes
+
+    @property
+    def tag_allowed_values(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.tag_allowed_values
+
+    @tag_allowed_values.setter
+    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_allowed_values = tag_allowed_values
+
+    @property
+    def mapped_atlan_tag_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
+        )
+
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
+
+    @property
+    def query_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_count
+
+    @query_count.setter
+    def query_count(self, query_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count = query_count
+
+    @property
+    def query_user_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.query_user_count
+
+    @query_user_count.setter
+    def query_user_count(self, query_user_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_count = query_user_count
+
+    @property
+    def query_user_map(self) -> Optional[dict[str, int]]:
+        return None if self.attributes is None else self.attributes.query_user_map
+
+    @query_user_map.setter
+    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_user_map = query_user_map
+
+    @property
+    def query_count_updated_at(self) -> Optional[datetime]:
+        return (
+            None if self.attributes is None else self.attributes.query_count_updated_at
+        )
+
+    @query_count_updated_at.setter
+    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_count_updated_at = query_count_updated_at
+
+    @property
+    def database_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.database_name
+
+    @database_name.setter
+    def database_name(self, database_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database_name = database_name
+
+    @property
+    def database_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.database_qualified_name
+        )
+
+    @database_qualified_name.setter
+    def database_qualified_name(self, database_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.database_qualified_name = database_qualified_name
+
+    @property
+    def schema_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.schema_name
+
+    @schema_name.setter
+    def schema_name(self, schema_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_name = schema_name
+
+    @property
+    def schema_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.schema_qualified_name
+        )
+
+    @schema_qualified_name.setter
+    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_qualified_name = schema_qualified_name
+
+    @property
+    def table_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_name
+
+    @table_name.setter
+    def table_name(self, table_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_name = table_name
+
+    @property
+    def table_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.table_qualified_name
+
+    @table_qualified_name.setter
+    def table_qualified_name(self, table_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.table_qualified_name = table_qualified_name
+
+    @property
+    def view_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.view_name
+
+    @view_name.setter
+    def view_name(self, view_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view_name = view_name
+
+    @property
+    def view_qualified_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.view_qualified_name
+
+    @view_qualified_name.setter
+    def view_qualified_name(self, view_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.view_qualified_name = view_qualified_name
+
+    @property
+    def is_profiled(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_profiled
+
+    @is_profiled.setter
+    def is_profiled(self, is_profiled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_profiled = is_profiled
+
+    @property
+    def last_profiled_at(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.last_profiled_at
+
+    @last_profiled_at.setter
+    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.last_profiled_at = last_profiled_at
+
+    @property
+    def dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.dbt_sources
+
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_models
+
+    @sql_dbt_models.setter
+    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_models = sql_dbt_models
+
+    @property
+    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.sql_dbt_sources
+
+    @sql_dbt_sources.setter
+    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_dbt_sources = sql_dbt_sources
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    class Attributes(Tag.Attributes):
+        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+            None, description="", alias="tagAttributes"
+        )
+        tag_allowed_values: Optional[set[str]] = Field(
+            None, description="", alias="tagAllowedValues"
+        )
+        mapped_atlan_tag_name: Optional[str] = Field(
+            None, description="", alias="mappedClassificationName"
+        )
+        query_count: Optional[int] = Field(None, description="", alias="queryCount")
+        query_user_count: Optional[int] = Field(
+            None, description="", alias="queryUserCount"
+        )
+        query_user_map: Optional[dict[str, int]] = Field(
+            None, description="", alias="queryUserMap"
+        )
+        query_count_updated_at: Optional[datetime] = Field(
+            None, description="", alias="queryCountUpdatedAt"
+        )
+        database_name: Optional[str] = Field(None, description="", alias="databaseName")
+        database_qualified_name: Optional[str] = Field(
+            None, description="", alias="databaseQualifiedName"
+        )
+        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
+        schema_qualified_name: Optional[str] = Field(
+            None, description="", alias="schemaQualifiedName"
+        )
+        table_name: Optional[str] = Field(None, description="", alias="tableName")
+        table_qualified_name: Optional[str] = Field(
+            None, description="", alias="tableQualifiedName"
+        )
+        view_name: Optional[str] = Field(None, description="", alias="viewName")
+        view_qualified_name: Optional[str] = Field(
+            None, description="", alias="viewQualifiedName"
+        )
+        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+        last_profiled_at: Optional[datetime] = Field(
+            None, description="", alias="lastProfiledAt"
+        )
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        sql_dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="sqlDbtModels"
+        )  # relationship
+        sql_dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="sqlDBTSources"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            None, description="", alias="atlanSchema"
+        )  # relationship
+
+    attributes: "SnowflakeTag.Attributes" = Field(
+        default_factory=lambda: SnowflakeTag.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Kafka(EventStore):
+    """Description"""
+
+    type_name: str = Field("Kafka", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Kafka":
+            raise ValueError("must be Kafka")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Kafka._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+
 class DbtModelColumn(Dbt):
     """Description"""
 
@@ -9110,9 +13722,10 @@ class DbtModelColumn(Dbt):
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
-        "dbt_model_column_sql_columns",
         "sql_column",
         "dbt_model",
+        "dbt_model_column_sql_columns",
+        "dbt_tests",
     ]
 
     @property
@@ -9156,22 +13769,6 @@ class DbtModelColumn(Dbt):
         self.attributes.dbt_model_column_order = dbt_model_column_order
 
     @property
-    def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.dbt_model_column_sql_columns
-        )
-
-    @dbt_model_column_sql_columns.setter
-    def dbt_model_column_sql_columns(
-        self, dbt_model_column_sql_columns: Optional[list[Column]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
-
-    @property
     def sql_column(self) -> Optional[Column]:
         return None if self.attributes is None else self.attributes.sql_column
 
@@ -9191,6 +13788,32 @@ class DbtModelColumn(Dbt):
             self.attributes = self.Attributes()
         self.attributes.dbt_model = dbt_model
 
+    @property
+    def dbt_model_column_sql_columns(self) -> Optional[list[Column]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_model_column_sql_columns
+        )
+
+    @dbt_model_column_sql_columns.setter
+    def dbt_model_column_sql_columns(
+        self, dbt_model_column_sql_columns: Optional[list[Column]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
+
+    @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
             None, description="", alias="dbtModelQualifiedName"
@@ -9201,18 +13824,569 @@ class DbtModelColumn(Dbt):
         dbt_model_column_order: Optional[int] = Field(
             None, description="", alias="dbtModelColumnOrder"
         )
-        dbt_model_column_sql_columns: Optional[list[Column]] = Field(
-            None, description="", alias="dbtModelColumnSqlColumns"
-        )  # relationship
         sql_column: Optional[Column] = Field(
             None, description="", alias="sqlColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
             None, description="", alias="dbtModel"
         )  # relationship
+        dbt_model_column_sql_columns: Optional[list[Column]] = Field(
+            None, description="", alias="dbtModelColumnSqlColumns"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
+        )  # relationship
 
     attributes: "DbtModelColumn.Attributes" = Field(
         default_factory=lambda: DbtModelColumn.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DbtTag(Dbt):
+    """Description"""
+
+    type_name: str = Field("DbtTag", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtTag":
+            raise ValueError("must be DbtTag")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DbtTag._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_alias",
+        "dbt_meta",
+        "dbt_unique_id",
+        "dbt_account_name",
+        "dbt_project_name",
+        "dbt_package_name",
+        "dbt_job_name",
+        "dbt_job_schedule",
+        "dbt_job_status",
+        "dbt_job_schedule_cron_humanized",
+        "dbt_job_last_run",
+        "dbt_job_next_run",
+        "dbt_job_next_run_humanized",
+        "dbt_environment_name",
+        "dbt_environment_dbt_version",
+        "dbt_tags",
+        "dbt_connection_context",
+        "dbt_semantic_layer_proxy_url",
+        "tag_id",
+        "tag_attributes",
+        "tag_allowed_values",
+        "mapped_atlan_tag_name",
+    ]
+
+    @property
+    def dbt_alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_alias
+
+    @dbt_alias.setter
+    def dbt_alias(self, dbt_alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_alias = dbt_alias
+
+    @property
+    def dbt_meta(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_meta
+
+    @dbt_meta.setter
+    def dbt_meta(self, dbt_meta: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_meta = dbt_meta
+
+    @property
+    def dbt_unique_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_unique_id
+
+    @dbt_unique_id.setter
+    def dbt_unique_id(self, dbt_unique_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_unique_id = dbt_unique_id
+
+    @property
+    def dbt_account_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_account_name
+
+    @dbt_account_name.setter
+    def dbt_account_name(self, dbt_account_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_account_name = dbt_account_name
+
+    @property
+    def dbt_project_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_project_name
+
+    @dbt_project_name.setter
+    def dbt_project_name(self, dbt_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_project_name = dbt_project_name
+
+    @property
+    def dbt_package_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_package_name
+
+    @dbt_package_name.setter
+    def dbt_package_name(self, dbt_package_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_package_name = dbt_package_name
+
+    @property
+    def dbt_job_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_job_name
+
+    @dbt_job_name.setter
+    def dbt_job_name(self, dbt_job_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_name = dbt_job_name
+
+    @property
+    def dbt_job_schedule(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_job_schedule
+
+    @dbt_job_schedule.setter
+    def dbt_job_schedule(self, dbt_job_schedule: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_schedule = dbt_job_schedule
+
+    @property
+    def dbt_job_status(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_job_status
+
+    @dbt_job_status.setter
+    def dbt_job_status(self, dbt_job_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_status = dbt_job_status
+
+    @property
+    def dbt_job_schedule_cron_humanized(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_job_schedule_cron_humanized
+        )
+
+    @dbt_job_schedule_cron_humanized.setter
+    def dbt_job_schedule_cron_humanized(
+        self, dbt_job_schedule_cron_humanized: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_schedule_cron_humanized = (
+            dbt_job_schedule_cron_humanized
+        )
+
+    @property
+    def dbt_job_last_run(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.dbt_job_last_run
+
+    @dbt_job_last_run.setter
+    def dbt_job_last_run(self, dbt_job_last_run: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_last_run = dbt_job_last_run
+
+    @property
+    def dbt_job_next_run(self) -> Optional[datetime]:
+        return None if self.attributes is None else self.attributes.dbt_job_next_run
+
+    @dbt_job_next_run.setter
+    def dbt_job_next_run(self, dbt_job_next_run: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_next_run = dbt_job_next_run
+
+    @property
+    def dbt_job_next_run_humanized(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_job_next_run_humanized
+        )
+
+    @dbt_job_next_run_humanized.setter
+    def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_job_next_run_humanized = dbt_job_next_run_humanized
+
+    @property
+    def dbt_environment_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_environment_name
+
+    @dbt_environment_name.setter
+    def dbt_environment_name(self, dbt_environment_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_environment_name = dbt_environment_name
+
+    @property
+    def dbt_environment_dbt_version(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_environment_dbt_version
+        )
+
+    @dbt_environment_dbt_version.setter
+    def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
+
+    @property
+    def dbt_tags(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.dbt_tags
+
+    @dbt_tags.setter
+    def dbt_tags(self, dbt_tags: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tags = dbt_tags
+
+    @property
+    def dbt_connection_context(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_connection_context
+        )
+
+    @dbt_connection_context.setter
+    def dbt_connection_context(self, dbt_connection_context: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_connection_context = dbt_connection_context
+
+    @property
+    def dbt_semantic_layer_proxy_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.dbt_semantic_layer_proxy_url
+        )
+
+    @dbt_semantic_layer_proxy_url.setter
+    def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
+
+    @property
+    def tag_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.tag_id
+
+    @tag_id.setter
+    def tag_id(self, tag_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_id = tag_id
+
+    @property
+    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
+        return None if self.attributes is None else self.attributes.tag_attributes
+
+    @tag_attributes.setter
+    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_attributes = tag_attributes
+
+    @property
+    def tag_allowed_values(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.tag_allowed_values
+
+    @tag_allowed_values.setter
+    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tag_allowed_values = tag_allowed_values
+
+    @property
+    def mapped_atlan_tag_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
+        )
+
+    @mapped_atlan_tag_name.setter
+    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
+
+    class Attributes(Dbt.Attributes):
+        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
+        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
+        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_account_name: Optional[str] = Field(
+            None, description="", alias="dbtAccountName"
+        )
+        dbt_project_name: Optional[str] = Field(
+            None, description="", alias="dbtProjectName"
+        )
+        dbt_package_name: Optional[str] = Field(
+            None, description="", alias="dbtPackageName"
+        )
+        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+        dbt_job_schedule: Optional[str] = Field(
+            None, description="", alias="dbtJobSchedule"
+        )
+        dbt_job_status: Optional[str] = Field(
+            None, description="", alias="dbtJobStatus"
+        )
+        dbt_job_schedule_cron_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobScheduleCronHumanized"
+        )
+        dbt_job_last_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobLastRun"
+        )
+        dbt_job_next_run: Optional[datetime] = Field(
+            None, description="", alias="dbtJobNextRun"
+        )
+        dbt_job_next_run_humanized: Optional[str] = Field(
+            None, description="", alias="dbtJobNextRunHumanized"
+        )
+        dbt_environment_name: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentName"
+        )
+        dbt_environment_dbt_version: Optional[str] = Field(
+            None, description="", alias="dbtEnvironmentDbtVersion"
+        )
+        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
+        dbt_connection_context: Optional[str] = Field(
+            None, description="", alias="dbtConnectionContext"
+        )
+        dbt_semantic_layer_proxy_url: Optional[str] = Field(
+            None, description="", alias="dbtSemanticLayerProxyUrl"
+        )
+        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
+            None, description="", alias="tagAttributes"
+        )
+        tag_allowed_values: Optional[set[str]] = Field(
+            None, description="", alias="tagAllowedValues"
+        )
+        mapped_atlan_tag_name: Optional[str] = Field(
+            None, description="", alias="mappedClassificationName"
+        )
+
+    attributes: "DbtTag.Attributes" = Field(
+        default_factory=lambda: DbtTag.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class DbtTest(Dbt):
+    """Description"""
+
+    type_name: str = Field("DbtTest", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "DbtTest":
+            raise ValueError("must be DbtTest")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in DbtTest._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "dbt_test_status",
+        "dbt_test_state",
+        "dbt_test_error",
+        "dbt_test_raw_s_q_l",
+        "dbt_test_compiled_s_q_l",
+        "dbt_test_raw_code",
+        "dbt_test_compiled_code",
+        "dbt_test_language",
+        "dbt_sources",
+        "sql_assets",
+        "dbt_models",
+        "dbt_model_columns",
+    ]
+
+    @property
+    def dbt_test_status(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_status
+
+    @dbt_test_status.setter
+    def dbt_test_status(self, dbt_test_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_status = dbt_test_status
+
+    @property
+    def dbt_test_state(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_state
+
+    @dbt_test_state.setter
+    def dbt_test_state(self, dbt_test_state: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_state = dbt_test_state
+
+    @property
+    def dbt_test_error(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_error
+
+    @dbt_test_error.setter
+    def dbt_test_error(self, dbt_test_error: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_error = dbt_test_error
+
+    @property
+    def dbt_test_raw_s_q_l(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_raw_s_q_l
+
+    @dbt_test_raw_s_q_l.setter
+    def dbt_test_raw_s_q_l(self, dbt_test_raw_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_raw_s_q_l = dbt_test_raw_s_q_l
+
+    @property
+    def dbt_test_compiled_s_q_l(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_test_compiled_s_q_l
+        )
+
+    @dbt_test_compiled_s_q_l.setter
+    def dbt_test_compiled_s_q_l(self, dbt_test_compiled_s_q_l: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_compiled_s_q_l = dbt_test_compiled_s_q_l
+
+    @property
+    def dbt_test_raw_code(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_raw_code
+
+    @dbt_test_raw_code.setter
+    def dbt_test_raw_code(self, dbt_test_raw_code: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_raw_code = dbt_test_raw_code
+
+    @property
+    def dbt_test_compiled_code(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.dbt_test_compiled_code
+        )
+
+    @dbt_test_compiled_code.setter
+    def dbt_test_compiled_code(self, dbt_test_compiled_code: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_compiled_code = dbt_test_compiled_code
+
+    @property
+    def dbt_test_language(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dbt_test_language
+
+    @dbt_test_language.setter
+    def dbt_test_language(self, dbt_test_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_test_language = dbt_test_language
+
+    @property
+    def dbt_sources(self) -> Optional[list[DbtSource]]:
+        return None if self.attributes is None else self.attributes.dbt_sources
+
+    @dbt_sources.setter
+    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_sources = dbt_sources
+
+    @property
+    def sql_assets(self) -> Optional[list[SQL]]:
+        return None if self.attributes is None else self.attributes.sql_assets
+
+    @sql_assets.setter
+    def sql_assets(self, sql_assets: Optional[list[SQL]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sql_assets = sql_assets
+
+    @property
+    def dbt_models(self) -> Optional[list[DbtModel]]:
+        return None if self.attributes is None else self.attributes.dbt_models
+
+    @dbt_models.setter
+    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_models = dbt_models
+
+    @property
+    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
+        return None if self.attributes is None else self.attributes.dbt_model_columns
+
+    @dbt_model_columns.setter
+    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_model_columns = dbt_model_columns
+
+    class Attributes(Dbt.Attributes):
+        dbt_test_status: Optional[str] = Field(
+            None, description="", alias="dbtTestStatus"
+        )
+        dbt_test_state: Optional[str] = Field(
+            None, description="", alias="dbtTestState"
+        )
+        dbt_test_error: Optional[str] = Field(
+            None, description="", alias="dbtTestError"
+        )
+        dbt_test_raw_s_q_l: Optional[str] = Field(
+            None, description="", alias="dbtTestRawSQL"
+        )
+        dbt_test_compiled_s_q_l: Optional[str] = Field(
+            None, description="", alias="dbtTestCompiledSQL"
+        )
+        dbt_test_raw_code: Optional[str] = Field(
+            None, description="", alias="dbtTestRawCode"
+        )
+        dbt_test_compiled_code: Optional[str] = Field(
+            None, description="", alias="dbtTestCompiledCode"
+        )
+        dbt_test_language: Optional[str] = Field(
+            None, description="", alias="dbtTestLanguage"
+        )
+        dbt_sources: Optional[list[DbtSource]] = Field(
+            None, description="", alias="dbtSources"
+        )  # relationship
+        sql_assets: Optional[list[SQL]] = Field(
+            None, description="", alias="sqlAssets"
+        )  # relationship
+        dbt_models: Optional[list[DbtModel]] = Field(
+            None, description="", alias="dbtModels"
+        )  # relationship
+        dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
+            None, description="", alias="dbtModelColumns"
+        )  # relationship
+
+    attributes: "DbtTest.Attributes" = Field(
+        default_factory=lambda: DbtTest.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9249,6 +14423,7 @@ class DbtModel(Dbt):
         "dbt_model_run_generated_at",
         "dbt_model_run_elapsed_time",
         "dbt_metrics",
+        "dbt_tests",
         "dbt_model_sql_assets",
         "dbt_model_columns",
         "sql_asset",
@@ -9437,6 +14612,16 @@ class DbtModel(Dbt):
         self.attributes.dbt_metrics = dbt_metrics
 
     @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
     def dbt_model_sql_assets(self) -> Optional[list[SQL]]:
         return None if self.attributes is None else self.attributes.dbt_model_sql_assets
 
@@ -9500,6 +14685,9 @@ class DbtModel(Dbt):
         )
         dbt_metrics: Optional[list[DbtMetric]] = Field(
             None, description="", alias="dbtMetrics"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
         )  # relationship
         dbt_model_sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="dbtModelSqlAssets"
@@ -9980,6 +15168,7 @@ class DbtSource(Dbt):
         "dbt_state",
         "dbt_freshness_criteria",
         "sql_assets",
+        "dbt_tests",
         "sql_asset",
     ]
 
@@ -10016,6 +15205,16 @@ class DbtSource(Dbt):
         self.attributes.sql_assets = sql_assets
 
     @property
+    def dbt_tests(self) -> Optional[list[DbtTest]]:
+        return None if self.attributes is None else self.attributes.dbt_tests
+
+    @dbt_tests.setter
+    def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dbt_tests = dbt_tests
+
+    @property
     def sql_asset(self) -> Optional[SQL]:
         return None if self.attributes is None else self.attributes.sql_asset
 
@@ -10032,6 +15231,9 @@ class DbtSource(Dbt):
         )
         sql_assets: Optional[list[SQL]] = Field(
             None, description="", alias="sqlAssets"
+        )  # relationship
+        dbt_tests: Optional[list[DbtTest]] = Field(
+            None, description="", alias="dbtTests"
         )  # relationship
         sql_asset: Optional[SQL] = Field(
             None, description="", alias="sqlAsset"
@@ -10085,6 +15287,7 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "airflow_tasks",
         "column_processes",
     ]
 
@@ -10353,6 +15556,16 @@ class DbtProcess(Dbt):
         self.attributes.ast = ast
 
     @property
+    def airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return None if self.attributes is None else self.attributes.airflow_tasks
+
+    @airflow_tasks.setter
+    def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_tasks = airflow_tasks
+
+    @property
     def column_processes(self) -> Optional[list[ColumnProcess]]:
         return None if self.attributes is None else self.attributes.column_processes
 
@@ -10415,357 +15628,15 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
+        airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="airflowTasks"
+        )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
             None, description="", alias="columnProcesses"
         )  # relationship
 
     attributes: "DbtProcess.Attributes" = Field(
         default_factory=lambda: DbtProcess.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ReadmeTemplate(Resource):
-    """Description"""
-
-    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ReadmeTemplate":
-            raise ValueError("must be ReadmeTemplate")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ReadmeTemplate._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "icon",
-        "icon_type",
-    ]
-
-    @property
-    def icon(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.icon
-
-    @icon.setter
-    def icon(self, icon: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.icon = icon
-
-    @property
-    def icon_type(self) -> Optional[IconType]:
-        return None if self.attributes is None else self.attributes.icon_type
-
-    @icon_type.setter
-    def icon_type(self, icon_type: Optional[IconType]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.icon_type = icon_type
-
-    class Attributes(Resource.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
-
-    attributes: "ReadmeTemplate.Attributes" = Field(
-        default_factory=lambda: ReadmeTemplate.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Readme(Resource):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
-    ) -> Readme:
-        return Readme(
-            attributes=Readme.Attributes.create(
-                asset=asset, content=content, asset_name=asset_name
-            )
-        )
-
-    @property
-    def description(self) -> Optional[str]:
-        ret_value = self.attributes.description
-        return unquote(ret_value) if ret_value is not None else ret_value
-
-    @description.setter
-    def description(self, description: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.description = (
-            quote(description) if description is not None else description
-        )
-
-    type_name: str = Field("Readme", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Readme":
-            raise ValueError("must be Readme")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Readme._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "internal",
-        "asset",
-        "see_also",
-    ]
-
-    @property
-    def internal(self) -> Optional[Internal]:
-        return None if self.attributes is None else self.attributes.internal
-
-    @internal.setter
-    def internal(self, internal: Optional[Internal]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.internal = internal
-
-    @property
-    def asset(self) -> Optional[Asset]:
-        return None if self.attributes is None else self.attributes.asset
-
-    @asset.setter
-    def asset(self, asset: Optional[Asset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset = asset
-
-    @property
-    def see_also(self) -> Optional[list[Readme]]:
-        return None if self.attributes is None else self.attributes.see_also
-
-    @see_also.setter
-    def see_also(self, see_also: Optional[list[Readme]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.see_also = see_also
-
-    class Attributes(Resource.Attributes):
-        internal: Optional[Internal] = Field(
-            None, description="", alias="__internal"
-        )  # relationship
-        asset: Optional[Asset] = Field(
-            None, description="", alias="asset"
-        )  # relationship
-        see_also: Optional[list[Readme]] = Field(
-            None, description="", alias="seeAlso"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
-        ) -> Readme.Attributes:
-            validate_required_fields(["asset", "content"], [asset, content])
-            if not asset.name:
-                if not asset_name:
-                    raise ValueError(
-                        "asset_name is required when name is not available from asset"
-                    )
-            elif asset_name:
-                raise ValueError(
-                    "asset_name can not be given when name is available from asset"
-                )
-            else:
-                asset_name = asset.name
-            return Readme.Attributes(
-                qualified_name=f"{asset.guid}/readme",
-                name=f"{asset_name} Readme",
-                asset=asset,
-                description=quote(content),
-            )
-
-    attributes: "Readme.Attributes" = Field(
-        default_factory=lambda: Readme.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class File(Resource):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, name: str, connection_qualified_name: str, file_type: FileType
-    ) -> File:
-        return File(
-            attributes=File.Attributes.create(
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                file_type=file_type,
-            )
-        )
-
-    type_name: str = Field("File", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "File":
-            raise ValueError("must be File")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in File._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "file_type",
-        "file_path",
-        "file_assets",
-    ]
-
-    @property
-    def file_type(self) -> Optional[FileType]:
-        return None if self.attributes is None else self.attributes.file_type
-
-    @file_type.setter
-    def file_type(self, file_type: Optional[FileType]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.file_type = file_type
-
-    @property
-    def file_path(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.file_path
-
-    @file_path.setter
-    def file_path(self, file_path: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.file_path = file_path
-
-    @property
-    def file_assets(self) -> Optional[Asset]:
-        return None if self.attributes is None else self.attributes.file_assets
-
-    @file_assets.setter
-    def file_assets(self, file_assets: Optional[Asset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.file_assets = file_assets
-
-    class Attributes(Resource.Attributes):
-        file_type: Optional[FileType] = Field(None, description="", alias="fileType")
-        file_path: Optional[str] = Field(None, description="", alias="filePath")
-        file_assets: Optional[Asset] = Field(
-            None, description="", alias="fileAssets"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, name: str, connection_qualified_name: str, file_type: FileType
-        ) -> File.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name", "file_type"],
-                [name, connection_qualified_name, file_type],
-            )
-            return File.Attributes(
-                name=name,
-                qualified_name=f"{connection_qualified_name}/{name}",
-                connection_qualified_name=connection_qualified_name,
-                file_type=file_type,
-            )
-
-    attributes: "File.Attributes" = Field(
-        default_factory=lambda: File.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Link(Resource):
-    """Description"""
-
-    type_name: str = Field("Link", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Link":
-            raise ValueError("must be Link")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Link._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "icon",
-        "icon_type",
-        "internal",
-        "asset",
-    ]
-
-    @property
-    def icon(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.icon
-
-    @icon.setter
-    def icon(self, icon: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.icon = icon
-
-    @property
-    def icon_type(self) -> Optional[IconType]:
-        return None if self.attributes is None else self.attributes.icon_type
-
-    @icon_type.setter
-    def icon_type(self, icon_type: Optional[IconType]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.icon_type = icon_type
-
-    @property
-    def internal(self) -> Optional[Internal]:
-        return None if self.attributes is None else self.attributes.internal
-
-    @internal.setter
-    def internal(self, internal: Optional[Internal]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.internal = internal
-
-    @property
-    def asset(self) -> Optional[Asset]:
-        return None if self.attributes is None else self.attributes.asset
-
-    @asset.setter
-    def asset(self, asset: Optional[Asset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.asset = asset
-
-    class Attributes(Resource.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
-        internal: Optional[Internal] = Field(
-            None, description="", alias="internal"
-        )  # relationship
-        asset: Optional[Asset] = Field(
-            None, description="", alias="asset"
-        )  # relationship
-
-    attributes: "Link.Attributes" = Field(
-        default_factory=lambda: Link.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11089,3163 +15960,189 @@ class APIPath(API):
     )
 
 
-class SnowflakeTag(Tag):
+class SchemaRegistrySubject(SchemaRegistry):
     """Description"""
 
-    type_name: str = Field("SnowflakeTag", allow_mutation=False)
+    type_name: str = Field("SchemaRegistrySubject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "SnowflakeTag":
-            raise ValueError("must be SnowflakeTag")
+        if v != "SchemaRegistrySubject":
+            raise ValueError("must be SchemaRegistrySubject")
         return v
 
     def __setattr__(self, name, value):
-        if name in SnowflakeTag._convience_properties:
+        if name in SchemaRegistrySubject._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "tag_id",
-        "tag_attributes",
-        "tag_allowed_values",
-        "mapped_atlan_tag_name",
-        "query_count",
-        "query_user_count",
-        "query_user_map",
-        "query_count_updated_at",
-        "database_name",
-        "database_qualified_name",
-        "schema_name",
-        "schema_qualified_name",
-        "table_name",
-        "table_qualified_name",
-        "view_name",
-        "view_qualified_name",
-        "is_profiled",
-        "last_profiled_at",
-        "dbt_sources",
-        "sql_dbt_models",
-        "sql_dbt_sources",
-        "dbt_models",
-        "atlan_schema",
+        "schema_registry_subject_base_name",
+        "schema_registry_subject_is_key_schema",
+        "schema_registry_subject_schema_compatibility",
+        "schema_registry_subject_latest_schema_version",
+        "schema_registry_subject_latest_schema_definition",
+        "schema_registry_subject_governing_asset_qualified_names",
+        "assets",
     ]
 
     @property
-    def tag_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.tag_id
-
-    @tag_id.setter
-    def tag_id(self, tag_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_id = tag_id
-
-    @property
-    def tag_attributes(self) -> Optional[list[SourceTagAttribute]]:
-        return None if self.attributes is None else self.attributes.tag_attributes
-
-    @tag_attributes.setter
-    def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_attributes = tag_attributes
-
-    @property
-    def tag_allowed_values(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.tag_allowed_values
-
-    @tag_allowed_values.setter
-    def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tag_allowed_values = tag_allowed_values
-
-    @property
-    def mapped_atlan_tag_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mapped_atlan_tag_name
-        )
-
-    @mapped_atlan_tag_name.setter
-    def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
-
-    @property
-    def query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_count
-
-    @query_count.setter
-    def query_count(self, query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count = query_count
-
-    @property
-    def query_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_user_count
-
-    @query_user_count.setter
-    def query_user_count(self, query_user_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_count = query_user_count
-
-    @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
-        return None if self.attributes is None else self.attributes.query_user_map
-
-    @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_map = query_user_map
-
-    @property
-    def query_count_updated_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
-        )
-
-    @query_count_updated_at.setter
-    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count_updated_at = query_count_updated_at
-
-    @property
-    def database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_name
-
-    @database_name.setter
-    def database_name(self, database_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_name = database_name
-
-    @property
-    def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
-
-    @database_qualified_name.setter
-    def database_qualified_name(self, database_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_qualified_name = database_qualified_name
-
-    @property
-    def schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_name
-
-    @schema_name.setter
-    def schema_name(self, schema_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_name = schema_name
-
-    @property
-    def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
-
-    @schema_qualified_name.setter
-    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_qualified_name = schema_qualified_name
-
-    @property
-    def table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_name
-
-    @table_name.setter
-    def table_name(self, table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_name = table_name
-
-    @property
-    def table_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_qualified_name
-
-    @table_qualified_name.setter
-    def table_qualified_name(self, table_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_qualified_name = table_qualified_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_qualified_name
-
-    @view_qualified_name.setter
-    def view_qualified_name(self, view_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_qualified_name = view_qualified_name
-
-    @property
-    def is_profiled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_profiled
-
-    @is_profiled.setter
-    def is_profiled(self, is_profiled: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_profiled = is_profiled
-
-    @property
-    def last_profiled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.last_profiled_at
-
-    @last_profiled_at.setter
-    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.last_profiled_at = last_profiled_at
-
-    @property
-    def dbt_sources(self) -> Optional[list[DbtSource]]:
-        return None if self.attributes is None else self.attributes.dbt_sources
-
-    @dbt_sources.setter
-    def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_sources = dbt_sources
-
-    @property
-    def sql_dbt_models(self) -> Optional[list[DbtModel]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_models
-
-    @sql_dbt_models.setter
-    def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_models = sql_dbt_models
-
-    @property
-    def sql_dbt_sources(self) -> Optional[list[DbtSource]]:
-        return None if self.attributes is None else self.attributes.sql_dbt_sources
-
-    @sql_dbt_sources.setter
-    def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sql_dbt_sources = sql_dbt_sources
-
-    @property
-    def dbt_models(self) -> Optional[list[DbtModel]]:
-        return None if self.attributes is None else self.attributes.dbt_models
-
-    @dbt_models.setter
-    def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_models = dbt_models
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    class Attributes(Tag.Attributes):
-        tag_id: Optional[str] = Field(None, description="", alias="tagId")
-        tag_attributes: Optional[list[SourceTagAttribute]] = Field(
-            None, description="", alias="tagAttributes"
-        )
-        tag_allowed_values: Optional[set[str]] = Field(
-            None, description="", alias="tagAllowedValues"
-        )
-        mapped_atlan_tag_name: Optional[str] = Field(
-            None, description="", alias="mappedClassificationName"
-        )
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
-        )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
-        )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
-        )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
-        database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
-        )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
-        schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
-        )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
-        table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
-        dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
-        )  # relationship
-        sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
-        )  # relationship
-        sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
-        )  # relationship
-        dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-
-    attributes: "SnowflakeTag.Attributes" = Field(
-        default_factory=lambda: SnowflakeTag.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class TablePartition(SQL):
-    """Description"""
-
-    type_name: str = Field("TablePartition", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "TablePartition":
-            raise ValueError("must be TablePartition")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in TablePartition._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "constraint",
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "alias",
-        "is_temporary",
-        "is_query_preview",
-        "query_preview_config",
-        "external_location",
-        "external_location_region",
-        "external_location_format",
-        "is_partitioned",
-        "partition_strategy",
-        "partition_count",
-        "partition_list",
-        "columns",
-        "parent_table",
-    ]
-
-    @property
-    def constraint(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.constraint
-
-    @constraint.setter
-    def constraint(self, constraint: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.constraint = constraint
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def external_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location
-
-    @external_location.setter
-    def external_location(self, external_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location = external_location
-
-    @property
-    def external_location_region(self) -> Optional[str]:
+    def schema_registry_subject_base_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.external_location_region
+            else self.attributes.schema_registry_subject_base_name
         )
 
-    @external_location_region.setter
-    def external_location_region(self, external_location_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_region = external_location_region
-
-    @property
-    def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
-
-    @external_location_format.setter
-    def external_location_format(self, external_location_format: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_format = external_location_format
-
-    @property
-    def is_partitioned(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_partitioned
-
-    @is_partitioned.setter
-    def is_partitioned(self, is_partitioned: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_partitioned = is_partitioned
-
-    @property
-    def partition_strategy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_strategy
-
-    @partition_strategy.setter
-    def partition_strategy(self, partition_strategy: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_strategy = partition_strategy
-
-    @property
-    def partition_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.partition_count
-
-    @partition_count.setter
-    def partition_count(self, partition_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_count = partition_count
-
-    @property
-    def partition_list(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_list
-
-    @partition_list.setter
-    def partition_list(self, partition_list: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_list = partition_list
-
-    @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def parent_table(self) -> Optional[Table]:
-        return None if self.attributes is None else self.attributes.parent_table
-
-    @parent_table.setter
-    def parent_table(self, parent_table: Optional[Table]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_table = parent_table
-
-    class Attributes(SQL.Attributes):
-        constraint: Optional[str] = Field(None, description="", alias="constraint")
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
-        query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
-        )
-        external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
-        )
-        external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
-        )
-        external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
-        )
-        is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
-        )
-        partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
-        )
-        partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
-        )
-        partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
-        )
-        columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
-        )  # relationship
-        parent_table: Optional[Table] = Field(
-            None, description="", alias="parentTable"
-        )  # relationship
-
-    attributes: "TablePartition.Attributes" = Field(
-        default_factory=lambda: TablePartition.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Table(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-        attributes = Table.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("Table", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Table":
-            raise ValueError("must be Table")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Table._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "alias",
-        "is_temporary",
-        "is_query_preview",
-        "query_preview_config",
-        "external_location",
-        "external_location_region",
-        "external_location_format",
-        "is_partitioned",
-        "partition_strategy",
-        "partition_count",
-        "partition_list",
-        "partitions",
-        "columns",
-        "queries",
-        "facts",
-        "atlan_schema",
-        "dimensions",
-    ]
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def external_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location
-
-    @external_location.setter
-    def external_location(self, external_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location = external_location
-
-    @property
-    def external_location_region(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_region
-        )
-
-    @external_location_region.setter
-    def external_location_region(self, external_location_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_region = external_location_region
-
-    @property
-    def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
-
-    @external_location_format.setter
-    def external_location_format(self, external_location_format: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_format = external_location_format
-
-    @property
-    def is_partitioned(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_partitioned
-
-    @is_partitioned.setter
-    def is_partitioned(self, is_partitioned: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_partitioned = is_partitioned
-
-    @property
-    def partition_strategy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_strategy
-
-    @partition_strategy.setter
-    def partition_strategy(self, partition_strategy: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_strategy = partition_strategy
-
-    @property
-    def partition_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.partition_count
-
-    @partition_count.setter
-    def partition_count(self, partition_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_count = partition_count
-
-    @property
-    def partition_list(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_list
-
-    @partition_list.setter
-    def partition_list(self, partition_list: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_list = partition_list
-
-    @property
-    def partitions(self) -> Optional[list[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[list[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
-
-    @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def facts(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.facts
-
-    @facts.setter
-    def facts(self, facts: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.facts = facts
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    @property
-    def dimensions(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.dimensions
-
-    @dimensions.setter
-    def dimensions(self, dimensions: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dimensions = dimensions
-
-    class Attributes(SQL.Attributes):
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
-        query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
-        )
-        external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
-        )
-        external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
-        )
-        external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
-        )
-        is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
-        )
-        partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
-        )
-        partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
-        )
-        partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
-        )
-        partitions: Optional[list[TablePartition]] = Field(
-            None, description="", alias="partitions"
-        )  # relationship
-        columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
-        facts: Optional[list[Table]] = Field(
-            None, description="", alias="facts"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-        dimensions: Optional[list[Table]] = Field(
-            None, description="", alias="dimensions"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
-            fields = schema_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid schema_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid schema_qualified_name") from e
-            return Table.Attributes(
-                name=name,
-                database_name=fields[3],
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                qualified_name=f"{schema_qualified_name}/{name}",
-                schema_qualified_name=schema_qualified_name,
-                schema_name=fields[4],
-                connector_name=connector_type.value,
-                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
-            )
-
-    attributes: "Table.Attributes" = Field(
-        default_factory=lambda: Table.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Query(SQL):
-    """Description"""
-
-    type_name: str = Field("Query", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Query":
-            raise ValueError("must be Query")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Query._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "raw_query",
-        "default_schema_qualified_name",
-        "default_database_qualified_name",
-        "variables_schema_base64",
-        "is_private",
-        "is_sql_snippet",
-        "parent_qualified_name",
-        "collection_qualified_name",
-        "is_visual_query",
-        "visual_builder_schema_base64",
-        "parent",
-        "columns",
-        "tables",
-        "views",
-    ]
-
-    @property
-    def raw_query(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.raw_query
-
-    @raw_query.setter
-    def raw_query(self, raw_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.raw_query = raw_query
-
-    @property
-    def default_schema_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.default_schema_qualified_name
-        )
-
-    @default_schema_qualified_name.setter
-    def default_schema_qualified_name(
-        self, default_schema_qualified_name: Optional[str]
+    @schema_registry_subject_base_name.setter
+    def schema_registry_subject_base_name(
+        self, schema_registry_subject_base_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.default_schema_qualified_name = default_schema_qualified_name
+        self.attributes.schema_registry_subject_base_name = (
+            schema_registry_subject_base_name
+        )
 
     @property
-    def default_database_qualified_name(self) -> Optional[str]:
+    def schema_registry_subject_is_key_schema(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.default_database_qualified_name
+            else self.attributes.schema_registry_subject_is_key_schema
         )
 
-    @default_database_qualified_name.setter
-    def default_database_qualified_name(
-        self, default_database_qualified_name: Optional[str]
+    @schema_registry_subject_is_key_schema.setter
+    def schema_registry_subject_is_key_schema(
+        self, schema_registry_subject_is_key_schema: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.default_database_qualified_name = (
-            default_database_qualified_name
+        self.attributes.schema_registry_subject_is_key_schema = (
+            schema_registry_subject_is_key_schema
         )
 
     @property
-    def variables_schema_base64(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.variables_schema_base64
-        )
-
-    @variables_schema_base64.setter
-    def variables_schema_base64(self, variables_schema_base64: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.variables_schema_base64 = variables_schema_base64
-
-    @property
-    def is_private(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_private
-
-    @is_private.setter
-    def is_private(self, is_private: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_private = is_private
-
-    @property
-    def is_sql_snippet(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_sql_snippet
-
-    @is_sql_snippet.setter
-    def is_sql_snippet(self, is_sql_snippet: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_sql_snippet = is_sql_snippet
-
-    @property
-    def parent_qualified_name(self) -> str:
-        return (
-            None if self.attributes is None else self.attributes.parent_qualified_name
-        )
-
-    @parent_qualified_name.setter
-    def parent_qualified_name(self, parent_qualified_name: str):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent_qualified_name = parent_qualified_name
-
-    @property
-    def collection_qualified_name(self) -> str:
+    def schema_registry_subject_schema_compatibility(
+        self,
+    ) -> Optional[SchemaRegistrySchemaCompatibility]:
         return (
             None
             if self.attributes is None
-            else self.attributes.collection_qualified_name
+            else self.attributes.schema_registry_subject_schema_compatibility
         )
 
-    @collection_qualified_name.setter
-    def collection_qualified_name(self, collection_qualified_name: str):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.collection_qualified_name = collection_qualified_name
-
-    @property
-    def is_visual_query(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_visual_query
-
-    @is_visual_query.setter
-    def is_visual_query(self, is_visual_query: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_visual_query = is_visual_query
-
-    @property
-    def visual_builder_schema_base64(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.visual_builder_schema_base64
-        )
-
-    @visual_builder_schema_base64.setter
-    def visual_builder_schema_base64(self, visual_builder_schema_base64: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
-
-    @property
-    def parent(self) -> Namespace:
-        return None if self.attributes is None else self.attributes.parent
-
-    @parent.setter
-    def parent(self, parent: Namespace):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.parent = parent
-
-    @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def tables(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.tables
-
-    @tables.setter
-    def tables(self, tables: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tables = tables
-
-    @property
-    def views(self) -> Optional[list[View]]:
-        return None if self.attributes is None else self.attributes.views
-
-    @views.setter
-    def views(self, views: Optional[list[View]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.views = views
-
-    class Attributes(SQL.Attributes):
-        raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
-        default_schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="defaultSchemaQualifiedName"
-        )
-        default_database_qualified_name: Optional[str] = Field(
-            None, description="", alias="defaultDatabaseQualifiedName"
-        )
-        variables_schema_base64: Optional[str] = Field(
-            None, description="", alias="variablesSchemaBase64"
-        )
-        is_private: Optional[bool] = Field(None, description="", alias="isPrivate")
-        is_sql_snippet: Optional[bool] = Field(
-            None, description="", alias="isSqlSnippet"
-        )
-        parent_qualified_name: str = Field(
-            None, description="", alias="parentQualifiedName"
-        )
-        collection_qualified_name: str = Field(
-            None, description="", alias="collectionQualifiedName"
-        )
-        is_visual_query: Optional[bool] = Field(
-            None, description="", alias="isVisualQuery"
-        )
-        visual_builder_schema_base64: Optional[str] = Field(
-            None, description="", alias="visualBuilderSchemaBase64"
-        )
-        parent: Namespace = Field(None, description="", alias="parent")  # relationship
-        columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
-        )  # relationship
-        tables: Optional[list[Table]] = Field(
-            None, description="", alias="tables"
-        )  # relationship
-        views: Optional[list[View]] = Field(
-            None, description="", alias="views"
-        )  # relationship
-
-    attributes: "Query.Attributes" = Field(
-        default_factory=lambda: Query.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Column(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
-    ) -> Column:
-        return Column(
-            attributes=Column.Attributes.create(
-                name=name,
-                parent_qualified_name=parent_qualified_name,
-                parent_type=parent_type,
-                order=order,
-            )
-        )
-
-    type_name: str = Field("Column", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Column":
-            raise ValueError("must be Column")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Column._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "data_type",
-        "sub_data_type",
-        "order",
-        "is_partition",
-        "partition_order",
-        "is_clustered",
-        "is_primary",
-        "is_foreign",
-        "is_indexed",
-        "is_sort",
-        "is_dist",
-        "is_pinned",
-        "pinned_by",
-        "pinned_at",
-        "precision",
-        "default_value",
-        "is_nullable",
-        "numeric_scale",
-        "max_length",
-        "validations",
-        "column_distinct_values_count",
-        "column_distinct_values_count_long",
-        "column_histogram",
-        "column_max",
-        "column_min",
-        "column_mean",
-        "column_sum",
-        "column_median",
-        "column_standard_deviation",
-        "column_unique_values_count",
-        "column_unique_values_count_long",
-        "column_average",
-        "column_average_length",
-        "column_duplicate_values_count",
-        "column_duplicate_values_count_long",
-        "column_maximum_string_length",
-        "column_maxs",
-        "column_minimum_string_length",
-        "column_mins",
-        "column_missing_values_count",
-        "column_missing_values_count_long",
-        "column_missing_values_percentage",
-        "column_uniqueness_percentage",
-        "column_variance",
-        "column_top_values",
-        "view",
-        "data_quality_metric_dimensions",
-        "dbt_model_columns",
-        "table",
-        "column_dbt_model_columns",
-        "materialised_view",
-        "queries",
-        "metric_timestamps",
-        "foreign_key_to",
-        "foreign_key_from",
-        "dbt_metrics",
-        "table_partition",
-    ]
-
-    @property
-    def data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.data_type
-
-    @data_type.setter
-    def data_type(self, data_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_type = data_type
-
-    @property
-    def sub_data_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sub_data_type
-
-    @sub_data_type.setter
-    def sub_data_type(self, sub_data_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sub_data_type = sub_data_type
-
-    @property
-    def order(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.order
-
-    @order.setter
-    def order(self, order: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.order = order
-
-    @property
-    def is_partition(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_partition
-
-    @is_partition.setter
-    def is_partition(self, is_partition: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_partition = is_partition
-
-    @property
-    def partition_order(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.partition_order
-
-    @partition_order.setter
-    def partition_order(self, partition_order: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_order = partition_order
-
-    @property
-    def is_clustered(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_clustered
-
-    @is_clustered.setter
-    def is_clustered(self, is_clustered: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_clustered = is_clustered
-
-    @property
-    def is_primary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_primary
-
-    @is_primary.setter
-    def is_primary(self, is_primary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_primary = is_primary
-
-    @property
-    def is_foreign(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_foreign
-
-    @is_foreign.setter
-    def is_foreign(self, is_foreign: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_foreign = is_foreign
-
-    @property
-    def is_indexed(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_indexed
-
-    @is_indexed.setter
-    def is_indexed(self, is_indexed: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_indexed = is_indexed
-
-    @property
-    def is_sort(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_sort
-
-    @is_sort.setter
-    def is_sort(self, is_sort: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_sort = is_sort
-
-    @property
-    def is_dist(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_dist
-
-    @is_dist.setter
-    def is_dist(self, is_dist: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_dist = is_dist
-
-    @property
-    def is_pinned(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_pinned
-
-    @is_pinned.setter
-    def is_pinned(self, is_pinned: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_pinned = is_pinned
-
-    @property
-    def pinned_by(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.pinned_by
-
-    @pinned_by.setter
-    def pinned_by(self, pinned_by: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.pinned_by = pinned_by
-
-    @property
-    def pinned_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.pinned_at
-
-    @pinned_at.setter
-    def pinned_at(self, pinned_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.pinned_at = pinned_at
-
-    @property
-    def precision(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.precision
-
-    @precision.setter
-    def precision(self, precision: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.precision = precision
-
-    @property
-    def default_value(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.default_value
-
-    @default_value.setter
-    def default_value(self, default_value: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.default_value = default_value
-
-    @property
-    def is_nullable(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_nullable
-
-    @is_nullable.setter
-    def is_nullable(self, is_nullable: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_nullable = is_nullable
-
-    @property
-    def numeric_scale(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.numeric_scale
-
-    @numeric_scale.setter
-    def numeric_scale(self, numeric_scale: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.numeric_scale = numeric_scale
-
-    @property
-    def max_length(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.max_length
-
-    @max_length.setter
-    def max_length(self, max_length: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.max_length = max_length
-
-    @property
-    def validations(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.validations
-
-    @validations.setter
-    def validations(self, validations: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.validations = validations
-
-    @property
-    def column_distinct_values_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_distinct_values_count
-        )
-
-    @column_distinct_values_count.setter
-    def column_distinct_values_count(self, column_distinct_values_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_distinct_values_count = column_distinct_values_count
-
-    @property
-    def column_distinct_values_count_long(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_distinct_values_count_long
-        )
-
-    @column_distinct_values_count_long.setter
-    def column_distinct_values_count_long(
-        self, column_distinct_values_count_long: Optional[int]
+    @schema_registry_subject_schema_compatibility.setter
+    def schema_registry_subject_schema_compatibility(
+        self,
+        schema_registry_subject_schema_compatibility: Optional[
+            SchemaRegistrySchemaCompatibility
+        ],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_distinct_values_count_long = (
-            column_distinct_values_count_long
+        self.attributes.schema_registry_subject_schema_compatibility = (
+            schema_registry_subject_schema_compatibility
         )
 
     @property
-    def column_histogram(self) -> Optional[Histogram]:
-        return None if self.attributes is None else self.attributes.column_histogram
-
-    @column_histogram.setter
-    def column_histogram(self, column_histogram: Optional[Histogram]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_histogram = column_histogram
-
-    @property
-    def column_max(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_max
-
-    @column_max.setter
-    def column_max(self, column_max: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_max = column_max
-
-    @property
-    def column_min(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_min
-
-    @column_min.setter
-    def column_min(self, column_min: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_min = column_min
-
-    @property
-    def column_mean(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_mean
-
-    @column_mean.setter
-    def column_mean(self, column_mean: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_mean = column_mean
-
-    @property
-    def column_sum(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_sum
-
-    @column_sum.setter
-    def column_sum(self, column_sum: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_sum = column_sum
-
-    @property
-    def column_median(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_median
-
-    @column_median.setter
-    def column_median(self, column_median: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_median = column_median
-
-    @property
-    def column_standard_deviation(self) -> Optional[float]:
+    def schema_registry_subject_latest_schema_version(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.column_standard_deviation
+            else self.attributes.schema_registry_subject_latest_schema_version
         )
 
-    @column_standard_deviation.setter
-    def column_standard_deviation(self, column_standard_deviation: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_standard_deviation = column_standard_deviation
-
-    @property
-    def column_unique_values_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_unique_values_count
-        )
-
-    @column_unique_values_count.setter
-    def column_unique_values_count(self, column_unique_values_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_unique_values_count = column_unique_values_count
-
-    @property
-    def column_unique_values_count_long(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_unique_values_count_long
-        )
-
-    @column_unique_values_count_long.setter
-    def column_unique_values_count_long(
-        self, column_unique_values_count_long: Optional[int]
+    @schema_registry_subject_latest_schema_version.setter
+    def schema_registry_subject_latest_schema_version(
+        self, schema_registry_subject_latest_schema_version: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_unique_values_count_long = (
-            column_unique_values_count_long
+        self.attributes.schema_registry_subject_latest_schema_version = (
+            schema_registry_subject_latest_schema_version
         )
 
     @property
-    def column_average(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_average
-
-    @column_average.setter
-    def column_average(self, column_average: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_average = column_average
-
-    @property
-    def column_average_length(self) -> Optional[float]:
-        return (
-            None if self.attributes is None else self.attributes.column_average_length
-        )
-
-    @column_average_length.setter
-    def column_average_length(self, column_average_length: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_average_length = column_average_length
-
-    @property
-    def column_duplicate_values_count(self) -> Optional[int]:
+    def schema_registry_subject_latest_schema_definition(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.column_duplicate_values_count
+            else self.attributes.schema_registry_subject_latest_schema_definition
         )
 
-    @column_duplicate_values_count.setter
-    def column_duplicate_values_count(
-        self, column_duplicate_values_count: Optional[int]
+    @schema_registry_subject_latest_schema_definition.setter
+    def schema_registry_subject_latest_schema_definition(
+        self, schema_registry_subject_latest_schema_definition: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_duplicate_values_count = column_duplicate_values_count
+        self.attributes.schema_registry_subject_latest_schema_definition = (
+            schema_registry_subject_latest_schema_definition
+        )
 
     @property
-    def column_duplicate_values_count_long(self) -> Optional[int]:
+    def schema_registry_subject_governing_asset_qualified_names(
+        self,
+    ) -> Optional[set[str]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.column_duplicate_values_count_long
+            else self.attributes.schema_registry_subject_governing_asset_qualified_names
         )
 
-    @column_duplicate_values_count_long.setter
-    def column_duplicate_values_count_long(
-        self, column_duplicate_values_count_long: Optional[int]
+    @schema_registry_subject_governing_asset_qualified_names.setter
+    def schema_registry_subject_governing_asset_qualified_names(
+        self,
+        schema_registry_subject_governing_asset_qualified_names: Optional[set[str]],
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_duplicate_values_count_long = (
-            column_duplicate_values_count_long
+        self.attributes.schema_registry_subject_governing_asset_qualified_names = (
+            schema_registry_subject_governing_asset_qualified_names
         )
 
     @property
-    def column_maximum_string_length(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_maximum_string_length
-        )
+    def assets(self) -> Optional[list[Asset]]:
+        return None if self.attributes is None else self.attributes.assets
 
-    @column_maximum_string_length.setter
-    def column_maximum_string_length(self, column_maximum_string_length: Optional[int]):
+    @assets.setter
+    def assets(self, assets: Optional[list[Asset]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.column_maximum_string_length = column_maximum_string_length
+        self.attributes.assets = assets
 
-    @property
-    def column_maxs(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.column_maxs
-
-    @column_maxs.setter
-    def column_maxs(self, column_maxs: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_maxs = column_maxs
-
-    @property
-    def column_minimum_string_length(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_minimum_string_length
+    class Attributes(SchemaRegistry.Attributes):
+        schema_registry_subject_base_name: Optional[str] = Field(
+            None, description="", alias="schemaRegistrySubjectBaseName"
         )
-
-    @column_minimum_string_length.setter
-    def column_minimum_string_length(self, column_minimum_string_length: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_minimum_string_length = column_minimum_string_length
-
-    @property
-    def column_mins(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.column_mins
-
-    @column_mins.setter
-    def column_mins(self, column_mins: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_mins = column_mins
-
-    @property
-    def column_missing_values_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_missing_values_count
+        schema_registry_subject_is_key_schema: Optional[bool] = Field(
+            None, description="", alias="schemaRegistrySubjectIsKeySchema"
         )
-
-    @column_missing_values_count.setter
-    def column_missing_values_count(self, column_missing_values_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_missing_values_count = column_missing_values_count
-
-    @property
-    def column_missing_values_count_long(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_missing_values_count_long
+        schema_registry_subject_schema_compatibility: Optional[
+            SchemaRegistrySchemaCompatibility
+        ] = Field(
+            None, description="", alias="schemaRegistrySubjectSchemaCompatibility"
         )
-
-    @column_missing_values_count_long.setter
-    def column_missing_values_count_long(
-        self, column_missing_values_count_long: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_missing_values_count_long = (
-            column_missing_values_count_long
+        schema_registry_subject_latest_schema_version: Optional[str] = Field(
+            None, description="", alias="schemaRegistrySubjectLatestSchemaVersion"
         )
-
-    @property
-    def column_missing_values_percentage(self) -> Optional[float]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_missing_values_percentage
+        schema_registry_subject_latest_schema_definition: Optional[str] = Field(
+            None, description="", alias="schemaRegistrySubjectLatestSchemaDefinition"
         )
-
-    @column_missing_values_percentage.setter
-    def column_missing_values_percentage(
-        self, column_missing_values_percentage: Optional[float]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_missing_values_percentage = (
-            column_missing_values_percentage
+        schema_registry_subject_governing_asset_qualified_names: Optional[
+            set[str]
+        ] = Field(
+            None,
+            description="",
+            alias="schemaRegistrySubjectGoverningAssetQualifiedNames",
         )
-
-    @property
-    def column_uniqueness_percentage(self) -> Optional[float]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_uniqueness_percentage
-        )
-
-    @column_uniqueness_percentage.setter
-    def column_uniqueness_percentage(
-        self, column_uniqueness_percentage: Optional[float]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_uniqueness_percentage = column_uniqueness_percentage
-
-    @property
-    def column_variance(self) -> Optional[float]:
-        return None if self.attributes is None else self.attributes.column_variance
-
-    @column_variance.setter
-    def column_variance(self, column_variance: Optional[float]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_variance = column_variance
-
-    @property
-    def column_top_values(self) -> Optional[list[ColumnValueFrequencyMap]]:
-        return None if self.attributes is None else self.attributes.column_top_values
-
-    @column_top_values.setter
-    def column_top_values(
-        self, column_top_values: Optional[list[ColumnValueFrequencyMap]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_top_values = column_top_values
-
-    @property
-    def view(self) -> Optional[View]:
-        return None if self.attributes is None else self.attributes.view
-
-    @view.setter
-    def view(self, view: Optional[View]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view = view
-
-    @property
-    def data_quality_metric_dimensions(self) -> Optional[list[Metric]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.data_quality_metric_dimensions
-        )
-
-    @data_quality_metric_dimensions.setter
-    def data_quality_metric_dimensions(
-        self, data_quality_metric_dimensions: Optional[list[Metric]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
-
-    @property
-    def dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
-        return None if self.attributes is None else self.attributes.dbt_model_columns
-
-    @dbt_model_columns.setter
-    def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_model_columns = dbt_model_columns
-
-    @property
-    def table(self) -> Optional[Table]:
-        return None if self.attributes is None else self.attributes.table
-
-    @table.setter
-    def table(self, table: Optional[Table]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table = table
-
-    @property
-    def column_dbt_model_columns(self) -> Optional[list[DbtModelColumn]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.column_dbt_model_columns
-        )
-
-    @column_dbt_model_columns.setter
-    def column_dbt_model_columns(
-        self, column_dbt_model_columns: Optional[list[DbtModelColumn]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_dbt_model_columns = column_dbt_model_columns
-
-    @property
-    def materialised_view(self) -> Optional[MaterialisedView]:
-        return None if self.attributes is None else self.attributes.materialised_view
-
-    @materialised_view.setter
-    def materialised_view(self, materialised_view: Optional[MaterialisedView]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.materialised_view = materialised_view
-
-    @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def metric_timestamps(self) -> Optional[list[Metric]]:
-        return None if self.attributes is None else self.attributes.metric_timestamps
-
-    @metric_timestamps.setter
-    def metric_timestamps(self, metric_timestamps: Optional[list[Metric]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metric_timestamps = metric_timestamps
-
-    @property
-    def foreign_key_to(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.foreign_key_to
-
-    @foreign_key_to.setter
-    def foreign_key_to(self, foreign_key_to: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.foreign_key_to = foreign_key_to
-
-    @property
-    def foreign_key_from(self) -> Optional[Column]:
-        return None if self.attributes is None else self.attributes.foreign_key_from
-
-    @foreign_key_from.setter
-    def foreign_key_from(self, foreign_key_from: Optional[Column]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.foreign_key_from = foreign_key_from
-
-    @property
-    def dbt_metrics(self) -> Optional[list[DbtMetric]]:
-        return None if self.attributes is None else self.attributes.dbt_metrics
-
-    @dbt_metrics.setter
-    def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dbt_metrics = dbt_metrics
-
-    @property
-    def table_partition(self) -> Optional[TablePartition]:
-        return None if self.attributes is None else self.attributes.table_partition
-
-    @table_partition.setter
-    def table_partition(self, table_partition: Optional[TablePartition]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_partition = table_partition
-
-    class Attributes(SQL.Attributes):
-        data_type: Optional[str] = Field(None, description="", alias="dataType")
-        sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
-        order: Optional[int] = Field(None, description="", alias="order")
-        is_partition: Optional[bool] = Field(None, description="", alias="isPartition")
-        partition_order: Optional[int] = Field(
-            None, description="", alias="partitionOrder"
-        )
-        is_clustered: Optional[bool] = Field(None, description="", alias="isClustered")
-        is_primary: Optional[bool] = Field(None, description="", alias="isPrimary")
-        is_foreign: Optional[bool] = Field(None, description="", alias="isForeign")
-        is_indexed: Optional[bool] = Field(None, description="", alias="isIndexed")
-        is_sort: Optional[bool] = Field(None, description="", alias="isSort")
-        is_dist: Optional[bool] = Field(None, description="", alias="isDist")
-        is_pinned: Optional[bool] = Field(None, description="", alias="isPinned")
-        pinned_by: Optional[str] = Field(None, description="", alias="pinnedBy")
-        pinned_at: Optional[datetime] = Field(None, description="", alias="pinnedAt")
-        precision: Optional[int] = Field(None, description="", alias="precision")
-        default_value: Optional[str] = Field(None, description="", alias="defaultValue")
-        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
-        numeric_scale: Optional[float] = Field(
-            None, description="", alias="numericScale"
-        )
-        max_length: Optional[int] = Field(None, description="", alias="maxLength")
-        validations: Optional[dict[str, str]] = Field(
-            None, description="", alias="validations"
-        )
-        column_distinct_values_count: Optional[int] = Field(
-            None, description="", alias="columnDistinctValuesCount"
-        )
-        column_distinct_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnDistinctValuesCountLong"
-        )
-        column_histogram: Optional[Histogram] = Field(
-            None, description="", alias="columnHistogram"
-        )
-        column_max: Optional[float] = Field(None, description="", alias="columnMax")
-        column_min: Optional[float] = Field(None, description="", alias="columnMin")
-        column_mean: Optional[float] = Field(None, description="", alias="columnMean")
-        column_sum: Optional[float] = Field(None, description="", alias="columnSum")
-        column_median: Optional[float] = Field(
-            None, description="", alias="columnMedian"
-        )
-        column_standard_deviation: Optional[float] = Field(
-            None, description="", alias="columnStandardDeviation"
-        )
-        column_unique_values_count: Optional[int] = Field(
-            None, description="", alias="columnUniqueValuesCount"
-        )
-        column_unique_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnUniqueValuesCountLong"
-        )
-        column_average: Optional[float] = Field(
-            None, description="", alias="columnAverage"
-        )
-        column_average_length: Optional[float] = Field(
-            None, description="", alias="columnAverageLength"
-        )
-        column_duplicate_values_count: Optional[int] = Field(
-            None, description="", alias="columnDuplicateValuesCount"
-        )
-        column_duplicate_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnDuplicateValuesCountLong"
-        )
-        column_maximum_string_length: Optional[int] = Field(
-            None, description="", alias="columnMaximumStringLength"
-        )
-        column_maxs: Optional[set[str]] = Field(
-            None, description="", alias="columnMaxs"
-        )
-        column_minimum_string_length: Optional[int] = Field(
-            None, description="", alias="columnMinimumStringLength"
-        )
-        column_mins: Optional[set[str]] = Field(
-            None, description="", alias="columnMins"
-        )
-        column_missing_values_count: Optional[int] = Field(
-            None, description="", alias="columnMissingValuesCount"
-        )
-        column_missing_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnMissingValuesCountLong"
-        )
-        column_missing_values_percentage: Optional[float] = Field(
-            None, description="", alias="columnMissingValuesPercentage"
-        )
-        column_uniqueness_percentage: Optional[float] = Field(
-            None, description="", alias="columnUniquenessPercentage"
-        )
-        column_variance: Optional[float] = Field(
-            None, description="", alias="columnVariance"
-        )
-        column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
-            None, description="", alias="columnTopValues"
-        )
-        view: Optional[View] = Field(None, description="", alias="view")  # relationship
-        data_quality_metric_dimensions: Optional[list[Metric]] = Field(
-            None, description="", alias="dataQualityMetricDimensions"
-        )  # relationship
-        dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
-            None, description="", alias="dbtModelColumns"
-        )  # relationship
-        table: Optional[Table] = Field(
-            None, description="", alias="table"
-        )  # relationship
-        column_dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
-            None, description="", alias="columnDbtModelColumns"
-        )  # relationship
-        materialised_view: Optional[MaterialisedView] = Field(
-            None, description="", alias="materialisedView"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
-        metric_timestamps: Optional[list[Metric]] = Field(
-            None, description="", alias="metricTimestamps"
-        )  # relationship
-        foreign_key_to: Optional[list[Column]] = Field(
-            None, description="", alias="foreignKeyTo"
-        )  # relationship
-        foreign_key_from: Optional[Column] = Field(
-            None, description="", alias="foreignKeyFrom"
-        )  # relationship
-        dbt_metrics: Optional[list[DbtMetric]] = Field(
-            None, description="", alias="dbtMetrics"
-        )  # relationship
-        table_partition: Optional[TablePartition] = Field(
-            None, description="", alias="tablePartition"
+        assets: Optional[list[Asset]] = Field(
+            None, description="", alias="assets"
         )  # relationship
 
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
-        ) -> Column.Attributes:
-            validate_required_fields(
-                ["name", "parent_qualified_name", "parent_type", "order"],
-                [name, parent_qualified_name, parent_type, order],
-            )
-            fields = parent_qualified_name.split("/")
-            if len(fields) != 6:
-                raise ValueError("Invalid parent_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid parent_qualified_name") from e
-            if order < 0:
-                raise ValueError("Order must be be a positive integer")
-            ret_value = Column.Attributes(
-                name=name,
-                qualified_name=f"{parent_qualified_name}/{name}",
-                connector_name=connector_type.value,
-                schema_name=fields[4],
-                schema_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}/{fields[4]}",
-                database_name=fields[3],
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                order=order,
-            )
-            if parent_type == Table:
-                ret_value.table_qualified_name = parent_qualified_name
-                ret_value.table = Table.ref_by_qualified_name(parent_qualified_name)
-                ret_value.table_name = fields[5]
-            elif parent_type == View:
-                ret_value.view_qualified_name = parent_qualified_name
-                ret_value.view = View.ref_by_qualified_name(parent_qualified_name)
-                ret_value.view_name = fields[5]
-            elif parent_type == MaterialisedView:
-                ret_value.view_qualified_name = parent_qualified_name
-                ret_value.materialised_view = MaterialisedView.ref_by_qualified_name(
-                    parent_qualified_name
-                )
-                ret_value.view_name = fields[5]
-            else:
-                raise ValueError(
-                    "parent_type must be either Table, View or MaterializeView"
-                )
-            return ret_value
-
-    attributes: "Column.Attributes" = Field(
-        default_factory=lambda: Column.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Schema(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, database_qualified_name: str) -> Schema:
-        validate_required_fields(
-            ["name", "database_qualified_name"], [name, database_qualified_name]
-        )
-        attributes = Schema.Attributes.create(
-            name=name, database_qualified_name=database_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("Schema", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Schema":
-            raise ValueError("must be Schema")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Schema._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "table_count",
-        "views_count",
-        "snowflake_tags",
-        "materialised_views",
-        "tables",
-        "database",
-        "snowflake_pipes",
-        "snowflake_streams",
-        "procedures",
-        "views",
-    ]
-
-    @property
-    def table_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.table_count
-
-    @table_count.setter
-    def table_count(self, table_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_count = table_count
-
-    @property
-    def views_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.views_count
-
-    @views_count.setter
-    def views_count(self, views_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.views_count = views_count
-
-    @property
-    def snowflake_tags(self) -> Optional[list[SnowflakeTag]]:
-        return None if self.attributes is None else self.attributes.snowflake_tags
-
-    @snowflake_tags.setter
-    def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_tags = snowflake_tags
-
-    @property
-    def materialised_views(self) -> Optional[list[MaterialisedView]]:
-        return None if self.attributes is None else self.attributes.materialised_views
-
-    @materialised_views.setter
-    def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.materialised_views = materialised_views
-
-    @property
-    def tables(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.tables
-
-    @tables.setter
-    def tables(self, tables: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tables = tables
-
-    @property
-    def database(self) -> Optional[Database]:
-        return None if self.attributes is None else self.attributes.database
-
-    @database.setter
-    def database(self, database: Optional[Database]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database = database
-
-    @property
-    def snowflake_pipes(self) -> Optional[list[SnowflakePipe]]:
-        return None if self.attributes is None else self.attributes.snowflake_pipes
-
-    @snowflake_pipes.setter
-    def snowflake_pipes(self, snowflake_pipes: Optional[list[SnowflakePipe]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_pipes = snowflake_pipes
-
-    @property
-    def snowflake_streams(self) -> Optional[list[SnowflakeStream]]:
-        return None if self.attributes is None else self.attributes.snowflake_streams
-
-    @snowflake_streams.setter
-    def snowflake_streams(self, snowflake_streams: Optional[list[SnowflakeStream]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_streams = snowflake_streams
-
-    @property
-    def procedures(self) -> Optional[list[Procedure]]:
-        return None if self.attributes is None else self.attributes.procedures
-
-    @procedures.setter
-    def procedures(self, procedures: Optional[list[Procedure]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.procedures = procedures
-
-    @property
-    def views(self) -> Optional[list[View]]:
-        return None if self.attributes is None else self.attributes.views
-
-    @views.setter
-    def views(self, views: Optional[list[View]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.views = views
-
-    class Attributes(SQL.Attributes):
-        table_count: Optional[int] = Field(None, description="", alias="tableCount")
-        views_count: Optional[int] = Field(None, description="", alias="viewsCount")
-        snowflake_tags: Optional[list[SnowflakeTag]] = Field(
-            None, description="", alias="snowflakeTags"
-        )  # relationship
-        materialised_views: Optional[list[MaterialisedView]] = Field(
-            None, description="", alias="materialisedViews"
-        )  # relationship
-        tables: Optional[list[Table]] = Field(
-            None, description="", alias="tables"
-        )  # relationship
-        database: Optional[Database] = Field(
-            None, description="", alias="database"
-        )  # relationship
-        snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
-            None, description="", alias="snowflakePipes"
-        )  # relationship
-        snowflake_streams: Optional[list[SnowflakeStream]] = Field(
-            None, description="", alias="snowflakeStreams"
-        )  # relationship
-        procedures: Optional[list[Procedure]] = Field(
-            None, description="", alias="procedures"
-        )  # relationship
-        views: Optional[list[View]] = Field(
-            None, description="", alias="views"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, name: str, database_qualified_name: str
-        ) -> Schema.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(
-                ["database_qualified_name"], [database_qualified_name]
-            )
-            fields = database_qualified_name.split("/")
-            if len(fields) != 4:
-                raise ValueError("Invalid database_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid database_qualified_name") from e
-            return Schema.Attributes(
-                name=name,
-                database_name=fields[3],
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                database_qualified_name=database_qualified_name,
-                qualified_name=f"{database_qualified_name}/{name}",
-                connector_name=connector_type.value,
-                database=Database.ref_by_qualified_name(database_qualified_name),
-            )
-
-    attributes: "Schema.Attributes" = Field(
-        default_factory=lambda: Schema.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SnowflakeStream(SQL):
-    """Description"""
-
-    type_name: str = Field("SnowflakeStream", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SnowflakeStream":
-            raise ValueError("must be SnowflakeStream")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SnowflakeStream._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "snowflake_stream_type",
-        "snowflake_stream_source_type",
-        "snowflake_stream_mode",
-        "snowflake_stream_is_stale",
-        "snowflake_stream_stale_after",
-        "atlan_schema",
-    ]
-
-    @property
-    def snowflake_stream_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.snowflake_stream_type
-        )
-
-    @snowflake_stream_type.setter
-    def snowflake_stream_type(self, snowflake_stream_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_stream_type = snowflake_stream_type
-
-    @property
-    def snowflake_stream_source_type(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_stream_source_type
-        )
-
-    @snowflake_stream_source_type.setter
-    def snowflake_stream_source_type(self, snowflake_stream_source_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_stream_source_type = snowflake_stream_source_type
-
-    @property
-    def snowflake_stream_mode(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.snowflake_stream_mode
-        )
-
-    @snowflake_stream_mode.setter
-    def snowflake_stream_mode(self, snowflake_stream_mode: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_stream_mode = snowflake_stream_mode
-
-    @property
-    def snowflake_stream_is_stale(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_stream_is_stale
-        )
-
-    @snowflake_stream_is_stale.setter
-    def snowflake_stream_is_stale(self, snowflake_stream_is_stale: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_stream_is_stale = snowflake_stream_is_stale
-
-    @property
-    def snowflake_stream_stale_after(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_stream_stale_after
-        )
-
-    @snowflake_stream_stale_after.setter
-    def snowflake_stream_stale_after(
-        self, snowflake_stream_stale_after: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_stream_stale_after = snowflake_stream_stale_after
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    class Attributes(SQL.Attributes):
-        snowflake_stream_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamType"
-        )
-        snowflake_stream_source_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamSourceType"
-        )
-        snowflake_stream_mode: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamMode"
-        )
-        snowflake_stream_is_stale: Optional[bool] = Field(
-            None, description="", alias="snowflakeStreamIsStale"
-        )
-        snowflake_stream_stale_after: Optional[datetime] = Field(
-            None, description="", alias="snowflakeStreamStaleAfter"
-        )
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-
-    attributes: "SnowflakeStream.Attributes" = Field(
-        default_factory=lambda: SnowflakeStream.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class SnowflakePipe(SQL):
-    """Description"""
-
-    type_name: str = Field("SnowflakePipe", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "SnowflakePipe":
-            raise ValueError("must be SnowflakePipe")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in SnowflakePipe._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "definition",
-        "snowflake_pipe_is_auto_ingest_enabled",
-        "snowflake_pipe_notification_channel_name",
-        "atlan_schema",
-    ]
-
-    @property
-    def definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.definition
-
-    @definition.setter
-    def definition(self, definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.definition = definition
-
-    @property
-    def snowflake_pipe_is_auto_ingest_enabled(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_pipe_is_auto_ingest_enabled
-        )
-
-    @snowflake_pipe_is_auto_ingest_enabled.setter
-    def snowflake_pipe_is_auto_ingest_enabled(
-        self, snowflake_pipe_is_auto_ingest_enabled: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_pipe_is_auto_ingest_enabled = (
-            snowflake_pipe_is_auto_ingest_enabled
-        )
-
-    @property
-    def snowflake_pipe_notification_channel_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.snowflake_pipe_notification_channel_name
-        )
-
-    @snowflake_pipe_notification_channel_name.setter
-    def snowflake_pipe_notification_channel_name(
-        self, snowflake_pipe_notification_channel_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.snowflake_pipe_notification_channel_name = (
-            snowflake_pipe_notification_channel_name
-        )
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    class Attributes(SQL.Attributes):
-        definition: Optional[str] = Field(None, description="", alias="definition")
-        snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
-            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
-        )
-        snowflake_pipe_notification_channel_name: Optional[str] = Field(
-            None, description="", alias="snowflakePipeNotificationChannelName"
-        )
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-
-    attributes: "SnowflakePipe.Attributes" = Field(
-        default_factory=lambda: SnowflakePipe.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Database(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
-        fields = connection_qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError("Invalid connection_qualified_name")
-        try:
-            connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError as e:
-            raise ValueError("Invalid connection_qualified_name") from e
-        attributes = Database.Attributes(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=connector_type.value,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("Database", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Database":
-            raise ValueError("must be Database")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Database._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "schema_count",
-        "schemas",
-    ]
-
-    @property
-    def schema_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.schema_count
-
-    @schema_count.setter
-    def schema_count(self, schema_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_count = schema_count
-
-    @property
-    def schemas(self) -> Optional[list[Schema]]:
-        return None if self.attributes is None else self.attributes.schemas
-
-    @schemas.setter
-    def schemas(self, schemas: Optional[list[Schema]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schemas = schemas
-
-    class Attributes(SQL.Attributes):
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        schemas: Optional[list[Schema]] = Field(
-            None, description="", alias="schemas"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, name: str, connection_qualified_name: str
-        ) -> Database.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return Database.Attributes(
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{name}",
-                connector_name=connector_type.value,
-            )
-
-    attributes: "Database.Attributes" = Field(
-        default_factory=lambda: Database.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class Procedure(SQL):
-    """Description"""
-
-    type_name: str = Field("Procedure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Procedure":
-            raise ValueError("must be Procedure")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Procedure._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "definition",
-        "atlan_schema",
-    ]
-
-    @property
-    def definition(self) -> str:
-        return None if self.attributes is None else self.attributes.definition
-
-    @definition.setter
-    def definition(self, definition: str):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.definition = definition
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    class Attributes(SQL.Attributes):
-        definition: str = Field(None, description="", alias="definition")
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-
-    attributes: "Procedure.Attributes" = Field(
-        default_factory=lambda: Procedure.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class View(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> View:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-        attributes = View.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("View", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "View":
-            raise ValueError("must be View")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in View._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "is_query_preview",
-        "query_preview_config",
-        "alias",
-        "is_temporary",
-        "definition",
-        "columns",
-        "queries",
-        "atlan_schema",
-    ]
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.definition
-
-    @definition.setter
-    def definition(self, definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.definition = definition
-
-    @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    class Attributes(SQL.Attributes):
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
-        query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
-        )
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        definition: Optional[str] = Field(None, description="", alias="definition")
-        columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(cls, *, name: str, schema_qualified_name: str) -> View.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
-            fields = schema_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid schema_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid schema_qualified_name") from e
-            return View.Attributes(
-                name=name,
-                database_name=fields[3],
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                qualified_name=f"{schema_qualified_name}/{name}",
-                schema_qualified_name=schema_qualified_name,
-                schema_name=fields[4],
-                connector_name=connector_type.value,
-                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
-            )
-
-    attributes: "View.Attributes" = Field(
-        default_factory=lambda: View.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class MaterialisedView(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-        attributes = MaterialisedView.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("MaterialisedView", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "MaterialisedView":
-            raise ValueError("must be MaterialisedView")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in MaterialisedView._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "refresh_mode",
-        "refresh_method",
-        "staleness",
-        "stale_since_date",
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "is_query_preview",
-        "query_preview_config",
-        "alias",
-        "is_temporary",
-        "definition",
-        "columns",
-        "atlan_schema",
-    ]
-
-    @property
-    def refresh_mode(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.refresh_mode
-
-    @refresh_mode.setter
-    def refresh_mode(self, refresh_mode: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.refresh_mode = refresh_mode
-
-    @property
-    def refresh_method(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.refresh_method
-
-    @refresh_method.setter
-    def refresh_method(self, refresh_method: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.refresh_method = refresh_method
-
-    @property
-    def staleness(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.staleness
-
-    @staleness.setter
-    def staleness(self, staleness: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.staleness = staleness
-
-    @property
-    def stale_since_date(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.stale_since_date
-
-    @stale_since_date.setter
-    def stale_since_date(self, stale_since_date: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.stale_since_date = stale_since_date
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def definition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.definition
-
-    @definition.setter
-    def definition(self, definition: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.definition = definition
-
-    @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    class Attributes(SQL.Attributes):
-        refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
-        refresh_method: Optional[str] = Field(
-            None, description="", alias="refreshMethod"
-        )
-        staleness: Optional[str] = Field(None, description="", alias="staleness")
-        stale_since_date: Optional[datetime] = Field(
-            None, description="", alias="staleSinceDate"
-        )
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
-        query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
-        )
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        definition: Optional[str] = Field(None, description="", alias="definition")
-        columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, name: str, schema_qualified_name: str
-        ) -> MaterialisedView.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
-            fields = schema_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid schema_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid schema_qualified_name") from e
-            return MaterialisedView.Attributes(
-                name=name,
-                database_name=fields[3],
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                qualified_name=f"{schema_qualified_name}/{name}",
-                schema_qualified_name=schema_qualified_name,
-                schema_name=fields[4],
-                connector_name=connector_type.value,
-                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
-            )
-
-    attributes: "MaterialisedView.Attributes" = Field(
-        default_factory=lambda: MaterialisedView.Attributes(),
+    attributes: "SchemaRegistrySubject.Attributes" = Field(
+        default_factory=lambda: SchemaRegistrySubject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14463,327 +16360,6 @@ class DataStudioAsset(DataStudio):
     )
 
 
-class KafkaTopic(Kafka):
-    """Description"""
-
-    type_name: str = Field("KafkaTopic", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "KafkaTopic":
-            raise ValueError("must be KafkaTopic")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in KafkaTopic._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "kafka_topic_is_internal",
-        "kafka_topic_compression_type",
-        "kafka_topic_replication_factor",
-        "kafka_topic_segment_bytes",
-        "kafka_topic_partitions_count",
-        "kafka_topic_size_in_bytes",
-        "kafka_topic_record_count",
-        "kafka_topic_cleanup_policy",
-        "kafka_consumer_groups",
-    ]
-
-    @property
-    def kafka_topic_is_internal(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.kafka_topic_is_internal
-        )
-
-    @kafka_topic_is_internal.setter
-    def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
-
-    @property
-    def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_compression_type
-        )
-
-    @kafka_topic_compression_type.setter
-    def kafka_topic_compression_type(
-        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
-
-    @property
-    def kafka_topic_replication_factor(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_replication_factor
-        )
-
-    @kafka_topic_replication_factor.setter
-    def kafka_topic_replication_factor(
-        self, kafka_topic_replication_factor: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
-
-    @property
-    def kafka_topic_segment_bytes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_segment_bytes
-        )
-
-    @kafka_topic_segment_bytes.setter
-    def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
-
-    @property
-    def kafka_topic_partitions_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_partitions_count
-        )
-
-    @kafka_topic_partitions_count.setter
-    def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
-
-    @property
-    def kafka_topic_size_in_bytes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_size_in_bytes
-        )
-
-    @kafka_topic_size_in_bytes.setter
-    def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
-
-    @property
-    def kafka_topic_record_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_record_count
-        )
-
-    @kafka_topic_record_count.setter
-    def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_record_count = kafka_topic_record_count
-
-    @property
-    def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_cleanup_policy
-        )
-
-    @kafka_topic_cleanup_policy.setter
-    def kafka_topic_cleanup_policy(
-        self, kafka_topic_cleanup_policy: Optional[PowerbiEndorsement]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
-
-    @property
-    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
-        return (
-            None if self.attributes is None else self.attributes.kafka_consumer_groups
-        )
-
-    @kafka_consumer_groups.setter
-    def kafka_consumer_groups(
-        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_groups = kafka_consumer_groups
-
-    class Attributes(Kafka.Attributes):
-        kafka_topic_is_internal: Optional[bool] = Field(
-            None, description="", alias="kafkaTopicIsInternal"
-        )
-        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
-            None, description="", alias="kafkaTopicCompressionType"
-        )
-        kafka_topic_replication_factor: Optional[int] = Field(
-            None, description="", alias="kafkaTopicReplicationFactor"
-        )
-        kafka_topic_segment_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSegmentBytes"
-        )
-        kafka_topic_partitions_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicPartitionsCount"
-        )
-        kafka_topic_size_in_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSizeInBytes"
-        )
-        kafka_topic_record_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicRecordCount"
-        )
-        kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
-            None, description="", alias="kafkaTopicCleanupPolicy"
-        )
-        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
-            None, description="", alias="kafkaConsumerGroups"
-        )  # relationship
-
-    attributes: "KafkaTopic.Attributes" = Field(
-        default_factory=lambda: KafkaTopic.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class KafkaConsumerGroup(Kafka):
-    """Description"""
-
-    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "KafkaConsumerGroup":
-            raise ValueError("must be KafkaConsumerGroup")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in KafkaConsumerGroup._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "kafka_consumer_group_topic_consumption_properties",
-        "kafka_consumer_group_member_count",
-        "kafka_topic_names",
-        "kafka_topic_qualified_names",
-        "kafka_topics",
-    ]
-
-    @property
-    def kafka_consumer_group_topic_consumption_properties(
-        self,
-    ) -> Optional[list[KafkaTopicConsumption]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_consumer_group_topic_consumption_properties
-        )
-
-    @kafka_consumer_group_topic_consumption_properties.setter
-    def kafka_consumer_group_topic_consumption_properties(
-        self,
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
-        ],
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_topic_consumption_properties = (
-            kafka_consumer_group_topic_consumption_properties
-        )
-
-    @property
-    def kafka_consumer_group_member_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_consumer_group_member_count
-        )
-
-    @kafka_consumer_group_member_count.setter
-    def kafka_consumer_group_member_count(
-        self, kafka_consumer_group_member_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_member_count = (
-            kafka_consumer_group_member_count
-        )
-
-    @property
-    def kafka_topic_names(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.kafka_topic_names
-
-    @kafka_topic_names.setter
-    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_names = kafka_topic_names
-
-    @property
-    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_qualified_names
-        )
-
-    @kafka_topic_qualified_names.setter
-    def kafka_topic_qualified_names(
-        self, kafka_topic_qualified_names: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
-
-    @property
-    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
-        return None if self.attributes is None else self.attributes.kafka_topics
-
-    @kafka_topics.setter
-    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topics = kafka_topics
-
-    class Attributes(Kafka.Attributes):
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
-        ] = Field(
-            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
-        )
-        kafka_consumer_group_member_count: Optional[int] = Field(
-            None, description="", alias="kafkaConsumerGroupMemberCount"
-        )
-        kafka_topic_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicNames"
-        )
-        kafka_topic_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicQualifiedNames"
-        )
-        kafka_topics: Optional[list[KafkaTopic]] = Field(
-            None, description="", alias="kafkaTopics"
-        )  # relationship
-
-    attributes: "KafkaConsumerGroup.Attributes" = Field(
-        default_factory=lambda: KafkaConsumerGroup.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class S3Bucket(S3):
     """Description"""
 
@@ -14915,7 +16491,7 @@ class S3Object(S3):
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
-        s3_bucket_qualified_name: Optional[str] = None,
+        s3_bucket_qualified_name: str,
     ) -> S3Object:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
@@ -15113,7 +16689,7 @@ class S3Object(S3):
             name: str,
             connection_qualified_name: str,
             aws_arn: str,
-            s3_bucket_qualified_name: Optional[str] = None,
+            s3_bucket_qualified_name: str,
         ) -> S3Object.Attributes:
             validate_required_fields(
                 ["name", "connection_qualified_name", "aws_arn"],
@@ -15137,6 +16713,7 @@ class S3Object(S3):
                 qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
                 s3_bucket_qualified_name=s3_bucket_qualified_name,
+                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
             )
 
     attributes: "S3Object.Attributes" = Field(
@@ -16369,8 +17946,8 @@ class MCIncident(MonteCarlo):
         "mc_incident_severity",
         "mc_incident_state",
         "mc_incident_warehouse",
-        "mc_incident_assets",
         "mc_monitor",
+        "mc_incident_assets",
     ]
 
     @property
@@ -16438,16 +18015,6 @@ class MCIncident(MonteCarlo):
         self.attributes.mc_incident_warehouse = mc_incident_warehouse
 
     @property
-    def mc_incident_assets(self) -> Optional[list[Asset]]:
-        return None if self.attributes is None else self.attributes.mc_incident_assets
-
-    @mc_incident_assets.setter
-    def mc_incident_assets(self, mc_incident_assets: Optional[list[Asset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mc_incident_assets = mc_incident_assets
-
-    @property
     def mc_monitor(self) -> Optional[MCMonitor]:
         return None if self.attributes is None else self.attributes.mc_monitor
 
@@ -16456,6 +18023,16 @@ class MCIncident(MonteCarlo):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mc_monitor = mc_monitor
+
+    @property
+    def mc_incident_assets(self) -> Optional[list[Asset]]:
+        return None if self.attributes is None else self.attributes.mc_incident_assets
+
+    @mc_incident_assets.setter
+    def mc_incident_assets(self, mc_incident_assets: Optional[list[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mc_incident_assets = mc_incident_assets
 
     class Attributes(MonteCarlo.Attributes):
         mc_incident_id: Optional[str] = Field(
@@ -16476,11 +18053,11 @@ class MCIncident(MonteCarlo):
         mc_incident_warehouse: Optional[str] = Field(
             None, description="", alias="mcIncidentWarehouse"
         )
-        mc_incident_assets: Optional[list[Asset]] = Field(
-            None, description="", alias="mcIncidentAssets"
-        )  # relationship
         mc_monitor: Optional[MCMonitor] = Field(
             None, description="", alias="mcMonitor"
+        )  # relationship
+        mc_incident_assets: Optional[list[Asset]] = Field(
+            None, description="", alias="mcIncidentAssets"
         )  # relationship
 
     attributes: "MCIncident.Attributes" = Field(
@@ -16823,6 +18400,142 @@ class MCMonitor(MonteCarlo):
 
     attributes: "MCMonitor.Attributes" = Field(
         default_factory=lambda: MCMonitor.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SodaCheck(Soda):
+    """Description"""
+
+    type_name: str = Field("SodaCheck", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SodaCheck":
+            raise ValueError("must be SodaCheck")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SodaCheck._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "soda_check_id",
+        "soda_check_evaluation_status",
+        "soda_check_definition",
+        "soda_check_last_scan_at",
+        "soda_check_incident_count",
+        "soda_check_columns",
+        "soda_check_assets",
+    ]
+
+    @property
+    def soda_check_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.soda_check_id
+
+    @soda_check_id.setter
+    def soda_check_id(self, soda_check_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_id = soda_check_id
+
+    @property
+    def soda_check_evaluation_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.soda_check_evaluation_status
+        )
+
+    @soda_check_evaluation_status.setter
+    def soda_check_evaluation_status(self, soda_check_evaluation_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_evaluation_status = soda_check_evaluation_status
+
+    @property
+    def soda_check_definition(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.soda_check_definition
+        )
+
+    @soda_check_definition.setter
+    def soda_check_definition(self, soda_check_definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_definition = soda_check_definition
+
+    @property
+    def soda_check_last_scan_at(self) -> Optional[datetime]:
+        return (
+            None if self.attributes is None else self.attributes.soda_check_last_scan_at
+        )
+
+    @soda_check_last_scan_at.setter
+    def soda_check_last_scan_at(self, soda_check_last_scan_at: Optional[datetime]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_last_scan_at = soda_check_last_scan_at
+
+    @property
+    def soda_check_incident_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.soda_check_incident_count
+        )
+
+    @soda_check_incident_count.setter
+    def soda_check_incident_count(self, soda_check_incident_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_incident_count = soda_check_incident_count
+
+    @property
+    def soda_check_columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.soda_check_columns
+
+    @soda_check_columns.setter
+    def soda_check_columns(self, soda_check_columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_columns = soda_check_columns
+
+    @property
+    def soda_check_assets(self) -> Optional[list[Asset]]:
+        return None if self.attributes is None else self.attributes.soda_check_assets
+
+    @soda_check_assets.setter
+    def soda_check_assets(self, soda_check_assets: Optional[list[Asset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.soda_check_assets = soda_check_assets
+
+    class Attributes(Soda.Attributes):
+        soda_check_id: Optional[str] = Field(None, description="", alias="sodaCheckId")
+        soda_check_evaluation_status: Optional[str] = Field(
+            None, description="", alias="sodaCheckEvaluationStatus"
+        )
+        soda_check_definition: Optional[str] = Field(
+            None, description="", alias="sodaCheckDefinition"
+        )
+        soda_check_last_scan_at: Optional[datetime] = Field(
+            None, description="", alias="sodaCheckLastScanAt"
+        )
+        soda_check_incident_count: Optional[int] = Field(
+            None, description="", alias="sodaCheckIncidentCount"
+        )
+        soda_check_columns: Optional[list[Column]] = Field(
+            None, description="", alias="sodaCheckColumns"
+        )  # relationship
+        soda_check_assets: Optional[list[Asset]] = Field(
+            None, description="", alias="sodaCheckAssets"
+        )  # relationship
+
+    attributes: "SodaCheck.Attributes" = Field(
+        default_factory=lambda: SodaCheck.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -17432,8 +19145,8 @@ class ModeReport(Mode):
         "mode_query_preview",
         "mode_is_public",
         "mode_is_shared",
-        "mode_collections",
         "mode_queries",
+        "mode_collections",
     ]
 
     @property
@@ -17513,16 +19226,6 @@ class ModeReport(Mode):
         self.attributes.mode_is_shared = mode_is_shared
 
     @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return None if self.attributes is None else self.attributes.mode_collections
-
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
-
-    @property
     def mode_queries(self) -> Optional[list[ModeQuery]]:
         return None if self.attributes is None else self.attributes.mode_queries
 
@@ -17531,6 +19234,16 @@ class ModeReport(Mode):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.mode_queries = mode_queries
+
+    @property
+    def mode_collections(self) -> Optional[list[ModeCollection]]:
+        return None if self.attributes is None else self.attributes.mode_collections
+
+    @mode_collections.setter
+    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_collections = mode_collections
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
@@ -17554,11 +19267,11 @@ class ModeReport(Mode):
         mode_is_shared: Optional[bool] = Field(
             None, description="", alias="modeIsShared"
         )
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
-        )  # relationship
         mode_queries: Optional[list[ModeQuery]] = Field(
             None, description="", alias="modeQueries"
+        )  # relationship
+        mode_collections: Optional[list[ModeCollection]] = Field(
+            None, description="", alias="modeCollections"
         )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
@@ -20519,8 +22232,8 @@ class LookerFolder(Looker):
         "source_creator_id",
         "source_child_count",
         "source_parent_i_d",
-        "looks",
         "dashboards",
+        "looks",
     ]
 
     @property
@@ -20568,16 +22281,6 @@ class LookerFolder(Looker):
         self.attributes.source_parent_i_d = source_parent_i_d
 
     @property
-    def looks(self) -> Optional[list[LookerLook]]:
-        return None if self.attributes is None else self.attributes.looks
-
-    @looks.setter
-    def looks(self, looks: Optional[list[LookerLook]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.looks = looks
-
-    @property
     def dashboards(self) -> Optional[list[LookerDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
@@ -20586,6 +22289,16 @@ class LookerFolder(Looker):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
+
+    @property
+    def looks(self) -> Optional[list[LookerLook]]:
+        return None if self.attributes is None else self.attributes.looks
+
+    @looks.setter
+    def looks(self, looks: Optional[list[LookerLook]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.looks = looks
 
     class Attributes(Looker.Attributes):
         source_content_metadata_id: Optional[int] = Field(
@@ -20600,11 +22313,11 @@ class LookerFolder(Looker):
         source_parent_i_d: Optional[int] = Field(
             None, description="", alias="sourceParentID"
         )
-        looks: Optional[list[LookerLook]] = Field(
-            None, description="", alias="looks"
-        )  # relationship
         dashboards: Optional[list[LookerDashboard]] = Field(
             None, description="", alias="dashboards"
+        )  # relationship
+        looks: Optional[list[LookerLook]] = Field(
+            None, description="", alias="looks"
         )  # relationship
 
     attributes: "LookerFolder.Attributes" = Field(
@@ -22106,8 +23819,8 @@ class QuickSightFolder(QuickSight):
         "quick_sight_folder_type",
         "quick_sight_folder_hierarchy",
         "quick_sight_dashboards",
-        "quick_sight_analyses",
         "quick_sight_datasets",
+        "quick_sight_analyses",
     ]
 
     @property
@@ -22155,18 +23868,6 @@ class QuickSightFolder(QuickSight):
         self.attributes.quick_sight_dashboards = quick_sight_dashboards
 
     @property
-    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analyses
-
-    @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analyses = quick_sight_analyses
-
-    @property
     def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
         return None if self.attributes is None else self.attributes.quick_sight_datasets
 
@@ -22178,6 +23879,18 @@ class QuickSightFolder(QuickSight):
             self.attributes = self.Attributes()
         self.attributes.quick_sight_datasets = quick_sight_datasets
 
+    @property
+    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+        return None if self.attributes is None else self.attributes.quick_sight_analyses
+
+    @quick_sight_analyses.setter
+    def quick_sight_analyses(
+        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analyses = quick_sight_analyses
+
     class Attributes(QuickSight.Attributes):
         quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
             None, description="", alias="quickSightFolderType"
@@ -22188,11 +23901,11 @@ class QuickSightFolder(QuickSight):
         quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
             None, description="", alias="quickSightDashboards"
         )  # relationship
-        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
-        )  # relationship
         quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
             None, description="", alias="quickSightDatasets"
+        )  # relationship
+        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
+            None, description="", alias="quickSightAnalyses"
         )  # relationship
 
     attributes: "QuickSightFolder.Attributes" = Field(
@@ -23379,8 +25092,8 @@ class PowerBITable(PowerBI):
         "power_b_i_table_source_expressions",
         "power_b_i_table_column_count",
         "power_b_i_table_measure_count",
-        "measures",
         "columns",
+        "measures",
         "dataset",
     ]
 
@@ -23459,16 +25172,6 @@ class PowerBITable(PowerBI):
         self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
 
     @property
-    def measures(self) -> Optional[list[PowerBIMeasure]]:
-        return None if self.attributes is None else self.attributes.measures
-
-    @measures.setter
-    def measures(self, measures: Optional[list[PowerBIMeasure]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.measures = measures
-
-    @property
     def columns(self) -> Optional[list[PowerBIColumn]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -23477,6 +25180,16 @@ class PowerBITable(PowerBI):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
+
+    @property
+    def measures(self) -> Optional[list[PowerBIMeasure]]:
+        return None if self.attributes is None else self.attributes.measures
+
+    @measures.setter
+    def measures(self, measures: Optional[list[PowerBIMeasure]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.measures = measures
 
     @property
     def dataset(self) -> Optional[PowerBIDataset]:
@@ -23504,11 +25217,11 @@ class PowerBITable(PowerBI):
         power_b_i_table_measure_count: Optional[int] = Field(
             None, description="", alias="powerBITableMeasureCount"
         )
-        measures: Optional[list[PowerBIMeasure]] = Field(
-            None, description="", alias="measures"
-        )  # relationship
         columns: Optional[list[PowerBIColumn]] = Field(
             None, description="", alias="columns"
+        )  # relationship
+        measures: Optional[list[PowerBIMeasure]] = Field(
+            None, description="", alias="measures"
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
             None, description="", alias="dataset"
@@ -23993,8 +25706,8 @@ class PowerBIDashboard(PowerBI):
         "workspace_qualified_name",
         "web_url",
         "tile_count",
-        "tiles",
         "workspace",
+        "tiles",
     ]
 
     @property
@@ -24032,16 +25745,6 @@ class PowerBIDashboard(PowerBI):
         self.attributes.tile_count = tile_count
 
     @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
     def workspace(self) -> Optional[PowerBIWorkspace]:
         return None if self.attributes is None else self.attributes.workspace
 
@@ -24051,17 +25754,27 @@ class PowerBIDashboard(PowerBI):
             self.attributes = self.Attributes()
         self.attributes.workspace = workspace
 
+    @property
+    def tiles(self) -> Optional[list[PowerBITile]]:
+        return None if self.attributes is None else self.attributes.tiles
+
+    @tiles.setter
+    def tiles(self, tiles: Optional[list[PowerBITile]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.tiles = tiles
+
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
             None, description="", alias="workspaceQualifiedName"
         )
         web_url: Optional[str] = Field(None, description="", alias="webUrl")
         tile_count: Optional[int] = Field(None, description="", alias="tileCount")
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
             None, description="", alias="workspace"
+        )  # relationship
+        tiles: Optional[list[PowerBITile]] = Field(
+            None, description="", alias="tiles"
         )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
@@ -24955,8 +26668,8 @@ class MicroStrategyDossier(MicroStrategy):
 
     _convience_properties: ClassVar[list[str]] = [
         "micro_strategy_dossier_chapter_names",
-        "micro_strategy_project",
         "micro_strategy_visualizations",
+        "micro_strategy_project",
     ]
 
     @property
@@ -24978,20 +26691,6 @@ class MicroStrategyDossier(MicroStrategy):
         )
 
     @property
-    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_project
-        )
-
-    @micro_strategy_project.setter
-    def micro_strategy_project(
-        self, micro_strategy_project: Optional[MicroStrategyProject]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project = micro_strategy_project
-
-    @property
     def micro_strategy_visualizations(
         self,
     ) -> Optional[list[MicroStrategyVisualization]]:
@@ -25009,17 +26708,31 @@ class MicroStrategyDossier(MicroStrategy):
             self.attributes = self.Attributes()
         self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
             None, description="", alias="microStrategyDossierChapterNames"
         )
-        micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
-        )  # relationship
         micro_strategy_visualizations: Optional[
             list[MicroStrategyVisualization]
         ] = Field(
             None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
         )  # relationship
 
     attributes: "MicroStrategyDossier.Attributes" = Field(
@@ -25906,8 +27619,8 @@ class SalesforceObject(Salesforce):
         "is_mergable",
         "is_queryable",
         "field_count",
-        "organization",
         "lookup_fields",
+        "organization",
         "fields",
     ]
 
@@ -25952,16 +27665,6 @@ class SalesforceObject(Salesforce):
         self.attributes.field_count = field_count
 
     @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    @property
     def lookup_fields(self) -> Optional[list[SalesforceField]]:
         return None if self.attributes is None else self.attributes.lookup_fields
 
@@ -25970,6 +27673,16 @@ class SalesforceObject(Salesforce):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.lookup_fields = lookup_fields
+
+    @property
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return None if self.attributes is None else self.attributes.organization
+
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.organization = organization
 
     @property
     def fields(self) -> Optional[list[SalesforceField]]:
@@ -25986,11 +27699,11 @@ class SalesforceObject(Salesforce):
         is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
         is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
         field_count: Optional[int] = Field(None, description="", alias="fieldCount")
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
-        )  # relationship
         lookup_fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="lookupFields"
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            None, description="", alias="organization"
         )  # relationship
         fields: Optional[list[SalesforceField]] = Field(
             None, description="", alias="fields"
@@ -26471,8 +28184,8 @@ class SalesforceReport(Salesforce):
         "source_id",
         "report_type",
         "detail_columns",
-        "organization",
         "dashboards",
+        "organization",
     ]
 
     @property
@@ -26506,16 +28219,6 @@ class SalesforceReport(Salesforce):
         self.attributes.detail_columns = detail_columns
 
     @property
-    def organization(self) -> Optional[SalesforceOrganization]:
-        return None if self.attributes is None else self.attributes.organization
-
-    @organization.setter
-    def organization(self, organization: Optional[SalesforceOrganization]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.organization = organization
-
-    @property
     def dashboards(self) -> Optional[list[SalesforceDashboard]]:
         return None if self.attributes is None else self.attributes.dashboards
 
@@ -26525,6 +28228,16 @@ class SalesforceReport(Salesforce):
             self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
+    @property
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return None if self.attributes is None else self.attributes.organization
+
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.organization = organization
+
     class Attributes(Salesforce.Attributes):
         source_id: Optional[str] = Field(None, description="", alias="sourceId")
         report_type: Optional[dict[str, str]] = Field(
@@ -26533,15 +28246,336 @@ class SalesforceReport(Salesforce):
         detail_columns: Optional[set[str]] = Field(
             None, description="", alias="detailColumns"
         )
-        organization: Optional[SalesforceOrganization] = Field(
-            None, description="", alias="organization"
-        )  # relationship
         dashboards: Optional[list[SalesforceDashboard]] = Field(
             None, description="", alias="dashboards"
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            None, description="", alias="organization"
         )  # relationship
 
     attributes: "SalesforceReport.Attributes" = Field(
         default_factory=lambda: SalesforceReport.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class KafkaTopic(Kafka):
+    """Description"""
+
+    type_name: str = Field("KafkaTopic", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaTopic":
+            raise ValueError("must be KafkaTopic")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in KafkaTopic._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "kafka_topic_is_internal",
+        "kafka_topic_compression_type",
+        "kafka_topic_replication_factor",
+        "kafka_topic_segment_bytes",
+        "kafka_topic_partitions_count",
+        "kafka_topic_size_in_bytes",
+        "kafka_topic_record_count",
+        "kafka_topic_cleanup_policy",
+        "kafka_consumer_groups",
+    ]
+
+    @property
+    def kafka_topic_is_internal(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.kafka_topic_is_internal
+        )
+
+    @kafka_topic_is_internal.setter
+    def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
+
+    @property
+    def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_compression_type
+        )
+
+    @kafka_topic_compression_type.setter
+    def kafka_topic_compression_type(
+        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
+
+    @property
+    def kafka_topic_replication_factor(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_replication_factor
+        )
+
+    @kafka_topic_replication_factor.setter
+    def kafka_topic_replication_factor(
+        self, kafka_topic_replication_factor: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
+
+    @property
+    def kafka_topic_segment_bytes(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_segment_bytes
+        )
+
+    @kafka_topic_segment_bytes.setter
+    def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
+
+    @property
+    def kafka_topic_partitions_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_partitions_count
+        )
+
+    @kafka_topic_partitions_count.setter
+    def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
+
+    @property
+    def kafka_topic_size_in_bytes(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_size_in_bytes
+        )
+
+    @kafka_topic_size_in_bytes.setter
+    def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
+
+    @property
+    def kafka_topic_record_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_record_count
+        )
+
+    @kafka_topic_record_count.setter
+    def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_record_count = kafka_topic_record_count
+
+    @property
+    def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_cleanup_policy
+        )
+
+    @kafka_topic_cleanup_policy.setter
+    def kafka_topic_cleanup_policy(
+        self, kafka_topic_cleanup_policy: Optional[PowerbiEndorsement]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
+
+    @property
+    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
+        return (
+            None if self.attributes is None else self.attributes.kafka_consumer_groups
+        )
+
+    @kafka_consumer_groups.setter
+    def kafka_consumer_groups(
+        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_groups = kafka_consumer_groups
+
+    class Attributes(Kafka.Attributes):
+        kafka_topic_is_internal: Optional[bool] = Field(
+            None, description="", alias="kafkaTopicIsInternal"
+        )
+        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
+            None, description="", alias="kafkaTopicCompressionType"
+        )
+        kafka_topic_replication_factor: Optional[int] = Field(
+            None, description="", alias="kafkaTopicReplicationFactor"
+        )
+        kafka_topic_segment_bytes: Optional[int] = Field(
+            None, description="", alias="kafkaTopicSegmentBytes"
+        )
+        kafka_topic_partitions_count: Optional[int] = Field(
+            None, description="", alias="kafkaTopicPartitionsCount"
+        )
+        kafka_topic_size_in_bytes: Optional[int] = Field(
+            None, description="", alias="kafkaTopicSizeInBytes"
+        )
+        kafka_topic_record_count: Optional[int] = Field(
+            None, description="", alias="kafkaTopicRecordCount"
+        )
+        kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
+            None, description="", alias="kafkaTopicCleanupPolicy"
+        )
+        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
+            None, description="", alias="kafkaConsumerGroups"
+        )  # relationship
+
+    attributes: "KafkaTopic.Attributes" = Field(
+        default_factory=lambda: KafkaTopic.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class KafkaConsumerGroup(Kafka):
+    """Description"""
+
+    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "KafkaConsumerGroup":
+            raise ValueError("must be KafkaConsumerGroup")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in KafkaConsumerGroup._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "kafka_consumer_group_topic_consumption_properties",
+        "kafka_consumer_group_member_count",
+        "kafka_topic_names",
+        "kafka_topic_qualified_names",
+        "kafka_topics",
+    ]
+
+    @property
+    def kafka_consumer_group_topic_consumption_properties(
+        self,
+    ) -> Optional[list[KafkaTopicConsumption]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_consumer_group_topic_consumption_properties
+        )
+
+    @kafka_consumer_group_topic_consumption_properties.setter
+    def kafka_consumer_group_topic_consumption_properties(
+        self,
+        kafka_consumer_group_topic_consumption_properties: Optional[
+            list[KafkaTopicConsumption]
+        ],
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_topic_consumption_properties = (
+            kafka_consumer_group_topic_consumption_properties
+        )
+
+    @property
+    def kafka_consumer_group_member_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_consumer_group_member_count
+        )
+
+    @kafka_consumer_group_member_count.setter
+    def kafka_consumer_group_member_count(
+        self, kafka_consumer_group_member_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_consumer_group_member_count = (
+            kafka_consumer_group_member_count
+        )
+
+    @property
+    def kafka_topic_names(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.kafka_topic_names
+
+    @kafka_topic_names.setter
+    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_names = kafka_topic_names
+
+    @property
+    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.kafka_topic_qualified_names
+        )
+
+    @kafka_topic_qualified_names.setter
+    def kafka_topic_qualified_names(
+        self, kafka_topic_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
+
+    @property
+    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
+        return None if self.attributes is None else self.attributes.kafka_topics
+
+    @kafka_topics.setter
+    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.kafka_topics = kafka_topics
+
+    class Attributes(Kafka.Attributes):
+        kafka_consumer_group_topic_consumption_properties: Optional[
+            list[KafkaTopicConsumption]
+        ] = Field(
+            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
+        )
+        kafka_consumer_group_member_count: Optional[int] = Field(
+            None, description="", alias="kafkaConsumerGroupMemberCount"
+        )
+        kafka_topic_names: Optional[set[str]] = Field(
+            None, description="", alias="kafkaTopicNames"
+        )
+        kafka_topic_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="kafkaTopicQualifiedNames"
+        )
+        kafka_topics: Optional[list[KafkaTopic]] = Field(
+            None, description="", alias="kafkaTopics"
+        )  # relationship
+
+    attributes: "KafkaConsumerGroup.Attributes" = Field(
+        default_factory=lambda: KafkaConsumerGroup.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -26560,6 +28594,25 @@ class QlikStream(QlikSpace):
 
     def __setattr__(self, name, value):
         if name in QlikStream._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = []
+
+
+class AzureEventHub(KafkaTopic):
+    """Description"""
+
+    type_name: str = Field("AzureEventHub", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "AzureEventHub":
+            raise ValueError("must be AzureEventHub")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in AzureEventHub._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -26615,7 +28668,7 @@ Collection.Attributes.update_forward_refs()
 
 Folder.Attributes.update_forward_refs()
 
-EventStore.Attributes.update_forward_refs()
+Airflow.Attributes.update_forward_refs()
 
 ObjectStore.Attributes.update_forward_refs()
 
@@ -26625,9 +28678,13 @@ BI.Attributes.update_forward_refs()
 
 SaaS.Attributes.update_forward_refs()
 
-Dbt.Attributes.update_forward_refs()
-
 Resource.Attributes.update_forward_refs()
+
+SQL.Attributes.update_forward_refs()
+
+EventStore.Attributes.update_forward_refs()
+
+Dbt.Attributes.update_forward_refs()
 
 Insight.Attributes.update_forward_refs()
 
@@ -26635,7 +28692,7 @@ API.Attributes.update_forward_refs()
 
 Tag.Attributes.update_forward_refs()
 
-SQL.Attributes.update_forward_refs()
+SchemaRegistry.Attributes.update_forward_refs()
 
 Google.Attributes.update_forward_refs()
 
@@ -26645,7 +28702,9 @@ AWS.Attributes.update_forward_refs()
 
 DbtColumnProcess.Attributes.update_forward_refs()
 
-Kafka.Attributes.update_forward_refs()
+AirflowDag.Attributes.update_forward_refs()
+
+AirflowTask.Attributes.update_forward_refs()
 
 S3.Attributes.update_forward_refs()
 
@@ -26656,6 +28715,8 @@ GCS.Attributes.update_forward_refs()
 MonteCarlo.Attributes.update_forward_refs()
 
 Metric.Attributes.update_forward_refs()
+
+Soda.Attributes.update_forward_refs()
 
 Preset.Attributes.update_forward_refs()
 
@@ -26685,7 +28746,47 @@ Qlik.Attributes.update_forward_refs()
 
 Salesforce.Attributes.update_forward_refs()
 
+ReadmeTemplate.Attributes.update_forward_refs()
+
+Readme.Attributes.update_forward_refs()
+
+File.Attributes.update_forward_refs()
+
+Link.Attributes.update_forward_refs()
+
+Table.Attributes.update_forward_refs()
+
+Query.Attributes.update_forward_refs()
+
+Schema.Attributes.update_forward_refs()
+
+SnowflakePipe.Attributes.update_forward_refs()
+
+View.Attributes.update_forward_refs()
+
+MaterialisedView.Attributes.update_forward_refs()
+
+Function.Attributes.update_forward_refs()
+
+TablePartition.Attributes.update_forward_refs()
+
+Column.Attributes.update_forward_refs()
+
+SnowflakeStream.Attributes.update_forward_refs()
+
+Database.Attributes.update_forward_refs()
+
+Procedure.Attributes.update_forward_refs()
+
+SnowflakeTag.Attributes.update_forward_refs()
+
+Kafka.Attributes.update_forward_refs()
+
 DbtModelColumn.Attributes.update_forward_refs()
+
+DbtTag.Attributes.update_forward_refs()
+
+DbtTest.Attributes.update_forward_refs()
 
 DbtModel.Attributes.update_forward_refs()
 
@@ -26695,47 +28796,13 @@ DbtSource.Attributes.update_forward_refs()
 
 DbtProcess.Attributes.update_forward_refs()
 
-ReadmeTemplate.Attributes.update_forward_refs()
-
-Readme.Attributes.update_forward_refs()
-
-File.Attributes.update_forward_refs()
-
-Link.Attributes.update_forward_refs()
-
 APISpec.Attributes.update_forward_refs()
 
 APIPath.Attributes.update_forward_refs()
 
-SnowflakeTag.Attributes.update_forward_refs()
-
-TablePartition.Attributes.update_forward_refs()
-
-Table.Attributes.update_forward_refs()
-
-Query.Attributes.update_forward_refs()
-
-Column.Attributes.update_forward_refs()
-
-Schema.Attributes.update_forward_refs()
-
-SnowflakeStream.Attributes.update_forward_refs()
-
-SnowflakePipe.Attributes.update_forward_refs()
-
-Database.Attributes.update_forward_refs()
-
-Procedure.Attributes.update_forward_refs()
-
-View.Attributes.update_forward_refs()
-
-MaterialisedView.Attributes.update_forward_refs()
+SchemaRegistrySubject.Attributes.update_forward_refs()
 
 DataStudioAsset.Attributes.update_forward_refs()
-
-KafkaTopic.Attributes.update_forward_refs()
-
-KafkaConsumerGroup.Attributes.update_forward_refs()
 
 S3Bucket.Attributes.update_forward_refs()
 
@@ -26754,6 +28821,8 @@ GCSBucket.Attributes.update_forward_refs()
 MCIncident.Attributes.update_forward_refs()
 
 MCMonitor.Attributes.update_forward_refs()
+
+SodaCheck.Attributes.update_forward_refs()
 
 PresetChart.Attributes.update_forward_refs()
 
@@ -26917,4 +28986,10 @@ SalesforceDashboard.Attributes.update_forward_refs()
 
 SalesforceReport.Attributes.update_forward_refs()
 
+KafkaTopic.Attributes.update_forward_refs()
+
+KafkaConsumerGroup.Attributes.update_forward_refs()
+
 QlikStream.Attributes.update_forward_refs()
+
+AzureEventHub.Attributes.update_forward_refs()

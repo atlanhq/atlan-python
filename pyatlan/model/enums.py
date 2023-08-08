@@ -142,6 +142,7 @@ class SourceCostUnitType(Enum):
 class AtlanDeleteType(Enum):
     HARD = "HARD"
     SOFT = "SOFT"
+    PURGE = "PURGE"
 
 
 class KafkaTopicCompressionType(Enum):
@@ -374,6 +375,31 @@ class AtlanTagColor(str, Enum):
     YELLOW = "Yellow"
     RED = "Red"
     GRAY = "Gray"
+
+
+class OpenLineageRunState(str, Enum):
+    START = "START"
+    RUNNING = "RUNNING"
+    COMPLETE = "COMPLETE"
+    ABORT = "ABORT"
+    FAIL = "FAIL"
+    OTHER = "OTHER"
+
+
+class SchemaRegistrySchemaType(str, Enum):
+    AVRO = "AVRO"
+    JSON = "JSON"
+    PROTOBUF = "PROTOBUF"
+
+
+class SchemaRegistrySchemaCompatibility(str, Enum):
+    BACKWARD = "BACKWARD"
+    BACKWARD_TRANSITIVE = "BACKWARD_TRANSITIVE"
+    FORWARD = "FORWARD"
+    FORWARD_TRANSITIVE = "FORWARD_TRANSITIVE"
+    FULL = "FULL"
+    FULL_TRANSITIVE = "FULL_TRANSITIVE"
+    NONE = "NONE"
 
 
 class QueryParserSourceType(str, Enum):

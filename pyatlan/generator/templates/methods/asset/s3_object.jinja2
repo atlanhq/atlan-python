@@ -7,7 +7,7 @@
         name: str,
         connection_qualified_name: str,
         aws_arn: str,
-        s3_bucket_qualified_name: Optional[str] = None,
+        s3_bucket_qualified_name: str,
     ) -> S3Object:
         validate_required_fields(
             ["name", "connection_qualified_name", "aws_arn"],
