@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from datetime import datetime, timedelta
 from typing import Generator, Optional
 
 import pytest
@@ -12,6 +13,8 @@ from pyatlan.model.keycloak_events import AdminEventRequest, KeycloakEventReques
 from pyatlan.model.user import AtlanUser
 from tests.integration.client import TestId
 
+TODAY = datetime.now().strftime("%Y-%m-%d")
+YESTERDAY = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 MODULE_NAME = TestId.make_unique("Admin")
 GROUP_NAME1 = f"{MODULE_NAME}1"
 GROUP_NAME2 = f"{MODULE_NAME}2"
@@ -286,7 +289,7 @@ def test_retrieve_logs(
     client: AtlanClient,
     users: list[AtlanUser],
 ):
-    request = KeycloakEventRequest(date_from="2023-07-12", date_to="2023-07-13")
+    request = KeycloakEventRequest(date_from=YESTERDAY, date_to=TODAY)
     events = client.get_keycloak_events(request)
     assert events
     count = 0
@@ -300,7 +303,7 @@ def test_retrieve_admin_logs(
     client: AtlanClient,
     users: list[AtlanUser],
 ):
-    request = AdminEventRequest(date_from="2023-07-12", date_to="2023-07-13")
+    request = AdminEventRequest(date_from=YESTERDAY, date_to=TODAY)
     events = client.get_admin_events(request)
     assert events
     count = 0
