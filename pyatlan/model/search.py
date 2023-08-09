@@ -20,7 +20,7 @@ from pydantic import (
 )
 
 from pyatlan.model.core import AtlanObject, SearchRequest
-from pyatlan.model.enums import AtlanConnectorType, SortOrder
+from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -62,6 +62,7 @@ class TermAttributes(Attributes):
     SUPER_TYPE_NAMES = ("__superTypeNames.keyword", StrictStr)
     TYPE_NAME = ("__typeName.keyword", StrictStr)
     UPDATE_TIME_AS_TIMESTAMP = ("__modificationTimestamp", datetime)
+    CERTIFICATE_STATUS = ("certificateStatus", CertificateStatus)
 
 
 class TextAttributes(Attributes):
@@ -326,6 +327,11 @@ class Exists(Query):
     def with_user_description(cls):
         return cls(field=TextAttributes.USER_DESCRIPTION.value)
 
+    @classmethod
+    @validate_arguments()
+    def with_certificate(cls):
+        return cls(field=TermAttributes.CERTIFICATE_STATUS.value)
+
     def to_dict(self):
         return {self.type_name: {"field": self.field}}
 
@@ -447,6 +453,11 @@ class Term(Query):
     @validate_arguments()
     def with_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.TYPE_NAME.value, value=value)
+
+    @classmethod
+    @validate_arguments()
+    def with_certificate(cls, value: CertificateStatus):
+        return cls(field=TermAttributes.CERTIFICATE_STATUS.value, value=value.value)
 
     def to_dict(self):
         if isinstance(self.value, datetime):
