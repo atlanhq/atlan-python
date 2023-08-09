@@ -478,6 +478,11 @@ class Terms(Query):
     boost: Optional[float] = None
     type_name: Literal["terms"] = "terms"
 
+    @classmethod
+    @validate_arguments()
+    def with_type_name(cls, values: list[str]):
+        return cls(field=TermAttributes.TYPE_NAME.value, values=values)
+
     def to_dict(self):
         terms = {self.field: self.values}
         if self.boost is not None:
