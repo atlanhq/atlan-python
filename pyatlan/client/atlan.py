@@ -638,6 +638,26 @@ class AtlanClient(BaseSettings):
         )
         return UserMinimalResponse(**raw_json)
 
+    def activate_user(self, guid: str) -> UserMinimalResponse:
+        """
+        Enable the user to log into Atlan. This will only affect users who are
+        deactivated, and will allow them to login again once completed.
+
+        :param guid: unique identifier (GUID) of the user to activate
+        :returns: result of the update to the user
+        """
+        return self.update_user(guid, user=AtlanUser(enabled=True))
+
+    def deactivate_user(self, guid: str) -> UserMinimalResponse:
+        """
+        Prevent the user from logging into Atlan. This will only affect users who
+        are activated, and will prevent them logging in once completed.
+
+        :param guid: unique identifier (GUID) of the user to deactivate
+        :returns: result of the update to the user
+        """
+        return self.update_user(guid, user=AtlanUser(enabled=False))
+
     def purge_user(
         self,
         guid: str,
