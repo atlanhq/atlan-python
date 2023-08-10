@@ -6,7 +6,7 @@ from typing import Literal, Union
 import pytest
 from pydantic import StrictBool, StrictStr, ValidationError
 
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -44,6 +44,7 @@ VALUES_BY_TYPE: dict[Union[type, object], Union[str, datetime, object]] = {
     Literal["ACTIVE", "DELETED", "PURGED"]: "ACTIVE",
     float: 1.0,
     AtlanConnectorType: AtlanConnectorType.SNOWFLAKE,
+    CertificateStatus: CertificateStatus.VERIFIED,
 }
 
 INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
@@ -53,6 +54,7 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
+        TermAttributes.CERTIFICATE_STATUS,
     },
     Regexp: {
         TermAttributes.CONNECTOR_NAME,
@@ -60,6 +62,7 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
+        TermAttributes.CERTIFICATE_STATUS,
     },
     Fuzzy: {
         TermAttributes.CONNECTOR_NAME,
@@ -67,6 +70,7 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
+        TermAttributes.CERTIFICATE_STATUS,
     },
     Prefix: {
         TermAttributes.CONNECTOR_NAME,
@@ -74,6 +78,7 @@ INCOMPATIPLE_QUERY: dict[type, set[TermAttributes]] = {
         TermAttributes.UPDATE_TIME_AS_TIMESTAMP,
         TermAttributes.CREATE_TIME_AS_TIMESTAMP,
         TermAttributes.POPULARITY_SCORE,
+        TermAttributes.CERTIFICATE_STATUS,
     },
     Term: {
         TermAttributes.POPULARITY_SCORE,

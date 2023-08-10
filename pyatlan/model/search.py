@@ -329,7 +329,7 @@ class Exists(Query):
 
     @classmethod
     @validate_arguments()
-    def with_certificate(cls):
+    def with_certificate_status(cls):
         return cls(field=TermAttributes.CERTIFICATE_STATUS.value)
 
     def to_dict(self):
@@ -456,7 +456,7 @@ class Term(Query):
 
     @classmethod
     @validate_arguments()
-    def with_certificate(cls, value: CertificateStatus):
+    def with_certificate_status(cls, value: CertificateStatus):
         return cls(field=TermAttributes.CERTIFICATE_STATUS.value, value=value.value)
 
     def to_dict(self):
