@@ -40,7 +40,6 @@ from pyatlan.client.constants import (
     DELETE_ENTITY_BY_ATTRIBUTE,
     DELETE_GROUP,
     DELETE_TYPE_DEF_BY_NAME,
-    DELETE_USER,
     GET_ALL_TYPE_DEFS,
     GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
@@ -657,12 +656,6 @@ class AtlanClient(BaseSettings):
         :returns: result of the update to the user
         """
         return self.update_user(guid, user=AtlanUser(enabled=False))
-
-    def purge_user(
-        self,
-        guid: str,
-    ) -> None:
-        self._call_api(DELETE_USER.format_path({"user_guid": guid}))
 
     def get_groups_for_user(
         self,
