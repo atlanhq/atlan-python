@@ -1,7 +1,18 @@
+## 0.5.0 (August 10, 2023)
+* Added:
+  * Bulk delete
+  * Restore
+  * Search by certificate
+  * Activate / deactivate users
+  * Search by any of multiple types
+* regenerates model to include latest assets and structs
+* Breaking change:
+  * S3_bucket_qualified_name is now required for S3 object creation
+
 ## 0.4.3 (August 7, 2023)
 
 * Add a creation-only semantic operation, and deprecate upsert in favour of save
-
+*
 ## 0.4.2 (July 25, 2023)
 
 * Add Alteyx to AtlanConnectorType enums
