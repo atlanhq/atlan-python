@@ -1,4 +1,4 @@
-## 0.4.4 (August 10, 2023)
+## 0.5.0 (August 10, 2023)
 * Added:
   * Bulk delete
   * Restore
@@ -6,6 +6,8 @@
   * Activate / deactivate users
   * Search by any of multiple types
 * regenerates model to include latest assets and structs
+* Breaking change:
+  * S3_bucket_qualified_name is now required for S3 object creation
 
 ## 0.4.3 (August 7, 2023)
 
