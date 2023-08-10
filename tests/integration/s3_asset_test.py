@@ -58,9 +58,8 @@ def _retrieve_and_check(client: AtlanClient, to_check: list[Asset], retry_count:
     if leftovers:
         if retry_count == 20:
             raise AtlanError(message="Overran retry limit", code="500", status_code=500)
-        else:
-            time.sleep(2)
-            _retrieve_and_check(client, leftovers, retry_count + 1)
+        time.sleep(2)
+        _retrieve_and_check(client, leftovers, retry_count + 1)
 
 
 @pytest.fixture(scope="module")
