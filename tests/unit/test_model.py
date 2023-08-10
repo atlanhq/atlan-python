@@ -20,6 +20,8 @@ from pyatlan.model.assets import (
     ADLSEncryptionTypes,
     ADLSObject,
     ADLSReplicationType,
+    AirflowDag,
+    AirflowTask,
     APIPath,
     APISpec,
     Asset,
@@ -42,8 +44,10 @@ from pyatlan.model.assets import (
     DbtModel,
     DbtModelColumn,
     DbtSource,
+    DbtTest,
     File,
     Folder,
+    Function,
     GCSBucket,
     GCSObject,
     GoogleLabel,
@@ -128,6 +132,7 @@ from pyatlan.model.assets import (
     SalesforceOrganization,
     SalesforceReport,
     Schema,
+    SchemaRegistrySubject,
     SigmaDataElement,
     SigmaDataElementField,
     SigmaDataset,
@@ -137,6 +142,7 @@ from pyatlan.model.assets import (
     SnowflakePipe,
     SnowflakeStream,
     SnowflakeTag,
+    SodaCheck,
     Table,
     TableauCalculatedField,
     TableauDashboard,
@@ -172,12 +178,15 @@ from pyatlan.model.enums import (
     GoogleDatastudioAssetType,
     IconType,
     KafkaTopicCompressionType,
+    OpenLineageRunState,
     PowerbiEndorsement,
     QueryUsernameStrategy,
     QuickSightAnalysisStatus,
     QuickSightDatasetFieldType,
     QuickSightDatasetImportMode,
     QuickSightFolderType,
+    SchemaRegistrySchemaCompatibility,
+    SchemaRegistrySchemaType,
     SourceCostUnitType,
 )
 from pyatlan.model.structs import (
@@ -185,6 +194,7 @@ from pyatlan.model.structs import (
     MCRuleComparison,
     MCRuleSchedule,
     SourceTagAttribute,
+    StarredDetails,
 )
 from pyatlan.model.typedef import TypeDefResponse
 
@@ -433,6 +443,17 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[AccessControl]": AccessControl(),
     "Optional[list[AuthPolicyCondition]]": [AuthPolicyCondition()],
     "Optional[list[AuthPolicyValiditySchedule]]": [AuthPolicyValiditySchedule()],
+    "Optional[list[SchemaRegistrySubject]]": [SchemaRegistrySubject()],
+    "Optional[list[StarredDetails]]": [StarredDetails()],
+    "Optional[list[SodaCheck]]": [SodaCheck()],
+    "Optional[SchemaRegistrySchemaCompatibility]": SchemaRegistrySchemaCompatibility.FULL,
+    "Optional[list[DbtTest]]": [DbtTest()],
+    "Optional[AirflowTask]": AirflowTask(),
+    "Optional[list[AirflowTask]]": [AirflowTask()],
+    "Optional[AirflowDag]": AirflowDag(),
+    "Optional[OpenLineageRunState]": OpenLineageRunState.RUNNING,
+    "Optional[list[Function]]": [Function()],
+    "Optional[SchemaRegistrySchemaType]": SchemaRegistrySchemaType.PROTOBUF,
 }
 
 

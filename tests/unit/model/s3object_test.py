@@ -12,46 +12,116 @@ from tests.unit.model.constants import (
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, aws_arn, msg",
+    "name, connection_qualified_name, aws_arn, s3_bucket_qualified_name, msg",
     [
-        (None, S3_CONNECTION_QUALIFIED_NAME, "abc", "name is required"),
-        (S3_OBJECT_NAME, None, "abc", "connection_qualified_name is required"),
-        ("", S3_CONNECTION_QUALIFIED_NAME, "abc", "name cannot be blank"),
-        (S3_OBJECT_NAME, "", "abc", "connection_qualified_name cannot be blank"),
-        (S3_OBJECT_NAME, "default/s3/", "abc", "Invalid connection_qualified_name"),
-        (S3_OBJECT_NAME, "/s3/", "abc", "Invalid connection_qualified_name"),
+        (
+            None,
+            S3_CONNECTION_QUALIFIED_NAME,
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "name is required",
+        ),
+        (
+            S3_OBJECT_NAME,
+            None,
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "connection_qualified_name is required",
+        ),
+        (
+            "",
+            S3_CONNECTION_QUALIFIED_NAME,
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "name cannot be blank",
+        ),
+        (
+            S3_OBJECT_NAME,
+            "",
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "connection_qualified_name cannot be blank",
+        ),
+        (
+            S3_OBJECT_NAME,
+            "default/s3/",
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "Invalid connection_qualified_name",
+        ),
+        (
+            S3_OBJECT_NAME,
+            "/s3/",
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "Invalid connection_qualified_name",
+        ),
         (
             S3_OBJECT_NAME,
             "default/s3/production/TestDb",
             "abc",
+            BUCKET_QUALIFIED_NAME,
             "Invalid connection_qualified_name",
         ),
-        (S3_OBJECT_NAME, "s3/production", "abc", "Invalid connection_qualified_name"),
+        (
+            S3_OBJECT_NAME,
+            "s3/production",
+            "abc",
+            BUCKET_QUALIFIED_NAME,
+            "Invalid connection_qualified_name",
+        ),
         (
             S3_OBJECT_NAME,
             "default/s33/production",
             "abc",
+            BUCKET_QUALIFIED_NAME,
             "Invalid connection_qualified_name",
         ),
-        (S3_OBJECT_NAME, "default/s3", None, "aws_arn is required"),
-        (S3_OBJECT_NAME, "default/s3", "", "aws_arn cannot be blank"),
+        (
+            S3_OBJECT_NAME,
+            "default/s3",
+            None,
+            BUCKET_QUALIFIED_NAME,
+            "aws_arn is required",
+        ),
+        (
+            S3_OBJECT_NAME,
+            "default/s3",
+            "",
+            BUCKET_QUALIFIED_NAME,
+            "aws_arn cannot be blank",
+        ),
+        (
+            S3_OBJECT_NAME,
+            S3_CONNECTION_QUALIFIED_NAME,
+            "abc",
+            None,
+            "s3_bucket_qualified_name is required",
+        ),
+        (
+            S3_OBJECT_NAME,
+            S3_CONNECTION_QUALIFIED_NAME,
+            "abc",
+            "",
+            "s3_bucket_qualified_name cannot be blank",
+        ),
     ],
 )
 def test__create_without_required_parameters_raises_validation_error(
-    name, connection_qualified_name, aws_arn, msg
+    name, connection_qualified_name, aws_arn, s3_bucket_qualified_name, msg
 ):
     with pytest.raises(ValueError, match=msg):
         S3Object.create(
             name=name,
             connection_qualified_name=connection_qualified_name,
             aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
         )
 
 
 @pytest.mark.parametrize(
     "name, connection_qualified_name, aws_arn, s3_bucket_qualified_name",
     [
-        (S3_OBJECT_NAME, S3_CONNECTION_QUALIFIED_NAME, AWS_ARN, None),
         (
             BUCKET_NAME,
             S3_CONNECTION_QUALIFIED_NAME,

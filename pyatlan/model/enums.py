@@ -5,17 +5,17 @@ from datetime import datetime
 from enum import Enum
 
 
-class ADLSEncryptionTypes(Enum):
+class ADLSEncryptionTypes(str, Enum):
     MICROSOFT_STORAGE = "Microsoft.Storage"
     MICROSOFT_KEYVAULT = "Microsoft.Keyvault"
 
 
-class ADLSPerformance(Enum):
+class ADLSPerformance(str, Enum):
     STANDARD = "Standard"
     PREMIUM = "Premium"
 
 
-class ADLSReplicationType(Enum):
+class ADLSReplicationType(str, Enum):
     LRS = "LRS"
     ZRS = "ZRS"
     GRS = "GRS"
@@ -23,12 +23,12 @@ class ADLSReplicationType(Enum):
     RA_GRS = "RA-GRS"
 
 
-class ADLSAccountStatus(Enum):
+class ADLSAccountStatus(str, Enum):
     AVAILABLE = "Available"
     UNAVAILABLE = "Unavailable"
 
 
-class ADLSStorageKind(Enum):
+class ADLSStorageKind(str, Enum):
     BLOB_STORAGE = "BlobStorage"
     BLOCK_BLOB_STORAGE = "BlockBlobStorage"
     FILE_STORAGE = "FileStorage"
@@ -36,19 +36,19 @@ class ADLSStorageKind(Enum):
     STORAGE_V2 = "StorageV2"
 
 
-class ADLSProvisionState(Enum):
+class ADLSProvisionState(str, Enum):
     CREATING = "Creating"
     RESOLVING_DNS = "ResolvingDNS"
     SUCCEEDED = "Succeeded"
 
 
-class ADLSAccessTier(Enum):
+class ADLSAccessTier(str, Enum):
     COOL = "Cool"
     HOT = "Hot"
     ARCHIVE = "Archive"
 
 
-class ADLSLeaseState(Enum):
+class ADLSLeaseState(str, Enum):
     AVAILABLE = "Available"
     LEASED = "Leased"
     EXPIRED = "Expired"
@@ -56,46 +56,46 @@ class ADLSLeaseState(Enum):
     BROKEN = "Broken"
 
 
-class ADLSLeaseStatus(Enum):
+class ADLSLeaseStatus(str, Enum):
     LOCKED = "Locked"
     UNLOCKED = "Unlocked"
 
 
-class ADLSObjectType(Enum):
+class ADLSObjectType(str, Enum):
     BLOCK_BLOB = "BlockBlob"
     PAGE_BLOB = "PageBlob"
     APPEND_BLOB = "AppendBlob"
 
 
-class ADLSObjectArchiveStatus(Enum):
+class ADLSObjectArchiveStatus(str, Enum):
     REHYDRATE_PENDING_TO_HOT = "rehydrate-pending-to-hot"
     REHYDRATE_PENDING_TO_COOL = "rehydrate-pending-to-cool"
 
 
-class AnnouncementType(Enum):
+class AnnouncementType(str, Enum):
     INFORMATION = "information"
     WARNING = "warning"
     ISSUE = "issue"
 
 
-class Cardinality(Enum):
+class Cardinality(str, Enum):
     SINGLE = "SINGLE"
     LIST = "LIST"
     SET = "SET"
 
 
-class CertificateStatus(Enum):
+class CertificateStatus(str, Enum):
     VERIFIED = "VERIFIED"
     DRAFT = "DRAFT"
     DEPRECATED = "DEPRECATED"
 
 
-class EntityStatus(Enum):
+class EntityStatus(str, Enum):
     ACTIVE = "ACTIVE"
     DELETED = "DELETED"
 
 
-class AtlanTypeCategory(Enum):
+class AtlanTypeCategory(str, Enum):
     ENUM = "ENUM"
     STRUCT = "STRUCT"
     CLASSIFICATION = "CLASSIFICATION"
@@ -104,47 +104,48 @@ class AtlanTypeCategory(Enum):
     CUSTOM_METADATA = "BUSINESS_METADATA"
 
 
-class TypeName(Enum):
+class TypeName(str, Enum):
     STRING = "string"
     ARRAY_STRING = "array<string>"
 
 
-class IndexType(Enum):
+class IndexType(str, Enum):
     DEFAULT = "DEFAULT"
     STRING = "STRING"
 
 
-class GoogleDatastudioAssetType(Enum):
+class GoogleDatastudioAssetType(str, Enum):
     DATA_SOURCE = "DATA_SOURCE"
     REPORT = "REPORT"
 
 
-class PowerbiEndorsement(Enum):
+class PowerbiEndorsement(str, Enum):
     PROMOTED = "Promoted"
     CERTIFIED = "Certified"
 
 
-class QueryUsernameStrategy(Enum):
+class QueryUsernameStrategy(str, Enum):
     CONNECTION_USERNAME = ("connectionUsername",)
     ATLAN_USERNAME = "atlanUsername"
 
 
-class IconType(Enum):
+class IconType(str, Enum):
     IMAGE = "image"
     EMOJI = "emoji"
     ICON = "icon"
 
 
-class SourceCostUnitType(Enum):
+class SourceCostUnitType(str, Enum):
     CREDITS = "Credits"
 
 
-class AtlanDeleteType(Enum):
+class AtlanDeleteType(str, Enum):
     HARD = "HARD"
     SOFT = "SOFT"
+    PURGE = "PURGE"
 
 
-class KafkaTopicCompressionType(Enum):
+class KafkaTopicCompressionType(str, Enum):
     UNCOMPRESSED = "uncompressed"
     ZSTD = "zstd"
     LZ4 = "lz4"
@@ -153,23 +154,23 @@ class KafkaTopicCompressionType(Enum):
     PRODUCER = "producer"
 
 
-class KafkaTopicCleanupPolicy(Enum):
+class KafkaTopicCleanupPolicy(str, Enum):
     COMPACT = "compact"
     DELETE = "delete"
 
 
-class QuickSightFolderType(Enum):
+class QuickSightFolderType(str, Enum):
     SHARED = "SHARED"
 
 
-class QuickSightDatasetFieldType(Enum):
+class QuickSightDatasetFieldType(str, Enum):
     STRING = "STRING"
     INTEGER = "INTEGER"
     DECIMAL = "DECIMAL"
     DATETIME = "DATETIME"
 
 
-class QuickSightAnalysisStatus(Enum):
+class QuickSightAnalysisStatus(str, Enum):
     CREATION_IN_PROGRESS = "CREATION_IN_PROGRESS"
     CREATION_SUCCESSFUL = "CREATION_SUCCESSFUL"
     CREATION_FAILED = "CREATION_FAILED"
@@ -179,12 +180,12 @@ class QuickSightAnalysisStatus(Enum):
     DELETED = "DELETED"
 
 
-class QuickSightDatasetImportMode(Enum):
+class QuickSightDatasetImportMode(str, Enum):
     SPICE = "SPICE"
     DIRECT_QUERY = "DIRECT_QUERY"
 
 
-class AtlanConnectionCategory(Enum):
+class AtlanConnectionCategory(str, Enum):
     WAREHOUSE = "warehouse"
     BI = "bi"
     OBJECT_STORE = "ObjectStore"
@@ -374,6 +375,31 @@ class AtlanTagColor(str, Enum):
     YELLOW = "Yellow"
     RED = "Red"
     GRAY = "Gray"
+
+
+class OpenLineageRunState(str, Enum):
+    START = "START"
+    RUNNING = "RUNNING"
+    COMPLETE = "COMPLETE"
+    ABORT = "ABORT"
+    FAIL = "FAIL"
+    OTHER = "OTHER"
+
+
+class SchemaRegistrySchemaType(str, Enum):
+    AVRO = "AVRO"
+    JSON = "JSON"
+    PROTOBUF = "PROTOBUF"
+
+
+class SchemaRegistrySchemaCompatibility(str, Enum):
+    BACKWARD = "BACKWARD"
+    BACKWARD_TRANSITIVE = "BACKWARD_TRANSITIVE"
+    FORWARD = "FORWARD"
+    FORWARD_TRANSITIVE = "FORWARD_TRANSITIVE"
+    FULL = "FULL"
+    FULL_TRANSITIVE = "FULL_TRANSITIVE"
+    NONE = "NONE"
 
 
 class QueryParserSourceType(str, Enum):

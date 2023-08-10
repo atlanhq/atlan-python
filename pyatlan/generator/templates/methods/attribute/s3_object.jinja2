@@ -7,11 +7,11 @@
             name: str,
             connection_qualified_name: str,
             aws_arn: str,
-            s3_bucket_qualified_name: Optional[str] = None,
+            s3_bucket_qualified_name: str,
         ) -> S3Object.Attributes:
             validate_required_fields(
-                ["name", "connection_qualified_name", "aws_arn"],
-                [name, connection_qualified_name, aws_arn],
+                ["name", "connection_qualified_name", "aws_arn", "s3_bucket_qualified_name"],
+                [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
             )
             fields = connection_qualified_name.split("/")
             if len(fields) != 3:
@@ -31,4 +31,5 @@
                 qualified_name=f"{connection_qualified_name}/{aws_arn}",
                 connector_name=connector_type.value,
                 s3_bucket_qualified_name=s3_bucket_qualified_name,
+                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
             )
