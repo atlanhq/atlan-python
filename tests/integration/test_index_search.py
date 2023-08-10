@@ -9,7 +9,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset
-from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
 from pyatlan.model.search import (
     DSL,
     Exists,
@@ -47,6 +47,7 @@ VALUES_FOR_TERM_QUERIES = {
     "with_super_type_names": "SQL",
     "with_type_name": "Schema",
     "with_update_time_as_timestamp": 1665723703029,
+    "with_certificate_status": CertificateStatus.VERIFIED,
 }
 
 VALUES_FOR_TEXT_QUERIES = {
