@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import List, Optional, Any
+from typing import Any, List, Optional
 
 from pydantic import Field
 
@@ -42,7 +42,7 @@ class AtlanGroup(AtlanObject):
     attributes: Optional[AtlanGroup.Attributes] = Field(
         description="Detailed attributes of the group."
     )
-    decentralized_roles: Optional[str] = Field(description="TBC")
+    decentralized_roles: Optional[List[Any]] = Field(description="TBC")
     id: Optional[str] = Field(description="Unique identifier for the group (GUID).")
     name: Optional[str] = Field(description="Unique (internal) name for the group.")
     path: Optional[str] = Field(description="TBC")
