@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import List, Optional, Any
+from typing import Any, List, Optional
 
 from pydantic import Field
 
@@ -128,7 +128,7 @@ class AtlanUser(AtlanObject):
         email: str,
         role_name: str,
     ) -> AtlanUser:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["email", "role_name"],
@@ -140,7 +140,7 @@ class AtlanUser(AtlanObject):
     def create_for_modification(
         guid: str,
     ) -> AtlanUser:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["guid"],

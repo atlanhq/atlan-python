@@ -57,7 +57,7 @@
 
         sub = cls._subtypes_.get(data_type)
         if sub is None:
-            sub = getattr(sys.modules[__name__], data_type)
+            sub = getattr(sys.modules['pyatlan.model.assets'], data_type)
 
 
         if sub is None:

@@ -65,7 +65,7 @@ class AtlanGroup(AtlanObject):
     def create(
         alias: str,
     ) -> AtlanGroup:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["alias"],
@@ -81,7 +81,7 @@ class AtlanGroup(AtlanObject):
         guid: str,
         path: str,
     ) -> AtlanGroup:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["guid", "path"],
@@ -93,7 +93,7 @@ class AtlanGroup(AtlanObject):
     def generate_name(
         alias: str,
     ) -> str:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["alias"],
