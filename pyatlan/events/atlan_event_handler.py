@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 from abc import ABC
-from typing import Iterable, List, Optional
+from typing import Iterable, Optional
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Catalog
@@ -146,7 +146,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         return get_current_view_of_asset(self.client, from_event)
 
-    def calculate_changes(self, current_view: Asset) -> List[Asset]:
+    def calculate_changes(self, current_view: Asset) -> list[Asset]:
         """
         Calculate any changes to apply to assets, and return a collection of the minimally-updated form of the assets
         with those changes applied (in-memory). Typically, you will want to call trim_to_required()
@@ -183,7 +183,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         return current == modified
 
-    def upsert_changes(self, changed_assets: List[Asset]):
+    def upsert_changes(self, changed_assets: list[Asset]):
         """
         Actually send the changed assets to Atlan so that they are persisted.
         (Deprecated: use save_changes instead.)
@@ -192,7 +192,7 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         self.save_changes(changed_assets)
 
-    def save_changes(self, changed_assets: List[Asset]):
+    def save_changes(self, changed_assets: list[Asset]):
         """
         Actually send the changed assets to Atlan so that they are persisted.
 
