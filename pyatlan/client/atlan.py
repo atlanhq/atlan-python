@@ -250,6 +250,10 @@ class AtlanClient(BaseSettings):
         env_prefix = "atlan_"
 
     class SearchResults(ABC):
+        """
+        Abstract class that encapsulates results returned by various searches.
+        """
+
         def __init__(
             self,
             client: "AtlanClient",
@@ -267,9 +271,19 @@ class AtlanClient(BaseSettings):
             self._assets = assets
 
         def current_page(self) -> list[Asset]:
+            """
+            Retrieve the current page of results.
+
+            :returns: list of assets on the current page of results
+            """
             return self._assets
 
         def next_page(self, start=None, size=None) -> bool:
+            """
+            Indicates whether there is a next page of results.
+
+            :returns: True if there is a next page of results, otherwise False
+            """
             self._start = start or self._start + self._size
             if size:
                 self._size = size
@@ -277,10 +291,19 @@ class AtlanClient(BaseSettings):
 
         @abc.abstractmethod
         def _get_next_page(self):
+            """
+            Abstract method that must be implemented in subclasses, used to
+            fetch the next page of results.
+            """
             pass
 
         # TODO Rename this here and in `next_page`
         def _get_next_page_json(self):
+            """
+            Fetches the next page of results and returns the raw JSON of the retrieval.
+
+            :returns: JSON for the next page of results, as-is
+            """
             raw_json = self._client._call_api(
                 self._endpoint,
                 request_obj=self._criteria,
@@ -300,12 +323,24 @@ class AtlanClient(BaseSettings):
                 raise err
 
         def __iter__(self) -> Generator[Asset, None, None]:
+            """
+            Iterates through the results, lazily-fetching each next page until there
+            are no more results.
+
+            :returns: an iterable form of each result, across all pages
+            """
             while True:
                 yield from self.current_page()
                 if not self.next_page():
                     break
 
     class IndexSearchResults(SearchResults):
+        """
+        Captures the response from a search against Atlan. Also provides the ability to
+        iteratively page through results, without needing to track or re-run the original
+        query.
+        """
+
         def __init__(
             self,
             client: "AtlanClient",
@@ -319,6 +354,11 @@ class AtlanClient(BaseSettings):
             self._count = count
 
         def _get_next_page(self):
+            """
+            Fetches the next page of results.
+
+            :returns: True if the next page of results was fetched, False if there was no next page
+            """
             self._criteria.dsl.from_ = self._start
             self._criteria.dsl.size = self._size
             if raw_json := super()._get_next_page_json():
@@ -335,6 +375,11 @@ class AtlanClient(BaseSettings):
             return self._count
 
     class LineageListResults(SearchResults):
+        """
+        Captures the response from a lineage retrieval against Atlan. Also provides the ability to
+        iteratively page through results, without needing to track or re-run the original query.
+        """
+
         def __init__(
             self,
             client: "AtlanClient",
@@ -348,6 +393,11 @@ class AtlanClient(BaseSettings):
             self._has_more = has_more
 
         def _get_next_page(self):
+            """
+            Fetches the next page of results.
+
+            :returns: True if the next page of results was fetched, False if there was no next page
+            """
             self._criteria.offset = self._start
             self._criteria.size = self._size
             if raw_json := super()._get_next_page_json():
@@ -361,17 +411,28 @@ class AtlanClient(BaseSettings):
 
     @classmethod
     def register_client(cls, client: "AtlanClient"):
+        """
+        Registers a client that was initialized directly in code, rather than automatically,
+        through environment variables.
+        """
         if not isinstance(client, AtlanClient):
             raise ValueError("client must be an instance of AtlanClient")
         cls._default_client = client
 
     @classmethod
     def get_default_client(cls) -> "Optional[AtlanClient]":
+        """
+        Retrieves the default client.
+
+        :returns: the default client, if it has been set
+        """
         return cls._default_client
 
     @classmethod
     def reset_default_client(cls):
-        """Sets the default_client to None"""
+        """
+        Sets the default_client to None
+        """
         cls._default_client = None
 
     def __init__(self, **data):
@@ -475,6 +536,13 @@ class AtlanClient(BaseSettings):
         return params, path
 
     def upload_image(self, file, filename: str) -> AtlanImage:
+        """
+        Uploads an image from the provided local file.
+
+        :param file: local file to upload
+        :param filename: name of the file to be uploaded
+        :returns: details of the uploaded image
+        """
         raw_json = self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
         return AtlanImage(**raw_json)
 
@@ -486,6 +554,16 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> RoleResponse:
+        """
+        Retrieves a list of the roles defined in Atlan.
+
+        :param limit: maximum number of results to be returned
+        :param post_filter: which roles to retrieve
+        :param sort: property by which to sort the results
+        :param count: whether to return the total number of records (True) or not (False)
+        :param offset: starting point for results to return, for paging
+        :returns: a list of roles that match the provided criteria
+        """
         query_params: dict[str, str] = {
             "count": str(count),
             "offset": str(offset),
@@ -501,6 +579,8 @@ class AtlanClient(BaseSettings):
     def get_all_roles(self) -> RoleResponse:
         """
         Retrieve all roles defined in Atlan.
+
+        :returns: a list of all the roles in Atlan
         """
         raw_json = self._call_api(GET_ROLES.format_path_with_params())
         return RoleResponse(**raw_json)
@@ -510,6 +590,13 @@ class AtlanClient(BaseSettings):
         group: AtlanGroup,
         user_ids: Optional[list[str]] = None,
     ) -> CreateGroupResponse:
+        """
+        Create a new group.
+
+        :param group: details of the new group
+        :param user_ids: list of unique identifiers (GUIDs) of users to associate with the group
+        :returns: details of the created group and user association
+        """
         payload = CreateGroupRequest(group=group)
         if user_ids:
             payload.users = user_ids
@@ -520,6 +607,11 @@ class AtlanClient(BaseSettings):
         self,
         group: AtlanGroup,
     ) -> None:
+        """
+        Update a group. Note that the provided 'group' must have its id populated.
+
+        :param group: details to update on the group
+        """
         self._call_api(
             UPDATE_GROUP.format_path_with_params(group.id),
             request_obj=group,
@@ -530,6 +622,11 @@ class AtlanClient(BaseSettings):
         self,
         guid: str,
     ) -> None:
+        """
+        Delete a group.
+
+        :param guid: unique identifier (GUID) of the group to delete
+        """
         self._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
 
     def get_groups(
@@ -540,6 +637,16 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> GroupResponse:
+        """
+        Retrieves a list of the groups defined in Atlan.
+
+        :param limit: maximum number of results to be returned
+        :param post_filter: which groups to retrieve
+        :param sort: property by which to sort the results
+        :param count: whether to return the total number of records (True) or not (False)
+        :param offset: starting point for results to return, for paging
+        :returns: a list of groups that match the provided criteria
+        """
         query_params: dict[str, str] = {
             "count": str(count),
             "offset": str(offset),
@@ -556,6 +663,8 @@ class AtlanClient(BaseSettings):
     def get_all_groups(self) -> list[AtlanGroup]:
         """
         Retrieve all groups defined in Atlan.
+
+        :returns: a list of all the groups in Atlan
         """
         groups: list[AtlanGroup] = []
         offset = 0
@@ -580,6 +689,10 @@ class AtlanClient(BaseSettings):
         (This could include a complete group name, in which case there should be at most
         a single item in the returned list, or could be a partial group name to retrieve
         all groups with that naming convention.)
+
+        :param alias: name (as it appears in the UI) on which to filter the groups
+        :param limit: maximum number of groups to retrieve
+        :returns: all groups whose name (in the UI) contains the provided string
         """
         if response := self.get_groups(
             offset=0,
@@ -592,6 +705,9 @@ class AtlanClient(BaseSettings):
     def get_group_members(self, guid: str) -> UserResponse:
         """
         Retrieves the members (users) of a group.
+
+        :param guid: unique identifier (GUID) of the group from which to retrieve members
+        :returns: list of users that are members of the group
         """
         raw_json = self._call_api(GET_GROUP_MEMBERS.format_path({"group_guid": guid}))
         return UserResponse(**raw_json)
@@ -599,6 +715,9 @@ class AtlanClient(BaseSettings):
     def remove_users_from_group(self, guid: str, user_ids=list[str]) -> None:
         """
         Remove one or more users from a group.
+
+        :param guid: unique identifier (GUID) of the group from which to remove users
+        :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
         """
         rfgr = RemoveFromGroupRequest(users=user_ids)
         self._call_api(
@@ -611,6 +730,11 @@ class AtlanClient(BaseSettings):
         self,
         users: list[AtlanUser],
     ) -> None:
+        """
+        Create one or more new users.
+
+        :param users: the details of the new users
+        """
         from pyatlan.cache.role_cache import RoleCache
 
         cur = CreateUserRequest(users=[])
@@ -630,6 +754,15 @@ class AtlanClient(BaseSettings):
         guid: str,
         user: AtlanUser,
     ) -> UserMinimalResponse:
+        """
+        Update a user.
+        Note: you can only update users that have already signed up to Atlan. Users that are
+        only invited (but have not yet logged in) cannot be updated.
+
+        :param guid: unique identifier (GUID) of the user to update
+        :param user: details to update on the user
+        :returns: basic details about the updated user
+        """
         raw_json = self._call_api(
             UPDATE_USER.format_path_with_params(guid),
             request_obj=user,
@@ -661,6 +794,12 @@ class AtlanClient(BaseSettings):
         self,
         guid: str,
     ) -> GroupResponse:
+        """
+        Retrieve the groups this user belongs to.
+
+        :param guid: unique identifier (GUID) of the user
+        :returns: groups this user belongs to
+        """
         raw_json = self._call_api(GET_USER_GROUPS.format_path({"user_guid": guid}))
         return GroupResponse(**raw_json)
 
@@ -669,6 +808,12 @@ class AtlanClient(BaseSettings):
         guid: str,
         group_ids: list[str],
     ) -> None:
+        """
+        Add a user to one or more groups.
+
+        :param guid: unique identifier (GUID) of the user to add into groups
+        :param group_ids: unique identifiers (GUIDs) of the groups to add the user into
+        """
         atgr = AddToGroupsRequest(groups=group_ids)
         self._call_api(
             ADD_USER_TO_GROUPS.format_path({"user_guid": guid}),
@@ -681,6 +826,12 @@ class AtlanClient(BaseSettings):
         guid: str,
         role_id: str,
     ) -> None:
+        """
+        Change the role of a user.
+
+        :param guid: unique identifier (GUID) of the user whose role should be changed
+        :param role_id: unique identifier (GUID) of the role to move the user into
+        """
         crr = ChangeRoleRequest(role_id=role_id)
         self._call_api(
             CHANGE_USER_ROLE.format_path({"user_guid": guid}),
@@ -691,6 +842,11 @@ class AtlanClient(BaseSettings):
     def get_current_user(
         self,
     ) -> UserMinimalResponse:
+        """
+        Retrieve the current user (representing the API token).
+
+        :returns: basic details about the current user (API token)
+        """
         raw_json = self._call_api(GET_CURRENT_USER)
         return UserMinimalResponse(**raw_json)
 
@@ -702,6 +858,16 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> UserResponse:
+        """
+        Retrieves a list of users defined in Atlan.
+
+        :param limit: maximum number of results to be returned
+        :param post_filter: which users to retrieve
+        :param sort: property by which to sort the results
+        :param count: whether to return the total number of records (True) or not (False)
+        :param offset: starting ponit for results to return, for paging
+        :returns: a list of users that match the provided criteria
+        """
         query_params: dict[str, str] = {
             "count": str(count),
             "offset": str(offset),
@@ -718,6 +884,8 @@ class AtlanClient(BaseSettings):
     def get_all_users(self) -> list[AtlanUser]:
         """
         Retrieve all users defined in Atlan.
+
+        :returns: a list of all the users in Atlan
         """
         users: list[AtlanUser] = []
         offset = 0
@@ -743,6 +911,10 @@ class AtlanClient(BaseSettings):
         most a single item in the returned list, or could be a partial email address
         such as "@example.com" to retrieve all users with that domain in their email
         address.)
+
+        :param email: on which to filter the users
+        :param limit: maximum number of users to retrieve
+        :returns: all users whose email addresses contain the provided string
         """
         if response := self.get_users(
             offset=0,
@@ -756,6 +928,9 @@ class AtlanClient(BaseSettings):
         """
         Retrieves a user based on the username. (This attempts an exact match on username
         rather than a contains search.)
+
+        :param username: the username by which to find the user
+        :returns: the user with that username
         """
         if response := self.get_users(
             offset=0,
@@ -769,6 +944,9 @@ class AtlanClient(BaseSettings):
     def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """
         Parses the provided query to describe its component parts.
+
+        :param query: query to parse and configuration options
+        :returns: parsed explanation of the query
         """
         raw_json = self._call_api(
             PARSE_QUERY,
@@ -785,6 +963,16 @@ class AtlanClient(BaseSettings):
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
     ) -> A:
+        """
+        Retrieves an asset by its qualified_name.
+
+        :param qualified_name: qualified_name of the asset to be retrieved
+        :param asset_type: type of asset to be retrieved
+        :param min_ext_info: whether to minimize extra info (True) or not (False)
+        :param ignore_relationships: whether to include relationships (False) or exclude them (True)
+        :returns: the requested asset
+        :raises NotFoundError: if the asset does not exist
+        """
         query_params = {
             "attr:qualifiedName": qualified_name,
             "minExtInfo": min_ext_info,
@@ -797,7 +985,7 @@ class AtlanClient(BaseSettings):
                 ),
                 query_params,
             )
-            asset = self.handle_relationships(raw_json)
+            asset = self._handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
                     message=f"Asset with qualifiedName {qualified_name} "
@@ -818,6 +1006,16 @@ class AtlanClient(BaseSettings):
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
     ) -> A:
+        """
+        Retrieves an asset by its GUID.
+
+        :param guid: unique identifier (GUID) of the asset to retrieve
+        :param asset_type: type of asset to be retrieved
+        :param min_ext_info: whether to minimize extra info (True) or not (False)
+        :param ignore_relationships: whether to include relationships (False) or exclude them (True)
+        :returns: the requested asset
+        :raises NotFoundError: if the asset does not exist
+        """
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
@@ -828,7 +1026,7 @@ class AtlanClient(BaseSettings):
                 GET_ENTITY_BY_GUID.format_path_with_params(guid),
                 query_params,
             )
-            asset = self.handle_relationships(raw_json)
+            asset = self._handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
                 raise NotFoundError(
                     message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
@@ -840,7 +1038,7 @@ class AtlanClient(BaseSettings):
                 raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
 
-    def handle_relationships(self, raw_json):
+    def _handle_relationships(self, raw_json):
         if (
             "relationshipAttributes" in raw_json["entity"]
             and raw_json["entity"]["relationshipAttributes"]
@@ -855,6 +1053,14 @@ class AtlanClient(BaseSettings):
 
     @validate_arguments()
     def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
+        """
+        Retrieves an asset by its GUID, without any of its relationships.
+
+        :param guid: unique identifier (GUID) of the asset to retrieve
+        :param asset_type: type of asset to be retrieved
+        :returns: the asset, without any of its relationships
+        :raises NotFoundError: if the asset does not exist
+        """
         return self.get_asset_by_guid(
             guid=guid,
             asset_type=asset_type,
@@ -884,7 +1090,8 @@ class AtlanClient(BaseSettings):
         replace_custom_metadata: bool = False,
         overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
-        """If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.
+        """
+        If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.
         If an asset does exist, opertionally overwrites any Atlan tags. Custom metadata will either be
         overwritten or merged depending on the options provided.
 
@@ -892,6 +1099,7 @@ class AtlanClient(BaseSettings):
         :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
         :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
         :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
+        :returns: the result of the save
         """
         query_params = {
             "replaceClassifications": replace_atlan_tags,
@@ -920,7 +1128,8 @@ class AtlanClient(BaseSettings):
     def save_merging_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
-        """If no asset exists, has the same behavior as the upsert() method, while also setting
+        """
+        If no asset exists, has the same behavior as the upsert() method, while also setting
         any custom metadata provided. If an asset does exist, optionally overwrites any Atlan tags.
         Will merge any provided custom metadata with any custom metadata that already exists on the asset.
 
@@ -938,7 +1147,8 @@ class AtlanClient(BaseSettings):
     def update_merging_cm(
         self, entity: Asset, replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
-        """If no asset exists, fails with a NotFoundError. Will merge any provided
+        """
+        If no asset exists, fails with a NotFoundError. Will merge any provided
         custom metadata with any custom metadata that already exists on the asset.
         If an asset does exist, optionally overwrites any Atlan tags.
 
@@ -968,7 +1178,8 @@ class AtlanClient(BaseSettings):
     def save_replacing_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
-        """If no asset exists, has the same behavior as the upsert() method, while also setting
+        """
+        If no asset exists, has the same behavior as the upsert() method, while also setting
         any custom metadata provided.
         If an asset does exist, optionally overwrites any Atlan tags.
         Will overwrite all custom metadata on any existing asset with only the custom metadata provided
@@ -998,7 +1209,8 @@ class AtlanClient(BaseSettings):
     def update_replacing_cm(
         self, entity: Asset, replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
-        """If no asset exists, fails with a NotFoundException.
+        """
+        If no asset exists, fails with a NotFoundError.
         Will overwrite all custom metadata on any existing asset with only the custom metadata provided
         (wiping out any other custom metadata on an existing asset that is not provided in the request).
         If an asset does exist, optionally overwrites any Atlan tags.
@@ -1063,7 +1275,7 @@ class AtlanClient(BaseSettings):
 
         :param asset_type: type of the asset to restore
         :param qualified_name: of the asset to restore
-        :returns: true if the asset is now restored, or false if not
+        :returns: True if the asset is now restored, or False if not
         """
         return self._restore(asset_type, qualified_name, 0)
 
@@ -1099,6 +1311,12 @@ class AtlanClient(BaseSettings):
         return AssetMutationResponse(**raw_json)
 
     def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
+        """
+        Search for assets using the provided criteria.
+
+        :param criteria: detailing the search query, parameters, and so on to run
+        :returns: the results of the search
+        """
         raw_json = self._call_api(
             INDEX_SEARCH,
             request_obj=criteria,
@@ -1126,10 +1344,21 @@ class AtlanClient(BaseSettings):
         )
 
     def get_all_typedefs(self) -> TypeDefResponse:
+        """
+        Retrieves a list of all the type definitions in Atlan.
+
+        :returns: a list of all the type definitions in Atlan
+        """
         raw_json = self._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
     def get_typedefs(self, type_category: AtlanTypeCategory) -> TypeDefResponse:
+        """
+        Retrieves a list of the type definitions in Atlan.
+
+        :param type_category: category of type definitions to retrieve
+        :returns: the requested list of type definitions
+        """
         query_params = {"type": type_category.value}
         raw_json = self._call_api(
             GET_ALL_TYPE_DEFS.format_path_with_params(),
@@ -1138,6 +1367,15 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        """
+        Create a new type definition in Atlan.
+        Note: only custom metadata, enumerations, and Atlan tag type definitions are currently
+        supported. Furthermore, if any of these are created their respective cache will be
+        force-refreshed.
+
+        :param typedef: type definition to create
+        :returns: the resulting type definition that was created
+        """
         payload = _build_typedef_request(typedef)
         raw_json = self._call_api(
             CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
@@ -1146,6 +1384,14 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def update_typedef(self, typedef: TypeDef) -> TypeDefResponse:
+        """
+        Update an existing type definition in Atlan.
+        Note: only custom metadata and Atlan tag type definitions are currently supported.
+        Furthermore, if any of these are updated their respective cache will be force-refreshed.
+
+        :param typedef: type definition to update
+        :returns: the resulting type definition that was updated
+        """
         payload = _build_typedef_request(typedef)
         raw_json = self._call_api(
             UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
@@ -1154,6 +1400,14 @@ class AtlanClient(BaseSettings):
         return TypeDefResponse(**raw_json)
 
     def purge_typedef(self, name: str, typedef_type: type) -> None:
+        """
+        Delete the type definition.
+        Furthermore, if an Atlan tag, enumeration or custom metadata is deleted their
+        respective cache will be force-refreshed.
+
+        :param name: internal hashed-string name of the type definition
+        :param typedef_type: type of the type definition that is being deleted
+        """
         if typedef_type == CustomMetadataDef:
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
@@ -1202,6 +1456,20 @@ class AtlanClient(BaseSettings):
         remove_propagation_on_delete: bool = True,
         restrict_lineage_propagation: bool = True,
     ) -> None:
+        """
+        Add one or more Atlan tags to the provided asset.
+        Note: if one or more of the provided Atlan tags already exist on the asset, an error
+        will be raised. (In other words, this operation is NOT idempotent.)
+
+        :param asset_type: type of asset to which to add the Atlan tags
+        :param qualified_name: qualified_name of the asset to which to add the Atlan tags
+        :param atlan_tag_names: human-readable names of the Atlan tags to add to the asset
+        :param propagate: whether to propagate the Atlan tag (True) or not (False)
+        :param remove_propagation_on_delete: whether to remove the propagated Atlan tags when the Atlan tag is removed
+                                             from this asset (True) or not (False)
+        :param restrict_lineage_propagation: whether to avoid propagating through lineage (True) or do propagate
+                                             through lineage (False)
+        """
         atlan_tags = AtlanTags(
             __root__=[
                 AtlanTag(
@@ -1226,6 +1494,15 @@ class AtlanClient(BaseSettings):
     def remove_atlan_tag(
         self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
     ) -> None:
+        """
+        Removes a single Atlan tag from the provided asset.
+        Note: if the provided Atlan tag does not exist on the asset, an error will be raised.
+        (In other words, this operation is NOT idempotent.)
+
+        :param asset_type: type of asset to which to add the Atlan tags
+        :param qualified_name: qualified_name of the asset to which to add the Atlan tags
+        :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset
+        """
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
         classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
@@ -1246,8 +1523,18 @@ class AtlanClient(BaseSettings):
         qualified_name: str,
         name: str,
         certificate_status: CertificateStatus,
-        message: str,
+        message: Optional[str] = None,
     ) -> Optional[A]:
+        """
+        Update the certificate on an asset.
+
+        :param asset_type: type of asset on which to update the certificate
+        :param qualified_name: the qualified_name of the asset on which to update the certificate
+        :param name: the name of the asset on which to update the certificate
+        :param certificate_status: specific certificate to set on the asset
+        :param message: (optional) message to set (or None for no message)
+        :returns: the result of the update, or None if the update failed
+        """
         asset = asset_type()
         asset.qualified_name = qualified_name
         asset.certificate_status = certificate_status
@@ -1275,6 +1562,14 @@ class AtlanClient(BaseSettings):
     def remove_certificate(
         self, asset_type: Type[A], qualified_name: str, name: str
     ) -> Optional[A]:
+        """
+        Remove the certificate from an asset.
+
+        :param asset_type: type of asset from which to remove the certificate
+        :param qualified_name: the qualified_name of the asset from which to remove the certificate
+        :param name: the name of the asset from which to remove the certificate
+        :returns: the result of the removal, or None if the removal failed
+        """
         asset = asset_type()
         asset.qualified_name = qualified_name
         asset.name = name
@@ -1289,6 +1584,15 @@ class AtlanClient(BaseSettings):
         name: str,
         announcement: Announcement,
     ) -> Optional[A]:
+        """
+        Update the announcement on an asset.
+
+        :param asset_type: type of asset on which to update the announcement
+        :param qualified_name: the qualified_name of the asset on which to update the announcement
+        :param name: the name of the asset on which to update the announcement
+        :param announcement: to apply to the asset
+        :returns: the result of the update, or None if the update failed
+        """
         asset = asset_type()
         asset.qualified_name = qualified_name
         asset.set_announcement(announcement)
@@ -1299,6 +1603,14 @@ class AtlanClient(BaseSettings):
     def remove_announcement(
         self, asset_type: Type[A], qualified_name: str, name: str
     ) -> Optional[A]:
+        """
+        Remove the announcement from an asset.
+
+        :param asset_type: type of asset from which to remove the announcement
+        :param qualified_name: the qualified_name of the asset from which to remove the announcement
+        :param name: the name of the asset from which to remove the announcement
+        :returns: the result of the removal, or None if the removal failed
+        """
         asset = asset_type()
         asset.qualified_name = qualified_name
         asset.name = name
@@ -1308,6 +1620,13 @@ class AtlanClient(BaseSettings):
     def update_custom_metadata_attributes(
         self, guid: str, custom_metadata: CustomMetadataDict
     ):
+        """
+        Update only the provided custom metadata attributes on the asset. This will leave all
+        other custom metadata attributes, even within the same named custom metadata, unchanged.
+
+        :param guid: unique identifier (GUID) of the asset
+        :param custom_metadata: custom metadata to update, as human-readable names mapped to values
+        """
         custom_metadata_request = CustomMetadataRequest.create(
             custom_metadata_dict=custom_metadata
         )
@@ -1323,6 +1642,13 @@ class AtlanClient(BaseSettings):
         )
 
     def replace_custom_metadata(self, guid: str, custom_metadata: CustomMetadataDict):
+        """
+        Replace specific custom metadata on the asset. This will replace everything within the named
+        custom metadata, but will not change any of hte other named custom metadata on the asset.
+
+        :param guid: unique identifier (GUID) of the asset
+        :param custom_metadata: custom metadata to replace, as human-readable names mapped to values
+        """
         # clear unset attributes so that they are removed
         custom_metadata.clear_unset()
         custom_metadata_request = CustomMetadataRequest.create(
@@ -1340,6 +1666,12 @@ class AtlanClient(BaseSettings):
         )
 
     def remove_custom_metadata(self, guid: str, cm_name: str):
+        """
+        Remove specific custom metadata from an asset.
+
+        :param guid: unique identifier (GUID) of the asset
+        :param cm_name: human-readable name of the custom metadata to remove
+        """
         custom_metadata = CustomMetadataDict(name=cm_name)
         # invoke clear_all so all attributes are set to None and consequently removed
         custom_metadata.clear_all()
@@ -1365,6 +1697,18 @@ class AtlanClient(BaseSettings):
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
+        """
+        Link additional terms to an asset, without replacing existing terms linked to the asset.
+        Note: this operation must make two API calls — one to retrieve the asset's existing terms,
+        and a second to append the new terms. (At least one of the GUID or qualified_name must be
+        supplied, but both are not necessary.)
+
+        :param asset_type: type of the asset
+        :param terms: the list of terms to append to the asset
+        :param guid: unique identifier (GUID) of the asset to which to link the terms
+        :param qualified_name: the qualified_name of the asset to which to link the terms
+        :returns: the asset that was updated (note that it will NOT contain details of the appended terms)
+        """
         if guid:
             if qualified_name:
                 raise ValueError(
@@ -1399,6 +1743,16 @@ class AtlanClient(BaseSettings):
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
+        """
+        Replace the terms linked to an asset.
+        (At least one of the GUID or qualified_name must be supplied, but both are not necessary.)
+
+        :param asset_type: type of the asset
+        :param terms: the list of terms to replace on the asset, or an empty list to remove all terms from an asset
+        :param guid: unique identifier (GUID) of the asset to which to replace the terms
+        :param qualified_name: the qualified_name of the asset to which to replace the terms
+        :returns: the asset that was updated (note that it will NOT contain details of the replaced terms)
+        """
         if guid:
             if qualified_name:
                 raise ValueError(
@@ -1425,6 +1779,18 @@ class AtlanClient(BaseSettings):
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
+        """
+        Remove terms from an asset, without replacing all existing terms linked to the asset.
+        Note: this operation must make two API calls — one to retrieve the asset's existing terms,
+        and a second to remove the provided terms.
+
+        :param asset_type: type of the asset
+        :param terms: the list of terms to remove from the asset (note: these must be references by GUID to efficiently
+                      remove any existing terms)
+        :param guid: unique identifier (GUID) of the asset from which to remove the terms
+        :param qualified_name: the qualified_name of the asset from which to remove the terms
+        :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
+        """
         if not terms:
             raise ValueError("A list of assigned_terms to remove must be specified")
         if guid:
@@ -1461,6 +1827,15 @@ class AtlanClient(BaseSettings):
         connector_type: AtlanConnectorType,
         attributes: Optional[list[str]] = None,
     ) -> list[Connection]:
+        """
+        Find a connection by its human-readable name and type.
+
+        :param name: of the connection
+        :param connector_type: of the connection
+        :param attributes: (optional) collection of attributes to retrieve for the connection
+        :returns: all connections with that name and type, if found
+        :raises NotFoundError: if the connection does not exist
+        """
         if attributes is None:
             attributes = []
         query = (
@@ -1478,6 +1853,13 @@ class AtlanClient(BaseSettings):
         return [asset for asset in results if isinstance(asset, Connection)]
 
     def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
+        """
+        Fetch the requested lineage. This is an older, slower operation that may be deprecated in
+        the future. If possible, use the get_lineage_list operation instead.
+
+        :param lineage_request: detailing the lineage query, parameters, and so on to run
+        :returns: the results of the lineage request
+        """
         raw_json = self._call_api(
             GET_LINEAGE, None, lineage_request, exclude_unset=False
         )
@@ -1486,6 +1868,12 @@ class AtlanClient(BaseSettings):
     def get_lineage_list(
         self, lineage_request: LineageListRequest
     ) -> LineageListResults:
+        """
+        Retrieve lineage using the higher-performance "list" API.
+
+        :param lineage_request: detailing the lineage query, parameters, and so on to run
+        :returns: the results of the lineage request
+        """
         if lineage_request.direction == LineageDirection.BOTH:
             raise InvalidRequestException(
                 message="Unable to request both directions of lineage at the same time through the lineage list API.",
@@ -1515,6 +1903,12 @@ class AtlanClient(BaseSettings):
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
     ) -> KeycloakEventResponse:
+        """
+        Retrieve all events, based on the supplied filters.
+
+        :param keycloak_request: details of the filters to apply when retrieving events
+        :returns: the events that match the supplied filters
+        """
         if raw_json := self._call_api(
             KEYCLOAK_EVENTS,
             query_params=keycloak_request.query_params,
@@ -1536,6 +1930,12 @@ class AtlanClient(BaseSettings):
         )
 
     def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
+        """
+        Retrieve admin events based on the supplied filters.
+
+        :param admin_request: details of the filters to apply when retrieving admin events
+        :returns: the admin events that match the supplied filters
+        """
         if raw_json := self._call_api(
             ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
         ):
@@ -1560,6 +1960,14 @@ class AtlanClient(BaseSettings):
         name: str,
         attributes: Optional[list[str]] = None,
     ) -> list[Persona]:
+        """
+        Find a persona by its human-readable name.
+
+        :param name: of the persona
+        :param attributes: (optional) collection of attributes to retrieve for the persona
+        :returns: all personas with that name, if found
+        :raises NotFoundError: if no persona with the provided name exists
+        """
         if attributes is None:
             attributes = []
         query = (
@@ -1580,6 +1988,14 @@ class AtlanClient(BaseSettings):
         name: str,
         attributes: Optional[list[str]] = None,
     ) -> list[Purpose]:
+        """
+        Find a purpose by its human-readable name.
+
+        :param name: of the purpose
+        :param attributes: (optional) collection of attributes to retrieve for the purpose
+        :returns: all purposes with that name, if found
+        :raises NotFoundError: if no purpose with the provided name exists
+        """
         if attributes is None:
             attributes = []
         query = (
@@ -1601,12 +2017,20 @@ class AtlanClient(BaseSettings):
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossary:
+        """
+        Find a glossary by its human-readable name.
+
+        :param name: of the glossary
+        :param attributes: (optional) collection of attributes to retrieve for the glossary
+        :returns: the glossary, if found
+        :raises NotFoundError: if no glossary with the provided name exists
+        """
         if attributes is None:
             attributes = []
         query = with_active_glossary(name=name)
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
-        )
+        )[0]
 
     @validate_arguments()
     def find_category_fast_by_name(
@@ -1614,7 +2038,19 @@ class AtlanClient(BaseSettings):
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
-    ) -> AtlasGlossaryCategory:
+    ) -> list[AtlasGlossaryCategory]:
+        """
+        Find a category by its human-readable name.
+        Note: this operation requires first knowing the qualified_name of the glossary in which the
+        category exists. Note that categories are not unique by name, so there may be
+        multiple results.
+
+        :param name: of the category
+        :param glossary_qualified_name: qualified_name of the glossary in which the category exists
+        :param attributes: (optional) collection of attributes to retrieve for the category
+        :returns: the category, if found
+        :raises NotFoundError: if no category with the provided name exists in the glossary
+        """
         if attributes is None:
             attributes = []
         query = with_active_category(
@@ -1625,6 +2061,7 @@ class AtlanClient(BaseSettings):
             name=name,
             asset_type=AtlasGlossaryCategory,
             attributes=attributes,
+            allow_multiple=True,
         )
 
     @validate_arguments()
@@ -1633,7 +2070,20 @@ class AtlanClient(BaseSettings):
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
-    ):
+    ) -> list[AtlasGlossaryCategory]:
+        """
+        Find a category by its human-readable name.
+        Note: this operation must run two separate queries to first resolve the qualified_name of the
+        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use
+        find_category_by_name_fast instead. Note that categories are not unique by name, so there may be
+        multiple results.
+
+        :param name: of the category
+        :param glossary_name: human-readable name of the glossary in which the category exists
+        :param attributes: (optional) collection of attributes to retrieve for the category
+        :returns: the category, if found
+        :raises NotFoundError: if no category with the provided name exists in the glossary
+        """
         glossary = self.find_glossary_by_name(name=glossary_name)
         return self.find_category_fast_by_name(
             name=name,
@@ -1647,7 +2097,8 @@ class AtlanClient(BaseSettings):
         name: str,
         asset_type: Type[A],
         attributes: Optional[list[StrictStr]],
-    ) -> A:
+        allow_multiple: bool = False,
+    ) -> list[A]:
         dsl = DSL(query=query)
         search_request = IndexSearchRequest(
             dsl=dsl,
@@ -1661,13 +2112,13 @@ class AtlanClient(BaseSettings):
                 if isinstance(asset, asset_type)
             ]
         ):
-            if len(assets) > 1:
+            if not allow_multiple and len(assets) > 1:
                 LOGGER.warning(
                     "More than 1 %s found with the name '%s', returning only the first.",
                     asset_type.__name__,
                     name,
                 )
-            return assets[0]
+            return assets
         raise NotFoundError(
             f"The {asset_type.__name__} asset could not be found by name: {name}.",
             "ATLAN-PYTHON-404-014",
@@ -1680,6 +2131,17 @@ class AtlanClient(BaseSettings):
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
+        """
+        Find a term by its human-readable name.
+        Note: this operation requires first knowing the qualified_name of the glossary in which the
+        term exists.
+
+        :param name: of the term
+        :param glossary_qualified_name: qualified_name of the glossary in which the term exists
+        :param attributes: (optional) collection of attributes to retrieve for the term
+        :returns: the term, if found
+        :raises NotFoundError: if no term with the provided name exists in the glossary
+        """
         if attributes is None:
             attributes = []
         query = with_active_term(
@@ -1687,7 +2149,7 @@ class AtlanClient(BaseSettings):
         )
         return self._search_for_asset_with_name(
             query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
-        )
+        )[0]
 
     @validate_arguments()
     def find_term_by_name(
@@ -1695,7 +2157,19 @@ class AtlanClient(BaseSettings):
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
-    ):
+    ) -> AtlasGlossaryTerm:
+        """
+        Find a term by its human-readable name.
+        Note: this operation must run two separate queries to first resolve the qualified_name of the
+        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use
+        find_term_by_name_fast instead.
+
+        :param name: of the term
+        :param glossary_name: human-readable name of the glossary in which the term exists
+        :param attributes: (optional) collection of attributes to retrieve for the term
+        :returns: the term, if found
+        :raises NotFoundError: if no term with the provided name exists in the glossary
+        """
         glossary = self.find_glossary_by_name(name=glossary_name)
         return self.find_term_fast_by_name(
             name=name,

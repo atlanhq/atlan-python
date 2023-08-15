@@ -199,7 +199,7 @@ def test_find_category_fast_by_name(
             category.guid
             == client.find_category_fast_by_name(
                 name=category.name, glossary_qualified_name=glossary.qualified_name
-            ).guid
+            )[0].guid
         )
 
     check_it()
@@ -212,7 +212,7 @@ def test_find_category_by_name(
         category.guid
         == client.find_category_by_name(
             name=category.name, glossary_name=glossary.name
-        ).guid
+        )[0].guid
     )
 
 
