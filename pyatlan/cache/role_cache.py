@@ -7,6 +7,10 @@ from pyatlan.model.role import AtlanRole
 
 
 class RoleCache:
+    """
+    Lazily-loaded cache for translating Atlan-internal roles into their various IDs.
+    """
+
     cache_by_id: dict[str, AtlanRole] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_name_to_id: dict[str, str] = dict()
@@ -32,6 +36,9 @@ class RoleCache:
     def get_id_for_name(cls, name: str) -> Optional[str]:
         """
         Translate the provided human-readable role name to its GUID.
+
+        :param name: human-readable name of the role
+        :returns: unique identifier (GUID) of the role
         """
         if role_id := cls.map_name_to_id.get(name):
             return role_id
@@ -42,6 +49,9 @@ class RoleCache:
     def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
         Translate the provided role GUID to the human-readable role name.
+
+        :param idstr: unique identifier (GUID) of the role
+        :returns: human-readable name of the role
         """
         if role_name := cls.map_id_to_name.get(idstr):
             return role_name

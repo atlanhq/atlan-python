@@ -611,14 +611,13 @@ def test_find_category_fast_by_name(mock_search, caplog):
 
     client = AtlanClient()
 
-    assert GLOSSARY_CATEGORY == client.find_category_fast_by_name(
-        name=GLOSSARY_CATEGORY_NAME,
-        glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
-        attributes=attributes,
-    )
     assert (
-        f"More than 1 AtlasGlossaryCategory found with the name '{GLOSSARY_CATEGORY_NAME}', returning only the first."
-        in caplog.text
+        GLOSSARY_CATEGORY
+        == client.find_category_fast_by_name(
+            name=GLOSSARY_CATEGORY_NAME,
+            glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
+            attributes=attributes,
+        )[0]
     )
     assert request
     assert request.attributes

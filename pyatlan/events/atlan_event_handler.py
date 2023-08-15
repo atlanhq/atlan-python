@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2023 Atlan Pte. Ltd.
 from abc import ABC
-from typing import Iterable, List, Optional
+from typing import Iterable, Optional
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Catalog
@@ -18,6 +18,10 @@ def is_validation_request(data: str) -> bool:
 def valid_signature(expected: str, headers: dict[str, str]) -> bool:
     """
     Validate the signing secret provided with a request matches the expected signing secret.
+
+    :param expected: signature that must be found for a valid request
+    :param headers: that were sent with the request
+    :returns: True if and only if the headers contain a signing secret that matches the expected signature
     """
     if not headers:
         return False
@@ -39,6 +43,13 @@ def get_current_view_of_asset(
     Note: this will be faster than getCurrentFullAsset, but relies on the eventual
     consistency of the search index so may not have the absolute latest information about
     an asset.
+
+    :param client: connectivity to Atlan
+    :param from_event: details of the asset in the event
+    :param limited_to_attributes: the limited set of attributes to retrieve about the asset
+    :param include_meanings: if True, include any assigned terms
+    :param include_atlan_tags: if True, include any assigned Atlan tags
+    :returns: the current information about the asset in Atlan, limited to what was requested
     """
     be_active = Term.with_state("ACTIVE")
     be_of_type = Term.with_type_name(from_event.type_name)
@@ -70,6 +81,9 @@ def get_current_view_of_asset(
 def has_description(asset: Asset) -> bool:
     """
     Check if the asset has either a user-provided or system-provided description.
+
+    :param asset: to check for the presence of a description
+    :returns: True if there is either a user-provided or system-provided description
     """
     description = asset.user_description or asset.description
     return description is not None and description != ""
@@ -78,6 +92,9 @@ def has_description(asset: Asset) -> bool:
 def has_owner(asset: Asset) -> bool:
     """
     Check if the asset has any individual or group owners.
+
+    :param asset: to check for the presence of an owner
+    :returns: True if there is at least one individual or group owner
     """
     return (asset.owner_users is not None) or (asset.owner_groups is not None)
 
@@ -85,6 +102,9 @@ def has_owner(asset: Asset) -> bool:
 def has_lineage(asset: Asset) -> bool:
     """
     Check if the asset has any lineage.
+
+    :param asset: to check for the presence of lineage
+    :returns: True if the asset is input to or output from at least one process
     """
     # If possible, look directly on inputs and outputs rather than the __hasLineage flag
     if isinstance(asset, Catalog):
@@ -105,6 +125,9 @@ class AtlanEventHandler(ABC):  # noqa: B024
         trying to do any other actions.
         This default implementation will only confirm that an event has been received and there are
         details of an asset embedded within the event.
+
+        :param event: the event to be processed
+        :returns: True if the prerequisites are met, otherwise False
         """
         return (
             event is not None
@@ -117,10 +140,13 @@ class AtlanEventHandler(ABC):  # noqa: B024
         Retrieve the current state of the asset, with minimal required info to handle any logic
         the event handler requires to make its decisions.
         This default implementation will only really check that the asset still exists in Atlan.
+
+        :param from_event: the asset from the event (which could be stale at this point)
+        :returns: the current state of the asset, as retrieved from Atlan
         """
         return get_current_view_of_asset(self.client, from_event)
 
-    def calculate_changes(self, current_view: Asset) -> List[Asset]:
+    def calculate_changes(self, current_view: Asset) -> list[Asset]:
         """
         Calculate any changes to apply to assets, and return a collection of the minimally-updated form of the assets
         with those changes applied (in-memory). Typically, you will want to call trim_to_required()
@@ -131,6 +157,10 @@ class AtlanEventHandler(ABC):  # noqa: B024
         to include before returning it from this method.
         NOTE: The returned assets from this method should be ONLY those assets on which updates are actually being
         applied, or you will risk an infinite loop of events triggering changes, more events, more changes, etc.
+
+        :param current_view: the current view / state of the asset in Atlan, as the starting point for any changes
+        :returns: a list of only those assets that have changes to send to Atlan (empty, if there are no changes to
+                  send)
         """
         return []
 
@@ -143,12 +173,30 @@ class AtlanEventHandler(ABC):  # noqa: B024
         This default implementation only blindly checks for equality. It is likely you would want to check
         specific attributes' values, rather than the entire object, for equality when determining whether a relevant
         change has been made (or not) to the asset.
+
+        :param current: the current view / state of the asset in Atlan, that was the starting point for any change
+                        calculations
+        :param modified: the in-memory-modified asset against which to check if any changes actually need to be sent
+                         to Atlan
+        :returns: True if the modified asset should be sent on to (updated in) Atlan, or False if there are no actual
+                  changes to apply
         """
         return current == modified
 
-    def upsert_changes(self, changed_assets: List[Asset]):
+    def upsert_changes(self, changed_assets: list[Asset]):
         """
         Actually send the changed assets to Atlan so that they are persisted.
+        (Deprecated: use save_changes instead.)
+
+        :param changed_assets: the in-memory-modified assets to send to Atlan
+        """
+        self.save_changes(changed_assets)
+
+    def save_changes(self, changed_assets: list[Asset]):
+        """
+        Actually send the changed assets to Atlan so that they are persisted.
+
+        :param changed_assets: the in-memory-modified assets to send to Atlan
         """
         # TODO: Migrate to an AssetBatch once implemented
         for one in changed_assets:

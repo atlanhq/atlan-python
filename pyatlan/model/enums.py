@@ -643,6 +643,8 @@ class PurposeMetadataAction(str, Enum):
     READ_ATLAN_TAG = "entity-read-classification"
     UPDATE_ATLAN_TAG = "entity-update-classification"
     REMOVE_ATLAN_TAG = "entity-remove-classification"
+    ATTACH_TERMS = "purpose-add-terms"
+    DETACH_TERMS = "purpose-remove-terms"
 
 
 class PersonaMetadataAction(str, Enum):

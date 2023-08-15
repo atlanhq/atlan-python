@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import List, Optional, Any
+from typing import Any, Optional
 
 from pydantic import Field
 
@@ -11,28 +11,28 @@ from pyatlan.model.core import AtlanObject
 
 class AtlanGroup(AtlanObject):
     class Attributes(AtlanObject):
-        alias: Optional[List[str]] = Field(
+        alias: Optional[list[str]] = Field(
             description="Name of the group as it appears in the UI."
         )
-        created_at: Optional[List[str]] = Field(
+        created_at: Optional[list[str]] = Field(
             description="Time (epoch) at which the group was created, in milliseconds."
         )
-        created_by: Optional[List[str]] = Field(
+        created_by: Optional[list[str]] = Field(
             description="User who created the group."
         )
-        updated_at: Optional[List[str]] = Field(
+        updated_at: Optional[list[str]] = Field(
             description="Time (epoch) at which the group was last updated, in milliseconds."
         )
-        updated_by: Optional[List[str]] = Field(
+        updated_by: Optional[list[str]] = Field(
             description="User who last updated the group."
         )
-        description: Optional[List[str]] = Field(
+        description: Optional[list[str]] = Field(
             description="Description of the group."
         )
-        is_default: Optional[List[str]] = Field(
+        is_default: Optional[list[str]] = Field(
             description="Whether this group should be auto-assigned to all new users or not."
         )
-        channels: Optional[List[str]] = Field(
+        channels: Optional[list[str]] = Field(
             description="Slack channels for this group."
         )
 
@@ -42,14 +42,14 @@ class AtlanGroup(AtlanObject):
     attributes: Optional[AtlanGroup.Attributes] = Field(
         description="Detailed attributes of the group."
     )
-    decentralized_roles: Optional[str] = Field(description="TBC")
+    decentralized_roles: Optional[list[Any]] = Field(description="TBC")
     id: Optional[str] = Field(description="Unique identifier for the group (GUID).")
     name: Optional[str] = Field(description="Unique (internal) name for the group.")
     path: Optional[str] = Field(description="TBC")
-    personas: Optional[List[Any]] = Field(
+    personas: Optional[list[Any]] = Field(
         description="Personas the group is associated with."
     )
-    purposes: Optional[List[Any]] = Field(
+    purposes: Optional[list[Any]] = Field(
         description="Purposes the group is associated with."
     )
     user_count: Optional[int] = Field(description="Number of users in the group.")
@@ -108,20 +108,20 @@ class GroupResponse(AtlanObject):
     filter_record: Optional[int] = Field(
         description="Number of groups in the filtered response.",
     )
-    records: Optional[List[AtlanGroup]] = Field(
+    records: Optional[list[AtlanGroup]] = Field(
         description="Details of each group included in the response."
     )
 
 
 class CreateGroupRequest(AtlanObject):
     group: AtlanGroup = Field(description="Group to be created.")
-    users: Optional[List[str]] = Field(
+    users: Optional[list[str]] = Field(
         description="List of users (their GUIDs) to be included in the group."
     )
 
 
 class RemoveFromGroupRequest(AtlanObject):
-    users: Optional[List[str]] = Field(
+    users: Optional[list[str]] = Field(
         description="List of users (their GUIDs) to remove from the group."
     )
 
