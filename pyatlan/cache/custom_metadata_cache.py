@@ -7,23 +7,14 @@ from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
 
-class Synonym:
-    def __init__(self, storage_name):
-        self.storage_name = storage_name
-
-    def __set__(self, instance, value):
-        instance[self.storage_name] = value
-
-    def __get__(self, instance, owner):
-        if self.storage_name in instance:
-            return instance[self.storage_name]
-        return None
-
-
 class CustomMetadataCache:
+    """
+    Lazily-loaded cache for translating between Atlan-internal ID strings and human-readable names
+    for custom metadata (including attributes).
+    """
+
     cache_by_id: dict[str, CustomMetadataDef] = dict()
     map_id_to_name: dict[str, str] = dict()
-    map_id_to_type: dict[str, type] = dict()
     map_name_to_id: dict[str, str] = dict()
     map_attr_id_to_name: dict[str, dict[str, str]] = dict()
     map_attr_name_to_id: dict[str, dict[str, str]] = dict()
@@ -32,6 +23,10 @@ class CustomMetadataCache:
 
     @classmethod
     def refresh_cache(cls) -> None:
+        """
+        Refreshes the cache of custom metadata structures by requesting the full set of custom metadata
+        structures from Atlan.
+        """
         from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_default_client()
@@ -73,6 +68,9 @@ class CustomMetadataCache:
     def get_id_for_name(cls, name: str) -> str:
         """
         Translate the provided human-readable custom metadata set name to its Atlan-internal ID string.
+
+        :param name: human-readable name of the custom metadata set
+        :returns: Atlan-internal ID string of the custom metadata set
         """
         if name is None or not name.strip():
             raise InvalidRequestError(
@@ -95,6 +93,9 @@ class CustomMetadataCache:
     def get_name_for_id(cls, idstr: str) -> str:
         """
         Translate the provided Atlan-internal custom metadata ID string to the human-readable custom metadata set name.
+
+        :param idstr: Atlan-internal ID string of the custom metadata set
+        :returns: human-readable name of the custom metadata set
         """
         if idstr is None or not idstr.strip():
             raise InvalidRequestError(
@@ -114,20 +115,19 @@ class CustomMetadataCache:
         )
 
     @classmethod
-    def get_type_for_id(cls, idstr: str) -> Optional[type]:
-        if cm_type := cls.map_id_to_type.get(idstr):
-            return cm_type
-        cls.refresh_cache()
-        return cls.map_id_to_type.get(idstr)
-
-    @classmethod
     def get_all_custom_attributes(
         cls, include_deleted: bool = False, force_refresh: bool = False
     ) -> dict[str, list[AttributeDef]]:
         """
-        Retrieve all the custom metadata attributes. The map will be keyed by custom metadata set
+        Retrieve all the custom metadata attributes. The dict will be keyed by custom metadata set
         name, and the value will be a listing of all the attributes within that set (with all the details
         of each of those attributes).
+
+        :param include_deleted: if True, include the archived (deleted) custom attributes; otherwise only
+                                include active custom attributes
+        :param force_refresh: if True, will refresh the custom metadata cache; if False, will only refresh the
+                              cache if it is empty
+        :returns: a dict from custom metadata set name to all details about its attributes
         """
         if len(cls.cache_by_id) == 0 or force_refresh:
             cls.refresh_cache()
@@ -157,6 +157,10 @@ class CustomMetadataCache:
         """
         Translate the provided human-readable custom metadata set and attribute names to the Atlan-internal ID string
         for the attribute.
+
+        :param set_name: human-readable name of the custom metadata set
+        :param attr_name: human-readable name of the attribute
+        :returns: Atlan-internal ID string for the attribute
         """
         set_id = cls.get_id_for_name(set_name)
         if sub_map := cls.map_attr_name_to_id.get(set_id):
@@ -183,8 +187,12 @@ class CustomMetadataCache:
     @classmethod
     def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> str:
         """
-        Given the Atlan-internal ID stringfor the set and the Atlan-internal ID for the attribute return the
+        Given the Atlan-internal ID string for the set and the Atlan-internal ID for the attribute return the
         human-readable custom metadata name for the attribute.
+
+        :param set_id: Atlan-internal ID string for the custom metadata set
+        :param attr_id: Atlan-internal ID string for the attribute
+        :returns: human-readable name of the attribute
         """
         if sub_map := cls.map_attr_id_to_name.get(set_id):
             if attr_name := sub_map.get(attr_id):
@@ -209,6 +217,9 @@ class CustomMetadataCache:
     def get_attributes_for_search_results(cls, set_name: str) -> Optional[list[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
+
+        :param set_name: human-readable name of the custom metadata set for which to retrieve attribute names
+        :returns: a list of the attribute names, strictly useful for inclusion in search results
         """
         if set_id := cls.get_id_for_name(set_name):
             if dot_names := cls._get_attributes_for_search_results(set_id):
@@ -221,6 +232,9 @@ class CustomMetadataCache:
     def get_custom_metadata_def(cls, name: str) -> CustomMetadataDef:
         """
         Retrieve the full custom metadata structure definition.
+
+        :param name: human-readable name of the custom metadata set
+        :returns: the full custom metadata structure definition for that set
         """
         ba_id = cls.get_id_for_name(name)
         if ba_id is None:

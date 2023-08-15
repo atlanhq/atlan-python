@@ -7,6 +7,11 @@ from pyatlan.model.typedef import AtlanTagDef
 
 
 class AtlanTagCache:
+    """
+    Lazily-loaded cache for translating between Atlan-internal ID strings and human-readable names
+    for Atlan tags.
+    """
+
     cache_by_id: dict[str, AtlanTagDef] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_name_to_id: dict[str, str] = dict()
@@ -15,6 +20,9 @@ class AtlanTagCache:
 
     @classmethod
     def refresh_cache(cls) -> None:
+        """
+        Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
+        """
         from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_default_client()
@@ -35,7 +43,10 @@ class AtlanTagCache:
     @classmethod
     def get_id_for_name(cls, name: str) -> Optional[str]:
         """
-        Translate the provided human-readable classification name to its Atlan-internal ID string.
+        Translate the provided human-readable Atlan tag name to its Atlan-internal ID string.
+
+        :param name: human-readable name of the Atlan tag
+        :returns: Atlan-internal ID string of the Atlan tag
         """
         cls_id = cls.map_name_to_id.get(name)
         if not cls_id and name not in cls.deleted_names:
@@ -52,7 +63,10 @@ class AtlanTagCache:
     @classmethod
     def get_name_for_id(cls, idstr: str) -> Optional[str]:
         """
-        Translate the provided Atlan-internal classification ID string to the human-readable classification name.
+        Translate the provided Atlan-internal classification ID string to the human-readable Atlan tag name.
+
+        :param idstr: Atlan-internal ID string of the Atlan tag
+        :returns: human-readable name of the Atlan tag
         """
         cls_name = cls.map_id_to_name.get(idstr)
         if not cls_name and idstr not in cls.deleted_ids:

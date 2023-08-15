@@ -7,10 +7,17 @@ from pyatlan.model.typedef import EnumDef
 
 
 class EnumCache:
+    """
+    Lazily-loaded cache for accessing details of an enumeration.
+    """
+
     cache_by_name: dict[str, EnumDef] = dict()
 
     @classmethod
     def refresh_cache(cls) -> None:
+        """
+        Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
+        """
         from pyatlan.client.atlan import AtlanClient
 
         client = AtlanClient.get_default_client()
@@ -27,6 +34,9 @@ class EnumCache:
     def get_by_name(cls, name: str) -> Optional[EnumDef]:
         """
         Retrieve the enumeration definition by its name.
+
+        :param name: human-readable name of the enumeration
+        :returns: the enumeration definition
         """
         if name:
             if enum_def := cls.cache_by_name.get(name):
