@@ -45,7 +45,7 @@ def file(client: AtlanClient, connection: Connection) -> Generator[File, None, N
         file_type=FileType.PDF,
     )
     to_create.file_path = "https://www.example.com"
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     result = response.assets_created(asset_type=File)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=File)

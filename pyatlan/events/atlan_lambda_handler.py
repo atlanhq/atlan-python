@@ -15,6 +15,18 @@ SIGNING_SECRET = str(os.environ.get("SIGNING_SECRET"))
 
 
 def process_event(handler: AtlanEventHandler, event, context):
+    """
+    Handle the Atlan event using the standard 5-step flow:
+    1. Validate prerequisites.
+    2. Retrieve current state of the asset.
+    3. Apply any changes (in-memory).
+    4. Determine whether any changes actually would be applied (idempotency).
+    5. Apply changes back to Atlan (only if (4) shows there are changes to apply).
+
+    :param handler: the event handler that should process the event
+    :param event: the event payload, from Atlan
+    :param context: context in which the event was received by the AWS Lambda function
+    """
     body = event.get("body")
     if is_validation_request(body):
         print("Matches a validation request - doing nothing and succeeding.")

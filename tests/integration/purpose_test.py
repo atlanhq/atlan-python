@@ -37,7 +37,7 @@ def purpose(
     atlan_tag: AtlanTagDef,
 ) -> Generator[Purpose, None, None]:
     to_create = Purpose.create(name=MODULE_NAME, atlan_tags=[atlan_tag.display_name])
-    response = client.upsert(to_create)
+    response = client.save(to_create)
     p = response.assets_created(asset_type=Purpose)[0]
     yield p
     delete_asset(client, guid=p.guid, asset_type=Purpose)
@@ -69,7 +69,7 @@ def test_update_purpose(
         AssetSidebarTab.RELATIONS.value,
         AssetSidebarTab.QUERIES.value,
     }
-    response = client.upsert(to_update)
+    response = client.save(to_update)
     assert response
     updated = response.assets_updated(asset_type=Purpose)
     assert updated
@@ -117,7 +117,7 @@ def test_add_policies_to_purpose(
         all_users=True,
     )
     data.policy_mask_type = DataMaskingType.HASH
-    response = client.upsert([metadata, data])
+    response = client.save([metadata, data])
     assert response
     purposes = response.assets_updated(asset_type=Purpose)
     assert purposes
