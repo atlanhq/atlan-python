@@ -10,6 +10,7 @@ import json
 import logging
 import os
 import time
+import uuid
 from abc import ABC
 from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
@@ -437,7 +438,14 @@ class AtlanClient(BaseSettings):
 
     def __init__(self, **data):
         super().__init__(**data)
-        self._request_params = {"headers": {"authorization": f"Bearer {self.api_key}"}}
+        self._request_params = {
+            "headers": {
+                "authorization": f"Bearer {self.api_key}",
+                "User-Agent": "Atlan-PythonSDK/0.5.0",
+                "x-atlan-agent": "sdk",
+                "x-atlan-agent-id": "python",
+            }
+        }
 
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
@@ -517,8 +525,10 @@ class AtlanClient(BaseSettings):
     ):
         params = copy.deepcopy(self._request_params)
         path = os.path.join(self.base_url, api.path)
+        request_id = str(uuid.uuid4())
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
+        params["headers"]["X-Atlan-Request-Id"] = request_id
         if query_params is not None:
             params["params"] = query_params
         if request_obj is not None:
@@ -533,6 +543,7 @@ class AtlanClient(BaseSettings):
             LOGGER.debug("Call         : %s %s", api.method, path)
             LOGGER.debug("Content-type_ : %s", api.consumes)
             LOGGER.debug("Accept       : %s", api.produces)
+            LOGGER.debug("Request ID   : %s", request_id)
         return params, path
 
     def upload_image(self, file, filename: str) -> AtlanImage:
