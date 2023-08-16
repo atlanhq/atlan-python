@@ -310,6 +310,8 @@ class MetabaseDashboard(Metabase):
 
 MetabaseQuestion.Attributes.update_forward_refs()
 
+
 MetabaseCollection.Attributes.update_forward_refs()
+
 
 MetabaseDashboard.Attributes.update_forward_refs()

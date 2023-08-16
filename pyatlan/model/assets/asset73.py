@@ -676,10 +676,14 @@ class SalesforceReport(Salesforce):
 
 SalesforceObject.Attributes.update_forward_refs()
 
+
 SalesforceField.Attributes.update_forward_refs()
+
 
 SalesforceOrganization.Attributes.update_forward_refs()
 
+
 SalesforceDashboard.Attributes.update_forward_refs()
+
 
 SalesforceReport.Attributes.update_forward_refs()

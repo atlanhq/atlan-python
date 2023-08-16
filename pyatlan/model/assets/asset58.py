@@ -463,10 +463,14 @@ class ModeCollection(Mode):
 
 ModeReport.Attributes.update_forward_refs()
 
+
 ModeQuery.Attributes.update_forward_refs()
+
 
 ModeChart.Attributes.update_forward_refs()
 
+
 ModeWorkspace.Attributes.update_forward_refs()
+
 
 ModeCollection.Attributes.update_forward_refs()

@@ -1542,11 +1542,6 @@ class IndexType(str, Enum):
     STRING = "STRING"
 
 
-class KafkaTopicCleanupPolicy(str, Enum):
-    COMPACT = "compact"
-    DELETE = "delete"
-
-
 class KeycloakEventType(str, Enum):
     LOGIN = "LOGIN"
     LOGIN_ERROR = "LOGIN_ERROR"
@@ -1722,6 +1717,11 @@ class SortOrder(str, Enum):
     DESCENDING = "desc"
 
 
+class TagIconType(str, Enum):
+    IMAGE = "image"
+    ICON = "icon"
+
+
 class TypeName(str, Enum):
     STRING = "string"
     ARRAY_STRING = "array<string>"
@@ -1730,6 +1730,8 @@ class TypeName(str, Enum):
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************
+
+
 class ADLSAccessTier(str, Enum):
     COOL = "Cool"
     HOT = "Hot"
@@ -1797,6 +1799,37 @@ class ADLSStorageKind(str, Enum):
     STORAGE_V2 = "StorageV2"
 
 
+class AtlasGlossaryTermAssignmentStatus(str, Enum):
+    DISCOVERED = "DISCOVERED"
+    PROPOSED = "PROPOSED"
+    IMPORTED = "IMPORTED"
+    VALIDATED = "VALIDATED"
+    DEPRECATED = "DEPRECATED"
+    OBSOLETE = "OBSOLETE"
+    OTHER = "OTHER"
+
+
+class AtlasGlossaryTermRelationshipStatus(str, Enum):
+    DRAFT = "DRAFT"
+    ACTIVE = "ACTIVE"
+    DEPRECATED = "DEPRECATED"
+    OBSOLETE = "OBSOLETE"
+    OTHER = "OTHER"
+
+
+class AtlasOperation(str, Enum):
+    OTHERS = "OTHERS"
+    PURGE = "PURGE"
+    EXPORT = "EXPORT"
+    IMPORT = "IMPORT"
+    IMPORT_DELETE_REPL = "IMPORT_DELETE_REPL"
+    TYPE_DEF_CREATE = "TYPE_DEF_CREATE"
+    TYPE_DEF_UPDATE = "TYPE_DEF_UPDATE"
+    TYPE_DEF_DELETE = "TYPE_DEF_DELETE"
+    SERVER_START = "SERVER_START"
+    SERVER_STATE_ACTIVE = "SERVER_STATE_ACTIVE"
+
+
 class AuthPolicyCategory(str, Enum):
     BOOTSTRAP = "bootstrap"
     PERSONA = "persona"
@@ -1815,39 +1848,43 @@ class AuthPolicyResourceCategory(str, Enum):
 class AuthPolicyType(str, Enum):
     ALLOW = "allow"
     DENY = "deny"
-    ALLOWEXCEPTIONS = "allowExceptions"
-    DENYEXCEPTIONS = "denyExceptions"
-    DATAMASK = "dataMask"
-    ROWFILTER = "rowFilter"
+    ALLOW_EXCEPTIONS = "allowExceptions"
+    DENY_EXCEPTIONS = "denyExceptions"
+    DATA_MASK = "dataMask"
+    ROW_FILTER = "rowFilter"
 
 
 class CertificateStatus(str, Enum):
-    VERIFIED = "VERIFIED"
-    DRAFT = "DRAFT"
     DEPRECATED = "DEPRECATED"
+    DRAFT = "DRAFT"
+    VERIFIED = "VERIFIED"
 
 
 class FileType(str, Enum):
-    CSV = "csv"
-    DOC = "doc"
-    JSON = "json"
     PDF = "pdf"
-    PPT = "ppt"
-    TXT = "txt"
+    DOC = "doc"
     XLS = "xls"
+    PPT = "ppt"
+    CSV = "csv"
+    TXT = "txt"
+    JSON = "json"
     XML = "xml"
     ZIP = "zip"
 
 
 class GoogleDatastudioAssetType(str, Enum):
-    DATA_SOURCE = "DATA_SOURCE"
     REPORT = "REPORT"
+    DATA_SOURCE = "DATA_SOURCE"
 
 
 class IconType(str, Enum):
     IMAGE = "image"
     EMOJI = "emoji"
-    ICON = "icon"
+
+
+class KafkaTopicCleanupPolicy(str, Enum):
+    COMPACT = "compact"
+    DELETE = "delete"
 
 
 class KafkaTopicCompressionType(str, Enum):
@@ -1874,7 +1911,7 @@ class PowerbiEndorsement(str, Enum):
 
 
 class QueryUsernameStrategy(str, Enum):
-    CONNECTION_USERNAME = ("connectionUsername",)
+    CONNECTION_USERNAME = "connectionUsername"
     ATLAN_USERNAME = "atlanUsername"
 
 
@@ -1922,3 +1959,5 @@ class SchemaRegistrySchemaType(str, Enum):
 
 class SourceCostUnitType(str, Enum):
     CREDITS = "Credits"
+    BYTES = "bytes"
+    SLOT_MS = "slot-ms"

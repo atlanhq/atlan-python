@@ -9,7 +9,7 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import KafkaTopicCompressionType, PowerbiEndorsement
+from pyatlan.model.enums import KafkaTopicCleanupPolicy, KafkaTopicCompressionType
 from pyatlan.model.structs import KafkaTopicConsumption
 
 from .asset50 import Kafka
@@ -271,7 +271,7 @@ class KafkaTopic(Kafka):
         self.attributes.kafka_topic_record_count = kafka_topic_record_count
 
     @property
-    def kafka_topic_cleanup_policy(self) -> Optional[PowerbiEndorsement]:
+    def kafka_topic_cleanup_policy(self) -> Optional[KafkaTopicCleanupPolicy]:
         return (
             None
             if self.attributes is None
@@ -280,7 +280,7 @@ class KafkaTopic(Kafka):
 
     @kafka_topic_cleanup_policy.setter
     def kafka_topic_cleanup_policy(
-        self, kafka_topic_cleanup_policy: Optional[PowerbiEndorsement]
+        self, kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
@@ -322,7 +322,7 @@ class KafkaTopic(Kafka):
         kafka_topic_record_count: Optional[int] = Field(
             None, description="", alias="kafkaTopicRecordCount"
         )
-        kafka_topic_cleanup_policy: Optional[PowerbiEndorsement] = Field(
+        kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(
             None, description="", alias="kafkaTopicCleanupPolicy"
         )
         kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
@@ -337,5 +337,6 @@ class KafkaTopic(Kafka):
 
 
 KafkaConsumerGroup.Attributes.update_forward_refs()
+
 
 KafkaTopic.Attributes.update_forward_refs()

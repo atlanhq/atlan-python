@@ -348,8 +348,11 @@ class SigmaDataElement(Sigma):
 
 SigmaWorkbook.Attributes.update_forward_refs()
 
+
 SigmaDataElementField.Attributes.update_forward_refs()
 
+
 SigmaPage.Attributes.update_forward_refs()
+
 
 SigmaDataElement.Attributes.update_forward_refs()

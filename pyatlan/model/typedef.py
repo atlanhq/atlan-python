@@ -13,8 +13,8 @@ from pyatlan.model.enums import (
     AtlanTagColor,
     AtlanTypeCategory,
     Cardinality,
-    IconType,
     IndexType,
+    TagIconType,
 )
 
 _complete_type_list = (
@@ -512,10 +512,10 @@ class AtlanTagDef(TypeDef):
         }
         if image:
             cls_options["imageID"] = str(image.id)
-            cls_options["iconType"] = IconType.IMAGE.value
+            cls_options["iconType"] = TagIconType.IMAGE.value
         else:
             cls_options["imageID"] = ""
-            cls_options["iconType"] = IconType.ICON.value
+            cls_options["iconType"] = TagIconType.ICON.value
 
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
         return AtlanTagDef(

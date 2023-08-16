@@ -494,10 +494,14 @@ class QlikSpace(Qlik):
 
 QlikApp.Attributes.update_forward_refs()
 
+
 QlikChart.Attributes.update_forward_refs()
+
 
 QlikDataset.Attributes.update_forward_refs()
 
+
 QlikSheet.Attributes.update_forward_refs()
+
 
 QlikSpace.Attributes.update_forward_refs()

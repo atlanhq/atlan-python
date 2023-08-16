@@ -263,4 +263,5 @@ class RedashVisualization(Redash):
 
 RedashQuery.Attributes.update_forward_refs()
 
+
 RedashVisualization.Attributes.update_forward_refs()

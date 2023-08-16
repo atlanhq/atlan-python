@@ -1186,18 +1186,26 @@ class MicroStrategyVisualization(MicroStrategy):
 
 MicroStrategyReport.Attributes.update_forward_refs()
 
+
 MicroStrategyProject.Attributes.update_forward_refs()
+
 
 MicroStrategyMetric.Attributes.update_forward_refs()
 
+
 MicroStrategyCube.Attributes.update_forward_refs()
+
 
 MicroStrategyDossier.Attributes.update_forward_refs()
 
+
 MicroStrategyFact.Attributes.update_forward_refs()
+
 
 MicroStrategyDocument.Attributes.update_forward_refs()
 
+
 MicroStrategyAttribute.Attributes.update_forward_refs()
+
 
 MicroStrategyVisualization.Attributes.update_forward_refs()

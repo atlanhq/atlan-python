@@ -391,4 +391,5 @@ class S3Object(S3):
 
 S3Bucket.Attributes.update_forward_refs()
 
+
 S3Object.Attributes.update_forward_refs()

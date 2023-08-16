@@ -11069,94 +11069,140 @@ class SodaCheck(Soda):
 
 Referenceable.Attributes.update_forward_refs()
 
+
 Asset.Attributes.update_forward_refs()
+
 
 AtlasGlossaryCategory.Attributes.update_forward_refs()
 
+
 AtlasGlossary.Attributes.update_forward_refs()
+
 
 AtlasGlossaryTerm.Attributes.update_forward_refs()
 
+
 Process.Attributes.update_forward_refs()
+
 
 Namespace.Attributes.update_forward_refs()
 
+
 Folder.Attributes.update_forward_refs()
+
 
 Catalog.Attributes.update_forward_refs()
 
+
 Tag.Attributes.update_forward_refs()
+
 
 ColumnProcess.Attributes.update_forward_refs()
 
+
 Airflow.Attributes.update_forward_refs()
+
 
 AirflowDag.Attributes.update_forward_refs()
 
+
 AirflowTask.Attributes.update_forward_refs()
+
 
 DataQuality.Attributes.update_forward_refs()
 
+
 Metric.Attributes.update_forward_refs()
+
 
 Resource.Attributes.update_forward_refs()
 
+
 Readme.Attributes.update_forward_refs()
+
 
 File.Attributes.update_forward_refs()
 
+
 Link.Attributes.update_forward_refs()
+
 
 SQL.Attributes.update_forward_refs()
 
+
 Table.Attributes.update_forward_refs()
+
 
 Query.Attributes.update_forward_refs()
 
+
 Schema.Attributes.update_forward_refs()
+
 
 SnowflakePipe.Attributes.update_forward_refs()
 
+
 View.Attributes.update_forward_refs()
+
 
 MaterialisedView.Attributes.update_forward_refs()
 
+
 Function.Attributes.update_forward_refs()
+
 
 TablePartition.Attributes.update_forward_refs()
 
+
 Column.Attributes.update_forward_refs()
+
 
 SnowflakeStream.Attributes.update_forward_refs()
 
+
 Database.Attributes.update_forward_refs()
+
 
 Procedure.Attributes.update_forward_refs()
 
+
 SnowflakeTag.Attributes.update_forward_refs()
+
 
 Dbt.Attributes.update_forward_refs()
 
+
 DbtModelColumn.Attributes.update_forward_refs()
+
 
 DbtTest.Attributes.update_forward_refs()
 
+
 DbtModel.Attributes.update_forward_refs()
+
 
 DbtMetric.Attributes.update_forward_refs()
 
+
 DbtSource.Attributes.update_forward_refs()
+
 
 SchemaRegistry.Attributes.update_forward_refs()
 
+
 SchemaRegistrySubject.Attributes.update_forward_refs()
+
 
 MonteCarlo.Attributes.update_forward_refs()
 
+
 MCIncident.Attributes.update_forward_refs()
+
 
 MCMonitor.Attributes.update_forward_refs()
 
+
 Soda.Attributes.update_forward_refs()
+
 
 SodaCheck.Attributes.update_forward_refs()

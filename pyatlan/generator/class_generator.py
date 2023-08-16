@@ -1,15 +1,16 @@
 import datetime
 import json
 import os
+import re
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+from typing import NamedTuple, Optional
 
 import networkx as nx
 from jinja2 import Environment, PackageLoader
 
 from pyatlan.model.core import to_snake_case
-from pyatlan.model.typedef import EntityDef, TypeDefResponse
+from pyatlan.model.typedef import EntityDef, EnumDef, TypeDefResponse
 
 REFERENCEABLE = "Referenceable"
 TYPE_DEF_FILE = Path(os.getenv("TMPDIR", "/tmp")) / "typedefs.json"
@@ -36,12 +37,13 @@ TYPE_REPLACEMENTS = [
     ("google_datastudio_asset_type", "GoogleDatastudioAssetType"),
     ("powerbi_endorsement", "PowerbiEndorsement"),
     ("kafka_topic_compression_type", "KafkaTopicCompressionType"),
-    ("kafka_topic_cleanup_policy", "PowerbiEndorsement"),
+    ("kafka_topic_cleanup_policy", "KafkaTopicCleanupPolicy"),
     ("quick_sight_folder_type", "QuickSightFolderType"),
     ("quick_sight_dataset_field_type", "QuickSightDatasetFieldType"),
     ("quick_sight_analysis_status", "QuickSightAnalysisStatus"),
     ("quick_sight_dataset_import_mode", "QuickSightDatasetImportMode"),
     ("file_type", "FileType"),
+    ("atlas_operation", "AtlasOperation"),
 ]
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 ADDITIONAL_IMPORTS = {
@@ -52,7 +54,7 @@ ADDITIONAL_IMPORTS = {
 }
 PARENT = Path(__file__).parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
-STRUCTS_DIR = PARENT.parent / "model"
+MODEL_DIR = PARENT.parent / "model"
 
 
 def get_type(type_: str):
@@ -64,14 +66,13 @@ def get_type(type_: str):
 
 def get_type_defs() -> TypeDefResponse:
     if (
-        TYPE_DEF_FILE.exists()
-        and datetime.date.fromtimestamp(os.path.getmtime(TYPE_DEF_FILE))
-        >= datetime.date.today()
+        not TYPE_DEF_FILE.exists()
+        or datetime.date.fromtimestamp(os.path.getmtime(TYPE_DEF_FILE))
+        < datetime.date.today()
     ):
-        with TYPE_DEF_FILE.open() as input_file:
-            return TypeDefResponse(**json.load(input_file))
-    else:
         raise (Exception("Need Type_Def"))
+    with TYPE_DEF_FILE.open() as input_file:
+        return TypeDefResponse(**json.load(input_file))
 
 
 class ModuleStatus(str, Enum):
@@ -83,13 +84,6 @@ class ModuleInfo:
     count: int = 0
     modules: set["ModuleInfo"] = set()
     modules_by_asset_name: dict[str, str] = {}
-
-    @classmethod
-    def update_all_external_dependencies(cls):
-        for module in cls.modules:
-            module.update_external_dependencies(
-                modules_by_asset_name=cls.modules_by_asset_name
-            )
 
     @classmethod
     def check_for_circular_module_dependencies(cls):
@@ -418,14 +412,62 @@ class Generator:
     def render_structs(self, struct_defs):
         template = self.environment.get_template("structs.jinja2")
         content = template.render({"struct_defs": struct_defs})
-        with (STRUCTS_DIR / "structs.py").open("w") as script:
+        with (MODEL_DIR / "structs.py").open("w") as script:
             script.write(content)
+
+    def render_enums(self, enum_defs: "EnumDefInfo"):
+        template = self.environment.get_template("enums.jinja2")
+        content = template.render({"enum_defs": enum_defs})
+        start_of_generated_section_found = False
+        existing_enums = MODEL_DIR / "enums.py"
+        new_enums = MODEL_DIR / "new_enum"
+        with existing_enums.open("r+") as current_file, new_enums.open("w") as new_file:
+            while not start_of_generated_section_found:
+                line = current_file.readline()
+                new_file.write(line)
+                if line.startswith("# CODE BELOW IS GENERATED NOT MODIFY  **"):
+                    line = current_file.readline()
+                    new_file.write(line)
+                    start_of_generated_section_found = True
+            new_file.write(content)
+        new_enums.replace(existing_enums)
+
+
+class KeyValue(NamedTuple):
+    key: str
+    value: str
+
+
+class EnumDefInfo:
+    enum_def_info: list["EnumDefInfo"] = []
+
+    def __init__(self, enum_def: EnumDef):
+        self.name = get_type(enum_def.name)
+        self.element_defs: list[KeyValue] = [
+            self.get_key_value(e)
+            for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal)
+        ]
+
+    def get_key_value(self, element_def: EnumDef.ElementDef):
+        value = element_def.value
+        key = value
+        while match := re.search("[a-z][A-Z]", key):
+            pos = match.regs[0][0] + 1
+            key = f"{key[:pos]}_{key[pos:]}"
+        key = key.upper().replace(".", "_").replace("-", "_")
+        return KeyValue(key, value)
+
+    @classmethod
+    def create(cls, enum_defs):
+        for enum_def in enum_defs:
+            cls.enum_def_info.append(EnumDefInfo(enum_def))
+        cls.enum_def_info = sorted(cls.enum_def_info, key=lambda e: e.name)
 
 
 if __name__ == "__main__":
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
-    for file in (STRUCTS_DIR).glob("structs.py"):
+    for file in (MODEL_DIR).glob("structs.py"):
         file.unlink()
     type_defs = get_type_defs()
     AssetInfo.set_entity_defs(type_defs.entity_defs)
@@ -437,3 +479,5 @@ if __name__ == "__main__":
         [m for m in ModuleInfo.modules if m.status == ModuleStatus.ACTIVE]
     )
     generator.render_structs(type_defs.struct_defs)
+    EnumDefInfo.create(type_defs.enum_defs)
+    generator.render_enums(EnumDefInfo.enum_def_info)

@@ -736,14 +736,20 @@ class QuickSightDataset(QuickSight):
 
 QuickSightFolder.Attributes.update_forward_refs()
 
+
 QuickSightDashboardVisual.Attributes.update_forward_refs()
+
 
 QuickSightAnalysisVisual.Attributes.update_forward_refs()
 
+
 QuickSightDatasetField.Attributes.update_forward_refs()
+
 
 QuickSightAnalysis.Attributes.update_forward_refs()
 
+
 QuickSightDashboard.Attributes.update_forward_refs()
+
 
 QuickSightDataset.Attributes.update_forward_refs()

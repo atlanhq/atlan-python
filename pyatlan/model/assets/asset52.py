@@ -332,4 +332,5 @@ class APIPath(API):
 
 APISpec.Attributes.update_forward_refs()
 
+
 APIPath.Attributes.update_forward_refs()

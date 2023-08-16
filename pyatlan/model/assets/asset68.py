@@ -144,4 +144,5 @@ class ThoughtspotDashlet(Thoughtspot):
 
 ThoughtspotLiveboard.Attributes.update_forward_refs()
 
+
 ThoughtspotDashlet.Attributes.update_forward_refs()

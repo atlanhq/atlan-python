@@ -594,8 +594,11 @@ class PresetWorkspace(Preset):
 
 PresetChart.Attributes.update_forward_refs()
 
+
 PresetDataset.Attributes.update_forward_refs()
 
+
 PresetDashboard.Attributes.update_forward_refs()
+
 
 PresetWorkspace.Attributes.update_forward_refs()

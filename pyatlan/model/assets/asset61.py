@@ -1674,18 +1674,26 @@ class TableauWorksheet(Tableau):
 
 TableauWorkbook.Attributes.update_forward_refs()
 
+
 TableauDatasourceField.Attributes.update_forward_refs()
+
 
 TableauCalculatedField.Attributes.update_forward_refs()
 
+
 TableauProject.Attributes.update_forward_refs()
+
 
 TableauSite.Attributes.update_forward_refs()
 
+
 TableauDatasource.Attributes.update_forward_refs()
+
 
 TableauDashboard.Attributes.update_forward_refs()
 
+
 TableauFlow.Attributes.update_forward_refs()
+
 
 TableauWorksheet.Attributes.update_forward_refs()

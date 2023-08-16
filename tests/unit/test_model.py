@@ -164,6 +164,7 @@ from pyatlan.model.enums import (
     FileType,
     GoogleDatastudioAssetType,
     IconType,
+    KafkaTopicCleanupPolicy,
     KafkaTopicCompressionType,
     OpenLineageRunState,
     PowerbiEndorsement,
@@ -453,6 +454,7 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[OpenLineageRunState]": OpenLineageRunState.RUNNING,
     "Optional[list[Function]]": [Function()],
     "Optional[SchemaRegistrySchemaType]": SchemaRegistrySchemaType.PROTOBUF,
+    "Optional[KafkaTopicCleanupPolicy]": KafkaTopicCleanupPolicy.DELETE,
 }
 
 
