@@ -5,71 +5,47 @@ from datetime import datetime
 from enum import Enum
 
 
-class ADLSEncryptionTypes(str, Enum):
-    MICROSOFT_STORAGE = "Microsoft.Storage"
-    MICROSOFT_KEYVAULT = "Microsoft.Keyvault"
+class AdminOperationType(str, Enum):
+    CREATE = "CREATE"
+    UPDATE = "UPDATE"
+    DELETE = "DELETE"
+    ACTION = "ACTION"
 
 
-class ADLSPerformance(str, Enum):
-    STANDARD = "Standard"
-    PREMIUM = "Premium"
-
-
-class ADLSReplicationType(str, Enum):
-    LRS = "LRS"
-    ZRS = "ZRS"
-    GRS = "GRS"
-    GZRS = "GZRS"
-    RA_GRS = "RA-GRS"
-
-
-class ADLSAccountStatus(str, Enum):
-    AVAILABLE = "Available"
-    UNAVAILABLE = "Unavailable"
-
-
-class ADLSStorageKind(str, Enum):
-    BLOB_STORAGE = "BlobStorage"
-    BLOCK_BLOB_STORAGE = "BlockBlobStorage"
-    FILE_STORAGE = "FileStorage"
-    STORAGE = "Storage"
-    STORAGE_V2 = "StorageV2"
-
-
-class ADLSProvisionState(str, Enum):
-    CREATING = "Creating"
-    RESOLVING_DNS = "ResolvingDNS"
-    SUCCEEDED = "Succeeded"
-
-
-class ADLSAccessTier(str, Enum):
-    COOL = "Cool"
-    HOT = "Hot"
-    ARCHIVE = "Archive"
-
-
-class ADLSLeaseState(str, Enum):
-    AVAILABLE = "Available"
-    LEASED = "Leased"
-    EXPIRED = "Expired"
-    BREAKING = "Breaking"
-    BROKEN = "Broken"
-
-
-class ADLSLeaseStatus(str, Enum):
-    LOCKED = "Locked"
-    UNLOCKED = "Unlocked"
-
-
-class ADLSObjectType(str, Enum):
-    BLOCK_BLOB = "BlockBlob"
-    PAGE_BLOB = "PageBlob"
-    APPEND_BLOB = "AppendBlob"
-
-
-class ADLSObjectArchiveStatus(str, Enum):
-    REHYDRATE_PENDING_TO_HOT = "rehydrate-pending-to-hot"
-    REHYDRATE_PENDING_TO_COOL = "rehydrate-pending-to-cool"
+class AdminResourceType(str, Enum):
+    REALM = "REALM"
+    REALM_ROLE = "REALM_ROLE"
+    REALM_ROLE_MAPPING = "REALM_ROLE_MAPPING"
+    REALM_SCOPE_MAPPING = "REALM_SCOPE_MAPPING"
+    AUTH_FLOW = "AUTH_FLOW"
+    AUTH_EXECUTION_FLOW = "AUTH_EXECUTION_FLOW"
+    AUTH_EXECUTION = "AUTH_EXECUTION"
+    AUTHENTICATOR_CONFIG = "AUTHENTICATOR_CONFIG"
+    REQUIRED_ACTION = "REQUIRED_ACTION"
+    IDENTITY_PROVIDER = "IDENTITY_PROVIDER"
+    IDENTITY_PROVIDER_MAPPER = "IDENTITY_PROVIDER_MAPPER"
+    PROTOCOL_MAPPER = "PROTOCOL_MAPPER"
+    USER = "USER"
+    USER_LOGIN_FAILURE = "USER_LOGIN_FAILURE"
+    USER_SESSION = "USER_SESSION"
+    USER_FEDERATION_PROVIDER = "USER_FEDERATION_PROVIDER"
+    USER_FEDERATION_MAPPER = "USER_FEDERATION_MAPPER"
+    GROUP = "GROUP"
+    GROUP_MEMBERSHIP = "GROUP_MEMBERSHIP"
+    CLIENT = "CLIENT"
+    CLIENT_INITIAL_ACCESS_MODEL = "CLIENT_INITIAL_ACCESS_MODEL"
+    CLIENT_ROLE = "CLIENT_ROLE"
+    CLIENT_ROLE_MAPPING = "CLIENT_ROLE_MAPPING"
+    CLIENT_SCOPE = "CLIENT_SCOPE"
+    CLIENT_SCOPE_MAPPING = "CLIENT_SCOPE_MAPPING"
+    CLIENT_SCOPE_CLIENT_MAPPING = "CLIENT_SCOPE_CLIENT_MAPPING"
+    CLUSTER_NODE = "CLUSTER_NODE"
+    COMPONENT = "COMPONENT"
+    AUTHORIZATION_RESOURCE_SERVER = "AUTHORIZATION_RESOURCE_SERVER"
+    AUTHORIZATION_RESOURCE = "AUTHORIZATION_RESOURCE"
+    AUTHORIZATION_SCOPE = "AUTHORIZATION_SCOPE"
+    AUTHORIZATION_POLICY = "AUTHORIZATION_POLICY"
+    CUSTOM = "CUSTOM"
 
 
 class AnnouncementType(str, Enum):
@@ -78,111 +54,31 @@ class AnnouncementType(str, Enum):
     ISSUE = "issue"
 
 
-class Cardinality(str, Enum):
-    SINGLE = "SINGLE"
-    LIST = "LIST"
-    SET = "SET"
+class AssetSidebarTab(str, Enum):
+    INCIDENTS = "Incidents"
+    VISUALS = "Visuals"
+    COLUMNS = "Columns"
+    RUNS = "Runs"
+    TASKS = "Tasks"
+    USAGE = "Usage"
+    OBJECTS = "Objects"
+    LINEAGE = "Lineage"
+    FIELDS = "Fields"
+    VISUALIZATIONS = "Visualizations"
+    RELATIONS = "Relations"
+    PROFILE = "Profile"
+    ASSETS = "Assets"
+    ACTIVITY = "Activity"
+    SCHEDULES = "Schedules"
+    RESOURCES = "Resources"
+    QUERIES = "Queries"
+    REQUESTS = "Requests"
+    PROPERTIES = "Properties"
+    MONTE_CARLO = "Monte Carlo"
 
 
-class CertificateStatus(str, Enum):
-    VERIFIED = "VERIFIED"
-    DRAFT = "DRAFT"
-    DEPRECATED = "DEPRECATED"
-
-
-class EntityStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    DELETED = "DELETED"
-
-
-class AtlanTypeCategory(str, Enum):
-    ENUM = "ENUM"
-    STRUCT = "STRUCT"
-    CLASSIFICATION = "CLASSIFICATION"
-    ENTITY = "ENTITY"
-    RELATIONSHIP = "RELATIONSHIP"
-    CUSTOM_METADATA = "BUSINESS_METADATA"
-
-
-class TypeName(str, Enum):
-    STRING = "string"
-    ARRAY_STRING = "array<string>"
-
-
-class IndexType(str, Enum):
-    DEFAULT = "DEFAULT"
-    STRING = "STRING"
-
-
-class GoogleDatastudioAssetType(str, Enum):
-    DATA_SOURCE = "DATA_SOURCE"
-    REPORT = "REPORT"
-
-
-class PowerbiEndorsement(str, Enum):
-    PROMOTED = "Promoted"
-    CERTIFIED = "Certified"
-
-
-class QueryUsernameStrategy(str, Enum):
-    CONNECTION_USERNAME = ("connectionUsername",)
-    ATLAN_USERNAME = "atlanUsername"
-
-
-class IconType(str, Enum):
-    IMAGE = "image"
-    EMOJI = "emoji"
-    ICON = "icon"
-
-
-class SourceCostUnitType(str, Enum):
-    CREDITS = "Credits"
-
-
-class AtlanDeleteType(str, Enum):
-    HARD = "HARD"
-    SOFT = "SOFT"
-    PURGE = "PURGE"
-
-
-class KafkaTopicCompressionType(str, Enum):
-    UNCOMPRESSED = "uncompressed"
-    ZSTD = "zstd"
-    LZ4 = "lz4"
-    SNAPPY = "snappy"
-    GZIP = "gzip"
-    PRODUCER = "producer"
-
-
-class KafkaTopicCleanupPolicy(str, Enum):
-    COMPACT = "compact"
-    DELETE = "delete"
-
-
-class QuickSightFolderType(str, Enum):
-    SHARED = "SHARED"
-
-
-class QuickSightDatasetFieldType(str, Enum):
-    STRING = "STRING"
-    INTEGER = "INTEGER"
-    DECIMAL = "DECIMAL"
-    DATETIME = "DATETIME"
-
-
-class QuickSightAnalysisStatus(str, Enum):
-    CREATION_IN_PROGRESS = "CREATION_IN_PROGRESS"
-    CREATION_SUCCESSFUL = "CREATION_SUCCESSFUL"
-    CREATION_FAILED = "CREATION_FAILED"
-    UPDATE_IN_PROGRESS = "UPDATE_IN_PROGRESS"
-    UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFUL"
-    UPDATE_FAILED = "UPDATE_FAILED"
-    DELETED = "DELETED"
-
-
-class QuickSightDatasetImportMode(str, Enum):
-    SPICE = "SPICE"
-    DIRECT_QUERY = "DIRECT_QUERY"
+class AtlanComparisonOperator(str, Enum):
+    CONTAINS = "contains"
 
 
 class AtlanConnectionCategory(str, Enum):
@@ -327,348 +223,10 @@ class AtlanCustomAttributePrimitiveType(str, Enum):
     SQL = "SQL"
 
 
-class SortOrder(str, Enum):
-    ASCENDING = "asc"
-    DESCENDING = "desc"
-
-
-class LineageDirection(str, Enum):
-    UPSTREAM = "INPUT"
-    DOWNSTREAM = "OUTPUT"
-    BOTH = "BOTH"
-
-
-class AtlanComparisonOperator(str, Enum):
-    CONTAINS = "contains"
-
-
-class BadgeComparisonOperator(str, Enum):
-    GT = "gt"
-    GTE = "gte"
-    LT = "lt"
-    LTE = "lte"
-    EQ = "eq"
-    NEQ = "neq"
-
-
-class BadgeConditionColor(str, Enum):
-    GREEN = "#047960"
-    YELLOW = "#F7B43D"
-    RED = "#BF1B1B"
-    GREY = "#525C73"
-
-
-class FileType(str, Enum):
-    CSV = "csv"
-    DOC = "doc"
-    JSON = "json"
-    PDF = "pdf"
-    PPT = "ppt"
-    TXT = "txt"
-    XLS = "xls"
-    XML = "xml"
-    ZIP = "zip"
-
-
-class AtlanTagColor(str, Enum):
-    GREEN = "Green"
-    YELLOW = "Yellow"
-    RED = "Red"
-    GRAY = "Gray"
-
-
-class OpenLineageRunState(str, Enum):
-    START = "START"
-    RUNNING = "RUNNING"
-    COMPLETE = "COMPLETE"
-    ABORT = "ABORT"
-    FAIL = "FAIL"
-    OTHER = "OTHER"
-
-
-class SchemaRegistrySchemaType(str, Enum):
-    AVRO = "AVRO"
-    JSON = "JSON"
-    PROTOBUF = "PROTOBUF"
-
-
-class SchemaRegistrySchemaCompatibility(str, Enum):
-    BACKWARD = "BACKWARD"
-    BACKWARD_TRANSITIVE = "BACKWARD_TRANSITIVE"
-    FORWARD = "FORWARD"
-    FORWARD_TRANSITIVE = "FORWARD_TRANSITIVE"
-    FULL = "FULL"
-    FULL_TRANSITIVE = "FULL_TRANSITIVE"
-    NONE = "NONE"
-
-
-class QueryParserSourceType(str, Enum):
-    ANSI = "ansi"
-    BIGQUERY = "bigquery"
-    HANA = "hana"
-    HIVE = "hive"
-    MSSQL = "mssql"
-    MYSQL = "mysql"
-    ORACLE = "oracle"
-    POSTGRESQL = "postgresql"
-    REDSHIFT = "redshift"
-    SNOWFLAKE = "snowflake"
-    SPARKSQL = "sparksql"
-    ATHENA = "athena"
-
-
-# Source: keycloak > server-spi-private/src/main/java/org/keycloak/events/admin/OperationType.java
-class AdminOperationType(str, Enum):
-    CREATE = "CREATE"
-    UPDATE = "UPDATE"
-    DELETE = "DELETE"
-    ACTION = "ACTION"
-
-
-# Source: keycloak > server-spi-private/src/main/java/org/keycloak/events/admin/ResourceType.java
-class AdminResourceType(str, Enum):
-    REALM = "REALM"
-    REALM_ROLE = "REALM_ROLE"
-    REALM_ROLE_MAPPING = "REALM_ROLE_MAPPING"
-    REALM_SCOPE_MAPPING = "REALM_SCOPE_MAPPING"
-    AUTH_FLOW = "AUTH_FLOW"
-    AUTH_EXECUTION_FLOW = "AUTH_EXECUTION_FLOW"
-    AUTH_EXECUTION = "AUTH_EXECUTION"
-    AUTHENTICATOR_CONFIG = "AUTHENTICATOR_CONFIG"
-    REQUIRED_ACTION = "REQUIRED_ACTION"
-    IDENTITY_PROVIDER = "IDENTITY_PROVIDER"
-    IDENTITY_PROVIDER_MAPPER = "IDENTITY_PROVIDER_MAPPER"
-    PROTOCOL_MAPPER = "PROTOCOL_MAPPER"
-    USER = "USER"
-    USER_LOGIN_FAILURE = "USER_LOGIN_FAILURE"
-    USER_SESSION = "USER_SESSION"
-    USER_FEDERATION_PROVIDER = "USER_FEDERATION_PROVIDER"
-    USER_FEDERATION_MAPPER = "USER_FEDERATION_MAPPER"
-    GROUP = "GROUP"
-    GROUP_MEMBERSHIP = "GROUP_MEMBERSHIP"
-    CLIENT = "CLIENT"
-    CLIENT_INITIAL_ACCESS_MODEL = "CLIENT_INITIAL_ACCESS_MODEL"
-    CLIENT_ROLE = "CLIENT_ROLE"
-    CLIENT_ROLE_MAPPING = "CLIENT_ROLE_MAPPING"
-    CLIENT_SCOPE = "CLIENT_SCOPE"
-    CLIENT_SCOPE_MAPPING = "CLIENT_SCOPE_MAPPING"
-    CLIENT_SCOPE_CLIENT_MAPPING = "CLIENT_SCOPE_CLIENT_MAPPING"
-    CLUSTER_NODE = "CLUSTER_NODE"
-    COMPONENT = "COMPONENT"
-    AUTHORIZATION_RESOURCE_SERVER = "AUTHORIZATION_RESOURCE_SERVER"
-    AUTHORIZATION_RESOURCE = "AUTHORIZATION_RESOURCE"
-    AUTHORIZATION_SCOPE = "AUTHORIZATION_SCOPE"
-    AUTHORIZATION_POLICY = "AUTHORIZATION_POLICY"
-    CUSTOM = "CUSTOM"
-
-
-# Source: keycloak > server-spi-private/src/main/java/org/keycloak/events/EventType.java
-class KeycloakEventType(str, Enum):
-    LOGIN = "LOGIN"
-    LOGIN_ERROR = "LOGIN_ERROR"
-    REGISTER = "REGISTER"
-    REGISTER_ERROR = "REGISTER_ERROR"
-    LOGOUT = "LOGOUT"
-    LOGOUT_ERROR = "LOGOUT_ERROR"
-    CODE_TO_TOKEN = "CODE_TO_TOKEN"  # noqa: S105
-    CODE_TO_TOKEN_ERROR = "CODE_TO_TOKEN_ERROR"  # noqa: S105
-    CLIENT_LOGIN = "CLIENT_LOGIN"
-    CLIENT_LOGIN_ERROR = "CLIENT_LOGIN_ERROR"
-    REFRESH_TOKEN = "REFRESH_TOKEN"  # noqa: S105
-    REFRESH_TOKEN_ERROR = "REFRESH_TOKEN_ERROR"  # noqa: S105
-    VALIDATE_ACCESS_TOKEN = "VALIDATE_ACCESS_TOKEN"  # noqa: S105
-    VALIDATE_ACCESS_TOKEN_ERROR = "VALIDATE_ACCESS_TOKEN_ERROR"  # noqa: S105
-    INTROSPECT_TOKEN = "INTROSPECT_TOKEN"  # noqa: S105
-    INTROSPECT_TOKEN_ERROR = "INTROSPECT_TOKEN_ERROR"  # noqa: S105
-    FEDERATED_IDENTITY_LINK = "FEDERATED_IDENTITY_LINK"
-    FEDERATED_IDENTITY_LINK_ERROR = "FEDERATED_IDENTITY_LINK_ERROR"
-    REMOVE_FEDERATED_IDENTITY = "REMOVE_FEDERATED_IDENTITY"
-    REMOVE_FEDERATED_IDENTITY_ERROR = "REMOVE_FEDERATED_IDENTITY_ERROR"
-    UPDATE_EMAIL = "UPDATE_EMAIL"
-    UPDATE_EMAIL_ERROR = "UPDATE_EMAIL_ERROR"
-    UPDATE_PROFILE = "UPDATE_PROFILE"
-    UPDATE_PROFILE_ERROR = "UPDATE_PROFILE_ERROR"
-    UPDATE_PASSWORD = "UPDATE_PASSWORD"  # noqa: S105
-    UPDATE_PASSWORD_ERROR = "UPDATE_PASSWORD_ERROR"  # noqa: S105
-    UPDATE_TOTP = "UPDATE_TOTP"
-    UPDATE_TOTP_ERROR = "UPDATE_TOTP_ERROR"
-    VERIFY_EMAIL = "VERIFY_EMAIL"
-    VERIFY_EMAIL_ERROR = "VERIFY_EMAIL_ERROR"
-    VERIFY_PROFILE = "VERIFY_PROFILE"
-    VERIFY_PROFILE_ERROR = "VERIFY_PROFILE_ERROR"
-    REMOVE_TOTP = "REMOVE_TOTP"
-    REMOVE_TOTP_ERROR = "REMOVE_TOTP_ERROR"
-    GRANT_CONSENT = "GRANT_CONSENT"
-    GRANT_CONSENT_ERROR = "GRANT_CONSENT_ERROR"
-    UPDATE_CONSENT = "UPDATE_CONSENT"
-    UPDATE_CONSENT_ERROR = "UPDATE_CONSENT_ERROR"
-    REVOKE_GRANT = "REVOKE_GRANT"
-    REVOKE_GRANT_ERROR = "REVOKE_GRANT_ERROR"
-    SEND_VERIFY_EMAIL = "SEND_VERIFY_EMAIL"
-    SEND_VERIFY_EMAIL_ERROR = "SEND_VERIFY_EMAIL_ERROR"
-    SEND_RESET_PASSWORD = "SEND_RESET_PASSWORD"  # noqa: S105
-    SEND_RESET_PASSWORD_ERROR = "SEND_RESET_PASSWORD_ERROR"  # noqa: S105
-    SEND_IDENTITY_PROVIDER_LINK = "SEND_IDENTITY_PROVIDER_LINK"
-    SEND_IDENTITY_PROVIDER_LINK_ERROR = "SEND_IDENTITY_PROVIDER_LINK_ERROR"
-    RESET_PASSWORD = "RESET_PASSWORD"  # noqa: S105
-    RESET_PASSWORD_ERROR = "RESET_PASSWORD_ERROR"  # noqa: S105
-    RESTART_AUTHENTICATION = "RESTART_AUTHENTICATION"
-    RESTART_AUTHENTICATION_ERROR = "RESTART_AUTHENTICATION_ERROR"
-    INVALID_SIGNATURE = "INVALID_SIGNATURE"
-    INVALID_SIGNATURE_ERROR = "INVALID_SIGNATURE_ERROR"
-    REGISTER_NODE = "REGISTER_NODE"
-    REGISTER_NODE_ERROR = "REGISTER_NODE_ERROR"
-    UNREGISTER_NODE = "UNREGISTER_NODE"
-    UNREGISTER_NODE_ERROR = "UNREGISTER_NODE_ERROR"
-    USER_INFO_REQUEST = "USER_INFO_REQUEST"
-    USER_INFO_REQUEST_ERROR = "USER_INFO_REQUEST_ERROR"
-    IDENTITY_PROVIDER_LINK_ACCOUNT = "IDENTITY_PROVIDER_LINK_ACCOUNT"
-    IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR = "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR"
-    IDENTITY_PROVIDER_LOGIN = "IDENTITY_PROVIDER_LOGIN"
-    IDENTITY_PROVIDER_LOGIN_ERROR = "IDENTITY_PROVIDER_LOGIN_ERROR"
-    IDENTITY_PROVIDER_FIRST_LOGIN = "IDENTITY_PROVIDER_FIRST_LOGIN"
-    IDENTITY_PROVIDER_FIRST_LOGIN_ERROR = "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
-    IDENTITY_PROVIDER_POST_LOGIN = "IDENTITY_PROVIDER_POST_LOGIN"
-    IDENTITY_PROVIDER_POST_LOGIN_ERROR = "IDENTITY_PROVIDER_POST_LOGIN_ERROR"
-    IDENTITY_PROVIDER_RESPONSE = "IDENTITY_PROVIDER_RESPONSE"
-    IDENTITY_PROVIDER_RESPONSE_ERROR = "IDENTITY_PROVIDER_RESPONSE_ERROR"
-    IDENTITY_PROVIDER_RETRIEVE_TOKEN = "IDENTITY_PROVIDER_RETRIEVE_TOKEN"  # noqa: S105
-    IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR = (
-        "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"  # noqa: S105
-    )
-    IMPERSONATE = "IMPERSONATE"
-    IMPERSONATE_ERROR = "IMPERSONATE_ERROR"
-    CUSTOM_REQUIRED_ACTION = "CUSTOM_REQUIRED_ACTION"
-    CUSTOM_REQUIRED_ACTION_ERROR = "CUSTOM_REQUIRED_ACTION_ERROR"
-    EXECUTE_ACTIONS = "EXECUTE_ACTIONS"
-    EXECUTE_ACTIONS_ERROR = "EXECUTE_ACTIONS_ERROR"
-    EXECUTE_ACTION_TOKEN = "EXECUTE_ACTION_TOKEN"  # noqa: S105
-    EXECUTE_ACTION_TOKEN_ERROR = "EXECUTE_ACTION_TOKEN_ERROR"  # noqa: S105
-    CLIENT_INFO = "CLIENT_INFO"
-    CLIENT_INFO_ERROR = "CLIENT_INFO_ERROR"
-    CLIENT_REGISTER = "CLIENT_REGISTER"
-    CLIENT_REGISTER_ERROR = "CLIENT_REGISTER_ERROR"
-    CLIENT_UPDATE = "CLIENT_UPDATE"
-    CLIENT_UPDATE_ERROR = "CLIENT_UPDATE_ERROR"
-    CLIENT_DELETE = "CLIENT_DELETE"
-    CLIENT_DELETE_ERROR = "CLIENT_DELETE_ERROR"
-    CLIENT_INITIATED_ACCOUNT_LINKING = "CLIENT_INITIATED_ACCOUNT_LINKING"
-    CLIENT_INITIATED_ACCOUNT_LINKING_ERROR = "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR"
-    TOKEN_EXCHANGE = "TOKEN_EXCHANGE"  # noqa: S105
-    TOKEN_EXCHANGE_ERROR = "TOKEN_EXCHANGE_ERROR"  # noqa: S105
-    OAUTH2_DEVICE_AUTH = "OAUTH2_DEVICE_AUTH"
-    OAUTH2_DEVICE_AUTH_ERROR = "OAUTH2_DEVICE_AUTH_ERROR"
-    OAUTH2_DEVICE_VERIFY_USER_CODE = "OAUTH2_DEVICE_VERIFY_USER_CODE"
-    OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR = "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR"
-    OAUTH2_DEVICE_CODE_TO_TOKEN = "OAUTH2_DEVICE_CODE_TO_TOKEN"  # noqa: S105
-    OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR = (
-        "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"  # noqa: S105
-    )
-    AUTHREQID_TO_TOKEN = "AUTHREQID_TO_TOKEN"  # noqa: S105
-    AUTHREQID_TO_TOKEN_ERROR = "AUTHREQID_TO_TOKEN_ERROR"  # noqa: S105
-    PERMISSION_TOKEN = "PERMISSION_TOKEN"  # noqa: S105
-    PERMISSION_TOKEN_ERROR = "PERMISSION_TOKEN_ERROR"  # noqa: S105
-    DELETE_ACCOUNT = "DELETE_ACCOUNT"
-    DELETE_ACCOUNT_ERROR = "DELETE_ACCOUNT_ERROR"
-    PUSHED_AUTHORIZATION_REQUEST = "PUSHED_AUTHORIZATION_REQUEST"
-    PUSHED_AUTHORIZATION_REQUEST_ERROR = "PUSHED_AUTHORIZATION_REQUEST_ERROR"
-
-
-class AuthPolicyType(str, Enum):
-    ALLOW = "allow"
-    DENY = "deny"
-    ALLOWEXCEPTIONS = "allowExceptions"
-    DENYEXCEPTIONS = "denyExceptions"
-    DATAMASK = "dataMask"
-    ROWFILTER = "rowFilter"
-
-
-class DataMaskingType(str, Enum):
-    SHOW_FIRST_4 = "MASK_SHOW_FIRST_4"
-    SHOW_LAST_4 = "MASK_SHOW_LAST_4"
-    HASH = "MASK_HASH"
-    NULLIFY = "MASK_NULL"
-    REDACT = "MASK_REDACT"
-
-
-class AuthPolicyCategory(str, Enum):
-    BOOTSTRAP = "bootstrap"
-    PERSONA = "persona"
-    PURPOSE = "purpose"
-
-
-class AuthPolicyResourceCategory(str, Enum):
-    ENTITY = "ENTITY"
-    RELATIONSHIP = "RELATIONSHIP"
-    TAG = "TAG"
-    CUSTOM = "CUSTOM"
-    TYPEDEFS = "TYPEDEFS"
-    ADMIN = "ADMIN"
-
-
-class AssetSidebarTab(str, Enum):
-    INCIDENTS = "Incidents"
-    VISUALS = "Visuals"
-    COLUMNS = "Columns"
-    RUNS = "Runs"
-    TASKS = "Tasks"
-    USAGE = "Usage"
-    OBJECTS = "Objects"
-    LINEAGE = "Lineage"
-    FIELDS = "Fields"
-    VISUALIZATIONS = "Visualizations"
-    RELATIONS = "Relations"
-    PROFILE = "Profile"
-    ASSETS = "Assets"
-    ACTIVITY = "Activity"
-    SCHEDULES = "Schedules"
-    RESOURCES = "Resources"
-    QUERIES = "Queries"
-    REQUESTS = "Requests"
-    PROPERTIES = "Properties"
-    MONTE_CARLO = "Monte Carlo"
-
-
-class DataAction(str, Enum):
-    SELECT = "select"
-
-
-class PurposeMetadataAction(str, Enum):
-    CREATE = "entity-create"
-    READ = "entity-read"
-    UPDATE = "entity-update"
-    DELETE = "entity-delete"
-    UPDATE_CUSTOM_METADATA = "entity-update-business-metadata"
-    ADD_ATLAN_TAG = "entity-add-classification"
-    READ_ATLAN_TAG = "entity-read-classification"
-    UPDATE_ATLAN_TAG = "entity-update-classification"
-    REMOVE_ATLAN_TAG = "entity-remove-classification"
-    ATTACH_TERMS = "purpose-add-terms"
-    DETACH_TERMS = "purpose-remove-terms"
-
-
-class PersonaMetadataAction(str, Enum):
-    CREATE = "persona-api-create"
-    READ = "persona-asset-read"
-    UPDATE = "persona-asset-update"
-    DELETE = "persona-api-delete"
-    UPDATE_CUSTOM_METADATA = "persona-business-update-metadata"
-    ADD_ATLAN_TAG = "persona-entity-add-classification"
-    UPDATE_ATLAN_TAG = "persona-entity-update-classification"
-    REMOVE_ATLAN_TAG = "persona-entity-remove-classification"
-    ATTACH_TERMS = "persona-add-terms"
-    DETACH_TERMS = "persona-remove-terms"
-
-
-class PersonaGlossaryAction(str, Enum):
-    CREATE = "persona-glossary-create"
-    READ = "persona-glossary-read"
-    UPDATE = "persona-glossary-update"
-    DELETE = "persona-glossary-delete"
-    UPDATE_CUSTOM_METADATA = "persona-glossary-update-custom-metadata"
-    ADD_ATLAN_TAG = "persona-glossary-add-classifications"
-    UPDATE_ATLAN_TAG = "persona-glossary-update-classifications"
-    REMOVE_ATLAN_TAG = "persona-glossary-delete-classifications"
+class AtlanDeleteType(str, Enum):
+    HARD = "HARD"
+    SOFT = "SOFT"
+    PURGE = "PURGE"
 
 
 class AtlanIcon(str, Enum):
@@ -1922,3 +1480,445 @@ class AtlanIcon(str, Enum):
     X_SQUARE = "PhXSquare"
     YIN_YANG = "PhYinYang"
     YOUTUBE_LOGO = "PhYoutubeLogo"
+
+
+class AtlanTagColor(str, Enum):
+    GREEN = "Green"
+    YELLOW = "Yellow"
+    RED = "Red"
+    GRAY = "Gray"
+
+
+class AtlanTypeCategory(str, Enum):
+    ENUM = "ENUM"
+    STRUCT = "STRUCT"
+    CLASSIFICATION = "CLASSIFICATION"
+    ENTITY = "ENTITY"
+    RELATIONSHIP = "RELATIONSHIP"
+    CUSTOM_METADATA = "BUSINESS_METADATA"
+
+
+class BadgeComparisonOperator(str, Enum):
+    GT = "gt"
+    GTE = "gte"
+    LT = "lt"
+    LTE = "lte"
+    EQ = "eq"
+    NEQ = "neq"
+
+
+class BadgeConditionColor(str, Enum):
+    GREEN = "#047960"
+    YELLOW = "#F7B43D"
+    RED = "#BF1B1B"
+    GREY = "#525C73"
+
+
+class Cardinality(str, Enum):
+    SINGLE = "SINGLE"
+    LIST = "LIST"
+    SET = "SET"
+
+
+class DataAction(str, Enum):
+    SELECT = "select"
+
+
+class DataMaskingType(str, Enum):
+    SHOW_FIRST_4 = "MASK_SHOW_FIRST_4"
+    SHOW_LAST_4 = "MASK_SHOW_LAST_4"
+    HASH = "MASK_HASH"
+    NULLIFY = "MASK_NULL"
+    REDACT = "MASK_REDACT"
+
+
+class EntityStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    DELETED = "DELETED"
+
+
+class IndexType(str, Enum):
+    DEFAULT = "DEFAULT"
+    STRING = "STRING"
+
+
+class KafkaTopicCleanupPolicy(str, Enum):
+    COMPACT = "compact"
+    DELETE = "delete"
+
+
+class KeycloakEventType(str, Enum):
+    LOGIN = "LOGIN"
+    LOGIN_ERROR = "LOGIN_ERROR"
+    REGISTER = "REGISTER"
+    REGISTER_ERROR = "REGISTER_ERROR"
+    LOGOUT = "LOGOUT"
+    LOGOUT_ERROR = "LOGOUT_ERROR"
+    CODE_TO_TOKEN = "CODE_TO_TOKEN"  # noqa: S105
+    CODE_TO_TOKEN_ERROR = "CODE_TO_TOKEN_ERROR"  # noqa: S105
+    CLIENT_LOGIN = "CLIENT_LOGIN"
+    CLIENT_LOGIN_ERROR = "CLIENT_LOGIN_ERROR"
+    REFRESH_TOKEN = "REFRESH_TOKEN"  # noqa: S105
+    REFRESH_TOKEN_ERROR = "REFRESH_TOKEN_ERROR"  # noqa: S105
+    VALIDATE_ACCESS_TOKEN = "VALIDATE_ACCESS_TOKEN"  # noqa: S105
+    VALIDATE_ACCESS_TOKEN_ERROR = "VALIDATE_ACCESS_TOKEN_ERROR"  # noqa: S105
+    INTROSPECT_TOKEN = "INTROSPECT_TOKEN"  # noqa: S105
+    INTROSPECT_TOKEN_ERROR = "INTROSPECT_TOKEN_ERROR"  # noqa: S105
+    FEDERATED_IDENTITY_LINK = "FEDERATED_IDENTITY_LINK"
+    FEDERATED_IDENTITY_LINK_ERROR = "FEDERATED_IDENTITY_LINK_ERROR"
+    REMOVE_FEDERATED_IDENTITY = "REMOVE_FEDERATED_IDENTITY"
+    REMOVE_FEDERATED_IDENTITY_ERROR = "REMOVE_FEDERATED_IDENTITY_ERROR"
+    UPDATE_EMAIL = "UPDATE_EMAIL"
+    UPDATE_EMAIL_ERROR = "UPDATE_EMAIL_ERROR"
+    UPDATE_PROFILE = "UPDATE_PROFILE"
+    UPDATE_PROFILE_ERROR = "UPDATE_PROFILE_ERROR"
+    UPDATE_PASSWORD = "UPDATE_PASSWORD"  # noqa: S105
+    UPDATE_PASSWORD_ERROR = "UPDATE_PASSWORD_ERROR"  # noqa: S105
+    UPDATE_TOTP = "UPDATE_TOTP"
+    UPDATE_TOTP_ERROR = "UPDATE_TOTP_ERROR"
+    VERIFY_EMAIL = "VERIFY_EMAIL"
+    VERIFY_EMAIL_ERROR = "VERIFY_EMAIL_ERROR"
+    VERIFY_PROFILE = "VERIFY_PROFILE"
+    VERIFY_PROFILE_ERROR = "VERIFY_PROFILE_ERROR"
+    REMOVE_TOTP = "REMOVE_TOTP"
+    REMOVE_TOTP_ERROR = "REMOVE_TOTP_ERROR"
+    GRANT_CONSENT = "GRANT_CONSENT"
+    GRANT_CONSENT_ERROR = "GRANT_CONSENT_ERROR"
+    UPDATE_CONSENT = "UPDATE_CONSENT"
+    UPDATE_CONSENT_ERROR = "UPDATE_CONSENT_ERROR"
+    REVOKE_GRANT = "REVOKE_GRANT"
+    REVOKE_GRANT_ERROR = "REVOKE_GRANT_ERROR"
+    SEND_VERIFY_EMAIL = "SEND_VERIFY_EMAIL"
+    SEND_VERIFY_EMAIL_ERROR = "SEND_VERIFY_EMAIL_ERROR"
+    SEND_RESET_PASSWORD = "SEND_RESET_PASSWORD"  # noqa: S105
+    SEND_RESET_PASSWORD_ERROR = "SEND_RESET_PASSWORD_ERROR"  # noqa: S105
+    SEND_IDENTITY_PROVIDER_LINK = "SEND_IDENTITY_PROVIDER_LINK"
+    SEND_IDENTITY_PROVIDER_LINK_ERROR = "SEND_IDENTITY_PROVIDER_LINK_ERROR"
+    RESET_PASSWORD = "RESET_PASSWORD"  # noqa: S105
+    RESET_PASSWORD_ERROR = "RESET_PASSWORD_ERROR"  # noqa: S105
+    RESTART_AUTHENTICATION = "RESTART_AUTHENTICATION"
+    RESTART_AUTHENTICATION_ERROR = "RESTART_AUTHENTICATION_ERROR"
+    INVALID_SIGNATURE = "INVALID_SIGNATURE"
+    INVALID_SIGNATURE_ERROR = "INVALID_SIGNATURE_ERROR"
+    REGISTER_NODE = "REGISTER_NODE"
+    REGISTER_NODE_ERROR = "REGISTER_NODE_ERROR"
+    UNREGISTER_NODE = "UNREGISTER_NODE"
+    UNREGISTER_NODE_ERROR = "UNREGISTER_NODE_ERROR"
+    USER_INFO_REQUEST = "USER_INFO_REQUEST"
+    USER_INFO_REQUEST_ERROR = "USER_INFO_REQUEST_ERROR"
+    IDENTITY_PROVIDER_LINK_ACCOUNT = "IDENTITY_PROVIDER_LINK_ACCOUNT"
+    IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR = "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR"
+    IDENTITY_PROVIDER_LOGIN = "IDENTITY_PROVIDER_LOGIN"
+    IDENTITY_PROVIDER_LOGIN_ERROR = "IDENTITY_PROVIDER_LOGIN_ERROR"
+    IDENTITY_PROVIDER_FIRST_LOGIN = "IDENTITY_PROVIDER_FIRST_LOGIN"
+    IDENTITY_PROVIDER_FIRST_LOGIN_ERROR = "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
+    IDENTITY_PROVIDER_POST_LOGIN = "IDENTITY_PROVIDER_POST_LOGIN"
+    IDENTITY_PROVIDER_POST_LOGIN_ERROR = "IDENTITY_PROVIDER_POST_LOGIN_ERROR"
+    IDENTITY_PROVIDER_RESPONSE = "IDENTITY_PROVIDER_RESPONSE"
+    IDENTITY_PROVIDER_RESPONSE_ERROR = "IDENTITY_PROVIDER_RESPONSE_ERROR"
+    IDENTITY_PROVIDER_RETRIEVE_TOKEN = "IDENTITY_PROVIDER_RETRIEVE_TOKEN"  # noqa: S105
+    IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR = (
+        "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"  # noqa: S105
+    )
+    IMPERSONATE = "IMPERSONATE"
+    IMPERSONATE_ERROR = "IMPERSONATE_ERROR"
+    CUSTOM_REQUIRED_ACTION = "CUSTOM_REQUIRED_ACTION"
+    CUSTOM_REQUIRED_ACTION_ERROR = "CUSTOM_REQUIRED_ACTION_ERROR"
+    EXECUTE_ACTIONS = "EXECUTE_ACTIONS"
+    EXECUTE_ACTIONS_ERROR = "EXECUTE_ACTIONS_ERROR"
+    EXECUTE_ACTION_TOKEN = "EXECUTE_ACTION_TOKEN"  # noqa: S105
+    EXECUTE_ACTION_TOKEN_ERROR = "EXECUTE_ACTION_TOKEN_ERROR"  # noqa: S105
+    CLIENT_INFO = "CLIENT_INFO"
+    CLIENT_INFO_ERROR = "CLIENT_INFO_ERROR"
+    CLIENT_REGISTER = "CLIENT_REGISTER"
+    CLIENT_REGISTER_ERROR = "CLIENT_REGISTER_ERROR"
+    CLIENT_UPDATE = "CLIENT_UPDATE"
+    CLIENT_UPDATE_ERROR = "CLIENT_UPDATE_ERROR"
+    CLIENT_DELETE = "CLIENT_DELETE"
+    CLIENT_DELETE_ERROR = "CLIENT_DELETE_ERROR"
+    CLIENT_INITIATED_ACCOUNT_LINKING = "CLIENT_INITIATED_ACCOUNT_LINKING"
+    CLIENT_INITIATED_ACCOUNT_LINKING_ERROR = "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR"
+    TOKEN_EXCHANGE = "TOKEN_EXCHANGE"  # noqa: S105
+    TOKEN_EXCHANGE_ERROR = "TOKEN_EXCHANGE_ERROR"  # noqa: S105
+    OAUTH2_DEVICE_AUTH = "OAUTH2_DEVICE_AUTH"
+    OAUTH2_DEVICE_AUTH_ERROR = "OAUTH2_DEVICE_AUTH_ERROR"
+    OAUTH2_DEVICE_VERIFY_USER_CODE = "OAUTH2_DEVICE_VERIFY_USER_CODE"
+    OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR = "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR"
+    OAUTH2_DEVICE_CODE_TO_TOKEN = "OAUTH2_DEVICE_CODE_TO_TOKEN"  # noqa: S105
+    OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR = (
+        "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"  # noqa: S105
+    )
+    AUTHREQID_TO_TOKEN = "AUTHREQID_TO_TOKEN"  # noqa: S105
+    AUTHREQID_TO_TOKEN_ERROR = "AUTHREQID_TO_TOKEN_ERROR"  # noqa: S105
+    PERMISSION_TOKEN = "PERMISSION_TOKEN"  # noqa: S105
+    PERMISSION_TOKEN_ERROR = "PERMISSION_TOKEN_ERROR"  # noqa: S105
+    DELETE_ACCOUNT = "DELETE_ACCOUNT"
+    DELETE_ACCOUNT_ERROR = "DELETE_ACCOUNT_ERROR"
+    PUSHED_AUTHORIZATION_REQUEST = "PUSHED_AUTHORIZATION_REQUEST"
+    PUSHED_AUTHORIZATION_REQUEST_ERROR = "PUSHED_AUTHORIZATION_REQUEST_ERROR"
+
+
+class LineageDirection(str, Enum):
+    UPSTREAM = "INPUT"
+    DOWNSTREAM = "OUTPUT"
+    BOTH = "BOTH"
+
+
+class PersonaGlossaryAction(str, Enum):
+    CREATE = "persona-glossary-create"
+    READ = "persona-glossary-read"
+    UPDATE = "persona-glossary-update"
+    DELETE = "persona-glossary-delete"
+    UPDATE_CUSTOM_METADATA = "persona-glossary-update-custom-metadata"
+    ADD_ATLAN_TAG = "persona-glossary-add-classifications"
+    UPDATE_ATLAN_TAG = "persona-glossary-update-classifications"
+    REMOVE_ATLAN_TAG = "persona-glossary-delete-classifications"
+
+
+class PersonaMetadataAction(str, Enum):
+    CREATE = "persona-api-create"
+    READ = "persona-asset-read"
+    UPDATE = "persona-asset-update"
+    DELETE = "persona-api-delete"
+    UPDATE_CUSTOM_METADATA = "persona-business-update-metadata"
+    ADD_ATLAN_TAG = "persona-entity-add-classification"
+    UPDATE_ATLAN_TAG = "persona-entity-update-classification"
+    REMOVE_ATLAN_TAG = "persona-entity-remove-classification"
+    ATTACH_TERMS = "persona-add-terms"
+    DETACH_TERMS = "persona-remove-terms"
+
+
+class PurposeMetadataAction(str, Enum):
+    CREATE = "entity-create"
+    READ = "entity-read"
+    UPDATE = "entity-update"
+    DELETE = "entity-delete"
+    UPDATE_CUSTOM_METADATA = "entity-update-business-metadata"
+    ADD_ATLAN_TAG = "entity-add-classification"
+    READ_ATLAN_TAG = "entity-read-classification"
+    UPDATE_ATLAN_TAG = "entity-update-classification"
+    REMOVE_ATLAN_TAG = "entity-remove-classification"
+    ATTACH_TERMS = "purpose-add-terms"
+    DETACH_TERMS = "purpose-remove-terms"
+
+
+class QueryParserSourceType(str, Enum):
+    ANSI = "ansi"
+    BIGQUERY = "bigquery"
+    HANA = "hana"
+    HIVE = "hive"
+    MSSQL = "mssql"
+    MYSQL = "mysql"
+    ORACLE = "oracle"
+    POSTGRESQL = "postgresql"
+    REDSHIFT = "redshift"
+    SNOWFLAKE = "snowflake"
+    SPARKSQL = "sparksql"
+    ATHENA = "athena"
+
+
+class SortOrder(str, Enum):
+    ASCENDING = "asc"
+    DESCENDING = "desc"
+
+
+class TypeName(str, Enum):
+    STRING = "string"
+    ARRAY_STRING = "array<string>"
+
+
+# **************************************
+# CODE BELOW IS GENERATED NOT MODIFY  **
+# **************************************
+class ADLSAccessTier(str, Enum):
+    COOL = "Cool"
+    HOT = "Hot"
+    ARCHIVE = "Archive"
+
+
+class ADLSAccountStatus(str, Enum):
+    AVAILABLE = "Available"
+    UNAVAILABLE = "Unavailable"
+
+
+class ADLSEncryptionTypes(str, Enum):
+    MICROSOFT_STORAGE = "Microsoft.Storage"
+    MICROSOFT_KEYVAULT = "Microsoft.Keyvault"
+
+
+class ADLSLeaseState(str, Enum):
+    AVAILABLE = "Available"
+    LEASED = "Leased"
+    EXPIRED = "Expired"
+    BREAKING = "Breaking"
+    BROKEN = "Broken"
+
+
+class ADLSLeaseStatus(str, Enum):
+    LOCKED = "Locked"
+    UNLOCKED = "Unlocked"
+
+
+class ADLSObjectArchiveStatus(str, Enum):
+    REHYDRATE_PENDING_TO_HOT = "rehydrate-pending-to-hot"
+    REHYDRATE_PENDING_TO_COOL = "rehydrate-pending-to-cool"
+
+
+class ADLSObjectType(str, Enum):
+    BLOCK_BLOB = "BlockBlob"
+    PAGE_BLOB = "PageBlob"
+    APPEND_BLOB = "AppendBlob"
+
+
+class ADLSPerformance(str, Enum):
+    STANDARD = "Standard"
+    PREMIUM = "Premium"
+
+
+class ADLSProvisionState(str, Enum):
+    CREATING = "Creating"
+    RESOLVING_DNS = "ResolvingDNS"
+    SUCCEEDED = "Succeeded"
+
+
+class ADLSReplicationType(str, Enum):
+    LRS = "LRS"
+    ZRS = "ZRS"
+    GRS = "GRS"
+    GZRS = "GZRS"
+    RA_GRS = "RA-GRS"
+
+
+class ADLSStorageKind(str, Enum):
+    BLOB_STORAGE = "BlobStorage"
+    BLOCK_BLOB_STORAGE = "BlockBlobStorage"
+    FILE_STORAGE = "FileStorage"
+    STORAGE = "Storage"
+    STORAGE_V2 = "StorageV2"
+
+
+class AuthPolicyCategory(str, Enum):
+    BOOTSTRAP = "bootstrap"
+    PERSONA = "persona"
+    PURPOSE = "purpose"
+
+
+class AuthPolicyResourceCategory(str, Enum):
+    ENTITY = "ENTITY"
+    RELATIONSHIP = "RELATIONSHIP"
+    TAG = "TAG"
+    CUSTOM = "CUSTOM"
+    TYPEDEFS = "TYPEDEFS"
+    ADMIN = "ADMIN"
+
+
+class AuthPolicyType(str, Enum):
+    ALLOW = "allow"
+    DENY = "deny"
+    ALLOWEXCEPTIONS = "allowExceptions"
+    DENYEXCEPTIONS = "denyExceptions"
+    DATAMASK = "dataMask"
+    ROWFILTER = "rowFilter"
+
+
+class CertificateStatus(str, Enum):
+    VERIFIED = "VERIFIED"
+    DRAFT = "DRAFT"
+    DEPRECATED = "DEPRECATED"
+
+
+class FileType(str, Enum):
+    CSV = "csv"
+    DOC = "doc"
+    JSON = "json"
+    PDF = "pdf"
+    PPT = "ppt"
+    TXT = "txt"
+    XLS = "xls"
+    XML = "xml"
+    ZIP = "zip"
+
+
+class GoogleDatastudioAssetType(str, Enum):
+    DATA_SOURCE = "DATA_SOURCE"
+    REPORT = "REPORT"
+
+
+class IconType(str, Enum):
+    IMAGE = "image"
+    EMOJI = "emoji"
+    ICON = "icon"
+
+
+class KafkaTopicCompressionType(str, Enum):
+    UNCOMPRESSED = "uncompressed"
+    ZSTD = "zstd"
+    LZ4 = "lz4"
+    SNAPPY = "snappy"
+    GZIP = "gzip"
+    PRODUCER = "producer"
+
+
+class OpenLineageRunState(str, Enum):
+    START = "START"
+    RUNNING = "RUNNING"
+    COMPLETE = "COMPLETE"
+    ABORT = "ABORT"
+    FAIL = "FAIL"
+    OTHER = "OTHER"
+
+
+class PowerbiEndorsement(str, Enum):
+    PROMOTED = "Promoted"
+    CERTIFIED = "Certified"
+
+
+class QueryUsernameStrategy(str, Enum):
+    CONNECTION_USERNAME = ("connectionUsername",)
+    ATLAN_USERNAME = "atlanUsername"
+
+
+class QuickSightAnalysisStatus(str, Enum):
+    CREATION_IN_PROGRESS = "CREATION_IN_PROGRESS"
+    CREATION_SUCCESSFUL = "CREATION_SUCCESSFUL"
+    CREATION_FAILED = "CREATION_FAILED"
+    UPDATE_IN_PROGRESS = "UPDATE_IN_PROGRESS"
+    UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFUL"
+    UPDATE_FAILED = "UPDATE_FAILED"
+    DELETED = "DELETED"
+
+
+class QuickSightDatasetFieldType(str, Enum):
+    STRING = "STRING"
+    INTEGER = "INTEGER"
+    DECIMAL = "DECIMAL"
+    DATETIME = "DATETIME"
+
+
+class QuickSightDatasetImportMode(str, Enum):
+    SPICE = "SPICE"
+    DIRECT_QUERY = "DIRECT_QUERY"
+
+
+class QuickSightFolderType(str, Enum):
+    SHARED = "SHARED"
+
+
+class SchemaRegistrySchemaCompatibility(str, Enum):
+    BACKWARD = "BACKWARD"
+    BACKWARD_TRANSITIVE = "BACKWARD_TRANSITIVE"
+    FORWARD = "FORWARD"
+    FORWARD_TRANSITIVE = "FORWARD_TRANSITIVE"
+    FULL = "FULL"
+    FULL_TRANSITIVE = "FULL_TRANSITIVE"
+    NONE = "NONE"
+
+
+class SchemaRegistrySchemaType(str, Enum):
+    AVRO = "AVRO"
+    JSON = "JSON"
+    PROTOBUF = "PROTOBUF"
+
+
+class SourceCostUnitType(str, Enum):
+    CREDITS = "Credits"
