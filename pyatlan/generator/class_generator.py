@@ -52,7 +52,7 @@ ADDITIONAL_IMPORTS = {
 }
 PARENT = Path(__file__).parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
-STRUCTS_DIR = PARENT.parent / "model" / "structs"
+STRUCTS_DIR = PARENT.parent / "model"
 
 
 def get_type(type_: str):
@@ -105,13 +105,6 @@ class ModuleInfo:
                     break
             else:
                 return
-
-    # @classmethod
-    # def update_all_module_dependencies(cls):
-    #     for module in cls.modules:
-    #         module.update_external_module_dependencies(
-    #             modules_by_asset_name=cls.modules_by_asset_name
-    #         )
 
     def __init__(self, asset_info: "AssetInfo"):
         self.order = ModuleInfo.count
@@ -172,23 +165,6 @@ class ModuleInfo:
     def check_for_circular_dependencies(self, asset_info: "AssetInfo"):
         for circular_dependency in asset_info.circular_dependencies:
             self.add_asset_info(circular_dependency)
-
-    # def update_external_dependencies(self, modules_by_asset_name: dict[str, str]):
-    #     for asset_info in self.asset_infos:
-    #         for required_asset_info in asset_info.required_asset_infos:
-    #             if required_asset_info not in self.asset_infos:
-    #                 name = required_asset_info.name
-    #                 required_asset_name = (
-    #                     f"from .{modules_by_asset_name[name]} import {name}"
-    #                 )
-    #                 self.external_asset_dependencies.add(required_asset_name)
-    #
-    # def update_external_module_dependencies(self, modules_by_asset_name: dict[str, str]):
-    #     for asset_info in self.asset_infos:
-    #         for required_asset_info in asset_info.required_asset_infos:
-    #             if required_asset_info not in self.asset_infos:
-    #                 name = required_asset_info.name
-    #                 self.external_module_dependencies.add(modules_by_asset_name[name])
 
     def merge_with(self, other: "ModuleInfo"):
         self.asset_infos.update(other.asset_infos)
@@ -444,26 +420,18 @@ class Generator:
         content = template.render({"struct_defs": struct_defs})
         with (STRUCTS_DIR / "structs.py").open("w") as script:
             script.write(content)
-        template = self.environment.get_template("structs_init.jinja2")
-        content = template.render(
-            {"struct_defs": sorted([s.name for s in struct_defs])}
-        )
-        with (STRUCTS_DIR / "__init__.py").open("w") as script:
-            script.write(content)
 
 
 if __name__ == "__main__":
     for file in (ASSETS_DIR).glob("*.py"):
         file.unlink()
-    for file in (STRUCTS_DIR).glob("*.py"):
+    for file in (STRUCTS_DIR).glob("structs.py"):
         file.unlink()
     type_defs = get_type_defs()
     AssetInfo.set_entity_defs(type_defs.entity_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
-    # ModuleInfo.update_all_module_dependencies()
     ModuleInfo.check_for_circular_module_dependencies()
-    # ModuleInfo.update_all_external_dependencies()
     generator = Generator()
     generator.render_modules(
         [m for m in ModuleInfo.modules if m.status == ModuleStatus.ACTIVE]
