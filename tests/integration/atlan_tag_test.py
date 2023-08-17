@@ -12,7 +12,7 @@ from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
-from pyatlan.model.enums import AtlanIcon, AtlanTagColor, IconType
+from pyatlan.model.enums import AtlanIcon, AtlanTagColor, TagIconType
 from pyatlan.model.typedef import AtlanTagDef
 from tests.integration.client import TestId
 
@@ -104,7 +104,7 @@ def test_atlan_tag_with_image(atlan_tag_with_image):
     assert "imageID" in atlan_tag_with_image.options.keys()
     assert atlan_tag_with_image.options.get("imageID")
     assert "iconType" in atlan_tag_with_image.options.keys()
-    assert atlan_tag_with_image.options.get("iconType") == IconType.IMAGE.value
+    assert atlan_tag_with_image.options.get("iconType") == TagIconType.IMAGE.value
 
 
 def test_atlan_tag_cache(atlan_tag_with_image):
@@ -127,4 +127,4 @@ def test_atlan_tag_with_icon(atlan_tag_with_icon):
     assert atlan_tag_with_icon.options.get("color") == AtlanTagColor.YELLOW.value
     assert not atlan_tag_with_icon.options.get("imageID")
     assert "iconType" in atlan_tag_with_icon.options.keys()
-    assert atlan_tag_with_icon.options.get("iconType") == IconType.ICON.value
+    assert atlan_tag_with_icon.options.get("iconType") == TagIconType.ICON.value

@@ -1,7 +1,7 @@
 import pytest
 
-from pyatlan.model.assets import BadgeCondition
 from pyatlan.model.enums import BadgeComparisonOperator, BadgeConditionColor
+from pyatlan.model.structs import BadgeCondition
 
 
 @pytest.mark.parametrize(

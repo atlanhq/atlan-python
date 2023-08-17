@@ -1,11 +1,26 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 {% from 'macros.jinja2' import gen_properties %}
+
 {% include 'imports.jinja2' %}
+{% for import in module.imports%}
+{{ import }}
+{% endfor %}
+{% for asset_info in module.ordered_asset_infos %}
+    {% set entity_def = asset_info.entity_def %}
+    {% set file_name = 'methods/imports/' + entity_def.name | to_snake_case + '.jinja2' %}
+    {%  if existz('templates/' + file_name) %}
+{% include file_name %}
+    {% endif %}
+{% endfor %}
+{%  if module_name == 'asset00' %}
 {% include 'globals.jinja2' %}
-{% for entity_def in entity_defs %}
-{%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types -%}
+{% endif %}
+
+{% for asset_info in module.ordered_asset_infos %}
+    {% set entity_def = asset_info.entity_def %}
+{%- set super_classes = ['AtlanObject'] if not entity_def.super_types else entity_def.super_types %}
+
 class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes  %}, type_name='{{ entity_def.name }}'{% endif %}):
     """Description"""
 {% if entity_def.name == "Referenceable" %}
@@ -49,8 +64,8 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     {%- endif %}
 {% endif %}
 {% endfor %}
-Referenceable.update_forward_refs()
-AtlasGlossary.update_forward_refs()
-{% for entity_def in entity_defs %}
+
+{% for asset_info in module.ordered_asset_infos %}
+    {% set entity_def = asset_info.entity_def %}
 {{entity_def.name}}.Attributes.update_forward_refs()
 {% endfor %}

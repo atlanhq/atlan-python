@@ -7,7 +7,7 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Badge, BadgeCondition
+from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Badge
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
@@ -18,6 +18,7 @@ from pyatlan.model.enums import (
 )
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
 from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
+from pyatlan.model.structs import BadgeCondition
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.admin_test import create_group, delete_group
 from tests.integration.client import TestId, delete_asset

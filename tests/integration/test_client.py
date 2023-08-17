@@ -5,13 +5,13 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
 from pyatlan.model.assets import (
-    Announcement,
     AtlasGlossary,
     AtlasGlossaryTerm,
     Connection,
     Database,
     Table,
 )
+from pyatlan.model.core import Announcement
 from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset

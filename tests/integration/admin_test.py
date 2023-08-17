@@ -102,7 +102,7 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
     assert user1 == users_list[0]
 
 
-@pytest.mark.order(after="test_create_group1")
+@pytest.mark.order(after="test_create_group")
 def test_update_groups(client: AtlanClient, group: CreateGroupResponse):
     groups = client.get_group_by_name(alias=GROUP_NAME)
     assert groups

@@ -110,7 +110,7 @@ class QueryParserRequest(AtlanObject):
         sql: str,
         source: QueryParserSourceType,
     ) -> QueryParserRequest:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["sql", "source"],
