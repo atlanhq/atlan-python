@@ -1,3 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2022 Atlan Pte. Ltd.
+"""
+This script can be used to generate the source code for pyatlan.model.assets, pyatlan.model.structs.py and part of
+pyatlan.model.enums. This script depends upon the presence of a JSON file containing typedefs downloaded from
+an Atlan instance. The script create_typedefs_file.py can be used to produce this file.
+"""
 import datetime
 import json
 import os
@@ -70,9 +77,16 @@ def get_type_defs() -> TypeDefResponse:
         or datetime.date.fromtimestamp(os.path.getmtime(TYPE_DEF_FILE))
         < datetime.date.today()
     ):
-        raise (Exception("Need Type_Def"))
+        raise ClassGenerationError(
+            "File containing typedefs does not exist or is not current."
+            f" Please run create_typedefs_file to create {TYPE_DEF_FILE}."
+        )
     with TYPE_DEF_FILE.open() as input_file:
         return TypeDefResponse(**json.load(input_file))
+
+
+class ClassGenerationError(Exception):
+    pass
 
 
 class ModuleStatus(str, Enum):
@@ -236,11 +250,11 @@ class AssetInfo:
             }.values()
         )
 
-    def update_required_asset_names(self):
+    def update_required_asset_names(self) -> None:
         attributes_to_remove: set[str] = set()
-        for attribute in (
-            self.entity_def.attribute_defs + self.entity_def.relationship_attribute_defs
-        ):
+        attribute_defs = self.entity_def.attribute_defs or []
+        relationship_attribute_defs = self.entity_def.relationship_attribute_defs or []
+        for attribute in attribute_defs + relationship_attribute_defs:
             type_name = attribute["typeName"].replace("array<", "").replace(">", "")
             if type_name == self._name:
                 continue
@@ -249,13 +263,11 @@ class AssetInfo:
             elif type_name in AssetInfo.asset_info_by_name:
                 self.required_asset_infos.add(AssetInfo.asset_info_by_name[type_name])
         self.entity_def.attribute_defs = [
-            a
-            for a in self.entity_def.attribute_defs
-            if a["name"] not in attributes_to_remove
+            a for a in attribute_defs if a["name"] not in attributes_to_remove
         ]
         self.entity_def.relationship_attribute_defs = [
             a
-            for a in self.entity_def.relationship_attribute_defs
+            for a in relationship_attribute_defs
             if a["name"] not in attributes_to_remove
         ]
         if self.entity_def.super_types:
@@ -295,16 +307,16 @@ class AssetInfo:
         cls.entity_defs_by_name = {
             entity_def.name: entity_def for entity_def in entity_defs
         }
-        entity_defs = sorted(entity_defs, key=lambda e: ",".join(e.super_types))
+        entity_defs = sorted(entity_defs, key=lambda e: ",".join(e.super_types or []))
         for entity_def in entity_defs:
             name = entity_def.name
             if (not entity_def.super_types and name != REFERENCEABLE) or any(
                 super_type in cls.super_type_names_to_ignore
-                for super_type in entity_def.super_types
+                for super_type in (entity_def.super_types or [])
             ):
                 cls.super_type_names_to_ignore.add(name)
                 continue
-            for asset_name in entity_def.sub_types:
+            for asset_name in entity_def.sub_types or []:
                 AssetInfo.hierarchy_graph.add_edge(name, asset_name)
             asset_info = AssetInfo(name=name, entity_def=entity_def)
             AssetInfo.asset_info_by_name[name] = asset_info
@@ -361,7 +373,7 @@ class Generator:
     def get_ancestor_relationship_defs(
         self, ancestor_name: str, ancestor_relationship_defs
     ):
-        ancestor_entity_def = self.entity_defs[ancestor_name]
+        ancestor_entity_def = AssetInfo.entity_defs_by_name[ancestor_name]
         if not ancestor_entity_def.super_types or not ancestor_name:
             return ancestor_relationship_defs
         for relationship_def in ancestor_entity_def.relationship_attribute_defs or []:
@@ -373,7 +385,7 @@ class Generator:
             ancestor_relationship_defs,
         )
 
-    def render_modules(self, modules: set[ModuleInfo]):
+    def render_modules(self, modules: list[ModuleInfo]):
         for module in modules:
             self.render_module(module)
         self.render_init(modules)
@@ -391,13 +403,14 @@ class Generator:
         with (ASSETS_DIR / f"{module.name}.py").open("w") as script:
             script.write(content)
 
-    def render_init(self, modules: set[ModuleInfo]):
+    def render_init(self, modules: list[ModuleInfo]):
         imports = sorted(
             {
                 f"from .{asset_info.module_info.name} import {asset_info.name}"
                 for module in modules
                 if module.status == ModuleStatus.ACTIVE
                 for asset_info in module.asset_infos
+                if asset_info.module_info
             }
         )
         template = self.environment.get_template("init.jinja2")
@@ -415,7 +428,7 @@ class Generator:
         with (MODEL_DIR / "structs.py").open("w") as script:
             script.write(content)
 
-    def render_enums(self, enum_defs: "EnumDefInfo"):
+    def render_enums(self, enum_defs: list["EnumDefInfo"]):
         template = self.environment.get_template("enums.jinja2")
         content = template.render({"enum_defs": enum_defs})
         start_of_generated_section_found = False
@@ -445,7 +458,7 @@ class EnumDefInfo:
         self.name = get_type(enum_def.name)
         self.element_defs: list[KeyValue] = [
             self.get_key_value(e)
-            for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal)
+            for e in sorted(enum_def.element_defs, key=lambda e: e.ordinal or 0)
         ]
 
     def get_key_value(self, element_def: EnumDef.ElementDef):
@@ -465,15 +478,13 @@ class EnumDefInfo:
 
 
 if __name__ == "__main__":
-    for file in (ASSETS_DIR).glob("*.py"):
-        file.unlink()
-    for file in (MODEL_DIR).glob("structs.py"):
-        file.unlink()
     type_defs = get_type_defs()
     AssetInfo.set_entity_defs(type_defs.entity_defs)
     AssetInfo.update_all_circular_dependencies()
     AssetInfo.create_modules()
     ModuleInfo.check_for_circular_module_dependencies()
+    for file in (ASSETS_DIR).glob("*.py"):
+        file.unlink()
     generator = Generator()
     generator.render_modules(
         [m for m in ModuleInfo.modules if m.status == ModuleStatus.ACTIVE]
