@@ -11,7 +11,7 @@ from pydantic import Field, validator
 
 from pyatlan.model.structs import GoogleLabel, GoogleTag
 
-from .asset00 import Process
+from .asset00 import AirflowTask, Process
 from .asset26 import Google
 
 
@@ -41,6 +41,8 @@ class DataStudio(Google):
         "google_labels",
         "google_tags",
         "input_to_processes",
+        "output_from_airflow_tasks",
+        "input_to_airflow_tasks",
         "output_from_processes",
     ]
 
@@ -137,6 +139,36 @@ class DataStudio(Google):
         self.attributes.input_to_processes = input_to_processes
 
     @property
+    def output_from_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.output_from_airflow_tasks
+        )
+
+    @output_from_airflow_tasks.setter
+    def output_from_airflow_tasks(
+        self, output_from_airflow_tasks: Optional[list[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
+
+    @property
+    def input_to_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return (
+            None if self.attributes is None else self.attributes.input_to_airflow_tasks
+        )
+
+    @input_to_airflow_tasks.setter
+    def input_to_airflow_tasks(
+        self, input_to_airflow_tasks: Optional[list[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
+
+    @property
     def output_from_processes(self) -> Optional[list[Process]]:
         return (
             None if self.attributes is None else self.attributes.output_from_processes
@@ -175,6 +207,12 @@ class DataStudio(Google):
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="outputFromAirflowTasks"
+        )  # relationship
+        input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="inputToAirflowTasks"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"

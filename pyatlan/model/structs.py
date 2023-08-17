@@ -41,13 +41,6 @@ class AwsCloudWatchMetric(AtlanObject):
     )
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: "set[float]" = Field(None, description="", alias="boundaries")
-    frequencies: "set[float]" = Field(None, description="", alias="frequencies")
-
-
 class KafkaTopicConsumption(AtlanObject):
     """Description"""
 
@@ -61,12 +54,30 @@ class KafkaTopicConsumption(AtlanObject):
     )
 
 
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: "set[float]" = Field(None, description="", alias="boundaries")
+    frequencies: "set[float]" = Field(None, description="", alias="frequencies")
+
+
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional["str"] = Field(None, description="", alias="columnValue")
     column_value_frequency: Optional["int"] = Field(
         None, description="", alias="columnValueFrequency"
+    )
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional["str"] = Field(
+        None, description="", alias="tagAttachmentKey"
+    )
+    tag_attachment_value: Optional["str"] = Field(
+        None, description="", alias="tagAttachmentValue"
     )
 
 
@@ -138,17 +149,6 @@ class BadgeCondition(AtlanObject):
     )
 
 
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentKey"
-    )
-    tag_attachment_value: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentValue"
-    )
-
-
 class AzureTag(AtlanObject):
     """Description"""
 
@@ -185,13 +185,6 @@ class AwsTag(AtlanObject):
     aws_tag_value: "str" = Field(None, description="", alias="awsTagValue")
 
 
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    google_tag_key: "str" = Field(None, description="", alias="googleTagKey")
-    google_tag_value: "str" = Field(None, description="", alias="googleTagValue")
-
-
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
@@ -207,6 +200,13 @@ class DbtMetricFilter(AtlanObject):
     dbt_metric_filter_value: Optional["str"] = Field(
         None, description="", alias="dbtMetricFilterValue"
     )
+
+
+class GoogleTag(AtlanObject):
+    """Description"""
+
+    google_tag_key: "str" = Field(None, description="", alias="googleTagKey")
+    google_tag_value: "str" = Field(None, description="", alias="googleTagValue")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):

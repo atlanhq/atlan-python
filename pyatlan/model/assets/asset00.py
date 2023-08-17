@@ -3678,6 +3678,8 @@ class Catalog(Asset, type_name="Catalog"):
 
     _convience_properties: ClassVar[list[str]] = [
         "input_to_processes",
+        "output_from_airflow_tasks",
+        "input_to_airflow_tasks",
         "output_from_processes",
     ]
 
@@ -3690,6 +3692,36 @@ class Catalog(Asset, type_name="Catalog"):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
+
+    @property
+    def output_from_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.output_from_airflow_tasks
+        )
+
+    @output_from_airflow_tasks.setter
+    def output_from_airflow_tasks(
+        self, output_from_airflow_tasks: Optional[list[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
+
+    @property
+    def input_to_airflow_tasks(self) -> Optional[list[AirflowTask]]:
+        return (
+            None if self.attributes is None else self.attributes.input_to_airflow_tasks
+        )
+
+    @input_to_airflow_tasks.setter
+    def input_to_airflow_tasks(
+        self, input_to_airflow_tasks: Optional[list[AirflowTask]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
     def output_from_processes(self) -> Optional[list[Process]]:
@@ -3706,6 +3738,12 @@ class Catalog(Asset, type_name="Catalog"):
     class Attributes(Asset.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
+        )  # relationship
+        output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="outputFromAirflowTasks"
+        )  # relationship
+        input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
+            None, description="", alias="inputToAirflowTasks"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
             None, description="", alias="outputFromProcesses"
@@ -4130,7 +4168,9 @@ class AirflowTask(Airflow):
         "airflow_task_queue",
         "airflow_task_priority_weight",
         "airflow_task_trigger_rule",
+        "outputs",
         "process",
+        "inputs",
         "tables",
         "airflow_dag",
     ]
@@ -4272,6 +4312,16 @@ class AirflowTask(Airflow):
         self.attributes.airflow_task_trigger_rule = airflow_task_trigger_rule
 
     @property
+    def outputs(self) -> Optional[list[Catalog]]:
+        return None if self.attributes is None else self.attributes.outputs
+
+    @outputs.setter
+    def outputs(self, outputs: Optional[list[Catalog]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.outputs = outputs
+
+    @property
     def process(self) -> Optional[Process]:
         return None if self.attributes is None else self.attributes.process
 
@@ -4280,6 +4330,16 @@ class AirflowTask(Airflow):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.process = process
+
+    @property
+    def inputs(self) -> Optional[list[Catalog]]:
+        return None if self.attributes is None else self.attributes.inputs
+
+    @inputs.setter
+    def inputs(self, inputs: Optional[list[Catalog]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.inputs = inputs
 
     @property
     def tables(self) -> Optional[list[Table]]:
@@ -4335,8 +4395,14 @@ class AirflowTask(Airflow):
         airflow_task_trigger_rule: Optional[str] = Field(
             None, description="", alias="airflowTaskTriggerRule"
         )
+        outputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="outputs"
+        )  # relationship
         process: Optional[Process] = Field(
             None, description="", alias="process"
+        )  # relationship
+        inputs: Optional[list[Catalog]] = Field(
+            None, description="", alias="inputs"
         )  # relationship
         tables: Optional[list[Table]] = Field(
             None, description="", alias="tables"
@@ -5174,12 +5240,12 @@ class Table(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
-        "partitions",
         "columns",
-        "airflow_task",
-        "queries",
         "facts",
         "atlan_schema",
+        "partitions",
+        "airflow_task",
+        "queries",
         "dimensions",
     ]
 
@@ -5332,16 +5398,6 @@ class Table(SQL):
         self.attributes.partition_list = partition_list
 
     @property
-    def partitions(self) -> Optional[list[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[list[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
-
-    @property
     def columns(self) -> Optional[list[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -5350,26 +5406,6 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
-
-    @property
-    def airflow_task(self) -> Optional[AirflowTask]:
-        return None if self.attributes is None else self.attributes.airflow_task
-
-    @airflow_task.setter
-    def airflow_task(self, airflow_task: Optional[AirflowTask]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.airflow_task = airflow_task
-
-    @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
 
     @property
     def facts(self) -> Optional[list[Table]]:
@@ -5390,6 +5426,36 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def partitions(self) -> Optional[list[TablePartition]]:
+        return None if self.attributes is None else self.attributes.partitions
+
+    @partitions.setter
+    def partitions(self, partitions: Optional[list[TablePartition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partitions = partitions
+
+    @property
+    def airflow_task(self) -> Optional[AirflowTask]:
+        return None if self.attributes is None else self.attributes.airflow_task
+
+    @airflow_task.setter
+    def airflow_task(self, airflow_task: Optional[AirflowTask]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.airflow_task = airflow_task
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
 
     @property
     def dimensions(self) -> Optional[list[Table]]:
@@ -5434,23 +5500,23 @@ class Table(SQL):
         partition_list: Optional[str] = Field(
             None, description="", alias="partitionList"
         )
-        partitions: Optional[list[TablePartition]] = Field(
-            None, description="", alias="partitions"
-        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
-        )  # relationship
-        airflow_task: Optional[AirflowTask] = Field(
-            None, description="", alias="airflowTask"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
         )  # relationship
         facts: Optional[list[Table]] = Field(
             None, description="", alias="facts"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
+        )  # relationship
+        partitions: Optional[list[TablePartition]] = Field(
+            None, description="", alias="partitions"
+        )  # relationship
+        airflow_task: Optional[AirflowTask] = Field(
+            None, description="", alias="airflowTask"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
         )  # relationship
         dimensions: Optional[list[Table]] = Field(
             None, description="", alias="dimensions"
