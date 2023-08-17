@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from datetime import datetime
 from enum import Enum
 
@@ -206,11 +205,6 @@ class AtlanConnectorType(str, Enum):
 
 
 class AtlanCustomAttributePrimitiveType(str, Enum):
-    def __new__(cls, value: str) -> "AtlanCustomAttributePrimitiveType":
-        obj = str.__new__(cls, value)
-        obj._value_ = value
-        return obj
-
     STRING = "string"
     INTEGER = "int"
     DECIMAL = "float"
