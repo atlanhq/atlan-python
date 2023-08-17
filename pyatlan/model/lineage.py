@@ -293,7 +293,7 @@ class LineageListRequest(SearchRequest):
     def create(
         guid: str,
     ) -> "LineageListRequest":
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["guid"],

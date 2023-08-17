@@ -1,3 +1,14 @@
+## 0.6.0 (August 17, 2023)
+* Added:
+  * Adds new purpose policy permissions (attaching / detaching terms from assets)
+  * Fixes type for decentralized_role
+  * Documents various public methods in client, caches, and event-handling classes
+  * Add code generation for enums from enum-defs
+  * split assets into multiple modules
+  * Initial support for an X-Atlan-Request-Id header
+* Breaking changes
+  * find_category_by_name[_fast] now return a list of categories rather than a single category, since categories are not unique by name within a glossary.
+
 ## 0.5.0 (August 10, 2023)
 * Added:
   * Bulk delete

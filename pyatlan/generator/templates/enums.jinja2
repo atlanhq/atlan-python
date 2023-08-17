@@ -1,0 +1,7 @@
+
+{% for enum_def in enum_defs %}
+class {{ enum_def.name}}(str, Enum):
+    {% for element_def in enum_def.element_defs -%}
+        {{ element_def.key }} = "{{ element_def.value }}"
+    {% endfor %}
+{% endfor %}

@@ -1,7 +1,8 @@
 import pytest
 
-from pyatlan.model.assets import Badge, BadgeCondition
+from pyatlan.model.assets import Badge
 from pyatlan.model.enums import BadgeComparisonOperator, BadgeConditionColor
+from pyatlan.model.structs import BadgeCondition
 
 CM_ATTRIBUTE_NAME = "dummy"
 

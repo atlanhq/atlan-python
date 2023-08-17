@@ -13,8 +13,8 @@ from pyatlan.model.enums import (
     AtlanTagColor,
     AtlanTypeCategory,
     Cardinality,
-    IconType,
     IndexType,
+    TagIconType,
 )
 
 _complete_type_list = (
@@ -177,7 +177,7 @@ class EnumDef(TypeDef):
 
         @staticmethod
         def of(ordinal: int, value: str) -> EnumDef.ElementDef:
-            from pyatlan.model.assets import validate_required_fields
+            from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["ordinal", "value"],
@@ -187,7 +187,7 @@ class EnumDef(TypeDef):
 
         @staticmethod
         def list_from(values: List[str]) -> List[EnumDef.ElementDef]:
-            from pyatlan.model.assets import validate_required_fields
+            from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["values"],
@@ -211,7 +211,7 @@ class EnumDef(TypeDef):
 
     @staticmethod
     def create(name: str, values: List[str]) -> EnumDef:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["name", "values"],
@@ -289,7 +289,7 @@ class AttributeDef(AtlanObject):
             attribute_type: AtlanCustomAttributePrimitiveType,
             options_name: Optional[str] = None,
         ) -> AttributeDef.Options:
-            from pyatlan.model.assets import validate_required_fields
+            from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["type"],
@@ -393,7 +393,7 @@ class AttributeDef(AtlanObject):
         multi_valued: bool = False,
         options_name: Optional[str] = None,
     ) -> AttributeDef:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["display_name", "attribute_type"],
@@ -500,7 +500,7 @@ class AtlanTagDef(TypeDef):
         icon: AtlanIcon = AtlanIcon.ATLAN_TAG,
         image: Optional[AtlanImage] = None,
     ) -> AtlanTagDef:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["name", "color"],
@@ -512,10 +512,10 @@ class AtlanTagDef(TypeDef):
         }
         if image:
             cls_options["imageID"] = str(image.id)
-            cls_options["iconType"] = IconType.IMAGE.value
+            cls_options["iconType"] = TagIconType.IMAGE.value
         else:
             cls_options["imageID"] = ""
-            cls_options["iconType"] = IconType.ICON.value
+            cls_options["iconType"] = TagIconType.ICON.value
 
         # Explicitly set all defaults to ensure inclusion during pydantic serialization
         return AtlanTagDef(
@@ -601,7 +601,7 @@ class CustomMetadataDef(TypeDef):
         def with_logo_as_emoji(
             emoji: str, locked: bool = False
         ) -> CustomMetadataDef.Options:
-            from pyatlan.model.assets import validate_required_fields
+            from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["emoji"],
@@ -615,7 +615,7 @@ class CustomMetadataDef(TypeDef):
         def with_logo_from_url(
             url: str, locked: bool = False
         ) -> CustomMetadataDef.Options:
-            from pyatlan.model.assets import validate_required_fields
+            from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["url"],
@@ -639,7 +639,7 @@ class CustomMetadataDef(TypeDef):
 
     @staticmethod
     def create(display_name: str) -> CustomMetadataDef:
-        from pyatlan.model.assets import validate_required_fields
+        from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
             ["display_name"],

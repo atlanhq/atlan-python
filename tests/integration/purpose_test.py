@@ -113,7 +113,7 @@ def test_add_policies_to_purpose(
     data = Purpose.create_data_policy(
         name="Mask the data",
         purpose_id=purpose.guid,
-        policy_type=AuthPolicyType.DATAMASK,
+        policy_type=AuthPolicyType.DATA_MASK,
         all_users=True,
     )
     data.policy_mask_type = DataMaskingType.HASH
@@ -165,6 +165,6 @@ def test_retrieve_purpose(
             assert full.policy_actions
             assert len(full.policy_actions) == 1
             assert DataAction.SELECT in full.policy_actions
-            assert full.policy_type == AuthPolicyType.DATAMASK
+            assert full.policy_type == AuthPolicyType.DATA_MASK
             assert full.policy_mask_type
             assert full.policy_mask_type == DataMaskingType.HASH
