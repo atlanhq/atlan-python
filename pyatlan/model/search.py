@@ -97,14 +97,14 @@ class Query(ABC):
         # preference
         if hasattr(other, "__radd__"):
             return other.__radd__(self)
-        return Bool(must=[self, other])
+        return Bool(filter=[self, other])
 
     def __and__(self, other):
         # make sure we give queries that know how to combine themselves
         # preference
         if hasattr(other, "__rand__"):
             return other.__rand__(self)
-        return Bool(must=[self, other])
+        return Bool(filter=[self, other])
 
     def __or__(self, other):
         # make sure we give queries that know how to combine themselves
@@ -1777,14 +1777,18 @@ class DSL(AtlanObject):
     track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
-    sort: Optional[list[SortItem]] = Field(alias="sort")
+    sort: list[SortItem] = Field(
+        alias="sort", default=[SortItem(TermAttributes.GUID.value)]
+    )
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
-        __pydantic_self__.__fields_set__.update(["from_", "size", "track_total_hits"])
+        __pydantic_self__.__fields_set__.update(
+            ["from_", "size", "track_total_hits", "sort"]
+        )
 
     @validator("query", always=True)
     def validate_query(cls, v, values):
