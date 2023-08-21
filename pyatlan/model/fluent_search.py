@@ -94,7 +94,8 @@ class CompoundQuery:
         values: list[str] = []
         if with_one_of:
             for name in with_one_of:
-                values.append(AtlanTagCache.get_id_for_name(name))
+                if tag_id := AtlanTagCache.get_id_for_name(name):
+                    values.append(tag_id)
         if directly:
             if values:
                 return FluentSearch(

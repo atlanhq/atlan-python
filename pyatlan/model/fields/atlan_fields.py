@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Union
 
-from pydantic import StrictStr
+from pydantic import StrictBool, StrictFloat, StrictInt, StrictStr
 
 from pyatlan.model.enums import SortOrder
 from pyatlan.model.search import (
@@ -100,7 +100,7 @@ class BooleanField(SearchableField):
         """
         return self.elastic_field_name
 
-    def eq(self, value: bool) -> Query:
+    def eq(self, value: StrictBool) -> Query:
         """
         Returns a query that will match all assets whose field has a value that exactly equals
         the provided boolean value.
@@ -117,7 +117,7 @@ class KeywordField(SearchableField):
     Represents any field in Atlan that can be searched only by keyword (no text-analyzed fuzziness).
     """
 
-    def __init__(self, atlan: str, keyword: str):
+    def __init__(self, atlan: StrictStr, keyword: StrictStr):
         """
         Default constructor.
 
@@ -135,7 +135,7 @@ class KeywordField(SearchableField):
         """
         return self.elastic_field_name
 
-    def startswith(self, value: str, case_insensitive: bool = False) -> Query:
+    def startswith(self, value: StrictStr, case_insensitive: bool = False) -> Query:
         """
         Returns a query that will match all assets whose field has a value that starts with
         the provided value. Note that this can als obe a case-insensitive match.
@@ -151,7 +151,7 @@ class KeywordField(SearchableField):
             case_insensitive=case_insensitive,
         )
 
-    def eq(self, value: str, case_insensitive: bool = False) -> Query:
+    def eq(self, value: StrictStr, case_insensitive: bool = False) -> Query:
         """
         Returns a query that will match all assets whose field has a value that exactly matches
         the provided string value.
@@ -184,7 +184,7 @@ class TextField(SearchableField):
     Represents any field in Atlan that can only be searched using text-related search operations.
     """
 
-    def __init__(self, atlan: str, text: str):
+    def __init__(self, atlan: StrictStr, text: StrictStr):
         """
         Default constructor.
 
@@ -202,7 +202,7 @@ class TextField(SearchableField):
         """
         return self.elastic_field_name
 
-    def match(self, value: str) -> Query:
+    def match(self, value: StrictStr) -> Query:
         """
         Returns a query that will textually match the provided value against the field. This
         analyzes the provided value according to the same analysis carried out on the field
@@ -223,7 +223,7 @@ class NumericField(SearchableField):
     Represents any field in Atlan that can be searched using only numeric search operations.
     """
 
-    def __init__(self, atlan: str, numeric: str):
+    def __init__(self, atlan: StrictStr, numeric: StrictStr):
         """
         Default constructor.
 
@@ -241,7 +241,7 @@ class NumericField(SearchableField):
         """
         return self.elastic_field_name
 
-    def eq(self, value: Union[int, float]) -> Query:
+    def eq(self, value: Union[StrictInt, StrictFloat]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that exactly
         matches the provided numeric value.
@@ -251,7 +251,7 @@ class NumericField(SearchableField):
         """
         return Term(field=self.numeric_field_name, value=value)
 
-    def gt(self, value: Union[int, float]) -> Query:
+    def gt(self, value: Union[StrictInt, StrictFloat]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that is strictly
         greater than the provided numeric value.
@@ -262,7 +262,7 @@ class NumericField(SearchableField):
         """
         return Range(field=self.numeric_field_name, gt=value)
 
-    def gte(self, value: Union[int, float]) -> Query:
+    def gte(self, value: Union[StrictInt, StrictFloat]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that is greater
         than or equal to the provided numeric value.
@@ -273,7 +273,7 @@ class NumericField(SearchableField):
         """
         return Range(field=self.numeric_field_name, gte=value)
 
-    def lt(self, value: Union[int, float]) -> Query:
+    def lt(self, value: Union[StrictInt, StrictFloat]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that is strictly
         less than the provided numeric value.
@@ -284,7 +284,7 @@ class NumericField(SearchableField):
         """
         return Range(field=self.numeric_field_name, lt=value)
 
-    def lte(self, value: Union[int, float]) -> Query:
+    def lte(self, value: Union[StrictInt, StrictFloat]) -> Query:
         """
         Returns a query that will match all assets whose field has a value that is less
         than or equal to the provided numeric value.
@@ -295,7 +295,11 @@ class NumericField(SearchableField):
         """
         return Range(field=self.numeric_field_name, lte=value)
 
-    def between(self, minimum: Union[int, float], maximum: Union[int, float]) -> Query:
+    def between(
+        self,
+        minimum: Union[StrictInt, StrictFloat],
+        maximum: Union[StrictInt, StrictFloat],
+    ) -> Query:
         """
         Returns a query that will match all assets whose field has a value between the minimum and
         maximum specified values, inclusive.
@@ -309,9 +313,9 @@ class NumericRankField(NumericField):
     but also has a rank-orderable index.
     """
 
-    rank_field_name: str
+    rank_field_name: StrictStr
 
-    def __init__(self, atlan: str, numeric: str, rank: str):
+    def __init__(self, atlan: StrictStr, numeric: StrictStr, rank: StrictStr):
         """
         Default constructor.
 
@@ -328,9 +332,9 @@ class KeywordTextField(KeywordField, TextField):
     Represents any field in Atlan that can be searched by keyword or text-based search operations.
     """
 
-    _text_field_name: str
+    _text_field_name: StrictStr
 
-    def __init__(self, atlan: str, keyword: str, text: str):
+    def __init__(self, atlan: StrictStr, keyword: StrictStr, text: StrictStr):
         """
         Default constructor.
 
@@ -352,9 +356,11 @@ class KeywordTextStemmedField(KeywordTextField):
     including a stemmed variation of the text analyzers.
     """
 
-    stemmed_field_name: str
+    stemmed_field_name: StrictStr
 
-    def __init__(self, atlan: str, keyword: str, text: str, stemmed: str):
+    def __init__(
+        self, atlan: StrictStr, keyword: StrictStr, text: StrictStr, stemmed: StrictStr
+    ):
         """
         Default constructor.
 
@@ -392,10 +398,14 @@ class CustomMetadataField(SearchableField):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
         super().__init__(
-            CustomMetadataCache.get_attribute_for_search_results(
-                set_name, attribute_name
+            StrictStr(
+                CustomMetadataCache.get_attribute_for_search_results(
+                    set_name, attribute_name
+                )
             ),
-            CustomMetadataCache.get_attr_id_for_name(set_name, attribute_name),
+            StrictStr(
+                CustomMetadataCache.get_attr_id_for_name(set_name, attribute_name)
+            ),
         )
         self.set_name = set_name
         self.attribute_name = attribute_name
