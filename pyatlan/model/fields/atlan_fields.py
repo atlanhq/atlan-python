@@ -33,13 +33,13 @@ class RelationField(AtlanField):
     searchable.
     """
 
-    def __init__(self, atlan: StrictStr):
+    def __init__(self, atlan_field_name: StrictStr):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
+        :param atlan_field_name: name of the attribute in the metastore
         """
-        self.atlan_field_name = atlan
+        self.atlan_field_name = atlan_field_name
 
 
 class SearchableField(AtlanField):
@@ -49,15 +49,15 @@ class SearchableField(AtlanField):
 
     elastic_field_name: StrictStr
 
-    def __init__(self, atlan: StrictStr, elastic: StrictStr):
+    def __init__(self, atlan_field_name: StrictStr, elastic_field_name: StrictStr):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param elastic: name of the field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param elastic_field_name: name of the field in the search index
         """
-        self.atlan_field_name = atlan
-        self.elastic_field_name = elastic
+        self.atlan_field_name = atlan_field_name
+        self.elastic_field_name = elastic_field_name
 
     def exists(self) -> Query:
         """
@@ -83,14 +83,14 @@ class BooleanField(SearchableField):
     Represents any field in Atlan that can be searched only by truthiness.
     """
 
-    def __init__(self, atlan: StrictStr, boolean: StrictStr):
+    def __init__(self, atlan_field_name: StrictStr, boolean_field_name: StrictStr):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param boolean: name of the bool field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param boolean_field_name: name of the bool field in the search index
         """
-        super().__init__(atlan, boolean)
+        super().__init__(atlan_field_name, boolean_field_name)
 
     @property
     def boolean_field_name(self) -> str:
@@ -118,14 +118,14 @@ class KeywordField(SearchableField):
     Represents any field in Atlan that can be searched only by keyword (no text-analyzed fuzziness).
     """
 
-    def __init__(self, atlan: StrictStr, keyword: StrictStr):
+    def __init__(self, atlan_field_name: StrictStr, keyword_field_name: StrictStr):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param keyword: name of the keyword field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param keyword_field_name: name of the keyword field in the search index
         """
-        super().__init__(atlan, keyword)
+        super().__init__(atlan_field_name, keyword_field_name)
 
     @property
     def keyword_field_name(self) -> str:
@@ -185,14 +185,14 @@ class TextField(SearchableField):
     Represents any field in Atlan that can only be searched using text-related search operations.
     """
 
-    def __init__(self, atlan: StrictStr, text: StrictStr):
+    def __init__(self, atlan_field_name: StrictStr, text_field_name: StrictStr):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param text: name of the text field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param text_field_name: name of the text field in the search index
         """
-        super().__init__(atlan, text)
+        super().__init__(atlan_field_name, text_field_name)
 
     @property
     def text_field_name(self) -> str:
@@ -224,14 +224,14 @@ class NumericField(SearchableField):
     Represents any field in Atlan that can be searched using only numeric search operations.
     """
 
-    def __init__(self, atlan: StrictStr, numeric: StrictStr):
+    def __init__(self, atlan_field_name: StrictStr, numeric_field_name: StrictStr):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param numeric: name of the numeric field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param numeric_field_name: name of the numeric field in the search index
         """
-        super().__init__(atlan, numeric)
+        super().__init__(atlan_field_name, numeric_field_name)
 
     @property
     def numeric_field_name(self) -> str:
@@ -316,16 +316,21 @@ class NumericRankField(NumericField):
 
     rank_field_name: StrictStr
 
-    def __init__(self, atlan: StrictStr, numeric: StrictStr, rank: StrictStr):
+    def __init__(
+        self,
+        atlan_field_name: StrictStr,
+        numeric_field_name: StrictStr,
+        rank_field_name: StrictStr,
+    ):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param numeric: name of the numeric field in the search index
-        :param rank: name of the rank orderable field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param numeric_field_name: name of the numeric field in the search index
+        :param rank_field_name: name of the rank orderable field in the search index
         """
-        super().__init__(atlan, numeric)
-        self.rank_field_name = rank
+        super().__init__(atlan_field_name, numeric_field_name)
+        self.rank_field_name = rank_field_name
 
 
 class KeywordTextField(KeywordField, TextField):
@@ -335,16 +340,21 @@ class KeywordTextField(KeywordField, TextField):
 
     _text_field_name: StrictStr
 
-    def __init__(self, atlan: StrictStr, keyword: StrictStr, text: StrictStr):
+    def __init__(
+        self,
+        atlan_field_name: StrictStr,
+        keyword_field_name: StrictStr,
+        text_field_name: StrictStr,
+    ):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param keyword: name of the keyword field in the search index
-        :param text: name of the text field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param keyword_field_name: name of the keyword field in the search index
+        :param text_field_name: name of the text field in the search index
         """
-        super(KeywordField, self).__init__(atlan, keyword)
-        self._text_field_name = text
+        super(KeywordField, self).__init__(atlan_field_name, keyword_field_name)
+        self._text_field_name = text_field_name
 
     @property
     def text_field_name(self) -> str:
@@ -360,18 +370,22 @@ class KeywordTextStemmedField(KeywordTextField):
     stemmed_field_name: StrictStr
 
     def __init__(
-        self, atlan: StrictStr, keyword: StrictStr, text: StrictStr, stemmed: StrictStr
+        self,
+        atlan_field_name: StrictStr,
+        keyword_field_name: StrictStr,
+        text_field_name: StrictStr,
+        stemmed_field_name: StrictStr,
     ):
         """
         Default constructor.
 
-        :param atlan: name of the attribute in the metastore
-        :param keyword: name of the keyword field in the search index
-        :param text: name of the text field in the search index
-        :param stemmed: name of the stemmed text field in the search index
+        :param atlan_field_name: name of the attribute in the metastore
+        :param keyword_field_name: name of the keyword field in the search index
+        :param text_field_name: name of the text field in the search index
+        :param stemmed_field_name: name of the stemmed text field in the search index
         """
-        super().__init__(atlan, keyword, text)
-        self.stemmed_field_name = stemmed
+        super().__init__(atlan_field_name, keyword_field_name, text_field_name)
+        self.stemmed_field_name = stemmed_field_name
 
     def match_stemmed(self, value: StrictStr) -> Query:
         """

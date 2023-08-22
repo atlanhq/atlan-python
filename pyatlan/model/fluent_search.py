@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import copy
 import dataclasses
-from typing import Optional, Union, cast
+from typing import Optional, Union
 
 from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
@@ -148,12 +149,7 @@ class CompoundQuery:
 
         :returns: copy of the current CompoundQuery
         """
-        return self.__class__(
-            wheres=self.wheres,
-            where_nots=self.where_nots,
-            where_somes=self.where_somes,
-            _min_somes=self._min_somes,
-        )
+        return copy.deepcopy(self)
 
     def where(self, query: Query) -> "CompoundQuery":
         """
@@ -258,13 +254,7 @@ class FluentSearch(CompoundQuery):
 
         :returns: copy of the current FluentSearch
         """
-        clone: FluentSearch = cast(FluentSearch, super()._clone())
-        clone.sorts = self.sorts
-        # TODO clone.aggregations = self.aggregations
-        clone._page_size = self._page_size
-        clone._includes_on_results = self._includes_on_results
-        clone._includes_on_relations = self._includes_on_relations
-        return clone
+        return copy.deepcopy(self)
 
     def sort(self, by: SortItem) -> "FluentSearch":
         """
