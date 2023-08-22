@@ -10,6 +10,7 @@ from pyatlan.model.search import (
     Prefix,
     Query,
     Range,
+    SearchFieldType,
     SortItem,
     Term,
     Terms,
@@ -138,7 +139,7 @@ class KeywordField(SearchableField):
     def startswith(self, value: StrictStr, case_insensitive: bool = False) -> Query:
         """
         Returns a query that will match all assets whose field has a value that starts with
-        the provided value. Note that this can als obe a case-insensitive match.
+        the provided value. Note that this can also be a case-insensitive match.
 
         :param value: the value (prefix) to check the field's value starts with
         :param case_insensitive: if True, will match the value irrespective of case, otherwise will be a case-sensitive
@@ -412,3 +413,116 @@ class CustomMetadataField(SearchableField):
         self.attribute_def = CustomMetadataCache.get_attribute_def(
             self.elastic_field_name
         )
+
+    def eq(self, value: SearchFieldType, case_insensitive: bool = False) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that exactly equals
+        the provided value.
+
+        :param value: the value to check the field's value is exactly equal to
+        :param case_insensitive: if True, will match the value irrespective of case, otherwise will be a case-sensitive
+                                 match
+        :returns: a query that will only match assets whose value for the field is exactly equal to the value provided
+        """
+        return Term(
+            field=self.elastic_field_name,
+            value=value,
+            case_insensitive=case_insensitive,
+        )
+
+    def startswith(self, value: StrictStr, case_insensitive: bool = False) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that starts with
+        the provided value. Note that this can also be a case-insensitive match.
+
+        :param value: the value (prefix) to check the field's value starts with
+        :param case_insensitive: if True, will match the value irrespective of case, otherwise will be a case-sensitive
+                                 match
+        :returns: a query that will only match assets whose value for the field starts with the value provided
+        """
+        return Prefix(
+            field=self.elastic_field_name,
+            value=value,
+            case_insensitive=case_insensitive,
+        )
+
+    def within(self, values: list[str]) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that exactly matches
+        at least one of the provided string values.
+
+        :param values: the values (strings) to check the field's value is exactly equal to
+        :returns: a query that will only match assets whose value for the field is exactly equal to at least one of
+                  the values provided
+        """
+        return Terms(field=self.elastic_field_name, values=values)
+
+    def match(self, value: StrictStr) -> Query:
+        """
+        Returns a query that will textually match the provided value against the field. This
+        analyzes the provided value according to the same analysis carried out on the field
+        (for example, tokenization, stemming, and so on).
+
+        :param value: the string value to match against
+        :returns: a query that will only match assets whose analyzed value for the field matches the value provided
+                  (which will also be analyzed)
+        """
+        return Match(
+            field=self.elastic_field_name,
+            query=value,
+        )
+
+    def gt(self, value: Union[StrictInt, StrictFloat]) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that is strictly
+        greater than the provided numeric value.
+
+        :param value: the numeric value to compare against
+        :returns: a query that will only match assets whose value for the field is strictly greater than the numeric
+                  value provided
+        """
+        return Range(field=self.elastic_field_name, gt=value)
+
+    def gte(self, value: Union[StrictInt, StrictFloat]) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that is greater
+        than or equal to the provided numeric value.
+
+        :param value: the numeric value to compare against
+        :returns: a query that will only match assets whose value for the field is greater than or equal to the numeric
+                  value provided
+        """
+        return Range(field=self.elastic_field_name, gte=value)
+
+    def lt(self, value: Union[StrictInt, StrictFloat]) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that is strictly
+        less than the provided numeric value.
+
+        :param value: the numeric value to compare against
+        :returns: a value that will only match assets whose value for the field is strictly less than the numeric
+                  value provided
+        """
+        return Range(field=self.elastic_field_name, lt=value)
+
+    def lte(self, value: Union[StrictInt, StrictFloat]) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value that is less
+        than or equal to the provided numeric value.
+
+        :param value: the numeric value to compare against
+        :returns: a query that will only match assets whose value for the field is less than or equal to the numeric
+                  value provided
+        """
+        return Range(field=self.elastic_field_name, lte=value)
+
+    def between(
+        self,
+        minimum: Union[StrictInt, StrictFloat],
+        maximum: Union[StrictInt, StrictFloat],
+    ) -> Query:
+        """
+        Returns a query that will match all assets whose field has a value between the minimum and
+        maximum specified values, inclusive.
+        """
+        return Range(field=self.elastic_field_name, gte=minimum, lte=maximum)

@@ -7,7 +7,7 @@ import pytest
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryTerm, Badge
+from pyatlan.model.assets import Asset, AtlasGlossary, AtlasGlossaryTerm, Badge
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
@@ -16,8 +16,9 @@ from pyatlan.model.enums import (
     BadgeConditionColor,
     EntityStatus,
 )
+from pyatlan.model.fields.atlan_fields import CustomMetadataField
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.group import AtlanGroup, CreateGroupResponse
-from pyatlan.model.search import DSL, Bool, Exists, IndexSearchRequest, Term
 from pyatlan.model.structs import BadgeCondition
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef, EnumDef
 from tests.integration.admin_test import create_group, delete_group
@@ -505,22 +506,19 @@ def test_search_by_any_accountable(
     glossary: AtlasGlossary,
     term: AtlasGlossaryTerm,
 ):
-    be_active = Term.with_state("ACTIVE")
-    be_a_term = Term.with_type_name("AtlasGlossaryTerm")
-    have_attr = Exists.with_custom_metadata(
-        set_name=CM_RACI, attr_name=CM_ATTR_RACI_ACCOUNTABLE
-    )
-    query = Bool(must=[be_active, be_a_term, have_attr])
-    dsl = DSL(query=query)
     attributes = ["name", "anchor"]
     cm_attributes = CustomMetadataCache.get_attributes_for_search_results(
         set_name=CM_RACI
     )
     assert cm_attributes
     attributes.extend(cm_attributes)
-    request = IndexSearchRequest(
-        dsl=dsl, attributes=attributes, relation_attributes=["name"]
-    )
+    request = (
+        FluentSearch(_includes_on_results=attributes)
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).exists())
+        .include_on_relations(Asset.NAME)
+    ).to_request()
     response = client.search(criteria=request)
     assert response
     count = 0
@@ -549,18 +547,15 @@ def test_search_by_specific_accountable(
     glossary: AtlasGlossary,
     term: AtlasGlossaryTerm,
 ):
-    be_active = Term.with_state("ACTIVE")
-    be_a_term = Term.with_type_name("AtlasGlossaryTerm")
-    have_attr = Term.with_custom_metadata(
-        set_name=CM_RACI,
-        attr_name=CM_ATTR_RACI_ACCOUNTABLE,
-        value=FIXED_USER,
-    )
-    query = Bool(must=[be_active, be_a_term, have_attr])
-    dsl = DSL(query=query)
-    request = IndexSearchRequest(
-        dsl=dsl, attributes=["name", "anchor"], relation_attributes=["name"]
-    )
+    request = (
+        FluentSearch()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).eq(FIXED_USER))
+        .include_on_results(Asset.NAME)
+        .include_on_results(AtlasGlossaryTerm.ANCHOR)
+        .include_on_relations(Asset.NAME)
+    ).to_request()
     response = client.search(criteria=request)
     assert response
     count = 0
