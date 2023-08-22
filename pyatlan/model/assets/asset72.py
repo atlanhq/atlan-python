@@ -8,499 +8,1203 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from .asset47 import Qlik
+from .asset47 import MicroStrategy
 
 
-class QlikApp(Qlik):
+class MicroStrategyReport(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("QlikApp", allow_mutation=False)
+    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikApp":
-            raise ValueError("must be QlikApp")
+        if v != "MicroStrategyReport":
+            raise ValueError("must be MicroStrategyReport")
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikApp._convience_properties:
+        if name in MicroStrategyReport._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_has_section_access",
-        "qlik_origin_app_id",
-        "qlik_is_encrypted",
-        "qlik_is_direct_query_mode",
-        "qlik_app_static_byte_size",
-        "qlik_space",
-        "qlik_sheets",
+        "micro_strategy_report_type",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def qlik_has_section_access(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.qlik_has_section_access
-        )
-
-    @qlik_has_section_access.setter
-    def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_has_section_access = qlik_has_section_access
-
-    @property
-    def qlik_origin_app_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_origin_app_id
-
-    @qlik_origin_app_id.setter
-    def qlik_origin_app_id(self, qlik_origin_app_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_origin_app_id = qlik_origin_app_id
-
-    @property
-    def qlik_is_encrypted(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.qlik_is_encrypted
-
-    @qlik_is_encrypted.setter
-    def qlik_is_encrypted(self, qlik_is_encrypted: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_is_encrypted = qlik_is_encrypted
-
-    @property
-    def qlik_is_direct_query_mode(self) -> Optional[bool]:
+    def micro_strategy_report_type(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.qlik_is_direct_query_mode
+            else self.attributes.micro_strategy_report_type
         )
 
-    @qlik_is_direct_query_mode.setter
-    def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
+    @micro_strategy_report_type.setter
+    def micro_strategy_report_type(self, micro_strategy_report_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_is_direct_query_mode = qlik_is_direct_query_mode
+        self.attributes.micro_strategy_report_type = micro_strategy_report_type
 
     @property
-    def qlik_app_static_byte_size(self) -> Optional[int]:
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.qlik_app_static_byte_size
+            else self.attributes.micro_strategy_attributes
         )
 
-    @qlik_app_static_byte_size.setter
-    def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
-    @property
-    def qlik_space(self) -> Optional[QlikSpace]:
-        return None if self.attributes is None else self.attributes.qlik_space
-
-    @qlik_space.setter
-    def qlik_space(self, qlik_space: Optional[QlikSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space = qlik_space
-
-    @property
-    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
-        return None if self.attributes is None else self.attributes.qlik_sheets
-
-    @qlik_sheets.setter
-    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_sheets = qlik_sheets
-
-    class Attributes(Qlik.Attributes):
-        qlik_has_section_access: Optional[bool] = Field(
-            None, description="", alias="qlikHasSectionAccess"
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_report_type: Optional[str] = Field(
+            None, description="", alias="microStrategyReportType"
         )
-        qlik_origin_app_id: Optional[str] = Field(
-            None, description="", alias="qlikOriginAppId"
-        )
-        qlik_is_encrypted: Optional[bool] = Field(
-            None, description="", alias="qlikIsEncrypted"
-        )
-        qlik_is_direct_query_mode: Optional[bool] = Field(
-            None, description="", alias="qlikIsDirectQueryMode"
-        )
-        qlik_app_static_byte_size: Optional[int] = Field(
-            None, description="", alias="qlikAppStaticByteSize"
-        )
-        qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
         )  # relationship
-        qlik_sheets: Optional[list[QlikSheet]] = Field(
-            None, description="", alias="qlikSheets"
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "QlikApp.Attributes" = Field(
-        default_factory=lambda: QlikApp.Attributes(),
+    attributes: "MicroStrategyReport.Attributes" = Field(
+        default_factory=lambda: MicroStrategyReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikChart(Qlik):
+class MicroStrategyProject(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("QlikChart", allow_mutation=False)
+    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikChart":
-            raise ValueError("must be QlikChart")
+        if v != "MicroStrategyProject":
+            raise ValueError("must be MicroStrategyProject")
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikChart._convience_properties:
+        if name in MicroStrategyProject._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_chart_subtitle",
-        "qlik_chart_footnote",
-        "qlik_chart_orientation",
-        "qlik_chart_type",
-        "qlik_sheet",
+        "micro_strategy_reports",
+        "micro_strategy_facts",
+        "micro_strategy_metrics",
+        "micro_strategy_visualizations",
+        "micro_strategy_documents",
+        "micro_strategy_cubes",
+        "micro_strategy_dossiers",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def qlik_chart_subtitle(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_chart_subtitle
-
-    @qlik_chart_subtitle.setter
-    def qlik_chart_subtitle(self, qlik_chart_subtitle: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_subtitle = qlik_chart_subtitle
-
-    @property
-    def qlik_chart_footnote(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_chart_footnote
-
-    @qlik_chart_footnote.setter
-    def qlik_chart_footnote(self, qlik_chart_footnote: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_chart_footnote = qlik_chart_footnote
-
-    @property
-    def qlik_chart_orientation(self) -> Optional[str]:
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
         return (
-            None if self.attributes is None else self.attributes.qlik_chart_orientation
+            None if self.attributes is None else self.attributes.micro_strategy_reports
         )
 
-    @qlik_chart_orientation.setter
-    def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_chart_orientation = qlik_chart_orientation
+        self.attributes.micro_strategy_reports = micro_strategy_reports
 
     @property
-    def qlik_chart_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_chart_type
+    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_facts
 
-    @qlik_chart_type.setter
-    def qlik_chart_type(self, qlik_chart_type: Optional[str]):
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_chart_type = qlik_chart_type
+        self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
-    def qlik_sheet(self) -> Optional[QlikSheet]:
-        return None if self.attributes is None else self.attributes.qlik_sheet
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
 
-    @qlik_sheet.setter
-    def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_sheet = qlik_sheet
-
-    class Attributes(Qlik.Attributes):
-        qlik_chart_subtitle: Optional[str] = Field(
-            None, description="", alias="qlikChartSubtitle"
-        )
-        qlik_chart_footnote: Optional[str] = Field(
-            None, description="", alias="qlikChartFootnote"
-        )
-        qlik_chart_orientation: Optional[str] = Field(
-            None, description="", alias="qlikChartOrientation"
-        )
-        qlik_chart_type: Optional[str] = Field(
-            None, description="", alias="qlikChartType"
-        )
-        qlik_sheet: Optional[QlikSheet] = Field(
-            None, description="", alias="qlikSheet"
-        )  # relationship
-
-    attributes: "QlikChart.Attributes" = Field(
-        default_factory=lambda: QlikChart.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QlikDataset(Qlik):
-    """Description"""
-
-    type_name: str = Field("QlikDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikDataset":
-            raise ValueError("must be QlikDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QlikDataset._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "qlik_dataset_technical_name",
-        "qlik_dataset_type",
-        "qlik_dataset_uri",
-        "qlik_dataset_subtype",
-        "qlik_space",
-    ]
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
-    def qlik_dataset_technical_name(self) -> Optional[str]:
+    def micro_strategy_visualizations(
+        self,
+    ) -> Optional[list[MicroStrategyVisualization]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.qlik_dataset_technical_name
+            else self.attributes.micro_strategy_visualizations
         )
 
-    @qlik_dataset_technical_name.setter
-    def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
+    @micro_strategy_visualizations.setter
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_technical_name = qlik_dataset_technical_name
+        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
     @property
-    def qlik_dataset_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_type
-
-    @qlik_dataset_type.setter
-    def qlik_dataset_type(self, qlik_dataset_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_type = qlik_dataset_type
-
-    @property
-    def qlik_dataset_uri(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_uri
-
-    @qlik_dataset_uri.setter
-    def qlik_dataset_uri(self, qlik_dataset_uri: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_uri = qlik_dataset_uri
-
-    @property
-    def qlik_dataset_subtype(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_dataset_subtype
-
-    @qlik_dataset_subtype.setter
-    def qlik_dataset_subtype(self, qlik_dataset_subtype: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
-
-    @property
-    def qlik_space(self) -> Optional[QlikSpace]:
-        return None if self.attributes is None else self.attributes.qlik_space
-
-    @qlik_space.setter
-    def qlik_space(self, qlik_space: Optional[QlikSpace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space = qlik_space
-
-    class Attributes(Qlik.Attributes):
-        qlik_dataset_technical_name: Optional[str] = Field(
-            None, description="", alias="qlikDatasetTechnicalName"
-        )
-        qlik_dataset_type: Optional[str] = Field(
-            None, description="", alias="qlikDatasetType"
-        )
-        qlik_dataset_uri: Optional[str] = Field(
-            None, description="", alias="qlikDatasetUri"
-        )
-        qlik_dataset_subtype: Optional[str] = Field(
-            None, description="", alias="qlikDatasetSubtype"
-        )
-        qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
-        )  # relationship
-
-    attributes: "QlikDataset.Attributes" = Field(
-        default_factory=lambda: QlikDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QlikSheet(Qlik):
-    """Description"""
-
-    type_name: str = Field("QlikSheet", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QlikSheet":
-            raise ValueError("must be QlikSheet")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QlikSheet._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "qlik_sheet_is_approved",
-        "qlik_app",
-        "qlik_charts",
-    ]
-
-    @property
-    def qlik_sheet_is_approved(self) -> Optional[bool]:
+    def micro_strategy_documents(self) -> Optional[list[MicroStrategyDocument]]:
         return (
-            None if self.attributes is None else self.attributes.qlik_sheet_is_approved
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_documents
         )
 
-    @qlik_sheet_is_approved.setter
-    def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
+    @micro_strategy_documents.setter
+    def micro_strategy_documents(
+        self, micro_strategy_documents: Optional[list[MicroStrategyDocument]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
+        self.attributes.micro_strategy_documents = micro_strategy_documents
 
     @property
-    def qlik_app(self) -> Optional[QlikApp]:
-        return None if self.attributes is None else self.attributes.qlik_app
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_cubes
 
-    @qlik_app.setter
-    def qlik_app(self, qlik_app: Optional[QlikApp]):
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.qlik_app = qlik_app
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
 
     @property
-    def qlik_charts(self) -> Optional[list[QlikChart]]:
-        return None if self.attributes is None else self.attributes.qlik_charts
-
-    @qlik_charts.setter
-    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_charts = qlik_charts
-
-    class Attributes(Qlik.Attributes):
-        qlik_sheet_is_approved: Optional[bool] = Field(
-            None, description="", alias="qlikSheetIsApproved"
+    def micro_strategy_dossiers(self) -> Optional[list[MicroStrategyDossier]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_dossiers
         )
-        qlik_app: Optional[QlikApp] = Field(
-            None, description="", alias="qlikApp"
+
+    @micro_strategy_dossiers.setter
+    def micro_strategy_dossiers(
+        self, micro_strategy_dossiers: Optional[list[MicroStrategyDossier]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossiers = micro_strategy_dossiers
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
         )  # relationship
-        qlik_charts: Optional[list[QlikChart]] = Field(
-            None, description="", alias="qlikCharts"
+        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
+            None, description="", alias="microStrategyFacts"
+        )  # relationship
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_visualizations: Optional[
+            list[MicroStrategyVisualization]
+        ] = Field(
+            None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+        micro_strategy_documents: Optional[list[MicroStrategyDocument]] = Field(
+            None, description="", alias="microStrategyDocuments"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_dossiers: Optional[list[MicroStrategyDossier]] = Field(
+            None, description="", alias="microStrategyDossiers"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "QlikSheet.Attributes" = Field(
-        default_factory=lambda: QlikSheet.Attributes(),
+    attributes: "MicroStrategyProject.Attributes" = Field(
+        default_factory=lambda: MicroStrategyProject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QlikSpace(Qlik):
+class MicroStrategyMetric(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("QlikSpace", allow_mutation=False)
+    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikSpace":
-            raise ValueError("must be QlikSpace")
+        if v != "MicroStrategyMetric":
+            raise ValueError("must be MicroStrategyMetric")
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikSpace._convience_properties:
+        if name in MicroStrategyMetric._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "qlik_space_type",
-        "qlik_datasets",
-        "qlik_apps",
+        "micro_strategy_metric_expression",
+        "micro_strategy_attribute_qualified_names",
+        "micro_strategy_attribute_names",
+        "micro_strategy_fact_qualified_names",
+        "micro_strategy_fact_names",
+        "micro_strategy_metric_parent_qualified_names",
+        "micro_strategy_metric_parent_names",
+        "micro_strategy_metric_parents",
+        "micro_strategy_facts",
+        "micro_strategy_reports",
+        "micro_strategy_cubes",
+        "micro_strategy_metric_children",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
     ]
 
     @property
-    def qlik_space_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.qlik_space_type
-
-    @qlik_space_type.setter
-    def qlik_space_type(self, qlik_space_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_space_type = qlik_space_type
-
-    @property
-    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
-        return None if self.attributes is None else self.attributes.qlik_datasets
-
-    @qlik_datasets.setter
-    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_datasets = qlik_datasets
-
-    @property
-    def qlik_apps(self) -> Optional[list[QlikApp]]:
-        return None if self.attributes is None else self.attributes.qlik_apps
-
-    @qlik_apps.setter
-    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.qlik_apps = qlik_apps
-
-    class Attributes(Qlik.Attributes):
-        qlik_space_type: Optional[str] = Field(
-            None, description="", alias="qlikSpaceType"
+    def micro_strategy_metric_expression(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_expression
         )
-        qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
+
+    @micro_strategy_metric_expression.setter
+    def micro_strategy_metric_expression(
+        self, micro_strategy_metric_expression: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_expression = (
+            micro_strategy_metric_expression
+        )
+
+    @property
+    def micro_strategy_attribute_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attribute_qualified_names
+        )
+
+    @micro_strategy_attribute_qualified_names.setter
+    def micro_strategy_attribute_qualified_names(
+        self, micro_strategy_attribute_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_qualified_names = (
+            micro_strategy_attribute_qualified_names
+        )
+
+    @property
+    def micro_strategy_attribute_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attribute_names
+        )
+
+    @micro_strategy_attribute_names.setter
+    def micro_strategy_attribute_names(
+        self, micro_strategy_attribute_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_names = micro_strategy_attribute_names
+
+    @property
+    def micro_strategy_fact_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_fact_qualified_names
+        )
+
+    @micro_strategy_fact_qualified_names.setter
+    def micro_strategy_fact_qualified_names(
+        self, micro_strategy_fact_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_qualified_names = (
+            micro_strategy_fact_qualified_names
+        )
+
+    @property
+    def micro_strategy_fact_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_fact_names
+        )
+
+    @micro_strategy_fact_names.setter
+    def micro_strategy_fact_names(self, micro_strategy_fact_names: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_names = micro_strategy_fact_names
+
+    @property
+    def micro_strategy_metric_parent_qualified_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_parent_qualified_names
+        )
+
+    @micro_strategy_metric_parent_qualified_names.setter
+    def micro_strategy_metric_parent_qualified_names(
+        self, micro_strategy_metric_parent_qualified_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parent_qualified_names = (
+            micro_strategy_metric_parent_qualified_names
+        )
+
+    @property
+    def micro_strategy_metric_parent_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_parent_names
+        )
+
+    @micro_strategy_metric_parent_names.setter
+    def micro_strategy_metric_parent_names(
+        self, micro_strategy_metric_parent_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parent_names = (
+            micro_strategy_metric_parent_names
+        )
+
+    @property
+    def micro_strategy_metric_parents(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_parents
+        )
+
+    @micro_strategy_metric_parents.setter
+    def micro_strategy_metric_parents(
+        self, micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_parents = micro_strategy_metric_parents
+
+    @property
+    def micro_strategy_facts(self) -> Optional[list[MicroStrategyFact]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_facts
+
+    @micro_strategy_facts.setter
+    def micro_strategy_facts(
+        self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_facts = micro_strategy_facts
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_reports
+        )
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_metric_children(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_metric_children
+        )
+
+    @micro_strategy_metric_children.setter
+    def micro_strategy_metric_children(
+        self, micro_strategy_metric_children: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metric_children = micro_strategy_metric_children
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_metric_expression: Optional[str] = Field(
+            None, description="", alias="microStrategyMetricExpression"
+        )
+        micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyAttributeQualifiedNames"
+        )
+        micro_strategy_attribute_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyAttributeNames"
+        )
+        micro_strategy_fact_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactQualifiedNames"
+        )
+        micro_strategy_fact_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactNames"
+        )
+        micro_strategy_metric_parent_qualified_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyMetricParentQualifiedNames"
+        )
+        micro_strategy_metric_parent_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyMetricParentNames"
+        )
+        micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetricParents"
         )  # relationship
-        qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
+        micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
+            None, description="", alias="microStrategyFacts"
+        )  # relationship
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_metric_children: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetricChildren"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
         )  # relationship
 
-    attributes: "QlikSpace.Attributes" = Field(
-        default_factory=lambda: QlikSpace.Attributes(),
+    attributes: "MicroStrategyMetric.Attributes" = Field(
+        default_factory=lambda: MicroStrategyMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-QlikApp.Attributes.update_forward_refs()
+class MicroStrategyCube(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyCube":
+            raise ValueError("must be MicroStrategyCube")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyCube._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_cube_type",
+        "micro_strategy_cube_query",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+        "micro_strategy_attributes",
+    ]
+
+    @property
+    def micro_strategy_cube_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_cube_type
+        )
+
+    @micro_strategy_cube_type.setter
+    def micro_strategy_cube_type(self, micro_strategy_cube_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_type = micro_strategy_cube_type
+
+    @property
+    def micro_strategy_cube_query(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_cube_query
+        )
+
+    @micro_strategy_cube_query.setter
+    def micro_strategy_cube_query(self, micro_strategy_cube_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cube_query = micro_strategy_cube_query
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    @property
+    def micro_strategy_attributes(self) -> Optional[list[MicroStrategyAttribute]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attributes
+        )
+
+    @micro_strategy_attributes.setter
+    def micro_strategy_attributes(
+        self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attributes = micro_strategy_attributes
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_cube_type: Optional[str] = Field(
+            None, description="", alias="microStrategyCubeType"
+        )
+        micro_strategy_cube_query: Optional[str] = Field(
+            None, description="", alias="microStrategyCubeQuery"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+        micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
+            None, description="", alias="microStrategyAttributes"
+        )  # relationship
+
+    attributes: "MicroStrategyCube.Attributes" = Field(
+        default_factory=lambda: MicroStrategyCube.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikChart.Attributes.update_forward_refs()
+class MicroStrategyDossier(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDossier":
+            raise ValueError("must be MicroStrategyDossier")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyDossier._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_dossier_chapter_names",
+        "micro_strategy_visualizations",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_dossier_chapter_names(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_chapter_names
+        )
+
+    @micro_strategy_dossier_chapter_names.setter
+    def micro_strategy_dossier_chapter_names(
+        self, micro_strategy_dossier_chapter_names: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_chapter_names = (
+            micro_strategy_dossier_chapter_names
+        )
+
+    @property
+    def micro_strategy_visualizations(
+        self,
+    ) -> Optional[list[MicroStrategyVisualization]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualizations
+        )
+
+    @micro_strategy_visualizations.setter
+    def micro_strategy_visualizations(
+        self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyDossierChapterNames"
+        )
+        micro_strategy_visualizations: Optional[
+            list[MicroStrategyVisualization]
+        ] = Field(
+            None, description="", alias="microStrategyVisualizations"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyDossier.Attributes" = Field(
+        default_factory=lambda: MicroStrategyDossier.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikDataset.Attributes.update_forward_refs()
+class MicroStrategyFact(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyFact":
+            raise ValueError("must be MicroStrategyFact")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyFact._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_fact_expressions",
+        "micro_strategy_metrics",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_fact_expressions(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_fact_expressions
+        )
+
+    @micro_strategy_fact_expressions.setter
+    def micro_strategy_fact_expressions(
+        self, micro_strategy_fact_expressions: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_fact_expressions = (
+            micro_strategy_fact_expressions
+        )
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_fact_expressions: Optional[set[str]] = Field(
+            None, description="", alias="microStrategyFactExpressions"
+        )
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyFact.Attributes" = Field(
+        default_factory=lambda: MicroStrategyFact.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikSheet.Attributes.update_forward_refs()
+class MicroStrategyDocument(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyDocument":
+            raise ValueError("must be MicroStrategyDocument")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyDocument._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyDocument.Attributes" = Field(
+        default_factory=lambda: MicroStrategyDocument.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-QlikSpace.Attributes.update_forward_refs()
+class MicroStrategyAttribute(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyAttribute":
+            raise ValueError("must be MicroStrategyAttribute")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyAttribute._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_attribute_forms",
+        "micro_strategy_reports",
+        "micro_strategy_metrics",
+        "micro_strategy_cubes",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_attribute_forms(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_attribute_forms
+        )
+
+    @micro_strategy_attribute_forms.setter
+    def micro_strategy_attribute_forms(
+        self, micro_strategy_attribute_forms: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_attribute_forms = micro_strategy_attribute_forms
+
+    @property
+    def micro_strategy_reports(self) -> Optional[list[MicroStrategyReport]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_reports
+        )
+
+    @micro_strategy_reports.setter
+    def micro_strategy_reports(
+        self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_reports = micro_strategy_reports
+
+    @property
+    def micro_strategy_metrics(self) -> Optional[list[MicroStrategyMetric]]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_metrics
+        )
+
+    @micro_strategy_metrics.setter
+    def micro_strategy_metrics(
+        self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_metrics = micro_strategy_metrics
+
+    @property
+    def micro_strategy_cubes(self) -> Optional[list[MicroStrategyCube]]:
+        return None if self.attributes is None else self.attributes.micro_strategy_cubes
+
+    @micro_strategy_cubes.setter
+    def micro_strategy_cubes(
+        self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_cubes = micro_strategy_cubes
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_attribute_forms: Optional[str] = Field(
+            None, description="", alias="microStrategyAttributeForms"
+        )
+        micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
+            None, description="", alias="microStrategyReports"
+        )  # relationship
+        micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
+            None, description="", alias="microStrategyMetrics"
+        )  # relationship
+        micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
+            None, description="", alias="microStrategyCubes"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyAttribute.Attributes" = Field(
+        default_factory=lambda: MicroStrategyAttribute.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MicroStrategyVisualization(MicroStrategy):
+    """Description"""
+
+    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MicroStrategyVisualization":
+            raise ValueError("must be MicroStrategyVisualization")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MicroStrategyVisualization._convience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    _convience_properties: ClassVar[list[str]] = [
+        "micro_strategy_visualization_type",
+        "micro_strategy_dossier_qualified_name",
+        "micro_strategy_dossier_name",
+        "micro_strategy_dossier",
+        "micro_strategy_project",
+    ]
+
+    @property
+    def micro_strategy_visualization_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_visualization_type
+        )
+
+    @micro_strategy_visualization_type.setter
+    def micro_strategy_visualization_type(
+        self, micro_strategy_visualization_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_visualization_type = (
+            micro_strategy_visualization_type
+        )
+
+    @property
+    def micro_strategy_dossier_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_qualified_name
+        )
+
+    @micro_strategy_dossier_qualified_name.setter
+    def micro_strategy_dossier_qualified_name(
+        self, micro_strategy_dossier_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_qualified_name = (
+            micro_strategy_dossier_qualified_name
+        )
+
+    @property
+    def micro_strategy_dossier_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.micro_strategy_dossier_name
+        )
+
+    @micro_strategy_dossier_name.setter
+    def micro_strategy_dossier_name(self, micro_strategy_dossier_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier_name = micro_strategy_dossier_name
+
+    @property
+    def micro_strategy_dossier(self) -> Optional[MicroStrategyDossier]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_dossier
+        )
+
+    @micro_strategy_dossier.setter
+    def micro_strategy_dossier(
+        self, micro_strategy_dossier: Optional[MicroStrategyDossier]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_dossier = micro_strategy_dossier
+
+    @property
+    def micro_strategy_project(self) -> Optional[MicroStrategyProject]:
+        return (
+            None if self.attributes is None else self.attributes.micro_strategy_project
+        )
+
+    @micro_strategy_project.setter
+    def micro_strategy_project(
+        self, micro_strategy_project: Optional[MicroStrategyProject]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.micro_strategy_project = micro_strategy_project
+
+    class Attributes(MicroStrategy.Attributes):
+        micro_strategy_visualization_type: Optional[str] = Field(
+            None, description="", alias="microStrategyVisualizationType"
+        )
+        micro_strategy_dossier_qualified_name: Optional[str] = Field(
+            None, description="", alias="microStrategyDossierQualifiedName"
+        )
+        micro_strategy_dossier_name: Optional[str] = Field(
+            None, description="", alias="microStrategyDossierName"
+        )
+        micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
+            None, description="", alias="microStrategyDossier"
+        )  # relationship
+        micro_strategy_project: Optional[MicroStrategyProject] = Field(
+            None, description="", alias="microStrategyProject"
+        )  # relationship
+
+    attributes: "MicroStrategyVisualization.Attributes" = Field(
+        default_factory=lambda: MicroStrategyVisualization.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+MicroStrategyReport.Attributes.update_forward_refs()
+
+
+MicroStrategyProject.Attributes.update_forward_refs()
+
+
+MicroStrategyMetric.Attributes.update_forward_refs()
+
+
+MicroStrategyCube.Attributes.update_forward_refs()
+
+
+MicroStrategyDossier.Attributes.update_forward_refs()
+
+
+MicroStrategyFact.Attributes.update_forward_refs()
+
+
+MicroStrategyDocument.Attributes.update_forward_refs()
+
+
+MicroStrategyAttribute.Attributes.update_forward_refs()
+
+
+MicroStrategyVisualization.Attributes.update_forward_refs()

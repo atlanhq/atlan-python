@@ -14,23 +14,29 @@ from .asset00 import AirflowTask, Process
 from .asset27 import Google
 
 
-class DataStudio(Google):
+class GCS(Google):
     """Description"""
 
-    type_name: str = Field("DataStudio", allow_mutation=False)
+    type_name: str = Field("GCS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "DataStudio":
-            raise ValueError("must be DataStudio")
+        if v != "GCS":
+            raise ValueError("must be GCS")
         return v
 
     def __setattr__(self, name, value):
-        if name in DataStudio._convience_properties:
+        if name in GCS._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
+        "gcs_storage_class",
+        "gcs_encryption_type",
+        "gcs_e_tag",
+        "gcs_requester_pays",
+        "gcs_access_control",
+        "gcs_meta_generation_id",
         "google_service",
         "google_project_name",
         "google_project_id",
@@ -44,6 +50,68 @@ class DataStudio(Google):
         "input_to_airflow_tasks",
         "output_from_processes",
     ]
+
+    @property
+    def gcs_storage_class(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_storage_class
+
+    @gcs_storage_class.setter
+    def gcs_storage_class(self, gcs_storage_class: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_storage_class = gcs_storage_class
+
+    @property
+    def gcs_encryption_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_encryption_type
+
+    @gcs_encryption_type.setter
+    def gcs_encryption_type(self, gcs_encryption_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_encryption_type = gcs_encryption_type
+
+    @property
+    def gcs_e_tag(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_e_tag
+
+    @gcs_e_tag.setter
+    def gcs_e_tag(self, gcs_e_tag: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_e_tag = gcs_e_tag
+
+    @property
+    def gcs_requester_pays(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.gcs_requester_pays
+
+    @gcs_requester_pays.setter
+    def gcs_requester_pays(self, gcs_requester_pays: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_requester_pays = gcs_requester_pays
+
+    @property
+    def gcs_access_control(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_access_control
+
+    @gcs_access_control.setter
+    def gcs_access_control(self, gcs_access_control: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_access_control = gcs_access_control
+
+    @property
+    def gcs_meta_generation_id(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.gcs_meta_generation_id
+        )
+
+    @gcs_meta_generation_id.setter
+    def gcs_meta_generation_id(self, gcs_meta_generation_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_meta_generation_id = gcs_meta_generation_id
 
     @property
     def google_service(self) -> Optional[str]:
@@ -180,6 +248,22 @@ class DataStudio(Google):
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Google.Attributes):
+        gcs_storage_class: Optional[str] = Field(
+            None, description="", alias="gcsStorageClass"
+        )
+        gcs_encryption_type: Optional[str] = Field(
+            None, description="", alias="gcsEncryptionType"
+        )
+        gcs_e_tag: Optional[str] = Field(None, description="", alias="gcsETag")
+        gcs_requester_pays: Optional[bool] = Field(
+            None, description="", alias="gcsRequesterPays"
+        )
+        gcs_access_control: Optional[str] = Field(
+            None, description="", alias="gcsAccessControl"
+        )
+        gcs_meta_generation_id: Optional[int] = Field(
+            None, description="", alias="gcsMetaGenerationId"
+        )
         google_service: Optional[str] = Field(
             None, description="", alias="googleService"
         )
@@ -217,11 +301,11 @@ class DataStudio(Google):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: "DataStudio.Attributes" = Field(
-        default_factory=lambda: DataStudio.Attributes(),
+    attributes: "GCS.Attributes" = Field(
+        default_factory=lambda: GCS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-DataStudio.Attributes.update_forward_refs()
+GCS.Attributes.update_forward_refs()

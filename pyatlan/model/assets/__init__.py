@@ -51,57 +51,57 @@ from .asset00 import (
 )
 from .asset01 import DataSet
 from .asset02 import Connection
-from .asset03 import Badge
-from .asset04 import AccessControl, AuthPolicy
-from .asset05 import ProcessExecution
-from .asset06 import AuthService
-from .asset07 import Cloud
-from .asset08 import Infrastructure
-from .asset09 import BIProcess
-from .asset10 import DbtProcess
-from .asset11 import Persona
-from .asset12 import Purpose
-from .asset13 import Collection
-from .asset15 import ObjectStore
-from .asset17 import BI
-from .asset18 import SaaS
-from .asset20 import EventStore
-from .asset22 import Insight
-from .asset23 import API
-from .asset26 import Google
-from .asset27 import Azure
-from .asset28 import AWS
-from .asset29 import DbtColumnProcess
-from .asset30 import S3
-from .asset31 import ADLS
-from .asset32 import GCS
-from .asset35 import Preset
-from .asset36 import Mode
-from .asset37 import Sigma
-from .asset38 import Tableau
-from .asset39 import Looker
-from .asset40 import Redash
-from .asset41 import DataStudio
-from .asset42 import Metabase
-from .asset43 import QuickSight
-from .asset44 import Thoughtspot
-from .asset45 import PowerBI
-from .asset46 import MicroStrategy
-from .asset47 import Qlik
-from .asset48 import Salesforce
-from .asset49 import ReadmeTemplate
-from .asset50 import Kafka
-from .asset51 import DbtTag
-from .asset52 import APIPath, APISpec
-from .asset53 import DataStudioAsset
-from .asset54 import S3Bucket, S3Object
-from .asset55 import ADLSAccount, ADLSContainer, ADLSObject
-from .asset56 import GCSBucket, GCSObject
-from .asset57 import PresetChart, PresetDashboard, PresetDataset, PresetWorkspace
-from .asset58 import ModeChart, ModeCollection, ModeQuery, ModeReport, ModeWorkspace
-from .asset59 import SigmaDataset, SigmaDatasetColumn
-from .asset60 import SigmaDataElement, SigmaDataElementField, SigmaPage, SigmaWorkbook
-from .asset61 import (
+from .asset04 import Badge
+from .asset05 import AccessControl, AuthPolicy
+from .asset06 import ProcessExecution
+from .asset07 import AuthService
+from .asset08 import Cloud
+from .asset09 import Infrastructure
+from .asset10 import BIProcess
+from .asset11 import DbtProcess
+from .asset12 import Persona
+from .asset13 import Purpose
+from .asset14 import Collection
+from .asset16 import ObjectStore
+from .asset18 import BI
+from .asset19 import SaaS
+from .asset21 import EventStore
+from .asset23 import Insight
+from .asset24 import API
+from .asset27 import Google
+from .asset28 import Azure
+from .asset29 import AWS
+from .asset30 import DbtColumnProcess
+from .asset31 import S3
+from .asset32 import ADLS
+from .asset33 import GCS
+from .asset36 import Preset
+from .asset37 import Mode
+from .asset38 import Sigma
+from .asset39 import Tableau
+from .asset40 import Looker
+from .asset41 import Redash
+from .asset42 import DataStudio
+from .asset43 import Metabase
+from .asset44 import QuickSight
+from .asset45 import Thoughtspot
+from .asset46 import PowerBI
+from .asset47 import MicroStrategy
+from .asset48 import Qlik
+from .asset49 import Salesforce
+from .asset50 import ReadmeTemplate
+from .asset51 import Kafka
+from .asset52 import DbtTag
+from .asset53 import APIPath, APISpec
+from .asset54 import DataStudioAsset
+from .asset55 import S3Bucket, S3Object
+from .asset56 import ADLSAccount, ADLSContainer, ADLSObject
+from .asset57 import GCSBucket, GCSObject
+from .asset58 import PresetChart, PresetDashboard, PresetDataset, PresetWorkspace
+from .asset59 import ModeChart, ModeCollection, ModeQuery, ModeReport, ModeWorkspace
+from .asset60 import SigmaDataset, SigmaDatasetColumn
+from .asset61 import SigmaDataElement, SigmaDataElementField, SigmaPage, SigmaWorkbook
+from .asset62 import (
     TableauCalculatedField,
     TableauDashboard,
     TableauDatasource,
@@ -112,8 +112,8 @@ from .asset61 import (
     TableauWorkbook,
     TableauWorksheet,
 )
-from .asset62 import TableauMetric
-from .asset63 import (
+from .asset63 import TableauMetric
+from .asset64 import (
     LookerDashboard,
     LookerExplore,
     LookerField,
@@ -125,10 +125,10 @@ from .asset63 import (
     LookerTile,
     LookerView,
 )
-from .asset64 import RedashDashboard
-from .asset65 import RedashQuery, RedashVisualization
-from .asset66 import MetabaseCollection, MetabaseDashboard, MetabaseQuestion
-from .asset67 import (
+from .asset65 import RedashDashboard
+from .asset66 import RedashQuery, RedashVisualization
+from .asset67 import MetabaseCollection, MetabaseDashboard, MetabaseQuestion
+from .asset68 import (
     QuickSightAnalysis,
     QuickSightAnalysisVisual,
     QuickSightDashboard,
@@ -137,9 +137,9 @@ from .asset67 import (
     QuickSightDatasetField,
     QuickSightFolder,
 )
-from .asset68 import ThoughtspotDashlet, ThoughtspotLiveboard
-from .asset69 import ThoughtspotAnswer
-from .asset70 import (
+from .asset69 import ThoughtspotDashlet, ThoughtspotLiveboard
+from .asset70 import ThoughtspotAnswer
+from .asset71 import (
     PowerBIColumn,
     PowerBIDashboard,
     PowerBIDataflow,
@@ -152,7 +152,7 @@ from .asset70 import (
     PowerBITile,
     PowerBIWorkspace,
 )
-from .asset71 import (
+from .asset72 import (
     MicroStrategyAttribute,
     MicroStrategyCube,
     MicroStrategyDocument,
@@ -163,14 +163,14 @@ from .asset71 import (
     MicroStrategyReport,
     MicroStrategyVisualization,
 )
-from .asset72 import QlikApp, QlikChart, QlikDataset, QlikSheet, QlikSpace
-from .asset73 import (
+from .asset73 import QlikApp, QlikChart, QlikDataset, QlikSheet, QlikSpace
+from .asset74 import (
     SalesforceDashboard,
     SalesforceField,
     SalesforceObject,
     SalesforceOrganization,
     SalesforceReport,
 )
-from .asset74 import KafkaConsumerGroup, KafkaTopic
-from .asset75 import QlikStream
-from .asset76 import AzureEventHub
+from .asset75 import KafkaConsumerGroup, KafkaTopic
+from .asset76 import QlikStream
+from .asset77 import AzureEventHub

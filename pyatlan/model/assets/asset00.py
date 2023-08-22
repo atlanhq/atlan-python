@@ -4170,7 +4170,6 @@ class AirflowTask(Airflow):
         "outputs",
         "process",
         "inputs",
-        "tables",
         "airflow_dag",
     ]
 
@@ -4341,16 +4340,6 @@ class AirflowTask(Airflow):
         self.attributes.inputs = inputs
 
     @property
-    def tables(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.tables
-
-    @tables.setter
-    def tables(self, tables: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tables = tables
-
-    @property
     def airflow_dag(self) -> Optional[AirflowDag]:
         return None if self.attributes is None else self.attributes.airflow_dag
 
@@ -4402,9 +4391,6 @@ class AirflowTask(Airflow):
         )  # relationship
         inputs: Optional[list[Catalog]] = Field(
             None, description="", alias="inputs"
-        )  # relationship
-        tables: Optional[list[Table]] = Field(
-            None, description="", alias="tables"
         )  # relationship
         airflow_dag: Optional[AirflowDag] = Field(
             None, description="", alias="airflowDag"
@@ -5239,12 +5225,11 @@ class Table(SQL):
         "partition_strategy",
         "partition_count",
         "partition_list",
+        "partitions",
         "columns",
+        "queries",
         "facts",
         "atlan_schema",
-        "partitions",
-        "airflow_task",
-        "queries",
         "dimensions",
     ]
 
@@ -5397,6 +5382,16 @@ class Table(SQL):
         self.attributes.partition_list = partition_list
 
     @property
+    def partitions(self) -> Optional[list[TablePartition]]:
+        return None if self.attributes is None else self.attributes.partitions
+
+    @partitions.setter
+    def partitions(self, partitions: Optional[list[TablePartition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partitions = partitions
+
+    @property
     def columns(self) -> Optional[list[Column]]:
         return None if self.attributes is None else self.attributes.columns
 
@@ -5405,6 +5400,16 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.columns = columns
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
 
     @property
     def facts(self) -> Optional[list[Table]]:
@@ -5425,36 +5430,6 @@ class Table(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
-
-    @property
-    def partitions(self) -> Optional[list[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[list[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
-
-    @property
-    def airflow_task(self) -> Optional[AirflowTask]:
-        return None if self.attributes is None else self.attributes.airflow_task
-
-    @airflow_task.setter
-    def airflow_task(self, airflow_task: Optional[AirflowTask]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.airflow_task = airflow_task
-
-    @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
 
     @property
     def dimensions(self) -> Optional[list[Table]]:
@@ -5499,23 +5474,20 @@ class Table(SQL):
         partition_list: Optional[str] = Field(
             None, description="", alias="partitionList"
         )
+        partitions: Optional[list[TablePartition]] = Field(
+            None, description="", alias="partitions"
+        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            None, description="", alias="queries"
         )  # relationship
         facts: Optional[list[Table]] = Field(
             None, description="", alias="facts"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
-        )  # relationship
-        partitions: Optional[list[TablePartition]] = Field(
-            None, description="", alias="partitions"
-        )  # relationship
-        airflow_task: Optional[AirflowTask] = Field(
-            None, description="", alias="airflowTask"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
         )  # relationship
         dimensions: Optional[list[Table]] = Field(
             None, description="", alias="dimensions"

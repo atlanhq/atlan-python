@@ -4,600 +4,483 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from .asset35 import Preset
+from .asset33 import GCS
 
 
-class PresetChart(Preset):
+class GCSObject(GCS):
     """Description"""
 
-    type_name: str = Field("PresetChart", allow_mutation=False)
+    type_name: str = Field("GCSObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PresetChart":
-            raise ValueError("must be PresetChart")
+        if v != "GCSObject":
+            raise ValueError("must be GCSObject")
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetChart._convience_properties:
+        if name in GCSObject._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "preset_chart_description_markdown",
-        "preset_chart_form_data",
-        "preset_dashboard",
+        "gcs_bucket_name",
+        "gcs_bucket_qualified_name",
+        "gcs_object_size",
+        "gcs_object_key",
+        "gcs_object_media_link",
+        "gcs_object_hold_type",
+        "gcs_object_generation_id",
+        "gcs_object_c_r_c32_c_hash",
+        "gcs_object_m_d5_hash",
+        "gcs_object_data_last_modified_time",
+        "gcs_object_content_type",
+        "gcs_object_content_encoding",
+        "gcs_object_content_disposition",
+        "gcs_object_content_language",
+        "gcs_object_retention_expiration_date",
+        "gcs_bucket",
     ]
 
     @property
-    def preset_chart_description_markdown(self) -> Optional[str]:
+    def gcs_bucket_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_bucket_name
+
+    @gcs_bucket_name.setter
+    def gcs_bucket_name(self, gcs_bucket_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_name = gcs_bucket_name
+
+    @property
+    def gcs_bucket_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_chart_description_markdown
+            else self.attributes.gcs_bucket_qualified_name
         )
 
-    @preset_chart_description_markdown.setter
-    def preset_chart_description_markdown(
-        self, preset_chart_description_markdown: Optional[str]
+    @gcs_bucket_qualified_name.setter
+    def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_qualified_name = gcs_bucket_qualified_name
+
+    @property
+    def gcs_object_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.gcs_object_size
+
+    @gcs_object_size.setter
+    def gcs_object_size(self, gcs_object_size: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_size = gcs_object_size
+
+    @property
+    def gcs_object_key(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_key
+
+    @gcs_object_key.setter
+    def gcs_object_key(self, gcs_object_key: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_key = gcs_object_key
+
+    @property
+    def gcs_object_media_link(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.gcs_object_media_link
+        )
+
+    @gcs_object_media_link.setter
+    def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_media_link = gcs_object_media_link
+
+    @property
+    def gcs_object_hold_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_hold_type
+
+    @gcs_object_hold_type.setter
+    def gcs_object_hold_type(self, gcs_object_hold_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_hold_type = gcs_object_hold_type
+
+    @property
+    def gcs_object_generation_id(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_generation_id
+        )
+
+    @gcs_object_generation_id.setter
+    def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_generation_id = gcs_object_generation_id
+
+    @property
+    def gcs_object_c_r_c32_c_hash(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_c_r_c32_c_hash
+        )
+
+    @gcs_object_c_r_c32_c_hash.setter
+    def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_c_r_c32_c_hash = gcs_object_c_r_c32_c_hash
+
+    @property
+    def gcs_object_m_d5_hash(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.gcs_object_m_d5_hash
+
+    @gcs_object_m_d5_hash.setter
+    def gcs_object_m_d5_hash(self, gcs_object_m_d5_hash: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_m_d5_hash = gcs_object_m_d5_hash
+
+    @property
+    def gcs_object_data_last_modified_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_data_last_modified_time
+        )
+
+    @gcs_object_data_last_modified_time.setter
+    def gcs_object_data_last_modified_time(
+        self, gcs_object_data_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_chart_description_markdown = (
-            preset_chart_description_markdown
+        self.attributes.gcs_object_data_last_modified_time = (
+            gcs_object_data_last_modified_time
         )
 
     @property
-    def preset_chart_form_data(self) -> Optional[dict[str, str]]:
+    def gcs_object_content_type(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.preset_chart_form_data
+            None if self.attributes is None else self.attributes.gcs_object_content_type
         )
 
-    @preset_chart_form_data.setter
-    def preset_chart_form_data(self, preset_chart_form_data: Optional[dict[str, str]]):
+    @gcs_object_content_type.setter
+    def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_chart_form_data = preset_chart_form_data
+        self.attributes.gcs_object_content_type = gcs_object_content_type
 
     @property
-    def preset_dashboard(self) -> Optional[PresetDashboard]:
-        return None if self.attributes is None else self.attributes.preset_dashboard
+    def gcs_object_content_encoding(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_encoding
+        )
 
-    @preset_dashboard.setter
-    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
+    @gcs_object_content_encoding.setter
+    def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard = preset_dashboard
+        self.attributes.gcs_object_content_encoding = gcs_object_content_encoding
 
-    class Attributes(Preset.Attributes):
-        preset_chart_description_markdown: Optional[str] = Field(
-            None, description="", alias="presetChartDescriptionMarkdown"
+    @property
+    def gcs_object_content_disposition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_disposition
         )
-        preset_chart_form_data: Optional[dict[str, str]] = Field(
-            None, description="", alias="presetChartFormData"
+
+    @gcs_object_content_disposition.setter
+    def gcs_object_content_disposition(
+        self, gcs_object_content_disposition: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
+
+    @property
+    def gcs_object_content_language(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_content_language
         )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+
+    @gcs_object_content_language.setter
+    def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_content_language = gcs_object_content_language
+
+    @property
+    def gcs_object_retention_expiration_date(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_object_retention_expiration_date
+        )
+
+    @gcs_object_retention_expiration_date.setter
+    def gcs_object_retention_expiration_date(
+        self, gcs_object_retention_expiration_date: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_retention_expiration_date = (
+            gcs_object_retention_expiration_date
+        )
+
+    @property
+    def gcs_bucket(self) -> Optional[GCSBucket]:
+        return None if self.attributes is None else self.attributes.gcs_bucket
+
+    @gcs_bucket.setter
+    def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket = gcs_bucket
+
+    class Attributes(GCS.Attributes):
+        gcs_bucket_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketName"
+        )
+        gcs_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="gcsBucketQualifiedName"
+        )
+        gcs_object_size: Optional[int] = Field(
+            None, description="", alias="gcsObjectSize"
+        )
+        gcs_object_key: Optional[str] = Field(
+            None, description="", alias="gcsObjectKey"
+        )
+        gcs_object_media_link: Optional[str] = Field(
+            None, description="", alias="gcsObjectMediaLink"
+        )
+        gcs_object_hold_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectHoldType"
+        )
+        gcs_object_generation_id: Optional[int] = Field(
+            None, description="", alias="gcsObjectGenerationId"
+        )
+        gcs_object_c_r_c32_c_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectCRC32CHash"
+        )
+        gcs_object_m_d5_hash: Optional[str] = Field(
+            None, description="", alias="gcsObjectMD5Hash"
+        )
+        gcs_object_data_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectDataLastModifiedTime"
+        )
+        gcs_object_content_type: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentType"
+        )
+        gcs_object_content_encoding: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentEncoding"
+        )
+        gcs_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentDisposition"
+        )
+        gcs_object_content_language: Optional[str] = Field(
+            None, description="", alias="gcsObjectContentLanguage"
+        )
+        gcs_object_retention_expiration_date: Optional[datetime] = Field(
+            None, description="", alias="gcsObjectRetentionExpirationDate"
+        )
+        gcs_bucket: Optional[GCSBucket] = Field(
+            None, description="", alias="gcsBucket"
         )  # relationship
 
-    attributes: "PresetChart.Attributes" = Field(
-        default_factory=lambda: PresetChart.Attributes(),
+    attributes: "GCSObject.Attributes" = Field(
+        default_factory=lambda: GCSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PresetDataset(Preset):
+class GCSBucket(GCS):
     """Description"""
 
-    type_name: str = Field("PresetDataset", allow_mutation=False)
+    type_name: str = Field("GCSBucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PresetDataset":
-            raise ValueError("must be PresetDataset")
+        if v != "GCSBucket":
+            raise ValueError("must be GCSBucket")
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetDataset._convience_properties:
+        if name in GCSBucket._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "preset_dataset_datasource_name",
-        "preset_dataset_id",
-        "preset_dataset_type",
-        "preset_dashboard",
+        "gcs_object_count",
+        "gcs_bucket_versioning_enabled",
+        "gcs_bucket_retention_locked",
+        "gcs_bucket_retention_period",
+        "gcs_bucket_retention_effective_time",
+        "gcs_bucket_lifecycle_rules",
+        "gcs_bucket_retention_policy",
+        "gcs_objects",
     ]
 
     @property
-    def preset_dataset_datasource_name(self) -> Optional[str]:
+    def gcs_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.gcs_object_count
+
+    @gcs_object_count.setter
+    def gcs_object_count(self, gcs_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_object_count = gcs_object_count
+
+    @property
+    def gcs_bucket_versioning_enabled(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_dataset_datasource_name
+            else self.attributes.gcs_bucket_versioning_enabled
         )
 
-    @preset_dataset_datasource_name.setter
-    def preset_dataset_datasource_name(
-        self, preset_dataset_datasource_name: Optional[str]
+    @gcs_bucket_versioning_enabled.setter
+    def gcs_bucket_versioning_enabled(
+        self, gcs_bucket_versioning_enabled: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dataset_datasource_name = preset_dataset_datasource_name
+        self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
 
     @property
-    def preset_dataset_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.preset_dataset_id
+    def gcs_bucket_retention_locked(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_locked
+        )
 
-    @preset_dataset_id.setter
-    def preset_dataset_id(self, preset_dataset_id: Optional[int]):
+    @gcs_bucket_retention_locked.setter
+    def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dataset_id = preset_dataset_id
+        self.attributes.gcs_bucket_retention_locked = gcs_bucket_retention_locked
 
     @property
-    def preset_dataset_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dataset_type
+    def gcs_bucket_retention_period(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_period
+        )
 
-    @preset_dataset_type.setter
-    def preset_dataset_type(self, preset_dataset_type: Optional[str]):
+    @gcs_bucket_retention_period.setter
+    def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dataset_type = preset_dataset_type
+        self.attributes.gcs_bucket_retention_period = gcs_bucket_retention_period
 
     @property
-    def preset_dashboard(self) -> Optional[PresetDashboard]:
-        return None if self.attributes is None else self.attributes.preset_dashboard
+    def gcs_bucket_retention_effective_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_effective_time
+        )
 
-    @preset_dashboard.setter
-    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
+    @gcs_bucket_retention_effective_time.setter
+    def gcs_bucket_retention_effective_time(
+        self, gcs_bucket_retention_effective_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard = preset_dashboard
+        self.attributes.gcs_bucket_retention_effective_time = (
+            gcs_bucket_retention_effective_time
+        )
 
-    class Attributes(Preset.Attributes):
-        preset_dataset_datasource_name: Optional[str] = Field(
-            None, description="", alias="presetDatasetDatasourceName"
+    @property
+    def gcs_bucket_lifecycle_rules(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_lifecycle_rules
         )
-        preset_dataset_id: Optional[int] = Field(
-            None, description="", alias="presetDatasetId"
+
+    @gcs_bucket_lifecycle_rules.setter
+    def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_lifecycle_rules = gcs_bucket_lifecycle_rules
+
+    @property
+    def gcs_bucket_retention_policy(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.gcs_bucket_retention_policy
         )
-        preset_dataset_type: Optional[str] = Field(
-            None, description="", alias="presetDatasetType"
+
+    @gcs_bucket_retention_policy.setter
+    def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
+
+    @property
+    def gcs_objects(self) -> Optional[list[GCSObject]]:
+        return None if self.attributes is None else self.attributes.gcs_objects
+
+    @gcs_objects.setter
+    def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.gcs_objects = gcs_objects
+
+    class Attributes(GCS.Attributes):
+        gcs_object_count: Optional[int] = Field(
+            None, description="", alias="gcsObjectCount"
         )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+        gcs_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="gcsBucketVersioningEnabled"
+        )
+        gcs_bucket_retention_locked: Optional[bool] = Field(
+            None, description="", alias="gcsBucketRetentionLocked"
+        )
+        gcs_bucket_retention_period: Optional[int] = Field(
+            None, description="", alias="gcsBucketRetentionPeriod"
+        )
+        gcs_bucket_retention_effective_time: Optional[datetime] = Field(
+            None, description="", alias="gcsBucketRetentionEffectiveTime"
+        )
+        gcs_bucket_lifecycle_rules: Optional[str] = Field(
+            None, description="", alias="gcsBucketLifecycleRules"
+        )
+        gcs_bucket_retention_policy: Optional[str] = Field(
+            None, description="", alias="gcsBucketRetentionPolicy"
+        )
+        gcs_objects: Optional[list[GCSObject]] = Field(
+            None, description="", alias="gcsObjects"
         )  # relationship
 
-    attributes: "PresetDataset.Attributes" = Field(
-        default_factory=lambda: PresetDataset.Attributes(),
+    attributes: "GCSBucket.Attributes" = Field(
+        default_factory=lambda: GCSBucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PresetDashboard(Preset):
-    """Description"""
-
-    type_name: str = Field("PresetDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetDashboard":
-            raise ValueError("must be PresetDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetDashboard._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "preset_dashboard_changed_by_name",
-        "preset_dashboard_changed_by_url",
-        "preset_dashboard_is_managed_externally",
-        "preset_dashboard_is_published",
-        "preset_dashboard_thumbnail_url",
-        "preset_dashboard_chart_count",
-        "preset_datasets",
-        "preset_charts",
-        "preset_workspace",
-    ]
-
-    @property
-    def preset_dashboard_changed_by_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_changed_by_name
-        )
-
-    @preset_dashboard_changed_by_name.setter
-    def preset_dashboard_changed_by_name(
-        self, preset_dashboard_changed_by_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_name = (
-            preset_dashboard_changed_by_name
-        )
-
-    @property
-    def preset_dashboard_changed_by_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_changed_by_url
-        )
-
-    @preset_dashboard_changed_by_url.setter
-    def preset_dashboard_changed_by_url(
-        self, preset_dashboard_changed_by_url: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_url = (
-            preset_dashboard_changed_by_url
-        )
-
-    @property
-    def preset_dashboard_is_managed_externally(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_is_managed_externally
-        )
-
-    @preset_dashboard_is_managed_externally.setter
-    def preset_dashboard_is_managed_externally(
-        self, preset_dashboard_is_managed_externally: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_managed_externally = (
-            preset_dashboard_is_managed_externally
-        )
-
-    @property
-    def preset_dashboard_is_published(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_is_published
-        )
-
-    @preset_dashboard_is_published.setter
-    def preset_dashboard_is_published(
-        self, preset_dashboard_is_published: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_published = preset_dashboard_is_published
-
-    @property
-    def preset_dashboard_thumbnail_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_thumbnail_url
-        )
-
-    @preset_dashboard_thumbnail_url.setter
-    def preset_dashboard_thumbnail_url(
-        self, preset_dashboard_thumbnail_url: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_thumbnail_url = preset_dashboard_thumbnail_url
-
-    @property
-    def preset_dashboard_chart_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_chart_count
-        )
-
-    @preset_dashboard_chart_count.setter
-    def preset_dashboard_chart_count(self, preset_dashboard_chart_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
-
-    @property
-    def preset_datasets(self) -> Optional[list[PresetDataset]]:
-        return None if self.attributes is None else self.attributes.preset_datasets
-
-    @preset_datasets.setter
-    def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_datasets = preset_datasets
-
-    @property
-    def preset_charts(self) -> Optional[list[PresetChart]]:
-        return None if self.attributes is None else self.attributes.preset_charts
-
-    @preset_charts.setter
-    def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_charts = preset_charts
-
-    @property
-    def preset_workspace(self) -> Optional[PresetWorkspace]:
-        return None if self.attributes is None else self.attributes.preset_workspace
-
-    @preset_workspace.setter
-    def preset_workspace(self, preset_workspace: Optional[PresetWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace = preset_workspace
-
-    class Attributes(Preset.Attributes):
-        preset_dashboard_changed_by_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByName"
-        )
-        preset_dashboard_changed_by_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByURL"
-        )
-        preset_dashboard_is_managed_externally: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsManagedExternally"
-        )
-        preset_dashboard_is_published: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsPublished"
-        )
-        preset_dashboard_thumbnail_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardThumbnailURL"
-        )
-        preset_dashboard_chart_count: Optional[int] = Field(
-            None, description="", alias="presetDashboardChartCount"
-        )
-        preset_datasets: Optional[list[PresetDataset]] = Field(
-            None, description="", alias="presetDatasets"
-        )  # relationship
-        preset_charts: Optional[list[PresetChart]] = Field(
-            None, description="", alias="presetCharts"
-        )  # relationship
-        preset_workspace: Optional[PresetWorkspace] = Field(
-            None, description="", alias="presetWorkspace"
-        )  # relationship
-
-    attributes: "PresetDashboard.Attributes" = Field(
-        default_factory=lambda: PresetDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
+GCSObject.Attributes.update_forward_refs()
 
 
-class PresetWorkspace(Preset):
-    """Description"""
-
-    type_name: str = Field("PresetWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetWorkspace":
-            raise ValueError("must be PresetWorkspace")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetWorkspace._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "preset_workspace_public_dashboards_allowed",
-        "preset_workspace_cluster_id",
-        "preset_workspace_hostname",
-        "preset_workspace_is_in_maintenance_mode",
-        "preset_workspace_region",
-        "preset_workspace_status",
-        "preset_workspace_deployment_id",
-        "preset_workspace_dashboard_count",
-        "preset_workspace_dataset_count",
-        "preset_dashboards",
-    ]
-
-    @property
-    def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_public_dashboards_allowed
-        )
-
-    @preset_workspace_public_dashboards_allowed.setter
-    def preset_workspace_public_dashboards_allowed(
-        self, preset_workspace_public_dashboards_allowed: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_public_dashboards_allowed = (
-            preset_workspace_public_dashboards_allowed
-        )
-
-    @property
-    def preset_workspace_cluster_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_cluster_id
-        )
-
-    @preset_workspace_cluster_id.setter
-    def preset_workspace_cluster_id(self, preset_workspace_cluster_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_cluster_id = preset_workspace_cluster_id
-
-    @property
-    def preset_workspace_hostname(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_hostname
-        )
-
-    @preset_workspace_hostname.setter
-    def preset_workspace_hostname(self, preset_workspace_hostname: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_hostname = preset_workspace_hostname
-
-    @property
-    def preset_workspace_is_in_maintenance_mode(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_is_in_maintenance_mode
-        )
-
-    @preset_workspace_is_in_maintenance_mode.setter
-    def preset_workspace_is_in_maintenance_mode(
-        self, preset_workspace_is_in_maintenance_mode: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_is_in_maintenance_mode = (
-            preset_workspace_is_in_maintenance_mode
-        )
-
-    @property
-    def preset_workspace_region(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_region
-        )
-
-    @preset_workspace_region.setter
-    def preset_workspace_region(self, preset_workspace_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_region = preset_workspace_region
-
-    @property
-    def preset_workspace_status(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_status
-        )
-
-    @preset_workspace_status.setter
-    def preset_workspace_status(self, preset_workspace_status: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_status = preset_workspace_status
-
-    @property
-    def preset_workspace_deployment_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_deployment_id
-        )
-
-    @preset_workspace_deployment_id.setter
-    def preset_workspace_deployment_id(
-        self, preset_workspace_deployment_id: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
-
-    @property
-    def preset_workspace_dashboard_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_dashboard_count
-        )
-
-    @preset_workspace_dashboard_count.setter
-    def preset_workspace_dashboard_count(
-        self, preset_workspace_dashboard_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dashboard_count = (
-            preset_workspace_dashboard_count
-        )
-
-    @property
-    def preset_workspace_dataset_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_dataset_count
-        )
-
-    @preset_workspace_dataset_count.setter
-    def preset_workspace_dataset_count(
-        self, preset_workspace_dataset_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
-
-    @property
-    def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
-        return None if self.attributes is None else self.attributes.preset_dashboards
-
-    @preset_dashboards.setter
-    def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboards = preset_dashboards
-
-    class Attributes(Preset.Attributes):
-        preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
-            None, description="", alias="presetWorkspacePublicDashboardsAllowed"
-        )
-        preset_workspace_cluster_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceClusterId"
-        )
-        preset_workspace_hostname: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceHostname"
-        )
-        preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
-            None, description="", alias="presetWorkspaceIsInMaintenanceMode"
-        )
-        preset_workspace_region: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceRegion"
-        )
-        preset_workspace_status: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceStatus"
-        )
-        preset_workspace_deployment_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDeploymentId"
-        )
-        preset_workspace_dashboard_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDashboardCount"
-        )
-        preset_workspace_dataset_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDatasetCount"
-        )
-        preset_dashboards: Optional[list[PresetDashboard]] = Field(
-            None, description="", alias="presetDashboards"
-        )  # relationship
-
-    attributes: "PresetWorkspace.Attributes" = Field(
-        default_factory=lambda: PresetWorkspace.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-PresetChart.Attributes.update_forward_refs()
-
-
-PresetDataset.Attributes.update_forward_refs()
-
-
-PresetDashboard.Attributes.update_forward_refs()
-
-
-PresetWorkspace.Attributes.update_forward_refs()
+GCSBucket.Attributes.update_forward_refs()

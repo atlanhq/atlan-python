@@ -8,26 +8,26 @@ from typing import ClassVar
 
 from pydantic import Field, validator
 
-from .asset00 import Catalog
+from .asset75 import KafkaTopic
 
 
-class BI(Catalog):
+class AzureEventHub(KafkaTopic):
     """Description"""
 
-    type_name: str = Field("BI", allow_mutation=False)
+    type_name: str = Field("AzureEventHub", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "BI":
-            raise ValueError("must be BI")
+        if v != "AzureEventHub":
+            raise ValueError("must be AzureEventHub")
         return v
 
     def __setattr__(self, name, value):
-        if name in BI._convience_properties:
+        if name in AzureEventHub._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = []
 
 
-BI.Attributes.update_forward_refs()
+AzureEventHub.Attributes.update_forward_refs()

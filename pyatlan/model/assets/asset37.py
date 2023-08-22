@@ -8,139 +8,173 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from .asset17 import BI
+from .asset18 import BI
 
 
-class Sigma(BI):
+class Mode(BI):
     """Description"""
 
-    type_name: str = Field("Sigma", allow_mutation=False)
+    type_name: str = Field("Mode", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Sigma":
-            raise ValueError("must be Sigma")
+        if v != "Mode":
+            raise ValueError("must be Mode")
         return v
 
     def __setattr__(self, name, value):
-        if name in Sigma._convience_properties:
+        if name in Mode._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "sigma_workbook_qualified_name",
-        "sigma_workbook_name",
-        "sigma_page_qualified_name",
-        "sigma_page_name",
-        "sigma_data_element_qualified_name",
-        "sigma_data_element_name",
+        "mode_id",
+        "mode_token",
+        "mode_workspace_name",
+        "mode_workspace_username",
+        "mode_workspace_qualified_name",
+        "mode_report_name",
+        "mode_report_qualified_name",
+        "mode_query_name",
+        "mode_query_qualified_name",
     ]
 
     @property
-    def sigma_workbook_qualified_name(self) -> Optional[str]:
+    def mode_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_id
+
+    @mode_id.setter
+    def mode_id(self, mode_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_id = mode_id
+
+    @property
+    def mode_token(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_token
+
+    @mode_token.setter
+    def mode_token(self, mode_token: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_token = mode_token
+
+    @property
+    def mode_workspace_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_workspace_name
+
+    @mode_workspace_name.setter
+    def mode_workspace_name(self, mode_workspace_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace_name = mode_workspace_name
+
+    @property
+    def mode_workspace_username(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.mode_workspace_username
+        )
+
+    @mode_workspace_username.setter
+    def mode_workspace_username(self, mode_workspace_username: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.mode_workspace_username = mode_workspace_username
+
+    @property
+    def mode_workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sigma_workbook_qualified_name
+            else self.attributes.mode_workspace_qualified_name
         )
 
-    @sigma_workbook_qualified_name.setter
-    def sigma_workbook_qualified_name(
-        self, sigma_workbook_qualified_name: Optional[str]
+    @mode_workspace_qualified_name.setter
+    def mode_workspace_qualified_name(
+        self, mode_workspace_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
+        self.attributes.mode_workspace_qualified_name = mode_workspace_qualified_name
 
     @property
-    def sigma_workbook_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_workbook_name
+    def mode_report_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_report_name
 
-    @sigma_workbook_name.setter
-    def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
+    @mode_report_name.setter
+    def mode_report_name(self, mode_report_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_name = sigma_workbook_name
+        self.attributes.mode_report_name = mode_report_name
 
     @property
-    def sigma_page_qualified_name(self) -> Optional[str]:
+    def mode_report_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sigma_page_qualified_name
+            else self.attributes.mode_report_qualified_name
         )
 
-    @sigma_page_qualified_name.setter
-    def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
+    @mode_report_qualified_name.setter
+    def mode_report_qualified_name(self, mode_report_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
+        self.attributes.mode_report_qualified_name = mode_report_qualified_name
 
     @property
-    def sigma_page_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_page_name
+    def mode_query_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mode_query_name
 
-    @sigma_page_name.setter
-    def sigma_page_name(self, sigma_page_name: Optional[str]):
+    @mode_query_name.setter
+    def mode_query_name(self, mode_query_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_page_name = sigma_page_name
+        self.attributes.mode_query_name = mode_query_name
 
     @property
-    def sigma_data_element_qualified_name(self) -> Optional[str]:
+    def mode_query_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sigma_data_element_qualified_name
+            else self.attributes.mode_query_qualified_name
         )
 
-    @sigma_data_element_qualified_name.setter
-    def sigma_data_element_qualified_name(
-        self, sigma_data_element_qualified_name: Optional[str]
-    ):
+    @mode_query_qualified_name.setter
+    def mode_query_qualified_name(self, mode_query_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_qualified_name = (
-            sigma_data_element_qualified_name
-        )
-
-    @property
-    def sigma_data_element_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sigma_data_element_name
-        )
-
-    @sigma_data_element_name.setter
-    def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_name = sigma_data_element_name
+        self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
     class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
+        mode_id: Optional[str] = Field(None, description="", alias="modeId")
+        mode_token: Optional[str] = Field(None, description="", alias="modeToken")
+        mode_workspace_name: Optional[str] = Field(
+            None, description="", alias="modeWorkspaceName"
         )
-        sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
+        mode_workspace_username: Optional[str] = Field(
+            None, description="", alias="modeWorkspaceUsername"
         )
-        sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
+        mode_workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="modeWorkspaceQualifiedName"
         )
-        sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
+        mode_report_name: Optional[str] = Field(
+            None, description="", alias="modeReportName"
         )
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
+        mode_report_qualified_name: Optional[str] = Field(
+            None, description="", alias="modeReportQualifiedName"
         )
-        sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
+        mode_query_name: Optional[str] = Field(
+            None, description="", alias="modeQueryName"
+        )
+        mode_query_qualified_name: Optional[str] = Field(
+            None, description="", alias="modeQueryQualifiedName"
         )
 
-    attributes: "Sigma.Attributes" = Field(
-        default_factory=lambda: Sigma.Attributes(),
+    attributes: "Mode.Attributes" = Field(
+        default_factory=lambda: Mode.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-Sigma.Attributes.update_forward_refs()
+Mode.Attributes.update_forward_refs()

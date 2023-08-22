@@ -8,105 +8,69 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import PowerbiEndorsement
-
-from .asset17 import BI
+from .asset18 import BI
 
 
-class PowerBI(BI):
+class Thoughtspot(BI):
     """Description"""
 
-    type_name: str = Field("PowerBI", allow_mutation=False)
+    type_name: str = Field("Thoughtspot", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBI":
-            raise ValueError("must be PowerBI")
+        if v != "Thoughtspot":
+            raise ValueError("must be Thoughtspot")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBI._convience_properties:
+        if name in Thoughtspot._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "power_b_i_is_hidden",
-        "power_b_i_table_qualified_name",
-        "power_b_i_format_string",
-        "power_b_i_endorsement",
+        "thoughtspot_chart_type",
+        "thoughtspot_question_text",
     ]
 
     @property
-    def power_b_i_is_hidden(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.power_b_i_is_hidden
+    def thoughtspot_chart_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.thoughtspot_chart_type
+        )
 
-    @power_b_i_is_hidden.setter
-    def power_b_i_is_hidden(self, power_b_i_is_hidden: Optional[bool]):
+    @thoughtspot_chart_type.setter
+    def thoughtspot_chart_type(self, thoughtspot_chart_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_is_hidden = power_b_i_is_hidden
+        self.attributes.thoughtspot_chart_type = thoughtspot_chart_type
 
     @property
-    def power_b_i_table_qualified_name(self) -> Optional[str]:
+    def thoughtspot_question_text(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.power_b_i_table_qualified_name
+            else self.attributes.thoughtspot_question_text
         )
 
-    @power_b_i_table_qualified_name.setter
-    def power_b_i_table_qualified_name(
-        self, power_b_i_table_qualified_name: Optional[str]
-    ):
+    @thoughtspot_question_text.setter
+    def thoughtspot_question_text(self, thoughtspot_question_text: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_qualified_name = power_b_i_table_qualified_name
-
-    @property
-    def power_b_i_format_string(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.power_b_i_format_string
-        )
-
-    @power_b_i_format_string.setter
-    def power_b_i_format_string(self, power_b_i_format_string: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_format_string = power_b_i_format_string
-
-    @property
-    def power_b_i_endorsement(self) -> Optional[PowerbiEndorsement]:
-        return (
-            None if self.attributes is None else self.attributes.power_b_i_endorsement
-        )
-
-    @power_b_i_endorsement.setter
-    def power_b_i_endorsement(
-        self, power_b_i_endorsement: Optional[PowerbiEndorsement]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_endorsement = power_b_i_endorsement
+        self.attributes.thoughtspot_question_text = thoughtspot_question_text
 
     class Attributes(BI.Attributes):
-        power_b_i_is_hidden: Optional[bool] = Field(
-            None, description="", alias="powerBIIsHidden"
+        thoughtspot_chart_type: Optional[str] = Field(
+            None, description="", alias="thoughtspotChartType"
         )
-        power_b_i_table_qualified_name: Optional[str] = Field(
-            None, description="", alias="powerBITableQualifiedName"
-        )
-        power_b_i_format_string: Optional[str] = Field(
-            None, description="", alias="powerBIFormatString"
-        )
-        power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
-            None, description="", alias="powerBIEndorsement"
+        thoughtspot_question_text: Optional[str] = Field(
+            None, description="", alias="thoughtspotQuestionText"
         )
 
-    attributes: "PowerBI.Attributes" = Field(
-        default_factory=lambda: PowerBI.Attributes(),
+    attributes: "Thoughtspot.Attributes" = Field(
+        default_factory=lambda: Thoughtspot.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-PowerBI.Attributes.update_forward_refs()
+Thoughtspot.Attributes.update_forward_refs()

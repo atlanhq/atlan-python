@@ -4,472 +4,600 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from .asset36 import Mode
+from .asset36 import Preset
 
 
-class ModeReport(Mode):
+class PresetChart(Preset):
     """Description"""
 
-    type_name: str = Field("ModeReport", allow_mutation=False)
+    type_name: str = Field("PresetChart", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ModeReport":
-            raise ValueError("must be ModeReport")
+        if v != "PresetChart":
+            raise ValueError("must be PresetChart")
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeReport._convience_properties:
+        if name in PresetChart._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "mode_collection_token",
-        "mode_report_published_at",
-        "mode_query_count",
-        "mode_chart_count",
-        "mode_query_preview",
-        "mode_is_public",
-        "mode_is_shared",
-        "mode_queries",
-        "mode_collections",
+        "preset_chart_description_markdown",
+        "preset_chart_form_data",
+        "preset_dashboard",
     ]
 
     @property
-    def mode_collection_token(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.mode_collection_token
-        )
-
-    @mode_collection_token.setter
-    def mode_collection_token(self, mode_collection_token: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collection_token = mode_collection_token
-
-    @property
-    def mode_report_published_at(self) -> Optional[datetime]:
+    def preset_chart_description_markdown(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mode_report_published_at
+            else self.attributes.preset_chart_description_markdown
         )
 
-    @mode_report_published_at.setter
-    def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
+    @preset_chart_description_markdown.setter
+    def preset_chart_description_markdown(
+        self, preset_chart_description_markdown: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report_published_at = mode_report_published_at
+        self.attributes.preset_chart_description_markdown = (
+            preset_chart_description_markdown
+        )
 
     @property
-    def mode_query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.mode_query_count
+    def preset_chart_form_data(self) -> Optional[dict[str, str]]:
+        return (
+            None if self.attributes is None else self.attributes.preset_chart_form_data
+        )
 
-    @mode_query_count.setter
-    def mode_query_count(self, mode_query_count: Optional[int]):
+    @preset_chart_form_data.setter
+    def preset_chart_form_data(self, preset_chart_form_data: Optional[dict[str, str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_query_count = mode_query_count
+        self.attributes.preset_chart_form_data = preset_chart_form_data
 
     @property
-    def mode_chart_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.mode_chart_count
+    def preset_dashboard(self) -> Optional[PresetDashboard]:
+        return None if self.attributes is None else self.attributes.preset_dashboard
 
-    @mode_chart_count.setter
-    def mode_chart_count(self, mode_chart_count: Optional[int]):
+    @preset_dashboard.setter
+    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_chart_count = mode_chart_count
+        self.attributes.preset_dashboard = preset_dashboard
 
-    @property
-    def mode_query_preview(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_query_preview
-
-    @mode_query_preview.setter
-    def mode_query_preview(self, mode_query_preview: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query_preview = mode_query_preview
-
-    @property
-    def mode_is_public(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.mode_is_public
-
-    @mode_is_public.setter
-    def mode_is_public(self, mode_is_public: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_is_public = mode_is_public
-
-    @property
-    def mode_is_shared(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.mode_is_shared
-
-    @mode_is_shared.setter
-    def mode_is_shared(self, mode_is_shared: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_is_shared = mode_is_shared
-
-    @property
-    def mode_queries(self) -> Optional[list[ModeQuery]]:
-        return None if self.attributes is None else self.attributes.mode_queries
-
-    @mode_queries.setter
-    def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_queries = mode_queries
-
-    @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return None if self.attributes is None else self.attributes.mode_collections
-
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
-
-    class Attributes(Mode.Attributes):
-        mode_collection_token: Optional[str] = Field(
-            None, description="", alias="modeCollectionToken"
+    class Attributes(Preset.Attributes):
+        preset_chart_description_markdown: Optional[str] = Field(
+            None, description="", alias="presetChartDescriptionMarkdown"
         )
-        mode_report_published_at: Optional[datetime] = Field(
-            None, description="", alias="modeReportPublishedAt"
+        preset_chart_form_data: Optional[dict[str, str]] = Field(
+            None, description="", alias="presetChartFormData"
         )
-        mode_query_count: Optional[int] = Field(
-            None, description="", alias="modeQueryCount"
-        )
-        mode_chart_count: Optional[int] = Field(
-            None, description="", alias="modeChartCount"
-        )
-        mode_query_preview: Optional[str] = Field(
-            None, description="", alias="modeQueryPreview"
-        )
-        mode_is_public: Optional[bool] = Field(
-            None, description="", alias="modeIsPublic"
-        )
-        mode_is_shared: Optional[bool] = Field(
-            None, description="", alias="modeIsShared"
-        )
-        mode_queries: Optional[list[ModeQuery]] = Field(
-            None, description="", alias="modeQueries"
-        )  # relationship
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+        preset_dashboard: Optional[PresetDashboard] = Field(
+            None, description="", alias="presetDashboard"
         )  # relationship
 
-    attributes: "ModeReport.Attributes" = Field(
-        default_factory=lambda: ModeReport.Attributes(),
+    attributes: "PresetChart.Attributes" = Field(
+        default_factory=lambda: PresetChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ModeQuery(Mode):
+class PresetDataset(Preset):
     """Description"""
 
-    type_name: str = Field("ModeQuery", allow_mutation=False)
+    type_name: str = Field("PresetDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ModeQuery":
-            raise ValueError("must be ModeQuery")
+        if v != "PresetDataset":
+            raise ValueError("must be PresetDataset")
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeQuery._convience_properties:
+        if name in PresetDataset._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "mode_raw_query",
-        "mode_report_import_count",
-        "mode_charts",
-        "mode_report",
+        "preset_dataset_datasource_name",
+        "preset_dataset_id",
+        "preset_dataset_type",
+        "preset_dashboard",
     ]
 
     @property
-    def mode_raw_query(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_raw_query
-
-    @mode_raw_query.setter
-    def mode_raw_query(self, mode_raw_query: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_raw_query = mode_raw_query
-
-    @property
-    def mode_report_import_count(self) -> Optional[int]:
+    def preset_dataset_datasource_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mode_report_import_count
+            else self.attributes.preset_dataset_datasource_name
         )
 
-    @mode_report_import_count.setter
-    def mode_report_import_count(self, mode_report_import_count: Optional[int]):
+    @preset_dataset_datasource_name.setter
+    def preset_dataset_datasource_name(
+        self, preset_dataset_datasource_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report_import_count = mode_report_import_count
+        self.attributes.preset_dataset_datasource_name = preset_dataset_datasource_name
 
     @property
-    def mode_charts(self) -> Optional[list[ModeChart]]:
-        return None if self.attributes is None else self.attributes.mode_charts
+    def preset_dataset_id(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.preset_dataset_id
 
-    @mode_charts.setter
-    def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
+    @preset_dataset_id.setter
+    def preset_dataset_id(self, preset_dataset_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_charts = mode_charts
+        self.attributes.preset_dataset_id = preset_dataset_id
 
     @property
-    def mode_report(self) -> Optional[ModeReport]:
-        return None if self.attributes is None else self.attributes.mode_report
+    def preset_dataset_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.preset_dataset_type
 
-    @mode_report.setter
-    def mode_report(self, mode_report: Optional[ModeReport]):
+    @preset_dataset_type.setter
+    def preset_dataset_type(self, preset_dataset_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_report = mode_report
+        self.attributes.preset_dataset_type = preset_dataset_type
 
-    class Attributes(Mode.Attributes):
-        mode_raw_query: Optional[str] = Field(
-            None, description="", alias="modeRawQuery"
+    @property
+    def preset_dashboard(self) -> Optional[PresetDashboard]:
+        return None if self.attributes is None else self.attributes.preset_dashboard
+
+    @preset_dashboard.setter
+    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard = preset_dashboard
+
+    class Attributes(Preset.Attributes):
+        preset_dataset_datasource_name: Optional[str] = Field(
+            None, description="", alias="presetDatasetDatasourceName"
         )
-        mode_report_import_count: Optional[int] = Field(
-            None, description="", alias="modeReportImportCount"
+        preset_dataset_id: Optional[int] = Field(
+            None, description="", alias="presetDatasetId"
         )
-        mode_charts: Optional[list[ModeChart]] = Field(
-            None, description="", alias="modeCharts"
-        )  # relationship
-        mode_report: Optional[ModeReport] = Field(
-            None, description="", alias="modeReport"
+        preset_dataset_type: Optional[str] = Field(
+            None, description="", alias="presetDatasetType"
+        )
+        preset_dashboard: Optional[PresetDashboard] = Field(
+            None, description="", alias="presetDashboard"
         )  # relationship
 
-    attributes: "ModeQuery.Attributes" = Field(
-        default_factory=lambda: ModeQuery.Attributes(),
+    attributes: "PresetDataset.Attributes" = Field(
+        default_factory=lambda: PresetDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ModeChart(Mode):
+class PresetDashboard(Preset):
     """Description"""
 
-    type_name: str = Field("ModeChart", allow_mutation=False)
+    type_name: str = Field("PresetDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ModeChart":
-            raise ValueError("must be ModeChart")
+        if v != "PresetDashboard":
+            raise ValueError("must be PresetDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeChart._convience_properties:
+        if name in PresetDashboard._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "mode_chart_type",
-        "mode_query",
+        "preset_dashboard_changed_by_name",
+        "preset_dashboard_changed_by_url",
+        "preset_dashboard_is_managed_externally",
+        "preset_dashboard_is_published",
+        "preset_dashboard_thumbnail_url",
+        "preset_dashboard_chart_count",
+        "preset_datasets",
+        "preset_charts",
+        "preset_workspace",
     ]
 
     @property
-    def mode_chart_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_chart_type
-
-    @mode_chart_type.setter
-    def mode_chart_type(self, mode_chart_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_chart_type = mode_chart_type
-
-    @property
-    def mode_query(self) -> Optional[ModeQuery]:
-        return None if self.attributes is None else self.attributes.mode_query
-
-    @mode_query.setter
-    def mode_query(self, mode_query: Optional[ModeQuery]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_query = mode_query
-
-    class Attributes(Mode.Attributes):
-        mode_chart_type: Optional[str] = Field(
-            None, description="", alias="modeChartType"
-        )
-        mode_query: Optional[ModeQuery] = Field(
-            None, description="", alias="modeQuery"
-        )  # relationship
-
-    attributes: "ModeChart.Attributes" = Field(
-        default_factory=lambda: ModeChart.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class ModeWorkspace(Mode):
-    """Description"""
-
-    type_name: str = Field("ModeWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "ModeWorkspace":
-            raise ValueError("must be ModeWorkspace")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in ModeWorkspace._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "mode_collection_count",
-        "mode_collections",
-    ]
-
-    @property
-    def mode_collection_count(self) -> Optional[int]:
+    def preset_dashboard_changed_by_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.mode_collection_count
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_changed_by_name
         )
 
-    @mode_collection_count.setter
-    def mode_collection_count(self, mode_collection_count: Optional[int]):
+    @preset_dashboard_changed_by_name.setter
+    def preset_dashboard_changed_by_name(
+        self, preset_dashboard_changed_by_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collection_count = mode_collection_count
+        self.attributes.preset_dashboard_changed_by_name = (
+            preset_dashboard_changed_by_name
+        )
 
     @property
-    def mode_collections(self) -> Optional[list[ModeCollection]]:
-        return None if self.attributes is None else self.attributes.mode_collections
+    def preset_dashboard_changed_by_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_changed_by_url
+        )
 
-    @mode_collections.setter
-    def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
+    @preset_dashboard_changed_by_url.setter
+    def preset_dashboard_changed_by_url(
+        self, preset_dashboard_changed_by_url: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collections = mode_collections
-
-    class Attributes(Mode.Attributes):
-        mode_collection_count: Optional[int] = Field(
-            None, description="", alias="modeCollectionCount"
+        self.attributes.preset_dashboard_changed_by_url = (
+            preset_dashboard_changed_by_url
         )
-        mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+
+    @property
+    def preset_dashboard_is_managed_externally(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_is_managed_externally
+        )
+
+    @preset_dashboard_is_managed_externally.setter
+    def preset_dashboard_is_managed_externally(
+        self, preset_dashboard_is_managed_externally: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard_is_managed_externally = (
+            preset_dashboard_is_managed_externally
+        )
+
+    @property
+    def preset_dashboard_is_published(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_is_published
+        )
+
+    @preset_dashboard_is_published.setter
+    def preset_dashboard_is_published(
+        self, preset_dashboard_is_published: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard_is_published = preset_dashboard_is_published
+
+    @property
+    def preset_dashboard_thumbnail_url(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_thumbnail_url
+        )
+
+    @preset_dashboard_thumbnail_url.setter
+    def preset_dashboard_thumbnail_url(
+        self, preset_dashboard_thumbnail_url: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard_thumbnail_url = preset_dashboard_thumbnail_url
+
+    @property
+    def preset_dashboard_chart_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_dashboard_chart_count
+        )
+
+    @preset_dashboard_chart_count.setter
+    def preset_dashboard_chart_count(self, preset_dashboard_chart_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
+
+    @property
+    def preset_datasets(self) -> Optional[list[PresetDataset]]:
+        return None if self.attributes is None else self.attributes.preset_datasets
+
+    @preset_datasets.setter
+    def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_datasets = preset_datasets
+
+    @property
+    def preset_charts(self) -> Optional[list[PresetChart]]:
+        return None if self.attributes is None else self.attributes.preset_charts
+
+    @preset_charts.setter
+    def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_charts = preset_charts
+
+    @property
+    def preset_workspace(self) -> Optional[PresetWorkspace]:
+        return None if self.attributes is None else self.attributes.preset_workspace
+
+    @preset_workspace.setter
+    def preset_workspace(self, preset_workspace: Optional[PresetWorkspace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace = preset_workspace
+
+    class Attributes(Preset.Attributes):
+        preset_dashboard_changed_by_name: Optional[str] = Field(
+            None, description="", alias="presetDashboardChangedByName"
+        )
+        preset_dashboard_changed_by_url: Optional[str] = Field(
+            None, description="", alias="presetDashboardChangedByURL"
+        )
+        preset_dashboard_is_managed_externally: Optional[bool] = Field(
+            None, description="", alias="presetDashboardIsManagedExternally"
+        )
+        preset_dashboard_is_published: Optional[bool] = Field(
+            None, description="", alias="presetDashboardIsPublished"
+        )
+        preset_dashboard_thumbnail_url: Optional[str] = Field(
+            None, description="", alias="presetDashboardThumbnailURL"
+        )
+        preset_dashboard_chart_count: Optional[int] = Field(
+            None, description="", alias="presetDashboardChartCount"
+        )
+        preset_datasets: Optional[list[PresetDataset]] = Field(
+            None, description="", alias="presetDatasets"
+        )  # relationship
+        preset_charts: Optional[list[PresetChart]] = Field(
+            None, description="", alias="presetCharts"
+        )  # relationship
+        preset_workspace: Optional[PresetWorkspace] = Field(
+            None, description="", alias="presetWorkspace"
         )  # relationship
 
-    attributes: "ModeWorkspace.Attributes" = Field(
-        default_factory=lambda: ModeWorkspace.Attributes(),
+    attributes: "PresetDashboard.Attributes" = Field(
+        default_factory=lambda: PresetDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class ModeCollection(Mode):
+class PresetWorkspace(Preset):
     """Description"""
 
-    type_name: str = Field("ModeCollection", allow_mutation=False)
+    type_name: str = Field("PresetWorkspace", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ModeCollection":
-            raise ValueError("must be ModeCollection")
+        if v != "PresetWorkspace":
+            raise ValueError("must be PresetWorkspace")
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeCollection._convience_properties:
+        if name in PresetWorkspace._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "mode_collection_type",
-        "mode_collection_state",
-        "mode_workspace",
-        "mode_reports",
+        "preset_workspace_public_dashboards_allowed",
+        "preset_workspace_cluster_id",
+        "preset_workspace_hostname",
+        "preset_workspace_is_in_maintenance_mode",
+        "preset_workspace_region",
+        "preset_workspace_status",
+        "preset_workspace_deployment_id",
+        "preset_workspace_dashboard_count",
+        "preset_workspace_dataset_count",
+        "preset_dashboards",
     ]
 
     @property
-    def mode_collection_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.mode_collection_type
-
-    @mode_collection_type.setter
-    def mode_collection_type(self, mode_collection_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mode_collection_type = mode_collection_type
-
-    @property
-    def mode_collection_state(self) -> Optional[str]:
+    def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
         return (
-            None if self.attributes is None else self.attributes.mode_collection_state
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_public_dashboards_allowed
         )
 
-    @mode_collection_state.setter
-    def mode_collection_state(self, mode_collection_state: Optional[str]):
+    @preset_workspace_public_dashboards_allowed.setter
+    def preset_workspace_public_dashboards_allowed(
+        self, preset_workspace_public_dashboards_allowed: Optional[bool]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_collection_state = mode_collection_state
+        self.attributes.preset_workspace_public_dashboards_allowed = (
+            preset_workspace_public_dashboards_allowed
+        )
 
     @property
-    def mode_workspace(self) -> Optional[ModeWorkspace]:
-        return None if self.attributes is None else self.attributes.mode_workspace
+    def preset_workspace_cluster_id(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_cluster_id
+        )
 
-    @mode_workspace.setter
-    def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
+    @preset_workspace_cluster_id.setter
+    def preset_workspace_cluster_id(self, preset_workspace_cluster_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_workspace = mode_workspace
+        self.attributes.preset_workspace_cluster_id = preset_workspace_cluster_id
 
     @property
-    def mode_reports(self) -> Optional[list[ModeReport]]:
-        return None if self.attributes is None else self.attributes.mode_reports
+    def preset_workspace_hostname(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_hostname
+        )
 
-    @mode_reports.setter
-    def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
+    @preset_workspace_hostname.setter
+    def preset_workspace_hostname(self, preset_workspace_hostname: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mode_reports = mode_reports
+        self.attributes.preset_workspace_hostname = preset_workspace_hostname
 
-    class Attributes(Mode.Attributes):
-        mode_collection_type: Optional[str] = Field(
-            None, description="", alias="modeCollectionType"
+    @property
+    def preset_workspace_is_in_maintenance_mode(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_is_in_maintenance_mode
         )
-        mode_collection_state: Optional[str] = Field(
-            None, description="", alias="modeCollectionState"
+
+    @preset_workspace_is_in_maintenance_mode.setter
+    def preset_workspace_is_in_maintenance_mode(
+        self, preset_workspace_is_in_maintenance_mode: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_is_in_maintenance_mode = (
+            preset_workspace_is_in_maintenance_mode
         )
-        mode_workspace: Optional[ModeWorkspace] = Field(
-            None, description="", alias="modeWorkspace"
-        )  # relationship
-        mode_reports: Optional[list[ModeReport]] = Field(
-            None, description="", alias="modeReports"
+
+    @property
+    def preset_workspace_region(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.preset_workspace_region
+        )
+
+    @preset_workspace_region.setter
+    def preset_workspace_region(self, preset_workspace_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_region = preset_workspace_region
+
+    @property
+    def preset_workspace_status(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.preset_workspace_status
+        )
+
+    @preset_workspace_status.setter
+    def preset_workspace_status(self, preset_workspace_status: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_status = preset_workspace_status
+
+    @property
+    def preset_workspace_deployment_id(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_deployment_id
+        )
+
+    @preset_workspace_deployment_id.setter
+    def preset_workspace_deployment_id(
+        self, preset_workspace_deployment_id: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
+
+    @property
+    def preset_workspace_dashboard_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_dashboard_count
+        )
+
+    @preset_workspace_dashboard_count.setter
+    def preset_workspace_dashboard_count(
+        self, preset_workspace_dashboard_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_dashboard_count = (
+            preset_workspace_dashboard_count
+        )
+
+    @property
+    def preset_workspace_dataset_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.preset_workspace_dataset_count
+        )
+
+    @preset_workspace_dataset_count.setter
+    def preset_workspace_dataset_count(
+        self, preset_workspace_dataset_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
+
+    @property
+    def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
+        return None if self.attributes is None else self.attributes.preset_dashboards
+
+    @preset_dashboards.setter
+    def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_dashboards = preset_dashboards
+
+    class Attributes(Preset.Attributes):
+        preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
+            None, description="", alias="presetWorkspacePublicDashboardsAllowed"
+        )
+        preset_workspace_cluster_id: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceClusterId"
+        )
+        preset_workspace_hostname: Optional[str] = Field(
+            None, description="", alias="presetWorkspaceHostname"
+        )
+        preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
+            None, description="", alias="presetWorkspaceIsInMaintenanceMode"
+        )
+        preset_workspace_region: Optional[str] = Field(
+            None, description="", alias="presetWorkspaceRegion"
+        )
+        preset_workspace_status: Optional[str] = Field(
+            None, description="", alias="presetWorkspaceStatus"
+        )
+        preset_workspace_deployment_id: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceDeploymentId"
+        )
+        preset_workspace_dashboard_count: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceDashboardCount"
+        )
+        preset_workspace_dataset_count: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceDatasetCount"
+        )
+        preset_dashboards: Optional[list[PresetDashboard]] = Field(
+            None, description="", alias="presetDashboards"
         )  # relationship
 
-    attributes: "ModeCollection.Attributes" = Field(
-        default_factory=lambda: ModeCollection.Attributes(),
+    attributes: "PresetWorkspace.Attributes" = Field(
+        default_factory=lambda: PresetWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-ModeReport.Attributes.update_forward_refs()
+PresetChart.Attributes.update_forward_refs()
 
 
-ModeQuery.Attributes.update_forward_refs()
+PresetDataset.Attributes.update_forward_refs()
 
 
-ModeChart.Attributes.update_forward_refs()
+PresetDashboard.Attributes.update_forward_refs()
 
 
-ModeWorkspace.Attributes.update_forward_refs()
-
-
-ModeCollection.Attributes.update_forward_refs()
+PresetWorkspace.Attributes.update_forward_refs()

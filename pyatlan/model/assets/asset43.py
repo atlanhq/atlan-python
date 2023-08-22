@@ -8,79 +8,75 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from .asset17 import BI
+from .asset18 import BI
 
 
-class QuickSight(BI):
+class Metabase(BI):
     """Description"""
 
-    type_name: str = Field("QuickSight", allow_mutation=False)
+    type_name: str = Field("Metabase", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSight":
-            raise ValueError("must be QuickSight")
+        if v != "Metabase":
+            raise ValueError("must be Metabase")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSight._convience_properties:
+        if name in Metabase._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_id",
-        "quick_sight_sheet_id",
-        "quick_sight_sheet_name",
+        "metabase_collection_name",
+        "metabase_collection_qualified_name",
     ]
 
     @property
-    def quick_sight_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.quick_sight_id
-
-    @quick_sight_id.setter
-    def quick_sight_id(self, quick_sight_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_id = quick_sight_id
-
-    @property
-    def quick_sight_sheet_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.quick_sight_sheet_id
-
-    @quick_sight_sheet_id.setter
-    def quick_sight_sheet_id(self, quick_sight_sheet_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_sheet_id = quick_sight_sheet_id
-
-    @property
-    def quick_sight_sheet_name(self) -> Optional[str]:
+    def metabase_collection_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.quick_sight_sheet_name
+            None
+            if self.attributes is None
+            else self.attributes.metabase_collection_name
         )
 
-    @quick_sight_sheet_name.setter
-    def quick_sight_sheet_name(self, quick_sight_sheet_name: Optional[str]):
+    @metabase_collection_name.setter
+    def metabase_collection_name(self, metabase_collection_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
+        self.attributes.metabase_collection_name = metabase_collection_name
+
+    @property
+    def metabase_collection_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.metabase_collection_qualified_name
+        )
+
+    @metabase_collection_qualified_name.setter
+    def metabase_collection_qualified_name(
+        self, metabase_collection_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection_qualified_name = (
+            metabase_collection_qualified_name
+        )
 
     class Attributes(BI.Attributes):
-        quick_sight_id: Optional[str] = Field(
-            None, description="", alias="quickSightId"
+        metabase_collection_name: Optional[str] = Field(
+            None, description="", alias="metabaseCollectionName"
         )
-        quick_sight_sheet_id: Optional[str] = Field(
-            None, description="", alias="quickSightSheetId"
-        )
-        quick_sight_sheet_name: Optional[str] = Field(
-            None, description="", alias="quickSightSheetName"
+        metabase_collection_qualified_name: Optional[str] = Field(
+            None, description="", alias="metabaseCollectionQualifiedName"
         )
 
-    attributes: "QuickSight.Attributes" = Field(
-        default_factory=lambda: QuickSight.Attributes(),
+    attributes: "Metabase.Attributes" = Field(
+        default_factory=lambda: Metabase.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-QuickSight.Attributes.update_forward_refs()
+Metabase.Attributes.update_forward_refs()

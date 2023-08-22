@@ -4,751 +4,313 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import (
-    QuickSightAnalysisStatus,
-    QuickSightDatasetFieldType,
-    QuickSightDatasetImportMode,
-    QuickSightFolderType,
-)
-
-from .asset43 import QuickSight
+from .asset43 import Metabase
 
 
-class QuickSightFolder(QuickSight):
+class MetabaseQuestion(Metabase):
     """Description"""
 
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightFolder":
-            raise ValueError("must be QuickSightFolder")
+        if v != "MetabaseQuestion":
+            raise ValueError("must be MetabaseQuestion")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightFolder._convience_properties:
+        if name in MetabaseQuestion._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_folder_type",
-        "quick_sight_folder_hierarchy",
-        "quick_sight_dashboards",
-        "quick_sight_datasets",
-        "quick_sight_analyses",
+        "metabase_dashboard_count",
+        "metabase_query_type",
+        "metabase_query",
+        "metabase_dashboards",
+        "metabase_collection",
     ]
 
     @property
-    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_folder_type
-        )
-
-    @quick_sight_folder_type.setter
-    def quick_sight_folder_type(
-        self, quick_sight_folder_type: Optional[QuickSightFolderType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_type = quick_sight_folder_type
-
-    @property
-    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
+    def metabase_dashboard_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_folder_hierarchy
+            else self.attributes.metabase_dashboard_count
         )
 
-    @quick_sight_folder_hierarchy.setter
-    def quick_sight_folder_hierarchy(
-        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
-    ):
+    @metabase_dashboard_count.setter
+    def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
+        self.attributes.metabase_dashboard_count = metabase_dashboard_count
 
     @property
-    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboards
-        )
+    def metabase_query_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.metabase_query_type
 
-    @quick_sight_dashboards.setter
-    def quick_sight_dashboards(
-        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
-    ):
+    @metabase_query_type.setter
+    def metabase_query_type(self, metabase_query_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboards = quick_sight_dashboards
+        self.attributes.metabase_query_type = metabase_query_type
 
     @property
-    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
-        return None if self.attributes is None else self.attributes.quick_sight_datasets
+    def metabase_query(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.metabase_query
 
-    @quick_sight_datasets.setter
-    def quick_sight_datasets(
-        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
-    ):
+    @metabase_query.setter
+    def metabase_query(self, metabase_query: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_datasets = quick_sight_datasets
+        self.attributes.metabase_query = metabase_query
 
     @property
-    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analyses
+    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        return None if self.attributes is None else self.attributes.metabase_dashboards
 
-    @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
+    @metabase_dashboards.setter
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analyses = quick_sight_analyses
+        self.attributes.metabase_dashboards = metabase_dashboards
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            None, description="", alias="quickSightFolderType"
+    @property
+    def metabase_collection(self) -> Optional[MetabaseCollection]:
+        return None if self.attributes is None else self.attributes.metabase_collection
+
+    @metabase_collection.setter
+    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection = metabase_collection
+
+    class Attributes(Metabase.Attributes):
+        metabase_dashboard_count: Optional[int] = Field(
+            None, description="", alias="metabaseDashboardCount"
         )
-        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="quickSightFolderHierarchy"
+        metabase_query_type: Optional[str] = Field(
+            None, description="", alias="metabaseQueryType"
         )
-        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
-            None, description="", alias="quickSightDashboards"
+        metabase_query: Optional[str] = Field(
+            None, description="", alias="metabaseQuery"
+        )
+        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
+            None, description="", alias="metabaseDashboards"
         )  # relationship
-        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
-            None, description="", alias="quickSightDatasets"
-        )  # relationship
-        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
+        metabase_collection: Optional[MetabaseCollection] = Field(
+            None, description="", alias="metabaseCollection"
         )  # relationship
 
-    attributes: "QuickSightFolder.Attributes" = Field(
-        default_factory=lambda: QuickSightFolder.Attributes(),
+    attributes: "MetabaseQuestion.Attributes" = Field(
+        default_factory=lambda: MetabaseQuestion.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDashboardVisual(QuickSight):
+class MetabaseCollection(Metabase):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+    type_name: str = Field("MetabaseCollection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDashboardVisual":
-            raise ValueError("must be QuickSightDashboardVisual")
+        if v != "MetabaseCollection":
+            raise ValueError("must be MetabaseCollection")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDashboardVisual._convience_properties:
+        if name in MetabaseCollection._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_qualified_name",
-        "quick_sight_dashboard",
+        "metabase_slug",
+        "metabase_color",
+        "metabase_namespace",
+        "metabase_is_personal_collection",
+        "metabase_dashboards",
+        "metabase_questions",
     ]
 
     @property
-    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
+    def metabase_slug(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.metabase_slug
+
+    @metabase_slug.setter
+    def metabase_slug(self, metabase_slug: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_slug = metabase_slug
+
+    @property
+    def metabase_color(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.metabase_color
+
+    @metabase_color.setter
+    def metabase_color(self, metabase_color: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_color = metabase_color
+
+    @property
+    def metabase_namespace(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.metabase_namespace
+
+    @metabase_namespace.setter
+    def metabase_namespace(self, metabase_namespace: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_namespace = metabase_namespace
+
+    @property
+    def metabase_is_personal_collection(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dashboard_qualified_name
+            else self.attributes.metabase_is_personal_collection
         )
 
-    @quick_sight_dashboard_qualified_name.setter
-    def quick_sight_dashboard_qualified_name(
-        self, quick_sight_dashboard_qualified_name: Optional[str]
+    @metabase_is_personal_collection.setter
+    def metabase_is_personal_collection(
+        self, metabase_is_personal_collection: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_qualified_name = (
-            quick_sight_dashboard_qualified_name
+        self.attributes.metabase_is_personal_collection = (
+            metabase_is_personal_collection
         )
 
     @property
-    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboard
-        )
+    def metabase_dashboards(self) -> Optional[list[MetabaseDashboard]]:
+        return None if self.attributes is None else self.attributes.metabase_dashboards
 
-    @quick_sight_dashboard.setter
-    def quick_sight_dashboard(
-        self, quick_sight_dashboard: Optional[QuickSightDashboard]
+    @metabase_dashboards.setter
+    def metabase_dashboards(
+        self, metabase_dashboards: Optional[list[MetabaseDashboard]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard = quick_sight_dashboard
+        self.attributes.metabase_dashboards = metabase_dashboards
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDashboardQualifiedName"
+    @property
+    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        return None if self.attributes is None else self.attributes.metabase_questions
+
+    @metabase_questions.setter
+    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_questions = metabase_questions
+
+    class Attributes(Metabase.Attributes):
+        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
+        metabase_color: Optional[str] = Field(
+            None, description="", alias="metabaseColor"
         )
-        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            None, description="", alias="quickSightDashboard"
+        metabase_namespace: Optional[str] = Field(
+            None, description="", alias="metabaseNamespace"
+        )
+        metabase_is_personal_collection: Optional[bool] = Field(
+            None, description="", alias="metabaseIsPersonalCollection"
+        )
+        metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
+            None, description="", alias="metabaseDashboards"
+        )  # relationship
+        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
+            None, description="", alias="metabaseQuestions"
         )  # relationship
 
-    attributes: "QuickSightDashboardVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
+    attributes: "MetabaseCollection.Attributes" = Field(
+        default_factory=lambda: MetabaseCollection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightAnalysisVisual(QuickSight):
+class MetabaseDashboard(Metabase):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightAnalysisVisual":
-            raise ValueError("must be QuickSightAnalysisVisual")
+        if v != "MetabaseDashboard":
+            raise ValueError("must be MetabaseDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysisVisual._convience_properties:
+        if name in MetabaseDashboard._convience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_qualified_name",
-        "quick_sight_analysis",
+        "metabase_question_count",
+        "metabase_questions",
+        "metabase_collection",
     ]
 
     @property
-    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+    def metabase_question_count(self) -> Optional[int]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_qualified_name
+            None if self.attributes is None else self.attributes.metabase_question_count
         )
 
-    @quick_sight_analysis_qualified_name.setter
-    def quick_sight_analysis_qualified_name(
-        self, quick_sight_analysis_qualified_name: Optional[str]
-    ):
+    @metabase_question_count.setter
+    def metabase_question_count(self, metabase_question_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_qualified_name = (
-            quick_sight_analysis_qualified_name
-        )
+        self.attributes.metabase_question_count = metabase_question_count
 
     @property
-    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis
+    def metabase_questions(self) -> Optional[list[MetabaseQuestion]]:
+        return None if self.attributes is None else self.attributes.metabase_questions
 
-    @quick_sight_analysis.setter
-    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
+    @metabase_questions.setter
+    def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis = quick_sight_analysis
+        self.attributes.metabase_questions = metabase_questions
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightAnalysisQualifiedName"
+    @property
+    def metabase_collection(self) -> Optional[MetabaseCollection]:
+        return None if self.attributes is None else self.attributes.metabase_collection
+
+    @metabase_collection.setter
+    def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection = metabase_collection
+
+    class Attributes(Metabase.Attributes):
+        metabase_question_count: Optional[int] = Field(
+            None, description="", alias="metabaseQuestionCount"
         )
-        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            None, description="", alias="quickSightAnalysis"
+        metabase_questions: Optional[list[MetabaseQuestion]] = Field(
+            None, description="", alias="metabaseQuestions"
+        )  # relationship
+        metabase_collection: Optional[MetabaseCollection] = Field(
+            None, description="", alias="metabaseCollection"
         )  # relationship
 
-    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
+    attributes: "MetabaseDashboard.Attributes" = Field(
+        default_factory=lambda: MetabaseDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDatasetField(QuickSight):
-    """Description"""
+MetabaseQuestion.Attributes.update_forward_refs()
 
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
 
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDatasetField":
-            raise ValueError("must be QuickSightDatasetField")
-        return v
+MetabaseCollection.Attributes.update_forward_refs()
 
-    def __setattr__(self, name, value):
-        if name in QuickSightDatasetField._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_field_type",
-        "quick_sight_dataset_qualified_name",
-        "quick_sight_dataset",
-    ]
-
-    @property
-    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_field_type
-        )
-
-    @quick_sight_dataset_field_type.setter
-    def quick_sight_dataset_field_type(
-        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
-
-    @property
-    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_qualified_name
-        )
-
-    @quick_sight_dataset_qualified_name.setter
-    def quick_sight_dataset_qualified_name(
-        self, quick_sight_dataset_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_qualified_name = (
-            quick_sight_dataset_qualified_name
-        )
-
-    @property
-    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
-        return None if self.attributes is None else self.attributes.quick_sight_dataset
-
-    @quick_sight_dataset.setter
-    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset = quick_sight_dataset
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
-            None, description="", alias="quickSightDatasetFieldType"
-        )
-        quick_sight_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDatasetQualifiedName"
-        )
-        quick_sight_dataset: Optional[QuickSightDataset] = Field(
-            None, description="", alias="quickSightDataset"
-        )  # relationship
-
-    attributes: "QuickSightDatasetField.Attributes" = Field(
-        default_factory=lambda: QuickSightDatasetField.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightAnalysis(QuickSight):
-    """Description"""
-
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightAnalysis":
-            raise ValueError("must be QuickSightAnalysis")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QuickSightAnalysis._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_status",
-        "quick_sight_analysis_calculated_fields",
-        "quick_sight_analysis_parameter_declarations",
-        "quick_sight_analysis_filter_groups",
-        "quick_sight_analysis_visuals",
-        "quick_sight_analysis_folders",
-    ]
-
-    @property
-    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_status
-        )
-
-    @quick_sight_analysis_status.setter
-    def quick_sight_analysis_status(
-        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
-
-    @property
-    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_calculated_fields
-        )
-
-    @quick_sight_analysis_calculated_fields.setter
-    def quick_sight_analysis_calculated_fields(
-        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_calculated_fields = (
-            quick_sight_analysis_calculated_fields
-        )
-
-    @property
-    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_parameter_declarations
-        )
-
-    @quick_sight_analysis_parameter_declarations.setter
-    def quick_sight_analysis_parameter_declarations(
-        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_parameter_declarations = (
-            quick_sight_analysis_parameter_declarations
-        )
-
-    @property
-    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_filter_groups
-        )
-
-    @quick_sight_analysis_filter_groups.setter
-    def quick_sight_analysis_filter_groups(
-        self, quick_sight_analysis_filter_groups: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_filter_groups = (
-            quick_sight_analysis_filter_groups
-        )
-
-    @property
-    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_visuals
-        )
-
-    @quick_sight_analysis_visuals.setter
-    def quick_sight_analysis_visuals(
-        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
-
-    @property
-    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_folders
-        )
-
-    @quick_sight_analysis_folders.setter
-    def quick_sight_analysis_folders(
-        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
-        )
-        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
-        )
-        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
-        )
-        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
-        )
-        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
-        )  # relationship
-        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
-        )  # relationship
-
-    attributes: "QuickSightAnalysis.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysis.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDashboard(QuickSight):
-    """Description"""
-
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDashboard":
-            raise ValueError("must be QuickSightDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDashboard._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_published_version_number",
-        "quick_sight_dashboard_last_published_time",
-        "quick_sight_dashboard_folders",
-        "quick_sight_dashboard_visuals",
-    ]
-
-    @property
-    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_published_version_number
-        )
-
-    @quick_sight_dashboard_published_version_number.setter
-    def quick_sight_dashboard_published_version_number(
-        self, quick_sight_dashboard_published_version_number: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_published_version_number = (
-            quick_sight_dashboard_published_version_number
-        )
-
-    @property
-    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_last_published_time
-        )
-
-    @quick_sight_dashboard_last_published_time.setter
-    def quick_sight_dashboard_last_published_time(
-        self, quick_sight_dashboard_last_published_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_last_published_time = (
-            quick_sight_dashboard_last_published_time
-        )
-
-    @property
-    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_folders
-        )
-
-    @quick_sight_dashboard_folders.setter
-    def quick_sight_dashboard_folders(
-        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
-
-    @property
-    def quick_sight_dashboard_visuals(
-        self,
-    ) -> Optional[list[QuickSightDashboardVisual]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_visuals
-        )
-
-    @quick_sight_dashboard_visuals.setter
-    def quick_sight_dashboard_visuals(
-        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_published_version_number: Optional[int] = Field(
-            None, description="", alias="quickSightDashboardPublishedVersionNumber"
-        )
-        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
-            None, description="", alias="quickSightDashboardLastPublishedTime"
-        )
-        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDashboardFolders"
-        )  # relationship
-        quick_sight_dashboard_visuals: Optional[
-            list[QuickSightDashboardVisual]
-        ] = Field(
-            None, description="", alias="quickSightDashboardVisuals"
-        )  # relationship
-
-    attributes: "QuickSightDashboard.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDataset(QuickSight):
-    """Description"""
-
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDataset":
-            raise ValueError("must be QuickSightDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDataset._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_import_mode",
-        "quick_sight_dataset_column_count",
-        "quick_sight_dataset_folders",
-        "quick_sight_dataset_fields",
-    ]
-
-    @property
-    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_import_mode
-        )
-
-    @quick_sight_dataset_import_mode.setter
-    def quick_sight_dataset_import_mode(
-        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_import_mode = (
-            quick_sight_dataset_import_mode
-        )
-
-    @property
-    def quick_sight_dataset_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_column_count
-        )
-
-    @quick_sight_dataset_column_count.setter
-    def quick_sight_dataset_column_count(
-        self, quick_sight_dataset_column_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_column_count = (
-            quick_sight_dataset_column_count
-        )
-
-    @property
-    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_folders
-        )
-
-    @quick_sight_dataset_folders.setter
-    def quick_sight_dataset_folders(
-        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
-
-    @property
-    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_fields
-        )
-
-    @quick_sight_dataset_fields.setter
-    def quick_sight_dataset_fields(
-        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
-            None, description="", alias="quickSightDatasetImportMode"
-        )
-        quick_sight_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="quickSightDatasetColumnCount"
-        )
-        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDatasetFolders"
-        )  # relationship
-        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
-            None, description="", alias="quickSightDatasetFields"
-        )  # relationship
-
-    attributes: "QuickSightDataset.Attributes" = Field(
-        default_factory=lambda: QuickSightDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-QuickSightFolder.Attributes.update_forward_refs()
-
-
-QuickSightDashboardVisual.Attributes.update_forward_refs()
-
-
-QuickSightAnalysisVisual.Attributes.update_forward_refs()
-
-
-QuickSightDatasetField.Attributes.update_forward_refs()
-
-
-QuickSightAnalysis.Attributes.update_forward_refs()
-
-
-QuickSightDashboard.Attributes.update_forward_refs()
-
-
-QuickSightDataset.Attributes.update_forward_refs()
+MetabaseDashboard.Attributes.update_forward_refs()
