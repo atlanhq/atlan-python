@@ -2173,7 +2173,7 @@ class Asset(Referenceable):
         self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
-        name: str = Field(None, description="", alias="name")
+        name: str = Field(description="", alias="name")
         display_name: Optional[str] = Field(None, description="", alias="displayName")
         description: Optional[str] = Field(None, description="", alias="description")
         user_description: Optional[str] = Field(
@@ -2727,9 +2727,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
-        anchor: AtlasGlossary = Field(
-            None, description="", alias="anchor"
-        )  # relationship
+        anchor: AtlasGlossary = Field(description="", alias="anchor")  # relationship
         parent_category: Optional[AtlasGlossaryCategory] = Field(
             None, description="", alias="parentCategory"
         )  # relationship
@@ -3288,9 +3286,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="translatedTerms"
         )  # relationship
-        anchor: AtlasGlossary = Field(
-            None, description="", alias="anchor"
-        )  # relationship
+        anchor: AtlasGlossary = Field(description="", alias="anchor")  # relationship
 
         @classmethod
         # @validate_arguments()
@@ -3644,13 +3640,11 @@ class Folder(Namespace):
         self.attributes.parent = parent
 
     class Attributes(Namespace.Attributes):
-        parent_qualified_name: str = Field(
-            None, description="", alias="parentQualifiedName"
-        )
+        parent_qualified_name: str = Field(description="", alias="parentQualifiedName")
         collection_qualified_name: str = Field(
-            None, description="", alias="collectionQualifiedName"
+            description="", alias="collectionQualifiedName"
         )
-        parent: Namespace = Field(None, description="", alias="parent")  # relationship
+        parent: Namespace = Field(description="", alias="parent")  # relationship
 
     attributes: "Folder.Attributes" = Field(
         default_factory=lambda: Folder.Attributes(),
@@ -5739,11 +5733,9 @@ class Query(SQL):
         is_sql_snippet: Optional[bool] = Field(
             None, description="", alias="isSqlSnippet"
         )
-        parent_qualified_name: str = Field(
-            None, description="", alias="parentQualifiedName"
-        )
+        parent_qualified_name: str = Field(description="", alias="parentQualifiedName")
         collection_qualified_name: str = Field(
-            None, description="", alias="collectionQualifiedName"
+            description="", alias="collectionQualifiedName"
         )
         is_visual_query: Optional[bool] = Field(
             None, description="", alias="isVisualQuery"
@@ -5751,7 +5743,7 @@ class Query(SQL):
         visual_builder_schema_base64: Optional[str] = Field(
             None, description="", alias="visualBuilderSchemaBase64"
         )
-        parent: Namespace = Field(None, description="", alias="parent")  # relationship
+        parent: Namespace = Field(description="", alias="parent")  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
@@ -8297,7 +8289,7 @@ class Procedure(SQL):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        definition: str = Field(None, description="", alias="definition")
+        definition: str = Field(description="", alias="definition")
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
