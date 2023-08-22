@@ -70,6 +70,45 @@ class ColumnValueFrequencyMap(AtlanObject):
     )
 
 
+class BadgeCondition(AtlanObject):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        badge_condition_operator: BadgeComparisonOperator,
+        badge_condition_value: str,
+        badge_condition_colorhex: Union[BadgeConditionColor, str]
+    ) -> "BadgeCondition":
+        validate_required_fields(
+            [
+                "badge_condition_operator",
+                "badge_condition_value",
+                "badge_condition_colorhex",
+            ],
+            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
+        )
+        return cls(
+            badge_condition_operator=badge_condition_operator.value,
+            badge_condition_value=badge_condition_value,
+            badge_condition_colorhex=badge_condition_colorhex.value
+            if isinstance(badge_condition_colorhex, BadgeConditionColor)
+            else badge_condition_colorhex,
+        )
+
+    badge_condition_operator: Optional["str"] = Field(
+        None, description="", alias="badgeConditionOperator"
+    )
+    badge_condition_value: Optional["str"] = Field(
+        None, description="", alias="badgeConditionValue"
+    )
+    badge_condition_colorhex: Optional["str"] = Field(
+        None, description="", alias="badgeConditionColorhex"
+    )
+
+
 class SourceTagAttachmentValue(AtlanObject):
     """Description"""
 
@@ -107,45 +146,6 @@ class SourceTagAttachment(AtlanObject):
     )
     source_tag_sync_error: Optional["str"] = Field(
         None, description="", alias="sourceTagSyncError"
-    )
-
-
-class BadgeCondition(AtlanObject):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        badge_condition_operator: BadgeComparisonOperator,
-        badge_condition_value: str,
-        badge_condition_colorhex: Union[BadgeConditionColor, str]
-    ) -> "BadgeCondition":
-        validate_required_fields(
-            [
-                "badge_condition_operator",
-                "badge_condition_value",
-                "badge_condition_colorhex",
-            ],
-            [badge_condition_operator, badge_condition_value, badge_condition_colorhex],
-        )
-        return cls(
-            badge_condition_operator=badge_condition_operator.value,
-            badge_condition_value=badge_condition_value,
-            badge_condition_colorhex=badge_condition_colorhex.value
-            if isinstance(badge_condition_colorhex, BadgeConditionColor)
-            else badge_condition_colorhex,
-        )
-
-    badge_condition_operator: Optional["str"] = Field(
-        None, description="", alias="badgeConditionOperator"
-    )
-    badge_condition_value: Optional["str"] = Field(
-        None, description="", alias="badgeConditionValue"
-    )
-    badge_condition_colorhex: Optional["str"] = Field(
-        None, description="", alias="badgeConditionColorhex"
     )
 
 

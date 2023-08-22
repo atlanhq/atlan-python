@@ -11,23 +11,23 @@ from pydantic import Field, validator
 from .asset00 import Catalog
 
 
-class Insight(Catalog):
+class EventStore(Catalog):
     """Description"""
 
-    type_name: str = Field("Insight", allow_mutation=False)
+    type_name: str = Field("EventStore", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Insight":
-            raise ValueError("must be Insight")
+        if v != "EventStore":
+            raise ValueError("must be EventStore")
         return v
 
     def __setattr__(self, name, value):
-        if name in Insight._convience_properties:
+        if name in EventStore._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[list[str]] = []
 
 
-Insight.Attributes.update_forward_refs()
+EventStore.Attributes.update_forward_refs()

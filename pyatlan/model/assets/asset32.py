@@ -8,43 +8,93 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.structs import GoogleLabel, GoogleTag
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+)
+from pyatlan.model.structs import AzureTag
 
 from .asset00 import AirflowTask, Process
-from .asset26 import Google
+from .asset28 import Azure
 
 
-class GCS(Google):
+class ADLS(Azure):
     """Description"""
 
-    type_name: str = Field("GCS", allow_mutation=False)
+    type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "GCS":
-            raise ValueError("must be GCS")
+        if v != "ADLS":
+            raise ValueError("must be ADLS")
         return v
 
     def __setattr__(self, name, value):
-        if name in GCS._convience_properties:
+        if name in ADLS._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "gcs_storage_class",
-        "gcs_encryption_type",
-        "gcs_e_tag",
-        "gcs_requester_pays",
-        "gcs_access_control",
-        "gcs_meta_generation_id",
-        "google_service",
-        "google_project_name",
-        "google_project_id",
-        "google_project_number",
-        "google_location",
-        "google_location_type",
-        "google_labels",
-        "google_tags",
+    ADLS_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountQualifiedName",
+        "adlsAccountQualifiedName",
+        "adlsAccountQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "azureResourceId", "azureResourceId", "azureResourceId.text"
+    )
+    """
+    TBC
+    """
+    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "azureLocation", "azureLocation"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+    )
+    """
+    TBC
+    """
+    AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
+    """
+    TBC
+    """
+
+    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "outputFromAirflowTasks"
+    )
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromProcesses"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "adls_account_qualified_name",
+        "azure_resource_id",
+        "azure_location",
+        "adls_account_secondary_location",
+        "azure_tags",
         "input_to_processes",
         "output_from_airflow_tasks",
         "input_to_airflow_tasks",
@@ -52,148 +102,66 @@ class GCS(Google):
     ]
 
     @property
-    def gcs_storage_class(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_storage_class
-
-    @gcs_storage_class.setter
-    def gcs_storage_class(self, gcs_storage_class: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_storage_class = gcs_storage_class
-
-    @property
-    def gcs_encryption_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_encryption_type
-
-    @gcs_encryption_type.setter
-    def gcs_encryption_type(self, gcs_encryption_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_encryption_type = gcs_encryption_type
-
-    @property
-    def gcs_e_tag(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_e_tag
-
-    @gcs_e_tag.setter
-    def gcs_e_tag(self, gcs_e_tag: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_e_tag = gcs_e_tag
-
-    @property
-    def gcs_requester_pays(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.gcs_requester_pays
-
-    @gcs_requester_pays.setter
-    def gcs_requester_pays(self, gcs_requester_pays: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_requester_pays = gcs_requester_pays
-
-    @property
-    def gcs_access_control(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.gcs_access_control
-
-    @gcs_access_control.setter
-    def gcs_access_control(self, gcs_access_control: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.gcs_access_control = gcs_access_control
-
-    @property
-    def gcs_meta_generation_id(self) -> Optional[int]:
+    def adls_account_qualified_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.gcs_meta_generation_id
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_qualified_name
         )
 
-    @gcs_meta_generation_id.setter
-    def gcs_meta_generation_id(self, gcs_meta_generation_id: Optional[int]):
+    @adls_account_qualified_name.setter
+    def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.gcs_meta_generation_id = gcs_meta_generation_id
+        self.attributes.adls_account_qualified_name = adls_account_qualified_name
 
     @property
-    def google_service(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_service
+    def azure_resource_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.azure_resource_id
 
-    @google_service.setter
-    def google_service(self, google_service: Optional[str]):
+    @azure_resource_id.setter
+    def azure_resource_id(self, azure_resource_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_service = google_service
+        self.attributes.azure_resource_id = azure_resource_id
 
     @property
-    def google_project_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_project_name
+    def azure_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.azure_location
 
-    @google_project_name.setter
-    def google_project_name(self, google_project_name: Optional[str]):
+    @azure_location.setter
+    def azure_location(self, azure_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_name = google_project_name
+        self.attributes.azure_location = azure_location
 
     @property
-    def google_project_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_project_id
-
-    @google_project_id.setter
-    def google_project_id(self, google_project_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_project_id = google_project_id
-
-    @property
-    def google_project_number(self) -> Optional[int]:
+    def adls_account_secondary_location(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.google_project_number
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_secondary_location
         )
 
-    @google_project_number.setter
-    def google_project_number(self, google_project_number: Optional[int]):
+    @adls_account_secondary_location.setter
+    def adls_account_secondary_location(
+        self, adls_account_secondary_location: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_project_number = google_project_number
+        self.attributes.adls_account_secondary_location = (
+            adls_account_secondary_location
+        )
 
     @property
-    def google_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_location
+    def azure_tags(self) -> Optional[list[AzureTag]]:
+        return None if self.attributes is None else self.attributes.azure_tags
 
-    @google_location.setter
-    def google_location(self, google_location: Optional[str]):
+    @azure_tags.setter
+    def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.google_location = google_location
-
-    @property
-    def google_location_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.google_location_type
-
-    @google_location_type.setter
-    def google_location_type(self, google_location_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_location_type = google_location_type
-
-    @property
-    def google_labels(self) -> Optional[list[GoogleLabel]]:
-        return None if self.attributes is None else self.attributes.google_labels
-
-    @google_labels.setter
-    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_labels = google_labels
-
-    @property
-    def google_tags(self) -> Optional[list[GoogleTag]]:
-        return None if self.attributes is None else self.attributes.google_tags
-
-    @google_tags.setter
-    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.google_tags = google_tags
+        self.attributes.azure_tags = azure_tags
 
     @property
     def input_to_processes(self) -> Optional[list[Process]]:
@@ -247,46 +215,21 @@ class GCS(Google):
             self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
-    class Attributes(Google.Attributes):
-        gcs_storage_class: Optional[str] = Field(
-            None, description="", alias="gcsStorageClass"
+    class Attributes(Azure.Attributes):
+        adls_account_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsAccountQualifiedName"
         )
-        gcs_encryption_type: Optional[str] = Field(
-            None, description="", alias="gcsEncryptionType"
+        azure_resource_id: Optional[str] = Field(
+            None, description="", alias="azureResourceId"
         )
-        gcs_e_tag: Optional[str] = Field(None, description="", alias="gcsETag")
-        gcs_requester_pays: Optional[bool] = Field(
-            None, description="", alias="gcsRequesterPays"
+        azure_location: Optional[str] = Field(
+            None, description="", alias="azureLocation"
         )
-        gcs_access_control: Optional[str] = Field(
-            None, description="", alias="gcsAccessControl"
+        adls_account_secondary_location: Optional[str] = Field(
+            None, description="", alias="adlsAccountSecondaryLocation"
         )
-        gcs_meta_generation_id: Optional[int] = Field(
-            None, description="", alias="gcsMetaGenerationId"
-        )
-        google_service: Optional[str] = Field(
-            None, description="", alias="googleService"
-        )
-        google_project_name: Optional[str] = Field(
-            None, description="", alias="googleProjectName"
-        )
-        google_project_id: Optional[str] = Field(
-            None, description="", alias="googleProjectId"
-        )
-        google_project_number: Optional[int] = Field(
-            None, description="", alias="googleProjectNumber"
-        )
-        google_location: Optional[str] = Field(
-            None, description="", alias="googleLocation"
-        )
-        google_location_type: Optional[str] = Field(
-            None, description="", alias="googleLocationType"
-        )
-        google_labels: Optional[list[GoogleLabel]] = Field(
-            None, description="", alias="googleLabels"
-        )
-        google_tags: Optional[list[GoogleTag]] = Field(
-            None, description="", alias="googleTags"
+        azure_tags: Optional[list[AzureTag]] = Field(
+            None, description="", alias="azureTags"
         )
         input_to_processes: Optional[list[Process]] = Field(
             None, description="", alias="inputToProcesses"
@@ -301,11 +244,11 @@ class GCS(Google):
             None, description="", alias="outputFromProcesses"
         )  # relationship
 
-    attributes: "GCS.Attributes" = Field(
-        default_factory=lambda: GCS.Attributes(),
+    attributes: "ADLS.Attributes" = Field(
+        default_factory=lambda: ADLS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-GCS.Attributes.update_forward_refs()
+ADLS.Attributes.update_forward_refs()

@@ -470,9 +470,9 @@ def test_find_glossary(mock_search, caplog):
     assert request.dsl
     assert request.dsl.query
     assert isinstance(request.dsl.query, Bool) is True
-    assert request.dsl.query.must
-    assert 3 == len(request.dsl.query.must)
-    term1, term2, term3 = request.dsl.query.must
+    assert request.dsl.query.filter
+    assert 3 == len(request.dsl.query.filter)
+    term1, term2, term3 = request.dsl.query.filter
     assert isinstance(term1, Term) is True
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
@@ -625,9 +625,9 @@ def test_find_category_fast_by_name(mock_search, caplog):
     assert request.dsl
     assert request.dsl.query
     assert isinstance(request.dsl.query, Bool) is True
-    assert request.dsl.query.must
-    assert 4 == len(request.dsl.query.must)
-    term1, term2, term3, term4 = request.dsl.query.must
+    assert request.dsl.query.filter
+    assert 4 == len(request.dsl.query.filter)
+    term1, term2, term3, term4 = request.dsl.query.filter
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
     assert isinstance(term2, Term) is True
@@ -875,9 +875,9 @@ def test_find_term_fast_by_name(mock_search, caplog):
     assert request.dsl
     assert request.dsl.query
     assert isinstance(request.dsl.query, Bool) is True
-    assert request.dsl.query.must
-    assert 4 == len(request.dsl.query.must)
-    term1, term2, term3, term4 = request.dsl.query.must
+    assert request.dsl.query.filter
+    assert 4 == len(request.dsl.query.filter)
+    term1, term2, term3, term4 = request.dsl.query.filter
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
     assert isinstance(term2, Term) is True

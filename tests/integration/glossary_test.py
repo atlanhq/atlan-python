@@ -11,8 +11,6 @@ from retry import retry
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
-from pyatlan.model.fields.asset import AssetFields
-from pyatlan.model.fields.atlas_glossary_term import AtlasGlossaryTermFields
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, IndexSearchRequest
 from tests.integration.client import TestId, delete_asset
@@ -180,8 +178,8 @@ def test_compound_queries(
         CompoundQuery()
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .where(AssetFields.NAME.startswith(MODULE_NAME))
-        .where(AtlasGlossaryTermFields.ANCHOR.eq(glossary.qualified_name))
+        .where(AtlasGlossaryTerm.NAME.startswith(MODULE_NAME))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
     ).to_query()
     request = IndexSearchRequest(dsl=DSL(query=cq))
     response = client.search(request)
@@ -192,9 +190,9 @@ def test_compound_queries(
         CompoundQuery()
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .where(AssetFields.NAME.startswith(MODULE_NAME))
-        .where(AtlasGlossaryTermFields.ANCHOR.eq(glossary.qualified_name))
-        .where_not(AssetFields.NAME.eq(term2.name))
+        .where(AtlasGlossaryTerm.NAME.startswith(MODULE_NAME))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
+        .where_not(AtlasGlossaryTerm.NAME.eq(term2.name))
     ).to_query()
     request = IndexSearchRequest(dsl=DSL(query=cq))
     response = client.search(request)
@@ -213,10 +211,10 @@ def test_fluent_search(
         .page_size(1)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .where(AssetFields.NAME.startswith(MODULE_NAME))
-        .where(AtlasGlossaryTermFields.ANCHOR.eq(glossary.qualified_name))
-        .include_on_results(AtlasGlossaryTermFields.ANCHOR)
-        .include_on_relations(AssetFields.NAME)
+        .where(AtlasGlossaryTerm.NAME.startswith(MODULE_NAME))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
+        .include_on_results(AtlasGlossaryTerm.ANCHOR)
+        .include_on_relations(AtlasGlossary.NAME)
     )
 
     assert terms.count(client) == 2
@@ -237,11 +235,11 @@ def test_fluent_search(
         wheres=[
             CompoundQuery.active_assets(),
             CompoundQuery.asset_type(AtlasGlossaryTerm),
-            AssetFields.NAME.startswith(MODULE_NAME),
-            AtlasGlossaryTermFields.ANCHOR.startswith(glossary.qualified_name),
+            AtlasGlossaryTerm.NAME.startswith(MODULE_NAME),
+            AtlasGlossaryTerm.ANCHOR.startswith(glossary.qualified_name),
         ],
-        _includes_on_results=[AtlasGlossaryTermFields.ANCHOR.atlan_field_name],
-        _includes_on_relations=[AssetFields.NAME.atlan_field_name],
+        _includes_on_results=[AtlasGlossaryTerm.ANCHOR.atlan_field_name],
+        _includes_on_relations=[AtlasGlossary.NAME.atlan_field_name],
     ).execute(client)
 
     guids_alt = []
@@ -257,12 +255,12 @@ def test_fluent_search(
         wheres=[
             CompoundQuery.active_assets(),
             CompoundQuery.asset_type(AtlasGlossaryTerm),
-            AssetFields.NAME.startswith(MODULE_NAME),
-            AtlasGlossaryTermFields.ANCHOR.startswith(glossary.qualified_name),
+            AtlasGlossaryTerm.NAME.startswith(MODULE_NAME),
+            AtlasGlossaryTerm.ANCHOR.startswith(glossary.qualified_name),
         ],
         _includes_on_results=["anchor"],
         _includes_on_relations=["name"],
-        sorts=[AssetFields.NAME.order()],
+        sorts=[AtlasGlossaryTerm.NAME.order()],
     ).execute(client)
 
     names = []

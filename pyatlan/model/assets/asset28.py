@@ -8,151 +8,125 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.structs import AwsTag
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.structs import AzureTag
 
-from .asset07 import Cloud
+from .asset08 import Cloud
 
 
-class AWS(Cloud):
+class Azure(Cloud):
     """Description"""
 
-    type_name: str = Field("AWS", allow_mutation=False)
+    type_name: str = Field("Azure", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "AWS":
-            raise ValueError("must be AWS")
+        if v != "Azure":
+            raise ValueError("must be Azure")
         return v
 
     def __setattr__(self, name, value):
-        if name in AWS._convience_properties:
+        if name in Azure._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "aws_arn",
-        "aws_partition",
-        "aws_service",
-        "aws_region",
-        "aws_account_id",
-        "aws_resource_id",
-        "aws_owner_name",
-        "aws_owner_id",
-        "aws_tags",
+    AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "azureResourceId", "azureResourceId", "azureResourceId.text"
+    )
+    """
+    TBC
+    """
+    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "azureLocation", "azureLocation"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+    )
+    """
+    TBC
+    """
+    AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "azure_resource_id",
+        "azure_location",
+        "adls_account_secondary_location",
+        "azure_tags",
     ]
 
     @property
-    def aws_arn(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_arn
+    def azure_resource_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.azure_resource_id
 
-    @aws_arn.setter
-    def aws_arn(self, aws_arn: Optional[str]):
+    @azure_resource_id.setter
+    def azure_resource_id(self, azure_resource_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_arn = aws_arn
+        self.attributes.azure_resource_id = azure_resource_id
 
     @property
-    def aws_partition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_partition
+    def azure_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.azure_location
 
-    @aws_partition.setter
-    def aws_partition(self, aws_partition: Optional[str]):
+    @azure_location.setter
+    def azure_location(self, azure_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_partition = aws_partition
+        self.attributes.azure_location = azure_location
 
     @property
-    def aws_service(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_service
+    def adls_account_secondary_location(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_secondary_location
+        )
 
-    @aws_service.setter
-    def aws_service(self, aws_service: Optional[str]):
+    @adls_account_secondary_location.setter
+    def adls_account_secondary_location(
+        self, adls_account_secondary_location: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_service = aws_service
+        self.attributes.adls_account_secondary_location = (
+            adls_account_secondary_location
+        )
 
     @property
-    def aws_region(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_region
+    def azure_tags(self) -> Optional[list[AzureTag]]:
+        return None if self.attributes is None else self.attributes.azure_tags
 
-    @aws_region.setter
-    def aws_region(self, aws_region: Optional[str]):
+    @azure_tags.setter
+    def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_region = aws_region
-
-    @property
-    def aws_account_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_account_id
-
-    @aws_account_id.setter
-    def aws_account_id(self, aws_account_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.aws_account_id = aws_account_id
-
-    @property
-    def aws_resource_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_resource_id
-
-    @aws_resource_id.setter
-    def aws_resource_id(self, aws_resource_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.aws_resource_id = aws_resource_id
-
-    @property
-    def aws_owner_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_owner_name
-
-    @aws_owner_name.setter
-    def aws_owner_name(self, aws_owner_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.aws_owner_name = aws_owner_name
-
-    @property
-    def aws_owner_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_owner_id
-
-    @aws_owner_id.setter
-    def aws_owner_id(self, aws_owner_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.aws_owner_id = aws_owner_id
-
-    @property
-    def aws_tags(self) -> Optional[list[AwsTag]]:
-        return None if self.attributes is None else self.attributes.aws_tags
-
-    @aws_tags.setter
-    def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.aws_tags = aws_tags
+        self.attributes.azure_tags = azure_tags
 
     class Attributes(Cloud.Attributes):
-        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
-        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
-        aws_service: Optional[str] = Field(None, description="", alias="awsService")
-        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
-        aws_account_id: Optional[str] = Field(
-            None, description="", alias="awsAccountId"
+        azure_resource_id: Optional[str] = Field(
+            None, description="", alias="azureResourceId"
         )
-        aws_resource_id: Optional[str] = Field(
-            None, description="", alias="awsResourceId"
+        azure_location: Optional[str] = Field(
+            None, description="", alias="azureLocation"
         )
-        aws_owner_name: Optional[str] = Field(
-            None, description="", alias="awsOwnerName"
+        adls_account_secondary_location: Optional[str] = Field(
+            None, description="", alias="adlsAccountSecondaryLocation"
         )
-        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
-        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
+        azure_tags: Optional[list[AzureTag]] = Field(
+            None, description="", alias="azureTags"
+        )
 
-    attributes: "AWS.Attributes" = Field(
-        default_factory=lambda: AWS.Attributes(),
+    attributes: "Azure.Attributes" = Field(
+        default_factory=lambda: Azure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-AWS.Attributes.update_forward_refs()
+Azure.Attributes.update_forward_refs()

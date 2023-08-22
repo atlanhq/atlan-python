@@ -512,7 +512,7 @@ class Bool(Query):
             if other.filter:
                 q.filter += other.filter
         else:
-            q.must.append(other)
+            q.filter.append(other)
         return q
 
     __radd__ = __add__

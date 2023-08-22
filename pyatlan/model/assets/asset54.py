@@ -4,391 +4,308 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import AtlanConnectorType
-from pyatlan.utils import validate_required_fields
+from pyatlan.model.enums import GoogleDatastudioAssetType
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    KeywordTextStemmedField,
+    NumericField,
+    RelationField,
+)
+from pyatlan.model.structs import GoogleLabel, GoogleTag
 
-from .asset30 import S3
+from .asset42 import DataStudio
 
 
-class S3Bucket(S3):
+class DataStudioAsset(DataStudio):
     """Description"""
 
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls, *, name: str, connection_qualified_name: str, aws_arn: str
-    ) -> S3Bucket:
-        validate_required_fields(
-            ["name", "connection_qualified_name", "aws_arn"],
-            [name, connection_qualified_name, aws_arn],
-        )
-        attributes = S3Bucket.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("S3Bucket", allow_mutation=False)
+    type_name: str = Field("DataStudioAsset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "S3Bucket":
-            raise ValueError("must be S3Bucket")
+        if v != "DataStudioAsset":
+            raise ValueError("must be DataStudioAsset")
         return v
 
     def __setattr__(self, name, value):
-        if name in S3Bucket._convience_properties:
+        if name in DataStudioAsset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "s3_object_count",
-        "s3_bucket_versioning_enabled",
-        "objects",
+    DATA_STUDIO_ASSET_TYPE: ClassVar[RelationField] = RelationField(
+        "dataStudioAssetType"
+    )
+    """
+    TBC
+    """
+    DATA_STUDIO_ASSET_TITLE: ClassVar[
+        KeywordTextStemmedField
+    ] = KeywordTextStemmedField(
+        "dataStudioAssetTitle",
+        "dataStudioAssetTitle.keyword",
+        "dataStudioAssetTitle",
+        "dataStudioAssetTitle.stemmed",
+    )
+    """
+    TBC
+    """
+    DATA_STUDIO_ASSET_OWNER: ClassVar[KeywordField] = KeywordField(
+        "dataStudioAssetOwner", "dataStudioAssetOwner"
+    )
+    """
+    TBC
+    """
+    IS_TRASHED_DATA_STUDIO_ASSET: ClassVar[BooleanField] = BooleanField(
+        "isTrashedDataStudioAsset", "isTrashedDataStudioAsset"
+    )
+    """
+    TBC
+    """
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    """
+    TBC
+    """
+    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "data_studio_asset_type",
+        "data_studio_asset_title",
+        "data_studio_asset_owner",
+        "is_trashed_data_studio_asset",
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
     ]
 
     @property
-    def s3_object_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.s3_object_count
-
-    @s3_object_count.setter
-    def s3_object_count(self, s3_object_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_count = s3_object_count
-
-    @property
-    def s3_bucket_versioning_enabled(self) -> Optional[bool]:
+    def data_studio_asset_type(self) -> Optional[GoogleDatastudioAssetType]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_bucket_versioning_enabled
+            None if self.attributes is None else self.attributes.data_studio_asset_type
         )
 
-    @s3_bucket_versioning_enabled.setter
-    def s3_bucket_versioning_enabled(
-        self, s3_bucket_versioning_enabled: Optional[bool]
+    @data_studio_asset_type.setter
+    def data_studio_asset_type(
+        self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
+        self.attributes.data_studio_asset_type = data_studio_asset_type
 
     @property
-    def objects(self) -> Optional[list[S3Object]]:
-        return None if self.attributes is None else self.attributes.objects
+    def data_studio_asset_title(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.data_studio_asset_title
+        )
 
-    @objects.setter
-    def objects(self, objects: Optional[list[S3Object]]):
+    @data_studio_asset_title.setter
+    def data_studio_asset_title(self, data_studio_asset_title: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.objects = objects
+        self.attributes.data_studio_asset_title = data_studio_asset_title
 
-    class Attributes(S3.Attributes):
-        s3_object_count: Optional[int] = Field(
-            None, description="", alias="s3ObjectCount"
+    @property
+    def data_studio_asset_owner(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.data_studio_asset_owner
         )
-        s3_bucket_versioning_enabled: Optional[bool] = Field(
-            None, description="", alias="s3BucketVersioningEnabled"
+
+    @data_studio_asset_owner.setter
+    def data_studio_asset_owner(self, data_studio_asset_owner: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_studio_asset_owner = data_studio_asset_owner
+
+    @property
+    def is_trashed_data_studio_asset(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.is_trashed_data_studio_asset
         )
-        objects: Optional[list[S3Object]] = Field(
-            None, description="", alias="objects"
-        )  # relationship
 
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, *, name: str, connection_qualified_name: str, aws_arn: str
-        ) -> S3Bucket.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name", "aws_arn"],
-                [name, connection_qualified_name, aws_arn],
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return S3Bucket.Attributes(
-                aws_arn=aws_arn,
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
-                connector_name=connector_type.value,
-            )
+    @is_trashed_data_studio_asset.setter
+    def is_trashed_data_studio_asset(
+        self, is_trashed_data_studio_asset: Optional[bool]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_trashed_data_studio_asset = is_trashed_data_studio_asset
 
-    attributes: "S3Bucket.Attributes" = Field(
-        default_factory=lambda: S3Bucket.Attributes(),
+    @property
+    def google_service(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_service
+
+    @google_service.setter
+    def google_service(self, google_service: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_service = google_service
+
+    @property
+    def google_project_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_project_name
+
+    @google_project_name.setter
+    def google_project_name(self, google_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_name = google_project_name
+
+    @property
+    def google_project_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_project_id
+
+    @google_project_id.setter
+    def google_project_id(self, google_project_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_id = google_project_id
+
+    @property
+    def google_project_number(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.google_project_number
+        )
+
+    @google_project_number.setter
+    def google_project_number(self, google_project_number: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_project_number = google_project_number
+
+    @property
+    def google_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_location
+
+    @google_location.setter
+    def google_location(self, google_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location = google_location
+
+    @property
+    def google_location_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_location_type
+
+    @google_location_type.setter
+    def google_location_type(self, google_location_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_location_type = google_location_type
+
+    @property
+    def google_labels(self) -> Optional[list[GoogleLabel]]:
+        return None if self.attributes is None else self.attributes.google_labels
+
+    @google_labels.setter
+    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_labels = google_labels
+
+    @property
+    def google_tags(self) -> Optional[list[GoogleTag]]:
+        return None if self.attributes is None else self.attributes.google_tags
+
+    @google_tags.setter
+    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.google_tags = google_tags
+
+    class Attributes(DataStudio.Attributes):
+        data_studio_asset_type: Optional[GoogleDatastudioAssetType] = Field(
+            None, description="", alias="dataStudioAssetType"
+        )
+        data_studio_asset_title: Optional[str] = Field(
+            None, description="", alias="dataStudioAssetTitle"
+        )
+        data_studio_asset_owner: Optional[str] = Field(
+            None, description="", alias="dataStudioAssetOwner"
+        )
+        is_trashed_data_studio_asset: Optional[bool] = Field(
+            None, description="", alias="isTrashedDataStudioAsset"
+        )
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
+
+    attributes: "DataStudioAsset.Attributes" = Field(
+        default_factory=lambda: DataStudioAsset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class S3Object(S3):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        aws_arn: str,
-        s3_bucket_qualified_name: str,
-    ) -> S3Object:
-        validate_required_fields(
-            [
-                "name",
-                "connection_qualified_name",
-                "aws_arn",
-                "s3_bucket_qualified_name",
-            ],
-            [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
-        )
-        attributes = S3Object.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            aws_arn=aws_arn,
-            s3_bucket_qualified_name=s3_bucket_qualified_name,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("S3Object", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "S3Object":
-            raise ValueError("must be S3Object")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in S3Object._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "s3_object_last_modified_time",
-        "s3_bucket_name",
-        "s3_bucket_qualified_name",
-        "s3_object_size",
-        "s3_object_storage_class",
-        "s3_object_key",
-        "s3_object_content_type",
-        "s3_object_content_disposition",
-        "s3_object_version_id",
-        "bucket",
-    ]
-
-    @property
-    def s3_object_last_modified_time(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_object_last_modified_time
-        )
-
-    @s3_object_last_modified_time.setter
-    def s3_object_last_modified_time(
-        self, s3_object_last_modified_time: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
-
-    @property
-    def s3_bucket_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_bucket_name
-
-    @s3_bucket_name.setter
-    def s3_bucket_name(self, s3_bucket_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_bucket_name = s3_bucket_name
-
-    @property
-    def s3_bucket_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_bucket_qualified_name
-        )
-
-    @s3_bucket_qualified_name.setter
-    def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
-
-    @property
-    def s3_object_size(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.s3_object_size
-
-    @s3_object_size.setter
-    def s3_object_size(self, s3_object_size: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_size = s3_object_size
-
-    @property
-    def s3_object_storage_class(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.s3_object_storage_class
-        )
-
-    @s3_object_storage_class.setter
-    def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_storage_class = s3_object_storage_class
-
-    @property
-    def s3_object_key(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_object_key
-
-    @s3_object_key.setter
-    def s3_object_key(self, s3_object_key: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_key = s3_object_key
-
-    @property
-    def s3_object_content_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.s3_object_content_type
-        )
-
-    @s3_object_content_type.setter
-    def s3_object_content_type(self, s3_object_content_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_content_type = s3_object_content_type
-
-    @property
-    def s3_object_content_disposition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.s3_object_content_disposition
-        )
-
-    @s3_object_content_disposition.setter
-    def s3_object_content_disposition(
-        self, s3_object_content_disposition: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_content_disposition = s3_object_content_disposition
-
-    @property
-    def s3_object_version_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_object_version_id
-
-    @s3_object_version_id.setter
-    def s3_object_version_id(self, s3_object_version_id: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_object_version_id = s3_object_version_id
-
-    @property
-    def bucket(self) -> Optional[S3Bucket]:
-        return None if self.attributes is None else self.attributes.bucket
-
-    @bucket.setter
-    def bucket(self, bucket: Optional[S3Bucket]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.bucket = bucket
-
-    class Attributes(S3.Attributes):
-        s3_object_last_modified_time: Optional[datetime] = Field(
-            None, description="", alias="s3ObjectLastModifiedTime"
-        )
-        s3_bucket_name: Optional[str] = Field(
-            None, description="", alias="s3BucketName"
-        )
-        s3_bucket_qualified_name: Optional[str] = Field(
-            None, description="", alias="s3BucketQualifiedName"
-        )
-        s3_object_size: Optional[int] = Field(
-            None, description="", alias="s3ObjectSize"
-        )
-        s3_object_storage_class: Optional[str] = Field(
-            None, description="", alias="s3ObjectStorageClass"
-        )
-        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
-        s3_object_content_type: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentType"
-        )
-        s3_object_content_disposition: Optional[str] = Field(
-            None, description="", alias="s3ObjectContentDisposition"
-        )
-        s3_object_version_id: Optional[str] = Field(
-            None, description="", alias="s3ObjectVersionId"
-        )
-        bucket: Optional[S3Bucket] = Field(
-            None, description="", alias="bucket"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            aws_arn: str,
-            s3_bucket_qualified_name: str,
-        ) -> S3Object.Attributes:
-            validate_required_fields(
-                [
-                    "name",
-                    "connection_qualified_name",
-                    "aws_arn",
-                    "s3_bucket_qualified_name",
-                ],
-                [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
-                    raise ValueError("Invalid connection_qualified_name")
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-                if connector_type != AtlanConnectorType.S3:
-                    raise ValueError("Connector type must be s3")
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return S3Object.Attributes(
-                aws_arn=aws_arn,
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{aws_arn}",
-                connector_name=connector_type.value,
-                s3_bucket_qualified_name=s3_bucket_qualified_name,
-                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
-            )
-
-    attributes: "S3Object.Attributes" = Field(
-        default_factory=lambda: S3Object.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-S3Bucket.Attributes.update_forward_refs()
-
-
-S3Object.Attributes.update_forward_refs()
+DataStudioAsset.Attributes.update_forward_refs()

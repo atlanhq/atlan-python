@@ -266,7 +266,7 @@ def test_dsl():
         dsl.json(by_alias=True, exclude_none=True)
         == '{"from": 0, "size": 100, "track_total_hits": true, "post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
-        '{"__typeName.keyword": {"value": "Schema"}}}}'
+        '{"__typeName.keyword": {"value": "Schema"}}}, "sort": [{"__guid": {"order": "asc"}}]}'
     )
 
 
@@ -281,8 +281,8 @@ def test_index_search_request():
         == '{"attributes": ["schemaName", "databaseName"],'
         ' "dsl": {"from": 0, "size": 100, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
-        '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}}, '
-        '"relationAttributes": []}'
+        '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
+        '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": []}'
     )
 
 
@@ -291,8 +291,8 @@ def test_adding_terms_results_in_must_bool():
     term_2 = Term(field="name", value="Dave")
     result = term_1 + term_2
     assert isinstance(result, Bool)
-    assert len(result.must) == 2
-    assert term_1 in result.must and term_2 in result.must
+    assert len(result.filter) == 2
+    assert term_1 in result.filter and term_2 in result.filter
 
 
 def test_anding_terms_results_in_must_bool():
@@ -300,8 +300,8 @@ def test_anding_terms_results_in_must_bool():
     term_2 = Term(field="name", value="Dave")
     result = term_1 & term_2
     assert isinstance(result, Bool)
-    assert len(result.must) == 2
-    assert term_1 in result.must and term_2 in result.must
+    assert len(result.filter) == 2
+    assert term_1 in result.filter and term_2 in result.filter
 
 
 def test_oring_terms_results_in_must_bool():
@@ -325,11 +325,11 @@ def test_negate_terms_results_must_not_bool():
     "q1, q2, expected",
     [
         (
-            Bool(must=[Term(field="name", value="Bob")]),
-            Bool(must=[Term(field="name", value="Dave")]),
+            Bool(filter=[Term(field="name", value="Bob")]),
+            Bool(filter=[Term(field="name", value="Dave")]),
             {
                 "bool": {
-                    "must": [
+                    "filter": [
                         {"term": {"name": {"value": "Bob"}}},
                         {"term": {"name": {"value": "Dave"}}},
                     ]
@@ -338,10 +338,10 @@ def test_negate_terms_results_must_not_bool():
         ),
         (
             Term(field="name", value="Bob"),
-            Bool(must=[Term(field="name", value="Fred")]),
+            Bool(filter=[Term(field="name", value="Fred")]),
             {
                 "bool": {
-                    "must": [
+                    "filter": [
                         {"term": {"name": {"value": "Fred"}}},
                         {"term": {"name": {"value": "Bob"}}},
                     ]
@@ -349,11 +349,11 @@ def test_negate_terms_results_must_not_bool():
             },
         ),
         (
-            Bool(must=[Term(field="name", value="Fred")]),
+            Bool(filter=[Term(field="name", value="Fred")]),
             Term(field="name", value="Bob"),
             {
                 "bool": {
-                    "must": [
+                    "filter": [
                         {"term": {"name": {"value": "Fred"}}},
                         {"term": {"name": {"value": "Bob"}}},
                     ]
@@ -1254,9 +1254,9 @@ def test_with_active_glossary():
 
     sut = with_active_glossary(name=GLOSSARY_NAME)
 
-    assert sut.must
-    assert 3 == len(sut.must)
-    term1, term2, term3 = sut.must
+    assert sut.filter
+    assert 3 == len(sut.filter)
+    term1, term2, term3 = sut.filter
     assert isinstance(term1, Term) is True
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
@@ -1306,9 +1306,9 @@ def test_with_active_category():
         name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
     )
 
-    assert sut.must
-    assert 4 == len(sut.must)
-    term1, term2, term3, term4 = sut.must
+    assert sut.filter
+    assert 4 == len(sut.filter)
+    term1, term2, term3, term4 = sut.filter
     assert isinstance(term1, Term) is True
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"
@@ -1361,9 +1361,9 @@ def test_with_active_term():
         name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
     )
 
-    assert sut.must
-    assert 4 == len(sut.must)
-    term1, term2, term3, term4 = sut.must
+    assert sut.filter
+    assert 4 == len(sut.filter)
+    term1, term2, term3, term4 = sut.filter
     assert isinstance(term1, Term) is True
     assert term1.field == "__state"
     assert term1.value == "ACTIVE"

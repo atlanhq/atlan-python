@@ -3,9 +3,9 @@ from __future__ import annotations
 import dataclasses
 from typing import Optional, Union, cast
 
+from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.model.fields.referenceable import ReferenceableFields
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem
 
 
@@ -27,7 +27,7 @@ class CompoundQuery:
 
         :returns: a query that will only match assets that are active in Atlan
         """
-        return ReferenceableFields.STATUS.eq(EntityStatus.ACTIVE.value)
+        return Referenceable.STATUS.eq(EntityStatus.ACTIVE.value)
 
     @staticmethod
     def archived_assets() -> Query:
@@ -36,7 +36,7 @@ class CompoundQuery:
 
         :returns: a query that will only match assets that are archived (soft-deleted) in Atlan
         """
-        return ReferenceableFields.STATUS.eq(EntityStatus.DELETED.value)
+        return Referenceable.STATUS.eq(EntityStatus.DELETED.value)
 
     @staticmethod
     def asset_type(of: type) -> Query:
@@ -46,7 +46,7 @@ class CompoundQuery:
         :param of: type for assets to match
         :returns: a query that will only match assets of the type provided
         """
-        return ReferenceableFields.TYPE_NAME.eq(of.__name__)
+        return Referenceable.TYPE_NAME.eq(of.__name__)
 
     @staticmethod
     def asset_types(one_of: list[type]) -> Query:
@@ -56,9 +56,7 @@ class CompoundQuery:
         :param one_of: types for assets to match
         :returns: a query that iwll only match assets of one of the types provided
         """
-        return ReferenceableFields.TYPE_NAME.within(
-            list(map(lambda x: x.__name__, one_of))
-        )
+        return Referenceable.TYPE_NAME.within(list(map(lambda x: x.__name__, one_of)))
 
     @staticmethod
     def super_types(one_of: Union[type, list[type]]) -> Query:
@@ -70,10 +68,10 @@ class CompoundQuery:
         :returns: a query that will only match assets of a subtype of the types provided
         """
         if isinstance(one_of, list):
-            return ReferenceableFields.SUPER_TYPE_NAMES.within(
+            return Referenceable.SUPER_TYPE_NAMES.within(
                 list(map(lambda x: x.__name__, one_of))
             )
-        return ReferenceableFields.SUPER_TYPE_NAMES.eq(one_of.__name__)
+        return Referenceable.SUPER_TYPE_NAMES.eq(one_of.__name__)
 
     @staticmethod
     def tagged(
@@ -99,23 +97,21 @@ class CompoundQuery:
         if directly:
             if values:
                 return FluentSearch(
-                    wheres=[ReferenceableFields.ATLAN_TAGS.within(values)]
+                    wheres=[Referenceable.ATLAN_TAGS.within(values)]
                 ).to_query()
-            return FluentSearch(
-                wheres=[ReferenceableFields.ATLAN_TAGS.exists()]
-            ).to_query()
+            return FluentSearch(wheres=[Referenceable.ATLAN_TAGS.exists()]).to_query()
         if values:
             return FluentSearch(
                 where_somes=[
-                    ReferenceableFields.ATLAN_TAGS.within(values),
-                    ReferenceableFields.PROPAGATED_ATLAN_TAGS.within(values),
+                    Referenceable.ATLAN_TAGS.within(values),
+                    Referenceable.PROPAGATED_ATLAN_TAGS.within(values),
                 ],
                 _min_somes=1,
             ).to_query()
         return FluentSearch(
             where_somes=[
-                ReferenceableFields.ATLAN_TAGS.exists(),
-                ReferenceableFields.PROPAGATED_ATLAN_TAGS.exists(),
+                Referenceable.ATLAN_TAGS.exists(),
+                Referenceable.PROPAGATED_ATLAN_TAGS.exists(),
             ],
             _min_somes=1,
         ).to_query()
@@ -131,8 +127,8 @@ class CompoundQuery:
         :returns: a query that will only match assets that have at least one term assigned
         """
         if qualified_names:
-            return ReferenceableFields.ASSIGNED_TERMS.within(qualified_names)
-        return ReferenceableFields.ASSIGNED_TERMS.exists()
+            return Referenceable.ASSIGNED_TERMS.within(qualified_names)
+        return Referenceable.ASSIGNED_TERMS.exists()
 
     def __init__(
         self,
