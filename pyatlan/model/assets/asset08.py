@@ -11,23 +11,23 @@ from pydantic import Field, validator
 from .asset00 import Asset
 
 
-class Infrastructure(Asset, type_name="Infrastructure"):
+class Cloud(Asset, type_name="Cloud"):
     """Description"""
 
-    type_name: str = Field("Infrastructure", allow_mutation=False)
+    type_name: str = Field("Cloud", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Infrastructure":
-            raise ValueError("must be Infrastructure")
+        if v != "Cloud":
+            raise ValueError("must be Cloud")
         return v
 
     def __setattr__(self, name, value):
-        if name in Infrastructure._convience_properties:
+        if name in Cloud._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[list[str]] = []
 
 
-Infrastructure.Attributes.update_forward_refs()
+Cloud.Attributes.update_forward_refs()

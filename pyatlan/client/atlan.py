@@ -12,7 +12,7 @@ import os
 import time
 import uuid
 from abc import ABC
-from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
+from typing import ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
 
 import requests
 from pydantic import (
@@ -250,7 +250,7 @@ class AtlanClient(BaseSettings):
     class Config:
         env_prefix = "atlan_"
 
-    class SearchResults(ABC):
+    class SearchResults(ABC, Iterable):
         """
         Abstract class that encapsulates results returned by various searches.
         """
@@ -335,7 +335,7 @@ class AtlanClient(BaseSettings):
                 if not self.next_page():
                     break
 
-    class IndexSearchResults(SearchResults):
+    class IndexSearchResults(SearchResults, Iterable):
         """
         Captures the response from a search against Atlan. Also provides the ability to
         iteratively page through results, without needing to track or re-run the original
@@ -375,7 +375,7 @@ class AtlanClient(BaseSettings):
         def count(self) -> int:
             return self._count
 
-    class LineageListResults(SearchResults):
+    class LineageListResults(SearchResults, Iterable):
         """
         Captures the response from a lineage retrieval against Atlan. Also provides the ability to
         iteratively page through results, without needing to track or re-run the original query.

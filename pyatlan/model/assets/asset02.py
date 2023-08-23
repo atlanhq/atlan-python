@@ -9,6 +9,7 @@ from typing import ClassVar, Optional
 from pydantic import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType, QueryUsernameStrategy
+from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
 from pyatlan.utils import validate_required_fields
 
 from .asset00 import Asset
@@ -77,11 +78,132 @@ class Connection(Asset, type_name="Connection"):
         return v
 
     def __setattr__(self, name, value):
-        if name in Connection._convience_properties:
+        if name in Connection._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    CATEGORY: ClassVar[KeywordField] = KeywordField("category", "category")
+    """
+    WAREHOUSE, RDBMS, LAKE, BI
+    """
+    SUB_CATEGORY: ClassVar[KeywordField] = KeywordField("subCategory", "subCategory")
+    """
+    WAREHOUSE, RDBMS, LAKE, BI
+    """
+    HOST: ClassVar[KeywordField] = KeywordField("host", "host")
+    """
+    TBC
+    """
+    PORT: ClassVar[NumericField] = NumericField("port", "port")
+    """
+    TBC
+    """
+    ALLOW_QUERY: ClassVar[BooleanField] = BooleanField("allowQuery", "allowQuery")
+    """
+    TBC
+    """
+    ALLOW_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "allowQueryPreview", "allowQueryPreview"
+    )
+    """
+    TBC
+    """
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
+    """
+    TBC
+    """
+    QUERY_CONFIG: ClassVar[KeywordField] = KeywordField("queryConfig", "queryConfig")
+    """
+    TBC
+    """
+    CREDENTIAL_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "credentialStrategy", "credentialStrategy"
+    )
+    """
+    TBC
+    """
+    PREVIEW_CREDENTIAL_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "previewCredentialStrategy", "previewCredentialStrategy"
+    )
+    """
+    TBC
+    """
+    POLICY_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "policyStrategy", "policyStrategy"
+    )
+    """
+    TBC
+    """
+    QUERY_USERNAME_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "queryUsernameStrategy", "queryUsernameStrategy"
+    )
+    """
+    TBC
+    """
+    ROW_LIMIT: ClassVar[NumericField] = NumericField("rowLimit", "rowLimit")
+    """
+    TBC
+    """
+    QUERY_TIMEOUT: ClassVar[NumericField] = NumericField("queryTimeout", "queryTimeout")
+    """
+    TBC
+    """
+    DEFAULT_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
+        "defaultCredentialGuid", "defaultCredentialGuid"
+    )
+    """
+    TBC
+    """
+    CONNECTOR_ICON: ClassVar[KeywordField] = KeywordField(
+        "connectorIcon", "connectorIcon"
+    )
+    """
+    TBC
+    """
+    CONNECTOR_IMAGE: ClassVar[KeywordField] = KeywordField(
+        "connectorImage", "connectorImage"
+    )
+    """
+    TBC
+    """
+    SOURCE_LOGO: ClassVar[KeywordField] = KeywordField("sourceLogo", "sourceLogo")
+    """
+    TBC
+    """
+    IS_SAMPLE_DATA_PREVIEW_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "isSampleDataPreviewEnabled", "isSampleDataPreviewEnabled"
+    )
+    """
+    TBC
+    """
+    POPULARITY_INSIGHTS_TIMEFRAME: ClassVar[NumericField] = NumericField(
+        "popularityInsightsTimeframe", "popularityInsightsTimeframe"
+    )
+    """
+    Number of days we are calculating popularity for, eg: 30 days
+    """
+    HAS_POPULARITY_INSIGHTS: ClassVar[BooleanField] = BooleanField(
+        "hasPopularityInsights", "hasPopularityInsights"
+    )
+    """
+    Boolean flag to tell if connection has popularity insights or not
+    """
+    CONNECTION_DBT_ENVIRONMENTS: ClassVar[KeywordField] = KeywordField(
+        "connectionDbtEnvironments", "connectionDbtEnvironments"
+    )
+    """
+    TBC
+    """
+    CONNECTION_SSO_CREDENTIAL_GUID: ClassVar[KeywordField] = KeywordField(
+        "connectionSSOCredentialGuid", "connectionSSOCredentialGuid"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "category",
         "sub_category",
         "host",

@@ -4,236 +4,141 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from .asset17 import BI
+from pyatlan.model.enums import PowerbiEndorsement
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+)
+
+from .asset18 import BI
 
 
-class MicroStrategy(BI):
+class PowerBI(BI):
     """Description"""
 
-    type_name: str = Field("MicroStrategy", allow_mutation=False)
+    type_name: str = Field("PowerBI", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MicroStrategy":
-            raise ValueError("must be MicroStrategy")
+        if v != "PowerBI":
+            raise ValueError("must be PowerBI")
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategy._convience_properties:
+        if name in PowerBI._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
-        "micro_strategy_project_qualified_name",
-        "micro_strategy_project_name",
-        "micro_strategy_cube_qualified_names",
-        "micro_strategy_cube_names",
-        "micro_strategy_report_qualified_names",
-        "micro_strategy_report_names",
-        "micro_strategy_is_certified",
-        "micro_strategy_certified_by",
-        "micro_strategy_certified_at",
-        "micro_strategy_location",
+    POWER_BI_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
+        "powerBIIsHidden", "powerBIIsHidden"
+    )
+    """
+    TBC
+    """
+    POWER_BI_TABLE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "powerBITableQualifiedName",
+        "powerBITableQualifiedName",
+        "powerBITableQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    POWER_BI_FORMAT_STRING: ClassVar[KeywordField] = KeywordField(
+        "powerBIFormatString", "powerBIFormatString"
+    )
+    """
+    TBC
+    """
+    POWER_BI_ENDORSEMENT: ClassVar[KeywordField] = KeywordField(
+        "powerBIEndorsement", "powerBIEndorsement"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "power_b_i_is_hidden",
+        "power_b_i_table_qualified_name",
+        "power_b_i_format_string",
+        "power_b_i_endorsement",
     ]
 
     @property
-    def micro_strategy_project_qualified_name(self) -> Optional[str]:
+    def power_b_i_is_hidden(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.power_b_i_is_hidden
+
+    @power_b_i_is_hidden.setter
+    def power_b_i_is_hidden(self, power_b_i_is_hidden: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.power_b_i_is_hidden = power_b_i_is_hidden
+
+    @property
+    def power_b_i_table_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.micro_strategy_project_qualified_name
+            else self.attributes.power_b_i_table_qualified_name
         )
 
-    @micro_strategy_project_qualified_name.setter
-    def micro_strategy_project_qualified_name(
-        self, micro_strategy_project_qualified_name: Optional[str]
+    @power_b_i_table_qualified_name.setter
+    def power_b_i_table_qualified_name(
+        self, power_b_i_table_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project_qualified_name = (
-            micro_strategy_project_qualified_name
-        )
+        self.attributes.power_b_i_table_qualified_name = power_b_i_table_qualified_name
 
     @property
-    def micro_strategy_project_name(self) -> Optional[str]:
+    def power_b_i_format_string(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_project_name
+            None if self.attributes is None else self.attributes.power_b_i_format_string
         )
 
-    @micro_strategy_project_name.setter
-    def micro_strategy_project_name(self, micro_strategy_project_name: Optional[str]):
+    @power_b_i_format_string.setter
+    def power_b_i_format_string(self, power_b_i_format_string: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_project_name = micro_strategy_project_name
+        self.attributes.power_b_i_format_string = power_b_i_format_string
 
     @property
-    def micro_strategy_cube_qualified_names(self) -> Optional[set[str]]:
+    def power_b_i_endorsement(self) -> Optional[PowerbiEndorsement]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_cube_qualified_names
+            None if self.attributes is None else self.attributes.power_b_i_endorsement
         )
 
-    @micro_strategy_cube_qualified_names.setter
-    def micro_strategy_cube_qualified_names(
-        self, micro_strategy_cube_qualified_names: Optional[set[str]]
+    @power_b_i_endorsement.setter
+    def power_b_i_endorsement(
+        self, power_b_i_endorsement: Optional[PowerbiEndorsement]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cube_qualified_names = (
-            micro_strategy_cube_qualified_names
-        )
-
-    @property
-    def micro_strategy_cube_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_cube_names
-        )
-
-    @micro_strategy_cube_names.setter
-    def micro_strategy_cube_names(self, micro_strategy_cube_names: Optional[set[str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_cube_names = micro_strategy_cube_names
-
-    @property
-    def micro_strategy_report_qualified_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_report_qualified_names
-        )
-
-    @micro_strategy_report_qualified_names.setter
-    def micro_strategy_report_qualified_names(
-        self, micro_strategy_report_qualified_names: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_report_qualified_names = (
-            micro_strategy_report_qualified_names
-        )
-
-    @property
-    def micro_strategy_report_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_report_names
-        )
-
-    @micro_strategy_report_names.setter
-    def micro_strategy_report_names(
-        self, micro_strategy_report_names: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_report_names = micro_strategy_report_names
-
-    @property
-    def micro_strategy_is_certified(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_is_certified
-        )
-
-    @micro_strategy_is_certified.setter
-    def micro_strategy_is_certified(self, micro_strategy_is_certified: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_is_certified = micro_strategy_is_certified
-
-    @property
-    def micro_strategy_certified_by(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_certified_by
-        )
-
-    @micro_strategy_certified_by.setter
-    def micro_strategy_certified_by(self, micro_strategy_certified_by: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_certified_by = micro_strategy_certified_by
-
-    @property
-    def micro_strategy_certified_at(self) -> Optional[datetime]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.micro_strategy_certified_at
-        )
-
-    @micro_strategy_certified_at.setter
-    def micro_strategy_certified_at(
-        self, micro_strategy_certified_at: Optional[datetime]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_certified_at = micro_strategy_certified_at
-
-    @property
-    def micro_strategy_location(self) -> Optional[list[dict[str, str]]]:
-        return (
-            None if self.attributes is None else self.attributes.micro_strategy_location
-        )
-
-    @micro_strategy_location.setter
-    def micro_strategy_location(
-        self, micro_strategy_location: Optional[list[dict[str, str]]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.micro_strategy_location = micro_strategy_location
+        self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
     class Attributes(BI.Attributes):
-        micro_strategy_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectQualifiedName"
+        power_b_i_is_hidden: Optional[bool] = Field(
+            None, description="", alias="powerBIIsHidden"
         )
-        micro_strategy_project_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectName"
+        power_b_i_table_qualified_name: Optional[str] = Field(
+            None, description="", alias="powerBITableQualifiedName"
         )
-        micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeQualifiedNames"
+        power_b_i_format_string: Optional[str] = Field(
+            None, description="", alias="powerBIFormatString"
         )
-        micro_strategy_cube_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeNames"
-        )
-        micro_strategy_report_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportQualifiedNames"
-        )
-        micro_strategy_report_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportNames"
-        )
-        micro_strategy_is_certified: Optional[bool] = Field(
-            None, description="", alias="microStrategyIsCertified"
-        )
-        micro_strategy_certified_by: Optional[str] = Field(
-            None, description="", alias="microStrategyCertifiedBy"
-        )
-        micro_strategy_certified_at: Optional[datetime] = Field(
-            None, description="", alias="microStrategyCertifiedAt"
-        )
-        micro_strategy_location: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="microStrategyLocation"
+        power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
+            None, description="", alias="powerBIEndorsement"
         )
 
-    attributes: "MicroStrategy.Attributes" = Field(
-        default_factory=lambda: MicroStrategy.Attributes(),
+    attributes: "PowerBI.Attributes" = Field(
+        default_factory=lambda: PowerBI.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MicroStrategy.Attributes.update_forward_refs()
+PowerBI.Attributes.update_forward_refs()

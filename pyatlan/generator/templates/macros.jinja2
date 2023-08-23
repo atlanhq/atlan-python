@@ -1,5 +1,5 @@
 {%- macro gen_properties(attribute_defs) %}
-    _convience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[list[str]] = [
         {%- for attribute_def in attribute_defs %}
         "{{ 'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case }}",
         {%- endfor %}]
@@ -20,4 +20,25 @@
         self.attributes.{{ attribute_name }} = {{ property_name }}
 
     {%- endfor %}
+{% endmacro %}
+
+{%- macro gen_property_class_vars(type_name, attribute_defs) %}
+    {%- for attribute_def in attribute_defs %}{% if attribute_def.name != "inputs" and attribute_def.name != "outputs" %}
+    {%- set search_type = attribute_def | get_search_type %}
+    {{ attribute_def.name | get_class_var_for_attr }}: ClassVar[{{ search_type.name }}] = {{ search_type.name }}("{{ attribute_def.name }}"{% if search_type.args %}, {{ search_type.args }}{% endif %})
+    """
+    {{ attribute_def.description | default("TBC") }}
+    """
+
+    {%- endif %}{%- endfor %}
+{% endmacro %}
+
+{%- macro gen_property_relationship_class_vars(type_name, relationship_attribute_defs) %}
+    {%- for attribute_def in relationship_attribute_defs %}{% if (type_name != "AtlasGlossaryTerm" or attribute_def.name != "categories") and (type_name != "AtlasGlossaryCategory" or attribute_def.name != "parentCategory") and ((type_name != "AtlasGlossaryTerm" or type_name != "AtlasGlossaryCategory") and attribute_def.name != "anchor") and (type_name != "Asset" or attribute_def.name != "meanings") %}
+    {{ attribute_def.name | get_class_var_for_attr }}: ClassVar[RelationField] = RelationField("{{ attribute_def.name }}")
+    """
+    {{ attribute_def.description | default("TBC") }}
+    """
+
+    {%- endif %}{%- endfor %}
 {% endmacro %}

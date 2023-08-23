@@ -6,12 +6,13 @@ pyatlan.model.enums. This script depends upon the presence of a JSON file contai
 an Atlan instance. The script create_typedefs_file.py can be used to produce this file.
 """
 import datetime
+import enum
 import json
 import os
 import re
 from enum import Enum
 from pathlib import Path
-from typing import NamedTuple, Optional
+from typing import Any, NamedTuple, Optional
 
 import networkx as nx
 from jinja2 import Environment, PackageLoader
@@ -344,6 +345,135 @@ class AssetInfo:
                     asset_info.module_info.add_asset_info(asset_info=asset_info)
 
 
+def get_class_var_for_attr(attr_name: str) -> str:
+    replace1 = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", attr_name.replace("_", ""))
+    replace2 = re.sub(r"([a-z])([A-Z])", r"\1_\2", replace1)
+    return replace2.upper()
+
+
+class IndexType(Enum):
+    KEYWORD = enum.auto()
+    TEXT = enum.auto()
+    RANK_FEATURE = enum.auto()
+    BOOLEAN = enum.auto()
+    NUMERIC = enum.auto()
+    STEMMED = enum.auto()
+    RELATION = enum.auto()
+
+
+class SearchType:
+    name: str
+    args: Optional[str]
+
+    def __init__(self, name: str, args: Optional[str] = None):
+        self.name = name
+        self.args = args
+
+
+def get_search_type(attr_def: dict[str, Any]) -> SearchType:
+    def get_default_index_for_type(base_type: str) -> IndexType:
+        if base_type in {"date", "float", "double", "int", "long"}:
+            to_use = IndexType.NUMERIC
+        elif base_type == "boolean":
+            to_use = IndexType.BOOLEAN
+        else:
+            to_use = IndexType.KEYWORD
+        return to_use
+
+    def get_embedded_type(attr_type: str) -> str:
+        return attr_type[attr_type.index("<") + 1 : attr_type.index(">")]  # noqa: E203
+
+    def get_base_type() -> str:
+        type_name = str(attr_def.get("typeName"))
+        base_type = type_name
+        if "<" in type_name:
+            if type_name.startswith("array<"):
+                if type_name.startswith("array<map<"):
+                    base_type = get_embedded_type(
+                        type_name[len("array<") :]  # noqa: E203
+                    )
+                else:
+                    base_type = get_embedded_type(type_name)
+            elif type_name.startswith("map<"):
+                base_type = get_embedded_type(type_name)
+        return base_type
+
+    def get_indexes_for_attribute() -> dict[IndexType, str]:
+        searchable: dict[IndexType, str] = {}
+        config = attr_def.get("indexTypeESConfig")
+        attr_name = str(attr_def.get("name"))
+        if "relationshipTypeName" in attr_def:
+            searchable[IndexType.RELATION] = attr_name
+        else:
+            base_type = get_base_type()
+            # Default index
+            if config:
+                if analyzer := config.get("analyzer"):
+                    if analyzer == "atlan_text_analyzer":
+                        if attr_name.endswith(".stemmed"):
+                            searchable[IndexType.STEMMED] = attr_name
+                        else:
+                            searchable[IndexType.TEXT] = attr_name
+            else:
+                def_index = get_default_index_for_type(base_type)
+                searchable[def_index] = attr_name
+            # Additional indexes
+            if fields := attr_def.get("indexTypeESFields"):
+                for field_suffix in fields:
+                    field_name = f"{attr_name}.{field_suffix}"
+                    if index_type := fields.get(field_suffix).get("type"):
+                        if index_type == "keyword":
+                            searchable[IndexType.KEYWORD] = field_name
+                        elif index_type == "text":
+                            if field_name.endswith(".stemmed"):
+                                searchable[IndexType.STEMMED] = field_name
+                            else:
+                                searchable[IndexType.TEXT] = field_name
+                        elif index_type == "rank_feature":
+                            searchable[IndexType.RANK_FEATURE] = field_name
+                    else:
+                        def_index = get_default_index_for_type(base_type)
+                        searchable[def_index] = field_name
+        return searchable
+
+    search_map = get_indexes_for_attribute()
+    indices = search_map.keys()
+    if indices == {IndexType.KEYWORD}:
+        return SearchType(
+            name="KeywordField", args=f'"{search_map.get(IndexType.KEYWORD)}"'
+        )
+    elif indices == {IndexType.TEXT}:
+        return SearchType(name="TextField", args=f'"{search_map.get(IndexType.TEXT)}"')
+    elif indices == {IndexType.NUMERIC}:
+        return SearchType(
+            name="NumericField", args=f'"{search_map.get(IndexType.NUMERIC)}"'
+        )
+    elif indices == {IndexType.BOOLEAN}:
+        return SearchType(
+            name="BooleanField", args=f'"{search_map.get(IndexType.BOOLEAN)}"'
+        )
+    elif indices == {IndexType.NUMERIC, IndexType.RANK_FEATURE}:
+        return SearchType(
+            name="NumericRankField",
+            args=f'"{search_map.get(IndexType.NUMERIC)}", '
+            f'"{search_map.get(IndexType.RANK_FEATURE)}"',
+        )
+    elif indices == {IndexType.KEYWORD, IndexType.TEXT}:
+        return SearchType(
+            name="KeywordTextField",
+            args=f'"{search_map.get(IndexType.KEYWORD)}", '
+            f'"{search_map.get(IndexType.TEXT)}"',
+        )
+    elif indices == {IndexType.KEYWORD, IndexType.TEXT, IndexType.STEMMED}:
+        return SearchType(
+            name="KeywordTextStemmedField",
+            args=f'"{search_map.get(IndexType.KEYWORD)}", '
+            f'"{search_map.get(IndexType.TEXT)}", '
+            f'"{search_map.get(IndexType.STEMMED)}"',
+        )
+    return SearchType(name="RelationField")
+
+
 class Generator:
     def __init__(self) -> None:
         self.environment = Environment(
@@ -351,6 +481,8 @@ class Generator:
         )
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
+        self.environment.filters["get_search_type"] = get_search_type
+        self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
 
     def merge_attributes(self, entity_def):
         def merge_them(s, a):

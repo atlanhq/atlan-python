@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+import itertools
 import logging
 from typing import Generator
 
@@ -10,6 +11,8 @@ from retry import retry
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
+from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
+from pyatlan.model.search import DSL, IndexSearchRequest
 from tests.integration.client import TestId, delete_asset
 
 LOGGER = logging.getLogger(__name__)
@@ -163,6 +166,110 @@ def test_read_glossary(
     terms = g.terms
     assert terms
     assert len(terms) == 2
+
+
+def test_compound_queries(
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+):
+    cq = (
+        CompoundQuery()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .where(AtlasGlossaryTerm.NAME.startswith(MODULE_NAME))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
+    ).to_query()
+    request = IndexSearchRequest(dsl=DSL(query=cq))
+    response = client.search(request)
+    assert response
+    assert response.count == 2
+
+    cq = (
+        CompoundQuery()
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .where(AtlasGlossaryTerm.NAME.startswith(MODULE_NAME))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
+        .where_not(AtlasGlossaryTerm.NAME.eq(term2.name))
+    ).to_query()
+    request = IndexSearchRequest(dsl=DSL(query=cq))
+    response = client.search(request)
+    assert response
+    assert response.count == 1
+
+
+def test_fluent_search(
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+    term1: AtlasGlossaryTerm,
+    term2: AtlasGlossaryTerm,
+):
+    terms = (
+        FluentSearch()
+        .page_size(1)
+        .where(CompoundQuery.active_assets())
+        .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
+        .where(AtlasGlossaryTerm.NAME.startswith(MODULE_NAME))
+        .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
+        .include_on_results(AtlasGlossaryTerm.ANCHOR)
+        .include_on_relations(AtlasGlossary.NAME)
+    )
+
+    assert terms.count(client) == 2
+
+    guids_chained = []
+    g_sorted = []
+    for asset in filter(
+        lambda x: isinstance(x, AtlasGlossaryTerm),
+        itertools.islice(terms.execute(client), 2),
+    ):
+        guids_chained.append(asset.guid)
+        g_sorted.append(asset.guid)
+    g_sorted.sort()
+    assert guids_chained == g_sorted
+
+    terms = FluentSearch(
+        _page_size=5,
+        wheres=[
+            CompoundQuery.active_assets(),
+            CompoundQuery.asset_type(AtlasGlossaryTerm),
+            AtlasGlossaryTerm.NAME.startswith(MODULE_NAME),
+            AtlasGlossaryTerm.ANCHOR.startswith(glossary.qualified_name),
+        ],
+        _includes_on_results=[AtlasGlossaryTerm.ANCHOR.atlan_field_name],
+        _includes_on_relations=[AtlasGlossary.NAME.atlan_field_name],
+    ).execute(client)
+
+    guids_alt = []
+    g_sorted = []
+    for asset in terms:
+        guids_alt.append(asset.guid)
+        g_sorted.append(asset.guid)
+    g_sorted.sort()
+    assert g_sorted == guids_alt
+
+    terms = FluentSearch(
+        _page_size=5,
+        wheres=[
+            CompoundQuery.active_assets(),
+            CompoundQuery.asset_type(AtlasGlossaryTerm),
+            AtlasGlossaryTerm.NAME.startswith(MODULE_NAME),
+            AtlasGlossaryTerm.ANCHOR.startswith(glossary.qualified_name),
+        ],
+        _includes_on_results=["anchor"],
+        _includes_on_relations=["name"],
+        sorts=[AtlasGlossaryTerm.NAME.order()],
+    ).execute(client)
+
+    names = []
+    names_sorted = []
+    for asset in terms:
+        names.append(asset.name)
+        names_sorted.append(asset.name)
+    names_sorted.sort()
+    assert names_sorted == names
 
 
 @pytest.mark.order(after="test_read_glossary")

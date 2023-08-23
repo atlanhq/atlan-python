@@ -11,22 +11,22 @@ from pydantic import Field, validator
 from pyatlan.model.enums import IconType
 from pyatlan.model.fields.atlan_fields import KeywordField
 
-from .asset00 import Resource
+from .asset00 import Namespace
 
 
-class ReadmeTemplate(Resource):
+class Collection(Namespace):
     """Description"""
 
-    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+    type_name: str = Field("Collection", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "ReadmeTemplate":
-            raise ValueError("must be ReadmeTemplate")
+        if v != "Collection":
+            raise ValueError("must be Collection")
         return v
 
     def __setattr__(self, name, value):
-        if name in ReadmeTemplate._convenience_properties:
+        if name in Collection._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
@@ -64,15 +64,15 @@ class ReadmeTemplate(Resource):
             self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
 
-    class Attributes(Resource.Attributes):
+    class Attributes(Namespace.Attributes):
         icon: Optional[str] = Field(None, description="", alias="icon")
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
 
-    attributes: "ReadmeTemplate.Attributes" = Field(
-        default_factory=lambda: ReadmeTemplate.Attributes(),
+    attributes: "Collection.Attributes" = Field(
+        default_factory=lambda: Collection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-ReadmeTemplate.Attributes.update_forward_refs()
+Collection.Attributes.update_forward_refs()
