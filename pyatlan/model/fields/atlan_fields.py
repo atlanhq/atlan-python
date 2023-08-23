@@ -59,7 +59,7 @@ class SearchableField(AtlanField):
         self.atlan_field_name = atlan_field_name
         self.elastic_field_name = elastic_field_name
 
-    def exists(self) -> Query:
+    def has_any_value(self) -> Query:
         """
         Returns a query that will only match assets that have some non-null, non-empty value
         (no matter what actual value) for the field.

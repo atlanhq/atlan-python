@@ -100,7 +100,9 @@ class CompoundQuery:
                 return FluentSearch(
                     wheres=[Referenceable.ATLAN_TAGS.within(values)]
                 ).to_query()
-            return FluentSearch(wheres=[Referenceable.ATLAN_TAGS.exists()]).to_query()
+            return FluentSearch(
+                wheres=[Referenceable.ATLAN_TAGS.has_any_value()]
+            ).to_query()
         if values:
             return FluentSearch(
                 where_somes=[
@@ -111,8 +113,8 @@ class CompoundQuery:
             ).to_query()
         return FluentSearch(
             where_somes=[
-                Referenceable.ATLAN_TAGS.exists(),
-                Referenceable.PROPAGATED_ATLAN_TAGS.exists(),
+                Referenceable.ATLAN_TAGS.has_any_value(),
+                Referenceable.PROPAGATED_ATLAN_TAGS.has_any_value(),
             ],
             _min_somes=1,
         ).to_query()
@@ -129,7 +131,7 @@ class CompoundQuery:
         """
         if qualified_names:
             return Referenceable.ASSIGNED_TERMS.within(qualified_names)
-        return Referenceable.ASSIGNED_TERMS.exists()
+        return Referenceable.ASSIGNED_TERMS.has_any_value()
 
     def __init__(
         self,

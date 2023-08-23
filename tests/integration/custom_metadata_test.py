@@ -516,7 +516,7 @@ def test_search_by_any_accountable(
         FluentSearch(_includes_on_results=attributes)
         .where(CompoundQuery.active_assets())
         .where(CompoundQuery.asset_type(AtlasGlossaryTerm))
-        .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).exists())
+        .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).has_any_value())
         .include_on_relations(Asset.NAME)
     ).to_request()
     response = client.search(criteria=request)
