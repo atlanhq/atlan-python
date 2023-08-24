@@ -123,6 +123,7 @@ from pyatlan.model.assets import (
     SigmaDatasetColumn,
     SigmaPage,
     SigmaWorkbook,
+    SnowflakeDynamicTable,
     SnowflakePipe,
     SnowflakeStream,
     SnowflakeTag,
@@ -455,6 +456,8 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[list[Function]]": [Function()],
     "Optional[SchemaRegistrySchemaType]": SchemaRegistrySchemaType.PROTOBUF,
     "Optional[KafkaTopicCleanupPolicy]": KafkaTopicCleanupPolicy.DELETE,
+    "Optional[list[SnowflakeDynamicTable]]": [SnowflakeDynamicTable()],
+    "Optional[SnowflakeDynamicTable]": SnowflakeDynamicTable(),
 }
 
 
