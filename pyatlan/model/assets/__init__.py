@@ -38,6 +38,7 @@ from .asset00 import (
     Schema,
     SchemaRegistry,
     SchemaRegistrySubject,
+    SnowflakeDynamicTable,
     SnowflakePipe,
     SnowflakeStream,
     SnowflakeTag,
@@ -171,6 +172,6 @@ from .asset74 import (
     SalesforceOrganization,
     SalesforceReport,
 )
-from .asset75 import KafkaConsumerGroup, KafkaTopic
-from .asset76 import QlikStream
-from .asset77 import AzureEventHub
+from .asset76 import KafkaConsumerGroup, KafkaTopic
+from .asset77 import QlikStream
+from .asset78 import AzureEventHub

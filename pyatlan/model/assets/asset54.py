@@ -15,7 +15,6 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     KeywordTextStemmedField,
     NumericField,
-    RelationField,
 )
 from pyatlan.model.structs import GoogleLabel, GoogleTag
 
@@ -38,8 +37,8 @@ class DataStudioAsset(DataStudio):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_STUDIO_ASSET_TYPE: ClassVar[RelationField] = RelationField(
-        "dataStudioAssetType"
+    DATA_STUDIO_ASSET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dataStudioAssetType", "dataStudioAssetType"
     )
     """
     TBC

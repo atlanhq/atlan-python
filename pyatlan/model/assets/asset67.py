@@ -14,7 +14,6 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
-    TextField,
 )
 
 from .asset43 import Metabase
@@ -42,8 +41,8 @@ class MetabaseQuestion(Metabase):
     """
     TBC
     """
-    METABASE_QUERY_TYPE: ClassVar[TextField] = TextField(
-        "metabaseQueryType", "metabaseQueryType.text"
+    METABASE_QUERY_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseQueryType", "metabaseQueryType", "metabaseQueryType.text"
     )
     """
     TBC
@@ -168,7 +167,9 @@ class MetabaseCollection(Metabase):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_SLUG: ClassVar[TextField] = TextField("metabaseSlug", "metabaseSlug.text")
+    METABASE_SLUG: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseSlug", "metabaseSlug", "metabaseSlug.text"
+    )
     """
     TBC
     """
@@ -178,8 +179,8 @@ class MetabaseCollection(Metabase):
     """
     TBC
     """
-    METABASE_NAMESPACE: ClassVar[TextField] = TextField(
-        "metabaseNamespace", "metabaseNamespace.text"
+    METABASE_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseNamespace", "metabaseNamespace", "metabaseNamespace.text"
     )
     """
     TBC

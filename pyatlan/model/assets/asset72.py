@@ -33,8 +33,8 @@ class MicroStrategyReport(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_REPORT_TYPE: ClassVar[RelationField] = RelationField(
-        "microStrategyReportType"
+    MICRO_STRATEGY_REPORT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "microStrategyReportType", "microStrategyReportType"
     )
     """
     Whether the report is a Grid or Chart report
@@ -786,8 +786,8 @@ class MicroStrategyCube(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_CUBE_TYPE: ClassVar[RelationField] = RelationField(
-        "microStrategyCubeType"
+    MICRO_STRATEGY_CUBE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "microStrategyCubeType", "microStrategyCubeType"
     )
     """
     Whether the cube is an OLAP or MTDI cube
@@ -1357,8 +1357,8 @@ class MicroStrategyVisualization(MicroStrategy):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MICRO_STRATEGY_VISUALIZATION_TYPE: ClassVar[RelationField] = RelationField(
-        "microStrategyVisualizationType"
+    MICRO_STRATEGY_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "microStrategyVisualizationType", "microStrategyVisualizationType"
     )
     """
     Visualization type name
