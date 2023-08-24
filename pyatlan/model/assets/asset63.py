@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordField, RelationField
+
 from .asset39 import Tableau
 from .asset62 import TableauProject
 
@@ -25,11 +27,41 @@ class TableauMetric(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauMetric._convience_properties:
+        if name in TableauMetric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",

@@ -8,9 +8,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.enums import (
-    PowerbiEndorsement,
+from pyatlan.model.enums import PowerbiEndorsement
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
 )
+
 from .asset18 import BI
 
 
@@ -27,11 +31,38 @@ class PowerBI(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBI._convience_properties:
+        if name in PowerBI._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    POWER_BI_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
+        "powerBIIsHidden", "powerBIIsHidden"
+    )
+    """
+    TBC
+    """
+    POWER_BI_TABLE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "powerBITableQualifiedName",
+        "powerBITableQualifiedName",
+        "powerBITableQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    POWER_BI_FORMAT_STRING: ClassVar[KeywordField] = KeywordField(
+        "powerBIFormatString", "powerBIFormatString"
+    )
+    """
+    TBC
+    """
+    POWER_BI_ENDORSEMENT: ClassVar[KeywordField] = KeywordField(
+        "powerBIEndorsement", "powerBIEndorsement"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "power_b_i_is_hidden",
         "power_b_i_table_qualified_name",
         "power_b_i_format_string",

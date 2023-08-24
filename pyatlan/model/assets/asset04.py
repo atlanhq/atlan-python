@@ -8,13 +8,11 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, StrictStr, field_validator
 
-from pyatlan.model.enums import (
-    EntityStatus,
-)
-from pyatlan.model.structs import (
-    BadgeCondition,
-)
+from pyatlan.model.enums import EntityStatus
+from pyatlan.model.fields.atlan_fields import KeywordField
+from pyatlan.model.structs import BadgeCondition
 from pyatlan.utils import validate_required_fields
+
 from .asset00 import Asset
 
 
@@ -51,11 +49,24 @@ class Badge(Asset, type_name="Badge"):
         return v
 
     def __setattr__(self, name, value):
-        if name in Badge._convience_properties:
+        if name in Badge._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    BADGE_CONDITIONS: ClassVar[KeywordField] = KeywordField(
+        "badgeConditions", "badgeConditions"
+    )
+    """
+    TBC
+    """
+    BADGE_METADATA_ATTRIBUTE: ClassVar[KeywordField] = KeywordField(
+        "badgeMetadataAttribute", "badgeMetadataAttribute"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "badge_conditions",
         "badge_metadata_attribute",
     ]

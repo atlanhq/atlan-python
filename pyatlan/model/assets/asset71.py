@@ -8,6 +8,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset46 import PowerBI
 
 
@@ -24,11 +32,49 @@ class PowerBIReport(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIReport._convience_properties:
+        if name in PowerBIReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    TBC
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    TBC
+    """
+    PAGE_COUNT: ClassVar[NumericField] = NumericField("pageCount", "pageCount")
+    """
+    TBC
+    """
+
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    PAGES: ClassVar[RelationField] = RelationField("pages")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "web_url",
@@ -173,11 +219,41 @@ class PowerBIMeasure(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIMeasure._convience_properties:
+        if name in PowerBIMeasure._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    TBC
+    """
+    POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField(
+        "powerBIMeasureExpression", "powerBIMeasureExpression"
+    )
+    """
+    TBC
+    """
+    POWER_BI_IS_EXTERNAL_MEASURE: ClassVar[BooleanField] = BooleanField(
+        "powerBIIsExternalMeasure", "powerBIIsExternalMeasure"
+    )
+    """
+    TBC
+    """
+
+    TABLE: ClassVar[RelationField] = RelationField("table")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "power_b_i_measure_expression",
@@ -292,11 +368,53 @@ class PowerBIColumn(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIColumn._convience_properties:
+        if name in PowerBIColumn._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    TBC
+    """
+    POWER_BI_COLUMN_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnDataCategory", "powerBIColumnDataCategory"
+    )
+    """
+    TBC
+    """
+    POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnDataType", "powerBIColumnDataType"
+    )
+    """
+    TBC
+    """
+    POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField(
+        "powerBISortByColumn", "powerBISortByColumn"
+    )
+    """
+    TBC
+    """
+    POWER_BI_COLUMN_SUMMARIZE_BY: ClassVar[KeywordField] = KeywordField(
+        "powerBIColumnSummarizeBy", "powerBIColumnSummarizeBy"
+    )
+    """
+    TBC
+    """
+
+    TABLE: ClassVar[RelationField] = RelationField("table")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "power_b_i_column_data_category",
@@ -451,11 +569,55 @@ class PowerBITable(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBITable._convience_properties:
+        if name in PowerBITable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasetQualifiedName", "datasetQualifiedName"
+    )
+    """
+    TBC
+    """
+    POWER_BI_TABLE_SOURCE_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
+        "powerBITableSourceExpressions", "powerBITableSourceExpressions"
+    )
+    """
+    TBC
+    """
+    POWER_BI_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "powerBITableColumnCount", "powerBITableColumnCount"
+    )
+    """
+    TBC
+    """
+    POWER_BI_TABLE_MEASURE_COUNT: ClassVar[NumericField] = NumericField(
+        "powerBITableMeasureCount", "powerBITableMeasureCount"
+    )
+    """
+    TBC
+    """
+
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    MEASURES: ClassVar[RelationField] = RelationField("measures")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dataset_qualified_name",
         "power_b_i_table_source_expressions",
@@ -621,11 +783,37 @@ class PowerBITile(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBITile._convience_properties:
+        if name in PowerBITile._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "dashboardQualifiedName", "dashboardQualifiedName"
+    )
+    """
+    TBC
+    """
+
+    REPORT: ClassVar[RelationField] = RelationField("report")
+    """
+    TBC
+    """
+    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    """
+    TBC
+    """
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "dashboard_qualified_name",
         "report",
@@ -730,11 +918,23 @@ class PowerBIDatasource(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDatasource._convience_properties:
+        if name in PowerBIDatasource._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    CONNECTION_DETAILS: ClassVar[KeywordField] = KeywordField(
+        "connectionDetails", "connectionDetails"
+    )
+    """
+    TBC
+    """
+
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "connection_details",
         "datasets",
     ]
@@ -788,11 +988,53 @@ class PowerBIWorkspace(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIWorkspace._convience_properties:
+        if name in PowerBIWorkspace._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    TBC
+    """
+    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    """
+    TBC
+    """
+    DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "dashboardCount", "dashboardCount"
+    )
+    """
+    TBC
+    """
+    DATASET_COUNT: ClassVar[NumericField] = NumericField("datasetCount", "datasetCount")
+    """
+    TBC
+    """
+    DATAFLOW_COUNT: ClassVar[NumericField] = NumericField(
+        "dataflowCount", "dataflowCount"
+    )
+    """
+    TBC
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "web_url",
         "report_count",
         "dashboard_count",
@@ -946,11 +1188,47 @@ class PowerBIDataset(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDataset._convience_properties:
+        if name in PowerBIDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    TBC
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
+    """
+    TBC
+    """
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
         "reports",
@@ -1091,11 +1369,35 @@ class PowerBIDashboard(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDashboard._convience_properties:
+        if name in PowerBIDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    TBC
+    """
+    TILE_COUNT: ClassVar[NumericField] = NumericField("tileCount", "tileCount")
+    """
+    TBC
+    """
+
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
         "tile_count",
@@ -1195,11 +1497,31 @@ class PowerBIDataflow(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDataflow._convience_properties:
+        if name in PowerBIDataflow._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
+    """
+    TBC
+    """
+
+    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    """
+    TBC
+    """
+    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "web_url",
         "workspace",
@@ -1284,11 +1606,29 @@ class PowerBIPage(PowerBI):
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIPage._convience_properties:
+        if name in PowerBIPage._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workspaceQualifiedName", "workspaceQualifiedName"
+    )
+    """
+    TBC
+    """
+    REPORT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "reportQualifiedName", "reportQualifiedName"
+    )
+    """
+    TBC
+    """
+
+    REPORT: ClassVar[RelationField] = RelationField("report")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "workspace_qualified_name",
         "report_qualified_name",
         "report",

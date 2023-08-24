@@ -8,9 +8,9 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.enums import (
-    IconType,
-)
+from pyatlan.model.enums import IconType
+from pyatlan.model.fields.atlan_fields import KeywordField
+
 from .asset00 import Namespace
 
 
@@ -27,11 +27,20 @@ class Collection(Namespace):
         return v
 
     def __setattr__(self, name, value):
-        if name in Collection._convience_properties:
+        if name in Collection._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
+    """
+    TBC
+    """
+    ICON_TYPE: ClassVar[KeywordField] = KeywordField("iconType", "iconType")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
     ]

@@ -1,3 +1,7 @@
+## 0.6.1 (August 23, 2023)
+* Adds a new FluentSearch approach to searching (no need to know Elastic anymore)
+* Changes default inclusion operation for Bool queries to filter rather than must (for efficiency)
+
 ## 0.6.0 (August 17, 2023)
 * Added:
   * Adds new purpose policy permissions (attaching / detaching terms from assets)

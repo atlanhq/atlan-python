@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import BooleanField
+
 from .asset18 import BI
 
 
@@ -24,11 +26,18 @@ class Redash(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in Redash._convience_properties:
+        if name in Redash._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    REDASH_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
+        "redashIsPublished", "redashIsPublished"
+    )
+    """
+    Status whether the asset is published or not on source
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "redash_is_published",
     ]
 

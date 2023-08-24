@@ -16,10 +16,11 @@ from pyatlan.model.enums import (
     PersonaGlossaryAction,
     PersonaMetadataAction,
 )
+from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan.utils import validate_required_fields
+
 from .asset00 import SelfAsset
-from .asset05 import AccessControl
-from .asset05 import AuthPolicy
+from .asset05 import AccessControl, AuthPolicy
 
 
 class Persona(AccessControl):
@@ -149,11 +150,26 @@ class Persona(AccessControl):
         return v
 
     def __setattr__(self, name, value):
-        if name in Persona._convience_properties:
+        if name in Persona._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PERSONA_GROUPS: ClassVar[KeywordField] = KeywordField(
+        "personaGroups", "personaGroups"
+    )
+    """
+    TBC
+    """
+    PERSONA_USERS: ClassVar[KeywordField] = KeywordField("personaUsers", "personaUsers")
+    """
+    TBC
+    """
+    ROLE_ID: ClassVar[KeywordField] = KeywordField("roleId", "roleId")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "persona_groups",
         "persona_users",
         "role_id",

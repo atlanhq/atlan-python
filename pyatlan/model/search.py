@@ -8,13 +8,13 @@ from itertools import chain
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from pydantic import (
-    StringConstraints,
     ConfigDict,
     Field,
     StrictBool,
     StrictFloat,
     StrictInt,
     StrictStr,
+    StringConstraints,
     validate_call,
     validator,
 )
@@ -28,6 +28,7 @@ else:
     from pydantic.dataclasses import dataclass
 
 import copy
+
 from typing_extensions import Annotated
 
 SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
@@ -98,14 +99,14 @@ class Query(ABC):
         # preference
         if hasattr(other, "__radd__"):
             return other.__radd__(self)
-        return Bool(must=[self, other])
+        return Bool(filter=[self, other])
 
     def __and__(self, other):
         # make sure we give queries that know how to combine themselves
         # preference
         if hasattr(other, "__rand__"):
             return other.__rand__(self)
-        return Bool(must=[self, other])
+        return Bool(filter=[self, other])
 
     def __or__(self, other):
         # make sure we give queries that know how to combine themselves
@@ -513,7 +514,7 @@ class Bool(Query):
             if other.filter:
                 q.filter += other.filter
         else:
-            q.must.append(other)
+            q.filter.append(other)
         return q
 
     __radd__ = __add__
@@ -1780,7 +1781,9 @@ class DSL(AtlanObject):
     track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query] = None
-    sort: Optional[list[SortItem]] = Field(alias="sort")
+    sort: Optional[list[SortItem]] = Field(
+        alias="sort", default=[SortItem(TermAttributes.GUID.value)]
+    )
     # TODO[pydantic]: The following keys were removed: `json_encoders`.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
     model_config = ConfigDict(
@@ -1789,7 +1792,9 @@ class DSL(AtlanObject):
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
-        __pydantic_self__.__fields_set__.update(["from_", "size", "track_total_hits"])
+        __pydantic_self__.__fields_set__.update(
+            ["from_", "size", "track_total_hits", "sort"]
+        )
 
     # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
     # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.

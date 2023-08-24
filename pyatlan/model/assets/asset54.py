@@ -8,13 +8,17 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.enums import (
-    GoogleDatastudioAssetType,
+from pyatlan.model.enums import GoogleDatastudioAssetType
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    KeywordTextStemmedField,
+    NumericField,
+    RelationField,
 )
-from pyatlan.model.structs import (
-    GoogleLabel,
-    GoogleTag,
-)
+from pyatlan.model.structs import GoogleLabel, GoogleTag
+
 from .asset42 import DataStudio
 
 
@@ -31,11 +35,85 @@ class DataStudioAsset(DataStudio):
         return v
 
     def __setattr__(self, name, value):
-        if name in DataStudioAsset._convience_properties:
+        if name in DataStudioAsset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DATA_STUDIO_ASSET_TYPE: ClassVar[RelationField] = RelationField(
+        "dataStudioAssetType"
+    )
+    """
+    TBC
+    """
+    DATA_STUDIO_ASSET_TITLE: ClassVar[
+        KeywordTextStemmedField
+    ] = KeywordTextStemmedField(
+        "dataStudioAssetTitle",
+        "dataStudioAssetTitle.keyword",
+        "dataStudioAssetTitle",
+        "dataStudioAssetTitle.stemmed",
+    )
+    """
+    TBC
+    """
+    DATA_STUDIO_ASSET_OWNER: ClassVar[KeywordField] = KeywordField(
+        "dataStudioAssetOwner", "dataStudioAssetOwner"
+    )
+    """
+    TBC
+    """
+    IS_TRASHED_DATA_STUDIO_ASSET: ClassVar[BooleanField] = BooleanField(
+        "isTrashedDataStudioAsset", "isTrashedDataStudioAsset"
+    )
+    """
+    TBC
+    """
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    """
+    TBC
+    """
+    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "data_studio_asset_type",
         "data_studio_asset_title",
         "data_studio_asset_owner",

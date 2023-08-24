@@ -13,6 +13,52 @@
         def validate_required(self):
             pass
 
+    TYPE_NAME: ClassVar[KeywordTextField] = KeywordTextField("typeName", "__typeName.keyword", "__typeName")
+    """Type of the asset. For example Table, Column, and so on."""
+
+    GUID: ClassVar[KeywordField] = KeywordField("guid", "__guid")
+    """Globally unique identifier (GUID) of any object in Atlan."""
+
+    CREATED_BY: ClassVar[KeywordField] = KeywordField("createdBy", "__createdBy")
+    """Atlan user who created this asset."""
+
+    UPDATED_BY: ClassVar[KeywordField] = KeywordField("updatedBy", "__modifiedBy")
+    """Atlan user who last updated the asset."""
+
+    STATUS: ClassVar[KeywordField] = KeywordField("status", "__state")
+    """Asset status in Atlan (active vs deleted)."""
+
+    ATLAN_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "classificationNames", "__traitNames", "__classificationsText"
+    )
+    """
+    All directly-assigned Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag.
+    """
+
+    PROPAGATED_ATLAN_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "classificationNames", "__propagatedTraitNames", "__classificationsText"
+    )
+    """All propagated Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag."""
+
+    ASSIGNED_TERMS: ClassVar[KeywordTextField] = KeywordTextField("meanings", "__meanings", "__meaningsText")
+    """All terms attached to an asset, searchable by the term's qualifiedName."""
+
+    SUPER_TYPE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "typeName", "__superTypeNames.keyword", "__superTypeNames"
+    )
+    """All super types of an asset."""
+
+    CREATE_TIME: ClassVar[NumericField] = NumericField("createTime", "__timestamp")
+    """Time (in milliseconds) when the asset was created."""
+
+    UPDATE_TIME: ClassVar[NumericField] = NumericField("updateTime", "__modificationTimestamp")
+    """Time (in milliseconds) when the asset was last updated."""
+
+    QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "qualifiedName", "qualifiedName", "qualifiedName.text"
+    )
+    """Unique fully-qualified name of the asset in Atlan."""
+
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
     attributes: '{{entity_def.name}}.Attributes' = Field(
         default_factory = lambda : {{entity_def.name}}.Attributes(),

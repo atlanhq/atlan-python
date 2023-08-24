@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordTextField, NumericField
+
 from .asset18 import BI
 
 
@@ -24,11 +26,40 @@ class Preset(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in Preset._convience_properties:
+        if name in Preset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PRESET_WORKSPACE_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceId", "presetWorkspaceId"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetWorkspaceQualifiedName",
+        "presetWorkspaceQualifiedName",
+        "presetWorkspaceQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
+        "presetDashboardId", "presetDashboardId"
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetDashboardQualifiedName",
+        "presetDashboardQualifiedName",
+        "presetDashboardQualifiedName.text",
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "preset_workspace_id",
         "preset_workspace_qualified_name",
         "preset_dashboard_id",

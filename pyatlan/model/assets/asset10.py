@@ -8,8 +8,9 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from .asset00 import Catalog
-from .asset00 import Process
+from pyatlan.model.fields.atlan_fields import RelationField
+
+from .asset00 import Catalog, Process
 
 
 class BIProcess(Process):
@@ -25,11 +26,20 @@ class BIProcess(Process):
         return v
 
     def __setattr__(self, name, value):
-        if name in BIProcess._convience_properties:
+        if name in BIProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
+    """
+    TBC
+    """
+    INPUTS: ClassVar[RelationField] = RelationField("inputs")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "outputs",
         "inputs",
     ]

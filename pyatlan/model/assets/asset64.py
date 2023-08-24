@@ -9,6 +9,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+)
+
 from .asset40 import Looker
 
 
@@ -25,11 +32,83 @@ class LookerLook(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerLook._convience_properties:
+        if name in LookerLook._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
+    """
+    TBC
+    """
+    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
+        "sourceUserId", "sourceUserId"
+    )
+    """
+    TBC
+    """
+    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceViewCount", "sourceViewCount"
+    )
+    """
+    TBC
+    """
+    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
+        "sourcelastUpdaterId", "sourcelastUpdaterId"
+    )
+    """
+    TBC
+    """
+    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
+        "sourceLastAccessedAt", "sourceLastAccessedAt"
+    )
+    """
+    TBC
+    """
+    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
+        "sourceLastViewedAt", "sourceLastViewedAt"
+    )
+    """
+    TBC
+    """
+    SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
+        "sourceContentMetadataId", "sourceContentMetadataId"
+    )
+    """
+    TBC
+    """
+    SOURCE_QUERY_ID: ClassVar[NumericField] = NumericField(
+        "sourceQueryId", "sourceQueryId"
+    )
+    """
+    TBC
+    """
+    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    """
+    TBC
+    """
+
+    QUERY: ClassVar[RelationField] = RelationField("query")
+    """
+    TBC
+    """
+    FOLDER: ClassVar[RelationField] = RelationField("folder")
+    """
+    TBC
+    """
+    TILE: ClassVar[RelationField] = RelationField("tile")
+    """
+    TBC
+    """
+    MODEL: ClassVar[RelationField] = RelationField("model")
+    """
+    TBC
+    """
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "folder_name",
         "source_user_id",
         "source_view_count",
@@ -269,11 +348,65 @@ class LookerDashboard(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerDashboard._convience_properties:
+        if name in LookerDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    FOLDER_NAME: ClassVar[KeywordField] = KeywordField("folderName", "folderName")
+    """
+    TBC
+    """
+    SOURCE_USER_ID: ClassVar[NumericField] = NumericField(
+        "sourceUserId", "sourceUserId"
+    )
+    """
+    TBC
+    """
+    SOURCE_VIEW_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceViewCount", "sourceViewCount"
+    )
+    """
+    TBC
+    """
+    SOURCE_METADATA_ID: ClassVar[NumericField] = NumericField(
+        "sourceMetadataId", "sourceMetadataId"
+    )
+    """
+    TBC
+    """
+    SOURCELAST_UPDATER_ID: ClassVar[NumericField] = NumericField(
+        "sourcelastUpdaterId", "sourcelastUpdaterId"
+    )
+    """
+    TBC
+    """
+    SOURCE_LAST_ACCESSED_AT: ClassVar[NumericField] = NumericField(
+        "sourceLastAccessedAt", "sourceLastAccessedAt"
+    )
+    """
+    TBC
+    """
+    SOURCE_LAST_VIEWED_AT: ClassVar[NumericField] = NumericField(
+        "sourceLastViewedAt", "sourceLastViewedAt"
+    )
+    """
+    TBC
+    """
+
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    LOOKS: ClassVar[RelationField] = RelationField("looks")
+    """
+    TBC
+    """
+    FOLDER: ClassVar[RelationField] = RelationField("folder")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "folder_name",
         "source_user_id",
         "source_view_count",
@@ -451,11 +584,45 @@ class LookerFolder(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerFolder._convience_properties:
+        if name in LookerFolder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SOURCE_CONTENT_METADATA_ID: ClassVar[NumericField] = NumericField(
+        "sourceContentMetadataId", "sourceContentMetadataId"
+    )
+    """
+    TBC
+    """
+    SOURCE_CREATOR_ID: ClassVar[NumericField] = NumericField(
+        "sourceCreatorId", "sourceCreatorId"
+    )
+    """
+    TBC
+    """
+    SOURCE_CHILD_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceChildCount", "sourceChildCount"
+    )
+    """
+    TBC
+    """
+    SOURCE_PARENT_ID: ClassVar[NumericField] = NumericField(
+        "sourceParentID", "sourceParentID"
+    )
+    """
+    TBC
+    """
+
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    LOOKS: ClassVar[RelationField] = RelationField("looks")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "source_content_metadata_id",
         "source_creator_id",
         "source_child_count",
@@ -572,11 +739,59 @@ class LookerTile(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerTile._convience_properties:
+        if name in LookerTile._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    LOOKML_LINK_ID: ClassVar[KeywordField] = KeywordField(
+        "lookmlLinkId", "lookmlLinkId"
+    )
+    """
+    TBC
+    """
+    MERGE_RESULT_ID: ClassVar[KeywordField] = KeywordField(
+        "mergeResultId", "mergeResultId"
+    )
+    """
+    TBC
+    """
+    NOTE_TEXT: ClassVar[KeywordField] = KeywordField("noteText", "noteText")
+    """
+    TBC
+    """
+    QUERY_ID: ClassVar[NumericField] = NumericField("queryID", "queryID")
+    """
+    TBC
+    """
+    RESULT_MAKER_ID: ClassVar[NumericField] = NumericField(
+        "resultMakerID", "resultMakerID"
+    )
+    """
+    TBC
+    """
+    SUBTITLE_TEXT: ClassVar[KeywordField] = KeywordField("subtitleText", "subtitleText")
+    """
+    TBC
+    """
+    LOOK_ID: ClassVar[NumericField] = NumericField("lookId", "lookId")
+    """
+    TBC
+    """
+
+    QUERY: ClassVar[RelationField] = RelationField("query")
+    """
+    TBC
+    """
+    LOOK: ClassVar[RelationField] = RelationField("look")
+    """
+    TBC
+    """
+    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "lookml_link_id",
         "merge_result_id",
         "note_text",
@@ -742,11 +957,37 @@ class LookerModel(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerModel._convience_properties:
+        if name in LookerModel._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    """
+    TBC
+    """
+
+    EXPLORES: ClassVar[RelationField] = RelationField("explores")
+    """
+    TBC
+    """
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    LOOK: ClassVar[RelationField] = RelationField("look")
+    """
+    TBC
+    """
+    QUERIES: ClassVar[RelationField] = RelationField("queries")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "project_name",
         "explores",
         "project",
@@ -856,11 +1097,49 @@ class LookerExplore(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerExplore._convience_properties:
+        if name in LookerExplore._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    """
+    TBC
+    """
+    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    """
+    TBC
+    """
+    SOURCE_CONNECTION_NAME: ClassVar[KeywordField] = KeywordField(
+        "sourceConnectionName", "sourceConnectionName"
+    )
+    """
+    TBC
+    """
+    VIEW_NAME: ClassVar[KeywordField] = KeywordField("viewName", "viewName")
+    """
+    TBC
+    """
+    SQL_TABLE_NAME: ClassVar[KeywordField] = KeywordField(
+        "sqlTableName", "sqlTableName"
+    )
+    """
+    TBC
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    MODEL: ClassVar[RelationField] = RelationField("model")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "project_name",
         "model_name",
         "source_connection_name",
@@ -1002,11 +1281,28 @@ class LookerProject(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerProject._convience_properties:
+        if name in LookerProject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MODELS: ClassVar[RelationField] = RelationField("models")
+    """
+    TBC
+    """
+    EXPLORES: ClassVar[RelationField] = RelationField("explores")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
+    VIEWS: ClassVar[RelationField] = RelationField("views")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "models",
         "explores",
         "fields",
@@ -1087,11 +1383,47 @@ class LookerQuery(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerQuery._convience_properties:
+        if name in LookerQuery._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
+        "sourceDefinition", "sourceDefinition"
+    )
+    """
+    TBC
+    """
+    SOURCE_DEFINITION_DATABASE: ClassVar[KeywordField] = KeywordField(
+        "sourceDefinitionDatabase", "sourceDefinitionDatabase"
+    )
+    """
+    TBC
+    """
+    SOURCE_DEFINITION_SCHEMA: ClassVar[KeywordField] = KeywordField(
+        "sourceDefinitionSchema", "sourceDefinitionSchema"
+    )
+    """
+    TBC
+    """
+    FIELDS: ClassVar[KeywordField] = KeywordField("fields", "fields")
+    """
+    TBC
+    """
+
+    TILES: ClassVar[RelationField] = RelationField("tiles")
+    """
+    TBC
+    """
+    LOOKS: ClassVar[RelationField] = RelationField("looks")
+    """
+    TBC
+    """
+    MODEL: ClassVar[RelationField] = RelationField("model")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "source_definition",
         "source_definition_database",
         "source_definition_schema",
@@ -1224,11 +1556,71 @@ class LookerField(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerField._convience_properties:
+        if name in LookerField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    """
+    TBC
+    """
+    LOOKER_EXPLORE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "lookerExploreQualifiedName",
+        "lookerExploreQualifiedName",
+        "lookerExploreQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    LOOKER_VIEW_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "lookerViewQualifiedName",
+        "lookerViewQualifiedName",
+        "lookerViewQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    MODEL_NAME: ClassVar[KeywordField] = KeywordField("modelName", "modelName")
+    """
+    TBC
+    """
+    SOURCE_DEFINITION: ClassVar[KeywordField] = KeywordField(
+        "sourceDefinition", "sourceDefinition"
+    )
+    """
+    TBC
+    """
+    LOOKER_FIELD_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "lookerFieldDataType", "lookerFieldDataType"
+    )
+    """
+    TBC
+    """
+    LOOKER_TIMES_USED: ClassVar[NumericField] = NumericField(
+        "lookerTimesUsed", "lookerTimesUsed"
+    )
+    """
+    TBC
+    """
+
+    EXPLORE: ClassVar[RelationField] = RelationField("explore")
+    """
+    TBC
+    """
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    VIEW: ClassVar[RelationField] = RelationField("view")
+    """
+    TBC
+    """
+    MODEL: ClassVar[RelationField] = RelationField("model")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "project_name",
         "looker_explore_qualified_name",
         "looker_view_qualified_name",
@@ -1426,11 +1818,37 @@ class LookerView(Looker):
         return v
 
     def __setattr__(self, name, value):
-        if name in LookerView._convience_properties:
+        if name in LookerView._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PROJECT_NAME: ClassVar[KeywordField] = KeywordField("projectName", "projectName")
+    """
+    TBC
+    """
+    LOOKER_VIEW_FILE_PATH: ClassVar[KeywordField] = KeywordField(
+        "lookerViewFilePath", "lookerViewFilePath"
+    )
+    """
+    File path of the looker view in the project
+    """
+    LOOKER_VIEW_FILE_NAME: ClassVar[KeywordField] = KeywordField(
+        "lookerViewFileName", "lookerViewFileName"
+    )
+    """
+    File name of the looker view in the project
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "project_name",
         "looker_view_file_path",
         "looker_view_file_name",

@@ -11,7 +11,7 @@ from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
-from pydantic import model_validator, Field, PrivateAttr, StrictStr, field_validator
+from pydantic import Field, PrivateAttr, StrictStr, field_validator, model_validator
 
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
@@ -26,6 +26,16 @@ from pyatlan.model.enums import (
     SchemaRegistrySchemaCompatibility,
     SchemaRegistrySchemaType,
     SourceCostUnitType,
+)
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    KeywordTextStemmedField,
+    NumericField,
+    NumericRankField,
+    RelationField,
+    TextField,
 )
 from pyatlan.model.structs import (
     ColumnValueFrequencyMap,
@@ -84,11 +94,11 @@ class Referenceable(AtlanObject):
         self.business_attributes = self._metadata_proxy.business_attributes
 
     def __setattr__(self, name, value):
-        if name in Referenceable._convience_properties:
+        if name in Referenceable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    _convenience_properties: ClassVar[list[str]] = [
         "qualified_name",
         "assigned_terms",
     ]
@@ -121,6 +131,58 @@ class Referenceable(AtlanObject):
 
         def validate_required(self):
             pass
+
+    TYPE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "typeName", "__typeName.keyword", "__typeName"
+    )
+    """Type of the asset. For example Table, Column, and so on."""
+
+    GUID: ClassVar[KeywordField] = KeywordField("guid", "__guid")
+    """Globally unique identifier (GUID) of any object in Atlan."""
+
+    CREATED_BY: ClassVar[KeywordField] = KeywordField("createdBy", "__createdBy")
+    """Atlan user who created this asset."""
+
+    UPDATED_BY: ClassVar[KeywordField] = KeywordField("updatedBy", "__modifiedBy")
+    """Atlan user who last updated the asset."""
+
+    STATUS: ClassVar[KeywordField] = KeywordField("status", "__state")
+    """Asset status in Atlan (active vs deleted)."""
+
+    ATLAN_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "classificationNames", "__traitNames", "__classificationsText"
+    )
+    """
+    All directly-assigned Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag.
+    """
+
+    PROPAGATED_ATLAN_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "classificationNames", "__propagatedTraitNames", "__classificationsText"
+    )
+    """All propagated Atlan tags that exist on an asset, searchable by internal hashed-string ID of the Atlan tag."""
+
+    ASSIGNED_TERMS: ClassVar[KeywordTextField] = KeywordTextField(
+        "meanings", "__meanings", "__meaningsText"
+    )
+    """All terms attached to an asset, searchable by the term's qualifiedName."""
+
+    SUPER_TYPE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "typeName", "__superTypeNames.keyword", "__superTypeNames"
+    )
+    """All super types of an asset."""
+
+    CREATE_TIME: ClassVar[NumericField] = NumericField("createTime", "__timestamp")
+    """Time (in milliseconds) when the asset was created."""
+
+    UPDATE_TIME: ClassVar[NumericField] = NumericField(
+        "updateTime", "__modificationTimestamp"
+    )
+    """Time (in milliseconds) when the asset was last updated."""
+
+    QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "qualifiedName", "qualifiedName", "qualifiedName.text"
+    )
+    """Unique fully-qualified name of the asset in Atlan."""
 
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
     attributes: "Referenceable.Attributes" = Field(
@@ -345,11 +407,764 @@ class Asset(Referenceable):
         return v
 
     def __setattr__(self, name, value):
-        if name in Asset._convience_properties:
+        if name in Asset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    NAME: ClassVar[KeywordTextStemmedField] = KeywordTextStemmedField(
+        "name", "name.keyword", "name", "name.stemmed"
+    )
+    """
+    TBC
+    """
+    DISPLAY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "displayName", "displayName.keyword", "displayName"
+    )
+    """
+    TBC
+    """
+    DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
+        "description", "description.keyword", "description"
+    )
+    """
+    TBC
+    """
+    USER_DESCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
+        "userDescription", "userDescription.keyword", "userDescription"
+    )
+    """
+    TBC
+    """
+    TENANT_ID: ClassVar[KeywordField] = KeywordField("tenantId", "tenantId")
+    """
+    TBC
+    """
+    CERTIFICATE_STATUS: ClassVar[TextField] = TextField(
+        "certificateStatus", "certificateStatus.text"
+    )
+    """
+    TBC
+    """
+    CERTIFICATE_STATUS_MESSAGE: ClassVar[KeywordField] = KeywordField(
+        "certificateStatusMessage", "certificateStatusMessage"
+    )
+    """
+    TBC
+    """
+    CERTIFICATE_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "certificateUpdatedBy", "certificateUpdatedBy"
+    )
+    """
+    TBC
+    """
+    CERTIFICATE_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "certificateUpdatedAt", "certificateUpdatedAt"
+    )
+    """
+    TBC
+    """
+    ANNOUNCEMENT_TITLE: ClassVar[KeywordField] = KeywordField(
+        "announcementTitle", "announcementTitle"
+    )
+    """
+    TBC
+    """
+    ANNOUNCEMENT_MESSAGE: ClassVar[KeywordField] = KeywordField(
+        "announcementMessage", "announcementMessage"
+    )
+    """
+    TBC
+    """
+    ANNOUNCEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "announcementType", "announcementType"
+    )
+    """
+    TBC
+    """
+    ANNOUNCEMENT_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "announcementUpdatedAt", "announcementUpdatedAt"
+    )
+    """
+    TBC
+    """
+    ANNOUNCEMENT_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "announcementUpdatedBy", "announcementUpdatedBy"
+    )
+    """
+    TBC
+    """
+    OWNER_USERS: ClassVar[KeywordField] = KeywordField("ownerUsers", "ownerUsers")
+    """
+    TBC
+    """
+    OWNER_GROUPS: ClassVar[KeywordField] = KeywordField("ownerGroups", "ownerGroups")
+    """
+    TBC
+    """
+    ADMIN_USERS: ClassVar[KeywordField] = KeywordField("adminUsers", "adminUsers")
+    """
+    TBC
+    """
+    ADMIN_GROUPS: ClassVar[KeywordField] = KeywordField("adminGroups", "adminGroups")
+    """
+    TBC
+    """
+    VIEWER_USERS: ClassVar[KeywordField] = KeywordField("viewerUsers", "viewerUsers")
+    """
+    TBC
+    """
+    VIEWER_GROUPS: ClassVar[KeywordField] = KeywordField("viewerGroups", "viewerGroups")
+    """
+    TBC
+    """
+    CONNECTOR_NAME: ClassVar[KeywordField] = KeywordField(
+        "connectorName", "connectorName"
+    )
+    """
+    TBC
+    """
+    CONNECTION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "connectionName", "connectionName", "connectionName.text"
+    )
+    """
+    TBC
+    """
+    CONNECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "connectionQualifiedName",
+        "connectionQualifiedName",
+        "connectionQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    HAS_LINEAGE: ClassVar[BooleanField] = BooleanField("__hasLineage", "__hasLineage")
+    """
+    TBC
+    """
+    IS_DISCOVERABLE: ClassVar[BooleanField] = BooleanField(
+        "isDiscoverable", "isDiscoverable"
+    )
+    """
+    TBC
+    """
+    IS_EDITABLE: ClassVar[BooleanField] = BooleanField("isEditable", "isEditable")
+    """
+    TBC
+    """
+    SUB_TYPE: ClassVar[KeywordField] = KeywordField("subType", "subType")
+    """
+    TBC
+    """
+    VIEW_SCORE: ClassVar[NumericRankField] = NumericRankField(
+        "viewScore", "viewScore", "viewScore.rank_feature"
+    )
+    """
+    TBC
+    """
+    POPULARITY_SCORE: ClassVar[NumericRankField] = NumericRankField(
+        "popularityScore", "popularityScore", "popularityScore.rank_feature"
+    )
+    """
+    TBC
+    """
+    SOURCE_OWNERS: ClassVar[KeywordField] = KeywordField("sourceOwners", "sourceOwners")
+    """
+    TBC
+    """
+    SOURCE_CREATED_BY: ClassVar[KeywordField] = KeywordField(
+        "sourceCreatedBy", "sourceCreatedBy"
+    )
+    """
+    TBC
+    """
+    SOURCE_CREATED_AT: ClassVar[NumericField] = NumericField(
+        "sourceCreatedAt", "sourceCreatedAt"
+    )
+    """
+    TBC
+    """
+    SOURCE_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "sourceUpdatedAt", "sourceUpdatedAt"
+    )
+    """
+    TBC
+    """
+    SOURCE_UPDATED_BY: ClassVar[KeywordField] = KeywordField(
+        "sourceUpdatedBy", "sourceUpdatedBy"
+    )
+    """
+    TBC
+    """
+    SOURCE_URL: ClassVar[KeywordField] = KeywordField("sourceURL", "sourceURL")
+    """
+    TBC
+    """
+    SOURCE_EMBED_URL: ClassVar[KeywordField] = KeywordField(
+        "sourceEmbedURL", "sourceEmbedURL"
+    )
+    """
+    TBC
+    """
+    LAST_SYNC_WORKFLOW_NAME: ClassVar[KeywordField] = KeywordField(
+        "lastSyncWorkflowName", "lastSyncWorkflowName"
+    )
+    """
+    TBC
+    """
+    LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
+        "lastSyncRunAt", "lastSyncRunAt"
+    )
+    """
+    TBC
+    """
+    LAST_SYNC_RUN: ClassVar[KeywordField] = KeywordField("lastSyncRun", "lastSyncRun")
+    """
+    TBC
+    """
+    ADMIN_ROLES: ClassVar[KeywordField] = KeywordField("adminRoles", "adminRoles")
+    """
+    TBC
+    """
+    SOURCE_READ_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceReadCount", "sourceReadCount"
+    )
+    """
+    Total count of all read operations at source
+    """
+    SOURCE_READ_USER_COUNT: ClassVar[NumericField] = NumericField(
+        "sourceReadUserCount", "sourceReadUserCount"
+    )
+    """
+    Total number of unique users that read data from asset
+    """
+    SOURCE_LAST_READ_AT: ClassVar[NumericField] = NumericField(
+        "sourceLastReadAt", "sourceLastReadAt"
+    )
+    """
+    Timestamp of most recent read operation
+    """
+    LAST_ROW_CHANGED_AT: ClassVar[NumericField] = NumericField(
+        "lastRowChangedAt", "lastRowChangedAt"
+    )
+    """
+    Timestamp of last operation that inserted/updated/deleted rows. Google Sheets, Mysql table etc
+    """
+    SOURCE_TOTAL_COST: ClassVar[NumericField] = NumericField(
+        "sourceTotalCost", "sourceTotalCost"
+    )
+    """
+    Total cost of all operations at source
+    """
+    SOURCE_COST_UNIT: ClassVar[KeywordField] = KeywordField(
+        "sourceCostUnit", "sourceCostUnit"
+    )
+    """
+    The unit of measure for sourceTotalCost
+    """
+    SOURCE_READ_QUERY_COST: ClassVar[NumericField] = NumericField(
+        "sourceReadQueryCost", "sourceReadQueryCost"
+    )
+    """
+    Total cost of read queries at source
+    """
+    SOURCE_READ_RECENT_USER_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadRecentUserList", "sourceReadRecentUserList"
+    )
+    """
+    List of usernames of the most recent users who read the asset
+    """
+    SOURCE_READ_RECENT_USER_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadRecentUserRecordList", "sourceReadRecentUserRecordList"
+    )
+    """
+    List of usernames with extra insights for the most recent users who read the asset
+    """
+    SOURCE_READ_TOP_USER_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadTopUserList", "sourceReadTopUserList"
+    )
+    """
+    List of usernames of the top users who read the asset the most
+    """
+    SOURCE_READ_TOP_USER_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadTopUserRecordList", "sourceReadTopUserRecordList"
+    )
+    """
+    List of usernames with extra insights for the top users who read the asset the most
+    """
+    SOURCE_READ_POPULAR_QUERY_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadPopularQueryRecordList", "sourceReadPopularQueryRecordList"
+    )
+    """
+    List of the most popular queries that accessed this asset
+    """
+    SOURCE_READ_EXPENSIVE_QUERY_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadExpensiveQueryRecordList", "sourceReadExpensiveQueryRecordList"
+    )
+    """
+    List of the most expensive queries that accessed this asset
+    """
+    SOURCE_READ_SLOW_QUERY_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceReadSlowQueryRecordList", "sourceReadSlowQueryRecordList"
+    )
+    """
+    List of the slowest queries that accessed this asset
+    """
+    SOURCE_QUERY_COMPUTE_COST_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceQueryComputeCostList", "sourceQueryComputeCostList"
+    )
+    """
+    List of most expensive warehouse names
+    """
+    SOURCE_QUERY_COMPUTE_COST_RECORD_LIST: ClassVar[KeywordField] = KeywordField(
+        "sourceQueryComputeCostRecordList", "sourceQueryComputeCostRecordList"
+    )
+    """
+    List of most expensive warehouses with extra insights
+    """
+    DBT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtQualifiedName", "dbtQualifiedName", "dbtQualifiedName.text"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtAlias", "assetDbtAlias.keyword", "assetDbtAlias"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_META: ClassVar[KeywordField] = KeywordField(
+        "assetDbtMeta", "assetDbtMeta"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtUniqueId", "assetDbtUniqueId.keyword", "assetDbtUniqueId"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtAccountName", "assetDbtAccountName.keyword", "assetDbtAccountName"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtProjectName", "assetDbtProjectName.keyword", "assetDbtProjectName"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtPackageName", "assetDbtPackageName.keyword", "assetDbtPackageName"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtJobName", "assetDbtJobName.keyword", "assetDbtJobName"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobSchedule", "assetDbtJobSchedule"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobStatus", "assetDbtJobStatus"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetDbtTestStatus", "assetDbtTestStatus"
+    )
+    """
+    All associated dbt test statuses
+    """
+    ASSET_DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[TextField] = TextField(
+        "assetDbtJobScheduleCronHumanized", "assetDbtJobScheduleCronHumanized"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "assetDbtJobLastRun", "assetDbtJobLastRun"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_URL: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunUrl", "assetDbtJobLastRunUrl"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_CREATED_AT: ClassVar[NumericField] = NumericField(
+        "assetDbtJobLastRunCreatedAt", "assetDbtJobLastRunCreatedAt"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "assetDbtJobLastRunUpdatedAt", "assetDbtJobLastRunUpdatedAt"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_DEQUED_AT: ClassVar[NumericField] = NumericField(
+        "assetDbtJobLastRunDequedAt", "assetDbtJobLastRunDequedAt"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_STARTED_AT: ClassVar[NumericField] = NumericField(
+        "assetDbtJobLastRunStartedAt", "assetDbtJobLastRunStartedAt"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunTotalDuration", "assetDbtJobLastRunTotalDuration"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_TOTAL_DURATION_HUMANIZED: ClassVar[
+        KeywordField
+    ] = KeywordField(
+        "assetDbtJobLastRunTotalDurationHumanized",
+        "assetDbtJobLastRunTotalDurationHumanized",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunQueuedDuration", "assetDbtJobLastRunQueuedDuration"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_QUEUED_DURATION_HUMANIZED: ClassVar[
+        KeywordField
+    ] = KeywordField(
+        "assetDbtJobLastRunQueuedDurationHumanized",
+        "assetDbtJobLastRunQueuedDurationHumanized",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_RUN_DURATION: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunRunDuration", "assetDbtJobLastRunRunDuration"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_RUN_DURATION_HUMANIZED: ClassVar[
+        KeywordField
+    ] = KeywordField(
+        "assetDbtJobLastRunRunDurationHumanized",
+        "assetDbtJobLastRunRunDurationHumanized",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_GIT_BRANCH: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtJobLastRunGitBranch",
+        "assetDbtJobLastRunGitBranch",
+        "assetDbtJobLastRunGitBranch.text",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_GIT_SHA: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunGitSha", "assetDbtJobLastRunGitSha"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_STATUS_MESSAGE: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "assetDbtJobLastRunStatusMessage",
+        "assetDbtJobLastRunStatusMessage.keyword",
+        "assetDbtJobLastRunStatusMessage",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_OWNER_THREAD_ID: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunOwnerThreadId", "assetDbtJobLastRunOwnerThreadId"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_EXECUTED_BY_THREAD_ID: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunExecutedByThreadId", "assetDbtJobLastRunExecutedByThreadId"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_ARTIFACTS_SAVED: ClassVar[BooleanField] = BooleanField(
+        "assetDbtJobLastRunArtifactsSaved", "assetDbtJobLastRunArtifactsSaved"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_ARTIFACT_S3PATH: ClassVar[KeywordField] = KeywordField(
+        "assetDbtJobLastRunArtifactS3Path", "assetDbtJobLastRunArtifactS3Path"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_HAS_DOCS_GENERATED: ClassVar[BooleanField] = BooleanField(
+        "assetDbtJobLastRunHasDocsGenerated", "assetDbtJobLastRunHasDocsGenerated"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_HAS_SOURCES_GENERATED: ClassVar[BooleanField] = BooleanField(
+        "assetDbtJobLastRunHasSourcesGenerated", "assetDbtJobLastRunHasSourcesGenerated"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_LAST_RUN_NOTIFICATIONS_SENT: ClassVar[BooleanField] = BooleanField(
+        "assetDbtJobLastRunNotificationsSent", "assetDbtJobLastRunNotificationsSent"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "assetDbtJobNextRun", "assetDbtJobNextRun"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtJobNextRunHumanized",
+        "assetDbtJobNextRunHumanized.keyword",
+        "assetDbtJobNextRunHumanized",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtEnvironmentName",
+        "assetDbtEnvironmentName.keyword",
+        "assetDbtEnvironmentName",
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordField] = KeywordField(
+        "assetDbtEnvironmentDbtVersion", "assetDbtEnvironmentDbtVersion"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetDbtTags", "assetDbtTags", "assetDbtTags.text"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
+        "assetDbtSemanticLayerProxyUrl", "assetDbtSemanticLayerProxyUrl"
+    )
+    """
+    TBC
+    """
+    ASSET_DBT_SOURCE_FRESHNESS_CRITERIA: ClassVar[KeywordField] = KeywordField(
+        "assetDbtSourceFreshnessCriteria", "assetDbtSourceFreshnessCriteria"
+    )
+    """
+    TBC
+    """
+    SAMPLE_DATA_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "sampleDataUrl", "sampleDataUrl", "sampleDataUrl.text"
+    )
+    """
+    TBC
+    """
+    ASSET_TAGS: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetTags", "assetTags", "assetTags.text"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_INCIDENT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetMcIncidentNames", "assetMcIncidentNames.keyword", "assetMcIncidentNames"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_INCIDENT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetMcIncidentQualifiedNames",
+        "assetMcIncidentQualifiedNames",
+        "assetMcIncidentQualifiedNames.text",
+    )
+    """
+    TBC
+    """
+    ASSET_MC_MONITOR_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetMcMonitorNames", "assetMcMonitorNames.keyword", "assetMcMonitorNames"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_MONITOR_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "assetMcMonitorQualifiedNames",
+        "assetMcMonitorQualifiedNames",
+        "assetMcMonitorQualifiedNames.text",
+    )
+    """
+    TBC
+    """
+    ASSET_MC_MONITOR_STATUSES: ClassVar[KeywordField] = KeywordField(
+        "assetMcMonitorStatuses", "assetMcMonitorStatuses"
+    )
+    """
+    All associated monitors statuses
+    """
+    ASSET_MC_MONITOR_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetMcMonitorTypes", "assetMcMonitorTypes"
+    )
+    """
+    All associated monitor types
+    """
+    ASSET_MC_MONITOR_SCHEDULE_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetMcMonitorScheduleTypes", "assetMcMonitorScheduleTypes"
+    )
+    """
+    MonteCarlo Monitor schedule type
+    """
+    ASSET_MC_INCIDENT_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentTypes", "assetMcIncidentTypes"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_INCIDENT_SUB_TYPES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentSubTypes", "assetMcIncidentSubTypes"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_INCIDENT_SEVERITIES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentSeverities", "assetMcIncidentSeverities"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_INCIDENT_STATES: ClassVar[KeywordField] = KeywordField(
+        "assetMcIncidentStates", "assetMcIncidentStates"
+    )
+    """
+    TBC
+    """
+    ASSET_MC_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetMcLastSyncRunAt", "assetMcLastSyncRunAt"
+    )
+    """
+    TBC
+    """
+    STARRED_BY: ClassVar[KeywordField] = KeywordField("starredBy", "starredBy")
+    """
+    TBC
+    """
+    STARRED_DETAILS_LIST: ClassVar[KeywordField] = KeywordField(
+        "starredDetailsList", "starredDetailsList"
+    )
+    """
+    List of usernames with extra information of the users who have starred an asset
+    """
+    STARRED_COUNT: ClassVar[NumericField] = NumericField("starredCount", "starredCount")
+    """
+    TBC
+    """
+    ASSET_SODA_DQ_STATUS: ClassVar[KeywordField] = KeywordField(
+        "assetSodaDQStatus", "assetSodaDQStatus"
+    )
+    """
+    Soda DQ Status
+    """
+    ASSET_SODA_CHECK_COUNT: ClassVar[NumericField] = NumericField(
+        "assetSodaCheckCount", "assetSodaCheckCount"
+    )
+    """
+    Soda check count
+    """
+    ASSET_SODA_LAST_SYNC_RUN_AT: ClassVar[NumericField] = NumericField(
+        "assetSodaLastSyncRunAt", "assetSodaLastSyncRunAt"
+    )
+    """
+    TBC
+    """
+    ASSET_SODA_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
+        "assetSodaLastScanAt", "assetSodaLastScanAt"
+    )
+    """
+    TBC
+    """
+    ASSET_SODA_CHECK_STATUSES: ClassVar[KeywordField] = KeywordField(
+        "assetSodaCheckStatuses", "assetSodaCheckStatuses"
+    )
+    """
+    All associated soda check statuses
+    """
+    ASSET_SODA_SOURCE_URL: ClassVar[KeywordField] = KeywordField(
+        "assetSodaSourceURL", "assetSodaSourceURL"
+    )
+    """
+    TBC
+    """
+    ASSET_ICON: ClassVar[KeywordField] = KeywordField("assetIcon", "assetIcon")
+    """
+    TBC
+    """
+
+    SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
+        "schemaRegistrySubjects"
+    )
+    """
+    TBC
+    """
+    MC_MONITORS: ClassVar[RelationField] = RelationField("mcMonitors")
+    """
+    TBC
+    """
+    FILES: ClassVar[RelationField] = RelationField("files")
+    """
+    TBC
+    """
+    MC_INCIDENTS: ClassVar[RelationField] = RelationField("mcIncidents")
+    """
+    TBC
+    """
+    LINKS: ClassVar[RelationField] = RelationField("links")
+    """
+    TBC
+    """
+    METRICS: ClassVar[RelationField] = RelationField("metrics")
+    """
+    TBC
+    """
+    README: ClassVar[RelationField] = RelationField("readme")
+    """
+    TBC
+    """
+    SODA_CHECKS: ClassVar[RelationField] = RelationField("sodaChecks")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "name",
         "display_name",
         "description",
@@ -2778,6 +3593,14 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
         )
 
+    ANCHOR: ClassVar[KeywordField] = KeywordField("anchor", "__glossary")
+    """Glossary in which the category is contained, searchable by the qualifiedName of the glossary."""
+
+    PARENT_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "categories", "__parentCategory"
+    )
+    """Parent category in which a subcategory is contained, searchable by the qualifiedName of the category."""
+
     type_name: str = Field("AtlasGlossaryCategory", frozen=False)
 
     @field_validator("type_name")
@@ -2788,11 +3611,39 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         return v
 
     def __setattr__(self, name, value):
-        if name in AtlasGlossaryCategory._convience_properties:
+        if name in AtlasGlossaryCategory._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SHORT_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+        "shortDescription", "shortDescription"
+    )
+    """
+    TBC
+    """
+    LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+        "longDescription", "longDescription"
+    )
+    """
+    TBC
+    """
+    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "additionalAttributes", "additionalAttributes"
+    )
+    """
+    TBC
+    """
+
+    TERMS: ClassVar[RelationField] = RelationField("terms")
+    """
+    TBC
+    """
+    CHILDREN_CATEGORIES: ClassVar[RelationField] = RelationField("childrenCategories")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "short_description",
         "long_description",
         "additional_attributes",
@@ -2954,11 +3805,47 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         return v
 
     def __setattr__(self, name, value):
-        if name in AtlasGlossary._convience_properties:
+        if name in AtlasGlossary._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SHORT_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+        "shortDescription", "shortDescription"
+    )
+    """
+    TBC
+    """
+    LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+        "longDescription", "longDescription"
+    )
+    """
+    TBC
+    """
+    LANGUAGE: ClassVar[KeywordField] = KeywordField("language", "language")
+    """
+    TBC
+    """
+    USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
+    """
+    TBC
+    """
+    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "additionalAttributes", "additionalAttributes"
+    )
+    """
+    TBC
+    """
+
+    TERMS: ClassVar[RelationField] = RelationField("terms")
+    """
+    TBC
+    """
+    CATEGORIES: ClassVar[RelationField] = RelationField("categories")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "short_description",
         "long_description",
         "language",
@@ -3141,6 +4028,12 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
         )
 
+    ANCHOR: ClassVar[KeywordField] = KeywordField("anchor", "__glossary")
+    """Glossary in which the term is contained, searchable by the qualifiedName of the glossary."""
+
+    CATEGORIES: ClassVar[KeywordField] = KeywordField("categories", "__categories")
+    """Categories in which the term is organized, searchable by the qualifiedName of the category."""
+
     type_name: str = Field("AtlasGlossaryTerm", frozen=False)
 
     @field_validator("type_name")
@@ -3151,11 +4044,99 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         return v
 
     def __setattr__(self, name, value):
-        if name in AtlasGlossaryTerm._convience_properties:
+        if name in AtlasGlossaryTerm._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SHORT_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+        "shortDescription", "shortDescription"
+    )
+    """
+    TBC
+    """
+    LONG_DESCRIPTION: ClassVar[KeywordField] = KeywordField(
+        "longDescription", "longDescription"
+    )
+    """
+    TBC
+    """
+    EXAMPLES: ClassVar[KeywordField] = KeywordField("examples", "examples")
+    """
+    TBC
+    """
+    ABBREVIATION: ClassVar[KeywordField] = KeywordField("abbreviation", "abbreviation")
+    """
+    TBC
+    """
+    USAGE: ClassVar[KeywordField] = KeywordField("usage", "usage")
+    """
+    TBC
+    """
+    ADDITIONAL_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "additionalAttributes", "additionalAttributes"
+    )
+    """
+    TBC
+    """
+
+    VALID_VALUES_FOR: ClassVar[RelationField] = RelationField("validValuesFor")
+    """
+    TBC
+    """
+    VALID_VALUES: ClassVar[RelationField] = RelationField("validValues")
+    """
+    TBC
+    """
+    SEE_ALSO: ClassVar[RelationField] = RelationField("seeAlso")
+    """
+    TBC
+    """
+    IS_A: ClassVar[RelationField] = RelationField("isA")
+    """
+    TBC
+    """
+    ANTONYMS: ClassVar[RelationField] = RelationField("antonyms")
+    """
+    TBC
+    """
+    ASSIGNED_ENTITIES: ClassVar[RelationField] = RelationField("assignedEntities")
+    """
+    TBC
+    """
+    CLASSIFIES: ClassVar[RelationField] = RelationField("classifies")
+    """
+    TBC
+    """
+    PREFERRED_TO_TERMS: ClassVar[RelationField] = RelationField("preferredToTerms")
+    """
+    TBC
+    """
+    PREFERRED_TERMS: ClassVar[RelationField] = RelationField("preferredTerms")
+    """
+    TBC
+    """
+    TRANSLATION_TERMS: ClassVar[RelationField] = RelationField("translationTerms")
+    """
+    TBC
+    """
+    SYNONYMS: ClassVar[RelationField] = RelationField("synonyms")
+    """
+    TBC
+    """
+    REPLACED_BY: ClassVar[RelationField] = RelationField("replacedBy")
+    """
+    TBC
+    """
+    REPLACEMENT_TERMS: ClassVar[RelationField] = RelationField("replacementTerms")
+    """
+    TBC
+    """
+    TRANSLATED_TERMS: ClassVar[RelationField] = RelationField("translatedTerms")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "short_description",
         "long_description",
         "examples",
@@ -3542,11 +4523,33 @@ class Process(Asset, type_name="Process"):
         return v
 
     def __setattr__(self, name, value):
-        if name in Process._convience_properties:
+        if name in Process._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    CODE: ClassVar[KeywordField] = KeywordField("code", "code")
+    """
+    TBC
+    """
+    SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
+    """
+    TBC
+    """
+    AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
+    """
+    TBC
+    """
+
+    AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
+    """
+    TBC
+    """
+    COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "inputs",
         "outputs",
         "code",
@@ -3732,11 +4735,20 @@ class Namespace(Asset, type_name="Namespace"):
         return v
 
     def __setattr__(self, name, value):
-        if name in Namespace._convience_properties:
+        if name in Namespace._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    CHILDREN_QUERIES: ClassVar[RelationField] = RelationField("childrenQueries")
+    """
+    TBC
+    """
+    CHILDREN_FOLDERS: ClassVar[RelationField] = RelationField("childrenFolders")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "children_queries",
         "children_folders",
     ]
@@ -3789,11 +4801,31 @@ class Folder(Namespace):
         return v
 
     def __setattr__(self, name, value):
-        if name in Folder._convience_properties:
+        if name in Folder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PARENT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text"
+    )
+    """
+    TBC
+    """
+    COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "collectionQualifiedName",
+        "collectionQualifiedName",
+        "collectionQualifiedName.text",
+    )
+    """
+    TBC
+    """
+
+    PARENT: ClassVar[RelationField] = RelationField("parent")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "parent_qualified_name",
         "collection_qualified_name",
         "parent",
@@ -3866,11 +4898,34 @@ class Catalog(Asset, type_name="Catalog"):
         return v
 
     def __setattr__(self, name, value):
-        if name in Catalog._convience_properties:
+        if name in Catalog._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "outputFromAirflowTasks"
+    )
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromProcesses"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "input_to_processes",
         "output_from_airflow_tasks",
         "input_to_airflow_tasks",
@@ -3963,11 +5018,34 @@ class Tag(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in Tag._convience_properties:
+        if name in Tag._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
+    """
+    Unique source tag identifier
+    """
+    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "tagAttributes", "tagAttributes"
+    )
+    """
+    Source tag attributes
+    """
+    TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
+        "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+    )
+    """
+    Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying
+    """
+    MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
+        "mappedClassificationName", "mappedClassificationName"
+    )
+    """
+    Mapped atlan classification name
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -4051,11 +5129,24 @@ class ColumnProcess(Process):
         return v
 
     def __setattr__(self, name, value):
-        if name in ColumnProcess._convience_properties:
+        if name in ColumnProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
+    """
+    TBC
+    """
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
+    INPUTS: ClassVar[RelationField] = RelationField("inputs")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "outputs",
         "process",
         "inputs",
@@ -4122,11 +5213,58 @@ class Airflow(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in Airflow._convience_properties:
+        if name in Airflow._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    AIRFLOW_TAGS: ClassVar[KeywordField] = KeywordField("airflowTags", "airflowTags")
+    """
+    TBC
+    """
+    AIRFLOW_RUN_VERSION: ClassVar[KeywordField] = KeywordField(
+        "airflowRunVersion", "airflowRunVersion"
+    )
+    """
+    Airflow Version of the run
+    """
+    AIRFLOW_RUN_OPEN_LINEAGE_VERSION: ClassVar[KeywordField] = KeywordField(
+        "airflowRunOpenLineageVersion", "airflowRunOpenLineageVersion"
+    )
+    """
+    OpenLineage Version of the run
+    """
+    AIRFLOW_RUN_NAME: ClassVar[KeywordField] = KeywordField(
+        "airflowRunName", "airflowRunName"
+    )
+    """
+    Name of the run
+    """
+    AIRFLOW_RUN_TYPE: ClassVar[KeywordField] = KeywordField(
+        "airflowRunType", "airflowRunType"
+    )
+    """
+    Type of the run
+    """
+    AIRFLOW_RUN_START_TIME: ClassVar[NumericField] = NumericField(
+        "airflowRunStartTime", "airflowRunStartTime"
+    )
+    """
+    Start time of the run
+    """
+    AIRFLOW_RUN_END_TIME: ClassVar[NumericField] = NumericField(
+        "airflowRunEndTime", "airflowRunEndTime"
+    )
+    """
+    End time of the run
+    """
+    AIRFLOW_RUN_OPEN_LINEAGE_STATE: ClassVar[KeywordField] = KeywordField(
+        "airflowRunOpenLineageState", "airflowRunOpenLineageState"
+    )
+    """
+    OpenLineage state of the run
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "airflow_tags",
         "airflow_run_version",
         "airflow_run_open_lineage_version",
@@ -4286,11 +5424,29 @@ class AirflowDag(Airflow):
         return v
 
     def __setattr__(self, name, value):
-        if name in AirflowDag._convience_properties:
+        if name in AirflowDag._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    AIRFLOW_DAG_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "airflowDagSchedule", "airflowDagSchedule"
+    )
+    """
+    TBC
+    """
+    AIRFLOW_DAG_SCHEDULE_DELTA: ClassVar[NumericField] = NumericField(
+        "airflowDagScheduleDelta", "airflowDagScheduleDelta"
+    )
+    """
+    Duration between scheduled runs in seconds
+    """
+
+    AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "airflow_dag_schedule",
         "airflow_dag_schedule_delta",
         "airflow_tasks",
@@ -4363,11 +5519,99 @@ class AirflowTask(Airflow):
         return v
 
     def __setattr__(self, name, value):
-        if name in AirflowTask._convience_properties:
+        if name in AirflowTask._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    AIRFLOW_TASK_OPERATOR_CLASS: ClassVar[KeywordTextField] = KeywordTextField(
+        "airflowTaskOperatorClass",
+        "airflowTaskOperatorClass.keyword",
+        "airflowTaskOperatorClass",
+    )
+    """
+    TBC
+    """
+    AIRFLOW_DAG_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "airflowDagName", "airflowDagName.keyword", "airflowDagName"
+    )
+    """
+    TBC
+    """
+    AIRFLOW_DAG_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "airflowDagQualifiedName", "airflowDagQualifiedName"
+    )
+    """
+    TBC
+    """
+    AIRFLOW_TASK_CONNECTION_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "airflowTaskConnectionId",
+        "airflowTaskConnectionId.keyword",
+        "airflowTaskConnectionId",
+    )
+    """
+    TBC
+    """
+    AIRFLOW_TASK_SQL: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskSql", "airflowTaskSql"
+    )
+    """
+    TBC
+    """
+    AIRFLOW_TASK_RETRY_NUMBER: ClassVar[NumericField] = NumericField(
+        "airflowTaskRetryNumber", "airflowTaskRetryNumber"
+    )
+    """
+    Retry required for the run
+    """
+    AIRFLOW_TASK_POOL: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskPool", "airflowTaskPool"
+    )
+    """
+    Pool on which this run happened
+    """
+    AIRFLOW_TASK_POOL_SLOTS: ClassVar[NumericField] = NumericField(
+        "airflowTaskPoolSlots", "airflowTaskPoolSlots"
+    )
+    """
+    Pool slots used for the run
+    """
+    AIRFLOW_TASK_QUEUE: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskQueue", "airflowTaskQueue"
+    )
+    """
+    Queue on which this run happened
+    """
+    AIRFLOW_TASK_PRIORITY_WEIGHT: ClassVar[NumericField] = NumericField(
+        "airflowTaskPriorityWeight", "airflowTaskPriorityWeight"
+    )
+    """
+    Priority weight of the run
+    """
+    AIRFLOW_TASK_TRIGGER_RULE: ClassVar[KeywordField] = KeywordField(
+        "airflowTaskTriggerRule", "airflowTaskTriggerRule"
+    )
+    """
+    Trigger rule of the run
+    """
+
+    OUTPUTS: ClassVar[RelationField] = RelationField("outputs")
+    """
+    TBC
+    """
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
+    INPUTS: ClassVar[RelationField] = RelationField("inputs")
+    """
+    TBC
+    """
+    AIRFLOW_DAG: ClassVar[RelationField] = RelationField("airflowDag")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "airflow_task_operator_class",
         "airflow_dag_name",
         "airflow_dag_qualified_name",
@@ -4639,11 +5883,11 @@ class DataQuality(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in DataQuality._convience_properties:
+        if name in DataQuality._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[list[str]] = []
 
 
 class Metric(DataQuality):
@@ -4659,11 +5903,47 @@ class Metric(DataQuality):
         return v
 
     def __setattr__(self, name, value):
-        if name in Metric._convience_properties:
+        if name in Metric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
+    """
+    TBC
+    """
+    METRIC_SQL: ClassVar[KeywordField] = KeywordField("metricSQL", "metricSQL")
+    """
+    TBC
+    """
+    METRIC_FILTERS: ClassVar[TextField] = TextField("metricFilters", "metricFilters")
+    """
+    TBC
+    """
+    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
+        "metricTimeGrains", "metricTimeGrains"
+    )
+    """
+    TBC
+    """
+
+    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
+        "metricTimestampColumn"
+    )
+    """
+    TBC
+    """
+    ASSETS: ClassVar[RelationField] = RelationField("assets")
+    """
+    TBC
+    """
+    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField(
+        "metricDimensionColumns"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "metric_type",
         "metric_s_q_l",
         "metric_filters",
@@ -4798,11 +6078,30 @@ class Resource(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in Resource._convience_properties:
+        if name in Resource._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    LINK: ClassVar[KeywordField] = KeywordField("link", "link")
+    """
+    TBC
+    """
+    IS_GLOBAL: ClassVar[BooleanField] = BooleanField("isGlobal", "isGlobal")
+    """
+    TBC
+    """
+    REFERENCE: ClassVar[KeywordField] = KeywordField("reference", "reference")
+    """
+    TBC
+    """
+    RESOURCE_METADATA: ClassVar[KeywordField] = KeywordField(
+        "resourceMetadata", "resourceMetadata"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "link",
         "is_global",
         "reference",
@@ -4908,11 +6207,20 @@ class Readme(Resource):
         return v
 
     def __setattr__(self, name, value):
-        if name in Readme._convience_properties:
+        if name in Readme._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SEE_ALSO: ClassVar[RelationField] = RelationField("seeAlso")
+    """
+    TBC
+    """
+    ASSET: ClassVar[RelationField] = RelationField("asset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "see_also",
         "asset",
     ]
@@ -5002,11 +6310,25 @@ class File(Resource):
         return v
 
     def __setattr__(self, name, value):
-        if name in File._convience_properties:
+        if name in File._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    FILE_TYPE: ClassVar[KeywordField] = KeywordField("fileType", "fileType")
+    """
+    TBC
+    """
+    FILE_PATH: ClassVar[KeywordField] = KeywordField("filePath", "filePath")
+    """
+    TBC
+    """
+
+    FILE_ASSETS: ClassVar[RelationField] = RelationField("fileAssets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "file_type",
         "file_path",
         "file_assets",
@@ -5089,11 +6411,25 @@ class Link(Resource):
         return v
 
     def __setattr__(self, name, value):
-        if name in Link._convience_properties:
+        if name in Link._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    ICON: ClassVar[KeywordField] = KeywordField("icon", "icon")
+    """
+    TBC
+    """
+    ICON_TYPE: ClassVar[KeywordField] = KeywordField("iconType", "iconType")
+    """
+    TBC
+    """
+
+    ASSET: ClassVar[RelationField] = RelationField("asset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "icon",
         "icon_type",
         "asset",
@@ -5160,11 +6496,113 @@ class SQL(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in SQL._convience_properties:
+        if name in SQL._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
+    """
+    TBC
+    """
+    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
+        "queryUserCount", "queryUserCount"
+    )
+    """
+    TBC
+    """
+    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
+        "queryUserMap", "queryUserMap"
+    )
+    """
+    TBC
+    """
+    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "queryCountUpdatedAt", "queryCountUpdatedAt"
+    )
+    """
+    TBC
+    """
+    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "databaseName", "databaseName.keyword", "databaseName"
+    )
+    """
+    TBC
+    """
+    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "databaseQualifiedName", "databaseQualifiedName"
+    )
+    """
+    TBC
+    """
+    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "schemaName", "schemaName.keyword", "schemaName"
+    )
+    """
+    TBC
+    """
+    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "schemaQualifiedName", "schemaQualifiedName"
+    )
+    """
+    TBC
+    """
+    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableName", "tableName.keyword", "tableName"
+    )
+    """
+    TBC
+    """
+    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "tableQualifiedName", "tableQualifiedName"
+    )
+    """
+    TBC
+    """
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "viewName", "viewName.keyword", "viewName"
+    )
+    """
+    TBC
+    """
+    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "viewQualifiedName", "viewQualifiedName"
+    )
+    """
+    TBC
+    """
+    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
+    """
+    TBC
+    """
+    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
+        "lastProfiledAt", "lastProfiledAt"
+    )
+    """
+    TBC
+    """
+
+    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
+    """
+    TBC
+    """
+    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
+    """
+    TBC
+    """
+    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "query_count",
         "query_user_count",
         "query_user_map",
@@ -5460,369 +6898,6 @@ class SQL(Catalog):
     )
 
 
-class Table(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
-        validate_required_fields(
-            ["name", "schema_qualified_name"], [name, schema_qualified_name]
-        )
-        attributes = Table.Attributes.create(
-            name=name, schema_qualified_name=schema_qualified_name
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("Table", frozen=False)
-
-    @field_validator("type_name")
-    @classmethod
-    def validate_type_name(cls, v):
-        if v != "Table":
-            raise ValueError("must be Table")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Table._convience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    _convience_properties: ClassVar[list[str]] = [
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "alias",
-        "is_temporary",
-        "is_query_preview",
-        "query_preview_config",
-        "external_location",
-        "external_location_region",
-        "external_location_format",
-        "is_partitioned",
-        "partition_strategy",
-        "partition_count",
-        "partition_list",
-        "partitions",
-        "columns",
-        "queries",
-        "facts",
-        "atlan_schema",
-        "dimensions",
-    ]
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def external_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location
-
-    @external_location.setter
-    def external_location(self, external_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location = external_location
-
-    @property
-    def external_location_region(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_region
-        )
-
-    @external_location_region.setter
-    def external_location_region(self, external_location_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_region = external_location_region
-
-    @property
-    def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
-
-    @external_location_format.setter
-    def external_location_format(self, external_location_format: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_format = external_location_format
-
-    @property
-    def is_partitioned(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_partitioned
-
-    @is_partitioned.setter
-    def is_partitioned(self, is_partitioned: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_partitioned = is_partitioned
-
-    @property
-    def partition_strategy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_strategy
-
-    @partition_strategy.setter
-    def partition_strategy(self, partition_strategy: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_strategy = partition_strategy
-
-    @property
-    def partition_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.partition_count
-
-    @partition_count.setter
-    def partition_count(self, partition_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_count = partition_count
-
-    @property
-    def partition_list(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_list
-
-    @partition_list.setter
-    def partition_list(self, partition_list: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_list = partition_list
-
-    @property
-    def partitions(self) -> Optional[list[TablePartition]]:
-        return None if self.attributes is None else self.attributes.partitions
-
-    @partitions.setter
-    def partitions(self, partitions: Optional[list[TablePartition]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partitions = partitions
-
-    @property
-    def columns(self) -> Optional[list[Column]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[Column]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def queries(self) -> Optional[list[Query]]:
-        return None if self.attributes is None else self.attributes.queries
-
-    @queries.setter
-    def queries(self, queries: Optional[list[Query]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.queries = queries
-
-    @property
-    def facts(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.facts
-
-    @facts.setter
-    def facts(self, facts: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.facts = facts
-
-    @property
-    def atlan_schema(self) -> Optional[Schema]:
-        return None if self.attributes is None else self.attributes.atlan_schema
-
-    @atlan_schema.setter
-    def atlan_schema(self, atlan_schema: Optional[Schema]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.atlan_schema = atlan_schema
-
-    @property
-    def dimensions(self) -> Optional[list[Table]]:
-        return None if self.attributes is None else self.attributes.dimensions
-
-    @dimensions.setter
-    def dimensions(self, dimensions: Optional[list[Table]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dimensions = dimensions
-
-    class Attributes(SQL.Attributes):
-        column_count: Optional[int] = Field(
-            default=None, description="", alias="columnCount"
-        )
-
-        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
-
-        size_bytes: Optional[int] = Field(
-            default=None, description="", alias="sizeBytes"
-        )
-
-        alias: Optional[str] = Field(default=None, description="", alias="alias")
-
-        is_temporary: Optional[bool] = Field(
-            default=None, description="", alias="isTemporary"
-        )
-
-        is_query_preview: Optional[bool] = Field(
-            default=None, description="", alias="isQueryPreview"
-        )
-
-        query_preview_config: Optional[dict[str, str]] = Field(
-            default=None, description="", alias="queryPreviewConfig"
-        )
-
-        external_location: Optional[str] = Field(
-            default=None, description="", alias="externalLocation"
-        )
-
-        external_location_region: Optional[str] = Field(
-            default=None, description="", alias="externalLocationRegion"
-        )
-
-        external_location_format: Optional[str] = Field(
-            default=None, description="", alias="externalLocationFormat"
-        )
-
-        is_partitioned: Optional[bool] = Field(
-            default=None, description="", alias="isPartitioned"
-        )
-
-        partition_strategy: Optional[str] = Field(
-            default=None, description="", alias="partitionStrategy"
-        )
-
-        partition_count: Optional[int] = Field(
-            default=None, description="", alias="partitionCount"
-        )
-
-        partition_list: Optional[str] = Field(
-            default=None, description="", alias="partitionList"
-        )
-
-        partitions: Optional[list[TablePartition]] = Field(
-            default=None, description="", alias="partitions"
-        )  # relationship
-        columns: Optional[list[Column]] = Field(
-            default=None, description="", alias="columns"
-        )  # relationship
-        queries: Optional[list[Query]] = Field(
-            default=None, description="", alias="queries"
-        )  # relationship
-        facts: Optional[list[Table]] = Field(
-            default=None, description="", alias="facts"
-        )  # relationship
-        atlan_schema: Optional[Schema] = Field(
-            default=None, description="", alias="atlanSchema"
-        )  # relationship
-        dimensions: Optional[list[Table]] = Field(
-            default=None, description="", alias="dimensions"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
-            if not name:
-                raise ValueError("name cannot be blank")
-            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
-            fields = schema_qualified_name.split("/")
-            if len(fields) != 5:
-                raise ValueError("Invalid schema_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid schema_qualified_name") from e
-            return Table.Attributes(
-                name=name,
-                database_name=fields[3],
-                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
-                qualified_name=f"{schema_qualified_name}/{name}",
-                schema_qualified_name=schema_qualified_name,
-                schema_name=fields[4],
-                connector_name=connector_type.value,
-                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
-            )
-
-    attributes: "Table.Attributes" = Field(
-        default_factory=lambda: Table.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Query(SQL):
     """Description"""
 
@@ -5836,11 +6911,91 @@ class Query(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in Query._convience_properties:
+        if name in Query._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    RAW_QUERY: ClassVar[KeywordField] = KeywordField("rawQuery", "rawQuery")
+    """
+    TBC
+    """
+    DEFAULT_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "defaultSchemaQualifiedName",
+        "defaultSchemaQualifiedName",
+        "defaultSchemaQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    DEFAULT_DATABASE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "defaultDatabaseQualifiedName",
+        "defaultDatabaseQualifiedName",
+        "defaultDatabaseQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    VARIABLES_SCHEMA_BASE64: ClassVar[KeywordField] = KeywordField(
+        "variablesSchemaBase64", "variablesSchemaBase64"
+    )
+    """
+    TBC
+    """
+    IS_PRIVATE: ClassVar[BooleanField] = BooleanField("isPrivate", "isPrivate")
+    """
+    TBC
+    """
+    IS_SQL_SNIPPET: ClassVar[BooleanField] = BooleanField(
+        "isSqlSnippet", "isSqlSnippet"
+    )
+    """
+    TBC
+    """
+    PARENT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "parentQualifiedName", "parentQualifiedName", "parentQualifiedName.text"
+    )
+    """
+    TBC
+    """
+    COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "collectionQualifiedName",
+        "collectionQualifiedName",
+        "collectionQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    IS_VISUAL_QUERY: ClassVar[BooleanField] = BooleanField(
+        "isVisualQuery", "isVisualQuery"
+    )
+    """
+    TBC
+    """
+    VISUAL_BUILDER_SCHEMA_BASE64: ClassVar[KeywordField] = KeywordField(
+        "visualBuilderSchemaBase64", "visualBuilderSchemaBase64"
+    )
+    """
+    TBC
+    """
+
+    PARENT: ClassVar[RelationField] = RelationField("parent")
+    """
+    TBC
+    """
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    VIEWS: ClassVar[RelationField] = RelationField("views")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "raw_query",
         "default_schema_qualified_name",
         "default_database_qualified_name",
@@ -6104,11 +7259,63 @@ class Schema(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in Schema._convience_properties:
+        if name in Schema._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    TABLE_COUNT: ClassVar[NumericField] = NumericField("tableCount", "tableCount")
+    """
+    TBC
+    """
+    VIEWS_COUNT: ClassVar[NumericField] = NumericField("viewsCount", "viewsCount")
+    """
+    TBC
+    """
+
+    SNOWFLAKE_TAGS: ClassVar[RelationField] = RelationField("snowflakeTags")
+    """
+    TBC
+    """
+    FUNCTIONS: ClassVar[RelationField] = RelationField("functions")
+    """
+    TBC
+    """
+    TABLES: ClassVar[RelationField] = RelationField("tables")
+    """
+    TBC
+    """
+    DATABASE: ClassVar[RelationField] = RelationField("database")
+    """
+    TBC
+    """
+    PROCEDURES: ClassVar[RelationField] = RelationField("procedures")
+    """
+    TBC
+    """
+    VIEWS: ClassVar[RelationField] = RelationField("views")
+    """
+    TBC
+    """
+    MATERIALISED_VIEWS: ClassVar[RelationField] = RelationField("materialisedViews")
+    """
+    TBC
+    """
+    SNOWFLAKE_DYNAMIC_TABLES: ClassVar[RelationField] = RelationField(
+        "snowflakeDynamicTables"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_PIPES: ClassVar[RelationField] = RelationField("snowflakePipes")
+    """
+    TBC
+    """
+    SNOWFLAKE_STREAMS: ClassVar[RelationField] = RelationField("snowflakeStreams")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "table_count",
         "views_count",
         "snowflake_tags",
@@ -6118,6 +7325,7 @@ class Schema(SQL):
         "procedures",
         "views",
         "materialised_views",
+        "snowflake_dynamic_tables",
         "snowflake_pipes",
         "snowflake_streams",
     ]
@@ -6213,6 +7421,22 @@ class Schema(SQL):
         self.attributes.materialised_views = materialised_views
 
     @property
+    def snowflake_dynamic_tables(self) -> Optional[list[SnowflakeDynamicTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.snowflake_dynamic_tables
+        )
+
+    @snowflake_dynamic_tables.setter
+    def snowflake_dynamic_tables(
+        self, snowflake_dynamic_tables: Optional[list[SnowflakeDynamicTable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_dynamic_tables = snowflake_dynamic_tables
+
+    @property
     def snowflake_pipes(self) -> Optional[list[SnowflakePipe]]:
         return None if self.attributes is None else self.attributes.snowflake_pipes
 
@@ -6261,6 +7485,9 @@ class Schema(SQL):
         )  # relationship
         materialised_views: Optional[list[MaterialisedView]] = Field(
             default=None, description="", alias="materialisedViews"
+        )  # relationship
+        snowflake_dynamic_tables: Optional[list[SnowflakeDynamicTable]] = Field(
+            default=None, description="", alias="snowflakeDynamicTables"
         )  # relationship
         snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
             default=None, description="", alias="snowflakePipes"
@@ -6316,11 +7543,37 @@ class SnowflakePipe(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in SnowflakePipe._convience_properties:
+        if name in SnowflakePipe._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    """
+    TBC
+    """
+    SNOWFLAKE_PIPE_IS_AUTO_INGEST_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "snowflakePipeIsAutoIngestEnabled", "snowflakePipeIsAutoIngestEnabled"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_PIPE_NOTIFICATION_CHANNEL_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "snowflakePipeNotificationChannelName",
+        "snowflakePipeNotificationChannelName",
+        "snowflakePipeNotificationChannelName.text",
+    )
+    """
+    TBC
+    """
+
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "definition",
         "snowflake_pipe_is_auto_ingest_enabled",
         "snowflake_pipe_notification_channel_name",
@@ -6431,11 +7684,61 @@ class View(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in View._convience_properties:
+        if name in View._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
+    """
+    TBC
+    """
+    ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
+    """
+    TBC
+    """
+    SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
+    """
+    TBC
+    """
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "isQueryPreview", "isQueryPreview"
+    )
+    """
+    TBC
+    """
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
+    """
+    TBC
+    """
+    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    """
+    TBC
+    """
+    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
+    """
+    TBC
+    """
+    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    """
+    TBC
+    """
+
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    QUERIES: ClassVar[RelationField] = RelationField("queries")
+    """
+    TBC
+    """
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "column_count",
         "row_count",
         "size_bytes",
@@ -6654,11 +7957,77 @@ class MaterialisedView(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in MaterialisedView._convience_properties:
+        if name in MaterialisedView._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    REFRESH_MODE: ClassVar[KeywordField] = KeywordField("refreshMode", "refreshMode")
+    """
+    TBC
+    """
+    REFRESH_METHOD: ClassVar[KeywordField] = KeywordField(
+        "refreshMethod", "refreshMethod"
+    )
+    """
+    TBC
+    """
+    STALENESS: ClassVar[KeywordField] = KeywordField("staleness", "staleness")
+    """
+    TBC
+    """
+    STALE_SINCE_DATE: ClassVar[NumericField] = NumericField(
+        "staleSinceDate", "staleSinceDate"
+    )
+    """
+    TBC
+    """
+    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
+    """
+    TBC
+    """
+    ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
+    """
+    TBC
+    """
+    SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
+    """
+    TBC
+    """
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "isQueryPreview", "isQueryPreview"
+    )
+    """
+    TBC
+    """
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
+    """
+    TBC
+    """
+    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    """
+    TBC
+    """
+    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
+    """
+    TBC
+    """
+    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    """
+    TBC
+    """
+
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "refresh_mode",
         "refresh_method",
         "staleness",
@@ -6914,11 +8283,63 @@ class Function(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in Function._convience_properties:
+        if name in Function._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    FUNCTION_DEFINITION: ClassVar[KeywordField] = KeywordField(
+        "functionDefinition", "functionDefinition"
+    )
+    """
+    Code or set of statements that determine the output of the function.
+    """
+    FUNCTION_RETURN_TYPE: ClassVar[KeywordField] = KeywordField(
+        "functionReturnType", "functionReturnType"
+    )
+    """
+    Data type of the value returned by the function.
+    """
+    FUNCTION_ARGUMENTS: ClassVar[KeywordField] = KeywordField(
+        "functionArguments", "functionArguments"
+    )
+    """
+    Arguments that are passed in to the function.
+    """
+    FUNCTION_LANGUAGE: ClassVar[KeywordField] = KeywordField(
+        "functionLanguage", "functionLanguage"
+    )
+    """
+    The programming language in which the function is written.
+    """
+    FUNCTION_TYPE: ClassVar[KeywordField] = KeywordField("functionType", "functionType")
+    """
+    The type of function.
+    """
+    FUNCTION_IS_EXTERNAL: ClassVar[BooleanField] = BooleanField(
+        "functionIsExternal", "functionIsExternal"
+    )
+    """
+    Determines whether the functions is stored or executed externally.
+    """
+    FUNCTION_IS_SECURE: ClassVar[BooleanField] = BooleanField(
+        "functionIsSecure", "functionIsSecure"
+    )
+    """
+    Determines whether sensitive information of the function is omitted for unauthorized users.
+    """
+    FUNCTION_IS_MEMOIZABLE: ClassVar[BooleanField] = BooleanField(
+        "functionIsMemoizable", "functionIsMemoizable"
+    )
+    """
+    Determines whether the function must re-compute or not if there are no underlying changes in the values.
+    """
+
+    FUNCTION_SCHEMA: ClassVar[RelationField] = RelationField("functionSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "function_definition",
         "function_return_type",
         "function_arguments",
@@ -7079,11 +8500,111 @@ class TablePartition(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in TablePartition._convience_properties:
+        if name in TablePartition._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    CONSTRAINT: ClassVar[KeywordField] = KeywordField("constraint", "constraint")
+    """
+    TBC
+    """
+    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
+    """
+    TBC
+    """
+    ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
+    """
+    TBC
+    """
+    SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
+    """
+    TBC
+    """
+    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    """
+    TBC
+    """
+    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
+    """
+    TBC
+    """
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "isQueryPreview", "isQueryPreview"
+    )
+    """
+    TBC
+    """
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
+    """
+    TBC
+    """
+    EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "externalLocation", "externalLocation"
+    )
+    """
+    TBC
+    """
+    EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
+        "externalLocationRegion", "externalLocationRegion"
+    )
+    """
+    TBC
+    """
+    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
+        "externalLocationFormat", "externalLocationFormat"
+    )
+    """
+    TBC
+    """
+    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
+        "isPartitioned", "isPartitioned"
+    )
+    """
+    TBC
+    """
+    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "partitionStrategy", "partitionStrategy"
+    )
+    """
+    TBC
+    """
+    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
+        "partitionCount", "partitionCount"
+    )
+    """
+    TBC
+    """
+    PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
+        "partitionList", "partitionList"
+    )
+    """
+    TBC
+    """
+
+    CHILD_TABLE_PARTITIONS: ClassVar[RelationField] = RelationField(
+        "childTablePartitions"
+    )
+    """
+    TBC
+    """
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    PARENT_TABLE_PARTITION: ClassVar[RelationField] = RelationField(
+        "parentTablePartition"
+    )
+    """
+    TBC
+    """
+    PARENT_TABLE: ClassVar[RelationField] = RelationField("parentTable")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "constraint",
         "column_count",
         "row_count",
@@ -7413,11 +8934,329 @@ class Column(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in Column._convience_properties:
+        if name in Column._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DATA_TYPE: ClassVar[TextField] = TextField("dataType", "dataType.text")
+    """
+    TBC
+    """
+    SUB_DATA_TYPE: ClassVar[KeywordField] = KeywordField("subDataType", "subDataType")
+    """
+    TBC
+    """
+    RAW_DATA_TYPE_DEFINITION: ClassVar[KeywordField] = KeywordField(
+        "rawDataTypeDefinition", "rawDataTypeDefinition"
+    )
+    """
+    TBC
+    """
+    ORDER: ClassVar[NumericField] = NumericField("order", "order")
+    """
+    TBC
+    """
+    NESTED_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "nestedColumnCount", "nestedColumnCount"
+    )
+    """
+    TBC
+    """
+    IS_PARTITION: ClassVar[BooleanField] = BooleanField("isPartition", "isPartition")
+    """
+    TBC
+    """
+    PARTITION_ORDER: ClassVar[NumericField] = NumericField(
+        "partitionOrder", "partitionOrder"
+    )
+    """
+    TBC
+    """
+    IS_CLUSTERED: ClassVar[BooleanField] = BooleanField("isClustered", "isClustered")
+    """
+    TBC
+    """
+    IS_PRIMARY: ClassVar[BooleanField] = BooleanField("isPrimary", "isPrimary")
+    """
+    TBC
+    """
+    IS_FOREIGN: ClassVar[BooleanField] = BooleanField("isForeign", "isForeign")
+    """
+    TBC
+    """
+    IS_INDEXED: ClassVar[BooleanField] = BooleanField("isIndexed", "isIndexed")
+    """
+    TBC
+    """
+    IS_SORT: ClassVar[BooleanField] = BooleanField("isSort", "isSort")
+    """
+    TBC
+    """
+    IS_DIST: ClassVar[BooleanField] = BooleanField("isDist", "isDist")
+    """
+    TBC
+    """
+    IS_PINNED: ClassVar[BooleanField] = BooleanField("isPinned", "isPinned")
+    """
+    TBC
+    """
+    PINNED_BY: ClassVar[KeywordField] = KeywordField("pinnedBy", "pinnedBy")
+    """
+    TBC
+    """
+    PINNED_AT: ClassVar[NumericField] = NumericField("pinnedAt", "pinnedAt")
+    """
+    TBC
+    """
+    PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
+    """
+    Total number of digits allowed
+    """
+    DEFAULT_VALUE: ClassVar[KeywordField] = KeywordField("defaultValue", "defaultValue")
+    """
+    TBC
+    """
+    IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
+    """
+    TBC
+    """
+    NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
+    """
+    TBC
+    """
+    MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
+    """
+    TBC
+    """
+    VALIDATIONS: ClassVar[KeywordField] = KeywordField("validations", "validations")
+    """
+    TBC
+    """
+    PARENT_COLUMN_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "parentColumnQualifiedName",
+        "parentColumnQualifiedName",
+        "parentColumnQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    PARENT_COLUMN_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "parentColumnName", "parentColumnName.keyword", "parentColumnName"
+    )
+    """
+    TBC
+    """
+    COLUMN_DISTINCT_VALUES_COUNT: ClassVar[NumericField] = NumericField(
+        "columnDistinctValuesCount", "columnDistinctValuesCount"
+    )
+    """
+    TBC
+    """
+    COLUMN_DISTINCT_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
+        "columnDistinctValuesCountLong", "columnDistinctValuesCountLong"
+    )
+    """
+    TBC
+    """
+    COLUMN_HISTOGRAM: ClassVar[KeywordField] = KeywordField(
+        "columnHistogram", "columnHistogram"
+    )
+    """
+    TBC
+    """
+    COLUMN_MAX: ClassVar[NumericField] = NumericField("columnMax", "columnMax")
+    """
+    TBC
+    """
+    COLUMN_MIN: ClassVar[NumericField] = NumericField("columnMin", "columnMin")
+    """
+    TBC
+    """
+    COLUMN_MEAN: ClassVar[NumericField] = NumericField("columnMean", "columnMean")
+    """
+    TBC
+    """
+    COLUMN_SUM: ClassVar[NumericField] = NumericField("columnSum", "columnSum")
+    """
+    TBC
+    """
+    COLUMN_MEDIAN: ClassVar[NumericField] = NumericField("columnMedian", "columnMedian")
+    """
+    TBC
+    """
+    COLUMN_STANDARD_DEVIATION: ClassVar[NumericField] = NumericField(
+        "columnStandardDeviation", "columnStandardDeviation"
+    )
+    """
+    TBC
+    """
+    COLUMN_UNIQUE_VALUES_COUNT: ClassVar[NumericField] = NumericField(
+        "columnUniqueValuesCount", "columnUniqueValuesCount"
+    )
+    """
+    TBC
+    """
+    COLUMN_UNIQUE_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
+        "columnUniqueValuesCountLong", "columnUniqueValuesCountLong"
+    )
+    """
+    TBC
+    """
+    COLUMN_AVERAGE: ClassVar[NumericField] = NumericField(
+        "columnAverage", "columnAverage"
+    )
+    """
+    TBC
+    """
+    COLUMN_AVERAGE_LENGTH: ClassVar[NumericField] = NumericField(
+        "columnAverageLength", "columnAverageLength"
+    )
+    """
+    TBC
+    """
+    COLUMN_DUPLICATE_VALUES_COUNT: ClassVar[NumericField] = NumericField(
+        "columnDuplicateValuesCount", "columnDuplicateValuesCount"
+    )
+    """
+    TBC
+    """
+    COLUMN_DUPLICATE_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
+        "columnDuplicateValuesCountLong", "columnDuplicateValuesCountLong"
+    )
+    """
+    TBC
+    """
+    COLUMN_MAXIMUM_STRING_LENGTH: ClassVar[NumericField] = NumericField(
+        "columnMaximumStringLength", "columnMaximumStringLength"
+    )
+    """
+    TBC
+    """
+    COLUMN_MAXS: ClassVar[KeywordField] = KeywordField("columnMaxs", "columnMaxs")
+    """
+    TBC
+    """
+    COLUMN_MINIMUM_STRING_LENGTH: ClassVar[NumericField] = NumericField(
+        "columnMinimumStringLength", "columnMinimumStringLength"
+    )
+    """
+    TBC
+    """
+    COLUMN_MINS: ClassVar[KeywordField] = KeywordField("columnMins", "columnMins")
+    """
+    TBC
+    """
+    COLUMN_MISSING_VALUES_COUNT: ClassVar[NumericField] = NumericField(
+        "columnMissingValuesCount", "columnMissingValuesCount"
+    )
+    """
+    TBC
+    """
+    COLUMN_MISSING_VALUES_COUNT_LONG: ClassVar[NumericField] = NumericField(
+        "columnMissingValuesCountLong", "columnMissingValuesCountLong"
+    )
+    """
+    TBC
+    """
+    COLUMN_MISSING_VALUES_PERCENTAGE: ClassVar[NumericField] = NumericField(
+        "columnMissingValuesPercentage", "columnMissingValuesPercentage"
+    )
+    """
+    TBC
+    """
+    COLUMN_UNIQUENESS_PERCENTAGE: ClassVar[NumericField] = NumericField(
+        "columnUniquenessPercentage", "columnUniquenessPercentage"
+    )
+    """
+    TBC
+    """
+    COLUMN_VARIANCE: ClassVar[NumericField] = NumericField(
+        "columnVariance", "columnVariance"
+    )
+    """
+    TBC
+    """
+    COLUMN_TOP_VALUES: ClassVar[KeywordField] = KeywordField(
+        "columnTopValues", "columnTopValues"
+    )
+    """
+    TBC
+    """
+    COLUMN_DEPTH_LEVEL: ClassVar[NumericField] = NumericField(
+        "columnDepthLevel", "columnDepthLevel"
+    )
+    """
+    Level of nesting, used for STRUCT/NESTED columns
+    """
+
+    SNOWFLAKE_DYNAMIC_TABLE: ClassVar[RelationField] = RelationField(
+        "snowflakeDynamicTable"
+    )
+    """
+    TBC
+    """
+    VIEW: ClassVar[RelationField] = RelationField("view")
+    """
+    TBC
+    """
+    NESTED_COLUMNS: ClassVar[RelationField] = RelationField("nestedColumns")
+    """
+    TBC
+    """
+    DATA_QUALITY_METRIC_DIMENSIONS: ClassVar[RelationField] = RelationField(
+        "dataQualityMetricDimensions"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumns")
+    """
+    TBC
+    """
+    TABLE: ClassVar[RelationField] = RelationField("table")
+    """
+    TBC
+    """
+    COLUMN_DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField(
+        "columnDbtModelColumns"
+    )
+    """
+    TBC
+    """
+    MATERIALISED_VIEW: ClassVar[RelationField] = RelationField("materialisedView")
+    """
+    TBC
+    """
+    PARENT_COLUMN: ClassVar[RelationField] = RelationField("parentColumn")
+    """
+    TBC
+    """
+    QUERIES: ClassVar[RelationField] = RelationField("queries")
+    """
+    TBC
+    """
+    METRIC_TIMESTAMPS: ClassVar[RelationField] = RelationField("metricTimestamps")
+    """
+    TBC
+    """
+    FOREIGN_KEY_TO: ClassVar[RelationField] = RelationField("foreignKeyTo")
+    """
+    TBC
+    """
+    FOREIGN_KEY_FROM: ClassVar[RelationField] = RelationField("foreignKeyFrom")
+    """
+    TBC
+    """
+    DBT_METRICS: ClassVar[RelationField] = RelationField("dbtMetrics")
+    """
+    TBC
+    """
+    TABLE_PARTITION: ClassVar[RelationField] = RelationField("tablePartition")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "data_type",
         "sub_data_type",
         "raw_data_type_definition",
@@ -7468,6 +9307,7 @@ class Column(SQL):
         "column_variance",
         "column_top_values",
         "column_depth_level",
+        "snowflake_dynamic_table",
         "view",
         "nested_columns",
         "data_quality_metric_dimensions",
@@ -8073,6 +9913,20 @@ class Column(SQL):
         self.attributes.column_depth_level = column_depth_level
 
     @property
+    def snowflake_dynamic_table(self) -> Optional[SnowflakeDynamicTable]:
+        return (
+            None if self.attributes is None else self.attributes.snowflake_dynamic_table
+        )
+
+    @snowflake_dynamic_table.setter
+    def snowflake_dynamic_table(
+        self, snowflake_dynamic_table: Optional[SnowflakeDynamicTable]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.snowflake_dynamic_table = snowflake_dynamic_table
+
+    @property
     def view(self) -> Optional[View]:
         return None if self.attributes is None else self.attributes.view
 
@@ -8415,6 +10269,9 @@ class Column(SQL):
             default=None, description="", alias="columnDepthLevel"
         )
 
+        snowflake_dynamic_table: Optional[SnowflakeDynamicTable] = Field(
+            default=None, description="", alias="snowflakeDynamicTable"
+        )  # relationship
         view: Optional[View] = Field(
             default=None, description="", alias="view"
         )  # relationship
@@ -8527,11 +10384,47 @@ class SnowflakeStream(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in SnowflakeStream._convience_properties:
+        if name in SnowflakeStream._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SNOWFLAKE_STREAM_TYPE: ClassVar[KeywordField] = KeywordField(
+        "snowflakeStreamType", "snowflakeStreamType"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_STREAM_SOURCE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "snowflakeStreamSourceType", "snowflakeStreamSourceType"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_STREAM_MODE: ClassVar[KeywordField] = KeywordField(
+        "snowflakeStreamMode", "snowflakeStreamMode"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_STREAM_IS_STALE: ClassVar[BooleanField] = BooleanField(
+        "snowflakeStreamIsStale", "snowflakeStreamIsStale"
+    )
+    """
+    TBC
+    """
+    SNOWFLAKE_STREAM_STALE_AFTER: ClassVar[NumericField] = NumericField(
+        "snowflakeStreamStaleAfter", "snowflakeStreamStaleAfter"
+    )
+    """
+    TBC
+    """
+
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "snowflake_stream_type",
         "snowflake_stream_source_type",
         "snowflake_stream_mode",
@@ -8684,11 +10577,21 @@ class Database(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in Database._convience_properties:
+        if name in Database._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
+    """
+    TBC
+    """
+
+    SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "schema_count",
         "schemas",
     ]
@@ -8764,11 +10667,21 @@ class Procedure(SQL):
         return v
 
     def __setattr__(self, name, value):
-        if name in Procedure._convience_properties:
+        if name in Procedure._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    """
+    TBC
+    """
+
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "definition",
         "atlan_schema",
     ]
@@ -8820,11 +10733,139 @@ class SnowflakeTag(Tag):
         return v
 
     def __setattr__(self, name, value):
-        if name in SnowflakeTag._convience_properties:
+        if name in SnowflakeTag._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
+    """
+    Unique source tag identifier
+    """
+    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "tagAttributes", "tagAttributes"
+    )
+    """
+    Source tag attributes
+    """
+    TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
+        "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+    )
+    """
+    Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying
+    """
+    MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
+        "mappedClassificationName", "mappedClassificationName"
+    )
+    """
+    Mapped atlan classification name
+    """
+    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
+    """
+    TBC
+    """
+    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
+        "queryUserCount", "queryUserCount"
+    )
+    """
+    TBC
+    """
+    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
+        "queryUserMap", "queryUserMap"
+    )
+    """
+    TBC
+    """
+    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
+        "queryCountUpdatedAt", "queryCountUpdatedAt"
+    )
+    """
+    TBC
+    """
+    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "databaseName", "databaseName.keyword", "databaseName"
+    )
+    """
+    TBC
+    """
+    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "databaseQualifiedName", "databaseQualifiedName"
+    )
+    """
+    TBC
+    """
+    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "schemaName", "schemaName.keyword", "schemaName"
+    )
+    """
+    TBC
+    """
+    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "schemaQualifiedName", "schemaQualifiedName"
+    )
+    """
+    TBC
+    """
+    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableName", "tableName.keyword", "tableName"
+    )
+    """
+    TBC
+    """
+    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "tableQualifiedName", "tableQualifiedName"
+    )
+    """
+    TBC
+    """
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "viewName", "viewName.keyword", "viewName"
+    )
+    """
+    TBC
+    """
+    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "viewQualifiedName", "viewQualifiedName"
+    )
+    """
+    TBC
+    """
+    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
+    """
+    TBC
+    """
+    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
+        "lastProfiledAt", "lastProfiledAt"
+    )
+    """
+    TBC
+    """
+
+    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
+    """
+    TBC
+    """
+    SQL_DBT_MODELS: ClassVar[RelationField] = RelationField("sqlDbtModels")
+    """
+    TBC
+    """
+    SQL_DBT_SOURCES: ClassVar[RelationField] = RelationField("sqlDBTSources")
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "tag_id",
         "tag_attributes",
         "tag_allowed_values",
@@ -9207,11 +11248,122 @@ class Dbt(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in Dbt._convience_properties:
+        if name in Dbt._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
+    )
+    """
+    TBC
+    """
+    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    """
+    TBC
+    """
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
+    )
+    """
+    TBC
+    """
+    DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
+    )
+    """
+    TBC
+    """
+    DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
+    )
+    """
+    TBC
+    """
+    DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "dbtJobSchedule", "dbtJobSchedule"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtJobStatus", "dbtJobStatus"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobScheduleCronHumanized",
+        "dbtJobScheduleCronHumanized.keyword",
+        "dbtJobScheduleCronHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobLastRun", "dbtJobLastRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobNextRun", "dbtJobNextRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobNextRunHumanized",
+        "dbtJobNextRunHumanized.keyword",
+        "dbtJobNextRunHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentDbtVersion",
+        "dbtEnvironmentDbtVersion.keyword",
+        "dbtEnvironmentDbtVersion",
+    )
+    """
+    TBC
+    """
+    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    """
+    TBC
+    """
+    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+        "dbtConnectionContext", "dbtConnectionContext"
+    )
+    """
+    TBC
+    """
+    DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
+        "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",
@@ -9523,11 +11675,49 @@ class DbtModelColumn(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtModelColumn._convience_properties:
+        if name in DbtModelColumn._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_MODEL_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtModelQualifiedName", "dbtModelQualifiedName", "dbtModelQualifiedName.text"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dbtModelColumnDataType", "dbtModelColumnDataType"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_COLUMN_ORDER: ClassVar[NumericField] = NumericField(
+        "dbtModelColumnOrder", "dbtModelColumnOrder"
+    )
+    """
+    TBC
+    """
+
+    SQL_COLUMN: ClassVar[RelationField] = RelationField("sqlColumn")
+    """
+    TBC
+    """
+    DBT_MODEL: ClassVar[RelationField] = RelationField("dbtModel")
+    """
+    TBC
+    """
+    DBT_MODEL_COLUMN_SQL_COLUMNS: ClassVar[RelationField] = RelationField(
+        "dbtModelColumnSqlColumns"
+    )
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_model_qualified_name",
         "dbt_model_column_data_type",
         "dbt_model_column_order",
@@ -9669,11 +11859,77 @@ class DbtTest(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtTest._convience_properties:
+        if name in DbtTest._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_TEST_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtTestStatus", "dbtTestStatus"
+    )
+    """
+    Status provides the details of the results of a test. For errors, it reads "ERROR".
+    """
+    DBT_TEST_STATE: ClassVar[KeywordField] = KeywordField(
+        "dbtTestState", "dbtTestState"
+    )
+    """
+    The test results. Can be one of, in order of severity, "error", "fail", "warn", "pass"
+    """
+    DBT_TEST_ERROR: ClassVar[KeywordField] = KeywordField(
+        "dbtTestError", "dbtTestError"
+    )
+    """
+    The error message in the case of state being "error"
+    """
+    DBT_TEST_RAW_SQL: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtTestRawSQL", "dbtTestRawSQL", "dbtTestRawSQL.text"
+    )
+    """
+    The raw sql of a test
+    """
+    DBT_TEST_COMPILED_SQL: ClassVar[KeywordField] = KeywordField(
+        "dbtTestCompiledSQL", "dbtTestCompiledSQL"
+    )
+    """
+    The compiled sql of a test
+    """
+    DBT_TEST_RAW_CODE: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtTestRawCode", "dbtTestRawCode", "dbtTestRawCode.text"
+    )
+    """
+    The raw code of a test ( tests in dbt can be defined using python )
+    """
+    DBT_TEST_COMPILED_CODE: ClassVar[KeywordField] = KeywordField(
+        "dbtTestCompiledCode", "dbtTestCompiledCode"
+    )
+    """
+    The compiled code of a test ( tests in dbt can be defined using python )
+    """
+    DBT_TEST_LANGUAGE: ClassVar[KeywordField] = KeywordField(
+        "dbtTestLanguage", "dbtTestLanguage"
+    )
+    """
+    The language in which a dbt test is written. Example: sql,python
+    """
+
+    DBT_SOURCES: ClassVar[RelationField] = RelationField("dbtSources")
+    """
+    TBC
+    """
+    SQL_ASSETS: ClassVar[RelationField] = RelationField("sqlAssets")
+    """
+    TBC
+    """
+    DBT_MODELS: ClassVar[RelationField] = RelationField("dbtModels")
+    """
+    TBC
+    """
+    DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumns")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_test_status",
         "dbt_test_state",
         "dbt_test_error",
@@ -9878,11 +12134,103 @@ class DbtModel(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtModel._convience_properties:
+        if name in DbtModel._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_STATUS: ClassVar[KeywordField] = KeywordField("dbtStatus", "dbtStatus")
+    """
+    TBC
+    """
+    DBT_ERROR: ClassVar[KeywordField] = KeywordField("dbtError", "dbtError")
+    """
+    TBC
+    """
+    DBT_RAW_SQL: ClassVar[KeywordField] = KeywordField("dbtRawSQL", "dbtRawSQL")
+    """
+    TBC
+    """
+    DBT_COMPILED_SQL: ClassVar[KeywordField] = KeywordField(
+        "dbtCompiledSQL", "dbtCompiledSQL"
+    )
+    """
+    TBC
+    """
+    DBT_STATS: ClassVar[KeywordField] = KeywordField("dbtStats", "dbtStats")
+    """
+    TBC
+    """
+    DBT_MATERIALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dbtMaterializationType", "dbtMaterializationType"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_COMPILE_STARTED_AT: ClassVar[NumericField] = NumericField(
+        "dbtModelCompileStartedAt", "dbtModelCompileStartedAt"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_COMPILE_COMPLETED_AT: ClassVar[NumericField] = NumericField(
+        "dbtModelCompileCompletedAt", "dbtModelCompileCompletedAt"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_EXECUTE_STARTED_AT: ClassVar[NumericField] = NumericField(
+        "dbtModelExecuteStartedAt", "dbtModelExecuteStartedAt"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_EXECUTE_COMPLETED_AT: ClassVar[NumericField] = NumericField(
+        "dbtModelExecuteCompletedAt", "dbtModelExecuteCompletedAt"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
+        "dbtModelExecutionTime", "dbtModelExecutionTime"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_RUN_GENERATED_AT: ClassVar[NumericField] = NumericField(
+        "dbtModelRunGeneratedAt", "dbtModelRunGeneratedAt"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL_RUN_ELAPSED_TIME: ClassVar[NumericField] = NumericField(
+        "dbtModelRunElapsedTime", "dbtModelRunElapsedTime"
+    )
+    """
+    TBC
+    """
+
+    DBT_METRICS: ClassVar[RelationField] = RelationField("dbtMetrics")
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    DBT_MODEL_SQL_ASSETS: ClassVar[RelationField] = RelationField("dbtModelSqlAssets")
+    """
+    TBC
+    """
+    DBT_MODEL_COLUMNS: ClassVar[RelationField] = RelationField("dbtModelColumns")
+    """
+    TBC
+    """
+    SQL_ASSET: ClassVar[RelationField] = RelationField("sqlAsset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_status",
         "dbt_error",
         "dbt_raw_s_q_l",
@@ -10210,11 +12558,173 @@ class DbtMetric(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtMetric._convience_properties:
+        if name in DbtMetric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_METRIC_FILTERS: ClassVar[KeywordField] = KeywordField(
+        "dbtMetricFilters", "dbtMetricFilters"
+    )
+    """
+    TBC
+    """
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
+    )
+    """
+    TBC
+    """
+    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    """
+    TBC
+    """
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
+    )
+    """
+    TBC
+    """
+    DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
+    )
+    """
+    TBC
+    """
+    DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
+    )
+    """
+    TBC
+    """
+    DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "dbtJobSchedule", "dbtJobSchedule"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtJobStatus", "dbtJobStatus"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobScheduleCronHumanized",
+        "dbtJobScheduleCronHumanized.keyword",
+        "dbtJobScheduleCronHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobLastRun", "dbtJobLastRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobNextRun", "dbtJobNextRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobNextRunHumanized",
+        "dbtJobNextRunHumanized.keyword",
+        "dbtJobNextRunHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentDbtVersion",
+        "dbtEnvironmentDbtVersion.keyword",
+        "dbtEnvironmentDbtVersion",
+    )
+    """
+    TBC
+    """
+    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    """
+    TBC
+    """
+    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+        "dbtConnectionContext", "dbtConnectionContext"
+    )
+    """
+    TBC
+    """
+    DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
+        "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+    )
+    """
+    TBC
+    """
+    METRIC_TYPE: ClassVar[KeywordField] = KeywordField("metricType", "metricType")
+    """
+    TBC
+    """
+    METRIC_SQL: ClassVar[KeywordField] = KeywordField("metricSQL", "metricSQL")
+    """
+    TBC
+    """
+    METRIC_FILTERS: ClassVar[TextField] = TextField("metricFilters", "metricFilters")
+    """
+    TBC
+    """
+    METRIC_TIME_GRAINS: ClassVar[TextField] = TextField(
+        "metricTimeGrains", "metricTimeGrains"
+    )
+    """
+    TBC
+    """
+
+    METRIC_TIMESTAMP_COLUMN: ClassVar[RelationField] = RelationField(
+        "metricTimestampColumn"
+    )
+    """
+    TBC
+    """
+    DBT_MODEL: ClassVar[RelationField] = RelationField("dbtModel")
+    """
+    TBC
+    """
+    ASSETS: ClassVar[RelationField] = RelationField("assets")
+    """
+    TBC
+    """
+    METRIC_DIMENSION_COLUMNS: ClassVar[RelationField] = RelationField(
+        "metricDimensionColumns"
+    )
+    """
+    TBC
+    """
+    DBT_METRIC_FILTER_COLUMNS: ClassVar[RelationField] = RelationField(
+        "dbtMetricFilterColumns"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_metric_filters",
         "dbt_alias",
         "dbt_meta",
@@ -10686,11 +13196,35 @@ class DbtSource(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtSource._convience_properties:
+        if name in DbtSource._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_STATE: ClassVar[KeywordField] = KeywordField("dbtState", "dbtState")
+    """
+    TBC
+    """
+    DBT_FRESHNESS_CRITERIA: ClassVar[KeywordField] = KeywordField(
+        "dbtFreshnessCriteria", "dbtFreshnessCriteria"
+    )
+    """
+    TBC
+    """
+
+    SQL_ASSETS: ClassVar[RelationField] = RelationField("sqlAssets")
+    """
+    TBC
+    """
+    DBT_TESTS: ClassVar[RelationField] = RelationField("dbtTests")
+    """
+    TBC
+    """
+    SQL_ASSET: ClassVar[RelationField] = RelationField("sqlAsset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_state",
         "dbt_freshness_criteria",
         "sql_assets",
@@ -10787,11 +13321,24 @@ class SchemaRegistry(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in SchemaRegistry._convience_properties:
+        if name in SchemaRegistry._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SCHEMA_REGISTRY_SCHEMA_TYPE: ClassVar[KeywordField] = KeywordField(
+        "schemaRegistrySchemaType", "schemaRegistrySchemaType"
+    )
+    """
+    Type of language/specification used to define the schema like JSON, Protobuf etc.
+    """
+    SCHEMA_REGISTRY_SCHEMA_ID: ClassVar[KeywordField] = KeywordField(
+        "schemaRegistrySchemaId", "schemaRegistrySchemaId"
+    )
+    """
+    Unique identifier for schema definition set by the schema registry
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "schema_registry_schema_type",
         "schema_registry_schema_id",
     ]
@@ -10855,11 +13402,61 @@ class SchemaRegistrySubject(SchemaRegistry):
         return v
 
     def __setattr__(self, name, value):
-        if name in SchemaRegistrySubject._convience_properties:
+        if name in SchemaRegistrySubject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SCHEMA_REGISTRY_SUBJECT_BASE_NAME: ClassVar[KeywordField] = KeywordField(
+        "schemaRegistrySubjectBaseName", "schemaRegistrySubjectBaseName"
+    )
+    """
+    Base name of the subject (i.e. without -key, -value prefixes)
+    """
+    SCHEMA_REGISTRY_SUBJECT_IS_KEY_SCHEMA: ClassVar[BooleanField] = BooleanField(
+        "schemaRegistrySubjectIsKeySchema", "schemaRegistrySubjectIsKeySchema"
+    )
+    """
+    If the subject is a schema for the keys of the messages.
+    """
+    SCHEMA_REGISTRY_SUBJECT_SCHEMA_COMPATIBILITY: ClassVar[KeywordField] = KeywordField(
+        "schemaRegistrySubjectSchemaCompatibility",
+        "schemaRegistrySubjectSchemaCompatibility",
+    )
+    """
+    Compatibility of the schema across versions.
+    """
+    SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_VERSION: ClassVar[
+        KeywordField
+    ] = KeywordField(
+        "schemaRegistrySubjectLatestSchemaVersion",
+        "schemaRegistrySubjectLatestSchemaVersion",
+    )
+    """
+    Latest schema version of the subject.
+    """
+    SCHEMA_REGISTRY_SUBJECT_LATEST_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
+        "schemaRegistrySubjectLatestSchemaDefinition",
+        "schemaRegistrySubjectLatestSchemaDefinition",
+    )
+    """
+    Definition of the latest schema in the subject.
+    """
+    SCHEMA_REGISTRY_SUBJECT_GOVERNING_ASSET_QUALIFIED_NAMES: ClassVar[
+        KeywordField
+    ] = KeywordField(
+        "schemaRegistrySubjectGoverningAssetQualifiedNames",
+        "schemaRegistrySubjectGoverningAssetQualifiedNames",
+    )
+    """
+    List of asset qualified names that this subject is governing/validating.
+    """
+
+    ASSETS: ClassVar[RelationField] = RelationField("assets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "schema_registry_subject_base_name",
         "schema_registry_subject_is_key_schema",
         "schema_registry_subject_schema_compatibility",
@@ -11056,11 +13653,22 @@ class MonteCarlo(DataQuality):
         return v
 
     def __setattr__(self, name, value):
-        if name in MonteCarlo._convience_properties:
+        if name in MonteCarlo._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MC_LABELS: ClassVar[KeywordField] = KeywordField("mcLabels", "mcLabels")
+    """
+    TBC
+    """
+    MC_ASSET_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
+        "mcAssetQualifiedNames", "mcAssetQualifiedNames"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mc_labels",
         "mc_asset_qualified_names",
     ]
@@ -11118,11 +13726,57 @@ class MCIncident(MonteCarlo):
         return v
 
     def __setattr__(self, name, value):
-        if name in MCIncident._convience_properties:
+        if name in MCIncident._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MC_INCIDENT_ID: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentId", "mcIncidentId"
+    )
+    """
+    TBC
+    """
+    MC_INCIDENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentType", "mcIncidentType"
+    )
+    """
+    TBC
+    """
+    MC_INCIDENT_SUB_TYPES: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentSubTypes", "mcIncidentSubTypes"
+    )
+    """
+    TBC
+    """
+    MC_INCIDENT_SEVERITY: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentSeverity", "mcIncidentSeverity"
+    )
+    """
+    TBC
+    """
+    MC_INCIDENT_STATE: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentState", "mcIncidentState"
+    )
+    """
+    TBC
+    """
+    MC_INCIDENT_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
+        "mcIncidentWarehouse", "mcIncidentWarehouse"
+    )
+    """
+    Incident warehouse name
+    """
+
+    MC_MONITOR: ClassVar[RelationField] = RelationField("mcMonitor")
+    """
+    TBC
+    """
+    MC_INCIDENT_ASSETS: ClassVar[RelationField] = RelationField("mcIncidentAssets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mc_incident_id",
         "mc_incident_type",
         "mc_incident_sub_types",
@@ -11269,11 +13923,117 @@ class MCMonitor(MonteCarlo):
         return v
 
     def __setattr__(self, name, value):
-        if name in MCMonitor._convience_properties:
+        if name in MCMonitor._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MC_MONITOR_ID: ClassVar[KeywordField] = KeywordField("mcMonitorId", "mcMonitorId")
+    """
+    Monitor Id
+    """
+    MC_MONITOR_STATUS: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorStatus", "mcMonitorStatus"
+    )
+    """
+    Monitor status
+    """
+    MC_MONITOR_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorType", "mcMonitorType"
+    )
+    """
+    Monitor type
+    """
+    MC_MONITOR_WAREHOUSE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorWarehouse", "mcMonitorWarehouse"
+    )
+    """
+    Monitor warehouse name
+    """
+    MC_MONITOR_SCHEDULE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorScheduleType", "mcMonitorScheduleType"
+    )
+    """
+    Monitor schedule type
+    """
+    MC_MONITOR_NAMESPACE: ClassVar[KeywordTextField] = KeywordTextField(
+        "mcMonitorNamespace", "mcMonitorNamespace.keyword", "mcMonitorNamespace"
+    )
+    """
+    Monitor namespace
+    """
+    MC_MONITOR_RULE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorRuleType", "mcMonitorRuleType"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_RULE_CUSTOM_SQL: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorRuleCustomSql", "mcMonitorRuleCustomSql"
+    )
+    """
+    custom sql query
+    """
+    MC_MONITOR_RULE_SCHEDULE_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorRuleScheduleConfig", "mcMonitorRuleScheduleConfig"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_RULE_SCHEDULE_CONFIG_HUMANIZED: ClassVar[TextField] = TextField(
+        "mcMonitorRuleScheduleConfigHumanized", "mcMonitorRuleScheduleConfigHumanized"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_ALERT_CONDITION: ClassVar[TextField] = TextField(
+        "mcMonitorAlertCondition", "mcMonitorAlertCondition"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_RULE_NEXT_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
+        "mcMonitorRuleNextExecutionTime", "mcMonitorRuleNextExecutionTime"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_RULE_PREVIOUS_EXECUTION_TIME: ClassVar[NumericField] = NumericField(
+        "mcMonitorRulePreviousExecutionTime", "mcMonitorRulePreviousExecutionTime"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_RULE_COMPARISONS: ClassVar[KeywordField] = KeywordField(
+        "mcMonitorRuleComparisons", "mcMonitorRuleComparisons"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_RULE_IS_SNOOZED: ClassVar[BooleanField] = BooleanField(
+        "mcMonitorRuleIsSnoozed", "mcMonitorRuleIsSnoozed"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_BREACH_RATE: ClassVar[NumericField] = NumericField(
+        "mcMonitorBreachRate", "mcMonitorBreachRate"
+    )
+    """
+    TBC
+    """
+    MC_MONITOR_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
+        "mcMonitorIncidentCount", "mcMonitorIncidentCount"
+    )
+    """
+    TBC
+    """
+
+    MC_MONITOR_ASSETS: ClassVar[RelationField] = RelationField("mcMonitorAssets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mc_monitor_id",
         "mc_monitor_status",
         "mc_monitor_type",
@@ -11627,11 +14387,11 @@ class Soda(DataQuality):
         return v
 
     def __setattr__(self, name, value):
-        if name in Soda._convience_properties:
+        if name in Soda._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[list[str]] = []
 
 
 class SodaCheck(Soda):
@@ -11647,11 +14407,49 @@ class SodaCheck(Soda):
         return v
 
     def __setattr__(self, name, value):
-        if name in SodaCheck._convience_properties:
+        if name in SodaCheck._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SODA_CHECK_ID: ClassVar[KeywordField] = KeywordField("sodaCheckId", "sodaCheckId")
+    """
+    Check Id
+    """
+    SODA_CHECK_EVALUATION_STATUS: ClassVar[KeywordField] = KeywordField(
+        "sodaCheckEvaluationStatus", "sodaCheckEvaluationStatus"
+    )
+    """
+    Check status
+    """
+    SODA_CHECK_DEFINITION: ClassVar[KeywordField] = KeywordField(
+        "sodaCheckDefinition", "sodaCheckDefinition"
+    )
+    """
+    Check definition
+    """
+    SODA_CHECK_LAST_SCAN_AT: ClassVar[NumericField] = NumericField(
+        "sodaCheckLastScanAt", "sodaCheckLastScanAt"
+    )
+    """
+    TBC
+    """
+    SODA_CHECK_INCIDENT_COUNT: ClassVar[NumericField] = NumericField(
+        "sodaCheckIncidentCount", "sodaCheckIncidentCount"
+    )
+    """
+    TBC
+    """
+
+    SODA_CHECK_COLUMNS: ClassVar[RelationField] = RelationField("sodaCheckColumns")
+    """
+    TBC
+    """
+    SODA_CHECK_ASSETS: ClassVar[RelationField] = RelationField("sodaCheckAssets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "soda_check_id",
         "soda_check_evaluation_status",
         "soda_check_definition",
@@ -11778,6 +14576,517 @@ class SodaCheck(Soda):
     )
 
 
+class Table(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, schema_qualified_name: str) -> Table:
+        validate_required_fields(
+            ["name", "schema_qualified_name"], [name, schema_qualified_name]
+        )
+        attributes = Table.Attributes.create(
+            name=name, schema_qualified_name=schema_qualified_name
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Table", frozen=False)
+
+    @field_validator("type_name")
+    @classmethod
+    def validate_type_name(cls, v):
+        if v != "Table":
+            raise ValueError("must be Table")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Table._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
+    """
+    TBC
+    """
+    ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
+    """
+    TBC
+    """
+    SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
+    """
+    TBC
+    """
+    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
+    """
+    TBC
+    """
+    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
+    """
+    TBC
+    """
+    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
+        "isQueryPreview", "isQueryPreview"
+    )
+    """
+    TBC
+    """
+    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "queryPreviewConfig", "queryPreviewConfig"
+    )
+    """
+    TBC
+    """
+    EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "externalLocation", "externalLocation"
+    )
+    """
+    TBC
+    """
+    EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
+        "externalLocationRegion", "externalLocationRegion"
+    )
+    """
+    TBC
+    """
+    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
+        "externalLocationFormat", "externalLocationFormat"
+    )
+    """
+    TBC
+    """
+    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
+        "isPartitioned", "isPartitioned"
+    )
+    """
+    TBC
+    """
+    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
+        "partitionStrategy", "partitionStrategy"
+    )
+    """
+    TBC
+    """
+    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
+        "partitionCount", "partitionCount"
+    )
+    """
+    TBC
+    """
+    PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
+        "partitionList", "partitionList"
+    )
+    """
+    TBC
+    """
+
+    PARTITIONS: ClassVar[RelationField] = RelationField("partitions")
+    """
+    TBC
+    """
+    COLUMNS: ClassVar[RelationField] = RelationField("columns")
+    """
+    TBC
+    """
+    QUERIES: ClassVar[RelationField] = RelationField("queries")
+    """
+    TBC
+    """
+    FACTS: ClassVar[RelationField] = RelationField("facts")
+    """
+    TBC
+    """
+    ATLAN_SCHEMA: ClassVar[RelationField] = RelationField("atlanSchema")
+    """
+    TBC
+    """
+    DIMENSIONS: ClassVar[RelationField] = RelationField("dimensions")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "column_count",
+        "row_count",
+        "size_bytes",
+        "alias",
+        "is_temporary",
+        "is_query_preview",
+        "query_preview_config",
+        "external_location",
+        "external_location_region",
+        "external_location_format",
+        "is_partitioned",
+        "partition_strategy",
+        "partition_count",
+        "partition_list",
+        "partitions",
+        "columns",
+        "queries",
+        "facts",
+        "atlan_schema",
+        "dimensions",
+    ]
+
+    @property
+    def column_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.column_count
+
+    @column_count.setter
+    def column_count(self, column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.column_count = column_count
+
+    @property
+    def row_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.row_count
+
+    @row_count.setter
+    def row_count(self, row_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.row_count = row_count
+
+    @property
+    def size_bytes(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.size_bytes
+
+    @size_bytes.setter
+    def size_bytes(self, size_bytes: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.size_bytes = size_bytes
+
+    @property
+    def alias(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.alias
+
+    @alias.setter
+    def alias(self, alias: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.alias = alias
+
+    @property
+    def is_temporary(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_temporary
+
+    @is_temporary.setter
+    def is_temporary(self, is_temporary: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_temporary = is_temporary
+
+    @property
+    def is_query_preview(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_query_preview
+
+    @is_query_preview.setter
+    def is_query_preview(self, is_query_preview: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_query_preview = is_query_preview
+
+    @property
+    def query_preview_config(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.query_preview_config
+
+    @query_preview_config.setter
+    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.query_preview_config = query_preview_config
+
+    @property
+    def external_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.external_location
+
+    @external_location.setter
+    def external_location(self, external_location: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location = external_location
+
+    @property
+    def external_location_region(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_region
+        )
+
+    @external_location_region.setter
+    def external_location_region(self, external_location_region: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_region = external_location_region
+
+    @property
+    def external_location_format(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.external_location_format
+        )
+
+    @external_location_format.setter
+    def external_location_format(self, external_location_format: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.external_location_format = external_location_format
+
+    @property
+    def is_partitioned(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_partitioned
+
+    @is_partitioned.setter
+    def is_partitioned(self, is_partitioned: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_partitioned = is_partitioned
+
+    @property
+    def partition_strategy(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_strategy
+
+    @partition_strategy.setter
+    def partition_strategy(self, partition_strategy: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_strategy = partition_strategy
+
+    @property
+    def partition_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.partition_count
+
+    @partition_count.setter
+    def partition_count(self, partition_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_count = partition_count
+
+    @property
+    def partition_list(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.partition_list
+
+    @partition_list.setter
+    def partition_list(self, partition_list: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partition_list = partition_list
+
+    @property
+    def partitions(self) -> Optional[list[TablePartition]]:
+        return None if self.attributes is None else self.attributes.partitions
+
+    @partitions.setter
+    def partitions(self, partitions: Optional[list[TablePartition]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.partitions = partitions
+
+    @property
+    def columns(self) -> Optional[list[Column]]:
+        return None if self.attributes is None else self.attributes.columns
+
+    @columns.setter
+    def columns(self, columns: Optional[list[Column]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.columns = columns
+
+    @property
+    def queries(self) -> Optional[list[Query]]:
+        return None if self.attributes is None else self.attributes.queries
+
+    @queries.setter
+    def queries(self, queries: Optional[list[Query]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.queries = queries
+
+    @property
+    def facts(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.facts
+
+    @facts.setter
+    def facts(self, facts: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.facts = facts
+
+    @property
+    def atlan_schema(self) -> Optional[Schema]:
+        return None if self.attributes is None else self.attributes.atlan_schema
+
+    @atlan_schema.setter
+    def atlan_schema(self, atlan_schema: Optional[Schema]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.atlan_schema = atlan_schema
+
+    @property
+    def dimensions(self) -> Optional[list[Table]]:
+        return None if self.attributes is None else self.attributes.dimensions
+
+    @dimensions.setter
+    def dimensions(self, dimensions: Optional[list[Table]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dimensions = dimensions
+
+    class Attributes(SQL.Attributes):
+        column_count: Optional[int] = Field(
+            default=None, description="", alias="columnCount"
+        )
+
+        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
+
+        size_bytes: Optional[int] = Field(
+            default=None, description="", alias="sizeBytes"
+        )
+
+        alias: Optional[str] = Field(default=None, description="", alias="alias")
+
+        is_temporary: Optional[bool] = Field(
+            default=None, description="", alias="isTemporary"
+        )
+
+        is_query_preview: Optional[bool] = Field(
+            default=None, description="", alias="isQueryPreview"
+        )
+
+        query_preview_config: Optional[dict[str, str]] = Field(
+            default=None, description="", alias="queryPreviewConfig"
+        )
+
+        external_location: Optional[str] = Field(
+            default=None, description="", alias="externalLocation"
+        )
+
+        external_location_region: Optional[str] = Field(
+            default=None, description="", alias="externalLocationRegion"
+        )
+
+        external_location_format: Optional[str] = Field(
+            default=None, description="", alias="externalLocationFormat"
+        )
+
+        is_partitioned: Optional[bool] = Field(
+            default=None, description="", alias="isPartitioned"
+        )
+
+        partition_strategy: Optional[str] = Field(
+            default=None, description="", alias="partitionStrategy"
+        )
+
+        partition_count: Optional[int] = Field(
+            default=None, description="", alias="partitionCount"
+        )
+
+        partition_list: Optional[str] = Field(
+            default=None, description="", alias="partitionList"
+        )
+
+        partitions: Optional[list[TablePartition]] = Field(
+            default=None, description="", alias="partitions"
+        )  # relationship
+        columns: Optional[list[Column]] = Field(
+            default=None, description="", alias="columns"
+        )  # relationship
+        queries: Optional[list[Query]] = Field(
+            default=None, description="", alias="queries"
+        )  # relationship
+        facts: Optional[list[Table]] = Field(
+            default=None, description="", alias="facts"
+        )  # relationship
+        atlan_schema: Optional[Schema] = Field(
+            default=None, description="", alias="atlanSchema"
+        )  # relationship
+        dimensions: Optional[list[Table]] = Field(
+            default=None, description="", alias="dimensions"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
+            if not name:
+                raise ValueError("name cannot be blank")
+            validate_required_fields(["schema_qualified_name"], [schema_qualified_name])
+            fields = schema_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid schema_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid schema_qualified_name") from e
+            return Table.Attributes(
+                name=name,
+                database_name=fields[3],
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                database_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}/{fields[3]}",
+                qualified_name=f"{schema_qualified_name}/{name}",
+                schema_qualified_name=schema_qualified_name,
+                schema_name=fields[4],
+                connector_name=connector_type.value,
+                atlan_schema=Schema.ref_by_qualified_name(schema_qualified_name),
+            )
+
+    attributes: "Table.Attributes" = Field(
+        default_factory=lambda: Table.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SnowflakeDynamicTable(Table):
+    """Description"""
+
+    type_name: str = Field("SnowflakeDynamicTable", frozen=False)
+
+    @field_validator("type_name")
+    @classmethod
+    def validate_type_name(cls, v):
+        if v != "SnowflakeDynamicTable":
+            raise ValueError("must be SnowflakeDynamicTable")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SnowflakeDynamicTable._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    DEFINITION: ClassVar[KeywordField] = KeywordField("definition", "definition")
+    """
+    SQL statements used to define a Snowflake Dynamic Table
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "definition",
+    ]
+
+    @property
+    def definition(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.definition
+
+    @definition.setter
+    def definition(self, definition: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.definition = definition
+
+    class Attributes(Table.Attributes):
+        definition: Optional[str] = Field(
+            default=None, description="", alias="definition"
+        )
+
+    attributes: "SnowflakeDynamicTable.Attributes" = Field(
+        default_factory=lambda: SnowflakeDynamicTable.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 Referenceable.Attributes.update_forward_refs()
 
 
@@ -11839,9 +15148,6 @@ Link.Attributes.update_forward_refs()
 
 
 SQL.Attributes.update_forward_refs()
-
-
-Table.Attributes.update_forward_refs()
 
 
 Query.Attributes.update_forward_refs()
@@ -11917,3 +15223,9 @@ Soda.Attributes.update_forward_refs()
 
 
 SodaCheck.Attributes.update_forward_refs()
+
+
+Table.Attributes.update_forward_refs()
+
+
+SnowflakeDynamicTable.Attributes.update_forward_refs()

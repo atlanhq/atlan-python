@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordTextField
+
 from .asset18 import BI
 
 
@@ -24,11 +26,54 @@ class Sigma(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in Sigma._convience_properties:
+        if name in Sigma._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaWorkbookQualifiedName",
+        "sigmaWorkbookQualifiedName",
+        "sigmaWorkbookQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    SIGMA_WORKBOOK_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaWorkbookName", "sigmaWorkbookName.keyword", "sigmaWorkbookName"
+    )
+    """
+    TBC
+    """
+    SIGMA_PAGE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaPageQualifiedName",
+        "sigmaPageQualifiedName",
+        "sigmaPageQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    SIGMA_PAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaPageName", "sigmaPageName.keyword", "sigmaPageName"
+    )
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaDataElementQualifiedName",
+        "sigmaDataElementQualifiedName",
+        "sigmaDataElementQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaDataElementName", "sigmaDataElementName.keyword", "sigmaDataElementName"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_workbook_qualified_name",
         "sigma_workbook_name",
         "sigma_page_qualified_name",

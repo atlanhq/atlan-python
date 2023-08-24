@@ -8,6 +8,12 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+)
+
 from .asset18 import BI
 
 
@@ -24,11 +30,54 @@ class Qlik(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in Qlik._convience_properties:
+        if name in Qlik._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QLIK_ID: ClassVar[KeywordField] = KeywordField("qlikId", "qlikId")
+    """
+    qID/guid of the qlik object
+    """
+    QLIK_QRI: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikQRI", "qlikQRI", "qlikQRI.text"
+    )
+    """
+    QRI of the qlik object, kind of like qualifiedName on Atlan
+    """
+    QLIK_SPACE_ID: ClassVar[KeywordField] = KeywordField("qlikSpaceId", "qlikSpaceId")
+    """
+    qID of a space where the qlik object belongs to
+    """
+    QLIK_SPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikSpaceQualifiedName",
+        "qlikSpaceQualifiedName",
+        "qlikSpaceQualifiedName.text",
+    )
+    """
+    qualifiedName of a space where the qlik object belongs to
+    """
+    QLIK_APP_ID: ClassVar[KeywordField] = KeywordField("qlikAppId", "qlikAppId")
+    """
+    qID of a app where the qlik object belongs
+    """
+    QLIK_APP_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikAppQualifiedName", "qlikAppQualifiedName", "qlikAppQualifiedName.text"
+    )
+    """
+    qualifiedName of an app where the qlik object belongs to
+    """
+    QLIK_OWNER_ID: ClassVar[KeywordField] = KeywordField("qlikOwnerId", "qlikOwnerId")
+    """
+    Owner's guid of the qlik object
+    """
+    QLIK_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
+        "qlikIsPublished", "qlikIsPublished"
+    )
+    """
+    If the qlik object is published
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "qlik_id",
         "qlik_q_r_i",
         "qlik_space_id",

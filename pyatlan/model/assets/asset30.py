@@ -9,11 +9,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from .asset00 import AirflowTask
-from .asset00 import Catalog
-from .asset00 import ColumnProcess
-from .asset00 import Dbt
-from .asset00 import Process
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+)
+
+from .asset00 import AirflowTask, Catalog, ColumnProcess, Dbt, Process
 
 
 class DbtColumnProcess(Dbt):
@@ -29,11 +32,153 @@ class DbtColumnProcess(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtColumnProcess._convience_properties:
+        if name in DbtColumnProcess._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_COLUMN_PROCESS_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtColumnProcessJobStatus", "dbtColumnProcessJobStatus"
+    )
+    """
+    TBC
+    """
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
+    )
+    """
+    TBC
+    """
+    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    """
+    TBC
+    """
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
+    )
+    """
+    TBC
+    """
+    DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
+    )
+    """
+    TBC
+    """
+    DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
+    )
+    """
+    TBC
+    """
+    DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "dbtJobSchedule", "dbtJobSchedule"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtJobStatus", "dbtJobStatus"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobScheduleCronHumanized",
+        "dbtJobScheduleCronHumanized.keyword",
+        "dbtJobScheduleCronHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobLastRun", "dbtJobLastRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobNextRun", "dbtJobNextRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobNextRunHumanized",
+        "dbtJobNextRunHumanized.keyword",
+        "dbtJobNextRunHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentDbtVersion",
+        "dbtEnvironmentDbtVersion.keyword",
+        "dbtEnvironmentDbtVersion",
+    )
+    """
+    TBC
+    """
+    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    """
+    TBC
+    """
+    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+        "dbtConnectionContext", "dbtConnectionContext"
+    )
+    """
+    TBC
+    """
+    DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
+        "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+    )
+    """
+    TBC
+    """
+    CODE: ClassVar[KeywordField] = KeywordField("code", "code")
+    """
+    TBC
+    """
+    SQL: ClassVar[KeywordField] = KeywordField("sql", "sql")
+    """
+    TBC
+    """
+    AST: ClassVar[KeywordField] = KeywordField("ast", "ast")
+    """
+    TBC
+    """
+
+    PROCESS: ClassVar[RelationField] = RelationField("process")
+    """
+    TBC
+    """
+    AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
+    """
+    TBC
+    """
+    COLUMN_PROCESSES: ClassVar[RelationField] = RelationField("columnProcesses")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_column_process_job_status",
         "dbt_alias",
         "dbt_meta",

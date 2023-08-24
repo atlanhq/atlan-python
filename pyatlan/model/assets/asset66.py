@@ -9,6 +9,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset41 import Redash
 
 
@@ -25,11 +33,55 @@ class RedashQuery(Redash):
         return v
 
     def __setattr__(self, name, value):
-        if name in RedashQuery._convience_properties:
+        if name in RedashQuery._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    REDASH_QUERY_SQL: ClassVar[KeywordField] = KeywordField(
+        "redashQuerySQL", "redashQuerySQL"
+    )
+    """
+    SQL code of Redash Query
+    """
+    REDASH_QUERY_PARAMETERS: ClassVar[KeywordField] = KeywordField(
+        "redashQueryParameters", "redashQueryParameters"
+    )
+    """
+    Parameters of Redash Query
+    """
+    REDASH_QUERY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "redashQuerySchedule", "redashQuerySchedule"
+    )
+    """
+    Schedule of Redash Query
+    """
+    REDASH_QUERY_LAST_EXECUTION_RUNTIME: ClassVar[NumericField] = NumericField(
+        "redashQueryLastExecutionRuntime", "redashQueryLastExecutionRuntime"
+    )
+    """
+    Runtime of Redash Query
+    """
+    REDASH_QUERY_LAST_EXECUTED_AT: ClassVar[NumericField] = NumericField(
+        "redashQueryLastExecutedAt", "redashQueryLastExecutedAt"
+    )
+    """
+    Time when the Redash Query was last executed
+    """
+    REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[TextField] = TextField(
+        "redashQueryScheduleHumanized", "redashQueryScheduleHumanized.text"
+    )
+    """
+    Query schedule for overview tab and filtering.
+    """
+
+    REDASH_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "redashVisualizations"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "redash_query_s_q_l",
         "redash_query_parameters",
         "redash_query_schedule",
@@ -188,11 +240,37 @@ class RedashVisualization(Redash):
         return v
 
     def __setattr__(self, name, value):
-        if name in RedashVisualization._convience_properties:
+        if name in RedashVisualization._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    REDASH_VISUALIZATION_TYPE: ClassVar[RelationField] = RelationField(
+        "redashVisualizationType"
+    )
+    """
+    Redash Visualization Type
+    """
+    REDASH_QUERY_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryName", "redashQueryName.keyword", "redashQueryName"
+    )
+    """
+    Redash Query from which visualization is created
+    """
+    REDASH_QUERY_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryQualifiedName",
+        "redashQueryQualifiedName",
+        "redashQueryQualifiedName.text",
+    )
+    """
+    Qualified name of the Redash Query from which visualization is created
+    """
+
+    REDASH_QUERY: ClassVar[RelationField] = RelationField("redashQuery")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "redash_visualization_type",
         "redash_query_name",
         "redash_query_qualified_name",

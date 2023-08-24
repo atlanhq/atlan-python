@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+
 from .asset18 import BI
 
 
@@ -24,11 +26,30 @@ class QuickSight(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSight._convience_properties:
+        if name in QuickSight._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightId", "quickSightId"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightSheetId", "quickSightSheetId"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_SHEET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightSheetName", "quickSightSheetName.keyword", "quickSightSheetName"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_id",
         "quick_sight_sheet_id",
         "quick_sight_sheet_name",

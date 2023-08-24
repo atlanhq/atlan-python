@@ -8,9 +8,9 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    AwsTag,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.structs import AwsTag
+
 from .asset16 import ObjectStore
 
 
@@ -27,11 +27,66 @@ class S3(ObjectStore):
         return v
 
     def __setattr__(self, name, value):
-        if name in S3._convience_properties:
+        if name in S3._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    S3E_TAG: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3ETag", "s3ETag", "s3ETag.text"
+    )
+    """
+    TBC
+    """
+    S3ENCRYPTION: ClassVar[KeywordField] = KeywordField("s3Encryption", "s3Encryption")
+    """
+    TBC
+    """
+    AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
+        "awsArn", "awsArn", "awsArn.text"
+    )
+    """
+    TBC
+    """
+    AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
+    """
+    TBC
+    """
+    AWS_SERVICE: ClassVar[KeywordField] = KeywordField("awsService", "awsService")
+    """
+    TBC
+    """
+    AWS_REGION: ClassVar[KeywordField] = KeywordField("awsRegion", "awsRegion")
+    """
+    TBC
+    """
+    AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
+        "awsAccountId", "awsAccountId"
+    )
+    """
+    TBC
+    """
+    AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
+        "awsResourceId", "awsResourceId"
+    )
+    """
+    TBC
+    """
+    AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+    )
+    """
+    TBC
+    """
+    AWS_OWNER_ID: ClassVar[KeywordField] = KeywordField("awsOwnerId", "awsOwnerId")
+    """
+    TBC
+    """
+    AWS_TAGS: ClassVar[KeywordField] = KeywordField("awsTags", "awsTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "s3_e_tag",
         "s3_encryption",
         "aws_arn",

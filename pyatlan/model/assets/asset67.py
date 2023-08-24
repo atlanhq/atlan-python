@@ -8,6 +8,15 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset43 import Metabase
 
 
@@ -24,11 +33,39 @@ class MetabaseQuestion(Metabase):
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseQuestion._convience_properties:
+        if name in MetabaseQuestion._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    METABASE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "metabaseDashboardCount", "metabaseDashboardCount"
+    )
+    """
+    TBC
+    """
+    METABASE_QUERY_TYPE: ClassVar[TextField] = TextField(
+        "metabaseQueryType", "metabaseQueryType.text"
+    )
+    """
+    TBC
+    """
+    METABASE_QUERY: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseQuery", "metabaseQuery.keyword", "metabaseQuery"
+    )
+    """
+    TBC
+    """
+
+    METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
+    """
+    TBC
+    """
+    METABASE_COLLECTION: ClassVar[RelationField] = RelationField("metabaseCollection")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "metabase_dashboard_count",
         "metabase_query_type",
         "metabase_query",
@@ -132,11 +169,43 @@ class MetabaseCollection(Metabase):
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseCollection._convience_properties:
+        if name in MetabaseCollection._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    METABASE_SLUG: ClassVar[TextField] = TextField("metabaseSlug", "metabaseSlug.text")
+    """
+    TBC
+    """
+    METABASE_COLOR: ClassVar[KeywordField] = KeywordField(
+        "metabaseColor", "metabaseColor"
+    )
+    """
+    TBC
+    """
+    METABASE_NAMESPACE: ClassVar[TextField] = TextField(
+        "metabaseNamespace", "metabaseNamespace.text"
+    )
+    """
+    TBC
+    """
+    METABASE_IS_PERSONAL_COLLECTION: ClassVar[BooleanField] = BooleanField(
+        "metabaseIsPersonalCollection", "metabaseIsPersonalCollection"
+    )
+    """
+    TBC
+    """
+
+    METABASE_DASHBOARDS: ClassVar[RelationField] = RelationField("metabaseDashboards")
+    """
+    TBC
+    """
+    METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "metabase_slug",
         "metabase_color",
         "metabase_namespace",
@@ -259,11 +328,27 @@ class MetabaseDashboard(Metabase):
         return v
 
     def __setattr__(self, name, value):
-        if name in MetabaseDashboard._convience_properties:
+        if name in MetabaseDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    METABASE_QUESTION_COUNT: ClassVar[NumericField] = NumericField(
+        "metabaseQuestionCount", "metabaseQuestionCount"
+    )
+    """
+    TBC
+    """
+
+    METABASE_QUESTIONS: ClassVar[RelationField] = RelationField("metabaseQuestions")
+    """
+    TBC
+    """
+    METABASE_COLLECTION: ClassVar[RelationField] = RelationField("metabaseCollection")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "metabase_question_count",
         "metabase_questions",
         "metabase_collection",

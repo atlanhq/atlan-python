@@ -9,6 +9,15 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset33 import GCS
 
 
@@ -25,11 +34,109 @@ class GCSObject(GCS):
         return v
 
     def __setattr__(self, name, value):
-        if name in GCSObject._convience_properties:
+        if name in GCSObject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    GCS_BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsBucketName", "gcsBucketName.keyword", "gcsBucketName"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsBucketQualifiedName",
+        "gcsBucketQualifiedName",
+        "gcsBucketQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
+        "gcsObjectSize", "gcsObjectSize"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectKey", "gcsObjectKey", "gcsObjectKey.text"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_MEDIA_LINK: ClassVar[KeywordTextField] = KeywordTextField(
+        "gcsObjectMediaLink", "gcsObjectMediaLink", "gcsObjectMediaLink.text"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_HOLD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectHoldType", "gcsObjectHoldType"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_GENERATION_ID: ClassVar[NumericField] = NumericField(
+        "gcsObjectGenerationId", "gcsObjectGenerationId"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_CRC32C_HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectCRC32CHash", "gcsObjectCRC32CHash"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_MD5HASH: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectMD5Hash", "gcsObjectMD5Hash"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_DATA_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "gcsObjectDataLastModifiedTime", "gcsObjectDataLastModifiedTime"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentType", "gcsObjectContentType"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_CONTENT_ENCODING: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentEncoding", "gcsObjectContentEncoding"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentDisposition", "gcsObjectContentDisposition"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordField] = KeywordField(
+        "gcsObjectContentLanguage", "gcsObjectContentLanguage"
+    )
+    """
+    TBC
+    """
+    GCS_OBJECT_RETENTION_EXPIRATION_DATE: ClassVar[NumericField] = NumericField(
+        "gcsObjectRetentionExpirationDate", "gcsObjectRetentionExpirationDate"
+    )
+    """
+    TBC
+    """
+
+    GCS_BUCKET: ClassVar[RelationField] = RelationField("gcsBucket")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "gcs_bucket_name",
         "gcs_bucket_qualified_name",
         "gcs_object_size",
@@ -339,11 +446,59 @@ class GCSBucket(GCS):
         return v
 
     def __setattr__(self, name, value):
-        if name in GCSBucket._convience_properties:
+        if name in GCSBucket._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    GCS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "gcsObjectCount", "gcsObjectCount"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "gcsBucketVersioningEnabled", "gcsBucketVersioningEnabled"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_RETENTION_LOCKED: ClassVar[BooleanField] = BooleanField(
+        "gcsBucketRetentionLocked", "gcsBucketRetentionLocked"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_RETENTION_PERIOD: ClassVar[NumericField] = NumericField(
+        "gcsBucketRetentionPeriod", "gcsBucketRetentionPeriod"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_RETENTION_EFFECTIVE_TIME: ClassVar[NumericField] = NumericField(
+        "gcsBucketRetentionEffectiveTime", "gcsBucketRetentionEffectiveTime"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_LIFECYCLE_RULES: ClassVar[TextField] = TextField(
+        "gcsBucketLifecycleRules", "gcsBucketLifecycleRules"
+    )
+    """
+    TBC
+    """
+    GCS_BUCKET_RETENTION_POLICY: ClassVar[TextField] = TextField(
+        "gcsBucketRetentionPolicy", "gcsBucketRetentionPolicy"
+    )
+    """
+    TBC
+    """
+
+    GCS_OBJECTS: ClassVar[RelationField] = RelationField("gcsObjects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "gcs_object_count",
         "gcs_bucket_versioning_enabled",
         "gcs_bucket_retention_locked",

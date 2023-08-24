@@ -14,6 +14,7 @@ class CustomMetadataCache:
     """
 
     cache_by_id: dict[str, CustomMetadataDef] = dict()
+    attr_cache_by_id: dict[str, AttributeDef] = dict()
     map_id_to_name: dict[str, str] = dict()
     map_name_to_id: dict[str, str] = dict()
     map_attr_id_to_name: dict[str, dict[str, str]] = dict()
@@ -40,6 +41,7 @@ class CustomMetadataCache:
             cls.map_attr_name_to_id = {}
             cls.archived_attr_ids = {}
             cls.cache_by_id = {}
+            cls.attr_cache_by_id = {}
             for cm in response.custom_metadata_defs:
                 type_id = cm.name
                 type_name = cm.display_name
@@ -53,6 +55,7 @@ class CustomMetadataCache:
                         attr_id = str(attr.name)
                         attr_name = str(attr.display_name)
                         cls.map_attr_id_to_name[type_id][attr_id] = attr_name
+                        cls.attr_cache_by_id[attr_id] = attr
                         if attr.options and attr.options.is_archived:
                             cls.archived_attr_ids[attr_id] = attr_name
                         elif attr_name in cls.map_attr_name_to_id[type_id]:
@@ -214,6 +217,14 @@ class CustomMetadataCache:
         return None
 
     @classmethod
+    def _get_attribute_for_search_results(
+        cls, set_id: str, attr_name: str
+    ) -> Optional[str]:
+        if sub_map := cls.map_attr_name_to_id.get(set_id):
+            return sub_map.get(attr_name, None)
+        return None
+
+    @classmethod
     def get_attributes_for_search_results(cls, set_name: str) -> Optional[list[str]]:
         """
         Retrieve the full set of custom attributes to include on search results.
@@ -226,6 +237,25 @@ class CustomMetadataCache:
                 return dot_names
             cls.refresh_cache()
             return cls._get_attributes_for_search_results(set_id)
+        return None
+
+    @classmethod
+    def get_attribute_for_search_results(
+        cls, set_name: str, attr_name: str
+    ) -> Optional[str]:
+        """
+        Retrieve a single custom attribute name to include on search results.
+
+        :param set_name: human-readable name of the custom metadata set for which to retrieve the custom metadata
+                         attribute name
+        :param attr_name: human-readable name of the attribute
+        :returns: the attribute name, strictly useful for inclusion in search results
+        """
+        if set_id := cls.get_id_for_name(set_name):
+            if attr_id := cls._get_attribute_for_search_results(set_id, attr_name):
+                return attr_id
+            cls.refresh_cache()
+            return cls._get_attribute_for_search_results(set_id, attr_name)
         return None
 
     @classmethod
@@ -243,3 +273,21 @@ class CustomMetadataCache:
             return typedef
         else:
             raise ValueError(f"No custom metadata with the name: {name} found")
+
+    @classmethod
+    def get_attribute_def(cls, attr_id: str) -> AttributeDef:
+        """
+        Retrieve a specific custom metadata attribute definition by its unique Atlan-internal ID string.
+
+        :param attr_id: Atlan-internal ID string for the custom metadata attribute
+        :returns: attribute definition for the custom metadata attribute
+        """
+        if not attr_id:
+            raise ValueError(
+                "No custom metadata attribute ID was provided, cannot lookup attribute definition."
+            )
+        if cls.attr_cache_by_id is None:
+            cls.refresh_cache()
+        if attr_def := cls.attr_cache_by_id.get(attr_id):
+            return attr_def
+        raise ValueError(f"No custom metadata attribute with the id: {attr_id} found")

@@ -8,6 +8,12 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+)
+
 from .asset47 import MicroStrategy
 
 
@@ -24,11 +30,37 @@ class MicroStrategyReport(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyReport._convience_properties:
+        if name in MicroStrategyReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_REPORT_TYPE: ClassVar[RelationField] = RelationField(
+        "microStrategyReportType"
+    )
+    """
+    Whether the report is a Grid or Chart report
+    """
+
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_report_type",
         "micro_strategy_metrics",
         "micro_strategy_project",
@@ -128,11 +160,56 @@ class MicroStrategyProject(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyProject._convience_properties:
+        if name in MicroStrategyProject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "microStrategyVisualizations"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_DOCUMENTS: ClassVar[RelationField] = RelationField(
+        "microStrategyDocuments"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_DOSSIERS: ClassVar[RelationField] = RelationField(
+        "microStrategyDossiers"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_reports",
         "micro_strategy_facts",
         "micro_strategy_metrics",
@@ -307,11 +384,109 @@ class MicroStrategyMetric(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyMetric._convience_properties:
+        if name in MicroStrategyMetric._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_METRIC_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "microStrategyMetricExpression", "microStrategyMetricExpression"
+    )
+    """
+    Metric expression text
+    """
+    MICRO_STRATEGY_ATTRIBUTE_QUALIFIED_NAMES: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyAttributeQualifiedNames",
+        "microStrategyAttributeQualifiedNames",
+        "microStrategyAttributeQualifiedNames.text",
+    )
+    """
+    Related attribute qualified name list
+    """
+    MICRO_STRATEGY_ATTRIBUTE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyAttributeNames",
+        "microStrategyAttributeNames.keyword",
+        "microStrategyAttributeNames",
+    )
+    """
+    Related attribute name list
+    """
+    MICRO_STRATEGY_FACT_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyFactQualifiedNames",
+        "microStrategyFactQualifiedNames",
+        "microStrategyFactQualifiedNames.text",
+    )
+    """
+    Related fact qualified name list
+    """
+    MICRO_STRATEGY_FACT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyFactNames",
+        "microStrategyFactNames.keyword",
+        "microStrategyFactNames",
+    )
+    """
+    Related fact name list
+    """
+    MICRO_STRATEGY_METRIC_PARENT_QUALIFIED_NAMES: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyMetricParentQualifiedNames",
+        "microStrategyMetricParentQualifiedNames",
+        "microStrategyMetricParentQualifiedNames.text",
+    )
+    """
+    Related parent metric qualified name list
+    """
+    MICRO_STRATEGY_METRIC_PARENT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyMetricParentNames",
+        "microStrategyMetricParentNames.keyword",
+        "microStrategyMetricParentNames",
+    )
+    """
+    Related parent metric name list
+    """
+
+    MICRO_STRATEGY_METRIC_PARENTS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetricParents"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_FACTS: ClassVar[RelationField] = RelationField("microStrategyFacts")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_METRIC_CHILDREN: ClassVar[RelationField] = RelationField(
+        "microStrategyMetricChildren"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_metric_expression",
         "micro_strategy_attribute_qualified_names",
         "micro_strategy_attribute_names",
@@ -621,11 +796,43 @@ class MicroStrategyCube(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyCube._convience_properties:
+        if name in MicroStrategyCube._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_CUBE_TYPE: ClassVar[RelationField] = RelationField(
+        "microStrategyCubeType"
+    )
+    """
+    Whether the cube is an OLAP or MTDI cube
+    """
+    MICRO_STRATEGY_CUBE_QUERY: ClassVar[KeywordField] = KeywordField(
+        "microStrategyCubeQuery", "microStrategyCubeQuery"
+    )
+    """
+    The query used to create the cube
+    """
+
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_ATTRIBUTES: ClassVar[RelationField] = RelationField(
+        "microStrategyAttributes"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_cube_type",
         "micro_strategy_cube_query",
         "micro_strategy_metrics",
@@ -744,11 +951,31 @@ class MicroStrategyDossier(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyDossier._convience_properties:
+        if name in MicroStrategyDossier._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_DOSSIER_CHAPTER_NAMES: ClassVar[KeywordField] = KeywordField(
+        "microStrategyDossierChapterNames", "microStrategyDossierChapterNames"
+    )
+    """
+    Dossier chapter name list
+    """
+
+    MICRO_STRATEGY_VISUALIZATIONS: ClassVar[RelationField] = RelationField(
+        "microStrategyVisualizations"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_dossier_chapter_names",
         "micro_strategy_visualizations",
         "micro_strategy_project",
@@ -838,11 +1065,31 @@ class MicroStrategyFact(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyFact._convience_properties:
+        if name in MicroStrategyFact._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_FACT_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
+        "microStrategyFactExpressions", "microStrategyFactExpressions"
+    )
+    """
+    Fact expression list
+    """
+
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_fact_expressions",
         "micro_strategy_metrics",
         "micro_strategy_project",
@@ -926,11 +1173,18 @@ class MicroStrategyDocument(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyDocument._convience_properties:
+        if name in MicroStrategyDocument._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_project",
     ]
 
@@ -973,11 +1227,41 @@ class MicroStrategyAttribute(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyAttribute._convience_properties:
+        if name in MicroStrategyAttribute._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_ATTRIBUTE_FORMS: ClassVar[KeywordField] = KeywordField(
+        "microStrategyAttributeForms", "microStrategyAttributeForms"
+    )
+    """
+    Attribute form name, description, displayFormat and expression as JSON string
+    """
+
+    MICRO_STRATEGY_REPORTS: ClassVar[RelationField] = RelationField(
+        "microStrategyReports"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_METRICS: ClassVar[RelationField] = RelationField(
+        "microStrategyMetrics"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_CUBES: ClassVar[RelationField] = RelationField("microStrategyCubes")
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_attribute_forms",
         "micro_strategy_reports",
         "micro_strategy_metrics",
@@ -1093,11 +1377,49 @@ class MicroStrategyVisualization(MicroStrategy):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategyVisualization._convience_properties:
+        if name in MicroStrategyVisualization._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_VISUALIZATION_TYPE: ClassVar[RelationField] = RelationField(
+        "microStrategyVisualizationType"
+    )
+    """
+    Visualization type name
+    """
+    MICRO_STRATEGY_DOSSIER_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyDossierQualifiedName",
+        "microStrategyDossierQualifiedName",
+        "microStrategyDossierQualifiedName.text",
+    )
+    """
+    Parent dossier qualified name
+    """
+    MICRO_STRATEGY_DOSSIER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyDossierName",
+        "microStrategyDossierName.keyword",
+        "microStrategyDossierName",
+    )
+    """
+    Parent dossier name
+    """
+
+    MICRO_STRATEGY_DOSSIER: ClassVar[RelationField] = RelationField(
+        "microStrategyDossier"
+    )
+    """
+    TBC
+    """
+    MICRO_STRATEGY_PROJECT: ClassVar[RelationField] = RelationField(
+        "microStrategyProject"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_visualization_type",
         "micro_strategy_dossier_qualified_name",
         "micro_strategy_dossier_name",

@@ -9,6 +9,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset37 import Mode
 
 
@@ -25,11 +33,63 @@ class ModeReport(Mode):
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeReport._convience_properties:
+        if name in ModeReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MODE_COLLECTION_TOKEN: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionToken", "modeCollectionToken"
+    )
+    """
+    TBC
+    """
+    MODE_REPORT_PUBLISHED_AT: ClassVar[NumericField] = NumericField(
+        "modeReportPublishedAt", "modeReportPublishedAt"
+    )
+    """
+    TBC
+    """
+    MODE_QUERY_COUNT: ClassVar[NumericField] = NumericField(
+        "modeQueryCount", "modeQueryCount"
+    )
+    """
+    TBC
+    """
+    MODE_CHART_COUNT: ClassVar[NumericField] = NumericField(
+        "modeChartCount", "modeChartCount"
+    )
+    """
+    TBC
+    """
+    MODE_QUERY_PREVIEW: ClassVar[TextField] = TextField(
+        "modeQueryPreview", "modeQueryPreview"
+    )
+    """
+    TBC
+    """
+    MODE_IS_PUBLIC: ClassVar[BooleanField] = BooleanField(
+        "modeIsPublic", "modeIsPublic"
+    )
+    """
+    TBC
+    """
+    MODE_IS_SHARED: ClassVar[BooleanField] = BooleanField(
+        "modeIsShared", "modeIsShared"
+    )
+    """
+    TBC
+    """
+
+    MODE_QUERIES: ClassVar[RelationField] = RelationField("modeQueries")
+    """
+    TBC
+    """
+    MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mode_collection_token",
         "mode_report_published_at",
         "mode_query_count",
@@ -193,11 +253,31 @@ class ModeQuery(Mode):
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeQuery._convience_properties:
+        if name in ModeQuery._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MODE_RAW_QUERY: ClassVar[TextField] = TextField("modeRawQuery", "modeRawQuery")
+    """
+    TBC
+    """
+    MODE_REPORT_IMPORT_COUNT: ClassVar[NumericField] = NumericField(
+        "modeReportImportCount", "modeReportImportCount"
+    )
+    """
+    TBC
+    """
+
+    MODE_CHARTS: ClassVar[RelationField] = RelationField("modeCharts")
+    """
+    TBC
+    """
+    MODE_REPORT: ClassVar[RelationField] = RelationField("modeReport")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mode_raw_query",
         "mode_report_import_count",
         "mode_charts",
@@ -284,11 +364,23 @@ class ModeChart(Mode):
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeChart._convience_properties:
+        if name in ModeChart._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MODE_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
+        "modeChartType", "modeChartType"
+    )
+    """
+    TBC
+    """
+
+    MODE_QUERY: ClassVar[RelationField] = RelationField("modeQuery")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mode_chart_type",
         "mode_query",
     ]
@@ -342,11 +434,23 @@ class ModeWorkspace(Mode):
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeWorkspace._convience_properties:
+        if name in ModeWorkspace._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MODE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
+        "modeCollectionCount", "modeCollectionCount"
+    )
+    """
+    TBC
+    """
+
+    MODE_COLLECTIONS: ClassVar[RelationField] = RelationField("modeCollections")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mode_collection_count",
         "mode_collections",
     ]
@@ -402,11 +506,33 @@ class ModeCollection(Mode):
         return v
 
     def __setattr__(self, name, value):
-        if name in ModeCollection._convience_properties:
+        if name in ModeCollection._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MODE_COLLECTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionType", "modeCollectionType"
+    )
+    """
+    TBC
+    """
+    MODE_COLLECTION_STATE: ClassVar[KeywordField] = KeywordField(
+        "modeCollectionState", "modeCollectionState"
+    )
+    """
+    TBC
+    """
+
+    MODE_WORKSPACE: ClassVar[RelationField] = RelationField("modeWorkspace")
+    """
+    TBC
+    """
+    MODE_REPORTS: ClassVar[RelationField] = RelationField("modeReports")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "mode_collection_type",
         "mode_collection_state",
         "mode_workspace",

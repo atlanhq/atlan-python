@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordField, TextField
+
 from .asset18 import BI
 
 
@@ -24,11 +26,24 @@ class Thoughtspot(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in Thoughtspot._convience_properties:
+        if name in Thoughtspot._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    THOUGHTSPOT_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
+        "thoughtspotChartType", "thoughtspotChartType"
+    )
+    """
+    TBC
+    """
+    THOUGHTSPOT_QUESTION_TEXT: ClassVar[TextField] = TextField(
+        "thoughtspotQuestionText", "thoughtspotQuestionText"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "thoughtspot_chart_type",
         "thoughtspot_question_text",
     ]

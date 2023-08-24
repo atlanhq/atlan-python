@@ -8,9 +8,9 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    AwsTag,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.structs import AwsTag
+
 from .asset08 import Cloud
 
 
@@ -27,11 +27,56 @@ class AWS(Cloud):
         return v
 
     def __setattr__(self, name, value):
-        if name in AWS._convience_properties:
+        if name in AWS._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
+        "awsArn", "awsArn", "awsArn.text"
+    )
+    """
+    TBC
+    """
+    AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
+    """
+    TBC
+    """
+    AWS_SERVICE: ClassVar[KeywordField] = KeywordField("awsService", "awsService")
+    """
+    TBC
+    """
+    AWS_REGION: ClassVar[KeywordField] = KeywordField("awsRegion", "awsRegion")
+    """
+    TBC
+    """
+    AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
+        "awsAccountId", "awsAccountId"
+    )
+    """
+    TBC
+    """
+    AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
+        "awsResourceId", "awsResourceId"
+    )
+    """
+    TBC
+    """
+    AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+    )
+    """
+    TBC
+    """
+    AWS_OWNER_ID: ClassVar[KeywordField] = KeywordField("awsOwnerId", "awsOwnerId")
+    """
+    TBC
+    """
+    AWS_TAGS: ClassVar[KeywordField] = KeywordField("awsTags", "awsTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "aws_arn",
         "aws_partition",
         "aws_service",

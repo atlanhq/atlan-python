@@ -174,6 +174,8 @@ def test_retrieve_logs(
     count = 0
     for _ in events:
         count += 1
+        if count >= 1000:
+            break
     assert count > 0
 
 
@@ -187,4 +189,6 @@ def test_retrieve_admin_logs(
     count = 0
     for _ in events:
         count += 1
+        if count >= 1000:
+            break
     assert count > 0

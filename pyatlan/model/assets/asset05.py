@@ -8,14 +8,16 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.enums import (
-    AuthPolicyType,
+from pyatlan.model.enums import AuthPolicyType
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
 )
-from pyatlan.model.structs import (
-    AuthPolicyCondition,
-    AuthPolicyValiditySchedule,
-)
+from pyatlan.model.structs import AuthPolicyCondition, AuthPolicyValiditySchedule
 from pyatlan.utils import validate_required_fields
+
 from .asset00 import Asset
 
 
@@ -39,11 +41,111 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         return v
 
     def __setattr__(self, name, value):
-        if name in AuthPolicy._convience_properties:
+        if name in AuthPolicy._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    POLICY_TYPE: ClassVar[KeywordField] = KeywordField("policyType", "policyType")
+    """
+    TBC
+    """
+    POLICY_SERVICE_NAME: ClassVar[KeywordField] = KeywordField(
+        "policyServiceName", "policyServiceName"
+    )
+    """
+    TBC
+    """
+    POLICY_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "policyCategory", "policyCategory"
+    )
+    """
+    TBC
+    """
+    POLICY_SUB_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "policySubCategory", "policySubCategory"
+    )
+    """
+    TBC
+    """
+    POLICY_USERS: ClassVar[KeywordField] = KeywordField("policyUsers", "policyUsers")
+    """
+    TBC
+    """
+    POLICY_GROUPS: ClassVar[KeywordField] = KeywordField("policyGroups", "policyGroups")
+    """
+    TBC
+    """
+    POLICY_ROLES: ClassVar[KeywordField] = KeywordField("policyRoles", "policyRoles")
+    """
+    TBC
+    """
+    POLICY_ACTIONS: ClassVar[KeywordField] = KeywordField(
+        "policyActions", "policyActions"
+    )
+    """
+    TBC
+    """
+    POLICY_RESOURCES: ClassVar[KeywordField] = KeywordField(
+        "policyResources", "policyResources"
+    )
+    """
+    TBC
+    """
+    POLICY_RESOURCE_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "policyResourceCategory", "policyResourceCategory"
+    )
+    """
+    TBC
+    """
+    POLICY_PRIORITY: ClassVar[NumericField] = NumericField(
+        "policyPriority", "policyPriority"
+    )
+    """
+    TBC
+    """
+    IS_POLICY_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "isPolicyEnabled", "isPolicyEnabled"
+    )
+    """
+    TBC
+    """
+    POLICY_MASK_TYPE: ClassVar[KeywordField] = KeywordField(
+        "policyMaskType", "policyMaskType"
+    )
+    """
+    TBC
+    """
+    POLICY_VALIDITY_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "policyValiditySchedule", "policyValiditySchedule"
+    )
+    """
+    TBC
+    """
+    POLICY_RESOURCE_SIGNATURE: ClassVar[KeywordField] = KeywordField(
+        "policyResourceSignature", "policyResourceSignature"
+    )
+    """
+    TBC
+    """
+    POLICY_DELEGATE_ADMIN: ClassVar[BooleanField] = BooleanField(
+        "policyDelegateAdmin", "policyDelegateAdmin"
+    )
+    """
+    TBC
+    """
+    POLICY_CONDITIONS: ClassVar[KeywordField] = KeywordField(
+        "policyConditions", "policyConditions"
+    )
+    """
+    TBC
+    """
+
+    ACCESS_CONTROL: ClassVar[RelationField] = RelationField("accessControl")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "policy_type",
         "policy_service_name",
         "policy_category",
@@ -361,11 +463,39 @@ class AccessControl(Asset, type_name="AccessControl"):
         return v
 
     def __setattr__(self, name, value):
-        if name in AccessControl._convience_properties:
+        if name in AccessControl._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    IS_ACCESS_CONTROL_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "isAccessControlEnabled", "isAccessControlEnabled"
+    )
+    """
+    TBC
+    """
+    DENY_CUSTOM_METADATA_GUIDS: ClassVar[KeywordField] = KeywordField(
+        "denyCustomMetadataGuids", "denyCustomMetadataGuids"
+    )
+    """
+    TBC
+    """
+    DENY_ASSET_TABS: ClassVar[KeywordField] = KeywordField(
+        "denyAssetTabs", "denyAssetTabs"
+    )
+    """
+    TBC
+    """
+    CHANNEL_LINK: ClassVar[KeywordField] = KeywordField("channelLink", "channelLink")
+    """
+    TBC
+    """
+
+    POLICIES: ClassVar[RelationField] = RelationField("policies")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "is_access_control_enabled",
         "deny_custom_metadata_guids",
         "deny_asset_tabs",

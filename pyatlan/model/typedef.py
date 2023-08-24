@@ -488,6 +488,13 @@ class AttributeDef(AtlanObject):
         return self
 
 
+class RelationshipAttributeDef(AttributeDef):
+    is_legacy_attribute: Optional[bool] = Field(description="Unused.")
+    relationship_type_name: Optional[str] = Field(
+        description="Name of the relationship type."
+    )
+
+
 class StructDef(TypeDef):
     category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
     attribute_defs: Optional[List[AttributeDef]] = Field(

@@ -50,3 +50,9 @@
                 qualified_name=qualified_name, name=name, anchor=glossary
             )
         )
+
+    ANCHOR: ClassVar[KeywordField] = KeywordField("anchor", "__glossary")
+    """Glossary in which the term is contained, searchable by the qualifiedName of the glossary."""
+
+    CATEGORIES: ClassVar[KeywordField] = KeywordField("categories", "__categories")
+    """Categories in which the term is organized, searchable by the qualifiedName of the category."""

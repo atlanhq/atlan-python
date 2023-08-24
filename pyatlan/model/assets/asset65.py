@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import NumericField
+
 from .asset41 import Redash
 
 
@@ -24,11 +26,18 @@ class RedashDashboard(Redash):
         return v
 
     def __setattr__(self, name, value):
-        if name in RedashDashboard._convience_properties:
+        if name in RedashDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    REDASH_DASHBOARD_WIDGET_COUNT: ClassVar[NumericField] = NumericField(
+        "redashDashboardWidgetCount", "redashDashboardWidgetCount"
+    )
+    """
+    Number of widgets in the Redash Dashboard
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "redash_dashboard_widget_count",
     ]
 

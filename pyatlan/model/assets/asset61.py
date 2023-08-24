@@ -8,6 +8,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset38 import Sigma
 
 
@@ -24,11 +32,23 @@ class SigmaWorkbook(Sigma):
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaWorkbook._convience_properties:
+        if name in SigmaWorkbook._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_PAGE_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaPageCount", "sigmaPageCount"
+    )
+    """
+    TBC
+    """
+
+    SIGMA_PAGES: ClassVar[RelationField] = RelationField("sigmaPages")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_page_count",
         "sigma_pages",
     ]
@@ -82,11 +102,29 @@ class SigmaDataElementField(Sigma):
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaDataElementField._convience_properties:
+        if name in SigmaDataElementField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_DATA_ELEMENT_FIELD_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
+        "sigmaDataElementFieldIsHidden", "sigmaDataElementFieldIsHidden"
+    )
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_FIELD_FORMULA: ClassVar[TextField] = TextField(
+        "sigmaDataElementFieldFormula", "sigmaDataElementFieldFormula"
+    )
+    """
+    TBC
+    """
+
+    SIGMA_DATA_ELEMENT: ClassVar[RelationField] = RelationField("sigmaDataElement")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_data_element_field_is_hidden",
         "sigma_data_element_field_formula",
         "sigma_data_element",
@@ -171,11 +209,27 @@ class SigmaPage(Sigma):
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaPage._convience_properties:
+        if name in SigmaPage._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_DATA_ELEMENT_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaDataElementCount", "sigmaDataElementCount"
+    )
+    """
+    TBC
+    """
+
+    SIGMA_DATA_ELEMENTS: ClassVar[RelationField] = RelationField("sigmaDataElements")
+    """
+    TBC
+    """
+    SIGMA_WORKBOOK: ClassVar[RelationField] = RelationField("sigmaWorkbook")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_data_element_count",
         "sigma_data_elements",
         "sigma_workbook",
@@ -249,11 +303,41 @@ class SigmaDataElement(Sigma):
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaDataElement._convience_properties:
+        if name in SigmaDataElement._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_DATA_ELEMENT_QUERY: ClassVar[KeywordField] = KeywordField(
+        "sigmaDataElementQuery", "sigmaDataElementQuery"
+    )
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_TYPE: ClassVar[RelationField] = RelationField(
+        "sigmaDataElementType"
+    )
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_FIELD_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaDataElementFieldCount", "sigmaDataElementFieldCount"
+    )
+    """
+    TBC
+    """
+
+    SIGMA_PAGE: ClassVar[RelationField] = RelationField("sigmaPage")
+    """
+    TBC
+    """
+    SIGMA_DATA_ELEMENT_FIELDS: ClassVar[RelationField] = RelationField(
+        "sigmaDataElementFields"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_data_element_query",
         "sigma_data_element_type",
         "sigma_data_element_field_count",

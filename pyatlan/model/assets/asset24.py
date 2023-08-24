@@ -8,6 +8,12 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+)
+
 from .asset00 import Catalog
 
 
@@ -24,11 +30,46 @@ class API(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in API._convience_properties:
+        if name in API._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    API_SPEC_TYPE: ClassVar[KeywordField] = KeywordField("apiSpecType", "apiSpecType")
+    """
+    TBC
+    """
+    API_SPEC_VERSION: ClassVar[KeywordField] = KeywordField(
+        "apiSpecVersion", "apiSpecVersion"
+    )
+    """
+    TBC
+    """
+    API_SPEC_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecName", "apiSpecName.keyword", "apiSpecName"
+    )
+    """
+    TBC
+    """
+    API_SPEC_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecQualifiedName", "apiSpecQualifiedName", "apiSpecQualifiedName.text"
+    )
+    """
+    TBC
+    """
+    API_EXTERNAL_DOCS: ClassVar[KeywordField] = KeywordField(
+        "apiExternalDocs", "apiExternalDocs"
+    )
+    """
+    TBC
+    """
+    API_IS_AUTH_OPTIONAL: ClassVar[BooleanField] = BooleanField(
+        "apiIsAuthOptional", "apiIsAuthOptional"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "api_spec_type",
         "api_spec_version",
         "api_spec_name",

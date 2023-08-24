@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordTextField, RelationField
+
 from .asset45 import Thoughtspot
 
 
@@ -24,11 +26,16 @@ class ThoughtspotLiveboard(Thoughtspot):
         return v
 
     def __setattr__(self, name, value):
-        if name in ThoughtspotLiveboard._convience_properties:
+        if name in ThoughtspotLiveboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    THOUGHTSPOT_DASHLETS: ClassVar[RelationField] = RelationField("thoughtspotDashlets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "thoughtspot_dashlets",
     ]
 
@@ -69,11 +76,35 @@ class ThoughtspotDashlet(Thoughtspot):
         return v
 
     def __setattr__(self, name, value):
-        if name in ThoughtspotDashlet._convience_properties:
+        if name in ThoughtspotDashlet._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    THOUGHTSPOT_LIVEBOARD_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "thoughtspotLiveboardName",
+        "thoughtspotLiveboardName.keyword",
+        "thoughtspotLiveboardName",
+    )
+    """
+    TBC
+    """
+    THOUGHTSPOT_LIVEBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "thoughtspotLiveboardQualifiedName",
+        "thoughtspotLiveboardQualifiedName",
+        "thoughtspotLiveboardQualifiedName.text",
+    )
+    """
+    TBC
+    """
+
+    THOUGHTSPOT_LIVEBOARD: ClassVar[RelationField] = RelationField(
+        "thoughtspotLiveboard"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "thoughtspot_liveboard_name",
         "thoughtspot_liveboard_qualified_name",
         "thoughtspot_liveboard",

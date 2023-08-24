@@ -8,12 +8,16 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    GoogleLabel,
-    GoogleTag,
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
 )
-from .asset00 import AirflowTask
-from .asset00 import Process
+from pyatlan.model.structs import GoogleLabel, GoogleTag
+
+from .asset00 import AirflowTask, Process
 from .asset27 import Google
 
 
@@ -30,11 +34,113 @@ class GCS(Google):
         return v
 
     def __setattr__(self, name, value):
-        if name in GCS._convience_properties:
+        if name in GCS._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    GCS_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
+        "gcsStorageClass", "gcsStorageClass"
+    )
+    """
+    TBC
+    """
+    GCS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "gcsEncryptionType", "gcsEncryptionType"
+    )
+    """
+    TBC
+    """
+    GCS_E_TAG: ClassVar[KeywordField] = KeywordField("gcsETag", "gcsETag")
+    """
+    TBC
+    """
+    GCS_REQUESTER_PAYS: ClassVar[BooleanField] = BooleanField(
+        "gcsRequesterPays", "gcsRequesterPays"
+    )
+    """
+    TBC
+    """
+    GCS_ACCESS_CONTROL: ClassVar[KeywordField] = KeywordField(
+        "gcsAccessControl", "gcsAccessControl"
+    )
+    """
+    TBC
+    """
+    GCS_META_GENERATION_ID: ClassVar[NumericField] = NumericField(
+        "gcsMetaGenerationId", "gcsMetaGenerationId"
+    )
+    """
+    TBC
+    """
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    """
+    TBC
+    """
+    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
+    """
+    TBC
+    """
+
+    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "outputFromAirflowTasks"
+    )
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromProcesses"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "gcs_storage_class",
         "gcs_encryption_type",
         "gcs_e_tag",

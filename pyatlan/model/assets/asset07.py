@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
+
 from .asset00 import Asset
 
 
@@ -24,11 +26,40 @@ class AuthService(Asset, type_name="AuthService"):
         return v
 
     def __setattr__(self, name, value):
-        if name in AuthService._convience_properties:
+        if name in AuthService._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    AUTH_SERVICE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "authServiceType", "authServiceType"
+    )
+    """
+    TBC
+    """
+    TAG_SERVICE: ClassVar[KeywordField] = KeywordField("tagService", "tagService")
+    """
+    TBC
+    """
+    AUTH_SERVICE_IS_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "authServiceIsEnabled", "authServiceIsEnabled"
+    )
+    """
+    TBC
+    """
+    AUTH_SERVICE_CONFIG: ClassVar[KeywordField] = KeywordField(
+        "authServiceConfig", "authServiceConfig"
+    )
+    """
+    TBC
+    """
+    AUTH_SERVICE_POLICY_LAST_SYNC: ClassVar[NumericField] = NumericField(
+        "authServicePolicyLastSync", "authServicePolicyLastSync"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "auth_service_type",
         "tag_service",
         "auth_service_is_enabled",

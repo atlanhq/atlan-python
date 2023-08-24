@@ -8,6 +8,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+)
+
 from .asset39 import Tableau
 
 
@@ -24,11 +31,59 @@ class TableauWorkbook(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauWorkbook._convience_properties:
+        if name in TableauWorkbook._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectName", "topLevelProjectName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_name",
@@ -196,11 +251,119 @@ class TableauDatasourceField(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauDatasourceField._convience_properties:
+        if name in TableauDatasourceField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    TBC
+    """
+    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+    FULLY_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "fullyQualifiedName", "fullyQualifiedName"
+    )
+    """
+    TBC
+    """
+    TABLEAU_DATASOURCE_FIELD_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldDataCategory", "tableauDatasourceFieldDataCategory"
+    )
+    """
+    TBC
+    """
+    TABLEAU_DATASOURCE_FIELD_ROLE: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldRole", "tableauDatasourceFieldRole"
+    )
+    """
+    TBC
+    """
+    TABLEAU_DATASOURCE_FIELD_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableauDatasourceFieldDataType",
+        "tableauDatasourceFieldDataType",
+        "tableauDatasourceFieldDataType.text",
+    )
+    """
+    TBC
+    """
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
+    """
+    TBC
+    """
+    TABLEAU_DATASOURCE_FIELD_FORMULA: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldFormula", "tableauDatasourceFieldFormula"
+    )
+    """
+    TBC
+    """
+    TABLEAU_DATASOURCE_FIELD_BIN_SIZE: ClassVar[KeywordField] = KeywordField(
+        "tableauDatasourceFieldBinSize", "tableauDatasourceFieldBinSize"
+    )
+    """
+    TBC
+    """
+    UPSTREAM_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "upstreamColumns", "upstreamColumns"
+    )
+    """
+    TBC
+    """
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
+    """
+    TBC
+    """
+    DATASOURCE_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "datasourceFieldType", "datasourceFieldType"
+    )
+    """
+    TBC
+    """
+
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+    DATASOURCE: ClassVar[RelationField] = RelationField("datasource")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -549,11 +712,81 @@ class TableauCalculatedField(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauCalculatedField._convience_properties:
+        if name in TableauCalculatedField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    TBC
+    """
+    DATASOURCE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "datasourceQualifiedName", "datasourceQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+    DATA_CATEGORY: ClassVar[KeywordField] = KeywordField("dataCategory", "dataCategory")
+    """
+    TBC
+    """
+    ROLE: ClassVar[KeywordField] = KeywordField("role", "role")
+    """
+    TBC
+    """
+    TABLEAU_DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "tableauDataType", "tableauDataType", "tableauDataType.text"
+    )
+    """
+    TBC
+    """
+    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    """
+    TBC
+    """
+    UPSTREAM_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "upstreamFields", "upstreamFields"
+    )
+    """
+    TBC
+    """
+
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+    DATASOURCE: ClassVar[RelationField] = RelationField("datasource")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -783,11 +1016,61 @@ class TableauProject(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauProject._convience_properties:
+        if name in TableauProject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    IS_TOP_LEVEL_PROJECT: ClassVar[BooleanField] = BooleanField(
+        "isTopLevelProject", "isTopLevelProject"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+
+    PARENT_PROJECT: ClassVar[RelationField] = RelationField("parentProject")
+    """
+    TBC
+    """
+    WORKBOOKS: ClassVar[RelationField] = RelationField("workbooks")
+    """
+    TBC
+    """
+    SITE: ClassVar[RelationField] = RelationField("site")
+    """
+    TBC
+    """
+    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
+    """
+    TBC
+    """
+    FLOWS: ClassVar[RelationField] = RelationField("flows")
+    """
+    TBC
+    """
+    CHILD_PROJECTS: ClassVar[RelationField] = RelationField("childProjects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "top_level_project_qualified_name",
         "is_top_level_project",
@@ -964,11 +1247,16 @@ class TableauSite(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauSite._convience_properties:
+        if name in TableauSite._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PROJECTS: ClassVar[RelationField] = RelationField("projects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "projects",
     ]
 
@@ -1007,11 +1295,95 @@ class TableauDatasource(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauDatasource._convience_properties:
+        if name in TableauDatasource._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+    IS_PUBLISHED: ClassVar[BooleanField] = BooleanField("isPublished", "isPublished")
+    """
+    TBC
+    """
+    HAS_EXTRACTS: ClassVar[BooleanField] = BooleanField("hasExtracts", "hasExtracts")
+    """
+    TBC
+    """
+    IS_CERTIFIED: ClassVar[BooleanField] = BooleanField("isCertified", "isCertified")
+    """
+    TBC
+    """
+    CERTIFIER: ClassVar[KeywordField] = KeywordField("certifier", "certifier")
+    """
+    TBC
+    """
+    CERTIFICATION_NOTE: ClassVar[KeywordField] = KeywordField(
+        "certificationNote", "certificationNote"
+    )
+    """
+    TBC
+    """
+    CERTIFIER_DISPLAY_NAME: ClassVar[KeywordField] = KeywordField(
+        "certifierDisplayName", "certifierDisplayName"
+    )
+    """
+    TBC
+    """
+    UPSTREAM_TABLES: ClassVar[KeywordField] = KeywordField(
+        "upstreamTables", "upstreamTables"
+    )
+    """
+    TBC
+    """
+    UPSTREAM_DATASOURCES: ClassVar[KeywordField] = KeywordField(
+        "upstreamDatasources", "upstreamDatasources"
+    )
+    """
+    TBC
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -1289,11 +1661,51 @@ class TableauDashboard(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauDashboard._convience_properties:
+        if name in TableauDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    WORKSHEETS: ClassVar[RelationField] = RelationField("worksheets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "workbook_qualified_name",
@@ -1433,11 +1845,53 @@ class TableauFlow(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauFlow._convience_properties:
+        if name in TableauFlow._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+    INPUT_FIELDS: ClassVar[KeywordField] = KeywordField("inputFields", "inputFields")
+    """
+    TBC
+    """
+    OUTPUT_FIELDS: ClassVar[KeywordField] = KeywordField("outputFields", "outputFields")
+    """
+    TBC
+    """
+    OUTPUT_STEPS: ClassVar[KeywordField] = KeywordField("outputSteps", "outputSteps")
+    """
+    TBC
+    """
+
+    PROJECT: ClassVar[RelationField] = RelationField("project")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",
@@ -1591,11 +2045,59 @@ class TableauWorksheet(Tableau):
         return v
 
     def __setattr__(self, name, value):
-        if name in TableauWorksheet._convience_properties:
+        if name in TableauWorksheet._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SITE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "siteQualifiedName", "siteQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "projectQualifiedName", "projectQualifiedName"
+    )
+    """
+    TBC
+    """
+    TOP_LEVEL_PROJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "topLevelProjectQualifiedName", "topLevelProjectQualifiedName"
+    )
+    """
+    TBC
+    """
+    PROJECT_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "projectHierarchy", "projectHierarchy"
+    )
+    """
+    TBC
+    """
+    WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "workbookQualifiedName", "workbookQualifiedName"
+    )
+    """
+    TBC
+    """
+
+    WORKBOOK: ClassVar[RelationField] = RelationField("workbook")
+    """
+    TBC
+    """
+    DATASOURCE_FIELDS: ClassVar[RelationField] = RelationField("datasourceFields")
+    """
+    TBC
+    """
+    CALCULATED_FIELDS: ClassVar[RelationField] = RelationField("calculatedFields")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "site_qualified_name",
         "project_qualified_name",
         "top_level_project_qualified_name",

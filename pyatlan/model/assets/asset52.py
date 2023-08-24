@@ -9,9 +9,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    SourceTagAttribute,
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
 )
+from pyatlan.model.structs import SourceTagAttribute
+
 from .asset00 import Dbt
 
 
@@ -28,11 +32,144 @@ class DbtTag(Dbt):
         return v
 
     def __setattr__(self, name, value):
-        if name in DbtTag._convience_properties:
+        if name in DbtTag._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DBT_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAlias", "dbtAlias.keyword", "dbtAlias"
+    )
+    """
+    TBC
+    """
+    DBT_META: ClassVar[KeywordField] = KeywordField("dbtMeta", "dbtMeta")
+    """
+    TBC
+    """
+    DBT_UNIQUE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtUniqueId", "dbtUniqueId.keyword", "dbtUniqueId"
+    )
+    """
+    TBC
+    """
+    DBT_ACCOUNT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtAccountName", "dbtAccountName.keyword", "dbtAccountName"
+    )
+    """
+    TBC
+    """
+    DBT_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtProjectName", "dbtProjectName.keyword", "dbtProjectName"
+    )
+    """
+    TBC
+    """
+    DBT_PACKAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtPackageName", "dbtPackageName.keyword", "dbtPackageName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobName", "dbtJobName.keyword", "dbtJobName"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "dbtJobSchedule", "dbtJobSchedule"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_STATUS: ClassVar[KeywordField] = KeywordField(
+        "dbtJobStatus", "dbtJobStatus"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_SCHEDULE_CRON_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobScheduleCronHumanized",
+        "dbtJobScheduleCronHumanized.keyword",
+        "dbtJobScheduleCronHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_JOB_LAST_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobLastRun", "dbtJobLastRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN: ClassVar[NumericField] = NumericField(
+        "dbtJobNextRun", "dbtJobNextRun"
+    )
+    """
+    TBC
+    """
+    DBT_JOB_NEXT_RUN_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtJobNextRunHumanized",
+        "dbtJobNextRunHumanized.keyword",
+        "dbtJobNextRunHumanized",
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentName", "dbtEnvironmentName.keyword", "dbtEnvironmentName"
+    )
+    """
+    TBC
+    """
+    DBT_ENVIRONMENT_DBT_VERSION: ClassVar[KeywordTextField] = KeywordTextField(
+        "dbtEnvironmentDbtVersion",
+        "dbtEnvironmentDbtVersion.keyword",
+        "dbtEnvironmentDbtVersion",
+    )
+    """
+    TBC
+    """
+    DBT_TAGS: ClassVar[KeywordField] = KeywordField("dbtTags", "dbtTags")
+    """
+    TBC
+    """
+    DBT_CONNECTION_CONTEXT: ClassVar[KeywordField] = KeywordField(
+        "dbtConnectionContext", "dbtConnectionContext"
+    )
+    """
+    TBC
+    """
+    DBT_SEMANTIC_LAYER_PROXY_URL: ClassVar[KeywordField] = KeywordField(
+        "dbtSemanticLayerProxyUrl", "dbtSemanticLayerProxyUrl"
+    )
+    """
+    TBC
+    """
+    TAG_ID: ClassVar[KeywordField] = KeywordField("tagId", "tagId")
+    """
+    Unique source tag identifier
+    """
+    TAG_ATTRIBUTES: ClassVar[KeywordField] = KeywordField(
+        "tagAttributes", "tagAttributes"
+    )
+    """
+    Source tag attributes
+    """
+    TAG_ALLOWED_VALUES: ClassVar[KeywordTextField] = KeywordTextField(
+        "tagAllowedValues", "tagAllowedValues", "tagAllowedValues.text"
+    )
+    """
+    Allowed values for the tag at source. De-normalised from sourceTagAttributed for ease of querying
+    """
+    MAPPED_CLASSIFICATION_NAME: ClassVar[KeywordField] = KeywordField(
+        "mappedClassificationName", "mappedClassificationName"
+    )
+    """
+    Mapped atlan classification name
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "dbt_alias",
         "dbt_meta",
         "dbt_unique_id",

@@ -8,6 +8,15 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset48 import Qlik
 
 
@@ -24,11 +33,51 @@ class QlikApp(Qlik):
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikApp._convience_properties:
+        if name in QlikApp._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QLIK_HAS_SECTION_ACCESS: ClassVar[BooleanField] = BooleanField(
+        "qlikHasSectionAccess", "qlikHasSectionAccess"
+    )
+    """
+    Whether section access/data masking is enabled on source
+    """
+    QLIK_ORIGIN_APP_ID: ClassVar[KeywordField] = KeywordField(
+        "qlikOriginAppId", "qlikOriginAppId"
+    )
+    """
+    originAppId value for a qlik app
+    """
+    QLIK_IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
+        "qlikIsEncrypted", "qlikIsEncrypted"
+    )
+    """
+    Whether a qlik app is encrypted
+    """
+    QLIK_IS_DIRECT_QUERY_MODE: ClassVar[BooleanField] = BooleanField(
+        "qlikIsDirectQueryMode", "qlikIsDirectQueryMode"
+    )
+    """
+    Whether a qlik app is in direct query mode
+    """
+    QLIK_APP_STATIC_BYTE_SIZE: ClassVar[NumericField] = NumericField(
+        "qlikAppStaticByteSize", "qlikAppStaticByteSize"
+    )
+    """
+    Static space taken by a qlik app
+    """
+
+    QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
+    """
+    TBC
+    """
+    QLIK_SHEETS: ClassVar[RelationField] = RelationField("qlikSheets")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "qlik_has_section_access",
         "qlik_origin_app_id",
         "qlik_is_encrypted",
@@ -166,11 +215,41 @@ class QlikChart(Qlik):
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikChart._convience_properties:
+        if name in QlikChart._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QLIK_CHART_SUBTITLE: ClassVar[TextField] = TextField(
+        "qlikChartSubtitle", "qlikChartSubtitle"
+    )
+    """
+    Subtitle of a qlik chart
+    """
+    QLIK_CHART_FOOTNOTE: ClassVar[TextField] = TextField(
+        "qlikChartFootnote", "qlikChartFootnote"
+    )
+    """
+    Footnote of a qlik chart
+    """
+    QLIK_CHART_ORIENTATION: ClassVar[KeywordField] = KeywordField(
+        "qlikChartOrientation", "qlikChartOrientation"
+    )
+    """
+    Orientation of a qlik chart
+    """
+    QLIK_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikChartType", "qlikChartType"
+    )
+    """
+    Subtype of an qlik chart. E.g. bar, graph, pie etc
+    """
+
+    QLIK_SHEET: ClassVar[RelationField] = RelationField("qlikSheet")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "qlik_chart_subtitle",
         "qlik_chart_footnote",
         "qlik_chart_orientation",
@@ -271,11 +350,43 @@ class QlikDataset(Qlik):
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikDataset._convience_properties:
+        if name in QlikDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QLIK_DATASET_TECHNICAL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikDatasetTechnicalName",
+        "qlikDatasetTechnicalName.keyword",
+        "qlikDatasetTechnicalName",
+    )
+    """
+    Technical name of a qlik data asset
+    """
+    QLIK_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikDatasetType", "qlikDatasetType"
+    )
+    """
+    Type of an qlik data asset. E.g. qix-df, snowflake etc
+    """
+    QLIK_DATASET_URI: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikDatasetUri", "qlikDatasetUri", "qlikDatasetUri.text"
+    )
+    """
+    URI of a qlik dataset
+    """
+    QLIK_DATASET_SUBTYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikDatasetSubtype", "qlikDatasetSubtype"
+    )
+    """
+    Subtype of an qlik dataset asset
+    """
+
+    QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "qlik_dataset_technical_name",
         "qlik_dataset_type",
         "qlik_dataset_uri",
@@ -378,11 +489,27 @@ class QlikSheet(Qlik):
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikSheet._convience_properties:
+        if name in QlikSheet._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QLIK_SHEET_IS_APPROVED: ClassVar[BooleanField] = BooleanField(
+        "qlikSheetIsApproved", "qlikSheetIsApproved"
+    )
+    """
+    Whether a qlik sheet is approved
+    """
+
+    QLIK_APP: ClassVar[RelationField] = RelationField("qlikApp")
+    """
+    TBC
+    """
+    QLIK_CHARTS: ClassVar[RelationField] = RelationField("qlikCharts")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "qlik_sheet_is_approved",
         "qlik_app",
         "qlik_charts",
@@ -452,11 +579,27 @@ class QlikSpace(Qlik):
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikSpace._convience_properties:
+        if name in QlikSpace._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QLIK_SPACE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikSpaceType", "qlikSpaceType"
+    )
+    """
+    Type of a qlik space. E.g. Private, Shared etc
+    """
+
+    QLIK_DATASETS: ClassVar[RelationField] = RelationField("qlikDatasets")
+    """
+    TBC
+    """
+    QLIK_APPS: ClassVar[RelationField] = RelationField("qlikApps")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "qlik_space_type",
         "qlik_datasets",
         "qlik_apps",

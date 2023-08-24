@@ -8,12 +8,15 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    GoogleLabel,
-    GoogleTag,
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
 )
-from .asset00 import AirflowTask
-from .asset00 import Process
+from pyatlan.model.structs import GoogleLabel, GoogleTag
+
+from .asset00 import AirflowTask, Process
 from .asset27 import Google
 
 
@@ -30,11 +33,79 @@ class DataStudio(Google):
         return v
 
     def __setattr__(self, name, value):
-        if name in DataStudio._convience_properties:
+        if name in DataStudio._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    """
+    TBC
+    """
+    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
+    """
+    TBC
+    """
+
+    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "outputFromAirflowTasks"
+    )
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromProcesses"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "google_service",
         "google_project_name",
         "google_project_id",

@@ -8,11 +8,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    AzureTag,
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    RelationField,
 )
-from .asset00 import AirflowTask
-from .asset00 import Process
+from pyatlan.model.structs import AzureTag
+
+from .asset00 import AirflowTask, Process
 from .asset28 import Azure
 
 
@@ -29,11 +32,65 @@ class ADLS(Azure):
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLS._convience_properties:
+        if name in ADLS._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    ADLS_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountQualifiedName",
+        "adlsAccountQualifiedName",
+        "adlsAccountQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "azureResourceId", "azureResourceId", "azureResourceId.text"
+    )
+    """
+    TBC
+    """
+    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "azureLocation", "azureLocation"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+    )
+    """
+    TBC
+    """
+    AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
+    """
+    TBC
+    """
+
+    INPUT_TO_PROCESSES: ClassVar[RelationField] = RelationField("inputToProcesses")
+    """
+    TBC
+    """
+    OUTPUT_FROM_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "outputFromAirflowTasks"
+    )
+    """
+    TBC
+    """
+    INPUT_TO_AIRFLOW_TASKS: ClassVar[RelationField] = RelationField(
+        "inputToAirflowTasks"
+    )
+    """
+    TBC
+    """
+    OUTPUT_FROM_PROCESSES: ClassVar[RelationField] = RelationField(
+        "outputFromProcesses"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "adls_account_qualified_name",
         "azure_resource_id",
         "azure_location",

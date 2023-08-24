@@ -24,11 +24,11 @@ class EventStore(Catalog):
         return v
 
     def __setattr__(self, name, value):
-        if name in EventStore._convience_properties:
+        if name in EventStore._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[list[str]] = []
 
 
 EventStore.Attributes.update_forward_refs()

@@ -8,9 +8,9 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    AzureTag,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
+from pyatlan.model.structs import AzureTag
+
 from .asset08 import Cloud
 
 
@@ -27,11 +27,34 @@ class Azure(Cloud):
         return v
 
     def __setattr__(self, name, value):
-        if name in Azure._convience_properties:
+        if name in Azure._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "azureResourceId", "azureResourceId", "azureResourceId.text"
+    )
+    """
+    TBC
+    """
+    AZURE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "azureLocation", "azureLocation"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_SECONDARY_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountSecondaryLocation", "adlsAccountSecondaryLocation"
+    )
+    """
+    TBC
+    """
+    AZURE_TAGS: ClassVar[KeywordField] = KeywordField("azureTags", "azureTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",

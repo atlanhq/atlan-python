@@ -8,6 +8,8 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import KeywordTextField
+
 from .asset18 import BI
 
 
@@ -24,11 +26,28 @@ class Metabase(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in Metabase._convience_properties:
+        if name in Metabase._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    METABASE_COLLECTION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseCollectionName",
+        "metabaseCollectionName.keyword",
+        "metabaseCollectionName",
+    )
+    """
+    TBC
+    """
+    METABASE_COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseCollectionQualifiedName",
+        "metabaseCollectionQualifiedName",
+        "metabaseCollectionQualifiedName.text",
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "metabase_collection_name",
         "metabase_collection_qualified_name",
     ]

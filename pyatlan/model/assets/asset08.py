@@ -24,11 +24,11 @@ class Cloud(Asset, type_name="Cloud"):
         return v
 
     def __setattr__(self, name, value):
-        if name in Cloud._convience_properties:
+        if name in Cloud._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = []
+    _convenience_properties: ClassVar[list[str]] = []
 
 
 Cloud.Attributes.update_forward_refs()

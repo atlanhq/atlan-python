@@ -9,6 +9,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+)
+
 from .asset18 import BI
 
 
@@ -25,11 +32,88 @@ class MicroStrategy(BI):
         return v
 
     def __setattr__(self, name, value):
-        if name in MicroStrategy._convience_properties:
+        if name in MicroStrategy._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    MICRO_STRATEGY_PROJECT_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyProjectQualifiedName",
+        "microStrategyProjectQualifiedName",
+        "microStrategyProjectQualifiedName.text",
+    )
+    """
+    Related project qualified name
+    """
+    MICRO_STRATEGY_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyProjectName",
+        "microStrategyProjectName.keyword",
+        "microStrategyProjectName",
+    )
+    """
+    Related project name
+    """
+    MICRO_STRATEGY_CUBE_QUALIFIED_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyCubeQualifiedNames",
+        "microStrategyCubeQualifiedNames",
+        "microStrategyCubeQualifiedNames.text",
+    )
+    """
+    Related cube qualified name list
+    """
+    MICRO_STRATEGY_CUBE_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyCubeNames",
+        "microStrategyCubeNames.keyword",
+        "microStrategyCubeNames",
+    )
+    """
+    Related cube name list
+    """
+    MICRO_STRATEGY_REPORT_QUALIFIED_NAMES: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "microStrategyReportQualifiedNames",
+        "microStrategyReportQualifiedNames",
+        "microStrategyReportQualifiedNames.text",
+    )
+    """
+    Related report qualified name list
+    """
+    MICRO_STRATEGY_REPORT_NAMES: ClassVar[KeywordTextField] = KeywordTextField(
+        "microStrategyReportNames",
+        "microStrategyReportNames.keyword",
+        "microStrategyReportNames",
+    )
+    """
+    Related report name list
+    """
+    MICRO_STRATEGY_IS_CERTIFIED: ClassVar[BooleanField] = BooleanField(
+        "microStrategyIsCertified", "microStrategyIsCertified"
+    )
+    """
+    Whether certified in MicroStrategy
+    """
+    MICRO_STRATEGY_CERTIFIED_BY: ClassVar[KeywordField] = KeywordField(
+        "microStrategyCertifiedBy", "microStrategyCertifiedBy"
+    )
+    """
+    User who certified in MicroStrategy
+    """
+    MICRO_STRATEGY_CERTIFIED_AT: ClassVar[NumericField] = NumericField(
+        "microStrategyCertifiedAt", "microStrategyCertifiedAt"
+    )
+    """
+    Certified date in MicroStrategy
+    """
+    MICRO_STRATEGY_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "microStrategyLocation", "microStrategyLocation"
+    )
+    """
+    Location path in MicroStrategy
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "micro_strategy_project_qualified_name",
         "micro_strategy_project_name",
         "micro_strategy_cube_qualified_names",

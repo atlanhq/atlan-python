@@ -8,6 +8,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    RelationField,
+    TextField,
+)
+
 from .asset24 import API
 
 
@@ -24,11 +32,67 @@ class APISpec(API):
         return v
 
     def __setattr__(self, name, value):
-        if name in APISpec._convience_properties:
+        if name in APISpec._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    API_SPEC_TERMS_OF_SERVICE_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecTermsOfServiceURL",
+        "apiSpecTermsOfServiceURL",
+        "apiSpecTermsOfServiceURL.text",
+    )
+    """
+    TBC
+    """
+    API_SPEC_CONTACT_EMAIL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactEmail", "apiSpecContactEmail", "apiSpecContactEmail.text"
+    )
+    """
+    TBC
+    """
+    API_SPEC_CONTACT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactName", "apiSpecContactName.keyword", "apiSpecContactName"
+    )
+    """
+    TBC
+    """
+    API_SPEC_CONTACT_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecContactURL", "apiSpecContactURL", "apiSpecContactURL.text"
+    )
+    """
+    TBC
+    """
+    API_SPEC_LICENSE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecLicenseName", "apiSpecLicenseName.keyword", "apiSpecLicenseName"
+    )
+    """
+    TBC
+    """
+    API_SPEC_LICENSE_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecLicenseURL", "apiSpecLicenseURL", "apiSpecLicenseURL.text"
+    )
+    """
+    TBC
+    """
+    API_SPEC_CONTRACT_VERSION: ClassVar[KeywordField] = KeywordField(
+        "apiSpecContractVersion", "apiSpecContractVersion"
+    )
+    """
+    TBC
+    """
+    API_SPEC_SERVICE_ALIAS: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiSpecServiceAlias", "apiSpecServiceAlias", "apiSpecServiceAlias.text"
+    )
+    """
+    TBC
+    """
+
+    API_PATHS: ClassVar[RelationField] = RelationField("apiPaths")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "api_spec_terms_of_service_url",
         "api_spec_contact_email",
         "api_spec_contact_name",
@@ -205,11 +269,53 @@ class APIPath(API):
         return v
 
     def __setattr__(self, name, value):
-        if name in APIPath._convience_properties:
+        if name in APIPath._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    API_PATH_SUMMARY: ClassVar[TextField] = TextField(
+        "apiPathSummary", "apiPathSummary"
+    )
+    """
+    TBC
+    """
+    API_PATH_RAW_URI: ClassVar[KeywordTextField] = KeywordTextField(
+        "apiPathRawURI", "apiPathRawURI", "apiPathRawURI.text"
+    )
+    """
+    TBC
+    """
+    API_PATH_IS_TEMPLATED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsTemplated", "apiPathIsTemplated"
+    )
+    """
+    TBC
+    """
+    API_PATH_AVAILABLE_OPERATIONS: ClassVar[KeywordField] = KeywordField(
+        "apiPathAvailableOperations", "apiPathAvailableOperations"
+    )
+    """
+    TBC
+    """
+    API_PATH_AVAILABLE_RESPONSE_CODES: ClassVar[KeywordField] = KeywordField(
+        "apiPathAvailableResponseCodes", "apiPathAvailableResponseCodes"
+    )
+    """
+    TBC
+    """
+    API_PATH_IS_INGRESS_EXPOSED: ClassVar[BooleanField] = BooleanField(
+        "apiPathIsIngressExposed", "apiPathIsIngressExposed"
+    )
+    """
+    TBC
+    """
+
+    API_SPEC: ClassVar[RelationField] = RelationField("apiSpec")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "api_path_summary",
         "api_path_raw_u_r_i",
         "api_path_is_templated",

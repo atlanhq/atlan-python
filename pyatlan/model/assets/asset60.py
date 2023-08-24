@@ -8,6 +8,12 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    KeywordTextField,
+    NumericField,
+    RelationField,
+)
+
 from .asset38 import Sigma
 
 
@@ -24,11 +30,31 @@ class SigmaDatasetColumn(Sigma):
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaDatasetColumn._convience_properties:
+        if name in SigmaDatasetColumn._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaDatasetQualifiedName",
+        "sigmaDatasetQualifiedName",
+        "sigmaDatasetQualifiedName.text",
+    )
+    """
+    TBC
+    """
+    SIGMA_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaDatasetName", "sigmaDatasetName.keyword", "sigmaDatasetName"
+    )
+    """
+    TBC
+    """
+
+    SIGMA_DATASET: ClassVar[RelationField] = RelationField("sigmaDataset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_dataset_qualified_name",
         "sigma_dataset_name",
         "sigma_dataset",
@@ -101,11 +127,25 @@ class SigmaDataset(Sigma):
         return v
 
     def __setattr__(self, name, value):
-        if name in SigmaDataset._convience_properties:
+        if name in SigmaDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SIGMA_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
+    )
+    """
+    TBC
+    """
+
+    SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField(
+        "sigmaDatasetColumns"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "sigma_dataset_column_count",
         "sigma_dataset_columns",
     ]

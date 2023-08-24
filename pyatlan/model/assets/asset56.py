@@ -22,6 +22,15 @@ from pyatlan.model.enums import (
     ADLSReplicationType,
     ADLSStorageKind,
 )
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset32 import ADLS
 
 
@@ -38,11 +47,79 @@ class ADLSAccount(ADLS):
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLSAccount._convience_properties:
+        if name in ADLSAccount._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    ADLS_E_TAG: ClassVar[KeywordField] = KeywordField("adlsETag", "adlsETag")
+    """
+    TBC
+    """
+    ADLS_ENCRYPTION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adlsEncryptionType", "adlsEncryptionType"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_RESOURCE_GROUP: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountResourceGroup",
+        "adlsAccountResourceGroup.keyword",
+        "adlsAccountResourceGroup",
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_SUBSCRIPTION: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountSubscription",
+        "adlsAccountSubscription.keyword",
+        "adlsAccountSubscription",
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_PERFORMANCE: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountPerformance", "adlsAccountPerformance"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_REPLICATION: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountReplication", "adlsAccountReplication"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_KIND: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountKind", "adlsAccountKind"
+    )
+    """
+    TBC
+    """
+    ADLS_PRIMARY_DISK_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsPrimaryDiskState", "adlsPrimaryDiskState"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_PROVISION_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountProvisionState", "adlsAccountProvisionState"
+    )
+    """
+    TBC
+    """
+    ADLS_ACCOUNT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
+        "adlsAccountAccessTier", "adlsAccountAccessTier"
+    )
+    """
+    TBC
+    """
+
+    ADLS_CONTAINERS: ClassVar[RelationField] = RelationField("adlsContainers")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "adls_e_tag",
         "adls_encryption_type",
         "adls_account_resource_group",
@@ -267,11 +344,60 @@ class ADLSContainer(ADLS):
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLSContainer._convience_properties:
+        if name in ADLSContainer._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    ADLS_CONTAINER_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsContainerUrl", "adlsContainerUrl.keyword", "adlsContainerUrl"
+    )
+    """
+    TBC
+    """
+    ADLS_CONTAINER_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsContainerLeaseState", "adlsContainerLeaseState"
+    )
+    """
+    TBC
+    """
+    ADLS_CONTAINER_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "adlsContainerLeaseStatus", "adlsContainerLeaseStatus"
+    )
+    """
+    TBC
+    """
+    ADLS_CONTAINER_ENCRYPTION_SCOPE: ClassVar[KeywordField] = KeywordField(
+        "adlsContainerEncryptionScope", "adlsContainerEncryptionScope"
+    )
+    """
+    TBC
+    """
+    ADLS_CONTAINER_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
+        BooleanField
+    ] = BooleanField(
+        "adlsContainerVersionLevelImmutabilitySupport",
+        "adlsContainerVersionLevelImmutabilitySupport",
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "adlsObjectCount", "adlsObjectCount"
+    )
+    """
+    TBC
+    """
+
+    ADLS_OBJECTS: ClassVar[RelationField] = RelationField("adlsObjects")
+    """
+    TBC
+    """
+    ADLS_ACCOUNT: ClassVar[RelationField] = RelationField("adlsAccount")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "adls_container_url",
         "adls_container_lease_state",
         "adls_container_lease_status",
@@ -444,11 +570,126 @@ class ADLSObject(ADLS):
         return v
 
     def __setattr__(self, name, value):
-        if name in ADLSObject._convience_properties:
+        if name in ADLSObject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    ADLS_OBJECT_URL: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsObjectUrl", "adlsObjectUrl.keyword", "adlsObjectUrl"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectVersionId", "adlsObjectVersionId"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectType", "adlsObjectType"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
+        "adlsObjectSize", "adlsObjectSize"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_ACCESS_TIER: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectAccessTier", "adlsObjectAccessTier"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_ACCESS_TIER_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "adlsObjectAccessTierLastModifiedTime", "adlsObjectAccessTierLastModifiedTime"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_ARCHIVE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectArchiveStatus", "adlsObjectArchiveStatus"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_SERVER_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
+        "adlsObjectServerEncrypted", "adlsObjectServerEncrypted"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_VERSION_LEVEL_IMMUTABILITY_SUPPORT: ClassVar[
+        BooleanField
+    ] = BooleanField(
+        "adlsObjectVersionLevelImmutabilitySupport",
+        "adlsObjectVersionLevelImmutabilitySupport",
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_CACHE_CONTROL: ClassVar[TextField] = TextField(
+        "adlsObjectCacheControl", "adlsObjectCacheControl"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_CONTENT_TYPE: ClassVar[TextField] = TextField(
+        "adlsObjectContentType", "adlsObjectContentType"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_CONTENT_MD5HASH: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectContentMD5Hash", "adlsObjectContentMD5Hash"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_CONTENT_LANGUAGE: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsObjectContentLanguage",
+        "adlsObjectContentLanguage.keyword",
+        "adlsObjectContentLanguage",
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_LEASE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectLeaseStatus", "adlsObjectLeaseStatus"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_LEASE_STATE: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectLeaseState", "adlsObjectLeaseState"
+    )
+    """
+    TBC
+    """
+    ADLS_OBJECT_METADATA: ClassVar[KeywordField] = KeywordField(
+        "adlsObjectMetadata", "adlsObjectMetadata"
+    )
+    """
+    TBC
+    """
+    ADLS_CONTAINER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsContainerQualifiedName",
+        "adlsContainerQualifiedName",
+        "adlsContainerQualifiedName.text",
+    )
+    """
+    TBC
+    """
+
+    ADLS_CONTAINER: ClassVar[RelationField] = RelationField("adlsContainer")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "adls_object_url",
         "adls_object_version_id",
         "adls_object_type",

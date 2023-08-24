@@ -8,6 +8,14 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset49 import Salesforce
 
 
@@ -24,11 +32,41 @@ class SalesforceObject(Salesforce):
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceObject._convience_properties:
+        if name in SalesforceObject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    IS_CUSTOM: ClassVar[BooleanField] = BooleanField("isCustom", "isCustom")
+    """
+    isCustom captures whether the object is a custom object or not
+    """
+    IS_MERGABLE: ClassVar[BooleanField] = BooleanField("isMergable", "isMergable")
+    """
+    TBC
+    """
+    IS_QUERYABLE: ClassVar[BooleanField] = BooleanField("isQueryable", "isQueryable")
+    """
+    TBC
+    """
+    FIELD_COUNT: ClassVar[NumericField] = NumericField("fieldCount", "fieldCount")
+    """
+    fieldCount is the number of fields in the object entity
+    """
+
+    LOOKUP_FIELDS: ClassVar[RelationField] = RelationField("lookupFields")
+    """
+    TBC
+    """
+    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "is_custom",
         "is_mergable",
         "is_queryable",
@@ -155,11 +193,97 @@ class SalesforceField(Salesforce):
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceField._convience_properties:
+        if name in SalesforceField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    DATA_TYPE: ClassVar[TextField] = TextField("dataType", "dataType.text")
+    """
+    data type of the field
+    """
+    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "objectQualifiedName", "objectQualifiedName"
+    )
+    """
+    TBC
+    """
+    ORDER: ClassVar[NumericField] = NumericField("order", "order")
+    """
+    TBC
+    """
+    INLINE_HELP_TEXT: ClassVar[TextField] = TextField(
+        "inlineHelpText", "inlineHelpText.text"
+    )
+    """
+    TBC
+    """
+    IS_CALCULATED: ClassVar[BooleanField] = BooleanField("isCalculated", "isCalculated")
+    """
+    TBC
+    """
+    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    """
+    TBC
+    """
+    IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField(
+        "isCaseSensitive", "isCaseSensitive"
+    )
+    """
+    TBC
+    """
+    IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField("isEncrypted", "isEncrypted")
+    """
+    TBC
+    """
+    MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
+    """
+    TBC
+    """
+    IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
+    """
+    TBC
+    """
+    PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
+    """
+    Total number of digits allowed
+    """
+    NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
+    """
+    TBC
+    """
+    IS_UNIQUE: ClassVar[BooleanField] = BooleanField("isUnique", "isUnique")
+    """
+    TBC
+    """
+    PICKLIST_VALUES: ClassVar[KeywordField] = KeywordField(
+        "picklistValues", "picklistValues"
+    )
+    """
+    picklistValues is a list of values from which a user can pick from while adding a record
+    """
+    IS_POLYMORPHIC_FOREIGN_KEY: ClassVar[BooleanField] = BooleanField(
+        "isPolymorphicForeignKey", "isPolymorphicForeignKey"
+    )
+    """
+    isPolymorphicForeignKey captures whether the field references to record of multiple objects
+    """
+    DEFAULT_VALUE_FORMULA: ClassVar[KeywordField] = KeywordField(
+        "defaultValueFormula", "defaultValueFormula"
+    )
+    """
+    TBC
+    """
+
+    LOOKUP_OBJECTS: ClassVar[RelationField] = RelationField("lookupObjects")
+    """
+    TBC
+    """
+    OBJECT: ClassVar[RelationField] = RelationField("object")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "data_type",
         "object_qualified_name",
         "order",
@@ -454,11 +578,29 @@ class SalesforceOrganization(Salesforce):
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceOrganization._convience_properties:
+        if name in SalesforceOrganization._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    """
+    sourceId is the Id of the organization entity on salesforce
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    OBJECTS: ClassVar[RelationField] = RelationField("objects")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "source_id",
         "reports",
         "objects",
@@ -538,11 +680,35 @@ class SalesforceDashboard(Salesforce):
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceDashboard._convience_properties:
+        if name in SalesforceDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    """
+    sourceId is the Id of the dashboard entity on salesforce
+    """
+    DASHBOARD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dashboardType", "dashboardType"
+    )
+    """
+    dashboardType is the type of dashboard in salesforce
+    """
+    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    """
+    reportCount is the number of reports linked to the dashboard entity on salesforce
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "source_id",
         "dashboard_type",
         "report_count",
@@ -638,11 +804,35 @@ class SalesforceReport(Salesforce):
         return v
 
     def __setattr__(self, name, value):
-        if name in SalesforceReport._convience_properties:
+        if name in SalesforceReport._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    """
+    sourceId is the Id of the report entity on salesforce
+    """
+    REPORT_TYPE: ClassVar[KeywordField] = KeywordField("reportType", "reportType")
+    """
+    reportType is the type of report in salesforce
+    """
+    DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "detailColumns", "detailColumns"
+    )
+    """
+    detailColumns is a list of column names on the report
+    """
+
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "source_id",
         "report_type",
         "detail_columns",

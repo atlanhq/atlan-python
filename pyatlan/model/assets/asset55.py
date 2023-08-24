@@ -9,10 +9,16 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.enums import (
-    AtlanConnectorType,
+from pyatlan.model.enums import AtlanConnectorType
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
 )
 from pyatlan.utils import validate_required_fields
+
 from .asset31 import S3
 
 
@@ -45,11 +51,29 @@ class S3Bucket(S3):
         return v
 
     def __setattr__(self, name, value):
-        if name in S3Bucket._convience_properties:
+        if name in S3Bucket._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "s3ObjectCount", "s3ObjectCount"
+    )
+    """
+    TBC
+    """
+    S3BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "s3BucketVersioningEnabled", "s3BucketVersioningEnabled"
+    )
+    """
+    TBC
+    """
+
+    OBJECTS: ClassVar[RelationField] = RelationField("objects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "s3_object_count",
         "s3_bucket_versioning_enabled",
         "objects",
@@ -179,11 +203,69 @@ class S3Object(S3):
         return v
 
     def __setattr__(self, name, value):
-        if name in S3Object._convience_properties:
+        if name in S3Object._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    S3OBJECT_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime"
+    )
+    """
+    TBC
+    """
+    S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3BucketName", "s3BucketName", "s3BucketName.text"
+    )
+    """
+    TBC
+    """
+    S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "s3BucketQualifiedName", "s3BucketQualifiedName"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_SIZE: ClassVar[NumericField] = NumericField("s3ObjectSize", "s3ObjectSize")
+    """
+    TBC
+    """
+    S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectStorageClass", "s3ObjectStorageClass"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectContentType", "s3ObjectContentType"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectContentDisposition", "s3ObjectContentDisposition"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectVersionId", "s3ObjectVersionId"
+    )
+    """
+    TBC
+    """
+
+    BUCKET: ClassVar[RelationField] = RelationField("bucket")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "s3_object_last_modified_time",
         "s3_bucket_name",
         "s3_bucket_qualified_name",

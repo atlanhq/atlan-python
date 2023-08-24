@@ -8,6 +8,16 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    KeywordTextStemmedField,
+    NumericField,
+    RelationField,
+    TextField,
+)
+
 from .asset36 import Preset
 
 
@@ -24,11 +34,29 @@ class PresetChart(Preset):
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetChart._convience_properties:
+        if name in PresetChart._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PRESET_CHART_DESCRIPTION_MARKDOWN: ClassVar[TextField] = TextField(
+        "presetChartDescriptionMarkdown", "presetChartDescriptionMarkdown"
+    )
+    """
+    TBC
+    """
+    PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
+        "presetChartFormData", "presetChartFormData"
+    )
+    """
+    TBC
+    """
+
+    PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "preset_chart_description_markdown",
         "preset_chart_form_data",
         "preset_dashboard",
@@ -107,11 +135,40 @@ class PresetDataset(Preset):
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetDataset._convience_properties:
+        if name in PresetDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PRESET_DATASET_DATASOURCE_NAME: ClassVar[
+        KeywordTextStemmedField
+    ] = KeywordTextStemmedField(
+        "presetDatasetDatasourceName",
+        "presetDatasetDatasourceName.keyword",
+        "presetDatasetDatasourceName",
+        "presetDatasetDatasourceName.stemmed",
+    )
+    """
+    TBC
+    """
+    PRESET_DATASET_ID: ClassVar[NumericField] = NumericField(
+        "presetDatasetId", "presetDatasetId"
+    )
+    """
+    TBC
+    """
+    PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "presetDatasetType", "presetDatasetType"
+    )
+    """
+    TBC
+    """
+
+    PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "preset_dataset_datasource_name",
         "preset_dataset_id",
         "preset_dataset_type",
@@ -201,11 +258,66 @@ class PresetDashboard(Preset):
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetDashboard._convience_properties:
+        if name in PresetDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[
+        KeywordTextStemmedField
+    ] = KeywordTextStemmedField(
+        "presetDashboardChangedByName",
+        "presetDashboardChangedByName.keyword",
+        "presetDashboardChangedByName",
+        "presetDashboardChangedByName.stemmed",
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
+        "presetDashboardChangedByURL", "presetDashboardChangedByURL"
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY: ClassVar[BooleanField] = BooleanField(
+        "presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally"
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
+        "presetDashboardIsPublished", "presetDashboardIsPublished"
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
+        "presetDashboardThumbnailURL", "presetDashboardThumbnailURL"
+    )
+    """
+    TBC
+    """
+    PRESET_DASHBOARD_CHART_COUNT: ClassVar[NumericField] = NumericField(
+        "presetDashboardChartCount", "presetDashboardChartCount"
+    )
+    """
+    TBC
+    """
+
+    PRESET_DATASETS: ClassVar[RelationField] = RelationField("presetDatasets")
+    """
+    TBC
+    """
+    PRESET_CHARTS: ClassVar[RelationField] = RelationField("presetCharts")
+    """
+    TBC
+    """
+    PRESET_WORKSPACE: ClassVar[RelationField] = RelationField("presetWorkspace")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "preset_dashboard_changed_by_name",
         "preset_dashboard_changed_by_url",
         "preset_dashboard_is_managed_externally",
@@ -402,11 +514,74 @@ class PresetWorkspace(Preset):
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetWorkspace._convience_properties:
+        if name in PresetWorkspace._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PRESET_WORKSPACE_PUBLIC_DASHBOARDS_ALLOWED: ClassVar[BooleanField] = BooleanField(
+        "presetWorkspacePublicDashboardsAllowed",
+        "presetWorkspacePublicDashboardsAllowed",
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_CLUSTER_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceClusterId", "presetWorkspaceClusterId"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_HOSTNAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetWorkspaceHostname",
+        "presetWorkspaceHostname",
+        "presetWorkspaceHostname.text",
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE: ClassVar[BooleanField] = BooleanField(
+        "presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_REGION: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField(
+        "presetWorkspaceStatus", "presetWorkspaceStatus"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
+    )
+    """
+    TBC
+    """
+    PRESET_WORKSPACE_DATASET_COUNT: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount"
+    )
+    """
+    TBC
+    """
+
+    PRESET_DASHBOARDS: ClassVar[RelationField] = RelationField("presetDashboards")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "preset_workspace_public_dashboards_allowed",
         "preset_workspace_cluster_id",
         "preset_workspace_hostname",

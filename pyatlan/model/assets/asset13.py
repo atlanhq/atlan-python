@@ -15,10 +15,11 @@ from pyatlan.model.enums import (
     DataAction,
     PurposeMetadataAction,
 )
+from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan.utils import validate_required_fields
+
 from .asset00 import SelfAsset
-from .asset05 import AccessControl
-from .asset05 import AuthPolicy
+from .asset05 import AccessControl, AuthPolicy
 
 
 class Purpose(AccessControl):
@@ -179,11 +180,18 @@ class Purpose(AccessControl):
         return v
 
     def __setattr__(self, name, value):
-        if name in Purpose._convience_properties:
+        if name in Purpose._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    PURPOSE_CLASSIFICATIONS: ClassVar[KeywordField] = KeywordField(
+        "purposeClassifications", "purposeClassifications"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "purpose_atlan_tags",
     ]
 

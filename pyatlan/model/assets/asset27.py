@@ -8,10 +8,13 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, field_validator
 
-from pyatlan.model.structs import (
-    GoogleLabel,
-    GoogleTag,
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
 )
+from pyatlan.model.structs import GoogleLabel, GoogleTag
+
 from .asset08 import Cloud
 
 
@@ -28,11 +31,56 @@ class Google(Cloud):
         return v
 
     def __setattr__(self, name, value):
-        if name in Google._convience_properties:
+        if name in Google._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    )
+    """
+    TBC
+    """
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    """
+    TBC
+    """
+    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "google_service",
         "google_project_name",
         "google_project_id",

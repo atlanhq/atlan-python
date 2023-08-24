@@ -15,6 +15,13 @@ from pyatlan.model.enums import (
     QuickSightDatasetImportMode,
     QuickSightFolderType,
 )
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+    RelationField,
+)
+
 from .asset44 import QuickSight
 
 
@@ -31,11 +38,39 @@ class QuickSightFolder(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightFolder._convience_properties:
+        if name in QuickSightFolder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField(
+        "quickSightFolderType", "quickSightFolderType"
+    )
+    """
+    Shared or private type of folder
+    """
+    QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "quickSightFolderHierarchy", "quickSightFolderHierarchy"
+    )
+    """
+    Detailed path of the folder
+    """
+
+    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboards"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DATASETS: ClassVar[RelationField] = RelationField("quickSightDatasets")
+    """
+    TBC
+    """
+    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_folder_type",
         "quick_sight_folder_hierarchy",
         "quick_sight_dashboards",
@@ -150,11 +185,27 @@ class QuickSightDashboardVisual(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDashboardVisual._convience_properties:
+        if name in QuickSightDashboardVisual._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightDashboardQualifiedName",
+        "quickSightDashboardQualifiedName",
+        "quickSightDashboardQualifiedName.text",
+    )
+    """
+    TBC
+    """
+
+    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
+        "quickSightDashboard"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_dashboard_qualified_name",
         "quick_sight_dashboard",
     ]
@@ -220,11 +271,25 @@ class QuickSightAnalysisVisual(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysisVisual._convience_properties:
+        if name in QuickSightAnalysisVisual._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightAnalysisQualifiedName",
+        "quickSightAnalysisQualifiedName",
+        "quickSightAnalysisQualifiedName.text",
+    )
+    """
+    Qualified name of the QuickSight Analysis
+    """
+
+    QUICK_SIGHT_ANALYSIS: ClassVar[RelationField] = RelationField("quickSightAnalysis")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_analysis_qualified_name",
         "quick_sight_analysis",
     ]
@@ -286,11 +351,31 @@ class QuickSightDatasetField(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDatasetField._convience_properties:
+        if name in QuickSightDatasetField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_DATASET_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "quickSightDatasetFieldType", "quickSightDatasetFieldType"
+    )
+    """
+    Datatype of column in the dataset
+    """
+    QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightDatasetQualifiedName",
+        "quickSightDatasetQualifiedName",
+        "quickSightDatasetQualifiedName.text",
+    )
+    """
+    Qualified name of the parent dataset
+    """
+
+    QUICK_SIGHT_DATASET: ClassVar[RelationField] = RelationField("quickSightDataset")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_dataset_field_type",
         "quick_sight_dataset_qualified_name",
         "quick_sight_dataset",
@@ -373,11 +458,50 @@ class QuickSightAnalysis(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysis._convience_properties:
+        if name in QuickSightAnalysis._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisStatus", "quickSightAnalysisStatus"
+    )
+    """
+    Status of quicksight analysis
+    """
+    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
+    )
+    """
+    Calculated fields of quicksight analysis
+    """
+    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisParameterDeclarations",
+        "quickSightAnalysisParameterDeclarations",
+    )
+    """
+    parameters used for quicksight analysis
+    """
+    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
+    )
+    """
+    Filter groups used for quicksight analysis
+    """
+
+    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisVisuals"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisFolders"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_analysis_status",
         "quick_sight_analysis_calculated_fields",
         "quick_sight_analysis_parameter_declarations",
@@ -534,11 +658,40 @@ class QuickSightDashboard(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDashboard._convience_properties:
+        if name in QuickSightDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[
+        NumericField
+    ] = NumericField(
+        "quickSightDashboardPublishedVersionNumber",
+        "quickSightDashboardPublishedVersionNumber",
+    )
+    """
+    Version number of the dashboard published
+    """
+    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[NumericField] = NumericField(
+        "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
+    )
+    """
+    Last published time of dashboard
+    """
+
+    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardFolders"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardVisuals"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_dashboard_published_version_number",
         "quick_sight_dashboard_last_published_time",
         "quick_sight_dashboard_folders",
@@ -655,11 +808,37 @@ class QuickSightDataset(QuickSight):
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDataset._convience_properties:
+        if name in QuickSightDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    _convience_properties: ClassVar[list[str]] = [
+    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[KeywordField] = KeywordField(
+        "quickSightDatasetImportMode", "quickSightDatasetImportMode"
+    )
+    """
+    Quicksight dataset importMode indicates a value that indicates whether you want to import the data into SPICE
+    """
+    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
+    )
+    """
+    Quicksight dataset column count indicates number of columns present in the dataset
+    """
+
+    QUICK_SIGHT_DATASET_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDatasetFolders"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DATASET_FIELDS: ClassVar[RelationField] = RelationField(
+        "quickSightDatasetFields"
+    )
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
         "quick_sight_dataset_import_mode",
         "quick_sight_dataset_column_count",
         "quick_sight_dataset_folders",
