@@ -6,20 +6,25 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.enums import KafkaTopicCleanupPolicy, KafkaTopicCompressionType
-from pyatlan.model.structs import KafkaTopicConsumption
-
+from pyatlan.model.enums import (
+    KafkaTopicCleanupPolicy,
+    KafkaTopicCompressionType,
+)
+from pyatlan.model.structs import (
+    KafkaTopicConsumption,
+)
 from .asset51 import Kafka
 
 
 class KafkaConsumerGroup(Kafka):
     """Description"""
 
-    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+    type_name: str = Field("KafkaConsumerGroup", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "KafkaConsumerGroup":
             raise ValueError("must be KafkaConsumerGroup")
@@ -119,19 +124,25 @@ class KafkaConsumerGroup(Kafka):
         kafka_consumer_group_topic_consumption_properties: Optional[
             list[KafkaTopicConsumption]
         ] = Field(
-            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
+            default=None,
+            description="",
+            alias="kafkaConsumerGroupTopicConsumptionProperties",
         )
+
         kafka_consumer_group_member_count: Optional[int] = Field(
-            None, description="", alias="kafkaConsumerGroupMemberCount"
+            default=None, description="", alias="kafkaConsumerGroupMemberCount"
         )
+
         kafka_topic_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicNames"
+            default=None, description="", alias="kafkaTopicNames"
         )
+
         kafka_topic_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicQualifiedNames"
+            default=None, description="", alias="kafkaTopicQualifiedNames"
         )
+
         kafka_topics: Optional[list[KafkaTopic]] = Field(
-            None, description="", alias="kafkaTopics"
+            default=None, description="", alias="kafkaTopics"
         )  # relationship
 
     attributes: "KafkaConsumerGroup.Attributes" = Field(
@@ -144,9 +155,10 @@ class KafkaConsumerGroup(Kafka):
 class KafkaTopic(Kafka):
     """Description"""
 
-    type_name: str = Field("KafkaTopic", allow_mutation=False)
+    type_name: str = Field("KafkaTopic", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "KafkaTopic":
             raise ValueError("must be KafkaTopic")
@@ -301,31 +313,39 @@ class KafkaTopic(Kafka):
 
     class Attributes(Kafka.Attributes):
         kafka_topic_is_internal: Optional[bool] = Field(
-            None, description="", alias="kafkaTopicIsInternal"
+            default=None, description="", alias="kafkaTopicIsInternal"
         )
+
         kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
-            None, description="", alias="kafkaTopicCompressionType"
+            default=None, description="", alias="kafkaTopicCompressionType"
         )
+
         kafka_topic_replication_factor: Optional[int] = Field(
-            None, description="", alias="kafkaTopicReplicationFactor"
+            default=None, description="", alias="kafkaTopicReplicationFactor"
         )
+
         kafka_topic_segment_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSegmentBytes"
+            default=None, description="", alias="kafkaTopicSegmentBytes"
         )
+
         kafka_topic_partitions_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicPartitionsCount"
+            default=None, description="", alias="kafkaTopicPartitionsCount"
         )
+
         kafka_topic_size_in_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSizeInBytes"
+            default=None, description="", alias="kafkaTopicSizeInBytes"
         )
+
         kafka_topic_record_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicRecordCount"
+            default=None, description="", alias="kafkaTopicRecordCount"
         )
+
         kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(
-            None, description="", alias="kafkaTopicCleanupPolicy"
+            default=None, description="", alias="kafkaTopicCleanupPolicy"
         )
+
         kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
-            None, description="", alias="kafkaConsumerGroups"
+            default=None, description="", alias="kafkaConsumerGroups"
         )  # relationship
 
     attributes: "KafkaTopic.Attributes" = Field(

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset00 import Asset
 
@@ -14,9 +14,10 @@ from .asset00 import Asset
 class Infrastructure(Asset, type_name="Infrastructure"):
     """Description"""
 
-    type_name: str = Field("Infrastructure", allow_mutation=False)
+    type_name: str = Field("Infrastructure", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Infrastructure":
             raise ValueError("must be Infrastructure")

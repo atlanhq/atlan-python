@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset00 import Catalog
 
@@ -14,9 +14,10 @@ from .asset00 import Catalog
 class EventStore(Catalog):
     """Description"""
 
-    type_name: str = Field("EventStore", allow_mutation=False)
+    type_name: str = Field("EventStore", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "EventStore":
             raise ValueError("must be EventStore")

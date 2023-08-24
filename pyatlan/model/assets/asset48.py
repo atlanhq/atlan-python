@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class Qlik(BI):
     """Description"""
 
-    type_name: str = Field("Qlik", allow_mutation=False)
+    type_name: str = Field("Qlik", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Qlik":
             raise ValueError("must be Qlik")
@@ -125,19 +126,32 @@ class Qlik(BI):
         self.attributes.qlik_is_published = qlik_is_published
 
     class Attributes(BI.Attributes):
-        qlik_id: Optional[str] = Field(None, description="", alias="qlikId")
-        qlik_q_r_i: Optional[str] = Field(None, description="", alias="qlikQRI")
-        qlik_space_id: Optional[str] = Field(None, description="", alias="qlikSpaceId")
+        qlik_id: Optional[str] = Field(default=None, description="", alias="qlikId")
+
+        qlik_q_r_i: Optional[str] = Field(default=None, description="", alias="qlikQRI")
+
+        qlik_space_id: Optional[str] = Field(
+            default=None, description="", alias="qlikSpaceId"
+        )
+
         qlik_space_qualified_name: Optional[str] = Field(
-            None, description="", alias="qlikSpaceQualifiedName"
+            default=None, description="", alias="qlikSpaceQualifiedName"
         )
-        qlik_app_id: Optional[str] = Field(None, description="", alias="qlikAppId")
+
+        qlik_app_id: Optional[str] = Field(
+            default=None, description="", alias="qlikAppId"
+        )
+
         qlik_app_qualified_name: Optional[str] = Field(
-            None, description="", alias="qlikAppQualifiedName"
+            default=None, description="", alias="qlikAppQualifiedName"
         )
-        qlik_owner_id: Optional[str] = Field(None, description="", alias="qlikOwnerId")
+
+        qlik_owner_id: Optional[str] = Field(
+            default=None, description="", alias="qlikOwnerId"
+        )
+
         qlik_is_published: Optional[bool] = Field(
-            None, description="", alias="qlikIsPublished"
+            default=None, description="", alias="qlikIsPublished"
         )
 
     attributes: "Qlik.Attributes" = Field(

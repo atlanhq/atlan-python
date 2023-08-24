@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class Thoughtspot(BI):
     """Description"""
 
-    type_name: str = Field("Thoughtspot", allow_mutation=False)
+    type_name: str = Field("Thoughtspot", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Thoughtspot":
             raise ValueError("must be Thoughtspot")
@@ -60,10 +61,11 @@ class Thoughtspot(BI):
 
     class Attributes(BI.Attributes):
         thoughtspot_chart_type: Optional[str] = Field(
-            None, description="", alias="thoughtspotChartType"
+            default=None, description="", alias="thoughtspotChartType"
         )
+
         thoughtspot_question_text: Optional[str] = Field(
-            None, description="", alias="thoughtspotQuestionText"
+            default=None, description="", alias="thoughtspotQuestionText"
         )
 
     attributes: "Thoughtspot.Attributes" = Field(

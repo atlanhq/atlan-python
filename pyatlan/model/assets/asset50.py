@@ -6,19 +6,21 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.enums import IconType
-
+from pyatlan.model.enums import (
+    IconType,
+)
 from .asset00 import Resource
 
 
 class ReadmeTemplate(Resource):
     """Description"""
 
-    type_name: str = Field("ReadmeTemplate", allow_mutation=False)
+    type_name: str = Field("ReadmeTemplate", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ReadmeTemplate":
             raise ValueError("must be ReadmeTemplate")
@@ -55,8 +57,11 @@ class ReadmeTemplate(Resource):
         self.attributes.icon_type = icon_type
 
     class Attributes(Resource.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+        icon: Optional[str] = Field(default=None, description="", alias="icon")
+
+        icon_type: Optional[IconType] = Field(
+            default=None, description="", alias="iconType"
+        )
 
     attributes: "ReadmeTemplate.Attributes" = Field(
         default_factory=lambda: ReadmeTemplate.Attributes(),

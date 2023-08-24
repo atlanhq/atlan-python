@@ -33,9 +33,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
         {% include file_name %}
     {% endif %}
 
-    type_name: str = Field("{{ entity_def.name }}", allow_mutation=False)
+    type_name: str = Field("{{ entity_def.name }}", frozen=False)
 
-    @validator('type_name')
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "{{ entity_def.name }}":
             raise ValueError('must be {{ entity_def.name }}')
@@ -46,11 +47,15 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}None,{% endif %} description='' , alias='{{attribute_def.name}}')
+        {% if type == 'str' and not attribute_def.isOptional %}
+        {{attribute_def.name | to_snake_case }}: {{type}} = Field(default='', description='' , alias='{{attribute_def.name}}')
+        {% else %}
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}default=None,{% endif %} description='' , alias='{{attribute_def.name}}')
+        {% endif %}
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}None,{% endif %} description='',  alias='{{attribute_def.name}}') # relationship
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}default=None,{% endif %} description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
         {% set file_name = 'methods/attribute/' + entity_def.name | to_snake_case + '.jinja2' %}
         {%  if existz('templates/' + file_name) %}

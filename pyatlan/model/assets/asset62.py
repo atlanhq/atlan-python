@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset39 import Tableau
 
@@ -14,9 +14,10 @@ from .asset39 import Tableau
 class TableauWorkbook(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauWorkbook", allow_mutation=False)
+    type_name: str = Field("TableauWorkbook", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauWorkbook":
             raise ValueError("must be TableauWorkbook")
@@ -143,31 +144,36 @@ class TableauWorkbook(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectName"
+            default=None, description="", alias="topLevelProjectName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         project: Optional[TableauProject] = Field(
-            None, description="", alias="project"
+            default=None, description="", alias="project"
         )  # relationship
         dashboards: Optional[list[TableauDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description="", alias="dashboards"
         )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
-            None, description="", alias="worksheets"
+            default=None, description="", alias="worksheets"
         )  # relationship
         datasources: Optional[list[TableauDatasource]] = Field(
-            None, description="", alias="datasources"
+            default=None, description="", alias="datasources"
         )  # relationship
 
     attributes: "TableauWorkbook.Attributes" = Field(
@@ -180,9 +186,10 @@ class TableauWorkbook(Tableau):
 class TableauDatasourceField(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauDatasourceField", allow_mutation=False)
+    type_name: str = Field("TableauDatasourceField", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauDatasourceField":
             raise ValueError("must be TableauDatasourceField")
@@ -452,58 +459,74 @@ class TableauDatasourceField(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="workbookQualifiedName"
+            default=None, description="", alias="workbookQualifiedName"
         )
+
         datasource_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasourceQualifiedName"
+            default=None, description="", alias="datasourceQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         fully_qualified_name: Optional[str] = Field(
-            None, description="", alias="fullyQualifiedName"
+            default=None, description="", alias="fullyQualifiedName"
         )
+
         tableau_datasource_field_data_category: Optional[str] = Field(
-            None, description="", alias="tableauDatasourceFieldDataCategory"
+            default=None, description="", alias="tableauDatasourceFieldDataCategory"
         )
+
         tableau_datasource_field_role: Optional[str] = Field(
-            None, description="", alias="tableauDatasourceFieldRole"
+            default=None, description="", alias="tableauDatasourceFieldRole"
         )
+
         tableau_datasource_field_data_type: Optional[str] = Field(
-            None, description="", alias="tableauDatasourceFieldDataType"
+            default=None, description="", alias="tableauDatasourceFieldDataType"
         )
+
         upstream_tables: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="upstreamTables"
+            default=None, description="", alias="upstreamTables"
         )
+
         tableau_datasource_field_formula: Optional[str] = Field(
-            None, description="", alias="tableauDatasourceFieldFormula"
+            default=None, description="", alias="tableauDatasourceFieldFormula"
         )
+
         tableau_datasource_field_bin_size: Optional[str] = Field(
-            None, description="", alias="tableauDatasourceFieldBinSize"
+            default=None, description="", alias="tableauDatasourceFieldBinSize"
         )
+
         upstream_columns: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="upstreamColumns"
+            default=None, description="", alias="upstreamColumns"
         )
+
         upstream_fields: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="upstreamFields"
+            default=None, description="", alias="upstreamFields"
         )
+
         datasource_field_type: Optional[str] = Field(
-            None, description="", alias="datasourceFieldType"
+            default=None, description="", alias="datasourceFieldType"
         )
+
         worksheets: Optional[list[TableauWorksheet]] = Field(
-            None, description="", alias="worksheets"
+            default=None, description="", alias="worksheets"
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(
-            None, description="", alias="datasource"
+            default=None, description="", alias="datasource"
         )  # relationship
 
     attributes: "TableauDatasourceField.Attributes" = Field(
@@ -516,9 +539,10 @@ class TableauDatasourceField(Tableau):
 class TableauCalculatedField(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauCalculatedField", allow_mutation=False)
+    type_name: str = Field("TableauCalculatedField", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauCalculatedField":
             raise ValueError("must be TableauCalculatedField")
@@ -693,37 +717,50 @@ class TableauCalculatedField(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="workbookQualifiedName"
+            default=None, description="", alias="workbookQualifiedName"
         )
+
         datasource_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasourceQualifiedName"
+            default=None, description="", alias="datasourceQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
-        data_category: Optional[str] = Field(None, description="", alias="dataCategory")
-        role: Optional[str] = Field(None, description="", alias="role")
+
+        data_category: Optional[str] = Field(
+            default=None, description="", alias="dataCategory"
+        )
+
+        role: Optional[str] = Field(default=None, description="", alias="role")
+
         tableau_data_type: Optional[str] = Field(
-            None, description="", alias="tableauDataType"
+            default=None, description="", alias="tableauDataType"
         )
-        formula: Optional[str] = Field(None, description="", alias="formula")
+
+        formula: Optional[str] = Field(default=None, description="", alias="formula")
+
         upstream_fields: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="upstreamFields"
+            default=None, description="", alias="upstreamFields"
         )
+
         worksheets: Optional[list[TableauWorksheet]] = Field(
-            None, description="", alias="worksheets"
+            default=None, description="", alias="worksheets"
         )  # relationship
         datasource: Optional[TableauDatasource] = Field(
-            None, description="", alias="datasource"
+            default=None, description="", alias="datasource"
         )  # relationship
 
     attributes: "TableauCalculatedField.Attributes" = Field(
@@ -736,9 +773,10 @@ class TableauCalculatedField(Tableau):
 class TableauProject(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauProject", allow_mutation=False)
+    type_name: str = Field("TableauProject", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauProject":
             raise ValueError("must be TableauProject")
@@ -872,34 +910,38 @@ class TableauProject(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         is_top_level_project: Optional[bool] = Field(
-            None, description="", alias="isTopLevelProject"
+            default=None, description="", alias="isTopLevelProject"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         parent_project: Optional[TableauProject] = Field(
-            None, description="", alias="parentProject"
+            default=None, description="", alias="parentProject"
         )  # relationship
         workbooks: Optional[list[TableauWorkbook]] = Field(
-            None, description="", alias="workbooks"
+            default=None, description="", alias="workbooks"
         )  # relationship
         site: Optional[TableauSite] = Field(
-            None, description="", alias="site"
+            default=None, description="", alias="site"
         )  # relationship
         datasources: Optional[list[TableauDatasource]] = Field(
-            None, description="", alias="datasources"
+            default=None, description="", alias="datasources"
         )  # relationship
         flows: Optional[list[TableauFlow]] = Field(
-            None, description="", alias="flows"
+            default=None, description="", alias="flows"
         )  # relationship
         child_projects: Optional[list[TableauProject]] = Field(
-            None, description="", alias="childProjects"
+            default=None, description="", alias="childProjects"
         )  # relationship
 
     attributes: "TableauProject.Attributes" = Field(
@@ -912,9 +954,10 @@ class TableauProject(Tableau):
 class TableauSite(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauSite", allow_mutation=False)
+    type_name: str = Field("TableauSite", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauSite":
             raise ValueError("must be TableauSite")
@@ -941,7 +984,7 @@ class TableauSite(Tableau):
 
     class Attributes(Tableau.Attributes):
         projects: Optional[list[TableauProject]] = Field(
-            None, description="", alias="projects"
+            default=None, description="", alias="projects"
         )  # relationship
 
     attributes: "TableauSite.Attributes" = Field(
@@ -954,9 +997,10 @@ class TableauSite(Tableau):
 class TableauDatasource(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauDatasource", allow_mutation=False)
+    type_name: str = Field("TableauDatasource", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauDatasource":
             raise ValueError("must be TableauDatasource")
@@ -1164,46 +1208,65 @@ class TableauDatasource(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="workbookQualifiedName"
+            default=None, description="", alias="workbookQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
-        is_published: Optional[bool] = Field(None, description="", alias="isPublished")
-        has_extracts: Optional[bool] = Field(None, description="", alias="hasExtracts")
-        is_certified: Optional[bool] = Field(None, description="", alias="isCertified")
+
+        is_published: Optional[bool] = Field(
+            default=None, description="", alias="isPublished"
+        )
+
+        has_extracts: Optional[bool] = Field(
+            default=None, description="", alias="hasExtracts"
+        )
+
+        is_certified: Optional[bool] = Field(
+            default=None, description="", alias="isCertified"
+        )
+
         certifier: Optional[dict[str, str]] = Field(
-            None, description="", alias="certifier"
+            default=None, description="", alias="certifier"
         )
+
         certification_note: Optional[str] = Field(
-            None, description="", alias="certificationNote"
+            default=None, description="", alias="certificationNote"
         )
+
         certifier_display_name: Optional[str] = Field(
-            None, description="", alias="certifierDisplayName"
+            default=None, description="", alias="certifierDisplayName"
         )
+
         upstream_tables: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="upstreamTables"
+            default=None, description="", alias="upstreamTables"
         )
+
         upstream_datasources: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="upstreamDatasources"
+            default=None, description="", alias="upstreamDatasources"
         )
+
         workbook: Optional[TableauWorkbook] = Field(
-            None, description="", alias="workbook"
+            default=None, description="", alias="workbook"
         )  # relationship
         project: Optional[TableauProject] = Field(
-            None, description="", alias="project"
+            default=None, description="", alias="project"
         )  # relationship
         fields: Optional[list[TableauDatasourceField]] = Field(
-            None, description="", alias="fields"
+            default=None, description="", alias="fields"
         )  # relationship
 
     attributes: "TableauDatasource.Attributes" = Field(
@@ -1216,9 +1279,10 @@ class TableauDatasource(Tableau):
 class TableauDashboard(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauDashboard", allow_mutation=False)
+    type_name: str = Field("TableauDashboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauDashboard":
             raise ValueError("must be TableauDashboard")
@@ -1323,25 +1387,30 @@ class TableauDashboard(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="workbookQualifiedName"
+            default=None, description="", alias="workbookQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         workbook: Optional[TableauWorkbook] = Field(
-            None, description="", alias="workbook"
+            default=None, description="", alias="workbook"
         )  # relationship
         worksheets: Optional[list[TableauWorksheet]] = Field(
-            None, description="", alias="worksheets"
+            default=None, description="", alias="worksheets"
         )  # relationship
 
     attributes: "TableauDashboard.Attributes" = Field(
@@ -1354,9 +1423,10 @@ class TableauDashboard(Tableau):
 class TableauFlow(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauFlow", allow_mutation=False)
+    type_name: str = Field("TableauFlow", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauFlow":
             raise ValueError("must be TableauFlow")
@@ -1470,28 +1540,35 @@ class TableauFlow(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         input_fields: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="inputFields"
+            default=None, description="", alias="inputFields"
         )
+
         output_fields: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="outputFields"
+            default=None, description="", alias="outputFields"
         )
+
         output_steps: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="outputSteps"
+            default=None, description="", alias="outputSteps"
         )
+
         project: Optional[TableauProject] = Field(
-            None, description="", alias="project"
+            default=None, description="", alias="project"
         )  # relationship
 
     attributes: "TableauFlow.Attributes" = Field(
@@ -1504,9 +1581,10 @@ class TableauFlow(Tableau):
 class TableauWorksheet(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauWorksheet", allow_mutation=False)
+    type_name: str = Field("TableauWorksheet", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauWorksheet":
             raise ValueError("must be TableauWorksheet")
@@ -1637,31 +1715,36 @@ class TableauWorksheet(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="workbookQualifiedName"
+            default=None, description="", alias="workbookQualifiedName"
         )
+
         workbook: Optional[TableauWorkbook] = Field(
-            None, description="", alias="workbook"
+            default=None, description="", alias="workbook"
         )  # relationship
         datasource_fields: Optional[list[TableauDatasourceField]] = Field(
-            None, description="", alias="datasourceFields"
+            default=None, description="", alias="datasourceFields"
         )  # relationship
         calculated_fields: Optional[list[TableauCalculatedField]] = Field(
-            None, description="", alias="calculatedFields"
+            default=None, description="", alias="calculatedFields"
         )  # relationship
         dashboards: Optional[list[TableauDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description="", alias="dashboards"
         )  # relationship
 
     attributes: "TableauWorksheet.Attributes" = Field(

@@ -18,10 +18,10 @@ from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
 
 
 class LineageRelation(AtlanObject):
-    from_entity_id: Optional[str]
-    to_entity_id: Optional[str]
-    process_id: Optional[str]
-    relationship_id: Optional[str]
+    from_entity_id: Optional[str] = None
+    to_entity_id: Optional[str] = None
+    process_id: Optional[str] = None
+    relationship_id: Optional[str] = None
 
     @property
     def is_full_link(self):
@@ -143,7 +143,7 @@ class LineageResponse(AtlanObject):
     has_more_downstream_vertices: bool
     guid_entity_map: dict[str, Asset]
     relations: list[LineageRelation]
-    vertex_children_info: Optional[dict[str, Any]]
+    vertex_children_info: Optional[dict[str, Any]] = None
     graph: Optional[LineageGraph] = None
 
     def get_graph(self):

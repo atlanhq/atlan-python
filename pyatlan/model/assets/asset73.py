@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset48 import Qlik
 
@@ -14,9 +14,10 @@ from .asset48 import Qlik
 class QlikApp(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikApp", allow_mutation=False)
+    type_name: str = Field("QlikApp", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QlikApp":
             raise ValueError("must be QlikApp")
@@ -119,25 +120,30 @@ class QlikApp(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_has_section_access: Optional[bool] = Field(
-            None, description="", alias="qlikHasSectionAccess"
+            default=None, description="", alias="qlikHasSectionAccess"
         )
+
         qlik_origin_app_id: Optional[str] = Field(
-            None, description="", alias="qlikOriginAppId"
+            default=None, description="", alias="qlikOriginAppId"
         )
+
         qlik_is_encrypted: Optional[bool] = Field(
-            None, description="", alias="qlikIsEncrypted"
+            default=None, description="", alias="qlikIsEncrypted"
         )
+
         qlik_is_direct_query_mode: Optional[bool] = Field(
-            None, description="", alias="qlikIsDirectQueryMode"
+            default=None, description="", alias="qlikIsDirectQueryMode"
         )
+
         qlik_app_static_byte_size: Optional[int] = Field(
-            None, description="", alias="qlikAppStaticByteSize"
+            default=None, description="", alias="qlikAppStaticByteSize"
         )
+
         qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
+            default=None, description="", alias="qlikSpace"
         )  # relationship
         qlik_sheets: Optional[list[QlikSheet]] = Field(
-            None, description="", alias="qlikSheets"
+            default=None, description="", alias="qlikSheets"
         )  # relationship
 
     attributes: "QlikApp.Attributes" = Field(
@@ -150,9 +156,10 @@ class QlikApp(Qlik):
 class QlikChart(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikChart", allow_mutation=False)
+    type_name: str = Field("QlikChart", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QlikChart":
             raise ValueError("must be QlikChart")
@@ -225,19 +232,23 @@ class QlikChart(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_chart_subtitle: Optional[str] = Field(
-            None, description="", alias="qlikChartSubtitle"
+            default=None, description="", alias="qlikChartSubtitle"
         )
+
         qlik_chart_footnote: Optional[str] = Field(
-            None, description="", alias="qlikChartFootnote"
+            default=None, description="", alias="qlikChartFootnote"
         )
+
         qlik_chart_orientation: Optional[str] = Field(
-            None, description="", alias="qlikChartOrientation"
+            default=None, description="", alias="qlikChartOrientation"
         )
+
         qlik_chart_type: Optional[str] = Field(
-            None, description="", alias="qlikChartType"
+            default=None, description="", alias="qlikChartType"
         )
+
         qlik_sheet: Optional[QlikSheet] = Field(
-            None, description="", alias="qlikSheet"
+            default=None, description="", alias="qlikSheet"
         )  # relationship
 
     attributes: "QlikChart.Attributes" = Field(
@@ -250,9 +261,10 @@ class QlikChart(Qlik):
 class QlikDataset(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikDataset", allow_mutation=False)
+    type_name: str = Field("QlikDataset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QlikDataset":
             raise ValueError("must be QlikDataset")
@@ -327,19 +339,23 @@ class QlikDataset(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_dataset_technical_name: Optional[str] = Field(
-            None, description="", alias="qlikDatasetTechnicalName"
+            default=None, description="", alias="qlikDatasetTechnicalName"
         )
+
         qlik_dataset_type: Optional[str] = Field(
-            None, description="", alias="qlikDatasetType"
+            default=None, description="", alias="qlikDatasetType"
         )
+
         qlik_dataset_uri: Optional[str] = Field(
-            None, description="", alias="qlikDatasetUri"
+            default=None, description="", alias="qlikDatasetUri"
         )
+
         qlik_dataset_subtype: Optional[str] = Field(
-            None, description="", alias="qlikDatasetSubtype"
+            default=None, description="", alias="qlikDatasetSubtype"
         )
+
         qlik_space: Optional[QlikSpace] = Field(
-            None, description="", alias="qlikSpace"
+            default=None, description="", alias="qlikSpace"
         )  # relationship
 
     attributes: "QlikDataset.Attributes" = Field(
@@ -352,9 +368,10 @@ class QlikDataset(Qlik):
 class QlikSheet(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikSheet", allow_mutation=False)
+    type_name: str = Field("QlikSheet", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QlikSheet":
             raise ValueError("must be QlikSheet")
@@ -405,13 +422,14 @@ class QlikSheet(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_sheet_is_approved: Optional[bool] = Field(
-            None, description="", alias="qlikSheetIsApproved"
+            default=None, description="", alias="qlikSheetIsApproved"
         )
+
         qlik_app: Optional[QlikApp] = Field(
-            None, description="", alias="qlikApp"
+            default=None, description="", alias="qlikApp"
         )  # relationship
         qlik_charts: Optional[list[QlikChart]] = Field(
-            None, description="", alias="qlikCharts"
+            default=None, description="", alias="qlikCharts"
         )  # relationship
 
     attributes: "QlikSheet.Attributes" = Field(
@@ -424,9 +442,10 @@ class QlikSheet(Qlik):
 class QlikSpace(Qlik):
     """Description"""
 
-    type_name: str = Field("QlikSpace", allow_mutation=False)
+    type_name: str = Field("QlikSpace", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QlikSpace":
             raise ValueError("must be QlikSpace")
@@ -475,13 +494,14 @@ class QlikSpace(Qlik):
 
     class Attributes(Qlik.Attributes):
         qlik_space_type: Optional[str] = Field(
-            None, description="", alias="qlikSpaceType"
+            default=None, description="", alias="qlikSpaceType"
         )
+
         qlik_datasets: Optional[list[QlikDataset]] = Field(
-            None, description="", alias="qlikDatasets"
+            default=None, description="", alias="qlikDatasets"
         )  # relationship
         qlik_apps: Optional[list[QlikApp]] = Field(
-            None, description="", alias="qlikApps"
+            default=None, description="", alias="qlikApps"
         )  # relationship
 
     attributes: "QlikSpace.Attributes" = Field(

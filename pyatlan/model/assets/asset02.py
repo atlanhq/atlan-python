@@ -6,11 +6,13 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.enums import AtlanConnectorType, QueryUsernameStrategy
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    QueryUsernameStrategy,
+)
 from pyatlan.utils import validate_required_fields
-
 from .asset00 import Asset
 
 
@@ -68,9 +70,10 @@ class Connection(Asset, type_name="Connection"):
         )
         return cls(attributes=attr)
 
-    type_name: str = Field("Connection", allow_mutation=False)
+    type_name: str = Field("Connection", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Connection":
             raise ValueError("must be Connection")
@@ -376,56 +379,88 @@ class Connection(Asset, type_name="Connection"):
         )
 
     class Attributes(Asset.Attributes):
-        category: Optional[str] = Field(None, description="", alias="category")
-        sub_category: Optional[str] = Field(None, description="", alias="subCategory")
-        host: Optional[str] = Field(None, description="", alias="host")
-        port: Optional[int] = Field(None, description="", alias="port")
-        allow_query: Optional[bool] = Field(None, description="", alias="allowQuery")
+        category: Optional[str] = Field(default=None, description="", alias="category")
+
+        sub_category: Optional[str] = Field(
+            default=None, description="", alias="subCategory"
+        )
+
+        host: Optional[str] = Field(default=None, description="", alias="host")
+
+        port: Optional[int] = Field(default=None, description="", alias="port")
+
+        allow_query: Optional[bool] = Field(
+            default=None, description="", alias="allowQuery"
+        )
+
         allow_query_preview: Optional[bool] = Field(
-            None, description="", alias="allowQueryPreview"
+            default=None, description="", alias="allowQueryPreview"
         )
+
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description="", alias="queryPreviewConfig"
         )
-        query_config: Optional[str] = Field(None, description="", alias="queryConfig")
+
+        query_config: Optional[str] = Field(
+            default=None, description="", alias="queryConfig"
+        )
+
         credential_strategy: Optional[str] = Field(
-            None, description="", alias="credentialStrategy"
+            default=None, description="", alias="credentialStrategy"
         )
+
         preview_credential_strategy: Optional[str] = Field(
-            None, description="", alias="previewCredentialStrategy"
+            default=None, description="", alias="previewCredentialStrategy"
         )
+
         policy_strategy: Optional[str] = Field(
-            None, description="", alias="policyStrategy"
+            default=None, description="", alias="policyStrategy"
         )
+
         query_username_strategy: Optional[QueryUsernameStrategy] = Field(
-            None, description="", alias="queryUsernameStrategy"
+            default=None, description="", alias="queryUsernameStrategy"
         )
-        row_limit: Optional[int] = Field(None, description="", alias="rowLimit")
-        query_timeout: Optional[int] = Field(None, description="", alias="queryTimeout")
+
+        row_limit: Optional[int] = Field(default=None, description="", alias="rowLimit")
+
+        query_timeout: Optional[int] = Field(
+            default=None, description="", alias="queryTimeout"
+        )
+
         default_credential_guid: Optional[str] = Field(
-            None, description="", alias="defaultCredentialGuid"
+            default=None, description="", alias="defaultCredentialGuid"
         )
+
         connector_icon: Optional[str] = Field(
-            None, description="", alias="connectorIcon"
+            default=None, description="", alias="connectorIcon"
         )
+
         connector_image: Optional[str] = Field(
-            None, description="", alias="connectorImage"
+            default=None, description="", alias="connectorImage"
         )
-        source_logo: Optional[str] = Field(None, description="", alias="sourceLogo")
+
+        source_logo: Optional[str] = Field(
+            default=None, description="", alias="sourceLogo"
+        )
+
         is_sample_data_preview_enabled: Optional[bool] = Field(
-            None, description="", alias="isSampleDataPreviewEnabled"
+            default=None, description="", alias="isSampleDataPreviewEnabled"
         )
+
         popularity_insights_timeframe: Optional[int] = Field(
-            None, description="", alias="popularityInsightsTimeframe"
+            default=None, description="", alias="popularityInsightsTimeframe"
         )
+
         has_popularity_insights: Optional[bool] = Field(
-            None, description="", alias="hasPopularityInsights"
+            default=None, description="", alias="hasPopularityInsights"
         )
+
         connection_dbt_environments: Optional[set[str]] = Field(
-            None, description="", alias="connectionDbtEnvironments"
+            default=None, description="", alias="connectionDbtEnvironments"
         )
+
         connection_s_s_o_credential_guid: Optional[str] = Field(
-            None, description="", alias="connectionSSOCredentialGuid"
+            default=None, description="", alias="connectionSSOCredentialGuid"
         )
 
     attributes: "Connection.Attributes" = Field(

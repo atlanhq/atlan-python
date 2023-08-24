@@ -6,19 +6,21 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.structs import AzureTag
-
+from pyatlan.model.structs import (
+    AzureTag,
+)
 from .asset08 import Cloud
 
 
 class Azure(Cloud):
     """Description"""
 
-    type_name: str = Field("Azure", allow_mutation=False)
+    type_name: str = Field("Azure", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Azure":
             raise ValueError("must be Azure")
@@ -86,16 +88,19 @@ class Azure(Cloud):
 
     class Attributes(Cloud.Attributes):
         azure_resource_id: Optional[str] = Field(
-            None, description="", alias="azureResourceId"
+            default=None, description="", alias="azureResourceId"
         )
+
         azure_location: Optional[str] = Field(
-            None, description="", alias="azureLocation"
+            default=None, description="", alias="azureLocation"
         )
+
         adls_account_secondary_location: Optional[str] = Field(
-            None, description="", alias="adlsAccountSecondaryLocation"
+            default=None, description="", alias="adlsAccountSecondaryLocation"
         )
+
         azure_tags: Optional[list[AzureTag]] = Field(
-            None, description="", alias="azureTags"
+            default=None, description="", alias="azureTags"
         )
 
     attributes: "Azure.Attributes" = Field(

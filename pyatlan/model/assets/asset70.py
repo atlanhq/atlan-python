@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset45 import Thoughtspot
 
@@ -14,9 +14,10 @@ from .asset45 import Thoughtspot
 class ThoughtspotAnswer(Thoughtspot):
     """Description"""
 
-    type_name: str = Field("ThoughtspotAnswer", allow_mutation=False)
+    type_name: str = Field("ThoughtspotAnswer", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ThoughtspotAnswer":
             raise ValueError("must be ThoughtspotAnswer")

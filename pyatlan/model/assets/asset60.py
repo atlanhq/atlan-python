@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset38 import Sigma
 
@@ -14,9 +14,10 @@ from .asset38 import Sigma
 class SigmaDatasetColumn(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
+    type_name: str = Field("SigmaDatasetColumn", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SigmaDatasetColumn":
             raise ValueError("must be SigmaDatasetColumn")
@@ -69,13 +70,15 @@ class SigmaDatasetColumn(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetQualifiedName"
+            default=None, description="", alias="sigmaDatasetQualifiedName"
         )
+
         sigma_dataset_name: Optional[str] = Field(
-            None, description="", alias="sigmaDatasetName"
+            default=None, description="", alias="sigmaDatasetName"
         )
+
         sigma_dataset: Optional[SigmaDataset] = Field(
-            None, description="", alias="sigmaDataset"
+            default=None, description="", alias="sigmaDataset"
         )  # relationship
 
     attributes: "SigmaDatasetColumn.Attributes" = Field(
@@ -88,9 +91,10 @@ class SigmaDatasetColumn(Sigma):
 class SigmaDataset(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDataset", allow_mutation=False)
+    type_name: str = Field("SigmaDataset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SigmaDataset":
             raise ValueError("must be SigmaDataset")
@@ -136,10 +140,11 @@ class SigmaDataset(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="sigmaDatasetColumnCount"
+            default=None, description="", alias="sigmaDatasetColumnCount"
         )
+
         sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
-            None, description="", alias="sigmaDatasetColumns"
+            default=None, description="", alias="sigmaDatasetColumns"
         )  # relationship
 
     attributes: "SigmaDataset.Attributes" = Field(

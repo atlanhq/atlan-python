@@ -6,12 +6,15 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, StrictStr, validator
+from pydantic import Field, StrictStr, field_validator
 
-from pyatlan.model.enums import EntityStatus
-from pyatlan.model.structs import BadgeCondition
+from pyatlan.model.enums import (
+    EntityStatus,
+)
+from pyatlan.model.structs import (
+    BadgeCondition,
+)
 from pyatlan.utils import validate_required_fields
-
 from .asset00 import Asset
 
 
@@ -38,9 +41,10 @@ class Badge(Asset, type_name="Badge"):
             ),
         )
 
-    type_name: str = Field("Badge", allow_mutation=False)
+    type_name: str = Field("Badge", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Badge":
             raise ValueError("must be Badge")
@@ -82,10 +86,11 @@ class Badge(Asset, type_name="Badge"):
 
     class Attributes(Asset.Attributes):
         badge_conditions: Optional[list[BadgeCondition]] = Field(
-            None, description="", alias="badgeConditions"
+            default=None, description="", alias="badgeConditions"
         )
+
         badge_metadata_attribute: Optional[str] = Field(
-            None, description="", alias="badgeMetadataAttribute"
+            default=None, description="", alias="badgeMetadataAttribute"
         )
 
         @classmethod

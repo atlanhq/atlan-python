@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset00 import Asset
 
@@ -14,9 +14,10 @@ from .asset00 import Asset
 class AuthService(Asset, type_name="AuthService"):
     """Description"""
 
-    type_name: str = Field("AuthService", allow_mutation=False)
+    type_name: str = Field("AuthService", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AuthService":
             raise ValueError("must be AuthService")
@@ -95,17 +96,23 @@ class AuthService(Asset, type_name="AuthService"):
 
     class Attributes(Asset.Attributes):
         auth_service_type: Optional[str] = Field(
-            None, description="", alias="authServiceType"
+            default=None, description="", alias="authServiceType"
         )
-        tag_service: Optional[str] = Field(None, description="", alias="tagService")
+
+        tag_service: Optional[str] = Field(
+            default=None, description="", alias="tagService"
+        )
+
         auth_service_is_enabled: Optional[bool] = Field(
-            None, description="", alias="authServiceIsEnabled"
+            default=None, description="", alias="authServiceIsEnabled"
         )
+
         auth_service_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="authServiceConfig"
+            default=None, description="", alias="authServiceConfig"
         )
+
         auth_service_policy_last_sync: Optional[int] = Field(
-            None, description="", alias="authServicePolicyLastSync"
+            default=None, description="", alias="authServicePolicyLastSync"
         )
 
     attributes: "AuthService.Attributes" = Field(

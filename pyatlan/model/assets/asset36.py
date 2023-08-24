@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class Preset(BI):
     """Description"""
 
-    type_name: str = Field("Preset", allow_mutation=False)
+    type_name: str = Field("Preset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Preset":
             raise ValueError("must be Preset")
@@ -92,16 +93,19 @@ class Preset(BI):
 
     class Attributes(BI.Attributes):
         preset_workspace_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceId"
+            default=None, description="", alias="presetWorkspaceId"
         )
+
         preset_workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceQualifiedName"
+            default=None, description="", alias="presetWorkspaceQualifiedName"
         )
+
         preset_dashboard_id: Optional[int] = Field(
-            None, description="", alias="presetDashboardId"
+            default=None, description="", alias="presetDashboardId"
         )
+
         preset_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardQualifiedName"
+            default=None, description="", alias="presetDashboardQualifiedName"
         )
 
     attributes: "Preset.Attributes" = Field(

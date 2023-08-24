@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class Metabase(BI):
     """Description"""
 
-    type_name: str = Field("Metabase", allow_mutation=False)
+    type_name: str = Field("Metabase", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Metabase":
             raise ValueError("must be Metabase")
@@ -66,10 +67,11 @@ class Metabase(BI):
 
     class Attributes(BI.Attributes):
         metabase_collection_name: Optional[str] = Field(
-            None, description="", alias="metabaseCollectionName"
+            default=None, description="", alias="metabaseCollectionName"
         )
+
         metabase_collection_qualified_name: Optional[str] = Field(
-            None, description="", alias="metabaseCollectionQualifiedName"
+            default=None, description="", alias="metabaseCollectionQualifiedName"
         )
 
     attributes: "Metabase.Attributes" = Field(

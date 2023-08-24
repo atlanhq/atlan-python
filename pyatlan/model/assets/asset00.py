@@ -11,7 +11,7 @@ from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
-from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic import model_validator, Field, PrivateAttr, StrictStr, field_validator
 
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
@@ -114,9 +114,9 @@ class Referenceable(AtlanObject):
         self.attributes.meanings = assigned_terms
 
     class Attributes(AtlanObject):
-        qualified_name: str = Field("", description="", alias="qualifiedName")
+        qualified_name: str = Field(default="", description="", alias="qualifiedName")
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
+            default=None, description="", alias="meanings"
         )  # relationship
 
         def validate_required(self):
@@ -129,95 +129,100 @@ class Referenceable(AtlanObject):
         "by type, so are described in the sub-types of this schema.\n",
     )
     business_attributes: Optional[Dict[str, Any]] = Field(
-        None,
+        default=None,
         description="Map of custom metadata attributes and values defined on the entity.\n",
         alias="businessAttributes",
     )
     created_by: Optional[str] = Field(
-        None,
+        default=None,
         description="Username of the user who created the object.\n",
         example="jsmith",
     )
     create_time: Optional[int] = Field(
-        None,
+        default=None,
         description="Time (epoch) at which this object was created, in milliseconds.\n",
         example=1648852296555,
     )
     delete_handler: Optional[str] = Field(
-        None,
+        default=None,
         description="Details on the handler used for deletion of the asset.",
         example="Hard",
     )
     guid: str = Field(
-        "",
+        default="",
         description="Unique identifier of the entity instance.\n",
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
-    is_incomplete: Optional[bool] = Field(True, description="", example=True)
-    labels: Optional[List[str]] = Field(None, description="Internal use only.")
+    is_incomplete: Optional[bool] = Field(default=True, description="", example=True)
+    labels: Optional[List[str]] = Field(default=None, description="Internal use only.")
     relationship_attributes: Optional[Dict[str, Any]] = Field(
-        None,
+        default=None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
         "so are described in the sub-types of this schema.\n",
     )
     status: Optional[EntityStatus] = Field(
-        None, description="Status of the entity", example=EntityStatus.ACTIVE
+        default=None, description="Status of the entity", example=EntityStatus.ACTIVE
     )
-    type_name: str = Field(
-        None, description="Name of the type definition that defines this instance.\n"
+    type_name: Optional[str] = Field(
+        default=None,
+        description="Name of the type definition that defines this instance.\n",
     )
     updated_by: Optional[str] = Field(
-        None,
+        default=None,
         description="Username of the user who last assets_updated the object.\n",
         example="jsmith",
     )
     update_time: Optional[int] = Field(
-        None,
+        default=None,
         description="Time (epoch) at which this object was last assets_updated, in milliseconds.\n",
         example=1649172284333,
     )
     version: Optional[int] = Field(
-        None, description="Version of this object.\n", example=2
+        default=None, description="Version of this object.\n", example=2
     )
     atlan_tags: Optional[list[AtlanTag]] = Field(
-        None, description="Atlan tags", alias="classifications"
+        default=None, description="Atlan tags", alias="classifications"
     )
     classification_names: Optional[list[str]] = Field(
-        None, description="The names of the classifications that exist on the asset."
+        default=None,
+        description="The names of the classifications that exist on the asset.",
     )
     display_text: Optional[str] = Field(
-        None,
+        default=None,
         description="Human-readable name of the entity..\n",
     )
     entity_status: Optional[str] = Field(
-        None,
+        default=None,
         description="Status of the entity (if this is a related entity).\n",
     )
     relationship_guid: Optional[str] = Field(
-        None,
+        default=None,
         description="Unique identifier of the relationship (when this is a related entity).\n",
     )
     relationship_status: Optional[str] = Field(
-        None,
+        default=None,
         description="Status of the relationship (when this is a related entity).\n",
     )
     relationship_type: Optional[str] = Field(
-        None,
+        default=None,
         description="Status of the relationship (when this is a related entity).\n",
     )
     meaning_names: Optional[list[str]] = Field(
-        None, description="Names of assigned_terms that have been linked to this asset."
+        default=None,
+        description="Names of assigned_terms that have been linked to this asset.",
     )
-    meanings: Optional[list[Meaning]] = Field(None, description="", alias="meanings")
+    meanings: Optional[list[Meaning]] = Field(
+        default=None, description="", alias="meanings"
+    )
     custom_attributes: Optional[dict[str, Any]] = Field(
-        None, description="", alias="customAttributes"
+        default=None, description="", alias="customAttributes"
     )
     scrubbed: Optional[bool] = Field(
-        None, description="", alias="fields removed from results"
+        default=None, description="", alias="fields removed from results"
     )
-    pending_tasks: Optional[list[str]] = Field(None)
+    pending_tasks: Optional[list[str]] = Field(default=None)
 
-    unique_attributes: Optional[dict[str, Any]] = Field(None)
+    unique_attributes: Optional[dict[str, Any]] = Field(default=None)
 
 
 class Asset(Referenceable):
@@ -270,7 +275,6 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
-
         if isinstance(data, Asset):
             return data
 
@@ -331,9 +335,10 @@ class Asset(Referenceable):
     def remove_certificate(self):
         self.attributes.remove_certificate()
 
-    type_name: str = Field("Asset", allow_mutation=False)
+    type_name: str = Field("Asset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Asset":
             raise ValueError("must be Asset")
@@ -2173,365 +2178,520 @@ class Asset(Referenceable):
         self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
-        name: str = Field(description="", alias="name")
-        display_name: Optional[str] = Field(None, description="", alias="displayName")
-        description: Optional[str] = Field(None, description="", alias="description")
+        name: str = Field(default="", description="", alias="name")
+
+        display_name: Optional[str] = Field(
+            default=None, description="", alias="displayName"
+        )
+
+        description: Optional[str] = Field(
+            default=None, description="", alias="description"
+        )
+
         user_description: Optional[str] = Field(
-            None, description="", alias="userDescription"
+            default=None, description="", alias="userDescription"
         )
-        tenant_id: Optional[str] = Field(None, description="", alias="tenantId")
+
+        tenant_id: Optional[str] = Field(default=None, description="", alias="tenantId")
+
         certificate_status: Optional[CertificateStatus] = Field(
-            None, description="", alias="certificateStatus"
+            default=None, description="", alias="certificateStatus"
         )
+
         certificate_status_message: Optional[str] = Field(
-            None, description="", alias="certificateStatusMessage"
+            default=None, description="", alias="certificateStatusMessage"
         )
+
         certificate_updated_by: Optional[str] = Field(
-            None, description="", alias="certificateUpdatedBy"
+            default=None, description="", alias="certificateUpdatedBy"
         )
+
         certificate_updated_at: Optional[datetime] = Field(
-            None, description="", alias="certificateUpdatedAt"
+            default=None, description="", alias="certificateUpdatedAt"
         )
+
         announcement_title: Optional[str] = Field(
-            None, description="", alias="announcementTitle"
+            default=None, description="", alias="announcementTitle"
         )
+
         announcement_message: Optional[str] = Field(
-            None, description="", alias="announcementMessage"
+            default=None, description="", alias="announcementMessage"
         )
+
         announcement_type: Optional[str] = Field(
-            None, description="", alias="announcementType"
+            default=None, description="", alias="announcementType"
         )
+
         announcement_updated_at: Optional[datetime] = Field(
-            None, description="", alias="announcementUpdatedAt"
+            default=None, description="", alias="announcementUpdatedAt"
         )
+
         announcement_updated_by: Optional[str] = Field(
-            None, description="", alias="announcementUpdatedBy"
+            default=None, description="", alias="announcementUpdatedBy"
         )
+
         owner_users: Optional[set[str]] = Field(
-            None, description="", alias="ownerUsers"
+            default=None, description="", alias="ownerUsers"
         )
+
         owner_groups: Optional[set[str]] = Field(
-            None, description="", alias="ownerGroups"
+            default=None, description="", alias="ownerGroups"
         )
+
         admin_users: Optional[set[str]] = Field(
-            None, description="", alias="adminUsers"
+            default=None, description="", alias="adminUsers"
         )
+
         admin_groups: Optional[set[str]] = Field(
-            None, description="", alias="adminGroups"
+            default=None, description="", alias="adminGroups"
         )
+
         viewer_users: Optional[set[str]] = Field(
-            None, description="", alias="viewerUsers"
+            default=None, description="", alias="viewerUsers"
         )
+
         viewer_groups: Optional[set[str]] = Field(
-            None, description="", alias="viewerGroups"
+            default=None, description="", alias="viewerGroups"
         )
+
         connector_name: Optional[str] = Field(
-            None, description="", alias="connectorName"
+            default=None, description="", alias="connectorName"
         )
+
         connection_name: Optional[str] = Field(
-            None, description="", alias="connectionName"
+            default=None, description="", alias="connectionName"
         )
+
         connection_qualified_name: Optional[str] = Field(
-            None, description="", alias="connectionQualifiedName"
+            default=None, description="", alias="connectionQualifiedName"
         )
-        has_lineage: Optional[bool] = Field(None, description="", alias="__hasLineage")
+
+        has_lineage: Optional[bool] = Field(
+            default=None, description="", alias="__hasLineage"
+        )
+
         is_discoverable: Optional[bool] = Field(
-            None, description="", alias="isDiscoverable"
+            default=None, description="", alias="isDiscoverable"
         )
-        is_editable: Optional[bool] = Field(None, description="", alias="isEditable")
-        sub_type: Optional[str] = Field(None, description="", alias="subType")
-        view_score: Optional[float] = Field(None, description="", alias="viewScore")
+
+        is_editable: Optional[bool] = Field(
+            default=None, description="", alias="isEditable"
+        )
+
+        sub_type: Optional[str] = Field(default=None, description="", alias="subType")
+
+        view_score: Optional[float] = Field(
+            default=None, description="", alias="viewScore"
+        )
+
         popularity_score: Optional[float] = Field(
-            None, description="", alias="popularityScore"
+            default=None, description="", alias="popularityScore"
         )
-        source_owners: Optional[str] = Field(None, description="", alias="sourceOwners")
+
+        source_owners: Optional[str] = Field(
+            default=None, description="", alias="sourceOwners"
+        )
+
         source_created_by: Optional[str] = Field(
-            None, description="", alias="sourceCreatedBy"
+            default=None, description="", alias="sourceCreatedBy"
         )
+
         source_created_at: Optional[datetime] = Field(
-            None, description="", alias="sourceCreatedAt"
+            default=None, description="", alias="sourceCreatedAt"
         )
+
         source_updated_at: Optional[datetime] = Field(
-            None, description="", alias="sourceUpdatedAt"
+            default=None, description="", alias="sourceUpdatedAt"
         )
+
         source_updated_by: Optional[str] = Field(
-            None, description="", alias="sourceUpdatedBy"
+            default=None, description="", alias="sourceUpdatedBy"
         )
-        source_url: Optional[str] = Field(None, description="", alias="sourceURL")
+
+        source_url: Optional[str] = Field(
+            default=None, description="", alias="sourceURL"
+        )
+
         source_embed_url: Optional[str] = Field(
-            None, description="", alias="sourceEmbedURL"
+            default=None, description="", alias="sourceEmbedURL"
         )
+
         last_sync_workflow_name: Optional[str] = Field(
-            None, description="", alias="lastSyncWorkflowName"
+            default=None, description="", alias="lastSyncWorkflowName"
         )
+
         last_sync_run_at: Optional[datetime] = Field(
-            None, description="", alias="lastSyncRunAt"
+            default=None, description="", alias="lastSyncRunAt"
         )
-        last_sync_run: Optional[str] = Field(None, description="", alias="lastSyncRun")
+
+        last_sync_run: Optional[str] = Field(
+            default=None, description="", alias="lastSyncRun"
+        )
+
         admin_roles: Optional[set[str]] = Field(
-            None, description="", alias="adminRoles"
+            default=None, description="", alias="adminRoles"
         )
+
         source_read_count: Optional[int] = Field(
-            None, description="", alias="sourceReadCount"
+            default=None, description="", alias="sourceReadCount"
         )
+
         source_read_user_count: Optional[int] = Field(
-            None, description="", alias="sourceReadUserCount"
+            default=None, description="", alias="sourceReadUserCount"
         )
+
         source_last_read_at: Optional[datetime] = Field(
-            None, description="", alias="sourceLastReadAt"
+            default=None, description="", alias="sourceLastReadAt"
         )
+
         last_row_changed_at: Optional[datetime] = Field(
-            None, description="", alias="lastRowChangedAt"
+            default=None, description="", alias="lastRowChangedAt"
         )
+
         source_total_cost: Optional[float] = Field(
-            None, description="", alias="sourceTotalCost"
+            default=None, description="", alias="sourceTotalCost"
         )
+
         source_cost_unit: Optional[SourceCostUnitType] = Field(
-            None, description="", alias="sourceCostUnit"
+            default=None, description="", alias="sourceCostUnit"
         )
+
         source_read_query_cost: Optional[float] = Field(
-            None, description="", alias="sourceReadQueryCost"
+            default=None, description="", alias="sourceReadQueryCost"
         )
+
         source_read_recent_user_list: Optional[set[str]] = Field(
-            None, description="", alias="sourceReadRecentUserList"
+            default=None, description="", alias="sourceReadRecentUserList"
         )
+
         source_read_recent_user_record_list: Optional[list[PopularityInsights]] = Field(
-            None, description="", alias="sourceReadRecentUserRecordList"
+            default=None, description="", alias="sourceReadRecentUserRecordList"
         )
+
         source_read_top_user_list: Optional[set[str]] = Field(
-            None, description="", alias="sourceReadTopUserList"
+            default=None, description="", alias="sourceReadTopUserList"
         )
+
         source_read_top_user_record_list: Optional[list[PopularityInsights]] = Field(
-            None, description="", alias="sourceReadTopUserRecordList"
+            default=None, description="", alias="sourceReadTopUserRecordList"
         )
+
         source_read_popular_query_record_list: Optional[
             list[PopularityInsights]
-        ] = Field(None, description="", alias="sourceReadPopularQueryRecordList")
+        ] = Field(
+            default=None, description="", alias="sourceReadPopularQueryRecordList"
+        )
+
         source_read_expensive_query_record_list: Optional[
             list[PopularityInsights]
-        ] = Field(None, description="", alias="sourceReadExpensiveQueryRecordList")
+        ] = Field(
+            default=None, description="", alias="sourceReadExpensiveQueryRecordList"
+        )
+
         source_read_slow_query_record_list: Optional[list[PopularityInsights]] = Field(
-            None, description="", alias="sourceReadSlowQueryRecordList"
+            default=None, description="", alias="sourceReadSlowQueryRecordList"
         )
+
         source_query_compute_cost_list: Optional[set[str]] = Field(
-            None, description="", alias="sourceQueryComputeCostList"
+            default=None, description="", alias="sourceQueryComputeCostList"
         )
+
         source_query_compute_cost_record_list: Optional[
             list[PopularityInsights]
-        ] = Field(None, description="", alias="sourceQueryComputeCostRecordList")
+        ] = Field(
+            default=None, description="", alias="sourceQueryComputeCostRecordList"
+        )
+
         dbt_qualified_name: Optional[str] = Field(
-            None, description="", alias="dbtQualifiedName"
+            default=None, description="", alias="dbtQualifiedName"
         )
+
         asset_dbt_alias: Optional[str] = Field(
-            None, description="", alias="assetDbtAlias"
+            default=None, description="", alias="assetDbtAlias"
         )
+
         asset_dbt_meta: Optional[str] = Field(
-            None, description="", alias="assetDbtMeta"
+            default=None, description="", alias="assetDbtMeta"
         )
+
         asset_dbt_unique_id: Optional[str] = Field(
-            None, description="", alias="assetDbtUniqueId"
+            default=None, description="", alias="assetDbtUniqueId"
         )
+
         asset_dbt_account_name: Optional[str] = Field(
-            None, description="", alias="assetDbtAccountName"
+            default=None, description="", alias="assetDbtAccountName"
         )
+
         asset_dbt_project_name: Optional[str] = Field(
-            None, description="", alias="assetDbtProjectName"
+            default=None, description="", alias="assetDbtProjectName"
         )
+
         asset_dbt_package_name: Optional[str] = Field(
-            None, description="", alias="assetDbtPackageName"
+            default=None, description="", alias="assetDbtPackageName"
         )
+
         asset_dbt_job_name: Optional[str] = Field(
-            None, description="", alias="assetDbtJobName"
+            default=None, description="", alias="assetDbtJobName"
         )
+
         asset_dbt_job_schedule: Optional[str] = Field(
-            None, description="", alias="assetDbtJobSchedule"
+            default=None, description="", alias="assetDbtJobSchedule"
         )
+
         asset_dbt_job_status: Optional[str] = Field(
-            None, description="", alias="assetDbtJobStatus"
+            default=None, description="", alias="assetDbtJobStatus"
         )
+
         asset_dbt_test_status: Optional[str] = Field(
-            None, description="", alias="assetDbtTestStatus"
+            default=None, description="", alias="assetDbtTestStatus"
         )
+
         asset_dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            None, description="", alias="assetDbtJobScheduleCronHumanized"
+            default=None, description="", alias="assetDbtJobScheduleCronHumanized"
         )
+
         asset_dbt_job_last_run: Optional[datetime] = Field(
-            None, description="", alias="assetDbtJobLastRun"
+            default=None, description="", alias="assetDbtJobLastRun"
         )
+
         asset_dbt_job_last_run_url: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunUrl"
+            default=None, description="", alias="assetDbtJobLastRunUrl"
         )
+
         asset_dbt_job_last_run_created_at: Optional[datetime] = Field(
-            None, description="", alias="assetDbtJobLastRunCreatedAt"
+            default=None, description="", alias="assetDbtJobLastRunCreatedAt"
         )
+
         asset_dbt_job_last_run_updated_at: Optional[datetime] = Field(
-            None, description="", alias="assetDbtJobLastRunUpdatedAt"
+            default=None, description="", alias="assetDbtJobLastRunUpdatedAt"
         )
+
         asset_dbt_job_last_run_dequed_at: Optional[datetime] = Field(
-            None, description="", alias="assetDbtJobLastRunDequedAt"
+            default=None, description="", alias="assetDbtJobLastRunDequedAt"
         )
+
         asset_dbt_job_last_run_started_at: Optional[datetime] = Field(
-            None, description="", alias="assetDbtJobLastRunStartedAt"
+            default=None, description="", alias="assetDbtJobLastRunStartedAt"
         )
+
         asset_dbt_job_last_run_total_duration: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunTotalDuration"
+            default=None, description="", alias="assetDbtJobLastRunTotalDuration"
         )
+
         asset_dbt_job_last_run_total_duration_humanized: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunTotalDurationHumanized"
+            default=None,
+            description="",
+            alias="assetDbtJobLastRunTotalDurationHumanized",
         )
+
         asset_dbt_job_last_run_queued_duration: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunQueuedDuration"
+            default=None, description="", alias="assetDbtJobLastRunQueuedDuration"
         )
+
         asset_dbt_job_last_run_queued_duration_humanized: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunQueuedDurationHumanized"
+            default=None,
+            description="",
+            alias="assetDbtJobLastRunQueuedDurationHumanized",
         )
+
         asset_dbt_job_last_run_run_duration: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunRunDuration"
+            default=None, description="", alias="assetDbtJobLastRunRunDuration"
         )
+
         asset_dbt_job_last_run_run_duration_humanized: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunRunDurationHumanized"
+            default=None, description="", alias="assetDbtJobLastRunRunDurationHumanized"
         )
+
         asset_dbt_job_last_run_git_branch: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunGitBranch"
+            default=None, description="", alias="assetDbtJobLastRunGitBranch"
         )
+
         asset_dbt_job_last_run_git_sha: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunGitSha"
+            default=None, description="", alias="assetDbtJobLastRunGitSha"
         )
+
         asset_dbt_job_last_run_status_message: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunStatusMessage"
+            default=None, description="", alias="assetDbtJobLastRunStatusMessage"
         )
+
         asset_dbt_job_last_run_owner_thread_id: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunOwnerThreadId"
+            default=None, description="", alias="assetDbtJobLastRunOwnerThreadId"
         )
+
         asset_dbt_job_last_run_executed_by_thread_id: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunExecutedByThreadId"
+            default=None, description="", alias="assetDbtJobLastRunExecutedByThreadId"
         )
+
         asset_dbt_job_last_run_artifacts_saved: Optional[bool] = Field(
-            None, description="", alias="assetDbtJobLastRunArtifactsSaved"
+            default=None, description="", alias="assetDbtJobLastRunArtifactsSaved"
         )
+
         asset_dbt_job_last_run_artifact_s3_path: Optional[str] = Field(
-            None, description="", alias="assetDbtJobLastRunArtifactS3Path"
+            default=None, description="", alias="assetDbtJobLastRunArtifactS3Path"
         )
+
         asset_dbt_job_last_run_has_docs_generated: Optional[bool] = Field(
-            None, description="", alias="assetDbtJobLastRunHasDocsGenerated"
+            default=None, description="", alias="assetDbtJobLastRunHasDocsGenerated"
         )
+
         asset_dbt_job_last_run_has_sources_generated: Optional[bool] = Field(
-            None, description="", alias="assetDbtJobLastRunHasSourcesGenerated"
+            default=None, description="", alias="assetDbtJobLastRunHasSourcesGenerated"
         )
+
         asset_dbt_job_last_run_notifications_sent: Optional[bool] = Field(
-            None, description="", alias="assetDbtJobLastRunNotificationsSent"
+            default=None, description="", alias="assetDbtJobLastRunNotificationsSent"
         )
+
         asset_dbt_job_next_run: Optional[datetime] = Field(
-            None, description="", alias="assetDbtJobNextRun"
+            default=None, description="", alias="assetDbtJobNextRun"
         )
+
         asset_dbt_job_next_run_humanized: Optional[str] = Field(
-            None, description="", alias="assetDbtJobNextRunHumanized"
+            default=None, description="", alias="assetDbtJobNextRunHumanized"
         )
+
         asset_dbt_environment_name: Optional[str] = Field(
-            None, description="", alias="assetDbtEnvironmentName"
+            default=None, description="", alias="assetDbtEnvironmentName"
         )
+
         asset_dbt_environment_dbt_version: Optional[str] = Field(
-            None, description="", alias="assetDbtEnvironmentDbtVersion"
+            default=None, description="", alias="assetDbtEnvironmentDbtVersion"
         )
+
         asset_dbt_tags: Optional[set[str]] = Field(
-            None, description="", alias="assetDbtTags"
+            default=None, description="", alias="assetDbtTags"
         )
+
         asset_dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            None, description="", alias="assetDbtSemanticLayerProxyUrl"
+            default=None, description="", alias="assetDbtSemanticLayerProxyUrl"
         )
+
         asset_dbt_source_freshness_criteria: Optional[str] = Field(
-            None, description="", alias="assetDbtSourceFreshnessCriteria"
+            default=None, description="", alias="assetDbtSourceFreshnessCriteria"
         )
+
         sample_data_url: Optional[str] = Field(
-            None, description="", alias="sampleDataUrl"
+            default=None, description="", alias="sampleDataUrl"
         )
-        asset_tags: Optional[set[str]] = Field(None, description="", alias="assetTags")
+
+        asset_tags: Optional[set[str]] = Field(
+            default=None, description="", alias="assetTags"
+        )
+
         asset_mc_incident_names: Optional[set[str]] = Field(
-            None, description="", alias="assetMcIncidentNames"
+            default=None, description="", alias="assetMcIncidentNames"
         )
+
         asset_mc_incident_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="assetMcIncidentQualifiedNames"
+            default=None, description="", alias="assetMcIncidentQualifiedNames"
         )
+
         asset_mc_monitor_names: Optional[set[str]] = Field(
-            None, description="", alias="assetMcMonitorNames"
+            default=None, description="", alias="assetMcMonitorNames"
         )
+
         asset_mc_monitor_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="assetMcMonitorQualifiedNames"
+            default=None, description="", alias="assetMcMonitorQualifiedNames"
         )
+
         asset_mc_monitor_statuses: Optional[set[str]] = Field(
-            None, description="", alias="assetMcMonitorStatuses"
+            default=None, description="", alias="assetMcMonitorStatuses"
         )
+
         asset_mc_monitor_types: Optional[set[str]] = Field(
-            None, description="", alias="assetMcMonitorTypes"
+            default=None, description="", alias="assetMcMonitorTypes"
         )
+
         asset_mc_monitor_schedule_types: Optional[set[str]] = Field(
-            None, description="", alias="assetMcMonitorScheduleTypes"
+            default=None, description="", alias="assetMcMonitorScheduleTypes"
         )
+
         asset_mc_incident_types: Optional[set[str]] = Field(
-            None, description="", alias="assetMcIncidentTypes"
+            default=None, description="", alias="assetMcIncidentTypes"
         )
+
         asset_mc_incident_sub_types: Optional[set[str]] = Field(
-            None, description="", alias="assetMcIncidentSubTypes"
+            default=None, description="", alias="assetMcIncidentSubTypes"
         )
+
         asset_mc_incident_severities: Optional[set[str]] = Field(
-            None, description="", alias="assetMcIncidentSeverities"
+            default=None, description="", alias="assetMcIncidentSeverities"
         )
+
         asset_mc_incident_states: Optional[set[str]] = Field(
-            None, description="", alias="assetMcIncidentStates"
+            default=None, description="", alias="assetMcIncidentStates"
         )
+
         asset_mc_last_sync_run_at: Optional[datetime] = Field(
-            None, description="", alias="assetMcLastSyncRunAt"
+            default=None, description="", alias="assetMcLastSyncRunAt"
         )
-        starred_by: Optional[set[str]] = Field(None, description="", alias="starredBy")
+
+        starred_by: Optional[set[str]] = Field(
+            default=None, description="", alias="starredBy"
+        )
+
         starred_details_list: Optional[list[StarredDetails]] = Field(
-            None, description="", alias="starredDetailsList"
+            default=None, description="", alias="starredDetailsList"
         )
-        starred_count: Optional[int] = Field(None, description="", alias="starredCount")
+
+        starred_count: Optional[int] = Field(
+            default=None, description="", alias="starredCount"
+        )
+
         asset_soda_d_q_status: Optional[str] = Field(
-            None, description="", alias="assetSodaDQStatus"
+            default=None, description="", alias="assetSodaDQStatus"
         )
+
         asset_soda_check_count: Optional[int] = Field(
-            None, description="", alias="assetSodaCheckCount"
+            default=None, description="", alias="assetSodaCheckCount"
         )
+
         asset_soda_last_sync_run_at: Optional[datetime] = Field(
-            None, description="", alias="assetSodaLastSyncRunAt"
+            default=None, description="", alias="assetSodaLastSyncRunAt"
         )
+
         asset_soda_last_scan_at: Optional[datetime] = Field(
-            None, description="", alias="assetSodaLastScanAt"
+            default=None, description="", alias="assetSodaLastScanAt"
         )
+
         asset_soda_check_statuses: Optional[str] = Field(
-            None, description="", alias="assetSodaCheckStatuses"
+            default=None, description="", alias="assetSodaCheckStatuses"
         )
+
         asset_soda_source_url: Optional[str] = Field(
-            None, description="", alias="assetSodaSourceURL"
+            default=None, description="", alias="assetSodaSourceURL"
         )
-        asset_icon: Optional[str] = Field(None, description="", alias="assetIcon")
+
+        asset_icon: Optional[str] = Field(
+            default=None, description="", alias="assetIcon"
+        )
+
         schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
-            None, description="", alias="schemaRegistrySubjects"
+            default=None, description="", alias="schemaRegistrySubjects"
         )  # relationship
         mc_monitors: Optional[list[MCMonitor]] = Field(
-            None, description="", alias="mcMonitors"
+            default=None, description="", alias="mcMonitors"
         )  # relationship
         files: Optional[list[File]] = Field(
-            None, description="", alias="files"
+            default=None, description="", alias="files"
         )  # relationship
         mc_incidents: Optional[list[MCIncident]] = Field(
-            None, description="", alias="mcIncidents"
+            default=None, description="", alias="mcIncidents"
         )  # relationship
         links: Optional[list[Link]] = Field(
-            None, description="", alias="links"
+            default=None, description="", alias="links"
         )  # relationship
         metrics: Optional[list[Metric]] = Field(
-            None, description="", alias="metrics"
+            default=None, description="", alias="metrics"
         )  # relationship
         readme: Optional[Readme] = Field(
-            None, description="", alias="readme"
+            default=None, description="", alias="readme"
         )  # relationship
         soda_checks: Optional[list[SodaCheck]] = Field(
-            None, description="", alias="sodaChecks"
+            default=None, description="", alias="sodaChecks"
         )  # relationship
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="meanings"
+            default=None, description="", alias="meanings"
         )  # relationship
 
         def remove_description(self):
@@ -2563,7 +2723,8 @@ class Asset(Referenceable):
 class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Description"""
 
-    @root_validator()
+    @model_validator(mode="after")
+    @classmethod
     def _set_qualified_name_fallback(cls, values):
         if (
             "attributes" in values
@@ -2617,9 +2778,10 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
         )
 
-    type_name: str = Field("AtlasGlossaryCategory", allow_mutation=False)
+    type_name: str = Field("AtlasGlossaryCategory", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AtlasGlossaryCategory":
             raise ValueError("must be AtlasGlossaryCategory")
@@ -2716,23 +2878,26 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
-            None, description="", alias="shortDescription"
+            default=None, description="", alias="shortDescription"
         )
+
         long_description: Optional[str] = Field(
-            None, description="", alias="longDescription"
+            default=None, description="", alias="longDescription"
         )
+
         additional_attributes: Optional[dict[str, str]] = Field(
-            None, description="", alias="additionalAttributes"
+            default=None, description="", alias="additionalAttributes"
         )
+
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="terms"
+            default=None, description="", alias="terms"
         )  # relationship
         anchor: AtlasGlossary = Field(description="", alias="anchor")  # relationship
         parent_category: Optional[AtlasGlossaryCategory] = Field(
-            None, description="", alias="parentCategory"
+            default=None, description="", alias="parentCategory"
         )  # relationship
         children_categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="childrenCategories"
+            default=None, description="", alias="childrenCategories"
         )  # relationship
 
         @classmethod
@@ -2762,7 +2927,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     """Description"""
 
-    @root_validator()
+    @model_validator(mode="after")
+    @classmethod
     def _set_qualified_name_fallback(cls, values):
         if (
             "attributes" in values
@@ -2778,9 +2944,10 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
         validate_required_fields(["name"], [name])
         return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
 
-    type_name: str = Field("AtlasGlossary", allow_mutation=False)
+    type_name: str = Field("AtlasGlossary", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AtlasGlossary":
             raise ValueError("must be AtlasGlossary")
@@ -2875,21 +3042,26 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
-            None, description="", alias="shortDescription"
+            default=None, description="", alias="shortDescription"
         )
+
         long_description: Optional[str] = Field(
-            None, description="", alias="longDescription"
+            default=None, description="", alias="longDescription"
         )
-        language: Optional[str] = Field(None, description="", alias="language")
-        usage: Optional[str] = Field(None, description="", alias="usage")
+
+        language: Optional[str] = Field(default=None, description="", alias="language")
+
+        usage: Optional[str] = Field(default=None, description="", alias="usage")
+
         additional_attributes: Optional[dict[str, str]] = Field(
-            None, description="", alias="additionalAttributes"
+            default=None, description="", alias="additionalAttributes"
         )
+
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="terms"
+            default=None, description="", alias="terms"
         )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
+            default=None, description="", alias="categories"
         )  # relationship
 
         @classmethod
@@ -2908,7 +3080,8 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     """Description"""
 
-    @root_validator()
+    @model_validator(mode="after")
+    @classmethod
     def _set_qualified_name_fallback(cls, values):
         if (
             "attributes" in values
@@ -2968,9 +3141,10 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
         )
 
-    type_name: str = Field("AtlasGlossaryTerm", allow_mutation=False)
+    type_name: str = Field("AtlasGlossaryTerm", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AtlasGlossaryTerm":
             raise ValueError("must be AtlasGlossaryTerm")
@@ -3230,61 +3404,71 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     class Attributes(Asset.Attributes):
         short_description: Optional[str] = Field(
-            None, description="", alias="shortDescription"
+            default=None, description="", alias="shortDescription"
         )
+
         long_description: Optional[str] = Field(
-            None, description="", alias="longDescription"
+            default=None, description="", alias="longDescription"
         )
-        examples: Optional[set[str]] = Field(None, description="", alias="examples")
-        abbreviation: Optional[str] = Field(None, description="", alias="abbreviation")
-        usage: Optional[str] = Field(None, description="", alias="usage")
+
+        examples: Optional[set[str]] = Field(
+            default=None, description="", alias="examples"
+        )
+
+        abbreviation: Optional[str] = Field(
+            default=None, description="", alias="abbreviation"
+        )
+
+        usage: Optional[str] = Field(default=None, description="", alias="usage")
+
         additional_attributes: Optional[dict[str, str]] = Field(
-            None, description="", alias="additionalAttributes"
+            default=None, description="", alias="additionalAttributes"
         )
+
         valid_values_for: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="validValuesFor"
+            default=None, description="", alias="validValuesFor"
         )  # relationship
         valid_values: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="validValues"
+            default=None, description="", alias="validValues"
         )  # relationship
         see_also: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="seeAlso"
+            default=None, description="", alias="seeAlso"
         )  # relationship
         is_a: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="isA"
+            default=None, description="", alias="isA"
         )  # relationship
         antonyms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="antonyms"
+            default=None, description="", alias="antonyms"
         )  # relationship
         assigned_entities: Optional[list[Referenceable]] = Field(
-            None, description="", alias="assignedEntities"
+            default=None, description="", alias="assignedEntities"
         )  # relationship
         classifies: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="classifies"
+            default=None, description="", alias="classifies"
         )  # relationship
         categories: Optional[list[AtlasGlossaryCategory]] = Field(
-            None, description="", alias="categories"
+            default=None, description="", alias="categories"
         )  # relationship
         preferred_to_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="preferredToTerms"
+            default=None, description="", alias="preferredToTerms"
         )  # relationship
         preferred_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="preferredTerms"
+            default=None, description="", alias="preferredTerms"
         )  # relationship
         translation_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="translationTerms"
+            default=None, description="", alias="translationTerms"
         )  # relationship
         synonyms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="synonyms"
+            default=None, description="", alias="synonyms"
         )  # relationship
         replaced_by: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="replacedBy"
+            default=None, description="", alias="replacedBy"
         )  # relationship
         replacement_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="replacementTerms"
+            default=None, description="", alias="replacementTerms"
         )  # relationship
         translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
-            None, description="", alias="translatedTerms"
+            default=None, description="", alias="translatedTerms"
         )  # relationship
         anchor: AtlasGlossary = Field(description="", alias="anchor")  # relationship
 
@@ -3348,9 +3532,10 @@ class Process(Asset, type_name="Process"):
             )
         )
 
-    type_name: str = Field("Process", allow_mutation=False)
+    type_name: str = Field("Process", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Process":
             raise ValueError("must be Process")
@@ -3442,16 +3627,25 @@ class Process(Asset, type_name="Process"):
         self.attributes.column_processes = column_processes
 
     class Attributes(Asset.Attributes):
-        inputs: Optional[list[Catalog]] = Field(None, description="", alias="inputs")
-        outputs: Optional[list[Catalog]] = Field(None, description="", alias="outputs")
-        code: Optional[str] = Field(None, description="", alias="code")
-        sql: Optional[str] = Field(None, description="", alias="sql")
-        ast: Optional[str] = Field(None, description="", alias="ast")
+        inputs: Optional[list[Catalog]] = Field(
+            default=None, description="", alias="inputs"
+        )
+
+        outputs: Optional[list[Catalog]] = Field(
+            default=None, description="", alias="outputs"
+        )
+
+        code: Optional[str] = Field(default=None, description="", alias="code")
+
+        sql: Optional[str] = Field(default=None, description="", alias="sql")
+
+        ast: Optional[str] = Field(default=None, description="", alias="ast")
+
         airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="airflowTasks"
+            default=None, description="", alias="airflowTasks"
         )  # relationship
         column_processes: Optional[list[ColumnProcess]] = Field(
-            None, description="", alias="columnProcesses"
+            default=None, description="", alias="columnProcesses"
         )  # relationship
 
         @staticmethod
@@ -3528,9 +3722,10 @@ class Process(Asset, type_name="Process"):
 class Namespace(Asset, type_name="Namespace"):
     """Description"""
 
-    type_name: str = Field("Namespace", allow_mutation=False)
+    type_name: str = Field("Namespace", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Namespace":
             raise ValueError("must be Namespace")
@@ -3568,10 +3763,10 @@ class Namespace(Asset, type_name="Namespace"):
 
     class Attributes(Asset.Attributes):
         children_queries: Optional[list[Query]] = Field(
-            None, description="", alias="childrenQueries"
+            default=None, description="", alias="childrenQueries"
         )  # relationship
         children_folders: Optional[list[Folder]] = Field(
-            None, description="", alias="childrenFolders"
+            default=None, description="", alias="childrenFolders"
         )  # relationship
 
     attributes: "Namespace.Attributes" = Field(
@@ -3584,9 +3779,10 @@ class Namespace(Asset, type_name="Namespace"):
 class Folder(Namespace):
     """Description"""
 
-    type_name: str = Field("Folder", allow_mutation=False)
+    type_name: str = Field("Folder", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Folder":
             raise ValueError("must be Folder")
@@ -3640,10 +3836,14 @@ class Folder(Namespace):
         self.attributes.parent = parent
 
     class Attributes(Namespace.Attributes):
-        parent_qualified_name: str = Field(description="", alias="parentQualifiedName")
-        collection_qualified_name: str = Field(
-            description="", alias="collectionQualifiedName"
+        parent_qualified_name: str = Field(
+            default="", description="", alias="parentQualifiedName"
         )
+
+        collection_qualified_name: str = Field(
+            default="", description="", alias="collectionQualifiedName"
+        )
+
         parent: Namespace = Field(description="", alias="parent")  # relationship
 
     attributes: "Folder.Attributes" = Field(
@@ -3656,9 +3856,10 @@ class Folder(Namespace):
 class Catalog(Asset, type_name="Catalog"):
     """Description"""
 
-    type_name: str = Field("Catalog", allow_mutation=False)
+    type_name: str = Field("Catalog", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Catalog":
             raise ValueError("must be Catalog")
@@ -3730,16 +3931,16 @@ class Catalog(Asset, type_name="Catalog"):
 
     class Attributes(Asset.Attributes):
         input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
+            default=None, description="", alias="inputToProcesses"
         )  # relationship
         output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="outputFromAirflowTasks"
+            default=None, description="", alias="outputFromAirflowTasks"
         )  # relationship
         input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="inputToAirflowTasks"
+            default=None, description="", alias="inputToAirflowTasks"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
+            default=None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "Catalog.Attributes" = Field(
@@ -3752,9 +3953,10 @@ class Catalog(Asset, type_name="Catalog"):
 class Tag(Catalog):
     """Description"""
 
-    type_name: str = Field("Tag", allow_mutation=False)
+    type_name: str = Field("Tag", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Tag":
             raise ValueError("must be Tag")
@@ -3815,15 +4017,18 @@ class Tag(Catalog):
         self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     class Attributes(Catalog.Attributes):
-        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_id: Optional[str] = Field(default=None, description="", alias="tagId")
+
         tag_attributes: Optional[list[SourceTagAttribute]] = Field(
-            None, description="", alias="tagAttributes"
+            default=None, description="", alias="tagAttributes"
         )
+
         tag_allowed_values: Optional[set[str]] = Field(
-            None, description="", alias="tagAllowedValues"
+            default=None, description="", alias="tagAllowedValues"
         )
+
         mapped_atlan_tag_name: Optional[str] = Field(
-            None, description="", alias="mappedClassificationName"
+            default=None, description="", alias="mappedClassificationName"
         )
 
     attributes: "Tag.Attributes" = Field(
@@ -3836,9 +4041,10 @@ class Tag(Catalog):
 class ColumnProcess(Process):
     """Description"""
 
-    type_name: str = Field("ColumnProcess", allow_mutation=False)
+    type_name: str = Field("ColumnProcess", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ColumnProcess":
             raise ValueError("must be ColumnProcess")
@@ -3887,13 +4093,13 @@ class ColumnProcess(Process):
 
     class Attributes(Process.Attributes):
         outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
+            default=None, description="", alias="outputs"
         )  # relationship
         process: Optional[Process] = Field(
-            None, description="", alias="process"
+            default=None, description="", alias="process"
         )  # relationship
         inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
+            default=None, description="", alias="inputs"
         )  # relationship
 
     attributes: "ColumnProcess.Attributes" = Field(
@@ -3906,9 +4112,10 @@ class ColumnProcess(Process):
 class Airflow(Catalog):
     """Description"""
 
-    type_name: str = Field("Airflow", allow_mutation=False)
+    type_name: str = Field("Airflow", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Airflow":
             raise ValueError("must be Airflow")
@@ -4028,28 +4235,35 @@ class Airflow(Catalog):
 
     class Attributes(Catalog.Attributes):
         airflow_tags: Optional[set[str]] = Field(
-            None, description="", alias="airflowTags"
+            default=None, description="", alias="airflowTags"
         )
+
         airflow_run_version: Optional[str] = Field(
-            None, description="", alias="airflowRunVersion"
+            default=None, description="", alias="airflowRunVersion"
         )
+
         airflow_run_open_lineage_version: Optional[str] = Field(
-            None, description="", alias="airflowRunOpenLineageVersion"
+            default=None, description="", alias="airflowRunOpenLineageVersion"
         )
+
         airflow_run_name: Optional[str] = Field(
-            None, description="", alias="airflowRunName"
+            default=None, description="", alias="airflowRunName"
         )
+
         airflow_run_type: Optional[str] = Field(
-            None, description="", alias="airflowRunType"
+            default=None, description="", alias="airflowRunType"
         )
+
         airflow_run_start_time: Optional[datetime] = Field(
-            None, description="", alias="airflowRunStartTime"
+            default=None, description="", alias="airflowRunStartTime"
         )
+
         airflow_run_end_time: Optional[datetime] = Field(
-            None, description="", alias="airflowRunEndTime"
+            default=None, description="", alias="airflowRunEndTime"
         )
+
         airflow_run_open_lineage_state: Optional[OpenLineageRunState] = Field(
-            None, description="", alias="airflowRunOpenLineageState"
+            default=None, description="", alias="airflowRunOpenLineageState"
         )
 
     attributes: "Airflow.Attributes" = Field(
@@ -4062,9 +4276,10 @@ class Airflow(Catalog):
 class AirflowDag(Airflow):
     """Description"""
 
-    type_name: str = Field("AirflowDag", allow_mutation=False)
+    type_name: str = Field("AirflowDag", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AirflowDag":
             raise ValueError("must be AirflowDag")
@@ -4117,13 +4332,15 @@ class AirflowDag(Airflow):
 
     class Attributes(Airflow.Attributes):
         airflow_dag_schedule: Optional[str] = Field(
-            None, description="", alias="airflowDagSchedule"
+            default=None, description="", alias="airflowDagSchedule"
         )
+
         airflow_dag_schedule_delta: Optional[int] = Field(
-            None, description="", alias="airflowDagScheduleDelta"
+            default=None, description="", alias="airflowDagScheduleDelta"
         )
+
         airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="airflowTasks"
+            default=None, description="", alias="airflowTasks"
         )  # relationship
 
     attributes: "AirflowDag.Attributes" = Field(
@@ -4136,9 +4353,10 @@ class AirflowDag(Airflow):
 class AirflowTask(Airflow):
     """Description"""
 
-    type_name: str = Field("AirflowTask", allow_mutation=False)
+    type_name: str = Field("AirflowTask", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AirflowTask":
             raise ValueError("must be AirflowTask")
@@ -4345,49 +4563,60 @@ class AirflowTask(Airflow):
 
     class Attributes(Airflow.Attributes):
         airflow_task_operator_class: Optional[str] = Field(
-            None, description="", alias="airflowTaskOperatorClass"
+            default=None, description="", alias="airflowTaskOperatorClass"
         )
+
         airflow_dag_name: Optional[str] = Field(
-            None, description="", alias="airflowDagName"
+            default=None, description="", alias="airflowDagName"
         )
+
         airflow_dag_qualified_name: Optional[str] = Field(
-            None, description="", alias="airflowDagQualifiedName"
+            default=None, description="", alias="airflowDagQualifiedName"
         )
+
         airflow_task_connection_id: Optional[str] = Field(
-            None, description="", alias="airflowTaskConnectionId"
+            default=None, description="", alias="airflowTaskConnectionId"
         )
+
         airflow_task_sql: Optional[str] = Field(
-            None, description="", alias="airflowTaskSql"
+            default=None, description="", alias="airflowTaskSql"
         )
+
         airflow_task_retry_number: Optional[int] = Field(
-            None, description="", alias="airflowTaskRetryNumber"
+            default=None, description="", alias="airflowTaskRetryNumber"
         )
+
         airflow_task_pool: Optional[str] = Field(
-            None, description="", alias="airflowTaskPool"
+            default=None, description="", alias="airflowTaskPool"
         )
+
         airflow_task_pool_slots: Optional[int] = Field(
-            None, description="", alias="airflowTaskPoolSlots"
+            default=None, description="", alias="airflowTaskPoolSlots"
         )
+
         airflow_task_queue: Optional[str] = Field(
-            None, description="", alias="airflowTaskQueue"
+            default=None, description="", alias="airflowTaskQueue"
         )
+
         airflow_task_priority_weight: Optional[int] = Field(
-            None, description="", alias="airflowTaskPriorityWeight"
+            default=None, description="", alias="airflowTaskPriorityWeight"
         )
+
         airflow_task_trigger_rule: Optional[str] = Field(
-            None, description="", alias="airflowTaskTriggerRule"
+            default=None, description="", alias="airflowTaskTriggerRule"
         )
+
         outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
+            default=None, description="", alias="outputs"
         )  # relationship
         process: Optional[Process] = Field(
-            None, description="", alias="process"
+            default=None, description="", alias="process"
         )  # relationship
         inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
+            default=None, description="", alias="inputs"
         )  # relationship
         airflow_dag: Optional[AirflowDag] = Field(
-            None, description="", alias="airflowDag"
+            default=None, description="", alias="airflowDag"
         )  # relationship
 
     attributes: "AirflowTask.Attributes" = Field(
@@ -4400,9 +4629,10 @@ class AirflowTask(Airflow):
 class DataQuality(Catalog):
     """Description"""
 
-    type_name: str = Field("DataQuality", allow_mutation=False)
+    type_name: str = Field("DataQuality", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "DataQuality":
             raise ValueError("must be DataQuality")
@@ -4419,9 +4649,10 @@ class DataQuality(Catalog):
 class Metric(DataQuality):
     """Description"""
 
-    type_name: str = Field("Metric", allow_mutation=False)
+    type_name: str = Field("Metric", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Metric":
             raise ValueError("must be Metric")
@@ -4521,22 +4752,30 @@ class Metric(DataQuality):
         self.attributes.metric_dimension_columns = metric_dimension_columns
 
     class Attributes(DataQuality.Attributes):
-        metric_type: Optional[str] = Field(None, description="", alias="metricType")
-        metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
+        metric_type: Optional[str] = Field(
+            default=None, description="", alias="metricType"
+        )
+
+        metric_s_q_l: Optional[str] = Field(
+            default=None, description="", alias="metricSQL"
+        )
+
         metric_filters: Optional[str] = Field(
-            None, description="", alias="metricFilters"
+            default=None, description="", alias="metricFilters"
         )
+
         metric_time_grains: Optional[set[str]] = Field(
-            None, description="", alias="metricTimeGrains"
+            default=None, description="", alias="metricTimeGrains"
         )
+
         metric_timestamp_column: Optional[Column] = Field(
-            None, description="", alias="metricTimestampColumn"
+            default=None, description="", alias="metricTimestampColumn"
         )  # relationship
         assets: Optional[list[Asset]] = Field(
-            None, description="", alias="assets"
+            default=None, description="", alias="assets"
         )  # relationship
         metric_dimension_columns: Optional[list[Column]] = Field(
-            None, description="", alias="metricDimensionColumns"
+            default=None, description="", alias="metricDimensionColumns"
         )  # relationship
 
     attributes: "Metric.Attributes" = Field(
@@ -4549,9 +4788,10 @@ class Metric(DataQuality):
 class Resource(Catalog):
     """Description"""
 
-    type_name: str = Field("Resource", allow_mutation=False)
+    type_name: str = Field("Resource", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Resource":
             raise ValueError("must be Resource")
@@ -4610,11 +4850,18 @@ class Resource(Catalog):
         self.attributes.resource_metadata = resource_metadata
 
     class Attributes(Catalog.Attributes):
-        link: Optional[str] = Field(None, description="", alias="link")
-        is_global: Optional[bool] = Field(None, description="", alias="isGlobal")
-        reference: Optional[str] = Field(None, description="", alias="reference")
+        link: Optional[str] = Field(default=None, description="", alias="link")
+
+        is_global: Optional[bool] = Field(
+            default=None, description="", alias="isGlobal"
+        )
+
+        reference: Optional[str] = Field(
+            default=None, description="", alias="reference"
+        )
+
         resource_metadata: Optional[dict[str, str]] = Field(
-            None, description="", alias="resourceMetadata"
+            default=None, description="", alias="resourceMetadata"
         )
 
     attributes: "Resource.Attributes" = Field(
@@ -4651,9 +4898,10 @@ class Readme(Resource):
             quote(description) if description is not None else description
         )
 
-    type_name: str = Field("Readme", allow_mutation=False)
+    type_name: str = Field("Readme", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Readme":
             raise ValueError("must be Readme")
@@ -4691,10 +4939,10 @@ class Readme(Resource):
 
     class Attributes(Resource.Attributes):
         see_also: Optional[list[Readme]] = Field(
-            None, description="", alias="seeAlso"
+            default=None, description="", alias="seeAlso"
         )  # relationship
         asset: Optional[Asset] = Field(
-            None, description="", alias="asset"
+            default=None, description="", alias="asset"
         )  # relationship
 
         @classmethod
@@ -4744,9 +4992,10 @@ class File(Resource):
             )
         )
 
-    type_name: str = Field("File", allow_mutation=False)
+    type_name: str = Field("File", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "File":
             raise ValueError("must be File")
@@ -4794,10 +5043,14 @@ class File(Resource):
         self.attributes.file_assets = file_assets
 
     class Attributes(Resource.Attributes):
-        file_type: Optional[FileType] = Field(None, description="", alias="fileType")
-        file_path: Optional[str] = Field(None, description="", alias="filePath")
+        file_type: Optional[FileType] = Field(
+            default=None, description="", alias="fileType"
+        )
+
+        file_path: Optional[str] = Field(default=None, description="", alias="filePath")
+
         file_assets: Optional[Asset] = Field(
-            None, description="", alias="fileAssets"
+            default=None, description="", alias="fileAssets"
         )  # relationship
 
         @classmethod
@@ -4826,9 +5079,10 @@ class File(Resource):
 class Link(Resource):
     """Description"""
 
-    type_name: str = Field("Link", allow_mutation=False)
+    type_name: str = Field("Link", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Link":
             raise ValueError("must be Link")
@@ -4876,10 +5130,14 @@ class Link(Resource):
         self.attributes.asset = asset
 
     class Attributes(Resource.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+        icon: Optional[str] = Field(default=None, description="", alias="icon")
+
+        icon_type: Optional[IconType] = Field(
+            default=None, description="", alias="iconType"
+        )
+
         asset: Optional[Asset] = Field(
-            None, description="", alias="asset"
+            default=None, description="", alias="asset"
         )  # relationship
 
     attributes: "Link.Attributes" = Field(
@@ -4892,9 +5150,10 @@ class Link(Resource):
 class SQL(Catalog):
     """Description"""
 
-    type_name: str = Field("SQL", allow_mutation=False)
+    type_name: str = Field("SQL", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SQL":
             raise ValueError("must be SQL")
@@ -5124,50 +5383,74 @@ class SQL(Catalog):
         self.attributes.dbt_tests = dbt_tests
 
     class Attributes(Catalog.Attributes):
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
+        query_count: Optional[int] = Field(
+            default=None, description="", alias="queryCount"
+        )
+
         query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
+            default=None, description="", alias="queryUserCount"
         )
+
         query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
+            default=None, description="", alias="queryUserMap"
         )
+
         query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
+            default=None, description="", alias="queryCountUpdatedAt"
         )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
+
+        database_name: Optional[str] = Field(
+            default=None, description="", alias="databaseName"
+        )
+
         database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
+            default=None, description="", alias="databaseQualifiedName"
         )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
+
+        schema_name: Optional[str] = Field(
+            default=None, description="", alias="schemaName"
+        )
+
         schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
+            default=None, description="", alias="schemaQualifiedName"
         )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
+
+        table_name: Optional[str] = Field(
+            default=None, description="", alias="tableName"
+        )
+
         table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
+            default=None, description="", alias="tableQualifiedName"
         )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
+
+        view_name: Optional[str] = Field(default=None, description="", alias="viewName")
+
         view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
+            default=None, description="", alias="viewQualifiedName"
         )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+
+        is_profiled: Optional[bool] = Field(
+            default=None, description="", alias="isProfiled"
+        )
+
         last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
+            default=None, description="", alias="lastProfiledAt"
         )
+
         dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
+            default=None, description="", alias="dbtSources"
         )  # relationship
         sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
+            default=None, description="", alias="sqlDbtModels"
         )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
+            default=None, description="", alias="sqlDBTSources"
         )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
+            default=None, description="", alias="dbtModels"
         )  # relationship
         dbt_tests: Optional[list[DbtTest]] = Field(
-            None, description="", alias="dbtTests"
+            default=None, description="", alias="dbtTests"
         )  # relationship
 
     attributes: "SQL.Attributes" = Field(
@@ -5191,9 +5474,10 @@ class Table(SQL):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("Table", allow_mutation=False)
+    type_name: str = Field("Table", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Table":
             raise ValueError("must be Table")
@@ -5436,55 +5720,75 @@ class Table(SQL):
         self.attributes.dimensions = dimensions
 
     class Attributes(SQL.Attributes):
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        column_count: Optional[int] = Field(
+            default=None, description="", alias="columnCount"
+        )
+
+        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
+
+        size_bytes: Optional[int] = Field(
+            default=None, description="", alias="sizeBytes"
+        )
+
+        alias: Optional[str] = Field(default=None, description="", alias="alias")
+
+        is_temporary: Optional[bool] = Field(
+            default=None, description="", alias="isTemporary"
+        )
+
         is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
+            default=None, description="", alias="isQueryPreview"
         )
+
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description="", alias="queryPreviewConfig"
         )
+
         external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
+            default=None, description="", alias="externalLocation"
         )
+
         external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
+            default=None, description="", alias="externalLocationRegion"
         )
+
         external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
+            default=None, description="", alias="externalLocationFormat"
         )
+
         is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
+            default=None, description="", alias="isPartitioned"
         )
+
         partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
+            default=None, description="", alias="partitionStrategy"
         )
+
         partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
+            default=None, description="", alias="partitionCount"
         )
+
         partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
+            default=None, description="", alias="partitionList"
         )
+
         partitions: Optional[list[TablePartition]] = Field(
-            None, description="", alias="partitions"
+            default=None, description="", alias="partitions"
         )  # relationship
         columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
+            default=None, description="", alias="columns"
         )  # relationship
         queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
+            default=None, description="", alias="queries"
         )  # relationship
         facts: Optional[list[Table]] = Field(
-            None, description="", alias="facts"
+            default=None, description="", alias="facts"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
         dimensions: Optional[list[Table]] = Field(
-            None, description="", alias="dimensions"
+            default=None, description="", alias="dimensions"
         )  # relationship
 
         @classmethod
@@ -5522,9 +5826,10 @@ class Table(SQL):
 class Query(SQL):
     """Description"""
 
-    type_name: str = Field("Query", allow_mutation=False)
+    type_name: str = Field("Query", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Query":
             raise ValueError("must be Query")
@@ -5719,39 +6024,53 @@ class Query(SQL):
         self.attributes.views = views
 
     class Attributes(SQL.Attributes):
-        raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
+        raw_query: Optional[str] = Field(default=None, description="", alias="rawQuery")
+
         default_schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="defaultSchemaQualifiedName"
+            default=None, description="", alias="defaultSchemaQualifiedName"
         )
+
         default_database_qualified_name: Optional[str] = Field(
-            None, description="", alias="defaultDatabaseQualifiedName"
+            default=None, description="", alias="defaultDatabaseQualifiedName"
         )
+
         variables_schema_base64: Optional[str] = Field(
-            None, description="", alias="variablesSchemaBase64"
+            default=None, description="", alias="variablesSchemaBase64"
         )
-        is_private: Optional[bool] = Field(None, description="", alias="isPrivate")
+
+        is_private: Optional[bool] = Field(
+            default=None, description="", alias="isPrivate"
+        )
+
         is_sql_snippet: Optional[bool] = Field(
-            None, description="", alias="isSqlSnippet"
+            default=None, description="", alias="isSqlSnippet"
         )
-        parent_qualified_name: str = Field(description="", alias="parentQualifiedName")
+
+        parent_qualified_name: str = Field(
+            default="", description="", alias="parentQualifiedName"
+        )
+
         collection_qualified_name: str = Field(
-            description="", alias="collectionQualifiedName"
+            default="", description="", alias="collectionQualifiedName"
         )
+
         is_visual_query: Optional[bool] = Field(
-            None, description="", alias="isVisualQuery"
+            default=None, description="", alias="isVisualQuery"
         )
+
         visual_builder_schema_base64: Optional[str] = Field(
-            None, description="", alias="visualBuilderSchemaBase64"
+            default=None, description="", alias="visualBuilderSchemaBase64"
         )
+
         parent: Namespace = Field(description="", alias="parent")  # relationship
         columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
+            default=None, description="", alias="columns"
         )  # relationship
         tables: Optional[list[Table]] = Field(
-            None, description="", alias="tables"
+            default=None, description="", alias="tables"
         )  # relationship
         views: Optional[list[View]] = Field(
-            None, description="", alias="views"
+            default=None, description="", alias="views"
         )  # relationship
 
     attributes: "Query.Attributes" = Field(
@@ -5775,9 +6094,10 @@ class Schema(SQL):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("Schema", allow_mutation=False)
+    type_name: str = Field("Schema", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Schema":
             raise ValueError("must be Schema")
@@ -5913,34 +6233,40 @@ class Schema(SQL):
         self.attributes.snowflake_streams = snowflake_streams
 
     class Attributes(SQL.Attributes):
-        table_count: Optional[int] = Field(None, description="", alias="tableCount")
-        views_count: Optional[int] = Field(None, description="", alias="viewsCount")
+        table_count: Optional[int] = Field(
+            default=None, description="", alias="tableCount"
+        )
+
+        views_count: Optional[int] = Field(
+            default=None, description="", alias="viewsCount"
+        )
+
         snowflake_tags: Optional[list[SnowflakeTag]] = Field(
-            None, description="", alias="snowflakeTags"
+            default=None, description="", alias="snowflakeTags"
         )  # relationship
         functions: Optional[list[Function]] = Field(
-            None, description="", alias="functions"
+            default=None, description="", alias="functions"
         )  # relationship
         tables: Optional[list[Table]] = Field(
-            None, description="", alias="tables"
+            default=None, description="", alias="tables"
         )  # relationship
         database: Optional[Database] = Field(
-            None, description="", alias="database"
+            default=None, description="", alias="database"
         )  # relationship
         procedures: Optional[list[Procedure]] = Field(
-            None, description="", alias="procedures"
+            default=None, description="", alias="procedures"
         )  # relationship
         views: Optional[list[View]] = Field(
-            None, description="", alias="views"
+            default=None, description="", alias="views"
         )  # relationship
         materialised_views: Optional[list[MaterialisedView]] = Field(
-            None, description="", alias="materialisedViews"
+            default=None, description="", alias="materialisedViews"
         )  # relationship
         snowflake_pipes: Optional[list[SnowflakePipe]] = Field(
-            None, description="", alias="snowflakePipes"
+            default=None, description="", alias="snowflakePipes"
         )  # relationship
         snowflake_streams: Optional[list[SnowflakeStream]] = Field(
-            None, description="", alias="snowflakeStreams"
+            default=None, description="", alias="snowflakeStreams"
         )  # relationship
 
         @classmethod
@@ -5980,9 +6306,10 @@ class Schema(SQL):
 class SnowflakePipe(SQL):
     """Description"""
 
-    type_name: str = Field("SnowflakePipe", allow_mutation=False)
+    type_name: str = Field("SnowflakePipe", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SnowflakePipe":
             raise ValueError("must be SnowflakePipe")
@@ -6057,15 +6384,20 @@ class SnowflakePipe(SQL):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        definition: Optional[str] = Field(None, description="", alias="definition")
+        definition: Optional[str] = Field(
+            default=None, description="", alias="definition"
+        )
+
         snowflake_pipe_is_auto_ingest_enabled: Optional[bool] = Field(
-            None, description="", alias="snowflakePipeIsAutoIngestEnabled"
+            default=None, description="", alias="snowflakePipeIsAutoIngestEnabled"
         )
+
         snowflake_pipe_notification_channel_name: Optional[str] = Field(
-            None, description="", alias="snowflakePipeNotificationChannelName"
+            default=None, description="", alias="snowflakePipeNotificationChannelName"
         )
+
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
 
     attributes: "SnowflakePipe.Attributes" = Field(
@@ -6089,9 +6421,10 @@ class View(SQL):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("View", allow_mutation=False)
+    type_name: str = Field("View", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "View":
             raise ValueError("must be View")
@@ -6227,26 +6560,42 @@ class View(SQL):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
+        column_count: Optional[int] = Field(
+            default=None, description="", alias="columnCount"
+        )
+
+        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
+
+        size_bytes: Optional[int] = Field(
+            default=None, description="", alias="sizeBytes"
+        )
+
         is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
+            default=None, description="", alias="isQueryPreview"
         )
+
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description="", alias="queryPreviewConfig"
         )
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        definition: Optional[str] = Field(None, description="", alias="definition")
+
+        alias: Optional[str] = Field(default=None, description="", alias="alias")
+
+        is_temporary: Optional[bool] = Field(
+            default=None, description="", alias="isTemporary"
+        )
+
+        definition: Optional[str] = Field(
+            default=None, description="", alias="definition"
+        )
+
         columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
+            default=None, description="", alias="columns"
         )  # relationship
         queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
+            default=None, description="", alias="queries"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
 
         @classmethod
@@ -6295,9 +6644,10 @@ class MaterialisedView(SQL):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("MaterialisedView", allow_mutation=False)
+    type_name: str = Field("MaterialisedView", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MaterialisedView":
             raise ValueError("must be MaterialisedView")
@@ -6466,31 +6816,55 @@ class MaterialisedView(SQL):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        refresh_mode: Optional[str] = Field(None, description="", alias="refreshMode")
+        refresh_mode: Optional[str] = Field(
+            default=None, description="", alias="refreshMode"
+        )
+
         refresh_method: Optional[str] = Field(
-            None, description="", alias="refreshMethod"
+            default=None, description="", alias="refreshMethod"
         )
-        staleness: Optional[str] = Field(None, description="", alias="staleness")
+
+        staleness: Optional[str] = Field(
+            default=None, description="", alias="staleness"
+        )
+
         stale_since_date: Optional[datetime] = Field(
-            None, description="", alias="staleSinceDate"
+            default=None, description="", alias="staleSinceDate"
         )
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
+
+        column_count: Optional[int] = Field(
+            default=None, description="", alias="columnCount"
+        )
+
+        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
+
+        size_bytes: Optional[int] = Field(
+            default=None, description="", alias="sizeBytes"
+        )
+
         is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
+            default=None, description="", alias="isQueryPreview"
         )
+
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description="", alias="queryPreviewConfig"
         )
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        definition: Optional[str] = Field(None, description="", alias="definition")
+
+        alias: Optional[str] = Field(default=None, description="", alias="alias")
+
+        is_temporary: Optional[bool] = Field(
+            default=None, description="", alias="isTemporary"
+        )
+
+        definition: Optional[str] = Field(
+            default=None, description="", alias="definition"
+        )
+
         columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
+            default=None, description="", alias="columns"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
 
         @classmethod
@@ -6530,9 +6904,10 @@ class MaterialisedView(SQL):
 class Function(SQL):
     """Description"""
 
-    type_name: str = Field("Function", allow_mutation=False)
+    type_name: str = Field("Function", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Function":
             raise ValueError("must be Function")
@@ -6649,29 +7024,39 @@ class Function(SQL):
 
     class Attributes(SQL.Attributes):
         function_definition: Optional[str] = Field(
-            None, description="", alias="functionDefinition"
+            default=None, description="", alias="functionDefinition"
         )
+
         function_return_type: Optional[str] = Field(
-            None, description="", alias="functionReturnType"
+            default=None, description="", alias="functionReturnType"
         )
+
         function_arguments: Optional[set[str]] = Field(
-            None, description="", alias="functionArguments"
+            default=None, description="", alias="functionArguments"
         )
+
         function_language: Optional[str] = Field(
-            None, description="", alias="functionLanguage"
+            default=None, description="", alias="functionLanguage"
         )
-        function_type: Optional[str] = Field(None, description="", alias="functionType")
+
+        function_type: Optional[str] = Field(
+            default=None, description="", alias="functionType"
+        )
+
         function_is_external: Optional[bool] = Field(
-            None, description="", alias="functionIsExternal"
+            default=None, description="", alias="functionIsExternal"
         )
+
         function_is_secure: Optional[bool] = Field(
-            None, description="", alias="functionIsSecure"
+            default=None, description="", alias="functionIsSecure"
         )
+
         function_is_memoizable: Optional[bool] = Field(
-            None, description="", alias="functionIsMemoizable"
+            default=None, description="", alias="functionIsMemoizable"
         )
+
         function_schema: Optional[Schema] = Field(
-            None, description="", alias="functionSchema"
+            default=None, description="", alias="functionSchema"
         )  # relationship
 
     attributes: "Function.Attributes" = Field(
@@ -6684,9 +7069,10 @@ class Function(SQL):
 class TablePartition(SQL):
     """Description"""
 
-    type_name: str = Field("TablePartition", allow_mutation=False)
+    type_name: str = Field("TablePartition", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TablePartition":
             raise ValueError("must be TablePartition")
@@ -6924,50 +7310,73 @@ class TablePartition(SQL):
         self.attributes.parent_table = parent_table
 
     class Attributes(SQL.Attributes):
-        constraint: Optional[str] = Field(None, description="", alias="constraint")
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
+        constraint: Optional[str] = Field(
+            default=None, description="", alias="constraint"
+        )
+
+        column_count: Optional[int] = Field(
+            default=None, description="", alias="columnCount"
+        )
+
+        row_count: Optional[int] = Field(default=None, description="", alias="rowCount")
+
+        size_bytes: Optional[int] = Field(
+            default=None, description="", alias="sizeBytes"
+        )
+
+        alias: Optional[str] = Field(default=None, description="", alias="alias")
+
+        is_temporary: Optional[bool] = Field(
+            default=None, description="", alias="isTemporary"
+        )
+
         is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
+            default=None, description="", alias="isQueryPreview"
         )
+
         query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
+            default=None, description="", alias="queryPreviewConfig"
         )
+
         external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
+            default=None, description="", alias="externalLocation"
         )
+
         external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
+            default=None, description="", alias="externalLocationRegion"
         )
+
         external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
+            default=None, description="", alias="externalLocationFormat"
         )
+
         is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
+            default=None, description="", alias="isPartitioned"
         )
+
         partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
+            default=None, description="", alias="partitionStrategy"
         )
+
         partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
+            default=None, description="", alias="partitionCount"
         )
+
         partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
+            default=None, description="", alias="partitionList"
         )
+
         child_table_partitions: Optional[list[TablePartition]] = Field(
-            None, description="", alias="childTablePartitions"
+            default=None, description="", alias="childTablePartitions"
         )  # relationship
         columns: Optional[list[Column]] = Field(
-            None, description="", alias="columns"
+            default=None, description="", alias="columns"
         )  # relationship
         parent_table_partition: Optional[TablePartition] = Field(
-            None, description="", alias="parentTablePartition"
+            default=None, description="", alias="parentTablePartition"
         )  # relationship
         parent_table: Optional[Table] = Field(
-            None, description="", alias="parentTable"
+            default=None, description="", alias="parentTable"
         )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
@@ -6994,9 +7403,10 @@ class Column(SQL):
             )
         )
 
-    type_name: str = Field("Column", allow_mutation=False)
+    type_name: str = Field("Column", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Column":
             raise ValueError("must be Column")
@@ -7815,153 +8225,237 @@ class Column(SQL):
         self.attributes.table_partition = table_partition
 
     class Attributes(SQL.Attributes):
-        data_type: Optional[str] = Field(None, description="", alias="dataType")
-        sub_data_type: Optional[str] = Field(None, description="", alias="subDataType")
+        data_type: Optional[str] = Field(default=None, description="", alias="dataType")
+
+        sub_data_type: Optional[str] = Field(
+            default=None, description="", alias="subDataType"
+        )
+
         raw_data_type_definition: Optional[str] = Field(
-            None, description="", alias="rawDataTypeDefinition"
+            default=None, description="", alias="rawDataTypeDefinition"
         )
-        order: Optional[int] = Field(None, description="", alias="order")
+
+        order: Optional[int] = Field(default=None, description="", alias="order")
+
         nested_column_count: Optional[int] = Field(
-            None, description="", alias="nestedColumnCount"
+            default=None, description="", alias="nestedColumnCount"
         )
-        is_partition: Optional[bool] = Field(None, description="", alias="isPartition")
+
+        is_partition: Optional[bool] = Field(
+            default=None, description="", alias="isPartition"
+        )
+
         partition_order: Optional[int] = Field(
-            None, description="", alias="partitionOrder"
+            default=None, description="", alias="partitionOrder"
         )
-        is_clustered: Optional[bool] = Field(None, description="", alias="isClustered")
-        is_primary: Optional[bool] = Field(None, description="", alias="isPrimary")
-        is_foreign: Optional[bool] = Field(None, description="", alias="isForeign")
-        is_indexed: Optional[bool] = Field(None, description="", alias="isIndexed")
-        is_sort: Optional[bool] = Field(None, description="", alias="isSort")
-        is_dist: Optional[bool] = Field(None, description="", alias="isDist")
-        is_pinned: Optional[bool] = Field(None, description="", alias="isPinned")
-        pinned_by: Optional[str] = Field(None, description="", alias="pinnedBy")
-        pinned_at: Optional[datetime] = Field(None, description="", alias="pinnedAt")
-        precision: Optional[int] = Field(None, description="", alias="precision")
-        default_value: Optional[str] = Field(None, description="", alias="defaultValue")
-        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
+
+        is_clustered: Optional[bool] = Field(
+            default=None, description="", alias="isClustered"
+        )
+
+        is_primary: Optional[bool] = Field(
+            default=None, description="", alias="isPrimary"
+        )
+
+        is_foreign: Optional[bool] = Field(
+            default=None, description="", alias="isForeign"
+        )
+
+        is_indexed: Optional[bool] = Field(
+            default=None, description="", alias="isIndexed"
+        )
+
+        is_sort: Optional[bool] = Field(default=None, description="", alias="isSort")
+
+        is_dist: Optional[bool] = Field(default=None, description="", alias="isDist")
+
+        is_pinned: Optional[bool] = Field(
+            default=None, description="", alias="isPinned"
+        )
+
+        pinned_by: Optional[str] = Field(default=None, description="", alias="pinnedBy")
+
+        pinned_at: Optional[datetime] = Field(
+            default=None, description="", alias="pinnedAt"
+        )
+
+        precision: Optional[int] = Field(
+            default=None, description="", alias="precision"
+        )
+
+        default_value: Optional[str] = Field(
+            default=None, description="", alias="defaultValue"
+        )
+
+        is_nullable: Optional[bool] = Field(
+            default=None, description="", alias="isNullable"
+        )
+
         numeric_scale: Optional[float] = Field(
-            None, description="", alias="numericScale"
+            default=None, description="", alias="numericScale"
         )
-        max_length: Optional[int] = Field(None, description="", alias="maxLength")
+
+        max_length: Optional[int] = Field(
+            default=None, description="", alias="maxLength"
+        )
+
         validations: Optional[dict[str, str]] = Field(
-            None, description="", alias="validations"
+            default=None, description="", alias="validations"
         )
+
         parent_column_qualified_name: Optional[str] = Field(
-            None, description="", alias="parentColumnQualifiedName"
+            default=None, description="", alias="parentColumnQualifiedName"
         )
+
         parent_column_name: Optional[str] = Field(
-            None, description="", alias="parentColumnName"
+            default=None, description="", alias="parentColumnName"
         )
+
         column_distinct_values_count: Optional[int] = Field(
-            None, description="", alias="columnDistinctValuesCount"
+            default=None, description="", alias="columnDistinctValuesCount"
         )
+
         column_distinct_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnDistinctValuesCountLong"
+            default=None, description="", alias="columnDistinctValuesCountLong"
         )
+
         column_histogram: Optional[Histogram] = Field(
-            None, description="", alias="columnHistogram"
+            default=None, description="", alias="columnHistogram"
         )
-        column_max: Optional[float] = Field(None, description="", alias="columnMax")
-        column_min: Optional[float] = Field(None, description="", alias="columnMin")
-        column_mean: Optional[float] = Field(None, description="", alias="columnMean")
-        column_sum: Optional[float] = Field(None, description="", alias="columnSum")
+
+        column_max: Optional[float] = Field(
+            default=None, description="", alias="columnMax"
+        )
+
+        column_min: Optional[float] = Field(
+            default=None, description="", alias="columnMin"
+        )
+
+        column_mean: Optional[float] = Field(
+            default=None, description="", alias="columnMean"
+        )
+
+        column_sum: Optional[float] = Field(
+            default=None, description="", alias="columnSum"
+        )
+
         column_median: Optional[float] = Field(
-            None, description="", alias="columnMedian"
+            default=None, description="", alias="columnMedian"
         )
+
         column_standard_deviation: Optional[float] = Field(
-            None, description="", alias="columnStandardDeviation"
+            default=None, description="", alias="columnStandardDeviation"
         )
+
         column_unique_values_count: Optional[int] = Field(
-            None, description="", alias="columnUniqueValuesCount"
+            default=None, description="", alias="columnUniqueValuesCount"
         )
+
         column_unique_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnUniqueValuesCountLong"
+            default=None, description="", alias="columnUniqueValuesCountLong"
         )
+
         column_average: Optional[float] = Field(
-            None, description="", alias="columnAverage"
+            default=None, description="", alias="columnAverage"
         )
+
         column_average_length: Optional[float] = Field(
-            None, description="", alias="columnAverageLength"
+            default=None, description="", alias="columnAverageLength"
         )
+
         column_duplicate_values_count: Optional[int] = Field(
-            None, description="", alias="columnDuplicateValuesCount"
+            default=None, description="", alias="columnDuplicateValuesCount"
         )
+
         column_duplicate_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnDuplicateValuesCountLong"
+            default=None, description="", alias="columnDuplicateValuesCountLong"
         )
+
         column_maximum_string_length: Optional[int] = Field(
-            None, description="", alias="columnMaximumStringLength"
+            default=None, description="", alias="columnMaximumStringLength"
         )
+
         column_maxs: Optional[set[str]] = Field(
-            None, description="", alias="columnMaxs"
+            default=None, description="", alias="columnMaxs"
         )
+
         column_minimum_string_length: Optional[int] = Field(
-            None, description="", alias="columnMinimumStringLength"
+            default=None, description="", alias="columnMinimumStringLength"
         )
+
         column_mins: Optional[set[str]] = Field(
-            None, description="", alias="columnMins"
+            default=None, description="", alias="columnMins"
         )
+
         column_missing_values_count: Optional[int] = Field(
-            None, description="", alias="columnMissingValuesCount"
+            default=None, description="", alias="columnMissingValuesCount"
         )
+
         column_missing_values_count_long: Optional[int] = Field(
-            None, description="", alias="columnMissingValuesCountLong"
+            default=None, description="", alias="columnMissingValuesCountLong"
         )
+
         column_missing_values_percentage: Optional[float] = Field(
-            None, description="", alias="columnMissingValuesPercentage"
+            default=None, description="", alias="columnMissingValuesPercentage"
         )
+
         column_uniqueness_percentage: Optional[float] = Field(
-            None, description="", alias="columnUniquenessPercentage"
+            default=None, description="", alias="columnUniquenessPercentage"
         )
+
         column_variance: Optional[float] = Field(
-            None, description="", alias="columnVariance"
+            default=None, description="", alias="columnVariance"
         )
+
         column_top_values: Optional[list[ColumnValueFrequencyMap]] = Field(
-            None, description="", alias="columnTopValues"
+            default=None, description="", alias="columnTopValues"
         )
+
         column_depth_level: Optional[int] = Field(
-            None, description="", alias="columnDepthLevel"
+            default=None, description="", alias="columnDepthLevel"
         )
-        view: Optional[View] = Field(None, description="", alias="view")  # relationship
+
+        view: Optional[View] = Field(
+            default=None, description="", alias="view"
+        )  # relationship
         nested_columns: Optional[list[Column]] = Field(
-            None, description="", alias="nestedColumns"
+            default=None, description="", alias="nestedColumns"
         )  # relationship
         data_quality_metric_dimensions: Optional[list[Metric]] = Field(
-            None, description="", alias="dataQualityMetricDimensions"
+            default=None, description="", alias="dataQualityMetricDimensions"
         )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
-            None, description="", alias="dbtModelColumns"
+            default=None, description="", alias="dbtModelColumns"
         )  # relationship
         table: Optional[Table] = Field(
-            None, description="", alias="table"
+            default=None, description="", alias="table"
         )  # relationship
         column_dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
-            None, description="", alias="columnDbtModelColumns"
+            default=None, description="", alias="columnDbtModelColumns"
         )  # relationship
         materialised_view: Optional[MaterialisedView] = Field(
-            None, description="", alias="materialisedView"
+            default=None, description="", alias="materialisedView"
         )  # relationship
         parent_column: Optional[Column] = Field(
-            None, description="", alias="parentColumn"
+            default=None, description="", alias="parentColumn"
         )  # relationship
         queries: Optional[list[Query]] = Field(
-            None, description="", alias="queries"
+            default=None, description="", alias="queries"
         )  # relationship
         metric_timestamps: Optional[list[Metric]] = Field(
-            None, description="", alias="metricTimestamps"
+            default=None, description="", alias="metricTimestamps"
         )  # relationship
         foreign_key_to: Optional[list[Column]] = Field(
-            None, description="", alias="foreignKeyTo"
+            default=None, description="", alias="foreignKeyTo"
         )  # relationship
         foreign_key_from: Optional[Column] = Field(
-            None, description="", alias="foreignKeyFrom"
+            default=None, description="", alias="foreignKeyFrom"
         )  # relationship
         dbt_metrics: Optional[list[DbtMetric]] = Field(
-            None, description="", alias="dbtMetrics"
+            default=None, description="", alias="dbtMetrics"
         )  # relationship
         table_partition: Optional[TablePartition] = Field(
-            None, description="", alias="tablePartition"
+            default=None, description="", alias="tablePartition"
         )  # relationship
 
         @classmethod
@@ -8023,9 +8517,10 @@ class Column(SQL):
 class SnowflakeStream(SQL):
     """Description"""
 
-    type_name: str = Field("SnowflakeStream", allow_mutation=False)
+    type_name: str = Field("SnowflakeStream", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SnowflakeStream":
             raise ValueError("must be SnowflakeStream")
@@ -8125,22 +8620,27 @@ class SnowflakeStream(SQL):
 
     class Attributes(SQL.Attributes):
         snowflake_stream_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamType"
+            default=None, description="", alias="snowflakeStreamType"
         )
+
         snowflake_stream_source_type: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamSourceType"
+            default=None, description="", alias="snowflakeStreamSourceType"
         )
+
         snowflake_stream_mode: Optional[str] = Field(
-            None, description="", alias="snowflakeStreamMode"
+            default=None, description="", alias="snowflakeStreamMode"
         )
+
         snowflake_stream_is_stale: Optional[bool] = Field(
-            None, description="", alias="snowflakeStreamIsStale"
+            default=None, description="", alias="snowflakeStreamIsStale"
         )
+
         snowflake_stream_stale_after: Optional[datetime] = Field(
-            None, description="", alias="snowflakeStreamStaleAfter"
+            default=None, description="", alias="snowflakeStreamStaleAfter"
         )
+
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
 
     attributes: "SnowflakeStream.Attributes" = Field(
@@ -8174,9 +8674,10 @@ class Database(SQL):
         )
         return cls(attributes=attributes)
 
-    type_name: str = Field("Database", allow_mutation=False)
+    type_name: str = Field("Database", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Database":
             raise ValueError("must be Database")
@@ -8213,9 +8714,12 @@ class Database(SQL):
         self.attributes.schemas = schemas
 
     class Attributes(SQL.Attributes):
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
+        schema_count: Optional[int] = Field(
+            default=None, description="", alias="schemaCount"
+        )
+
         schemas: Optional[list[Schema]] = Field(
-            None, description="", alias="schemas"
+            default=None, description="", alias="schemas"
         )  # relationship
 
         @classmethod
@@ -8250,9 +8754,10 @@ class Database(SQL):
 class Procedure(SQL):
     """Description"""
 
-    type_name: str = Field("Procedure", allow_mutation=False)
+    type_name: str = Field("Procedure", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Procedure":
             raise ValueError("must be Procedure")
@@ -8289,9 +8794,10 @@ class Procedure(SQL):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        definition: str = Field(description="", alias="definition")
+        definition: str = Field(default="", description="", alias="definition")
+
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
@@ -8304,9 +8810,10 @@ class Procedure(SQL):
 class SnowflakeTag(Tag):
     """Description"""
 
-    type_name: str = Field("SnowflakeTag", allow_mutation=False)
+    type_name: str = Field("SnowflakeTag", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SnowflakeTag":
             raise ValueError("must be SnowflakeTag")
@@ -8593,63 +9100,91 @@ class SnowflakeTag(Tag):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(Tag.Attributes):
-        tag_id: Optional[str] = Field(None, description="", alias="tagId")
+        tag_id: Optional[str] = Field(default=None, description="", alias="tagId")
+
         tag_attributes: Optional[list[SourceTagAttribute]] = Field(
-            None, description="", alias="tagAttributes"
+            default=None, description="", alias="tagAttributes"
         )
+
         tag_allowed_values: Optional[set[str]] = Field(
-            None, description="", alias="tagAllowedValues"
+            default=None, description="", alias="tagAllowedValues"
         )
+
         mapped_atlan_tag_name: Optional[str] = Field(
-            None, description="", alias="mappedClassificationName"
+            default=None, description="", alias="mappedClassificationName"
         )
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
+
+        query_count: Optional[int] = Field(
+            default=None, description="", alias="queryCount"
+        )
+
         query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
+            default=None, description="", alias="queryUserCount"
         )
+
         query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
+            default=None, description="", alias="queryUserMap"
         )
+
         query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
+            default=None, description="", alias="queryCountUpdatedAt"
         )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
+
+        database_name: Optional[str] = Field(
+            default=None, description="", alias="databaseName"
+        )
+
         database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
+            default=None, description="", alias="databaseQualifiedName"
         )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
+
+        schema_name: Optional[str] = Field(
+            default=None, description="", alias="schemaName"
+        )
+
         schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
+            default=None, description="", alias="schemaQualifiedName"
         )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
+
+        table_name: Optional[str] = Field(
+            default=None, description="", alias="tableName"
+        )
+
         table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
+            default=None, description="", alias="tableQualifiedName"
         )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
+
+        view_name: Optional[str] = Field(default=None, description="", alias="viewName")
+
         view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
+            default=None, description="", alias="viewQualifiedName"
         )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
+
+        is_profiled: Optional[bool] = Field(
+            default=None, description="", alias="isProfiled"
+        )
+
         last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
+            default=None, description="", alias="lastProfiledAt"
         )
+
         dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
+            default=None, description="", alias="dbtSources"
         )  # relationship
         sql_dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="sqlDbtModels"
+            default=None, description="", alias="sqlDbtModels"
         )  # relationship
         sql_dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="sqlDBTSources"
+            default=None, description="", alias="sqlDBTSources"
         )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
+            default=None, description="", alias="dbtModels"
         )  # relationship
         dbt_tests: Optional[list[DbtTest]] = Field(
-            None, description="", alias="dbtTests"
+            default=None, description="", alias="dbtTests"
         )  # relationship
         atlan_schema: Optional[Schema] = Field(
-            None, description="", alias="atlanSchema"
+            default=None, description="", alias="atlanSchema"
         )  # relationship
 
     attributes: "SnowflakeTag.Attributes" = Field(
@@ -8662,9 +9197,10 @@ class SnowflakeTag(Tag):
 class Dbt(Catalog):
     """Description"""
 
-    type_name: str = Field("Dbt", allow_mutation=False)
+    type_name: str = Field("Dbt", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Dbt":
             raise ValueError("must be Dbt")
@@ -8899,49 +9435,72 @@ class Dbt(Catalog):
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     class Attributes(Catalog.Attributes):
-        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
-        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
-        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+        dbt_alias: Optional[str] = Field(default=None, description="", alias="dbtAlias")
+
+        dbt_meta: Optional[str] = Field(default=None, description="", alias="dbtMeta")
+
+        dbt_unique_id: Optional[str] = Field(
+            default=None, description="", alias="dbtUniqueId"
+        )
+
         dbt_account_name: Optional[str] = Field(
-            None, description="", alias="dbtAccountName"
+            default=None, description="", alias="dbtAccountName"
         )
+
         dbt_project_name: Optional[str] = Field(
-            None, description="", alias="dbtProjectName"
+            default=None, description="", alias="dbtProjectName"
         )
+
         dbt_package_name: Optional[str] = Field(
-            None, description="", alias="dbtPackageName"
+            default=None, description="", alias="dbtPackageName"
         )
-        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+
+        dbt_job_name: Optional[str] = Field(
+            default=None, description="", alias="dbtJobName"
+        )
+
         dbt_job_schedule: Optional[str] = Field(
-            None, description="", alias="dbtJobSchedule"
+            default=None, description="", alias="dbtJobSchedule"
         )
+
         dbt_job_status: Optional[str] = Field(
-            None, description="", alias="dbtJobStatus"
+            default=None, description="", alias="dbtJobStatus"
         )
+
         dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            None, description="", alias="dbtJobScheduleCronHumanized"
+            default=None, description="", alias="dbtJobScheduleCronHumanized"
         )
+
         dbt_job_last_run: Optional[datetime] = Field(
-            None, description="", alias="dbtJobLastRun"
+            default=None, description="", alias="dbtJobLastRun"
         )
+
         dbt_job_next_run: Optional[datetime] = Field(
-            None, description="", alias="dbtJobNextRun"
+            default=None, description="", alias="dbtJobNextRun"
         )
+
         dbt_job_next_run_humanized: Optional[str] = Field(
-            None, description="", alias="dbtJobNextRunHumanized"
+            default=None, description="", alias="dbtJobNextRunHumanized"
         )
+
         dbt_environment_name: Optional[str] = Field(
-            None, description="", alias="dbtEnvironmentName"
+            default=None, description="", alias="dbtEnvironmentName"
         )
+
         dbt_environment_dbt_version: Optional[str] = Field(
-            None, description="", alias="dbtEnvironmentDbtVersion"
+            default=None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
+
+        dbt_tags: Optional[set[str]] = Field(
+            default=None, description="", alias="dbtTags"
+        )
+
         dbt_connection_context: Optional[str] = Field(
-            None, description="", alias="dbtConnectionContext"
+            default=None, description="", alias="dbtConnectionContext"
         )
+
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            None, description="", alias="dbtSemanticLayerProxyUrl"
+            default=None, description="", alias="dbtSemanticLayerProxyUrl"
         )
 
     attributes: "Dbt.Attributes" = Field(
@@ -8954,9 +9513,10 @@ class Dbt(Catalog):
 class DbtModelColumn(Dbt):
     """Description"""
 
-    type_name: str = Field("DbtModelColumn", allow_mutation=False)
+    type_name: str = Field("DbtModelColumn", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "DbtModelColumn":
             raise ValueError("must be DbtModelColumn")
@@ -9065,25 +9625,28 @@ class DbtModelColumn(Dbt):
 
     class Attributes(Dbt.Attributes):
         dbt_model_qualified_name: Optional[str] = Field(
-            None, description="", alias="dbtModelQualifiedName"
+            default=None, description="", alias="dbtModelQualifiedName"
         )
+
         dbt_model_column_data_type: Optional[str] = Field(
-            None, description="", alias="dbtModelColumnDataType"
+            default=None, description="", alias="dbtModelColumnDataType"
         )
+
         dbt_model_column_order: Optional[int] = Field(
-            None, description="", alias="dbtModelColumnOrder"
+            default=None, description="", alias="dbtModelColumnOrder"
         )
+
         sql_column: Optional[Column] = Field(
-            None, description="", alias="sqlColumn"
+            default=None, description="", alias="sqlColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
-            None, description="", alias="dbtModel"
+            default=None, description="", alias="dbtModel"
         )  # relationship
         dbt_model_column_sql_columns: Optional[list[Column]] = Field(
-            None, description="", alias="dbtModelColumnSqlColumns"
+            default=None, description="", alias="dbtModelColumnSqlColumns"
         )  # relationship
         dbt_tests: Optional[list[DbtTest]] = Field(
-            None, description="", alias="dbtTests"
+            default=None, description="", alias="dbtTests"
         )  # relationship
 
     attributes: "DbtModelColumn.Attributes" = Field(
@@ -9096,9 +9659,10 @@ class DbtModelColumn(Dbt):
 class DbtTest(Dbt):
     """Description"""
 
-    type_name: str = Field("DbtTest", allow_mutation=False)
+    type_name: str = Field("DbtTest", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "DbtTest":
             raise ValueError("must be DbtTest")
@@ -9250,40 +9814,48 @@ class DbtTest(Dbt):
 
     class Attributes(Dbt.Attributes):
         dbt_test_status: Optional[str] = Field(
-            None, description="", alias="dbtTestStatus"
+            default=None, description="", alias="dbtTestStatus"
         )
+
         dbt_test_state: Optional[str] = Field(
-            None, description="", alias="dbtTestState"
+            default=None, description="", alias="dbtTestState"
         )
+
         dbt_test_error: Optional[str] = Field(
-            None, description="", alias="dbtTestError"
+            default=None, description="", alias="dbtTestError"
         )
+
         dbt_test_raw_s_q_l: Optional[str] = Field(
-            None, description="", alias="dbtTestRawSQL"
+            default=None, description="", alias="dbtTestRawSQL"
         )
+
         dbt_test_compiled_s_q_l: Optional[str] = Field(
-            None, description="", alias="dbtTestCompiledSQL"
+            default=None, description="", alias="dbtTestCompiledSQL"
         )
+
         dbt_test_raw_code: Optional[str] = Field(
-            None, description="", alias="dbtTestRawCode"
+            default=None, description="", alias="dbtTestRawCode"
         )
+
         dbt_test_compiled_code: Optional[str] = Field(
-            None, description="", alias="dbtTestCompiledCode"
+            default=None, description="", alias="dbtTestCompiledCode"
         )
+
         dbt_test_language: Optional[str] = Field(
-            None, description="", alias="dbtTestLanguage"
+            default=None, description="", alias="dbtTestLanguage"
         )
+
         dbt_sources: Optional[list[DbtSource]] = Field(
-            None, description="", alias="dbtSources"
+            default=None, description="", alias="dbtSources"
         )  # relationship
         sql_assets: Optional[list[SQL]] = Field(
-            None, description="", alias="sqlAssets"
+            default=None, description="", alias="sqlAssets"
         )  # relationship
         dbt_models: Optional[list[DbtModel]] = Field(
-            None, description="", alias="dbtModels"
+            default=None, description="", alias="dbtModels"
         )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
-            None, description="", alias="dbtModelColumns"
+            default=None, description="", alias="dbtModelColumns"
         )  # relationship
 
     attributes: "DbtTest.Attributes" = Field(
@@ -9296,9 +9868,10 @@ class DbtTest(Dbt):
 class DbtModel(Dbt):
     """Description"""
 
-    type_name: str = Field("DbtModel", allow_mutation=False)
+    type_name: str = Field("DbtModel", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "DbtModel":
             raise ValueError("must be DbtModel")
@@ -9553,51 +10126,68 @@ class DbtModel(Dbt):
         self.attributes.sql_asset = sql_asset
 
     class Attributes(Dbt.Attributes):
-        dbt_status: Optional[str] = Field(None, description="", alias="dbtStatus")
-        dbt_error: Optional[str] = Field(None, description="", alias="dbtError")
-        dbt_raw_s_q_l: Optional[str] = Field(None, description="", alias="dbtRawSQL")
+        dbt_status: Optional[str] = Field(
+            default=None, description="", alias="dbtStatus"
+        )
+
+        dbt_error: Optional[str] = Field(default=None, description="", alias="dbtError")
+
+        dbt_raw_s_q_l: Optional[str] = Field(
+            default=None, description="", alias="dbtRawSQL"
+        )
+
         dbt_compiled_s_q_l: Optional[str] = Field(
-            None, description="", alias="dbtCompiledSQL"
+            default=None, description="", alias="dbtCompiledSQL"
         )
-        dbt_stats: Optional[str] = Field(None, description="", alias="dbtStats")
+
+        dbt_stats: Optional[str] = Field(default=None, description="", alias="dbtStats")
+
         dbt_materialization_type: Optional[str] = Field(
-            None, description="", alias="dbtMaterializationType"
+            default=None, description="", alias="dbtMaterializationType"
         )
+
         dbt_model_compile_started_at: Optional[datetime] = Field(
-            None, description="", alias="dbtModelCompileStartedAt"
+            default=None, description="", alias="dbtModelCompileStartedAt"
         )
+
         dbt_model_compile_completed_at: Optional[datetime] = Field(
-            None, description="", alias="dbtModelCompileCompletedAt"
+            default=None, description="", alias="dbtModelCompileCompletedAt"
         )
+
         dbt_model_execute_started_at: Optional[datetime] = Field(
-            None, description="", alias="dbtModelExecuteStartedAt"
+            default=None, description="", alias="dbtModelExecuteStartedAt"
         )
+
         dbt_model_execute_completed_at: Optional[datetime] = Field(
-            None, description="", alias="dbtModelExecuteCompletedAt"
+            default=None, description="", alias="dbtModelExecuteCompletedAt"
         )
+
         dbt_model_execution_time: Optional[float] = Field(
-            None, description="", alias="dbtModelExecutionTime"
+            default=None, description="", alias="dbtModelExecutionTime"
         )
+
         dbt_model_run_generated_at: Optional[datetime] = Field(
-            None, description="", alias="dbtModelRunGeneratedAt"
+            default=None, description="", alias="dbtModelRunGeneratedAt"
         )
+
         dbt_model_run_elapsed_time: Optional[float] = Field(
-            None, description="", alias="dbtModelRunElapsedTime"
+            default=None, description="", alias="dbtModelRunElapsedTime"
         )
+
         dbt_metrics: Optional[list[DbtMetric]] = Field(
-            None, description="", alias="dbtMetrics"
+            default=None, description="", alias="dbtMetrics"
         )  # relationship
         dbt_tests: Optional[list[DbtTest]] = Field(
-            None, description="", alias="dbtTests"
+            default=None, description="", alias="dbtTests"
         )  # relationship
         dbt_model_sql_assets: Optional[list[SQL]] = Field(
-            None, description="", alias="dbtModelSqlAssets"
+            default=None, description="", alias="dbtModelSqlAssets"
         )  # relationship
         dbt_model_columns: Optional[list[DbtModelColumn]] = Field(
-            None, description="", alias="dbtModelColumns"
+            default=None, description="", alias="dbtModelColumns"
         )  # relationship
         sql_asset: Optional[SQL] = Field(
-            None, description="", alias="sqlAsset"
+            default=None, description="", alias="sqlAsset"
         )  # relationship
 
     attributes: "DbtModel.Attributes" = Field(
@@ -9610,9 +10200,10 @@ class DbtModel(Dbt):
 class DbtMetric(Dbt):
     """Description"""
 
-    type_name: str = Field("DbtMetric", allow_mutation=False)
+    type_name: str = Field("DbtMetric", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "DbtMetric":
             raise ValueError("must be DbtMetric")
@@ -9972,74 +10563,107 @@ class DbtMetric(Dbt):
 
     class Attributes(Dbt.Attributes):
         dbt_metric_filters: Optional[list[DbtMetricFilter]] = Field(
-            None, description="", alias="dbtMetricFilters"
+            default=None, description="", alias="dbtMetricFilters"
         )
-        dbt_alias: Optional[str] = Field(None, description="", alias="dbtAlias")
-        dbt_meta: Optional[str] = Field(None, description="", alias="dbtMeta")
-        dbt_unique_id: Optional[str] = Field(None, description="", alias="dbtUniqueId")
+
+        dbt_alias: Optional[str] = Field(default=None, description="", alias="dbtAlias")
+
+        dbt_meta: Optional[str] = Field(default=None, description="", alias="dbtMeta")
+
+        dbt_unique_id: Optional[str] = Field(
+            default=None, description="", alias="dbtUniqueId"
+        )
+
         dbt_account_name: Optional[str] = Field(
-            None, description="", alias="dbtAccountName"
+            default=None, description="", alias="dbtAccountName"
         )
+
         dbt_project_name: Optional[str] = Field(
-            None, description="", alias="dbtProjectName"
+            default=None, description="", alias="dbtProjectName"
         )
+
         dbt_package_name: Optional[str] = Field(
-            None, description="", alias="dbtPackageName"
+            default=None, description="", alias="dbtPackageName"
         )
-        dbt_job_name: Optional[str] = Field(None, description="", alias="dbtJobName")
+
+        dbt_job_name: Optional[str] = Field(
+            default=None, description="", alias="dbtJobName"
+        )
+
         dbt_job_schedule: Optional[str] = Field(
-            None, description="", alias="dbtJobSchedule"
+            default=None, description="", alias="dbtJobSchedule"
         )
+
         dbt_job_status: Optional[str] = Field(
-            None, description="", alias="dbtJobStatus"
+            default=None, description="", alias="dbtJobStatus"
         )
+
         dbt_job_schedule_cron_humanized: Optional[str] = Field(
-            None, description="", alias="dbtJobScheduleCronHumanized"
+            default=None, description="", alias="dbtJobScheduleCronHumanized"
         )
+
         dbt_job_last_run: Optional[datetime] = Field(
-            None, description="", alias="dbtJobLastRun"
+            default=None, description="", alias="dbtJobLastRun"
         )
+
         dbt_job_next_run: Optional[datetime] = Field(
-            None, description="", alias="dbtJobNextRun"
+            default=None, description="", alias="dbtJobNextRun"
         )
+
         dbt_job_next_run_humanized: Optional[str] = Field(
-            None, description="", alias="dbtJobNextRunHumanized"
+            default=None, description="", alias="dbtJobNextRunHumanized"
         )
+
         dbt_environment_name: Optional[str] = Field(
-            None, description="", alias="dbtEnvironmentName"
+            default=None, description="", alias="dbtEnvironmentName"
         )
+
         dbt_environment_dbt_version: Optional[str] = Field(
-            None, description="", alias="dbtEnvironmentDbtVersion"
+            default=None, description="", alias="dbtEnvironmentDbtVersion"
         )
-        dbt_tags: Optional[set[str]] = Field(None, description="", alias="dbtTags")
+
+        dbt_tags: Optional[set[str]] = Field(
+            default=None, description="", alias="dbtTags"
+        )
+
         dbt_connection_context: Optional[str] = Field(
-            None, description="", alias="dbtConnectionContext"
+            default=None, description="", alias="dbtConnectionContext"
         )
+
         dbt_semantic_layer_proxy_url: Optional[str] = Field(
-            None, description="", alias="dbtSemanticLayerProxyUrl"
+            default=None, description="", alias="dbtSemanticLayerProxyUrl"
         )
-        metric_type: Optional[str] = Field(None, description="", alias="metricType")
-        metric_s_q_l: Optional[str] = Field(None, description="", alias="metricSQL")
+
+        metric_type: Optional[str] = Field(
+            default=None, description="", alias="metricType"
+        )
+
+        metric_s_q_l: Optional[str] = Field(
+            default=None, description="", alias="metricSQL"
+        )
+
         metric_filters: Optional[str] = Field(
-            None, description="", alias="metricFilters"
+            default=None, description="", alias="metricFilters"
         )
+
         metric_time_grains: Optional[set[str]] = Field(
-            None, description="", alias="metricTimeGrains"
+            default=None, description="", alias="metricTimeGrains"
         )
+
         metric_timestamp_column: Optional[Column] = Field(
-            None, description="", alias="metricTimestampColumn"
+            default=None, description="", alias="metricTimestampColumn"
         )  # relationship
         dbt_model: Optional[DbtModel] = Field(
-            None, description="", alias="dbtModel"
+            default=None, description="", alias="dbtModel"
         )  # relationship
         assets: Optional[list[Asset]] = Field(
-            None, description="", alias="assets"
+            default=None, description="", alias="assets"
         )  # relationship
         metric_dimension_columns: Optional[list[Column]] = Field(
-            None, description="", alias="metricDimensionColumns"
+            default=None, description="", alias="metricDimensionColumns"
         )  # relationship
         dbt_metric_filter_columns: Optional[list[Column]] = Field(
-            None, description="", alias="dbtMetricFilterColumns"
+            default=None, description="", alias="dbtMetricFilterColumns"
         )  # relationship
 
     attributes: "DbtMetric.Attributes" = Field(
@@ -10052,9 +10676,10 @@ class DbtMetric(Dbt):
 class DbtSource(Dbt):
     """Description"""
 
-    type_name: str = Field("DbtSource", allow_mutation=False)
+    type_name: str = Field("DbtSource", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "DbtSource":
             raise ValueError("must be DbtSource")
@@ -10126,18 +10751,20 @@ class DbtSource(Dbt):
         self.attributes.sql_asset = sql_asset
 
     class Attributes(Dbt.Attributes):
-        dbt_state: Optional[str] = Field(None, description="", alias="dbtState")
+        dbt_state: Optional[str] = Field(default=None, description="", alias="dbtState")
+
         dbt_freshness_criteria: Optional[str] = Field(
-            None, description="", alias="dbtFreshnessCriteria"
+            default=None, description="", alias="dbtFreshnessCriteria"
         )
+
         sql_assets: Optional[list[SQL]] = Field(
-            None, description="", alias="sqlAssets"
+            default=None, description="", alias="sqlAssets"
         )  # relationship
         dbt_tests: Optional[list[DbtTest]] = Field(
-            None, description="", alias="dbtTests"
+            default=None, description="", alias="dbtTests"
         )  # relationship
         sql_asset: Optional[SQL] = Field(
-            None, description="", alias="sqlAsset"
+            default=None, description="", alias="sqlAsset"
         )  # relationship
 
     attributes: "DbtSource.Attributes" = Field(
@@ -10150,9 +10777,10 @@ class DbtSource(Dbt):
 class SchemaRegistry(Catalog):
     """Description"""
 
-    type_name: str = Field("SchemaRegistry", allow_mutation=False)
+    type_name: str = Field("SchemaRegistry", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SchemaRegistry":
             raise ValueError("must be SchemaRegistry")
@@ -10200,10 +10828,11 @@ class SchemaRegistry(Catalog):
 
     class Attributes(Catalog.Attributes):
         schema_registry_schema_type: Optional[SchemaRegistrySchemaType] = Field(
-            None, description="", alias="schemaRegistrySchemaType"
+            default=None, description="", alias="schemaRegistrySchemaType"
         )
+
         schema_registry_schema_id: Optional[str] = Field(
-            None, description="", alias="schemaRegistrySchemaId"
+            default=None, description="", alias="schemaRegistrySchemaId"
         )
 
     attributes: "SchemaRegistry.Attributes" = Field(
@@ -10216,9 +10845,10 @@ class SchemaRegistry(Catalog):
 class SchemaRegistrySubject(SchemaRegistry):
     """Description"""
 
-    type_name: str = Field("SchemaRegistrySubject", allow_mutation=False)
+    type_name: str = Field("SchemaRegistrySubject", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SchemaRegistrySubject":
             raise ValueError("must be SchemaRegistrySubject")
@@ -10367,31 +10997,43 @@ class SchemaRegistrySubject(SchemaRegistry):
 
     class Attributes(SchemaRegistry.Attributes):
         schema_registry_subject_base_name: Optional[str] = Field(
-            None, description="", alias="schemaRegistrySubjectBaseName"
+            default=None, description="", alias="schemaRegistrySubjectBaseName"
         )
+
         schema_registry_subject_is_key_schema: Optional[bool] = Field(
-            None, description="", alias="schemaRegistrySubjectIsKeySchema"
+            default=None, description="", alias="schemaRegistrySubjectIsKeySchema"
         )
+
         schema_registry_subject_schema_compatibility: Optional[
             SchemaRegistrySchemaCompatibility
         ] = Field(
-            None, description="", alias="schemaRegistrySubjectSchemaCompatibility"
+            default=None,
+            description="",
+            alias="schemaRegistrySubjectSchemaCompatibility",
         )
+
         schema_registry_subject_latest_schema_version: Optional[str] = Field(
-            None, description="", alias="schemaRegistrySubjectLatestSchemaVersion"
+            default=None,
+            description="",
+            alias="schemaRegistrySubjectLatestSchemaVersion",
         )
+
         schema_registry_subject_latest_schema_definition: Optional[str] = Field(
-            None, description="", alias="schemaRegistrySubjectLatestSchemaDefinition"
+            default=None,
+            description="",
+            alias="schemaRegistrySubjectLatestSchemaDefinition",
         )
+
         schema_registry_subject_governing_asset_qualified_names: Optional[
             set[str]
         ] = Field(
-            None,
+            default=None,
             description="",
             alias="schemaRegistrySubjectGoverningAssetQualifiedNames",
         )
+
         assets: Optional[list[Asset]] = Field(
-            None, description="", alias="assets"
+            default=None, description="", alias="assets"
         )  # relationship
 
     attributes: "SchemaRegistrySubject.Attributes" = Field(
@@ -10404,9 +11046,10 @@ class SchemaRegistrySubject(SchemaRegistry):
 class MonteCarlo(DataQuality):
     """Description"""
 
-    type_name: str = Field("MonteCarlo", allow_mutation=False)
+    type_name: str = Field("MonteCarlo", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MonteCarlo":
             raise ValueError("must be MonteCarlo")
@@ -10447,9 +11090,12 @@ class MonteCarlo(DataQuality):
         self.attributes.mc_asset_qualified_names = mc_asset_qualified_names
 
     class Attributes(DataQuality.Attributes):
-        mc_labels: Optional[set[str]] = Field(None, description="", alias="mcLabels")
+        mc_labels: Optional[set[str]] = Field(
+            default=None, description="", alias="mcLabels"
+        )
+
         mc_asset_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="mcAssetQualifiedNames"
+            default=None, description="", alias="mcAssetQualifiedNames"
         )
 
     attributes: "MonteCarlo.Attributes" = Field(
@@ -10462,9 +11108,10 @@ class MonteCarlo(DataQuality):
 class MCIncident(MonteCarlo):
     """Description"""
 
-    type_name: str = Field("MCIncident", allow_mutation=False)
+    type_name: str = Field("MCIncident", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MCIncident":
             raise ValueError("must be MCIncident")
@@ -10572,28 +11219,34 @@ class MCIncident(MonteCarlo):
 
     class Attributes(MonteCarlo.Attributes):
         mc_incident_id: Optional[str] = Field(
-            None, description="", alias="mcIncidentId"
+            default=None, description="", alias="mcIncidentId"
         )
+
         mc_incident_type: Optional[str] = Field(
-            None, description="", alias="mcIncidentType"
+            default=None, description="", alias="mcIncidentType"
         )
+
         mc_incident_sub_types: Optional[set[str]] = Field(
-            None, description="", alias="mcIncidentSubTypes"
+            default=None, description="", alias="mcIncidentSubTypes"
         )
+
         mc_incident_severity: Optional[str] = Field(
-            None, description="", alias="mcIncidentSeverity"
+            default=None, description="", alias="mcIncidentSeverity"
         )
+
         mc_incident_state: Optional[str] = Field(
-            None, description="", alias="mcIncidentState"
+            default=None, description="", alias="mcIncidentState"
         )
+
         mc_incident_warehouse: Optional[str] = Field(
-            None, description="", alias="mcIncidentWarehouse"
+            default=None, description="", alias="mcIncidentWarehouse"
         )
+
         mc_monitor: Optional[MCMonitor] = Field(
-            None, description="", alias="mcMonitor"
+            default=None, description="", alias="mcMonitor"
         )  # relationship
         mc_incident_assets: Optional[list[Asset]] = Field(
-            None, description="", alias="mcIncidentAssets"
+            default=None, description="", alias="mcIncidentAssets"
         )  # relationship
 
     attributes: "MCIncident.Attributes" = Field(
@@ -10606,9 +11259,10 @@ class MCIncident(MonteCarlo):
 class MCMonitor(MonteCarlo):
     """Description"""
 
-    type_name: str = Field("MCMonitor", allow_mutation=False)
+    type_name: str = Field("MCMonitor", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MCMonitor":
             raise ValueError("must be MCMonitor")
@@ -10881,57 +11535,76 @@ class MCMonitor(MonteCarlo):
         self.attributes.mc_monitor_assets = mc_monitor_assets
 
     class Attributes(MonteCarlo.Attributes):
-        mc_monitor_id: Optional[str] = Field(None, description="", alias="mcMonitorId")
+        mc_monitor_id: Optional[str] = Field(
+            default=None, description="", alias="mcMonitorId"
+        )
+
         mc_monitor_status: Optional[str] = Field(
-            None, description="", alias="mcMonitorStatus"
+            default=None, description="", alias="mcMonitorStatus"
         )
+
         mc_monitor_type: Optional[str] = Field(
-            None, description="", alias="mcMonitorType"
+            default=None, description="", alias="mcMonitorType"
         )
+
         mc_monitor_warehouse: Optional[str] = Field(
-            None, description="", alias="mcMonitorWarehouse"
+            default=None, description="", alias="mcMonitorWarehouse"
         )
+
         mc_monitor_schedule_type: Optional[str] = Field(
-            None, description="", alias="mcMonitorScheduleType"
+            default=None, description="", alias="mcMonitorScheduleType"
         )
+
         mc_monitor_namespace: Optional[str] = Field(
-            None, description="", alias="mcMonitorNamespace"
+            default=None, description="", alias="mcMonitorNamespace"
         )
+
         mc_monitor_rule_type: Optional[str] = Field(
-            None, description="", alias="mcMonitorRuleType"
+            default=None, description="", alias="mcMonitorRuleType"
         )
+
         mc_monitor_rule_custom_sql: Optional[str] = Field(
-            None, description="", alias="mcMonitorRuleCustomSql"
+            default=None, description="", alias="mcMonitorRuleCustomSql"
         )
+
         mc_monitor_rule_schedule_config: Optional[MCRuleSchedule] = Field(
-            None, description="", alias="mcMonitorRuleScheduleConfig"
+            default=None, description="", alias="mcMonitorRuleScheduleConfig"
         )
+
         mc_monitor_rule_schedule_config_humanized: Optional[str] = Field(
-            None, description="", alias="mcMonitorRuleScheduleConfigHumanized"
+            default=None, description="", alias="mcMonitorRuleScheduleConfigHumanized"
         )
+
         mc_monitor_alert_condition: Optional[str] = Field(
-            None, description="", alias="mcMonitorAlertCondition"
+            default=None, description="", alias="mcMonitorAlertCondition"
         )
+
         mc_monitor_rule_next_execution_time: Optional[datetime] = Field(
-            None, description="", alias="mcMonitorRuleNextExecutionTime"
+            default=None, description="", alias="mcMonitorRuleNextExecutionTime"
         )
+
         mc_monitor_rule_previous_execution_time: Optional[datetime] = Field(
-            None, description="", alias="mcMonitorRulePreviousExecutionTime"
+            default=None, description="", alias="mcMonitorRulePreviousExecutionTime"
         )
+
         mc_monitor_rule_comparisons: Optional[list[MCRuleComparison]] = Field(
-            None, description="", alias="mcMonitorRuleComparisons"
+            default=None, description="", alias="mcMonitorRuleComparisons"
         )
+
         mc_monitor_rule_is_snoozed: Optional[bool] = Field(
-            None, description="", alias="mcMonitorRuleIsSnoozed"
+            default=None, description="", alias="mcMonitorRuleIsSnoozed"
         )
+
         mc_monitor_breach_rate: Optional[float] = Field(
-            None, description="", alias="mcMonitorBreachRate"
+            default=None, description="", alias="mcMonitorBreachRate"
         )
+
         mc_monitor_incident_count: Optional[int] = Field(
-            None, description="", alias="mcMonitorIncidentCount"
+            default=None, description="", alias="mcMonitorIncidentCount"
         )
+
         mc_monitor_assets: Optional[list[Asset]] = Field(
-            None, description="", alias="mcMonitorAssets"
+            default=None, description="", alias="mcMonitorAssets"
         )  # relationship
 
     attributes: "MCMonitor.Attributes" = Field(
@@ -10944,9 +11617,10 @@ class MCMonitor(MonteCarlo):
 class Soda(DataQuality):
     """Description"""
 
-    type_name: str = Field("Soda", allow_mutation=False)
+    type_name: str = Field("Soda", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Soda":
             raise ValueError("must be Soda")
@@ -10963,9 +11637,10 @@ class Soda(DataQuality):
 class SodaCheck(Soda):
     """Description"""
 
-    type_name: str = Field("SodaCheck", allow_mutation=False)
+    type_name: str = Field("SodaCheck", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SodaCheck":
             raise ValueError("must be SodaCheck")
@@ -11069,24 +11744,31 @@ class SodaCheck(Soda):
         self.attributes.soda_check_assets = soda_check_assets
 
     class Attributes(Soda.Attributes):
-        soda_check_id: Optional[str] = Field(None, description="", alias="sodaCheckId")
+        soda_check_id: Optional[str] = Field(
+            default=None, description="", alias="sodaCheckId"
+        )
+
         soda_check_evaluation_status: Optional[str] = Field(
-            None, description="", alias="sodaCheckEvaluationStatus"
+            default=None, description="", alias="sodaCheckEvaluationStatus"
         )
+
         soda_check_definition: Optional[str] = Field(
-            None, description="", alias="sodaCheckDefinition"
+            default=None, description="", alias="sodaCheckDefinition"
         )
+
         soda_check_last_scan_at: Optional[datetime] = Field(
-            None, description="", alias="sodaCheckLastScanAt"
+            default=None, description="", alias="sodaCheckLastScanAt"
         )
+
         soda_check_incident_count: Optional[int] = Field(
-            None, description="", alias="sodaCheckIncidentCount"
+            default=None, description="", alias="sodaCheckIncidentCount"
         )
+
         soda_check_columns: Optional[list[Column]] = Field(
-            None, description="", alias="sodaCheckColumns"
+            default=None, description="", alias="sodaCheckColumns"
         )  # relationship
         soda_check_assets: Optional[list[Asset]] = Field(
-            None, description="", alias="sodaCheckAssets"
+            default=None, description="", alias="sodaCheckAssets"
         )  # relationship
 
     attributes: "SodaCheck.Attributes" = Field(

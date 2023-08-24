@@ -1,9 +1,21 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from abc import ABC
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Literal, Union
+from typing_extensions import Annotated
 
-from pydantic import BaseModel, Extra, Field, validator
+from pydantic import (
+    field_serializer,
+    field_validator,
+    model_serializer,
+    ConfigDict,
+    BaseModel,
+    Field,
+    validator,
+    RootModel,
+    SerializerFunctionWrapHandler,
+)
+from pydantic.functional_serializers import WrapSerializer
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -12,8 +24,6 @@ else:
 
 from datetime import datetime
 from typing import Any, Generic, Optional, TypeVar
-
-from pydantic.generics import GenericModel
 
 from pyatlan.model.enums import AnnouncementType, EntityStatus
 
@@ -97,6 +107,29 @@ class AtlanTagName:
         else:
             raise ValueError(f"{data} is not a valid AtlanTag")
 
+    @model_serializer
+    def ser_model(self) -> str:
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+
+        return AtlanTagCache.get_id_for_name(self._display_text) or ""
+
+    if TYPE_CHECKING:
+        # Ensure type checkers see the correct return type
+        def model_dump(
+            self,
+            *,
+            mode: Union[Literal["json", "python"], str] = "python",
+            include: Any = None,
+            exclude: Any = None,
+            by_alias: bool = False,
+            exclude_unset: bool = False,
+            exclude_defaults: bool = False,
+            exclude_none: bool = False,
+            round_trip: bool = False,
+            warnings: bool = True,
+        ) -> str:
+            ...
+
     @staticmethod
     def json_encode_atlan_tag(atlan_tag_name: "AtlanTagName"):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
@@ -105,15 +138,14 @@ class AtlanTagName:
 
 
 class AtlanObject(BaseModel):
-    class Config:
-        allow_population_by_field_name = True
-        alias_generator = to_camel_case
-        extra = Extra.ignore
-        json_encoders = {
-            datetime: lambda v: int(v.timestamp() * 1000),
-            "AtlanTagName": AtlanTagName.json_encode_atlan_tag,
-        }
-        validate_assignment = True
+    # TODO[pydantic]: The following keys were removed: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(
+        populate_by_name=True,
+        alias_generator=to_camel_case,
+        extra="ignore",
+        validate_assignment=True,
+    )
 
 
 class SearchRequest(AtlanObject, ABC):
@@ -137,6 +169,7 @@ class Announcement:
 
 
 class AtlanTag(AtlanObject):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     type_name: Optional[AtlanTagName] = Field(
         None,
         description="Name of the type definition that defines this instance.\n",
@@ -164,10 +197,7 @@ class AtlanTag(AtlanObject):
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
 
 
-class AtlanTags(AtlanObject):
-    __root__: list[AtlanTag] = Field(
-        default_factory=list, description="classifications"
-    )
+AtlanTags = RootModel[list[AtlanObject]]
 
 
 class Meaning(AtlanObject):
@@ -192,7 +222,7 @@ class Meaning(AtlanObject):
 T = TypeVar("T")
 
 
-class AssetResponse(AtlanObject, GenericModel, Generic[T]):
+class AssetResponse(AtlanObject, BaseModel, Generic[T]):
     entity: T
     referredEntities: Optional[dict[str, Any]] = Field(
         None,
@@ -201,10 +231,11 @@ class AssetResponse(AtlanObject, GenericModel, Generic[T]):
     )
 
 
-class AssetRequest(AtlanObject, GenericModel, Generic[T]):
+class AssetRequest(AtlanObject, BaseModel, Generic[T]):
     entity: T
 
-    @validator("entity")
+    @field_validator("entity")
+    @classmethod
     def flush_custom_metadata(cls, v):
         from pyatlan.model.assets import Asset
 
@@ -213,9 +244,11 @@ class AssetRequest(AtlanObject, GenericModel, Generic[T]):
         return v
 
 
-class BulkRequest(AtlanObject, GenericModel, Generic[T]):
+class BulkRequest(AtlanObject, BaseModel, Generic[T]):
     entities: list[T]
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("entities", each_item=True)
     def flush_custom_metadata(cls, v):
         from pyatlan.model.assets import Asset

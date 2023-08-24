@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class QuickSight(BI):
     """Description"""
 
-    type_name: str = Field("QuickSight", allow_mutation=False)
+    type_name: str = Field("QuickSight", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSight":
             raise ValueError("must be QuickSight")
@@ -67,13 +68,15 @@ class QuickSight(BI):
 
     class Attributes(BI.Attributes):
         quick_sight_id: Optional[str] = Field(
-            None, description="", alias="quickSightId"
+            default=None, description="", alias="quickSightId"
         )
+
         quick_sight_sheet_id: Optional[str] = Field(
-            None, description="", alias="quickSightSheetId"
+            default=None, description="", alias="quickSightSheetId"
         )
+
         quick_sight_sheet_name: Optional[str] = Field(
-            None, description="", alias="quickSightSheetName"
+            default=None, description="", alias="quickSightSheetName"
         )
 
     attributes: "QuickSight.Attributes" = Field(

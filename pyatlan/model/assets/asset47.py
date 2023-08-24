@@ -7,7 +7,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -15,9 +15,10 @@ from .asset18 import BI
 class MicroStrategy(BI):
     """Description"""
 
-    type_name: str = Field("MicroStrategy", allow_mutation=False)
+    type_name: str = Field("MicroStrategy", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategy":
             raise ValueError("must be MicroStrategy")
@@ -199,34 +200,43 @@ class MicroStrategy(BI):
 
     class Attributes(BI.Attributes):
         micro_strategy_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectQualifiedName"
+            default=None, description="", alias="microStrategyProjectQualifiedName"
         )
+
         micro_strategy_project_name: Optional[str] = Field(
-            None, description="", alias="microStrategyProjectName"
+            default=None, description="", alias="microStrategyProjectName"
         )
+
         micro_strategy_cube_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeQualifiedNames"
+            default=None, description="", alias="microStrategyCubeQualifiedNames"
         )
+
         micro_strategy_cube_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyCubeNames"
+            default=None, description="", alias="microStrategyCubeNames"
         )
+
         micro_strategy_report_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportQualifiedNames"
+            default=None, description="", alias="microStrategyReportQualifiedNames"
         )
+
         micro_strategy_report_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyReportNames"
+            default=None, description="", alias="microStrategyReportNames"
         )
+
         micro_strategy_is_certified: Optional[bool] = Field(
-            None, description="", alias="microStrategyIsCertified"
+            default=None, description="", alias="microStrategyIsCertified"
         )
+
         micro_strategy_certified_by: Optional[str] = Field(
-            None, description="", alias="microStrategyCertifiedBy"
+            default=None, description="", alias="microStrategyCertifiedBy"
         )
+
         micro_strategy_certified_at: Optional[datetime] = Field(
-            None, description="", alias="microStrategyCertifiedAt"
+            default=None, description="", alias="microStrategyCertifiedAt"
         )
+
         micro_strategy_location: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="microStrategyLocation"
+            default=None, description="", alias="microStrategyLocation"
         )
 
     attributes: "MicroStrategy.Attributes" = Field(

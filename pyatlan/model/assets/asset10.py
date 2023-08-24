@@ -6,17 +6,19 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from .asset00 import Catalog, Process
+from .asset00 import Catalog
+from .asset00 import Process
 
 
 class BIProcess(Process):
     """Description"""
 
-    type_name: str = Field("BIProcess", allow_mutation=False)
+    type_name: str = Field("BIProcess", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "BIProcess":
             raise ValueError("must be BIProcess")
@@ -54,10 +56,10 @@ class BIProcess(Process):
 
     class Attributes(Process.Attributes):
         outputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="outputs"
+            default=None, description="", alias="outputs"
         )  # relationship
         inputs: Optional[list[Catalog]] = Field(
-            None, description="", alias="inputs"
+            default=None, description="", alias="inputs"
         )  # relationship
 
     attributes: "BIProcess.Attributes" = Field(

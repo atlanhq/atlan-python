@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset38 import Sigma
 
@@ -14,9 +14,10 @@ from .asset38 import Sigma
 class SigmaWorkbook(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaWorkbook", allow_mutation=False)
+    type_name: str = Field("SigmaWorkbook", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SigmaWorkbook":
             raise ValueError("must be SigmaWorkbook")
@@ -54,10 +55,11 @@ class SigmaWorkbook(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_page_count: Optional[int] = Field(
-            None, description="", alias="sigmaPageCount"
+            default=None, description="", alias="sigmaPageCount"
         )
+
         sigma_pages: Optional[list[SigmaPage]] = Field(
-            None, description="", alias="sigmaPages"
+            default=None, description="", alias="sigmaPages"
         )  # relationship
 
     attributes: "SigmaWorkbook.Attributes" = Field(
@@ -70,9 +72,10 @@ class SigmaWorkbook(Sigma):
 class SigmaDataElementField(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDataElementField", allow_mutation=False)
+    type_name: str = Field("SigmaDataElementField", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SigmaDataElementField":
             raise ValueError("must be SigmaDataElementField")
@@ -137,13 +140,15 @@ class SigmaDataElementField(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_field_is_hidden: Optional[bool] = Field(
-            None, description="", alias="sigmaDataElementFieldIsHidden"
+            default=None, description="", alias="sigmaDataElementFieldIsHidden"
         )
+
         sigma_data_element_field_formula: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementFieldFormula"
+            default=None, description="", alias="sigmaDataElementFieldFormula"
         )
+
         sigma_data_element: Optional[SigmaDataElement] = Field(
-            None, description="", alias="sigmaDataElement"
+            default=None, description="", alias="sigmaDataElement"
         )  # relationship
 
     attributes: "SigmaDataElementField.Attributes" = Field(
@@ -156,9 +161,10 @@ class SigmaDataElementField(Sigma):
 class SigmaPage(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaPage", allow_mutation=False)
+    type_name: str = Field("SigmaPage", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SigmaPage":
             raise ValueError("must be SigmaPage")
@@ -213,13 +219,14 @@ class SigmaPage(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementCount"
+            default=None, description="", alias="sigmaDataElementCount"
         )
+
         sigma_data_elements: Optional[list[SigmaDataElement]] = Field(
-            None, description="", alias="sigmaDataElements"
+            default=None, description="", alias="sigmaDataElements"
         )  # relationship
         sigma_workbook: Optional[SigmaWorkbook] = Field(
-            None, description="", alias="sigmaWorkbook"
+            default=None, description="", alias="sigmaWorkbook"
         )  # relationship
 
     attributes: "SigmaPage.Attributes" = Field(
@@ -232,9 +239,10 @@ class SigmaPage(Sigma):
 class SigmaDataElement(Sigma):
     """Description"""
 
-    type_name: str = Field("SigmaDataElement", allow_mutation=False)
+    type_name: str = Field("SigmaDataElement", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "SigmaDataElement":
             raise ValueError("must be SigmaDataElement")
@@ -323,19 +331,22 @@ class SigmaDataElement(Sigma):
 
     class Attributes(Sigma.Attributes):
         sigma_data_element_query: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQuery"
+            default=None, description="", alias="sigmaDataElementQuery"
         )
+
         sigma_data_element_type: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementType"
+            default=None, description="", alias="sigmaDataElementType"
         )
+
         sigma_data_element_field_count: Optional[int] = Field(
-            None, description="", alias="sigmaDataElementFieldCount"
+            default=None, description="", alias="sigmaDataElementFieldCount"
         )
+
         sigma_page: Optional[SigmaPage] = Field(
-            None, description="", alias="sigmaPage"
+            default=None, description="", alias="sigmaPage"
         )  # relationship
         sigma_data_element_fields: Optional[list[SigmaDataElementField]] = Field(
-            None, description="", alias="sigmaDataElementFields"
+            default=None, description="", alias="sigmaDataElementFields"
         )  # relationship
 
     attributes: "SigmaDataElement.Attributes" = Field(

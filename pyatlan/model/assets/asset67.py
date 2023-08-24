@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset43 import Metabase
 
@@ -14,9 +14,10 @@ from .asset43 import Metabase
 class MetabaseQuestion(Metabase):
     """Description"""
 
-    type_name: str = Field("MetabaseQuestion", allow_mutation=False)
+    type_name: str = Field("MetabaseQuestion", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MetabaseQuestion":
             raise ValueError("must be MetabaseQuestion")
@@ -93,19 +94,22 @@ class MetabaseQuestion(Metabase):
 
     class Attributes(Metabase.Attributes):
         metabase_dashboard_count: Optional[int] = Field(
-            None, description="", alias="metabaseDashboardCount"
+            default=None, description="", alias="metabaseDashboardCount"
         )
+
         metabase_query_type: Optional[str] = Field(
-            None, description="", alias="metabaseQueryType"
+            default=None, description="", alias="metabaseQueryType"
         )
+
         metabase_query: Optional[str] = Field(
-            None, description="", alias="metabaseQuery"
+            default=None, description="", alias="metabaseQuery"
         )
+
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
+            default=None, description="", alias="metabaseDashboards"
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
+            default=None, description="", alias="metabaseCollection"
         )  # relationship
 
     attributes: "MetabaseQuestion.Attributes" = Field(
@@ -118,9 +122,10 @@ class MetabaseQuestion(Metabase):
 class MetabaseCollection(Metabase):
     """Description"""
 
-    type_name: str = Field("MetabaseCollection", allow_mutation=False)
+    type_name: str = Field("MetabaseCollection", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MetabaseCollection":
             raise ValueError("must be MetabaseCollection")
@@ -211,21 +216,27 @@ class MetabaseCollection(Metabase):
         self.attributes.metabase_questions = metabase_questions
 
     class Attributes(Metabase.Attributes):
-        metabase_slug: Optional[str] = Field(None, description="", alias="metabaseSlug")
+        metabase_slug: Optional[str] = Field(
+            default=None, description="", alias="metabaseSlug"
+        )
+
         metabase_color: Optional[str] = Field(
-            None, description="", alias="metabaseColor"
+            default=None, description="", alias="metabaseColor"
         )
+
         metabase_namespace: Optional[str] = Field(
-            None, description="", alias="metabaseNamespace"
+            default=None, description="", alias="metabaseNamespace"
         )
+
         metabase_is_personal_collection: Optional[bool] = Field(
-            None, description="", alias="metabaseIsPersonalCollection"
+            default=None, description="", alias="metabaseIsPersonalCollection"
         )
+
         metabase_dashboards: Optional[list[MetabaseDashboard]] = Field(
-            None, description="", alias="metabaseDashboards"
+            default=None, description="", alias="metabaseDashboards"
         )  # relationship
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+            default=None, description="", alias="metabaseQuestions"
         )  # relationship
 
     attributes: "MetabaseCollection.Attributes" = Field(
@@ -238,9 +249,10 @@ class MetabaseCollection(Metabase):
 class MetabaseDashboard(Metabase):
     """Description"""
 
-    type_name: str = Field("MetabaseDashboard", allow_mutation=False)
+    type_name: str = Field("MetabaseDashboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MetabaseDashboard":
             raise ValueError("must be MetabaseDashboard")
@@ -291,13 +303,14 @@ class MetabaseDashboard(Metabase):
 
     class Attributes(Metabase.Attributes):
         metabase_question_count: Optional[int] = Field(
-            None, description="", alias="metabaseQuestionCount"
+            default=None, description="", alias="metabaseQuestionCount"
         )
+
         metabase_questions: Optional[list[MetabaseQuestion]] = Field(
-            None, description="", alias="metabaseQuestions"
+            default=None, description="", alias="metabaseQuestions"
         )  # relationship
         metabase_collection: Optional[MetabaseCollection] = Field(
-            None, description="", alias="metabaseCollection"
+            default=None, description="", alias="metabaseCollection"
         )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(

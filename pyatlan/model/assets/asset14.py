@@ -6,19 +6,21 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.enums import IconType
-
+from pyatlan.model.enums import (
+    IconType,
+)
 from .asset00 import Namespace
 
 
 class Collection(Namespace):
     """Description"""
 
-    type_name: str = Field("Collection", allow_mutation=False)
+    type_name: str = Field("Collection", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Collection":
             raise ValueError("must be Collection")
@@ -55,8 +57,11 @@ class Collection(Namespace):
         self.attributes.icon_type = icon_type
 
     class Attributes(Namespace.Attributes):
-        icon: Optional[str] = Field(None, description="", alias="icon")
-        icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
+        icon: Optional[str] = Field(default=None, description="", alias="icon")
+
+        icon_type: Optional[IconType] = Field(
+            default=None, description="", alias="iconType"
+        )
 
     attributes: "Collection.Attributes" = Field(
         default_factory=lambda: Collection.Attributes(),

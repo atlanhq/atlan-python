@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset46 import PowerBI
 
@@ -14,9 +14,10 @@ from .asset46 import PowerBI
 class PowerBIReport(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIReport", allow_mutation=False)
+    type_name: str = Field("PowerBIReport", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIReport":
             raise ValueError("must be PowerBIReport")
@@ -126,24 +127,30 @@ class PowerBIReport(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
+
         dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
+            default=None, description="", alias="datasetQualifiedName"
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        page_count: Optional[int] = Field(None, description="", alias="pageCount")
+
+        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+
+        page_count: Optional[int] = Field(
+            default=None, description="", alias="pageCount"
+        )
+
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description="", alias="workspace"
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description="", alias="tiles"
         )  # relationship
         pages: Optional[list[PowerBIPage]] = Field(
-            None, description="", alias="pages"
+            default=None, description="", alias="pages"
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+            default=None, description="", alias="dataset"
         )  # relationship
 
     attributes: "PowerBIReport.Attributes" = Field(
@@ -156,9 +163,10 @@ class PowerBIReport(PowerBI):
 class PowerBIMeasure(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
+    type_name: str = Field("PowerBIMeasure", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIMeasure":
             raise ValueError("must be PowerBIMeasure")
@@ -245,19 +253,23 @@ class PowerBIMeasure(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
+
         dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
+            default=None, description="", alias="datasetQualifiedName"
         )
+
         power_b_i_measure_expression: Optional[str] = Field(
-            None, description="", alias="powerBIMeasureExpression"
+            default=None, description="", alias="powerBIMeasureExpression"
         )
+
         power_b_i_is_external_measure: Optional[bool] = Field(
-            None, description="", alias="powerBIIsExternalMeasure"
+            default=None, description="", alias="powerBIIsExternalMeasure"
         )
+
         table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
+            default=None, description="", alias="table"
         )  # relationship
 
     attributes: "PowerBIMeasure.Attributes" = Field(
@@ -270,9 +282,10 @@ class PowerBIMeasure(PowerBI):
 class PowerBIColumn(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIColumn", allow_mutation=False)
+    type_name: str = Field("PowerBIColumn", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIColumn":
             raise ValueError("must be PowerBIColumn")
@@ -391,25 +404,31 @@ class PowerBIColumn(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
+
         dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
+            default=None, description="", alias="datasetQualifiedName"
         )
+
         power_b_i_column_data_category: Optional[str] = Field(
-            None, description="", alias="powerBIColumnDataCategory"
+            default=None, description="", alias="powerBIColumnDataCategory"
         )
+
         power_b_i_column_data_type: Optional[str] = Field(
-            None, description="", alias="powerBIColumnDataType"
+            default=None, description="", alias="powerBIColumnDataType"
         )
+
         power_b_i_sort_by_column: Optional[str] = Field(
-            None, description="", alias="powerBISortByColumn"
+            default=None, description="", alias="powerBISortByColumn"
         )
+
         power_b_i_column_summarize_by: Optional[str] = Field(
-            None, description="", alias="powerBIColumnSummarizeBy"
+            default=None, description="", alias="powerBIColumnSummarizeBy"
         )
+
         table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
+            default=None, description="", alias="table"
         )  # relationship
 
     attributes: "PowerBIColumn.Attributes" = Field(
@@ -422,9 +441,10 @@ class PowerBIColumn(PowerBI):
 class PowerBITable(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBITable", allow_mutation=False)
+    type_name: str = Field("PowerBITable", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBITable":
             raise ValueError("must be PowerBITable")
@@ -552,28 +572,33 @@ class PowerBITable(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
+
         dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
+            default=None, description="", alias="datasetQualifiedName"
         )
+
         power_b_i_table_source_expressions: Optional[set[str]] = Field(
-            None, description="", alias="powerBITableSourceExpressions"
+            default=None, description="", alias="powerBITableSourceExpressions"
         )
+
         power_b_i_table_column_count: Optional[int] = Field(
-            None, description="", alias="powerBITableColumnCount"
+            default=None, description="", alias="powerBITableColumnCount"
         )
+
         power_b_i_table_measure_count: Optional[int] = Field(
-            None, description="", alias="powerBITableMeasureCount"
+            default=None, description="", alias="powerBITableMeasureCount"
         )
+
         columns: Optional[list[PowerBIColumn]] = Field(
-            None, description="", alias="columns"
+            default=None, description="", alias="columns"
         )  # relationship
         measures: Optional[list[PowerBIMeasure]] = Field(
-            None, description="", alias="measures"
+            default=None, description="", alias="measures"
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+            default=None, description="", alias="dataset"
         )  # relationship
 
     attributes: "PowerBITable.Attributes" = Field(
@@ -586,9 +611,10 @@ class PowerBITable(PowerBI):
 class PowerBITile(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBITile", allow_mutation=False)
+    type_name: str = Field("PowerBITile", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBITile":
             raise ValueError("must be PowerBITile")
@@ -667,19 +693,21 @@ class PowerBITile(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
+
         dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="dashboardQualifiedName"
+            default=None, description="", alias="dashboardQualifiedName"
         )
+
         report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
+            default=None, description="", alias="report"
         )  # relationship
         dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+            default=None, description="", alias="dataset"
         )  # relationship
         dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
+            default=None, description="", alias="dashboard"
         )  # relationship
 
     attributes: "PowerBITile.Attributes" = Field(
@@ -692,9 +720,10 @@ class PowerBITile(PowerBI):
 class PowerBIDatasource(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+    type_name: str = Field("PowerBIDatasource", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIDatasource":
             raise ValueError("must be PowerBIDatasource")
@@ -732,10 +761,11 @@ class PowerBIDatasource(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         connection_details: Optional[dict[str, str]] = Field(
-            None, description="", alias="connectionDetails"
+            default=None, description="", alias="connectionDetails"
         )
+
         datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+            default=None, description="", alias="datasets"
         )  # relationship
 
     attributes: "PowerBIDatasource.Attributes" = Field(
@@ -748,9 +778,10 @@ class PowerBIDatasource(PowerBI):
 class PowerBIWorkspace(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
+    type_name: str = Field("PowerBIWorkspace", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIWorkspace":
             raise ValueError("must be PowerBIWorkspace")
@@ -864,26 +895,35 @@ class PowerBIWorkspace(PowerBI):
         self.attributes.dataflows = dataflows
 
     class Attributes(PowerBI.Attributes):
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        report_count: Optional[int] = Field(None, description="", alias="reportCount")
+        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+
+        report_count: Optional[int] = Field(
+            default=None, description="", alias="reportCount"
+        )
+
         dashboard_count: Optional[int] = Field(
-            None, description="", alias="dashboardCount"
+            default=None, description="", alias="dashboardCount"
         )
-        dataset_count: Optional[int] = Field(None, description="", alias="datasetCount")
+
+        dataset_count: Optional[int] = Field(
+            default=None, description="", alias="datasetCount"
+        )
+
         dataflow_count: Optional[int] = Field(
-            None, description="", alias="dataflowCount"
+            default=None, description="", alias="dataflowCount"
         )
+
         reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
+            default=None, description="", alias="reports"
         )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+            default=None, description="", alias="datasets"
         )  # relationship
         dashboards: Optional[list[PowerBIDashboard]] = Field(
-            None, description="", alias="dashboards"
+            default=None, description="", alias="dashboards"
         )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
+            default=None, description="", alias="dataflows"
         )  # relationship
 
     attributes: "PowerBIWorkspace.Attributes" = Field(
@@ -896,9 +936,10 @@ class PowerBIWorkspace(PowerBI):
 class PowerBIDataset(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIDataset", allow_mutation=False)
+    type_name: str = Field("PowerBIDataset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIDataset":
             raise ValueError("must be PowerBIDataset")
@@ -1006,26 +1047,28 @@ class PowerBIDataset(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+
+        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+
         reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
+            default=None, description="", alias="reports"
         )  # relationship
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description="", alias="workspace"
         )  # relationship
         dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
+            default=None, description="", alias="dataflows"
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description="", alias="tiles"
         )  # relationship
         tables: Optional[list[PowerBITable]] = Field(
-            None, description="", alias="tables"
+            default=None, description="", alias="tables"
         )  # relationship
         datasources: Optional[list[PowerBIDatasource]] = Field(
-            None, description="", alias="datasources"
+            default=None, description="", alias="datasources"
         )  # relationship
 
     attributes: "PowerBIDataset.Attributes" = Field(
@@ -1038,9 +1081,10 @@ class PowerBIDataset(PowerBI):
 class PowerBIDashboard(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+    type_name: str = Field("PowerBIDashboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIDashboard":
             raise ValueError("must be PowerBIDashboard")
@@ -1115,15 +1159,20 @@ class PowerBIDashboard(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        tile_count: Optional[int] = Field(None, description="", alias="tileCount")
+
+        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+
+        tile_count: Optional[int] = Field(
+            default=None, description="", alias="tileCount"
+        )
+
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description="", alias="workspace"
         )  # relationship
         tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+            default=None, description="", alias="tiles"
         )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
@@ -1136,9 +1185,10 @@ class PowerBIDashboard(PowerBI):
 class PowerBIDataflow(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+    type_name: str = Field("PowerBIDataflow", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIDataflow":
             raise ValueError("must be PowerBIDataflow")
@@ -1202,14 +1252,16 @@ class PowerBIDataflow(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
+
+        web_url: Optional[str] = Field(default=None, description="", alias="webUrl")
+
         workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+            default=None, description="", alias="workspace"
         )  # relationship
         datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+            default=None, description="", alias="datasets"
         )  # relationship
 
     attributes: "PowerBIDataflow.Attributes" = Field(
@@ -1222,9 +1274,10 @@ class PowerBIDataflow(PowerBI):
 class PowerBIPage(PowerBI):
     """Description"""
 
-    type_name: str = Field("PowerBIPage", allow_mutation=False)
+    type_name: str = Field("PowerBIPage", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBIPage":
             raise ValueError("must be PowerBIPage")
@@ -1279,13 +1332,15 @@ class PowerBIPage(PowerBI):
 
     class Attributes(PowerBI.Attributes):
         workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+            default=None, description="", alias="workspaceQualifiedName"
         )
+
         report_qualified_name: Optional[str] = Field(
-            None, description="", alias="reportQualifiedName"
+            default=None, description="", alias="reportQualifiedName"
         )
+
         report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
+            default=None, description="", alias="report"
         )  # relationship
 
     attributes: "PowerBIPage.Attributes" = Field(

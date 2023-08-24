@@ -10,10 +10,10 @@ from pyatlan.model.core import AtlanObject
 
 
 class AtlanRole(AtlanObject):
-    id: str = Field(None, description="Unique identifier for the role (GUID).\n")
+    id: str = Field(description="Unique identifier for the role (GUID).\n")
     """Unique identifier for the role (GUID)."""
     description: Optional[str] = Field(None, description="Description of the role.\n")
-    name: str = Field(None, description="Unique name for the role.\n")
+    name: str = Field(description="Unique name for the role.\n")
     client_role: Optional[bool] = Field(None, description="TBC\n")
     level: Optional[str] = Field(None, description="TBC\n")
     member_count: Optional[str] = Field(
@@ -29,5 +29,6 @@ class RoleResponse(AtlanObject):
         description="Number of roles in the filtered response.\n",
     )
     records: List["AtlanRole"] = Field(
-        None, description="Details of each role included in the response.\n"
+        default_factory=list,
+        description="Details of each role included in the response.\n",
     )

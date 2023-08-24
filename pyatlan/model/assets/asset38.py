@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class Sigma(BI):
     """Description"""
 
-    type_name: str = Field("Sigma", allow_mutation=False)
+    type_name: str = Field("Sigma", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Sigma":
             raise ValueError("must be Sigma")
@@ -118,22 +119,27 @@ class Sigma(BI):
 
     class Attributes(BI.Attributes):
         sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
+            default=None, description="", alias="sigmaWorkbookQualifiedName"
         )
+
         sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
+            default=None, description="", alias="sigmaWorkbookName"
         )
+
         sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
+            default=None, description="", alias="sigmaPageQualifiedName"
         )
+
         sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
+            default=None, description="", alias="sigmaPageName"
         )
+
         sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
+            default=None, description="", alias="sigmaDataElementQualifiedName"
         )
+
         sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
+            default=None, description="", alias="sigmaDataElementName"
         )
 
     attributes: "Sigma.Attributes" = Field(

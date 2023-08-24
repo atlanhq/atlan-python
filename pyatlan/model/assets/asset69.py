@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset45 import Thoughtspot
 
@@ -14,9 +14,10 @@ from .asset45 import Thoughtspot
 class ThoughtspotLiveboard(Thoughtspot):
     """Description"""
 
-    type_name: str = Field("ThoughtspotLiveboard", allow_mutation=False)
+    type_name: str = Field("ThoughtspotLiveboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ThoughtspotLiveboard":
             raise ValueError("must be ThoughtspotLiveboard")
@@ -45,7 +46,7 @@ class ThoughtspotLiveboard(Thoughtspot):
 
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]] = Field(
-            None, description="", alias="thoughtspotDashlets"
+            default=None, description="", alias="thoughtspotDashlets"
         )  # relationship
 
     attributes: "ThoughtspotLiveboard.Attributes" = Field(
@@ -58,9 +59,10 @@ class ThoughtspotLiveboard(Thoughtspot):
 class ThoughtspotDashlet(Thoughtspot):
     """Description"""
 
-    type_name: str = Field("ThoughtspotDashlet", allow_mutation=False)
+    type_name: str = Field("ThoughtspotDashlet", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ThoughtspotDashlet":
             raise ValueError("must be ThoughtspotDashlet")
@@ -125,13 +127,15 @@ class ThoughtspotDashlet(Thoughtspot):
 
     class Attributes(Thoughtspot.Attributes):
         thoughtspot_liveboard_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardName"
+            default=None, description="", alias="thoughtspotLiveboardName"
         )
+
         thoughtspot_liveboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="thoughtspotLiveboardQualifiedName"
+            default=None, description="", alias="thoughtspotLiveboardQualifiedName"
         )
+
         thoughtspot_liveboard: Optional[ThoughtspotLiveboard] = Field(
-            None, description="", alias="thoughtspotLiveboard"
+            default=None, description="", alias="thoughtspotLiveboard"
         )  # relationship
 
     attributes: "ThoughtspotDashlet.Attributes" = Field(

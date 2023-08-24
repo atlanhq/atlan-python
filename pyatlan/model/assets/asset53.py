@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset24 import API
 
@@ -14,9 +14,10 @@ from .asset24 import API
 class APISpec(API):
     """Description"""
 
-    type_name: str = Field("APISpec", allow_mutation=False)
+    type_name: str = Field("APISpec", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "APISpec":
             raise ValueError("must be APISpec")
@@ -149,31 +150,39 @@ class APISpec(API):
 
     class Attributes(API.Attributes):
         api_spec_terms_of_service_url: Optional[str] = Field(
-            None, description="", alias="apiSpecTermsOfServiceURL"
+            default=None, description="", alias="apiSpecTermsOfServiceURL"
         )
+
         api_spec_contact_email: Optional[str] = Field(
-            None, description="", alias="apiSpecContactEmail"
+            default=None, description="", alias="apiSpecContactEmail"
         )
+
         api_spec_contact_name: Optional[str] = Field(
-            None, description="", alias="apiSpecContactName"
+            default=None, description="", alias="apiSpecContactName"
         )
+
         api_spec_contact_url: Optional[str] = Field(
-            None, description="", alias="apiSpecContactURL"
+            default=None, description="", alias="apiSpecContactURL"
         )
+
         api_spec_license_name: Optional[str] = Field(
-            None, description="", alias="apiSpecLicenseName"
+            default=None, description="", alias="apiSpecLicenseName"
         )
+
         api_spec_license_url: Optional[str] = Field(
-            None, description="", alias="apiSpecLicenseURL"
+            default=None, description="", alias="apiSpecLicenseURL"
         )
+
         api_spec_contract_version: Optional[str] = Field(
-            None, description="", alias="apiSpecContractVersion"
+            default=None, description="", alias="apiSpecContractVersion"
         )
+
         api_spec_service_alias: Optional[str] = Field(
-            None, description="", alias="apiSpecServiceAlias"
+            default=None, description="", alias="apiSpecServiceAlias"
         )
+
         api_paths: Optional[list[APIPath]] = Field(
-            None, description="", alias="apiPaths"
+            default=None, description="", alias="apiPaths"
         )  # relationship
 
     attributes: "APISpec.Attributes" = Field(
@@ -186,9 +195,10 @@ class APISpec(API):
 class APIPath(API):
     """Description"""
 
-    type_name: str = Field("APIPath", allow_mutation=False)
+    type_name: str = Field("APIPath", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "APIPath":
             raise ValueError("must be APIPath")
@@ -301,25 +311,31 @@ class APIPath(API):
 
     class Attributes(API.Attributes):
         api_path_summary: Optional[str] = Field(
-            None, description="", alias="apiPathSummary"
+            default=None, description="", alias="apiPathSummary"
         )
+
         api_path_raw_u_r_i: Optional[str] = Field(
-            None, description="", alias="apiPathRawURI"
+            default=None, description="", alias="apiPathRawURI"
         )
+
         api_path_is_templated: Optional[bool] = Field(
-            None, description="", alias="apiPathIsTemplated"
+            default=None, description="", alias="apiPathIsTemplated"
         )
+
         api_path_available_operations: Optional[set[str]] = Field(
-            None, description="", alias="apiPathAvailableOperations"
+            default=None, description="", alias="apiPathAvailableOperations"
         )
+
         api_path_available_response_codes: Optional[dict[str, str]] = Field(
-            None, description="", alias="apiPathAvailableResponseCodes"
+            default=None, description="", alias="apiPathAvailableResponseCodes"
         )
+
         api_path_is_ingress_exposed: Optional[bool] = Field(
-            None, description="", alias="apiPathIsIngressExposed"
+            default=None, description="", alias="apiPathIsIngressExposed"
         )
+
         api_spec: Optional[APISpec] = Field(
-            None, description="", alias="apiSpec"
+            default=None, description="", alias="apiSpec"
         )  # relationship
 
     attributes: "APIPath.Attributes" = Field(

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional, Set
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from pyatlan.model.enums import (
     AuthPolicyCategory,
@@ -17,9 +17,9 @@ from pyatlan.model.enums import (
     PersonaMetadataAction,
 )
 from pyatlan.utils import validate_required_fields
-
 from .asset00 import SelfAsset
-from .asset05 import AccessControl, AuthPolicy
+from .asset05 import AccessControl
+from .asset05 import AuthPolicy
 
 
 class Persona(AccessControl):
@@ -139,9 +139,10 @@ class Persona(AccessControl):
             )
         )
 
-    type_name: str = Field("Persona", allow_mutation=False)
+    type_name: str = Field("Persona", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Persona":
             raise ValueError("must be Persona")
@@ -190,12 +191,14 @@ class Persona(AccessControl):
 
     class Attributes(AccessControl.Attributes):
         persona_groups: Optional[set[str]] = Field(
-            None, description="", alias="personaGroups"
+            default=None, description="", alias="personaGroups"
         )
+
         persona_users: Optional[set[str]] = Field(
-            None, description="", alias="personaUsers"
+            default=None, description="", alias="personaUsers"
         )
-        role_id: Optional[str] = Field(None, description="", alias="roleId")
+
+        role_id: Optional[str] = Field(default=None, description="", alias="roleId")
 
         @classmethod
         # @validate_arguments()

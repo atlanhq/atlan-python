@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset00 import Catalog
 
@@ -14,9 +14,10 @@ from .asset00 import Catalog
 class API(Catalog):
     """Description"""
 
-    type_name: str = Field("API", allow_mutation=False)
+    type_name: str = Field("API", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "API":
             raise ValueError("must be API")
@@ -99,19 +100,28 @@ class API(Catalog):
         self.attributes.api_is_auth_optional = api_is_auth_optional
 
     class Attributes(Catalog.Attributes):
-        api_spec_type: Optional[str] = Field(None, description="", alias="apiSpecType")
+        api_spec_type: Optional[str] = Field(
+            default=None, description="", alias="apiSpecType"
+        )
+
         api_spec_version: Optional[str] = Field(
-            None, description="", alias="apiSpecVersion"
+            default=None, description="", alias="apiSpecVersion"
         )
-        api_spec_name: Optional[str] = Field(None, description="", alias="apiSpecName")
+
+        api_spec_name: Optional[str] = Field(
+            default=None, description="", alias="apiSpecName"
+        )
+
         api_spec_qualified_name: Optional[str] = Field(
-            None, description="", alias="apiSpecQualifiedName"
+            default=None, description="", alias="apiSpecQualifiedName"
         )
+
         api_external_docs: Optional[dict[str, str]] = Field(
-            None, description="", alias="apiExternalDocs"
+            default=None, description="", alias="apiExternalDocs"
         )
+
         api_is_auth_optional: Optional[bool] = Field(
-            None, description="", alias="apiIsAuthOptional"
+            default=None, description="", alias="apiIsAuthOptional"
         )
 
     attributes: "API.Attributes" = Field(

@@ -7,7 +7,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset37 import Mode
 
@@ -15,9 +15,10 @@ from .asset37 import Mode
 class ModeReport(Mode):
     """Description"""
 
-    type_name: str = Field("ModeReport", allow_mutation=False)
+    type_name: str = Field("ModeReport", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ModeReport":
             raise ValueError("must be ModeReport")
@@ -138,31 +139,38 @@ class ModeReport(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_token: Optional[str] = Field(
-            None, description="", alias="modeCollectionToken"
+            default=None, description="", alias="modeCollectionToken"
         )
+
         mode_report_published_at: Optional[datetime] = Field(
-            None, description="", alias="modeReportPublishedAt"
+            default=None, description="", alias="modeReportPublishedAt"
         )
+
         mode_query_count: Optional[int] = Field(
-            None, description="", alias="modeQueryCount"
+            default=None, description="", alias="modeQueryCount"
         )
+
         mode_chart_count: Optional[int] = Field(
-            None, description="", alias="modeChartCount"
+            default=None, description="", alias="modeChartCount"
         )
+
         mode_query_preview: Optional[str] = Field(
-            None, description="", alias="modeQueryPreview"
+            default=None, description="", alias="modeQueryPreview"
         )
+
         mode_is_public: Optional[bool] = Field(
-            None, description="", alias="modeIsPublic"
+            default=None, description="", alias="modeIsPublic"
         )
+
         mode_is_shared: Optional[bool] = Field(
-            None, description="", alias="modeIsShared"
+            default=None, description="", alias="modeIsShared"
         )
+
         mode_queries: Optional[list[ModeQuery]] = Field(
-            None, description="", alias="modeQueries"
+            default=None, description="", alias="modeQueries"
         )  # relationship
         mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+            default=None, description="", alias="modeCollections"
         )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
@@ -175,9 +183,10 @@ class ModeReport(Mode):
 class ModeQuery(Mode):
     """Description"""
 
-    type_name: str = Field("ModeQuery", allow_mutation=False)
+    type_name: str = Field("ModeQuery", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ModeQuery":
             raise ValueError("must be ModeQuery")
@@ -241,16 +250,18 @@ class ModeQuery(Mode):
 
     class Attributes(Mode.Attributes):
         mode_raw_query: Optional[str] = Field(
-            None, description="", alias="modeRawQuery"
+            default=None, description="", alias="modeRawQuery"
         )
+
         mode_report_import_count: Optional[int] = Field(
-            None, description="", alias="modeReportImportCount"
+            default=None, description="", alias="modeReportImportCount"
         )
+
         mode_charts: Optional[list[ModeChart]] = Field(
-            None, description="", alias="modeCharts"
+            default=None, description="", alias="modeCharts"
         )  # relationship
         mode_report: Optional[ModeReport] = Field(
-            None, description="", alias="modeReport"
+            default=None, description="", alias="modeReport"
         )  # relationship
 
     attributes: "ModeQuery.Attributes" = Field(
@@ -263,9 +274,10 @@ class ModeQuery(Mode):
 class ModeChart(Mode):
     """Description"""
 
-    type_name: str = Field("ModeChart", allow_mutation=False)
+    type_name: str = Field("ModeChart", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ModeChart":
             raise ValueError("must be ModeChart")
@@ -303,10 +315,11 @@ class ModeChart(Mode):
 
     class Attributes(Mode.Attributes):
         mode_chart_type: Optional[str] = Field(
-            None, description="", alias="modeChartType"
+            default=None, description="", alias="modeChartType"
         )
+
         mode_query: Optional[ModeQuery] = Field(
-            None, description="", alias="modeQuery"
+            default=None, description="", alias="modeQuery"
         )  # relationship
 
     attributes: "ModeChart.Attributes" = Field(
@@ -319,9 +332,10 @@ class ModeChart(Mode):
 class ModeWorkspace(Mode):
     """Description"""
 
-    type_name: str = Field("ModeWorkspace", allow_mutation=False)
+    type_name: str = Field("ModeWorkspace", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ModeWorkspace":
             raise ValueError("must be ModeWorkspace")
@@ -361,10 +375,11 @@ class ModeWorkspace(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_count: Optional[int] = Field(
-            None, description="", alias="modeCollectionCount"
+            default=None, description="", alias="modeCollectionCount"
         )
+
         mode_collections: Optional[list[ModeCollection]] = Field(
-            None, description="", alias="modeCollections"
+            default=None, description="", alias="modeCollections"
         )  # relationship
 
     attributes: "ModeWorkspace.Attributes" = Field(
@@ -377,9 +392,10 @@ class ModeWorkspace(Mode):
 class ModeCollection(Mode):
     """Description"""
 
-    type_name: str = Field("ModeCollection", allow_mutation=False)
+    type_name: str = Field("ModeCollection", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ModeCollection":
             raise ValueError("must be ModeCollection")
@@ -441,16 +457,18 @@ class ModeCollection(Mode):
 
     class Attributes(Mode.Attributes):
         mode_collection_type: Optional[str] = Field(
-            None, description="", alias="modeCollectionType"
+            default=None, description="", alias="modeCollectionType"
         )
+
         mode_collection_state: Optional[str] = Field(
-            None, description="", alias="modeCollectionState"
+            default=None, description="", alias="modeCollectionState"
         )
+
         mode_workspace: Optional[ModeWorkspace] = Field(
-            None, description="", alias="modeWorkspace"
+            default=None, description="", alias="modeWorkspace"
         )  # relationship
         mode_reports: Optional[list[ModeReport]] = Field(
-            None, description="", alias="modeReports"
+            default=None, description="", alias="modeReports"
         )  # relationship
 
     attributes: "ModeCollection.Attributes" = Field(

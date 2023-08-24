@@ -6,19 +6,21 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.enums import PowerbiEndorsement
-
+from pyatlan.model.enums import (
+    PowerbiEndorsement,
+)
 from .asset18 import BI
 
 
 class PowerBI(BI):
     """Description"""
 
-    type_name: str = Field("PowerBI", allow_mutation=False)
+    type_name: str = Field("PowerBI", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PowerBI":
             raise ValueError("must be PowerBI")
@@ -90,16 +92,19 @@ class PowerBI(BI):
 
     class Attributes(BI.Attributes):
         power_b_i_is_hidden: Optional[bool] = Field(
-            None, description="", alias="powerBIIsHidden"
+            default=None, description="", alias="powerBIIsHidden"
         )
+
         power_b_i_table_qualified_name: Optional[str] = Field(
-            None, description="", alias="powerBITableQualifiedName"
+            default=None, description="", alias="powerBITableQualifiedName"
         )
+
         power_b_i_format_string: Optional[str] = Field(
-            None, description="", alias="powerBIFormatString"
+            default=None, description="", alias="powerBIFormatString"
         )
+
         power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
-            None, description="", alias="powerBIEndorsement"
+            default=None, description="", alias="powerBIEndorsement"
         )
 
     attributes: "PowerBI.Attributes" = Field(

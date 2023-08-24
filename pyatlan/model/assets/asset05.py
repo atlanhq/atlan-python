@@ -6,12 +6,16 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.enums import AuthPolicyType
-from pyatlan.model.structs import AuthPolicyCondition, AuthPolicyValiditySchedule
+from pyatlan.model.enums import (
+    AuthPolicyType,
+)
+from pyatlan.model.structs import (
+    AuthPolicyCondition,
+    AuthPolicyValiditySchedule,
+)
 from pyatlan.utils import validate_required_fields
-
 from .asset00 import Asset
 
 
@@ -25,9 +29,10 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         attributes = AuthPolicy.Attributes._Attributes__create(name=name)  # type: ignore
         return cls(attributes=attributes)
 
-    type_name: str = Field("AuthPolicy", allow_mutation=False)
+    type_name: str = Field("AuthPolicy", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AuthPolicy":
             raise ValueError("must be AuthPolicy")
@@ -257,58 +262,75 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 
     class Attributes(Asset.Attributes):
         policy_type: Optional[AuthPolicyType] = Field(
-            None, description="", alias="policyType"
+            default=None, description="", alias="policyType"
         )
+
         policy_service_name: Optional[str] = Field(
-            None, description="", alias="policyServiceName"
+            default=None, description="", alias="policyServiceName"
         )
+
         policy_category: Optional[str] = Field(
-            None, description="", alias="policyCategory"
+            default=None, description="", alias="policyCategory"
         )
+
         policy_sub_category: Optional[str] = Field(
-            None, description="", alias="policySubCategory"
+            default=None, description="", alias="policySubCategory"
         )
+
         policy_users: Optional[set[str]] = Field(
-            None, description="", alias="policyUsers"
+            default=None, description="", alias="policyUsers"
         )
+
         policy_groups: Optional[set[str]] = Field(
-            None, description="", alias="policyGroups"
+            default=None, description="", alias="policyGroups"
         )
+
         policy_roles: Optional[set[str]] = Field(
-            None, description="", alias="policyRoles"
+            default=None, description="", alias="policyRoles"
         )
+
         policy_actions: Optional[set[str]] = Field(
-            None, description="", alias="policyActions"
+            default=None, description="", alias="policyActions"
         )
+
         policy_resources: Optional[set[str]] = Field(
-            None, description="", alias="policyResources"
+            default=None, description="", alias="policyResources"
         )
+
         policy_resource_category: Optional[str] = Field(
-            None, description="", alias="policyResourceCategory"
+            default=None, description="", alias="policyResourceCategory"
         )
+
         policy_priority: Optional[int] = Field(
-            None, description="", alias="policyPriority"
+            default=None, description="", alias="policyPriority"
         )
+
         is_policy_enabled: Optional[bool] = Field(
-            None, description="", alias="isPolicyEnabled"
+            default=None, description="", alias="isPolicyEnabled"
         )
+
         policy_mask_type: Optional[str] = Field(
-            None, description="", alias="policyMaskType"
+            default=None, description="", alias="policyMaskType"
         )
+
         policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]] = Field(
-            None, description="", alias="policyValiditySchedule"
+            default=None, description="", alias="policyValiditySchedule"
         )
+
         policy_resource_signature: Optional[str] = Field(
-            None, description="", alias="policyResourceSignature"
+            default=None, description="", alias="policyResourceSignature"
         )
+
         policy_delegate_admin: Optional[bool] = Field(
-            None, description="", alias="policyDelegateAdmin"
+            default=None, description="", alias="policyDelegateAdmin"
         )
+
         policy_conditions: Optional[list[AuthPolicyCondition]] = Field(
-            None, description="", alias="policyConditions"
+            default=None, description="", alias="policyConditions"
         )
+
         access_control: Optional[AccessControl] = Field(
-            None, description="", alias="accessControl"
+            default=None, description="", alias="accessControl"
         )  # relationship
 
         @classmethod
@@ -329,9 +351,10 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
 class AccessControl(Asset, type_name="AccessControl"):
     """Description"""
 
-    type_name: str = Field("AccessControl", allow_mutation=False)
+    type_name: str = Field("AccessControl", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "AccessControl":
             raise ValueError("must be AccessControl")
@@ -412,17 +435,23 @@ class AccessControl(Asset, type_name="AccessControl"):
 
     class Attributes(Asset.Attributes):
         is_access_control_enabled: Optional[bool] = Field(
-            None, description="", alias="isAccessControlEnabled"
+            default=None, description="", alias="isAccessControlEnabled"
         )
+
         deny_custom_metadata_guids: Optional[set[str]] = Field(
-            None, description="", alias="denyCustomMetadataGuids"
+            default=None, description="", alias="denyCustomMetadataGuids"
         )
+
         deny_asset_tabs: Optional[set[str]] = Field(
-            None, description="", alias="denyAssetTabs"
+            default=None, description="", alias="denyAssetTabs"
         )
-        channel_link: Optional[str] = Field(None, description="", alias="channelLink")
+
+        channel_link: Optional[str] = Field(
+            default=None, description="", alias="channelLink"
+        )
+
         policies: Optional[list[AuthPolicy]] = Field(
-            None, description="", alias="policies"
+            default=None, description="", alias="policies"
         )  # relationship
 
     attributes: "AccessControl.Attributes" = Field(

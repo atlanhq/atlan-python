@@ -7,7 +7,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from pyatlan.model.enums import (
     QuickSightAnalysisStatus,
@@ -15,16 +15,16 @@ from pyatlan.model.enums import (
     QuickSightDatasetImportMode,
     QuickSightFolderType,
 )
-
 from .asset44 import QuickSight
 
 
 class QuickSightFolder(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+    type_name: str = Field("QuickSightFolder", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightFolder":
             raise ValueError("must be QuickSightFolder")
@@ -113,19 +113,21 @@ class QuickSightFolder(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            None, description="", alias="quickSightFolderType"
+            default=None, description="", alias="quickSightFolderType"
         )
+
         quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="quickSightFolderHierarchy"
+            default=None, description="", alias="quickSightFolderHierarchy"
         )
+
         quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
-            None, description="", alias="quickSightDashboards"
+            default=None, description="", alias="quickSightDashboards"
         )  # relationship
         quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
-            None, description="", alias="quickSightDatasets"
+            default=None, description="", alias="quickSightDatasets"
         )  # relationship
         quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
+            default=None, description="", alias="quickSightAnalyses"
         )  # relationship
 
     attributes: "QuickSightFolder.Attributes" = Field(
@@ -138,9 +140,10 @@ class QuickSightFolder(QuickSight):
 class QuickSightDashboardVisual(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
+    type_name: str = Field("QuickSightDashboardVisual", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightDashboardVisual":
             raise ValueError("must be QuickSightDashboardVisual")
@@ -190,10 +193,11 @@ class QuickSightDashboardVisual(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDashboardQualifiedName"
+            default=None, description="", alias="quickSightDashboardQualifiedName"
         )
+
         quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            None, description="", alias="quickSightDashboard"
+            default=None, description="", alias="quickSightDashboard"
         )  # relationship
 
     attributes: "QuickSightDashboardVisual.Attributes" = Field(
@@ -206,9 +210,10 @@ class QuickSightDashboardVisual(QuickSight):
 class QuickSightAnalysisVisual(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+    type_name: str = Field("QuickSightAnalysisVisual", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightAnalysisVisual":
             raise ValueError("must be QuickSightAnalysisVisual")
@@ -254,10 +259,11 @@ class QuickSightAnalysisVisual(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightAnalysisQualifiedName"
+            default=None, description="", alias="quickSightAnalysisQualifiedName"
         )
+
         quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            None, description="", alias="quickSightAnalysis"
+            default=None, description="", alias="quickSightAnalysis"
         )  # relationship
 
     attributes: "QuickSightAnalysisVisual.Attributes" = Field(
@@ -270,9 +276,10 @@ class QuickSightAnalysisVisual(QuickSight):
 class QuickSightDatasetField(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+    type_name: str = Field("QuickSightDatasetField", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightDatasetField":
             raise ValueError("must be QuickSightDatasetField")
@@ -335,13 +342,15 @@ class QuickSightDatasetField(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
-            None, description="", alias="quickSightDatasetFieldType"
+            default=None, description="", alias="quickSightDatasetFieldType"
         )
+
         quick_sight_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDatasetQualifiedName"
+            default=None, description="", alias="quickSightDatasetQualifiedName"
         )
+
         quick_sight_dataset: Optional[QuickSightDataset] = Field(
-            None, description="", alias="quickSightDataset"
+            default=None, description="", alias="quickSightDataset"
         )  # relationship
 
     attributes: "QuickSightDatasetField.Attributes" = Field(
@@ -354,9 +363,10 @@ class QuickSightDatasetField(QuickSight):
 class QuickSightAnalysis(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+    type_name: str = Field("QuickSightAnalysis", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightAnalysis":
             raise ValueError("must be QuickSightAnalysis")
@@ -480,22 +490,28 @@ class QuickSightAnalysis(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
+            default=None, description="", alias="quickSightAnalysisStatus"
         )
+
         quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
+            default=None, description="", alias="quickSightAnalysisCalculatedFields"
         )
+
         quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
+            default=None,
+            description="",
+            alias="quickSightAnalysisParameterDeclarations",
         )
+
         quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
+            default=None, description="", alias="quickSightAnalysisFilterGroups"
         )
+
         quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
+            default=None, description="", alias="quickSightAnalysisVisuals"
         )  # relationship
         quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
+            default=None, description="", alias="quickSightAnalysisFolders"
         )  # relationship
 
     attributes: "QuickSightAnalysis.Attributes" = Field(
@@ -508,9 +524,10 @@ class QuickSightAnalysis(QuickSight):
 class QuickSightDashboard(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+    type_name: str = Field("QuickSightDashboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightDashboard":
             raise ValueError("must be QuickSightDashboard")
@@ -600,18 +617,22 @@ class QuickSightDashboard(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dashboard_published_version_number: Optional[int] = Field(
-            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+            default=None,
+            description="",
+            alias="quickSightDashboardPublishedVersionNumber",
         )
+
         quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
-            None, description="", alias="quickSightDashboardLastPublishedTime"
+            default=None, description="", alias="quickSightDashboardLastPublishedTime"
         )
+
         quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDashboardFolders"
+            default=None, description="", alias="quickSightDashboardFolders"
         )  # relationship
         quick_sight_dashboard_visuals: Optional[
             list[QuickSightDashboardVisual]
         ] = Field(
-            None, description="", alias="quickSightDashboardVisuals"
+            default=None, description="", alias="quickSightDashboardVisuals"
         )  # relationship
 
     attributes: "QuickSightDashboard.Attributes" = Field(
@@ -624,9 +645,10 @@ class QuickSightDashboard(QuickSight):
 class QuickSightDataset(QuickSight):
     """Description"""
 
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
+    type_name: str = Field("QuickSightDataset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QuickSightDataset":
             raise ValueError("must be QuickSightDataset")
@@ -714,16 +736,18 @@ class QuickSightDataset(QuickSight):
 
     class Attributes(QuickSight.Attributes):
         quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
-            None, description="", alias="quickSightDatasetImportMode"
+            default=None, description="", alias="quickSightDatasetImportMode"
         )
+
         quick_sight_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="quickSightDatasetColumnCount"
+            default=None, description="", alias="quickSightDatasetColumnCount"
         )
+
         quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDatasetFolders"
+            default=None, description="", alias="quickSightDatasetFolders"
         )  # relationship
         quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
-            None, description="", alias="quickSightDatasetFields"
+            default=None, description="", alias="quickSightDatasetFields"
         )  # relationship
 
     attributes: "QuickSightDataset.Attributes" = Field(

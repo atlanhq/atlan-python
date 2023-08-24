@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset18 import BI
 
@@ -14,9 +14,10 @@ from .asset18 import BI
 class Redash(BI):
     """Description"""
 
-    type_name: str = Field("Redash", allow_mutation=False)
+    type_name: str = Field("Redash", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Redash":
             raise ValueError("must be Redash")
@@ -43,7 +44,7 @@ class Redash(BI):
 
     class Attributes(BI.Attributes):
         redash_is_published: Optional[bool] = Field(
-            None, description="", alias="redashIsPublished"
+            default=None, description="", alias="redashIsPublished"
         )
 
     attributes: "Redash.Attributes" = Field(

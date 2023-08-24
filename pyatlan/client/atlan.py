@@ -16,12 +16,11 @@ from typing import ClassVar, Generator, Optional, Type, TypeVar, Union
 
 import requests
 from pydantic import (
-    BaseSettings,
+    StringConstraints,
     HttpUrl,
     PrivateAttr,
     StrictStr,
     ValidationError,
-    constr,
     parse_obj_as,
     validate_arguments,
 )
@@ -246,9 +245,7 @@ class AtlanClient(BaseSettings):
     api_key: str
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
-
-    class Config:
-        env_prefix = "atlan_"
+    model_config = SettingsConfigDict(env_prefix="atlan_")
 
     class SearchResults(ABC):
         """
@@ -2025,7 +2022,7 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_glossary_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossary:
         """
@@ -2046,8 +2043,8 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_category_fast_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> list[AtlasGlossaryCategory]:
         """
@@ -2078,8 +2075,8 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_category_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        glossary_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> list[AtlasGlossaryCategory]:
         """
@@ -2138,8 +2135,8 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_term_fast_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """
@@ -2165,8 +2162,8 @@ class AtlanClient(BaseSettings):
     @validate_arguments()
     def find_term_by_name(
         self,
-        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        glossary_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """
@@ -2197,3 +2194,5 @@ from pyatlan.model.keycloak_events import (  # noqa: E402
     KeycloakEventRequest,
     KeycloakEventResponse,
 )
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing_extensions import Annotated

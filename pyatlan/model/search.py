@@ -8,14 +8,14 @@ from itertools import chain
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from pydantic import (
+    StringConstraints,
     ConfigDict,
     Field,
     StrictBool,
     StrictFloat,
     StrictInt,
     StrictStr,
-    constr,
-    validate_arguments,
+    validate_call,
     validator,
 )
 
@@ -28,6 +28,7 @@ else:
     from pydantic.dataclasses import dataclass
 
 import copy
+from typing_extensions import Annotated
 
 SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
 
@@ -82,7 +83,7 @@ class TextAttributes(Attributes):
 
 
 def get_with_string(attribute: TermAttributes):
-    @validate_arguments()
+    @validate_call()
     def with_string(cls, value: StrictStr):
         """This function returns a string"""
         return cls(field=attribute.value, value=value)
@@ -177,7 +178,7 @@ class Exists(Query):
     type_name: Literal["exists"] = "exists"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_custom_metadata(cls, set_name: StrictStr, attr_name: StrictStr):
         from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 
@@ -191,144 +192,144 @@ class Exists(Query):
             )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_categories(cls):
         return cls(field=TermAttributes.CATEGORIES.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_classification_names(cls):
         return cls(field=TextAttributes.CLASSIFICATION_NAMES.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_classifications_text(cls):
         return cls(field=TextAttributes.CLASSIFICATIONS_TEXT.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_connector_name(cls):
         return cls(field=TermAttributes.CONNECTOR_NAME.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_created_by(cls):
         return cls(field=TermAttributes.CREATED_BY.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_description(cls):
         return cls(field=TextAttributes.DESCRIPTION.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_glossary(cls):
         return cls(field=TermAttributes.GLOSSARY.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_guid(cls):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.GUID.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_has_lineage(cls):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.HAS_LINEAGE.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings(cls):
         return cls(field=TermAttributes.MEANINGS.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings_text(cls):
         return cls(field=TextAttributes.MEANINGS_TEXT.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_update_time_as_timestamp(cls):
         return cls(field=TermAttributes.UPDATE_TIME_AS_TIMESTAMP.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_modified_by(cls):
         return cls(field=TermAttributes.MODIFIED_BY.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_name(cls):
         return cls(field=TermAttributes.NAME.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_users(cls):
         return cls(field=TermAttributes.OWNER_USERS.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_parent_category(cls):
         return cls(field=TermAttributes.PARENT_CATEGORY.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_popularity_score(cls):
         return cls(field=TermAttributes.POPULARITY_SCORE.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_propagated_classification_names(cls):
         return cls(field=TextAttributes.PROPAGATED_CLASSIFICATION_NAMES.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_propagated_trait_names(cls):
         return cls(field=TextAttributes.PROPAGATED_TRAIT_NAMES.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(cls):
         return cls(field=TermAttributes.QUALIFIED_NAME.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(cls):
         return cls(field=TermAttributes.SUPER_TYPE_NAMES.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_state(cls):
         return cls(field=TermAttributes.STATE.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_groups(cls):
         return cls(field=TermAttributes.OWNER_GROUPS.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_create_time_as_timestamp(cls):
         return cls(field=TermAttributes.CREATE_TIME_AS_TIMESTAMP.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_trait_names(cls):
         return cls(field=TextAttributes.TRAIT_NAMES.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(cls):
         return cls(field=TermAttributes.TYPE_NAME.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_user_description(cls):
         return cls(field=TextAttributes.USER_DESCRIPTION.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_certificate_status(cls):
         return cls(field=TermAttributes.CERTIFICATE_STATUS.value)
 
@@ -345,7 +346,7 @@ class Term(Query):
     type_name: Literal["term"] = "term"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_custom_metadata(
         cls, set_name: StrictStr, attr_name: StrictStr, value: SearchFieldType
     ):
@@ -361,101 +362,101 @@ class Term(Query):
             )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_categories(cls, value: StrictStr):
         return cls(field=TermAttributes.CATEGORIES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_connector_name(cls, value: AtlanConnectorType):
         return cls(field=TermAttributes.CONNECTOR_NAME.value, value=value.value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_glossary(
-        cls, qualified_name: constr(strip_whitespace=True, min_length=1, strict=True)  # type: ignore
+        cls, qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)]  # type: ignore
     ):
         return cls(field=TermAttributes.GLOSSARY.value, value=qualified_name)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_guid(cls, value: StrictStr):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.GUID.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_has_lineage(cls, value: StrictBool):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.HAS_LINEAGE.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_update_time_as_timestamp(cls, value: datetime):
         return cls(field=TermAttributes.UPDATE_TIME_AS_TIMESTAMP.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_modified_by(cls, value: StrictStr):
         return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
-    def with_name(cls, value: constr(strip_whitespace=True, min_length=1, strict=True)):  # type: ignore
+    @validate_call()
+    def with_name(cls, value: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)]):  # type: ignore
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_groups(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_users(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_parent_category(cls, value: StrictStr):
         return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAMES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_create_time_as_timestamp(cls, value: datetime):
         return cls(field=TermAttributes.CREATE_TIME_AS_TIMESTAMP.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_certificate_status(cls, value: CertificateStatus):
         return cls(field=TermAttributes.CERTIFICATE_STATUS.value, value=value.value)
 
@@ -479,7 +480,7 @@ class Terms(Query):
     type_name: Literal["terms"] = "terms"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(cls, values: list[str]):
         return cls(field=TermAttributes.TYPE_NAME.value, values=values)
 
@@ -626,73 +627,73 @@ class Prefix(Query):
     type_name: Literal["prefix"] = "prefix"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_categories(cls, value: StrictStr):
         return cls(field=TermAttributes.CATEGORIES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_glossary(cls, value: StrictStr):
         return cls(field=TermAttributes.GLOSSARY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_guid(cls, value: StrictStr):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.GUID.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_modified_by(cls, value: StrictStr):
         return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_name(cls, value: StrictStr):
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_groups(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_users(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_parent_category(cls, value: StrictStr):
         return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAMES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
@@ -724,7 +725,7 @@ class Range(Query):
     type_name: Literal["range"] = "range"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_popularity_score(
         cls,
         gt: Optional[SearchFieldType] = None,
@@ -749,7 +750,7 @@ class Range(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_create_time_as_timestamp(
         cls,
         gt: Optional[SearchFieldType] = None,
@@ -774,7 +775,7 @@ class Range(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_create_time_as_date(
         cls,
         gt: Optional[SearchFieldType] = None,
@@ -799,7 +800,7 @@ class Range(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_update_time_as_timestamp(
         cls,
         gt: Optional[SearchFieldType] = None,
@@ -824,7 +825,7 @@ class Range(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_update_time_as_date(
         cls,
         gt: Optional[SearchFieldType] = None,
@@ -884,73 +885,73 @@ class Wildcard(Query):
     type_name: Literal["wildcard"] = "wildcard"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_categories(cls, value: StrictStr):
         return cls(field=TermAttributes.CATEGORIES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_glossary(cls, value: StrictStr):
         return cls(field=TermAttributes.GLOSSARY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_guid(cls, value: StrictStr):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.GUID.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_modified_by(cls, value: StrictStr):
         return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_name(cls, value: StrictStr):
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_groups(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_users(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_parent_category(cls, value: StrictStr):
         return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAMES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
@@ -976,73 +977,73 @@ class Regexp(Query):
     type_name: Literal["regexp"] = "regexp"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_categories(cls, value: StrictStr):
         return cls(field=TermAttributes.CATEGORIES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_created_by(cls, value: StrictStr):
         return cls(field=TermAttributes.CREATED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_glossary(cls, value: StrictStr):
         return cls(field=TermAttributes.GLOSSARY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_guid(cls, value: StrictStr):
         # Use a GUID as a Query Term
         return cls(field=TermAttributes.GUID.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings(cls, value: StrictStr):
         return cls(field=TermAttributes.MEANINGS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_modified_by(cls, value: StrictStr):
         return cls(field=TermAttributes.MODIFIED_BY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_name(cls, value: StrictStr):
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_groups(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_GROUPS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_users(cls, value: StrictStr):
         return cls(field=TermAttributes.OWNER_USERS.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_parent_category(cls, value: StrictStr):
         return cls(field=TermAttributes.PARENT_CATEGORY.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(cls, value: StrictStr):
         return cls(field=TermAttributes.QUALIFIED_NAME.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(cls, value: StrictStr):
         return cls(field=TermAttributes.SUPER_TYPE_NAMES.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_state(cls, value: Literal["ACTIVE", "DELETED", "PURGED"]):
         return cls(field=TermAttributes.STATE.value, value=value)
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(cls, value: StrictStr):
         return cls(field=TermAttributes.TYPE_NAME.value, value=value)
 
@@ -1072,7 +1073,7 @@ class Fuzzy(Query):
     type_name: Literal["fuzzy"] = "fuzzy"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_categories(
         cls,
         value: StrictStr,
@@ -1093,7 +1094,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_created_by(
         cls,
         value: StrictStr,
@@ -1114,7 +1115,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_glossary(
         cls,
         value: StrictStr,
@@ -1135,7 +1136,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_guid(
         cls,
         value: StrictStr,
@@ -1156,7 +1157,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_meanings(
         cls,
         value: StrictStr,
@@ -1177,7 +1178,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_modified_by(
         cls,
         value: StrictStr,
@@ -1198,7 +1199,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_name(
         cls,
         value: StrictStr,
@@ -1219,7 +1220,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_groups(
         cls,
         value: StrictStr,
@@ -1240,7 +1241,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_owner_users(
         cls,
         value: StrictStr,
@@ -1261,7 +1262,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_parent_category(
         cls,
         value: StrictStr,
@@ -1282,7 +1283,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(
         cls,
         value: StrictStr,
@@ -1303,7 +1304,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(
         cls,
         value: StrictStr,
@@ -1324,7 +1325,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_state(
         cls,
         value: StrictStr,
@@ -1345,7 +1346,7 @@ class Fuzzy(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_type_name(
         cls,
         value: StrictStr,
@@ -1398,7 +1399,7 @@ class Match(Query):
     type_name: Literal["match"] = "match"
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_classification_names(
         cls,
         query: StrictStr,
@@ -1431,7 +1432,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_classifications_text(
         cls,
         query: StrictStr,
@@ -1464,7 +1465,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_name(
         cls,
         query: StrictStr,
@@ -1497,7 +1498,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_propagated_classification_names(
         cls,
         query: StrictStr,
@@ -1530,7 +1531,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_description(
         cls,
         query: StrictStr,
@@ -1563,7 +1564,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_propagated_trait_names(
         cls,
         query: StrictStr,
@@ -1596,7 +1597,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_qualified_name(
         cls,
         query: StrictStr,
@@ -1629,7 +1630,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_super_type_names(
         cls,
         query: StrictStr,
@@ -1662,7 +1663,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_trait_names(
         cls,
         query: StrictStr,
@@ -1695,7 +1696,7 @@ class Match(Query):
         )
 
     @classmethod
-    @validate_arguments()
+    @validate_call()
     def with_user_description(
         cls,
         query: StrictStr,
@@ -1764,6 +1765,8 @@ class SortItem:
     def to_dict(self):
         return {self.field: {"order": self.order.value}}
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("order", always=True)
     def validate_order(cls, v, values):
         if not v and "field" in values:
@@ -1776,16 +1779,20 @@ class DSL(AtlanObject):
     size: int = 100
     track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(alias="post_filter")
-    query: Optional[Query]
+    query: Optional[Query] = None
     sort: Optional[list[SortItem]] = Field(alias="sort")
-
-    class Config:
-        json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+    # TODO[pydantic]: The following keys were removed: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(
+        json_encoders={Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+    )
 
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(["from_", "size", "track_total_hits"])
 
+    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
     @validator("query", always=True)
     def validate_query(cls, v, values):
         if v or "post_filter" in values and values["post_filter"]:
@@ -1799,9 +1806,11 @@ class IndexSearchRequest(SearchRequest):
     relation_attributes: list[str] = Field(
         default_factory=list, alias="relationAttributes"
     )
-
-    class Config:
-        json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+    # TODO[pydantic]: The following keys were removed: `json_encoders`.
+    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-config for more information.
+    model_config = ConfigDict(
+        json_encoders={Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
+    )
 
 
 def with_active_glossary(name: StrictStr) -> "Bool":
@@ -1813,8 +1822,8 @@ def with_active_glossary(name: StrictStr) -> "Bool":
 
 
 def with_active_category(
-    name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-    glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+    glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
 ) -> Bool:
     return (
         Term.with_state("ACTIVE")
@@ -1825,8 +1834,8 @@ def with_active_category(
 
 
 def with_active_term(
-    name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
-    glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+    glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
 ) -> Bool:
     return (
         Term.with_state("ACTIVE")

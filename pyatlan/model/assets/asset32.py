@@ -6,20 +6,23 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
-from pyatlan.model.structs import AzureTag
-
-from .asset00 import AirflowTask, Process
+from pyatlan.model.structs import (
+    AzureTag,
+)
+from .asset00 import AirflowTask
+from .asset00 import Process
 from .asset28 import Azure
 
 
 class ADLS(Azure):
     """Description"""
 
-    type_name: str = Field("ADLS", allow_mutation=False)
+    type_name: str = Field("ADLS", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "ADLS":
             raise ValueError("must be ADLS")
@@ -158,31 +161,36 @@ class ADLS(Azure):
 
     class Attributes(Azure.Attributes):
         adls_account_qualified_name: Optional[str] = Field(
-            None, description="", alias="adlsAccountQualifiedName"
+            default=None, description="", alias="adlsAccountQualifiedName"
         )
+
         azure_resource_id: Optional[str] = Field(
-            None, description="", alias="azureResourceId"
+            default=None, description="", alias="azureResourceId"
         )
+
         azure_location: Optional[str] = Field(
-            None, description="", alias="azureLocation"
+            default=None, description="", alias="azureLocation"
         )
+
         adls_account_secondary_location: Optional[str] = Field(
-            None, description="", alias="adlsAccountSecondaryLocation"
+            default=None, description="", alias="adlsAccountSecondaryLocation"
         )
+
         azure_tags: Optional[list[AzureTag]] = Field(
-            None, description="", alias="azureTags"
+            default=None, description="", alias="azureTags"
         )
+
         input_to_processes: Optional[list[Process]] = Field(
-            None, description="", alias="inputToProcesses"
+            default=None, description="", alias="inputToProcesses"
         )  # relationship
         output_from_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="outputFromAirflowTasks"
+            default=None, description="", alias="outputFromAirflowTasks"
         )  # relationship
         input_to_airflow_tasks: Optional[list[AirflowTask]] = Field(
-            None, description="", alias="inputToAirflowTasks"
+            default=None, description="", alias="inputToAirflowTasks"
         )  # relationship
         output_from_processes: Optional[list[Process]] = Field(
-            None, description="", alias="outputFromProcesses"
+            default=None, description="", alias="outputFromProcesses"
         )  # relationship
 
     attributes: "ADLS.Attributes" = Field(

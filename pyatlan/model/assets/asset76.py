@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset73 import QlikSpace
 
@@ -14,9 +14,10 @@ from .asset73 import QlikSpace
 class QlikStream(QlikSpace):
     """Description"""
 
-    type_name: str = Field("QlikStream", allow_mutation=False)
+    type_name: str = Field("QlikStream", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "QlikStream":
             raise ValueError("must be QlikStream")

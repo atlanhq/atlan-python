@@ -7,7 +7,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset41 import Redash
 
@@ -15,9 +15,10 @@ from .asset41 import Redash
 class RedashQuery(Redash):
     """Description"""
 
-    type_name: str = Field("RedashQuery", allow_mutation=False)
+    type_name: str = Field("RedashQuery", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "RedashQuery":
             raise ValueError("must be RedashQuery")
@@ -140,25 +141,31 @@ class RedashQuery(Redash):
 
     class Attributes(Redash.Attributes):
         redash_query_s_q_l: Optional[str] = Field(
-            None, description="", alias="redashQuerySQL"
+            default=None, description="", alias="redashQuerySQL"
         )
+
         redash_query_parameters: Optional[str] = Field(
-            None, description="", alias="redashQueryParameters"
+            default=None, description="", alias="redashQueryParameters"
         )
+
         redash_query_schedule: Optional[dict[str, str]] = Field(
-            None, description="", alias="redashQuerySchedule"
+            default=None, description="", alias="redashQuerySchedule"
         )
+
         redash_query_last_execution_runtime: Optional[float] = Field(
-            None, description="", alias="redashQueryLastExecutionRuntime"
+            default=None, description="", alias="redashQueryLastExecutionRuntime"
         )
+
         redash_query_last_executed_at: Optional[datetime] = Field(
-            None, description="", alias="redashQueryLastExecutedAt"
+            default=None, description="", alias="redashQueryLastExecutedAt"
         )
+
         redash_query_schedule_humanized: Optional[str] = Field(
-            None, description="", alias="redashQueryScheduleHumanized"
+            default=None, description="", alias="redashQueryScheduleHumanized"
         )
+
         redash_visualizations: Optional[list[RedashVisualization]] = Field(
-            None, description="", alias="redashVisualizations"
+            default=None, description="", alias="redashVisualizations"
         )  # relationship
 
     attributes: "RedashQuery.Attributes" = Field(
@@ -171,9 +178,10 @@ class RedashQuery(Redash):
 class RedashVisualization(Redash):
     """Description"""
 
-    type_name: str = Field("RedashVisualization", allow_mutation=False)
+    type_name: str = Field("RedashVisualization", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "RedashVisualization":
             raise ValueError("must be RedashVisualization")
@@ -241,16 +249,19 @@ class RedashVisualization(Redash):
 
     class Attributes(Redash.Attributes):
         redash_visualization_type: Optional[str] = Field(
-            None, description="", alias="redashVisualizationType"
+            default=None, description="", alias="redashVisualizationType"
         )
+
         redash_query_name: Optional[str] = Field(
-            None, description="", alias="redashQueryName"
+            default=None, description="", alias="redashQueryName"
         )
+
         redash_query_qualified_name: Optional[str] = Field(
-            None, description="", alias="redashQueryQualifiedName"
+            default=None, description="", alias="redashQueryQualifiedName"
         )
+
         redash_query: Optional[RedashQuery] = Field(
-            None, description="", alias="redashQuery"
+            default=None, description="", alias="redashQuery"
         )  # relationship
 
     attributes: "RedashVisualization.Attributes" = Field(

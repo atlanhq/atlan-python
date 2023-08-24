@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset47 import MicroStrategy
 
@@ -14,9 +14,10 @@ from .asset47 import MicroStrategy
 class MicroStrategyReport(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyReport", allow_mutation=False)
+    type_name: str = Field("MicroStrategyReport", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyReport":
             raise ValueError("must be MicroStrategyReport")
@@ -94,16 +95,17 @@ class MicroStrategyReport(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_report_type: Optional[str] = Field(
-            None, description="", alias="microStrategyReportType"
+            default=None, description="", alias="microStrategyReportType"
         )
+
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description="", alias="microStrategyMetrics"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description="", alias="microStrategyAttributes"
         )  # relationship
 
     attributes: "MicroStrategyReport.Attributes" = Field(
@@ -116,9 +118,10 @@ class MicroStrategyReport(MicroStrategy):
 class MicroStrategyProject(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyProject", allow_mutation=False)
+    type_name: str = Field("MicroStrategyProject", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyProject":
             raise ValueError("must be MicroStrategyProject")
@@ -258,30 +261,30 @@ class MicroStrategyProject(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+            default=None, description="", alias="microStrategyReports"
         )  # relationship
         micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
-            None, description="", alias="microStrategyFacts"
+            default=None, description="", alias="microStrategyFacts"
         )  # relationship
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description="", alias="microStrategyMetrics"
         )  # relationship
         micro_strategy_visualizations: Optional[
             list[MicroStrategyVisualization]
         ] = Field(
-            None, description="", alias="microStrategyVisualizations"
+            default=None, description="", alias="microStrategyVisualizations"
         )  # relationship
         micro_strategy_documents: Optional[list[MicroStrategyDocument]] = Field(
-            None, description="", alias="microStrategyDocuments"
+            default=None, description="", alias="microStrategyDocuments"
         )  # relationship
         micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+            default=None, description="", alias="microStrategyCubes"
         )  # relationship
         micro_strategy_dossiers: Optional[list[MicroStrategyDossier]] = Field(
-            None, description="", alias="microStrategyDossiers"
+            default=None, description="", alias="microStrategyDossiers"
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description="", alias="microStrategyAttributes"
         )  # relationship
 
     attributes: "MicroStrategyProject.Attributes" = Field(
@@ -294,9 +297,10 @@ class MicroStrategyProject(MicroStrategy):
 class MicroStrategyMetric(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyMetric", allow_mutation=False)
+    type_name: str = Field("MicroStrategyMetric", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyMetric":
             raise ValueError("must be MicroStrategyMetric")
@@ -546,46 +550,55 @@ class MicroStrategyMetric(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_metric_expression: Optional[str] = Field(
-            None, description="", alias="microStrategyMetricExpression"
+            default=None, description="", alias="microStrategyMetricExpression"
         )
+
         micro_strategy_attribute_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyAttributeQualifiedNames"
+            default=None, description="", alias="microStrategyAttributeQualifiedNames"
         )
+
         micro_strategy_attribute_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyAttributeNames"
+            default=None, description="", alias="microStrategyAttributeNames"
         )
+
         micro_strategy_fact_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactQualifiedNames"
+            default=None, description="", alias="microStrategyFactQualifiedNames"
         )
+
         micro_strategy_fact_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactNames"
+            default=None, description="", alias="microStrategyFactNames"
         )
+
         micro_strategy_metric_parent_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyMetricParentQualifiedNames"
+            default=None,
+            description="",
+            alias="microStrategyMetricParentQualifiedNames",
         )
+
         micro_strategy_metric_parent_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyMetricParentNames"
+            default=None, description="", alias="microStrategyMetricParentNames"
         )
+
         micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetricParents"
+            default=None, description="", alias="microStrategyMetricParents"
         )  # relationship
         micro_strategy_facts: Optional[list[MicroStrategyFact]] = Field(
-            None, description="", alias="microStrategyFacts"
+            default=None, description="", alias="microStrategyFacts"
         )  # relationship
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+            default=None, description="", alias="microStrategyReports"
         )  # relationship
         micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+            default=None, description="", alias="microStrategyCubes"
         )  # relationship
         micro_strategy_metric_children: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetricChildren"
+            default=None, description="", alias="microStrategyMetricChildren"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description="", alias="microStrategyAttributes"
         )  # relationship
 
     attributes: "MicroStrategyMetric.Attributes" = Field(
@@ -598,9 +611,10 @@ class MicroStrategyMetric(MicroStrategy):
 class MicroStrategyCube(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyCube", allow_mutation=False)
+    type_name: str = Field("MicroStrategyCube", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyCube":
             raise ValueError("must be MicroStrategyCube")
@@ -693,19 +707,21 @@ class MicroStrategyCube(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_cube_type: Optional[str] = Field(
-            None, description="", alias="microStrategyCubeType"
+            default=None, description="", alias="microStrategyCubeType"
         )
+
         micro_strategy_cube_query: Optional[str] = Field(
-            None, description="", alias="microStrategyCubeQuery"
+            default=None, description="", alias="microStrategyCubeQuery"
         )
+
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description="", alias="microStrategyMetrics"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
         micro_strategy_attributes: Optional[list[MicroStrategyAttribute]] = Field(
-            None, description="", alias="microStrategyAttributes"
+            default=None, description="", alias="microStrategyAttributes"
         )  # relationship
 
     attributes: "MicroStrategyCube.Attributes" = Field(
@@ -718,9 +734,10 @@ class MicroStrategyCube(MicroStrategy):
 class MicroStrategyDossier(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyDossier", allow_mutation=False)
+    type_name: str = Field("MicroStrategyDossier", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyDossier":
             raise ValueError("must be MicroStrategyDossier")
@@ -789,15 +806,16 @@ class MicroStrategyDossier(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_dossier_chapter_names: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyDossierChapterNames"
+            default=None, description="", alias="microStrategyDossierChapterNames"
         )
+
         micro_strategy_visualizations: Optional[
             list[MicroStrategyVisualization]
         ] = Field(
-            None, description="", alias="microStrategyVisualizations"
+            default=None, description="", alias="microStrategyVisualizations"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
 
     attributes: "MicroStrategyDossier.Attributes" = Field(
@@ -810,9 +828,10 @@ class MicroStrategyDossier(MicroStrategy):
 class MicroStrategyFact(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyFact", allow_mutation=False)
+    type_name: str = Field("MicroStrategyFact", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyFact":
             raise ValueError("must be MicroStrategyFact")
@@ -877,13 +896,14 @@ class MicroStrategyFact(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_fact_expressions: Optional[set[str]] = Field(
-            None, description="", alias="microStrategyFactExpressions"
+            default=None, description="", alias="microStrategyFactExpressions"
         )
+
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description="", alias="microStrategyMetrics"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
 
     attributes: "MicroStrategyFact.Attributes" = Field(
@@ -896,9 +916,10 @@ class MicroStrategyFact(MicroStrategy):
 class MicroStrategyDocument(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyDocument", allow_mutation=False)
+    type_name: str = Field("MicroStrategyDocument", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyDocument":
             raise ValueError("must be MicroStrategyDocument")
@@ -929,7 +950,7 @@ class MicroStrategyDocument(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
 
     attributes: "MicroStrategyDocument.Attributes" = Field(
@@ -942,9 +963,10 @@ class MicroStrategyDocument(MicroStrategy):
 class MicroStrategyAttribute(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyAttribute", allow_mutation=False)
+    type_name: str = Field("MicroStrategyAttribute", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyAttribute":
             raise ValueError("must be MicroStrategyAttribute")
@@ -1035,19 +1057,20 @@ class MicroStrategyAttribute(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_attribute_forms: Optional[str] = Field(
-            None, description="", alias="microStrategyAttributeForms"
+            default=None, description="", alias="microStrategyAttributeForms"
         )
+
         micro_strategy_reports: Optional[list[MicroStrategyReport]] = Field(
-            None, description="", alias="microStrategyReports"
+            default=None, description="", alias="microStrategyReports"
         )  # relationship
         micro_strategy_metrics: Optional[list[MicroStrategyMetric]] = Field(
-            None, description="", alias="microStrategyMetrics"
+            default=None, description="", alias="microStrategyMetrics"
         )  # relationship
         micro_strategy_cubes: Optional[list[MicroStrategyCube]] = Field(
-            None, description="", alias="microStrategyCubes"
+            default=None, description="", alias="microStrategyCubes"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
 
     attributes: "MicroStrategyAttribute.Attributes" = Field(
@@ -1060,9 +1083,10 @@ class MicroStrategyAttribute(MicroStrategy):
 class MicroStrategyVisualization(MicroStrategy):
     """Description"""
 
-    type_name: str = Field("MicroStrategyVisualization", allow_mutation=False)
+    type_name: str = Field("MicroStrategyVisualization", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "MicroStrategyVisualization":
             raise ValueError("must be MicroStrategyVisualization")
@@ -1161,19 +1185,22 @@ class MicroStrategyVisualization(MicroStrategy):
 
     class Attributes(MicroStrategy.Attributes):
         micro_strategy_visualization_type: Optional[str] = Field(
-            None, description="", alias="microStrategyVisualizationType"
+            default=None, description="", alias="microStrategyVisualizationType"
         )
+
         micro_strategy_dossier_qualified_name: Optional[str] = Field(
-            None, description="", alias="microStrategyDossierQualifiedName"
+            default=None, description="", alias="microStrategyDossierQualifiedName"
         )
+
         micro_strategy_dossier_name: Optional[str] = Field(
-            None, description="", alias="microStrategyDossierName"
+            default=None, description="", alias="microStrategyDossierName"
         )
+
         micro_strategy_dossier: Optional[MicroStrategyDossier] = Field(
-            None, description="", alias="microStrategyDossier"
+            default=None, description="", alias="microStrategyDossier"
         )  # relationship
         micro_strategy_project: Optional[MicroStrategyProject] = Field(
-            None, description="", alias="microStrategyProject"
+            default=None, description="", alias="microStrategyProject"
         )  # relationship
 
     attributes: "MicroStrategyVisualization.Attributes" = Field(

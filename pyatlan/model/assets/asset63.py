@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset39 import Tableau
 from .asset62 import TableauProject
@@ -15,9 +15,10 @@ from .asset62 import TableauProject
 class TableauMetric(Tableau):
     """Description"""
 
-    type_name: str = Field("TableauMetric", allow_mutation=False)
+    type_name: str = Field("TableauMetric", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "TableauMetric":
             raise ValueError("must be TableauMetric")
@@ -98,19 +99,23 @@ class TableauMetric(Tableau):
 
     class Attributes(Tableau.Attributes):
         site_qualified_name: Optional[str] = Field(
-            None, description="", alias="siteQualifiedName"
+            default=None, description="", alias="siteQualifiedName"
         )
+
         project_qualified_name: Optional[str] = Field(
-            None, description="", alias="projectQualifiedName"
+            default=None, description="", alias="projectQualifiedName"
         )
+
         top_level_project_qualified_name: Optional[str] = Field(
-            None, description="", alias="topLevelProjectQualifiedName"
+            default=None, description="", alias="topLevelProjectQualifiedName"
         )
+
         project_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="projectHierarchy"
+            default=None, description="", alias="projectHierarchy"
         )
+
         project: Optional[TableauProject] = Field(
-            None, description="", alias="project"
+            default=None, description="", alias="project"
         )  # relationship
 
     attributes: "TableauMetric.Attributes" = Field(

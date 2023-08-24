@@ -7,7 +7,7 @@ from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
 from urllib.parse import quote, unquote
 
-from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic import model_validator, Field, PrivateAttr, StrictStr, field_validator
 
 from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
 from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy

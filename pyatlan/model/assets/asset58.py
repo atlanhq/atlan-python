@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset36 import Preset
 
@@ -14,9 +14,10 @@ from .asset36 import Preset
 class PresetChart(Preset):
     """Description"""
 
-    type_name: str = Field("PresetChart", allow_mutation=False)
+    type_name: str = Field("PresetChart", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PresetChart":
             raise ValueError("must be PresetChart")
@@ -75,13 +76,15 @@ class PresetChart(Preset):
 
     class Attributes(Preset.Attributes):
         preset_chart_description_markdown: Optional[str] = Field(
-            None, description="", alias="presetChartDescriptionMarkdown"
+            default=None, description="", alias="presetChartDescriptionMarkdown"
         )
+
         preset_chart_form_data: Optional[dict[str, str]] = Field(
-            None, description="", alias="presetChartFormData"
+            default=None, description="", alias="presetChartFormData"
         )
+
         preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+            default=None, description="", alias="presetDashboard"
         )  # relationship
 
     attributes: "PresetChart.Attributes" = Field(
@@ -94,9 +97,10 @@ class PresetChart(Preset):
 class PresetDataset(Preset):
     """Description"""
 
-    type_name: str = Field("PresetDataset", allow_mutation=False)
+    type_name: str = Field("PresetDataset", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PresetDataset":
             raise ValueError("must be PresetDataset")
@@ -162,16 +166,19 @@ class PresetDataset(Preset):
 
     class Attributes(Preset.Attributes):
         preset_dataset_datasource_name: Optional[str] = Field(
-            None, description="", alias="presetDatasetDatasourceName"
+            default=None, description="", alias="presetDatasetDatasourceName"
         )
+
         preset_dataset_id: Optional[int] = Field(
-            None, description="", alias="presetDatasetId"
+            default=None, description="", alias="presetDatasetId"
         )
+
         preset_dataset_type: Optional[str] = Field(
-            None, description="", alias="presetDatasetType"
+            default=None, description="", alias="presetDatasetType"
         )
+
         preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+            default=None, description="", alias="presetDashboard"
         )  # relationship
 
     attributes: "PresetDataset.Attributes" = Field(
@@ -184,9 +191,10 @@ class PresetDataset(Preset):
 class PresetDashboard(Preset):
     """Description"""
 
-    type_name: str = Field("PresetDashboard", allow_mutation=False)
+    type_name: str = Field("PresetDashboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PresetDashboard":
             raise ValueError("must be PresetDashboard")
@@ -341,31 +349,37 @@ class PresetDashboard(Preset):
 
     class Attributes(Preset.Attributes):
         preset_dashboard_changed_by_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByName"
+            default=None, description="", alias="presetDashboardChangedByName"
         )
+
         preset_dashboard_changed_by_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByURL"
+            default=None, description="", alias="presetDashboardChangedByURL"
         )
+
         preset_dashboard_is_managed_externally: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsManagedExternally"
+            default=None, description="", alias="presetDashboardIsManagedExternally"
         )
+
         preset_dashboard_is_published: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsPublished"
+            default=None, description="", alias="presetDashboardIsPublished"
         )
+
         preset_dashboard_thumbnail_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardThumbnailURL"
+            default=None, description="", alias="presetDashboardThumbnailURL"
         )
+
         preset_dashboard_chart_count: Optional[int] = Field(
-            None, description="", alias="presetDashboardChartCount"
+            default=None, description="", alias="presetDashboardChartCount"
         )
+
         preset_datasets: Optional[list[PresetDataset]] = Field(
-            None, description="", alias="presetDatasets"
+            default=None, description="", alias="presetDatasets"
         )  # relationship
         preset_charts: Optional[list[PresetChart]] = Field(
-            None, description="", alias="presetCharts"
+            default=None, description="", alias="presetCharts"
         )  # relationship
         preset_workspace: Optional[PresetWorkspace] = Field(
-            None, description="", alias="presetWorkspace"
+            default=None, description="", alias="presetWorkspace"
         )  # relationship
 
     attributes: "PresetDashboard.Attributes" = Field(
@@ -378,9 +392,10 @@ class PresetDashboard(Preset):
 class PresetWorkspace(Preset):
     """Description"""
 
-    type_name: str = Field("PresetWorkspace", allow_mutation=False)
+    type_name: str = Field("PresetWorkspace", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "PresetWorkspace":
             raise ValueError("must be PresetWorkspace")
@@ -554,34 +569,43 @@ class PresetWorkspace(Preset):
 
     class Attributes(Preset.Attributes):
         preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
-            None, description="", alias="presetWorkspacePublicDashboardsAllowed"
+            default=None, description="", alias="presetWorkspacePublicDashboardsAllowed"
         )
+
         preset_workspace_cluster_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceClusterId"
+            default=None, description="", alias="presetWorkspaceClusterId"
         )
+
         preset_workspace_hostname: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceHostname"
+            default=None, description="", alias="presetWorkspaceHostname"
         )
+
         preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
-            None, description="", alias="presetWorkspaceIsInMaintenanceMode"
+            default=None, description="", alias="presetWorkspaceIsInMaintenanceMode"
         )
+
         preset_workspace_region: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceRegion"
+            default=None, description="", alias="presetWorkspaceRegion"
         )
+
         preset_workspace_status: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceStatus"
+            default=None, description="", alias="presetWorkspaceStatus"
         )
+
         preset_workspace_deployment_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDeploymentId"
+            default=None, description="", alias="presetWorkspaceDeploymentId"
         )
+
         preset_workspace_dashboard_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDashboardCount"
+            default=None, description="", alias="presetWorkspaceDashboardCount"
         )
+
         preset_workspace_dataset_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDatasetCount"
+            default=None, description="", alias="presetWorkspaceDatasetCount"
         )
+
         preset_dashboards: Optional[list[PresetDashboard]] = Field(
-            None, description="", alias="presetDashboards"
+            default=None, description="", alias="presetDashboards"
         )  # relationship
 
     attributes: "PresetWorkspace.Attributes" = Field(

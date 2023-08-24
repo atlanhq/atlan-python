@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset19 import SaaS
 
@@ -14,9 +14,10 @@ from .asset19 import SaaS
 class Salesforce(SaaS):
     """Description"""
 
-    type_name: str = Field("Salesforce", allow_mutation=False)
+    type_name: str = Field("Salesforce", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "Salesforce":
             raise ValueError("must be Salesforce")
@@ -58,9 +59,10 @@ class Salesforce(SaaS):
 
     class Attributes(SaaS.Attributes):
         organization_qualified_name: Optional[str] = Field(
-            None, description="", alias="organizationQualifiedName"
+            default=None, description="", alias="organizationQualifiedName"
         )
-        api_name: Optional[str] = Field(None, description="", alias="apiName")
+
+        api_name: Optional[str] = Field(default=None, description="", alias="apiName")
 
     attributes: "Salesforce.Attributes" = Field(
         default_factory=lambda: Salesforce.Attributes(),

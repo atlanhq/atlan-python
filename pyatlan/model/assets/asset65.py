@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import ClassVar, Optional
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from .asset41 import Redash
 
@@ -14,9 +14,10 @@ from .asset41 import Redash
 class RedashDashboard(Redash):
     """Description"""
 
-    type_name: str = Field("RedashDashboard", allow_mutation=False)
+    type_name: str = Field("RedashDashboard", frozen=False)
 
-    @validator("type_name")
+    @field_validator("type_name")
+    @classmethod
     def validate_type_name(cls, v):
         if v != "RedashDashboard":
             raise ValueError("must be RedashDashboard")
@@ -49,7 +50,7 @@ class RedashDashboard(Redash):
 
     class Attributes(Redash.Attributes):
         redash_dashboard_widget_count: Optional[int] = Field(
-            None, description="", alias="redashDashboardWidgetCount"
+            default=None, description="", alias="redashDashboardWidgetCount"
         )
 
     attributes: "RedashDashboard.Attributes" = Field(
