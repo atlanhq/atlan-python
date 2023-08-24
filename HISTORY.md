@@ -1,3 +1,6 @@
+## 0.6.2 (August 24, 2023)
+* Fix bug in generating field class vars
+
 ## 0.6.1 (August 23, 2023)
 * Adds a new FluentSearch approach to searching (no need to know Elastic anymore)
 * Changes default inclusion operation for Bool queries to filter rather than must (for efficiency)
