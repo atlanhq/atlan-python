@@ -934,24 +934,3 @@ class QuickSightDataset(QuickSight):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-QuickSightFolder.Attributes.update_forward_refs()
-
-
-QuickSightDashboardVisual.Attributes.update_forward_refs()
-
-
-QuickSightAnalysisVisual.Attributes.update_forward_refs()
-
-
-QuickSightDatasetField.Attributes.update_forward_refs()
-
-
-QuickSightAnalysis.Attributes.update_forward_refs()
-
-
-QuickSightDashboard.Attributes.update_forward_refs()
-
-
-QuickSightDataset.Attributes.update_forward_refs()

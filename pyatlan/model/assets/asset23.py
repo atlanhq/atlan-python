@@ -29,6 +29,3 @@ class Insight(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-Insight.Attributes.update_forward_refs()

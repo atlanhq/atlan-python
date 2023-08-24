@@ -29,6 +29,3 @@ class Cloud(Asset, type_name="Cloud"):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-Cloud.Attributes.update_forward_refs()

@@ -29,6 +29,3 @@ class SaaS(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-SaaS.Attributes.update_forward_refs()

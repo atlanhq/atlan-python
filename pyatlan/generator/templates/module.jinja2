@@ -64,15 +64,10 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
             {% include file_name %}
         {% endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        default_factory = lambda: {{entity_def.name}}.Attributes(),
+        default_factory = lambda: {{entity_def.name}}.Attributes({% for parm_name in entity_def | get_attr_constructor_parms %}{{ parm_name }} = None,{% endfor %}),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
                     'type, so are described in the sub-types of this schema.\n',
     )
     {%- endif %}
 {% endif %}
-{% endfor %}
-
-{% for asset_info in module.ordered_asset_infos %}
-    {% set entity_def = asset_info.entity_def %}
-{{entity_def.name}}.Attributes.update_forward_refs()
 {% endfor %}

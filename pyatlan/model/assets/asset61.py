@@ -438,15 +438,3 @@ class SigmaDataElement(Sigma):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-SigmaWorkbook.Attributes.update_forward_refs()
-
-
-SigmaDataElementField.Attributes.update_forward_refs()
-
-
-SigmaPage.Attributes.update_forward_refs()
-
-
-SigmaDataElement.Attributes.update_forward_refs()

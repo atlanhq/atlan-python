@@ -602,18 +602,3 @@ class ModeCollection(Mode):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-ModeReport.Attributes.update_forward_refs()
-
-
-ModeQuery.Attributes.update_forward_refs()
-
-
-ModeChart.Attributes.update_forward_refs()
-
-
-ModeWorkspace.Attributes.update_forward_refs()
-
-
-ModeCollection.Attributes.update_forward_refs()

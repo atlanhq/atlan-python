@@ -264,17 +264,19 @@ class LineageListRequest(SearchRequest):
         "Note that you cannot fetch both upstream and downstream at the same time."
     )
     entity_filters: Optional[FilterList] = Field(
-        description="Filters to apply on entities."
+        default=None, description="Filters to apply on entities."
     )
     entity_traversal_filters: Optional[FilterList] = Field(
+        default=None,
         description="Filters to apply for skipping traversal based on entities."
         "Any sub-graphs beyond the entities filtered out by these filters will not be included"
-        "in the lineage result."
+        "in the lineage result.",
     )
     relationship_traversal_filters: Optional[FilterList] = Field(
+        default=None,
         description="Filters to apply for skipping traversal based on relationships."
         "Any sub-graphs beyond the relationships filtered out by these filters will not be included"
-        "in the lineage result."
+        "in the lineage result.",
     )
     offset: Optional[int] = Field(
         description="Starting point for pagination.", alias="from"

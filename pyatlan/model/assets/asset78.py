@@ -29,6 +29,3 @@ class AzureEventHub(KafkaTopic):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-AzureEventHub.Attributes.update_forward_refs()

@@ -788,15 +788,3 @@ class PresetWorkspace(Preset):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-PresetChart.Attributes.update_forward_refs()
-
-
-PresetDataset.Attributes.update_forward_refs()
-
-
-PresetDashboard.Attributes.update_forward_refs()
-
-
-PresetWorkspace.Attributes.update_forward_refs()

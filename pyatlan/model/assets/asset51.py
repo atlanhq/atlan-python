@@ -29,6 +29,3 @@ class Kafka(EventStore):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-Kafka.Attributes.update_forward_refs()

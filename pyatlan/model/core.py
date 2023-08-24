@@ -2,27 +2,22 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from abc import ABC
 from typing import TYPE_CHECKING, List, Literal, Union
-from typing_extensions import Annotated
 
 from pydantic import (
-    field_serializer,
+    BaseModel,
+    ConfigDict,
+    Field,
+    RootModel,
     field_validator,
     model_serializer,
-    ConfigDict,
-    BaseModel,
-    Field,
     validator,
-    RootModel,
-    SerializerFunctionWrapHandler,
 )
-from pydantic.functional_serializers import WrapSerializer
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
 else:
     from pydantic.dataclasses import dataclass
 
-from datetime import datetime
 from typing import Any, Generic, Optional, TypeVar
 
 from pyatlan.model.enums import AnnouncementType, EntityStatus
@@ -154,10 +149,10 @@ class SearchRequest(AtlanObject, ABC):
         default_factory=list,
     )
     offset: Optional[int] = Field(
-        description="Starting point for pagination.", alias="from"
+        default=None, description="Starting point for pagination.", alias="from"
     )
     size: Optional[int] = Field(
-        description="How many results to include in each page of results."
+        default=None, description="How many results to include in each page of results."
     )
 
 

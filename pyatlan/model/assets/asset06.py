@@ -29,6 +29,3 @@ class ProcessExecution(Asset, type_name="ProcessExecution"):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-ProcessExecution.Attributes.update_forward_refs()

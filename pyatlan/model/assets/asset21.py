@@ -29,6 +29,3 @@ class EventStore(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-EventStore.Attributes.update_forward_refs()

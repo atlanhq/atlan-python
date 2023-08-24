@@ -29,6 +29,3 @@ class ObjectStore(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-ObjectStore.Attributes.update_forward_refs()

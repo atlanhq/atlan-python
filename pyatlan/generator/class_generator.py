@@ -86,6 +86,17 @@ def get_type_defs() -> TypeDefResponse:
         return TypeDefResponse(**json.load(input_file))
 
 
+def get_attr_constructor_parms(entity_def: EntityDef) -> list[str]:
+    return [
+        to_snake_case(a["name"])
+        for a in (
+            (entity_def.attribute_defs or [])
+            + (entity_def.relationship_attribute_defs or [])
+        )
+        if not a["isOptional"]
+    ]
+
+
 class ClassGenerationError(Exception):
     pass
 
@@ -483,6 +494,9 @@ class Generator:
         self.environment.filters["get_type"] = get_type
         self.environment.filters["get_search_type"] = get_search_type
         self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
+        self.environment.filters[
+            "get_attr_constructor_parms"
+        ] = get_attr_constructor_parms
 
     def merge_attributes(self, entity_def):
         def merge_them(s, a):

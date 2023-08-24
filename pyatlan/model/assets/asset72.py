@@ -1530,30 +1530,3 @@ class MicroStrategyVisualization(MicroStrategy):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-MicroStrategyReport.Attributes.update_forward_refs()
-
-
-MicroStrategyProject.Attributes.update_forward_refs()
-
-
-MicroStrategyMetric.Attributes.update_forward_refs()
-
-
-MicroStrategyCube.Attributes.update_forward_refs()
-
-
-MicroStrategyDossier.Attributes.update_forward_refs()
-
-
-MicroStrategyFact.Attributes.update_forward_refs()
-
-
-MicroStrategyDocument.Attributes.update_forward_refs()
-
-
-MicroStrategyAttribute.Attributes.update_forward_refs()
-
-
-MicroStrategyVisualization.Attributes.update_forward_refs()

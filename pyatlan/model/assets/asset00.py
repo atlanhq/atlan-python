@@ -110,7 +110,9 @@ class Referenceable(AtlanObject):
     @qualified_name.setter
     def qualified_name(self, qualified_name: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                qualified_name=None,
+            )
         self.attributes.qualified_name = qualified_name
 
     @property
@@ -120,7 +122,9 @@ class Referenceable(AtlanObject):
     @assigned_terms.setter
     def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                qualified_name=None,
+            )
         self.attributes.meanings = assigned_terms
 
     class Attributes(AtlanObject):
@@ -1304,7 +1308,9 @@ class Asset(Referenceable):
     @name.setter
     def name(self, name: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.name = name
 
     @property
@@ -1314,7 +1320,9 @@ class Asset(Referenceable):
     @display_name.setter
     def display_name(self, display_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.display_name = display_name
 
     @property
@@ -1324,7 +1332,9 @@ class Asset(Referenceable):
     @description.setter
     def description(self, description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.description = description
 
     @property
@@ -1334,7 +1344,9 @@ class Asset(Referenceable):
     @user_description.setter
     def user_description(self, user_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.user_description = user_description
 
     @property
@@ -1344,7 +1356,9 @@ class Asset(Referenceable):
     @tenant_id.setter
     def tenant_id(self, tenant_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.tenant_id = tenant_id
 
     @property
@@ -1354,7 +1368,9 @@ class Asset(Referenceable):
     @certificate_status.setter
     def certificate_status(self, certificate_status: Optional[CertificateStatus]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.certificate_status = certificate_status
 
     @property
@@ -1368,7 +1384,9 @@ class Asset(Referenceable):
     @certificate_status_message.setter
     def certificate_status_message(self, certificate_status_message: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.certificate_status_message = certificate_status_message
 
     @property
@@ -1380,7 +1398,9 @@ class Asset(Referenceable):
     @certificate_updated_by.setter
     def certificate_updated_by(self, certificate_updated_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.certificate_updated_by = certificate_updated_by
 
     @property
@@ -1392,7 +1412,9 @@ class Asset(Referenceable):
     @certificate_updated_at.setter
     def certificate_updated_at(self, certificate_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.certificate_updated_at = certificate_updated_at
 
     @property
@@ -1402,7 +1424,9 @@ class Asset(Referenceable):
     @announcement_title.setter
     def announcement_title(self, announcement_title: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.announcement_title = announcement_title
 
     @property
@@ -1412,7 +1436,9 @@ class Asset(Referenceable):
     @announcement_message.setter
     def announcement_message(self, announcement_message: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.announcement_message = announcement_message
 
     @property
@@ -1422,7 +1448,9 @@ class Asset(Referenceable):
     @announcement_type.setter
     def announcement_type(self, announcement_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.announcement_type = announcement_type
 
     @property
@@ -1434,7 +1462,9 @@ class Asset(Referenceable):
     @announcement_updated_at.setter
     def announcement_updated_at(self, announcement_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.announcement_updated_at = announcement_updated_at
 
     @property
@@ -1446,7 +1476,9 @@ class Asset(Referenceable):
     @announcement_updated_by.setter
     def announcement_updated_by(self, announcement_updated_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.announcement_updated_by = announcement_updated_by
 
     @property
@@ -1456,7 +1488,9 @@ class Asset(Referenceable):
     @owner_users.setter
     def owner_users(self, owner_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.owner_users = owner_users
 
     @property
@@ -1466,7 +1500,9 @@ class Asset(Referenceable):
     @owner_groups.setter
     def owner_groups(self, owner_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.owner_groups = owner_groups
 
     @property
@@ -1476,7 +1512,9 @@ class Asset(Referenceable):
     @admin_users.setter
     def admin_users(self, admin_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.admin_users = admin_users
 
     @property
@@ -1486,7 +1524,9 @@ class Asset(Referenceable):
     @admin_groups.setter
     def admin_groups(self, admin_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.admin_groups = admin_groups
 
     @property
@@ -1496,7 +1536,9 @@ class Asset(Referenceable):
     @viewer_users.setter
     def viewer_users(self, viewer_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.viewer_users = viewer_users
 
     @property
@@ -1506,7 +1548,9 @@ class Asset(Referenceable):
     @viewer_groups.setter
     def viewer_groups(self, viewer_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.viewer_groups = viewer_groups
 
     @property
@@ -1516,7 +1560,9 @@ class Asset(Referenceable):
     @connector_name.setter
     def connector_name(self, connector_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.connector_name = connector_name
 
     @property
@@ -1526,7 +1572,9 @@ class Asset(Referenceable):
     @connection_name.setter
     def connection_name(self, connection_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.connection_name = connection_name
 
     @property
@@ -1540,7 +1588,9 @@ class Asset(Referenceable):
     @connection_qualified_name.setter
     def connection_qualified_name(self, connection_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.connection_qualified_name = connection_qualified_name
 
     @property
@@ -1550,7 +1600,9 @@ class Asset(Referenceable):
     @has_lineage.setter
     def has_lineage(self, has_lineage: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.has_lineage = has_lineage
 
     @property
@@ -1560,7 +1612,9 @@ class Asset(Referenceable):
     @is_discoverable.setter
     def is_discoverable(self, is_discoverable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.is_discoverable = is_discoverable
 
     @property
@@ -1570,7 +1624,9 @@ class Asset(Referenceable):
     @is_editable.setter
     def is_editable(self, is_editable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.is_editable = is_editable
 
     @property
@@ -1580,7 +1636,9 @@ class Asset(Referenceable):
     @sub_type.setter
     def sub_type(self, sub_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.sub_type = sub_type
 
     @property
@@ -1590,7 +1648,9 @@ class Asset(Referenceable):
     @view_score.setter
     def view_score(self, view_score: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.view_score = view_score
 
     @property
@@ -1600,7 +1660,9 @@ class Asset(Referenceable):
     @popularity_score.setter
     def popularity_score(self, popularity_score: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.popularity_score = popularity_score
 
     @property
@@ -1610,7 +1672,9 @@ class Asset(Referenceable):
     @source_owners.setter
     def source_owners(self, source_owners: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_owners = source_owners
 
     @property
@@ -1620,7 +1684,9 @@ class Asset(Referenceable):
     @source_created_by.setter
     def source_created_by(self, source_created_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_created_by = source_created_by
 
     @property
@@ -1630,7 +1696,9 @@ class Asset(Referenceable):
     @source_created_at.setter
     def source_created_at(self, source_created_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_created_at = source_created_at
 
     @property
@@ -1640,7 +1708,9 @@ class Asset(Referenceable):
     @source_updated_at.setter
     def source_updated_at(self, source_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_updated_at = source_updated_at
 
     @property
@@ -1650,7 +1720,9 @@ class Asset(Referenceable):
     @source_updated_by.setter
     def source_updated_by(self, source_updated_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_updated_by = source_updated_by
 
     @property
@@ -1660,7 +1732,9 @@ class Asset(Referenceable):
     @source_url.setter
     def source_url(self, source_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_url = source_url
 
     @property
@@ -1670,7 +1744,9 @@ class Asset(Referenceable):
     @source_embed_url.setter
     def source_embed_url(self, source_embed_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_embed_url = source_embed_url
 
     @property
@@ -1682,7 +1758,9 @@ class Asset(Referenceable):
     @last_sync_workflow_name.setter
     def last_sync_workflow_name(self, last_sync_workflow_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.last_sync_workflow_name = last_sync_workflow_name
 
     @property
@@ -1692,7 +1770,9 @@ class Asset(Referenceable):
     @last_sync_run_at.setter
     def last_sync_run_at(self, last_sync_run_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.last_sync_run_at = last_sync_run_at
 
     @property
@@ -1702,7 +1782,9 @@ class Asset(Referenceable):
     @last_sync_run.setter
     def last_sync_run(self, last_sync_run: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.last_sync_run = last_sync_run
 
     @property
@@ -1712,7 +1794,9 @@ class Asset(Referenceable):
     @admin_roles.setter
     def admin_roles(self, admin_roles: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.admin_roles = admin_roles
 
     @property
@@ -1722,7 +1806,9 @@ class Asset(Referenceable):
     @source_read_count.setter
     def source_read_count(self, source_read_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_count = source_read_count
 
     @property
@@ -1734,7 +1820,9 @@ class Asset(Referenceable):
     @source_read_user_count.setter
     def source_read_user_count(self, source_read_user_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_user_count = source_read_user_count
 
     @property
@@ -1744,7 +1832,9 @@ class Asset(Referenceable):
     @source_last_read_at.setter
     def source_last_read_at(self, source_last_read_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_last_read_at = source_last_read_at
 
     @property
@@ -1754,7 +1844,9 @@ class Asset(Referenceable):
     @last_row_changed_at.setter
     def last_row_changed_at(self, last_row_changed_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.last_row_changed_at = last_row_changed_at
 
     @property
@@ -1764,7 +1856,9 @@ class Asset(Referenceable):
     @source_total_cost.setter
     def source_total_cost(self, source_total_cost: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_total_cost = source_total_cost
 
     @property
@@ -1774,7 +1868,9 @@ class Asset(Referenceable):
     @source_cost_unit.setter
     def source_cost_unit(self, source_cost_unit: Optional[SourceCostUnitType]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_cost_unit = source_cost_unit
 
     @property
@@ -1786,7 +1882,9 @@ class Asset(Referenceable):
     @source_read_query_cost.setter
     def source_read_query_cost(self, source_read_query_cost: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_query_cost = source_read_query_cost
 
     @property
@@ -1802,7 +1900,9 @@ class Asset(Referenceable):
         self, source_read_recent_user_list: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_recent_user_list = source_read_recent_user_list
 
     @property
@@ -1818,7 +1918,9 @@ class Asset(Referenceable):
         self, source_read_recent_user_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_recent_user_record_list = (
             source_read_recent_user_record_list
         )
@@ -1834,7 +1936,9 @@ class Asset(Referenceable):
     @source_read_top_user_list.setter
     def source_read_top_user_list(self, source_read_top_user_list: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_top_user_list = source_read_top_user_list
 
     @property
@@ -1850,7 +1954,9 @@ class Asset(Referenceable):
         self, source_read_top_user_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_top_user_record_list = (
             source_read_top_user_record_list
         )
@@ -1870,7 +1976,9 @@ class Asset(Referenceable):
         self, source_read_popular_query_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_popular_query_record_list = (
             source_read_popular_query_record_list
         )
@@ -1891,7 +1999,9 @@ class Asset(Referenceable):
         source_read_expensive_query_record_list: Optional[list[PopularityInsights]],
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_expensive_query_record_list = (
             source_read_expensive_query_record_list
         )
@@ -1909,7 +2019,9 @@ class Asset(Referenceable):
         self, source_read_slow_query_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_read_slow_query_record_list = (
             source_read_slow_query_record_list
         )
@@ -1927,7 +2039,9 @@ class Asset(Referenceable):
         self, source_query_compute_cost_list: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_query_compute_cost_list = source_query_compute_cost_list
 
     @property
@@ -1945,7 +2059,9 @@ class Asset(Referenceable):
         self, source_query_compute_cost_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.source_query_compute_cost_record_list = (
             source_query_compute_cost_record_list
         )
@@ -1957,7 +2073,9 @@ class Asset(Referenceable):
     @dbt_qualified_name.setter
     def dbt_qualified_name(self, dbt_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.dbt_qualified_name = dbt_qualified_name
 
     @property
@@ -1967,7 +2085,9 @@ class Asset(Referenceable):
     @asset_dbt_alias.setter
     def asset_dbt_alias(self, asset_dbt_alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_alias = asset_dbt_alias
 
     @property
@@ -1977,7 +2097,9 @@ class Asset(Referenceable):
     @asset_dbt_meta.setter
     def asset_dbt_meta(self, asset_dbt_meta: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_meta = asset_dbt_meta
 
     @property
@@ -1987,7 +2109,9 @@ class Asset(Referenceable):
     @asset_dbt_unique_id.setter
     def asset_dbt_unique_id(self, asset_dbt_unique_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_unique_id = asset_dbt_unique_id
 
     @property
@@ -1999,7 +2123,9 @@ class Asset(Referenceable):
     @asset_dbt_account_name.setter
     def asset_dbt_account_name(self, asset_dbt_account_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_account_name = asset_dbt_account_name
 
     @property
@@ -2011,7 +2137,9 @@ class Asset(Referenceable):
     @asset_dbt_project_name.setter
     def asset_dbt_project_name(self, asset_dbt_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_project_name = asset_dbt_project_name
 
     @property
@@ -2023,7 +2151,9 @@ class Asset(Referenceable):
     @asset_dbt_package_name.setter
     def asset_dbt_package_name(self, asset_dbt_package_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_package_name = asset_dbt_package_name
 
     @property
@@ -2033,7 +2163,9 @@ class Asset(Referenceable):
     @asset_dbt_job_name.setter
     def asset_dbt_job_name(self, asset_dbt_job_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_name = asset_dbt_job_name
 
     @property
@@ -2045,7 +2177,9 @@ class Asset(Referenceable):
     @asset_dbt_job_schedule.setter
     def asset_dbt_job_schedule(self, asset_dbt_job_schedule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_schedule = asset_dbt_job_schedule
 
     @property
@@ -2055,7 +2189,9 @@ class Asset(Referenceable):
     @asset_dbt_job_status.setter
     def asset_dbt_job_status(self, asset_dbt_job_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_status = asset_dbt_job_status
 
     @property
@@ -2067,7 +2203,9 @@ class Asset(Referenceable):
     @asset_dbt_test_status.setter
     def asset_dbt_test_status(self, asset_dbt_test_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_test_status = asset_dbt_test_status
 
     @property
@@ -2083,7 +2221,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_schedule_cron_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_schedule_cron_humanized = (
             asset_dbt_job_schedule_cron_humanized
         )
@@ -2097,7 +2237,9 @@ class Asset(Referenceable):
     @asset_dbt_job_last_run.setter
     def asset_dbt_job_last_run(self, asset_dbt_job_last_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run = asset_dbt_job_last_run
 
     @property
@@ -2111,7 +2253,9 @@ class Asset(Referenceable):
     @asset_dbt_job_last_run_url.setter
     def asset_dbt_job_last_run_url(self, asset_dbt_job_last_run_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_url = asset_dbt_job_last_run_url
 
     @property
@@ -2127,7 +2271,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_created_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_created_at = (
             asset_dbt_job_last_run_created_at
         )
@@ -2145,7 +2291,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_updated_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_updated_at = (
             asset_dbt_job_last_run_updated_at
         )
@@ -2163,7 +2311,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_dequed_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_dequed_at = (
             asset_dbt_job_last_run_dequed_at
         )
@@ -2181,7 +2331,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_started_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_started_at = (
             asset_dbt_job_last_run_started_at
         )
@@ -2199,7 +2351,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_total_duration: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_total_duration = (
             asset_dbt_job_last_run_total_duration
         )
@@ -2217,7 +2371,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_total_duration_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_total_duration_humanized = (
             asset_dbt_job_last_run_total_duration_humanized
         )
@@ -2235,7 +2391,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_queued_duration: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_queued_duration = (
             asset_dbt_job_last_run_queued_duration
         )
@@ -2253,7 +2411,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_queued_duration_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_queued_duration_humanized = (
             asset_dbt_job_last_run_queued_duration_humanized
         )
@@ -2271,7 +2431,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_run_duration: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_run_duration = (
             asset_dbt_job_last_run_run_duration
         )
@@ -2289,7 +2451,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_run_duration_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_run_duration_humanized = (
             asset_dbt_job_last_run_run_duration_humanized
         )
@@ -2307,7 +2471,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_git_branch: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_git_branch = (
             asset_dbt_job_last_run_git_branch
         )
@@ -2325,7 +2491,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_git_sha: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_git_sha = asset_dbt_job_last_run_git_sha
 
     @property
@@ -2341,7 +2509,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_status_message: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_status_message = (
             asset_dbt_job_last_run_status_message
         )
@@ -2359,7 +2529,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_owner_thread_id: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_owner_thread_id = (
             asset_dbt_job_last_run_owner_thread_id
         )
@@ -2377,7 +2549,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_executed_by_thread_id: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_executed_by_thread_id = (
             asset_dbt_job_last_run_executed_by_thread_id
         )
@@ -2395,7 +2569,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_artifacts_saved: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_artifacts_saved = (
             asset_dbt_job_last_run_artifacts_saved
         )
@@ -2413,7 +2589,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_artifact_s3_path: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_artifact_s3_path = (
             asset_dbt_job_last_run_artifact_s3_path
         )
@@ -2431,7 +2609,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_has_docs_generated: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_has_docs_generated = (
             asset_dbt_job_last_run_has_docs_generated
         )
@@ -2449,7 +2629,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_has_sources_generated: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_has_sources_generated = (
             asset_dbt_job_last_run_has_sources_generated
         )
@@ -2467,7 +2649,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_notifications_sent: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_last_run_notifications_sent = (
             asset_dbt_job_last_run_notifications_sent
         )
@@ -2481,7 +2665,9 @@ class Asset(Referenceable):
     @asset_dbt_job_next_run.setter
     def asset_dbt_job_next_run(self, asset_dbt_job_next_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_next_run = asset_dbt_job_next_run
 
     @property
@@ -2497,7 +2683,9 @@ class Asset(Referenceable):
         self, asset_dbt_job_next_run_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_job_next_run_humanized = (
             asset_dbt_job_next_run_humanized
         )
@@ -2513,7 +2701,9 @@ class Asset(Referenceable):
     @asset_dbt_environment_name.setter
     def asset_dbt_environment_name(self, asset_dbt_environment_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_environment_name = asset_dbt_environment_name
 
     @property
@@ -2529,7 +2719,9 @@ class Asset(Referenceable):
         self, asset_dbt_environment_dbt_version: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_environment_dbt_version = (
             asset_dbt_environment_dbt_version
         )
@@ -2541,7 +2733,9 @@ class Asset(Referenceable):
     @asset_dbt_tags.setter
     def asset_dbt_tags(self, asset_dbt_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_tags = asset_dbt_tags
 
     @property
@@ -2557,7 +2751,9 @@ class Asset(Referenceable):
         self, asset_dbt_semantic_layer_proxy_url: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_semantic_layer_proxy_url = (
             asset_dbt_semantic_layer_proxy_url
         )
@@ -2575,7 +2771,9 @@ class Asset(Referenceable):
         self, asset_dbt_source_freshness_criteria: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_dbt_source_freshness_criteria = (
             asset_dbt_source_freshness_criteria
         )
@@ -2587,7 +2785,9 @@ class Asset(Referenceable):
     @sample_data_url.setter
     def sample_data_url(self, sample_data_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.sample_data_url = sample_data_url
 
     @property
@@ -2597,7 +2797,9 @@ class Asset(Referenceable):
     @asset_tags.setter
     def asset_tags(self, asset_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_tags = asset_tags
 
     @property
@@ -2609,7 +2811,9 @@ class Asset(Referenceable):
     @asset_mc_incident_names.setter
     def asset_mc_incident_names(self, asset_mc_incident_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_incident_names = asset_mc_incident_names
 
     @property
@@ -2625,7 +2829,9 @@ class Asset(Referenceable):
         self, asset_mc_incident_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_incident_qualified_names = (
             asset_mc_incident_qualified_names
         )
@@ -2639,7 +2845,9 @@ class Asset(Referenceable):
     @asset_mc_monitor_names.setter
     def asset_mc_monitor_names(self, asset_mc_monitor_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_monitor_names = asset_mc_monitor_names
 
     @property
@@ -2655,7 +2863,9 @@ class Asset(Referenceable):
         self, asset_mc_monitor_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_monitor_qualified_names = (
             asset_mc_monitor_qualified_names
         )
@@ -2671,7 +2881,9 @@ class Asset(Referenceable):
     @asset_mc_monitor_statuses.setter
     def asset_mc_monitor_statuses(self, asset_mc_monitor_statuses: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_monitor_statuses = asset_mc_monitor_statuses
 
     @property
@@ -2683,7 +2895,9 @@ class Asset(Referenceable):
     @asset_mc_monitor_types.setter
     def asset_mc_monitor_types(self, asset_mc_monitor_types: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_monitor_types = asset_mc_monitor_types
 
     @property
@@ -2699,7 +2913,9 @@ class Asset(Referenceable):
         self, asset_mc_monitor_schedule_types: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_monitor_schedule_types = (
             asset_mc_monitor_schedule_types
         )
@@ -2713,7 +2929,9 @@ class Asset(Referenceable):
     @asset_mc_incident_types.setter
     def asset_mc_incident_types(self, asset_mc_incident_types: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_incident_types = asset_mc_incident_types
 
     @property
@@ -2729,7 +2947,9 @@ class Asset(Referenceable):
         self, asset_mc_incident_sub_types: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_incident_sub_types = asset_mc_incident_sub_types
 
     @property
@@ -2745,7 +2965,9 @@ class Asset(Referenceable):
         self, asset_mc_incident_severities: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
 
     @property
@@ -2759,7 +2981,9 @@ class Asset(Referenceable):
     @asset_mc_incident_states.setter
     def asset_mc_incident_states(self, asset_mc_incident_states: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_incident_states = asset_mc_incident_states
 
     @property
@@ -2773,7 +2997,9 @@ class Asset(Referenceable):
     @asset_mc_last_sync_run_at.setter
     def asset_mc_last_sync_run_at(self, asset_mc_last_sync_run_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
 
     @property
@@ -2783,7 +3009,9 @@ class Asset(Referenceable):
     @starred_by.setter
     def starred_by(self, starred_by: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.starred_by = starred_by
 
     @property
@@ -2795,7 +3023,9 @@ class Asset(Referenceable):
         self, starred_details_list: Optional[list[StarredDetails]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.starred_details_list = starred_details_list
 
     @property
@@ -2805,7 +3035,9 @@ class Asset(Referenceable):
     @starred_count.setter
     def starred_count(self, starred_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.starred_count = starred_count
 
     @property
@@ -2817,7 +3049,9 @@ class Asset(Referenceable):
     @asset_soda_d_q_status.setter
     def asset_soda_d_q_status(self, asset_soda_d_q_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_soda_d_q_status = asset_soda_d_q_status
 
     @property
@@ -2829,7 +3063,9 @@ class Asset(Referenceable):
     @asset_soda_check_count.setter
     def asset_soda_check_count(self, asset_soda_check_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_soda_check_count = asset_soda_check_count
 
     @property
@@ -2845,7 +3081,9 @@ class Asset(Referenceable):
         self, asset_soda_last_sync_run_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_soda_last_sync_run_at = asset_soda_last_sync_run_at
 
     @property
@@ -2857,7 +3095,9 @@ class Asset(Referenceable):
     @asset_soda_last_scan_at.setter
     def asset_soda_last_scan_at(self, asset_soda_last_scan_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_soda_last_scan_at = asset_soda_last_scan_at
 
     @property
@@ -2871,7 +3111,9 @@ class Asset(Referenceable):
     @asset_soda_check_statuses.setter
     def asset_soda_check_statuses(self, asset_soda_check_statuses: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_soda_check_statuses = asset_soda_check_statuses
 
     @property
@@ -2883,7 +3125,9 @@ class Asset(Referenceable):
     @asset_soda_source_url.setter
     def asset_soda_source_url(self, asset_soda_source_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_soda_source_url = asset_soda_source_url
 
     @property
@@ -2893,7 +3137,9 @@ class Asset(Referenceable):
     @asset_icon.setter
     def asset_icon(self, asset_icon: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.asset_icon = asset_icon
 
     @property
@@ -2909,7 +3155,9 @@ class Asset(Referenceable):
         self, schema_registry_subjects: Optional[list[SchemaRegistrySubject]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.schema_registry_subjects = schema_registry_subjects
 
     @property
@@ -2919,7 +3167,9 @@ class Asset(Referenceable):
     @mc_monitors.setter
     def mc_monitors(self, mc_monitors: Optional[list[MCMonitor]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.mc_monitors = mc_monitors
 
     @property
@@ -2929,7 +3179,9 @@ class Asset(Referenceable):
     @files.setter
     def files(self, files: Optional[list[File]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.files = files
 
     @property
@@ -2939,7 +3191,9 @@ class Asset(Referenceable):
     @mc_incidents.setter
     def mc_incidents(self, mc_incidents: Optional[list[MCIncident]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.mc_incidents = mc_incidents
 
     @property
@@ -2949,7 +3203,9 @@ class Asset(Referenceable):
     @links.setter
     def links(self, links: Optional[list[Link]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.links = links
 
     @property
@@ -2959,7 +3215,9 @@ class Asset(Referenceable):
     @metrics.setter
     def metrics(self, metrics: Optional[list[Metric]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.metrics = metrics
 
     @property
@@ -2969,7 +3227,9 @@ class Asset(Referenceable):
     @readme.setter
     def readme(self, readme: Optional[Readme]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.readme = readme
 
     @property
@@ -2979,7 +3239,9 @@ class Asset(Referenceable):
     @soda_checks.setter
     def soda_checks(self, soda_checks: Optional[list[SodaCheck]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.soda_checks = soda_checks
 
     @property
@@ -2989,7 +3251,9 @@ class Asset(Referenceable):
     @assigned_terms.setter
     def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                name=None,
+            )
         self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
@@ -3529,7 +3793,9 @@ class Asset(Referenceable):
             self.announcement_type = None
 
     attributes: "Asset.Attributes" = Field(
-        default_factory=lambda: Asset.Attributes(),
+        default_factory=lambda: Asset.Attributes(
+            name=None,
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3660,7 +3926,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @short_description.setter
     def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.short_description = short_description
 
     @property
@@ -3670,7 +3938,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @long_description.setter
     def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.long_description = long_description
 
     @property
@@ -3682,7 +3952,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.additional_attributes = additional_attributes
 
     @property
@@ -3692,7 +3964,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @terms.setter
     def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.terms = terms
 
     @property
@@ -3702,7 +3976,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @anchor.setter
     def anchor(self, anchor: AtlasGlossary):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.anchor = anchor
 
     @property
@@ -3712,7 +3988,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @parent_category.setter
     def parent_category(self, parent_category: Optional[AtlasGlossaryCategory]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.parent_category = parent_category
 
     @property
@@ -3724,7 +4002,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self, children_categories: Optional[list[AtlasGlossaryCategory]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.children_categories = children_categories
 
     class Attributes(Asset.Attributes):
@@ -3769,7 +4049,9 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
-        default_factory=lambda: AtlasGlossaryCategory.Attributes(),
+        default_factory=lambda: AtlasGlossaryCategory.Attributes(
+            anchor=None,
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4168,7 +4450,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @short_description.setter
     def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.short_description = short_description
 
     @property
@@ -4178,7 +4462,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @long_description.setter
     def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.long_description = long_description
 
     @property
@@ -4188,7 +4474,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @examples.setter
     def examples(self, examples: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.examples = examples
 
     @property
@@ -4198,7 +4486,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @abbreviation.setter
     def abbreviation(self, abbreviation: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.abbreviation = abbreviation
 
     @property
@@ -4208,7 +4498,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @usage.setter
     def usage(self, usage: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.usage = usage
 
     @property
@@ -4220,7 +4512,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.additional_attributes = additional_attributes
 
     @property
@@ -4230,7 +4524,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @valid_values_for.setter
     def valid_values_for(self, valid_values_for: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.valid_values_for = valid_values_for
 
     @property
@@ -4240,7 +4536,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @valid_values.setter
     def valid_values(self, valid_values: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.valid_values = valid_values
 
     @property
@@ -4250,7 +4548,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @see_also.setter
     def see_also(self, see_also: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.see_also = see_also
 
     @property
@@ -4260,7 +4560,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @is_a.setter
     def is_a(self, is_a: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.is_a = is_a
 
     @property
@@ -4270,7 +4572,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @antonyms.setter
     def antonyms(self, antonyms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.antonyms = antonyms
 
     @property
@@ -4280,7 +4584,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @assigned_entities.setter
     def assigned_entities(self, assigned_entities: Optional[list[Referenceable]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.assigned_entities = assigned_entities
 
     @property
@@ -4290,7 +4596,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @classifies.setter
     def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.classifies = classifies
 
     @property
@@ -4300,7 +4608,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @categories.setter
     def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.categories = categories
 
     @property
@@ -4310,7 +4620,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @preferred_to_terms.setter
     def preferred_to_terms(self, preferred_to_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.preferred_to_terms = preferred_to_terms
 
     @property
@@ -4320,7 +4632,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @preferred_terms.setter
     def preferred_terms(self, preferred_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.preferred_terms = preferred_terms
 
     @property
@@ -4330,7 +4644,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @translation_terms.setter
     def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.translation_terms = translation_terms
 
     @property
@@ -4340,7 +4656,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @synonyms.setter
     def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.synonyms = synonyms
 
     @property
@@ -4350,7 +4668,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @replaced_by.setter
     def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.replaced_by = replaced_by
 
     @property
@@ -4360,7 +4680,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @replacement_terms.setter
     def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.replacement_terms = replacement_terms
 
     @property
@@ -4370,7 +4692,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @translated_terms.setter
     def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.translated_terms = translated_terms
 
     @property
@@ -4380,7 +4704,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @anchor.setter
     def anchor(self, anchor: AtlasGlossary):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                anchor=None,
+            )
         self.attributes.anchor = anchor
 
     class Attributes(Asset.Attributes):
@@ -4483,7 +4809,9 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
-        default_factory=lambda: AtlasGlossaryTerm.Attributes(),
+        default_factory=lambda: AtlasGlossaryTerm.Attributes(
+            anchor=None,
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4840,7 +5168,11 @@ class Folder(Namespace):
     @parent_qualified_name.setter
     def parent_qualified_name(self, parent_qualified_name: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.parent_qualified_name = parent_qualified_name
 
     @property
@@ -4854,7 +5186,11 @@ class Folder(Namespace):
     @collection_qualified_name.setter
     def collection_qualified_name(self, collection_qualified_name: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.collection_qualified_name = collection_qualified_name
 
     @property
@@ -4864,7 +5200,11 @@ class Folder(Namespace):
     @parent.setter
     def parent(self, parent: Namespace):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.parent = parent
 
     class Attributes(Namespace.Attributes):
@@ -4879,7 +5219,11 @@ class Folder(Namespace):
         parent: Namespace = Field(description="", alias="parent")  # relationship
 
     attributes: "Folder.Attributes" = Field(
-        default_factory=lambda: Folder.Attributes(),
+        default_factory=lambda: Folder.Attributes(
+            parent_qualified_name=None,
+            collection_qualified_name=None,
+            parent=None,
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6194,7 +6538,7 @@ class Readme(Resource):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.description = (
-            quote(description) if description is not None else description
+            quote(description) if description is not None else ""
         )
 
     type_name: str = Field("Readme", frozen=False)
@@ -7019,7 +7363,11 @@ class Query(SQL):
     @raw_query.setter
     def raw_query(self, raw_query: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.raw_query = raw_query
 
     @property
@@ -7035,7 +7383,11 @@ class Query(SQL):
         self, default_schema_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.default_schema_qualified_name = default_schema_qualified_name
 
     @property
@@ -7051,7 +7403,11 @@ class Query(SQL):
         self, default_database_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.default_database_qualified_name = (
             default_database_qualified_name
         )
@@ -7065,7 +7421,11 @@ class Query(SQL):
     @variables_schema_base64.setter
     def variables_schema_base64(self, variables_schema_base64: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.variables_schema_base64 = variables_schema_base64
 
     @property
@@ -7075,7 +7435,11 @@ class Query(SQL):
     @is_private.setter
     def is_private(self, is_private: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.is_private = is_private
 
     @property
@@ -7085,7 +7449,11 @@ class Query(SQL):
     @is_sql_snippet.setter
     def is_sql_snippet(self, is_sql_snippet: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.is_sql_snippet = is_sql_snippet
 
     @property
@@ -7097,7 +7465,11 @@ class Query(SQL):
     @parent_qualified_name.setter
     def parent_qualified_name(self, parent_qualified_name: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.parent_qualified_name = parent_qualified_name
 
     @property
@@ -7111,7 +7483,11 @@ class Query(SQL):
     @collection_qualified_name.setter
     def collection_qualified_name(self, collection_qualified_name: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.collection_qualified_name = collection_qualified_name
 
     @property
@@ -7121,7 +7497,11 @@ class Query(SQL):
     @is_visual_query.setter
     def is_visual_query(self, is_visual_query: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.is_visual_query = is_visual_query
 
     @property
@@ -7135,7 +7515,11 @@ class Query(SQL):
     @visual_builder_schema_base64.setter
     def visual_builder_schema_base64(self, visual_builder_schema_base64: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
 
     @property
@@ -7145,7 +7529,11 @@ class Query(SQL):
     @parent.setter
     def parent(self, parent: Namespace):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.parent = parent
 
     @property
@@ -7155,7 +7543,11 @@ class Query(SQL):
     @columns.setter
     def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.columns = columns
 
     @property
@@ -7165,7 +7557,11 @@ class Query(SQL):
     @tables.setter
     def tables(self, tables: Optional[list[Table]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.tables = tables
 
     @property
@@ -7175,7 +7571,11 @@ class Query(SQL):
     @views.setter
     def views(self, views: Optional[list[View]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                parent_qualified_name=None,
+                collection_qualified_name=None,
+                parent=None,
+            )
         self.attributes.views = views
 
     class Attributes(SQL.Attributes):
@@ -7229,7 +7629,11 @@ class Query(SQL):
         )  # relationship
 
     attributes: "Query.Attributes" = Field(
-        default_factory=lambda: Query.Attributes(),
+        default_factory=lambda: Query.Attributes(
+            parent_qualified_name=None,
+            collection_qualified_name=None,
+            parent=None,
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10693,7 +11097,9 @@ class Procedure(SQL):
     @definition.setter
     def definition(self, definition: str):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                definition=None,
+            )
         self.attributes.definition = definition
 
     @property
@@ -10703,7 +11109,9 @@ class Procedure(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(
+                definition=None,
+            )
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
@@ -10714,7 +11122,9 @@ class Procedure(SQL):
         )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
-        default_factory=lambda: Procedure.Attributes(),
+        default_factory=lambda: Procedure.Attributes(
+            definition=None,
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -15085,147 +15495,3 @@ class SnowflakeDynamicTable(Table):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-Referenceable.Attributes.update_forward_refs()
-
-
-Asset.Attributes.update_forward_refs()
-
-
-AtlasGlossaryCategory.Attributes.update_forward_refs()
-
-
-AtlasGlossary.Attributes.update_forward_refs()
-
-
-AtlasGlossaryTerm.Attributes.update_forward_refs()
-
-
-Process.Attributes.update_forward_refs()
-
-
-Namespace.Attributes.update_forward_refs()
-
-
-Folder.Attributes.update_forward_refs()
-
-
-Catalog.Attributes.update_forward_refs()
-
-
-Tag.Attributes.update_forward_refs()
-
-
-ColumnProcess.Attributes.update_forward_refs()
-
-
-Airflow.Attributes.update_forward_refs()
-
-
-AirflowDag.Attributes.update_forward_refs()
-
-
-AirflowTask.Attributes.update_forward_refs()
-
-
-DataQuality.Attributes.update_forward_refs()
-
-
-Metric.Attributes.update_forward_refs()
-
-
-Resource.Attributes.update_forward_refs()
-
-
-Readme.Attributes.update_forward_refs()
-
-
-File.Attributes.update_forward_refs()
-
-
-Link.Attributes.update_forward_refs()
-
-
-SQL.Attributes.update_forward_refs()
-
-
-Query.Attributes.update_forward_refs()
-
-
-Schema.Attributes.update_forward_refs()
-
-
-SnowflakePipe.Attributes.update_forward_refs()
-
-
-View.Attributes.update_forward_refs()
-
-
-MaterialisedView.Attributes.update_forward_refs()
-
-
-Function.Attributes.update_forward_refs()
-
-
-TablePartition.Attributes.update_forward_refs()
-
-
-Column.Attributes.update_forward_refs()
-
-
-SnowflakeStream.Attributes.update_forward_refs()
-
-
-Database.Attributes.update_forward_refs()
-
-
-Procedure.Attributes.update_forward_refs()
-
-
-SnowflakeTag.Attributes.update_forward_refs()
-
-
-Dbt.Attributes.update_forward_refs()
-
-
-DbtModelColumn.Attributes.update_forward_refs()
-
-
-DbtTest.Attributes.update_forward_refs()
-
-
-DbtModel.Attributes.update_forward_refs()
-
-
-DbtMetric.Attributes.update_forward_refs()
-
-
-DbtSource.Attributes.update_forward_refs()
-
-
-SchemaRegistry.Attributes.update_forward_refs()
-
-
-SchemaRegistrySubject.Attributes.update_forward_refs()
-
-
-MonteCarlo.Attributes.update_forward_refs()
-
-
-MCIncident.Attributes.update_forward_refs()
-
-
-MCMonitor.Attributes.update_forward_refs()
-
-
-Soda.Attributes.update_forward_refs()
-
-
-SodaCheck.Attributes.update_forward_refs()
-
-
-Table.Attributes.update_forward_refs()
-
-
-SnowflakeDynamicTable.Attributes.update_forward_refs()

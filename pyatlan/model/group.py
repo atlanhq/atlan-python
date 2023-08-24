@@ -125,7 +125,8 @@ class GroupResponse(AtlanObject):
 class CreateGroupRequest(AtlanObject):
     group: AtlanGroup = Field(description="Group to be created.")
     users: Optional[list[str]] = Field(
-        description="List of users (their GUIDs) to be included in the group."
+        default=None,
+        description="List of users (their GUIDs) to be included in the group.",
     )
 
 

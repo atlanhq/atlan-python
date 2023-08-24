@@ -22,8 +22,9 @@ from pydantic import (
     StringConstraints,
     ValidationError,
     parse_obj_as,
-    validate_arguments,
+    validate_call,
 )
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
@@ -521,7 +522,7 @@ class AtlanClient(BaseSettings):
         self, api, query_params, request_obj, exclude_unset: bool = True
     ):
         params = copy.deepcopy(self._request_params)
-        path = os.path.join(self.base_url, api.path)
+        path = os.path.join(str(self.base_url), api.path)
         request_id = str(uuid.uuid4())
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
@@ -963,7 +964,7 @@ class AtlanClient(BaseSettings):
         )
         return ParsedQuery(**raw_json)
 
-    @validate_arguments()
+    @validate_call()
     def get_asset_by_qualified_name(
         self,
         qualified_name: str,
@@ -1006,7 +1007,7 @@ class AtlanClient(BaseSettings):
                 raise NotFoundError(message=ae.user_message, code=ae.code) from ae
             raise ae
 
-    @validate_arguments()
+    @validate_call()
     def get_asset_by_guid(
         self,
         guid: str,
@@ -1059,7 +1060,7 @@ class AtlanClient(BaseSettings):
         asset.is_incomplete = False
         return asset
 
-    @validate_arguments()
+    @validate_call()
     def retrieve_minimal(self, guid: str, asset_type: Type[A]) -> A:
         """
         Retrieves an asset by its GUID, without any of its relationships.
@@ -1454,7 +1455,7 @@ class AtlanClient(BaseSettings):
 
             AtlanTagCache.refresh_cache()
 
-    @validate_arguments()
+    @validate_call()
     def add_atlan_tags(
         self,
         asset_type: Type[A],
@@ -1498,7 +1499,7 @@ class AtlanClient(BaseSettings):
             atlan_tags,
         )
 
-    @validate_arguments()
+    @validate_call()
     def remove_atlan_tag(
         self, asset_type: Type[A], qualified_name: str, atlan_tag_name: str
     ) -> None:
@@ -1524,7 +1525,7 @@ class AtlanClient(BaseSettings):
             query_params,
         )
 
-    @validate_arguments()
+    @validate_call()
     def update_certificate(
         self,
         asset_type: Type[A],
@@ -1566,7 +1567,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return None
 
-    @validate_arguments()
+    @validate_call()
     def remove_certificate(
         self, asset_type: Type[A], qualified_name: str, name: str
     ) -> Optional[A]:
@@ -1584,7 +1585,7 @@ class AtlanClient(BaseSettings):
         asset.remove_certificate()
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
-    @validate_arguments()
+    @validate_call()
     def update_announcement(
         self,
         asset_type: Type[A],
@@ -1607,7 +1608,7 @@ class AtlanClient(BaseSettings):
         asset.name = name
         return self._update_asset_by_attribute(asset, asset_type, qualified_name)
 
-    @validate_arguments()
+    @validate_call()
     def remove_announcement(
         self, asset_type: Type[A], qualified_name: str, name: str
     ) -> Optional[A]:
@@ -1697,7 +1698,7 @@ class AtlanClient(BaseSettings):
             custom_metadata_request,
         )
 
-    @validate_arguments()
+    @validate_call()
     def append_terms(
         self,
         asset_type: Type[A],
@@ -1743,7 +1744,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return asset
 
-    @validate_arguments()
+    @validate_call()
     def replace_terms(
         self,
         asset_type: Type[A],
@@ -1779,7 +1780,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return asset
 
-    @validate_arguments()
+    @validate_call()
     def remove_terms(
         self,
         asset_type: Type[A],
@@ -1828,7 +1829,7 @@ class AtlanClient(BaseSettings):
             return assets[0]
         return asset
 
-    @validate_arguments()
+    @validate_call()
     def find_connections_by_name(
         self,
         name: str,
@@ -1962,7 +1963,7 @@ class AtlanClient(BaseSettings):
             events=events,
         )
 
-    @validate_arguments()
+    @validate_call()
     def find_personas_by_name(
         self,
         name: str,
@@ -2019,7 +2020,7 @@ class AtlanClient(BaseSettings):
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Purpose)]
 
-    @validate_arguments()
+    @validate_call()
     def find_glossary_by_name(
         self,
         name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
@@ -2040,11 +2041,15 @@ class AtlanClient(BaseSettings):
             query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
         )[0]
 
-    @validate_arguments()
+    @validate_call()
     def find_category_fast_by_name(
         self,
-        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
-        glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
+        glossary_qualified_name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
         attributes: Optional[list[StrictStr]] = None,
     ) -> list[AtlasGlossaryCategory]:
         """
@@ -2072,11 +2077,15 @@ class AtlanClient(BaseSettings):
             allow_multiple=True,
         )
 
-    @validate_arguments()
+    @validate_call()
     def find_category_by_name(
         self,
-        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
-        glossary_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
+        glossary_name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
         attributes: Optional[list[StrictStr]] = None,
     ) -> list[AtlasGlossaryCategory]:
         """
@@ -2132,11 +2141,15 @@ class AtlanClient(BaseSettings):
             "ATLAN-PYTHON-404-014",
         )
 
-    @validate_arguments()
+    @validate_call()
     def find_term_fast_by_name(
         self,
-        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
-        glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
+        glossary_qualified_name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """
@@ -2159,11 +2172,15 @@ class AtlanClient(BaseSettings):
             query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
         )[0]
 
-    @validate_arguments()
+    @validate_call()
     def find_term_by_name(
         self,
-        name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
-        glossary_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+        name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
+        glossary_name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
         """
@@ -2186,8 +2203,7 @@ class AtlanClient(BaseSettings):
         )
 
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing_extensions import Annotated
+from typing_extensions import Annotated  # noqa: E402
 
 from pyatlan.model.keycloak_events import (  # noqa: E402
     AdminEvent,

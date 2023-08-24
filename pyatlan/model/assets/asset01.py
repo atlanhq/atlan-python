@@ -29,6 +29,3 @@ class DataSet(Asset, type_name="DataSet"):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-DataSet.Attributes.update_forward_refs()

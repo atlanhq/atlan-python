@@ -1,4 +1,4 @@
-{%- macro gen_properties(attribute_defs) %}
+{%- macro gen_properties(entity_def, attribute_defs) %}
     _convenience_properties: ClassVar[list[str]] = [
         {%- for attribute_def in attribute_defs %}
         "{{ 'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case }}",
@@ -16,7 +16,7 @@
     @{{ property_name }}.setter
     def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes({% for parm_name in entity_def | get_attr_constructor_parms %}{{ parm_name }} = None,{% endfor %})
         self.attributes.{{ attribute_name }} = {{ property_name }}
 
     {%- endfor %}

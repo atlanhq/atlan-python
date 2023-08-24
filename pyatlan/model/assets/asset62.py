@@ -2254,30 +2254,3 @@ class TableauWorksheet(Tableau):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
-
-
-TableauWorkbook.Attributes.update_forward_refs()
-
-
-TableauDatasourceField.Attributes.update_forward_refs()
-
-
-TableauCalculatedField.Attributes.update_forward_refs()
-
-
-TableauProject.Attributes.update_forward_refs()
-
-
-TableauSite.Attributes.update_forward_refs()
-
-
-TableauDatasource.Attributes.update_forward_refs()
-
-
-TableauDashboard.Attributes.update_forward_refs()
-
-
-TableauFlow.Attributes.update_forward_refs()
-
-
-TableauWorksheet.Attributes.update_forward_refs()

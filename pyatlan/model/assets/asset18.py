@@ -29,6 +29,3 @@ class BI(Catalog):
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
-
-
-BI.Attributes.update_forward_refs()
