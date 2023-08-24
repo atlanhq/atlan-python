@@ -305,8 +305,8 @@ class SigmaDataElement(Sigma):
     """
     TBC
     """
-    SIGMA_DATA_ELEMENT_TYPE: ClassVar[RelationField] = RelationField(
-        "sigmaDataElementType"
+    SIGMA_DATA_ELEMENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sigmaDataElementType", "sigmaDataElementType"
     )
     """
     TBC

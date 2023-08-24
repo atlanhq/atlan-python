@@ -407,13 +407,13 @@ def get_search_type(attr_def: dict[str, Any]) -> SearchType:
         else:
             base_type = get_base_type()
             # Default index
-            if config:
-                if analyzer := config.get("analyzer"):
-                    if analyzer == "atlan_text_analyzer":
-                        if attr_name.endswith(".stemmed"):
-                            searchable[IndexType.STEMMED] = attr_name
-                        else:
-                            searchable[IndexType.TEXT] = attr_name
+            if config and config.get("analyzer"):
+                analyzer = config.get("analyzer")
+                if analyzer == "atlan_text_analyzer":
+                    if attr_name.endswith(".stemmed"):
+                        searchable[IndexType.STEMMED] = attr_name
+                    else:
+                        searchable[IndexType.TEXT] = attr_name
             else:
                 def_index = get_default_index_for_type(base_type)
                 searchable[def_index] = attr_name

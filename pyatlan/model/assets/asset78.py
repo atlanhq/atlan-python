@@ -8,26 +8,26 @@ from typing import ClassVar
 
 from pydantic import Field, validator
 
-from .asset73 import QlikSpace
+from .asset76 import KafkaTopic
 
 
-class QlikStream(QlikSpace):
+class AzureEventHub(KafkaTopic):
     """Description"""
 
-    type_name: str = Field("QlikStream", allow_mutation=False)
+    type_name: str = Field("AzureEventHub", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QlikStream":
-            raise ValueError("must be QlikStream")
+        if v != "AzureEventHub":
+            raise ValueError("must be AzureEventHub")
         return v
 
     def __setattr__(self, name, value):
-        if name in QlikStream._convenience_properties:
+        if name in AzureEventHub._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
 
 
-QlikStream.Attributes.update_forward_refs()
+AzureEventHub.Attributes.update_forward_refs()

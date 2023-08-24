@@ -149,13 +149,6 @@ class SourceTagAttachment(AtlanObject):
     )
 
 
-class AzureTag(AtlanObject):
-    """Description"""
-
-    azure_tag_key: "str" = Field(None, description="", alias="azureTagKey")
-    azure_tag_value: "str" = Field(None, description="", alias="azureTagValue")
-
-
 class StarredDetails(AtlanObject):
     """Description"""
 
@@ -165,6 +158,13 @@ class StarredDetails(AtlanObject):
     asset_starred_at: Optional["datetime"] = Field(
         None, description="", alias="assetStarredAt"
     )
+
+
+class AzureTag(AtlanObject):
+    """Description"""
+
+    azure_tag_key: "str" = Field(None, description="", alias="azureTagKey")
+    azure_tag_value: "str" = Field(None, description="", alias="azureTagValue")
 
 
 class AuthPolicyCondition(AtlanObject):

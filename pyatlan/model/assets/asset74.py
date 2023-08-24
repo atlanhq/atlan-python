@@ -11,6 +11,7 @@ from pydantic import Field, validator
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
     TextField,
@@ -183,7 +184,9 @@ class SalesforceField(Salesforce):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    DATA_TYPE: ClassVar[TextField] = TextField("dataType", "dataType.text")
+    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "dataType", "dataType", "dataType.text"
+    )
     """
     data type of the field
     """

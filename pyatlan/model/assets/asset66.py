@@ -14,7 +14,6 @@ from pyatlan.model.fields.atlan_fields import (
     KeywordTextField,
     NumericField,
     RelationField,
-    TextField,
 )
 
 from .asset41 import Redash
@@ -66,8 +65,10 @@ class RedashQuery(Redash):
     """
     Time when the Redash Query was last executed
     """
-    REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[TextField] = TextField(
-        "redashQueryScheduleHumanized", "redashQueryScheduleHumanized.text"
+    REDASH_QUERY_SCHEDULE_HUMANIZED: ClassVar[KeywordTextField] = KeywordTextField(
+        "redashQueryScheduleHumanized",
+        "redashQueryScheduleHumanized",
+        "redashQueryScheduleHumanized.text",
     )
     """
     Query schedule for overview tab and filtering.
@@ -236,8 +237,8 @@ class RedashVisualization(Redash):
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    REDASH_VISUALIZATION_TYPE: ClassVar[RelationField] = RelationField(
-        "redashVisualizationType"
+    REDASH_VISUALIZATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "redashVisualizationType", "redashVisualizationType"
     )
     """
     Redash Visualization Type
