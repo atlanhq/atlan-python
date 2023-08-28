@@ -42,7 +42,6 @@ def database(
 def test_append_terms_with_guid(
     client: AtlanClient, term1: AtlasGlossaryTerm, database: Database
 ):
-
     assert (
         database := client.append_terms(
             guid=database.guid, asset_type=Database, terms=[term1]
@@ -59,7 +58,6 @@ def test_append_terms_with_qualified_name(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term1]
@@ -76,7 +74,6 @@ def test_append_terms_using_ref_by_guid_for_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name,
@@ -130,7 +127,6 @@ def test_replace_all_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name,
@@ -161,7 +157,6 @@ def test_remove_term(
     term2: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name,

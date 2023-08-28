@@ -161,7 +161,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = S3Object.create_for_modification(
         qualified_name=S3_OBJECT_QUALIFIED_NAME, name=S3_OBJECT_NAME
     )
@@ -171,7 +170,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = S3Object.create_for_modification(
         qualified_name=S3_OBJECT_QUALIFIED_NAME, name=S3_OBJECT_NAME
     ).trim_to_required()

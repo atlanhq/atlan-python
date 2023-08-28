@@ -294,7 +294,7 @@ class Referenceable(AtlanObject):
 class Asset(Referenceable):
     """Description"""
 
-    _subtypes_: dict[str, type] = dict()
+    _subtypes_: ClassVar[dict[str, type]] = dict()
 
     def __init_subclass__(cls, type_name=None):
         cls._subtypes_[type_name or cls.__name__.lower()] = cls

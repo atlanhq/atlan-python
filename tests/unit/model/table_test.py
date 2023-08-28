@@ -28,7 +28,6 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 def test_create():
-
     sut = Table.create(name=TABLE_NAME, schema_qualified_name=SCHEMA_QUALIFIED_NAME)
 
     assert sut.name == TABLE_NAME
@@ -52,13 +51,11 @@ def test_create():
 def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
-
     with pytest.raises(ValueError, match=message):
         Table.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-
     sut = Table.create_for_modification(
         qualified_name=TABLE_QUALIFIED_NAME, name=TABLE_NAME
     )
@@ -68,7 +65,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Table.create_for_modification(
         qualified_name=TABLE_QUALIFIED_NAME, name=TABLE_NAME
     ).trim_to_required()

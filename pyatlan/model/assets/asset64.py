@@ -117,7 +117,7 @@ class LookerLook(Looker):
         "source_last_viewed_at",
         "source_content_metadata_id",
         "source_query_id",
-        "model_name",
+        "mdel_name",
         "query",
         "folder",
         "tile",
@@ -216,14 +216,14 @@ class LookerLook(Looker):
         self.attributes.source_query_id = source_query_id
 
     @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
+    def mdel_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mdel_name
 
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
+    @mdel_name.setter
+    def mdel_name(self, mdel_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
+        self.attributes.mdel_name = mdel_name
 
     @property
     def query(self) -> Optional[LookerQuery]:
@@ -308,7 +308,7 @@ class LookerLook(Looker):
             default=None, description="", alias="sourceQueryId"
         )
 
-        model_name: Optional[str] = Field(
+        mdel_name: Optional[str] = Field(
             default=None, description="", alias="modelName"
         )
 
@@ -1141,7 +1141,7 @@ class LookerExplore(Looker):
 
     _convenience_properties: ClassVar[list[str]] = [
         "project_name",
-        "model_name",
+        "mdel_name",
         "source_connection_name",
         "view_name",
         "sql_table_name",
@@ -1161,14 +1161,14 @@ class LookerExplore(Looker):
         self.attributes.project_name = project_name
 
     @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
+    def mdel_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mdel_name
 
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
+    @mdel_name.setter
+    def mdel_name(self, mdel_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
+        self.attributes.mdel_name = mdel_name
 
     @property
     def source_connection_name(self) -> Optional[str]:
@@ -1237,7 +1237,7 @@ class LookerExplore(Looker):
             default=None, description="", alias="projectName"
         )
 
-        model_name: Optional[str] = Field(
+        mdel_name: Optional[str] = Field(
             default=None, description="", alias="modelName"
         )
 
@@ -1624,7 +1624,7 @@ class LookerField(Looker):
         "project_name",
         "looker_explore_qualified_name",
         "looker_view_qualified_name",
-        "model_name",
+        "mdel_name",
         "source_definition",
         "looker_field_data_type",
         "looker_times_used",
@@ -1675,14 +1675,14 @@ class LookerField(Looker):
         self.attributes.looker_view_qualified_name = looker_view_qualified_name
 
     @property
-    def model_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.model_name
+    def mdel_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.mdel_name
 
-    @model_name.setter
-    def model_name(self, model_name: Optional[str]):
+    @mdel_name.setter
+    def mdel_name(self, mdel_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.model_name = model_name
+        self.attributes.mdel_name = mdel_name
 
     @property
     def source_definition(self) -> Optional[str]:
@@ -1769,7 +1769,7 @@ class LookerField(Looker):
             default=None, description="", alias="lookerViewQualifiedName"
         )
 
-        model_name: Optional[str] = Field(
+        mdel_name: Optional[str] = Field(
             default=None, description="", alias="modelName"
         )
 

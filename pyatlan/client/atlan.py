@@ -12,7 +12,16 @@ import os
 import time
 import uuid
 from abc import ABC
-from typing import ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
+from typing import (
+    Annotated,
+    ClassVar,
+    Generator,
+    Iterable,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import requests
 from pydantic import (
@@ -2202,8 +2211,6 @@ class AtlanClient(BaseSettings):
             attributes=attributes,
         )
 
-
-from typing_extensions import Annotated  # noqa: E402
 
 from pyatlan.model.keycloak_events import (  # noqa: E402
     AdminEvent,

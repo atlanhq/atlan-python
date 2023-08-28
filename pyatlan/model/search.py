@@ -126,7 +126,7 @@ class Query(ABC):
         ...
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class MatchAll(Query):
     type_name: Literal["match_all"] = "match_all"
     boost: Optional[float] = None
@@ -152,7 +152,7 @@ class MatchAll(Query):
 EMPTY_QUERY = MatchAll()
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class MatchNone(Query):
     type_name: Literal["match_none"] = "match_none"
 
@@ -173,7 +173,7 @@ class MatchNone(Query):
         return {"match_none": {}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Exists(Query):
     field: str
     type_name: Literal["exists"] = "exists"
@@ -338,7 +338,7 @@ class Exists(Query):
         return {self.type_name: {"field": self.field}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Term(Query):
     field: str
     value: SearchFieldType
@@ -380,7 +380,10 @@ class Term(Query):
     @classmethod
     @validate_call()
     def with_glossary(
-        cls, qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)]  # type: ignore
+        cls,
+        qualified_name: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
     ):
         return cls(field=TermAttributes.GLOSSARY.value, value=qualified_name)
 
@@ -413,7 +416,12 @@ class Term(Query):
 
     @classmethod
     @validate_call()
-    def with_name(cls, value: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)]):  # type: ignore
+    def with_name(
+        cls,
+        value: Annotated[
+            str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+        ],
+    ):
         return cls(field=TermAttributes.NAME.value, value=value)
 
     @classmethod
@@ -492,7 +500,7 @@ class Terms(Query):
         return {self.type_name: terms}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Bool(Query):
     must: list[Query] = Field(default_factory=list)
     should: list[Query] = Field(default_factory=list)
@@ -619,7 +627,7 @@ class Bool(Query):
         return {"bool": clauses}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Prefix(Query):
     field: str
     value: SearchFieldType
@@ -712,7 +720,7 @@ class Prefix(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Range(Query):
     field: str
     gt: Optional[SearchFieldType] = None
@@ -877,7 +885,7 @@ class Range(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Wildcard(Query):
     field: str
     value: StrictStr
@@ -968,7 +976,7 @@ class Wildcard(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Regexp(Query):
     field: str
     value: StrictStr
@@ -1062,7 +1070,7 @@ class Regexp(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Fuzzy(Query):
     field: str
     value: StrictStr
@@ -1382,7 +1390,7 @@ class Fuzzy(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class Match(Query):
     field: str
     query: StrictStr
@@ -1758,7 +1766,7 @@ class Match(Query):
         return {self.type_name: {self.field: parameters}}
 
 
-@dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
+@dataclass(config=ConfigDict(extra="forbid"))  # type: ignore
 class SortItem:
     field: StrictStr
     order: Optional[SortOrder] = None
@@ -1827,8 +1835,12 @@ def with_active_glossary(name: StrictStr) -> "Bool":
 
 
 def with_active_category(
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
-    glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+    name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+    ],
+    glossary_qualified_name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+    ],
 ) -> Bool:
     return (
         Term.with_state("ACTIVE")
@@ -1839,8 +1851,12 @@ def with_active_category(
 
 
 def with_active_term(
-    name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
-    glossary_qualified_name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)],  # type: ignore
+    name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+    ],
+    glossary_qualified_name: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, strict=True)
+    ],
 ) -> Bool:
     return (
         Term.with_state("ACTIVE")

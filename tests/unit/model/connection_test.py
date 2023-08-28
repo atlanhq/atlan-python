@@ -127,7 +127,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = Connection.create_for_modification(
         qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
     )
@@ -137,7 +136,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Connection.create_for_modification(
         qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
     ).trim_to_required()
