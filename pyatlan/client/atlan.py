@@ -675,7 +675,10 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(GET_GROUPS.format_path_with_params(), query_params)
         return GroupResponse(**raw_json)
 
-    def get_all_groups(self) -> list[AtlanGroup]:
+    def get_all_groups(
+        self,
+        limit: int = 20,
+    ) -> list[AtlanGroup]:
         """
         Retrieve all groups defined in Atlan.
 
@@ -683,7 +686,6 @@ class AtlanClient(BaseSettings):
         """
         groups: list[AtlanGroup] = []
         offset = 0
-        limit = 100
         response: Optional[GroupResponse] = self.get_groups(
             offset=offset, limit=limit, sort="createdAt"
         )
@@ -697,7 +699,9 @@ class AtlanClient(BaseSettings):
         return groups
 
     def get_group_by_name(
-        self, alias: str, limit: int = 100
+        self,
+        alias: str,
+        limit: int = 20,
     ) -> Optional[list[AtlanGroup]]:
         """
         Retrieve all groups with a name that contains the provided string.
@@ -896,7 +900,10 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(GET_USERS.format_path_with_params(), query_params)
         return UserResponse(**raw_json)
 
-    def get_all_users(self) -> list[AtlanUser]:
+    def get_all_users(
+        self,
+        limit: int = 20,
+    ) -> list[AtlanUser]:
         """
         Retrieve all users defined in Atlan.
 
@@ -904,7 +911,6 @@ class AtlanClient(BaseSettings):
         """
         users: list[AtlanUser] = []
         offset = 0
-        limit = 100
         response: Optional[UserResponse] = self.get_users(
             offset=offset, limit=limit, sort="username"
         )
@@ -918,7 +924,9 @@ class AtlanClient(BaseSettings):
         return users
 
     def get_users_by_email(
-        self, email: str, limit: int = 100
+        self,
+        email: str,
+        limit: int = 20,
     ) -> Optional[list[AtlanUser]]:
         """
         Retrieves all users with email addresses that contain the provided email.
