@@ -37,11 +37,13 @@ from pyatlan.client.constants import (
     CREATE_GROUP,
     CREATE_TYPE_DEFS,
     CREATE_USERS,
+    DELETE_API_TOKEN,
     DELETE_ENTITIES_BY_GUIDS,
     DELETE_ENTITY_BY_ATTRIBUTE,
     DELETE_GROUP,
     DELETE_TYPE_DEF_BY_NAME,
     GET_ALL_TYPE_DEFS,
+    GET_API_TOKENS,
     GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
@@ -62,9 +64,11 @@ from pyatlan.client.constants import (
     UPDATE_TYPE_DEFS,
     UPDATE_USER,
     UPLOAD_IMAGE,
+    UPSERT_API_TOKEN,
 )
 from pyatlan.error import AtlanError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
+from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -876,7 +880,7 @@ class AtlanClient(BaseSettings):
         :param post_filter: which users to retrieve
         :param sort: property by which to sort the results
         :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting ponit for results to return, for paging
+        :param offset: starting point for results to return, for paging
         :returns: a list of users that match the provided criteria
         """
         query_params: dict[str, str] = {
@@ -1910,6 +1914,132 @@ class AtlanClient(BaseSettings):
             has_more=has_more,
             assets=assets,
         )
+
+    def get_api_tokens(
+        self,
+        limit: Optional[int] = None,
+        post_filter: Optional[str] = None,
+        sort: Optional[str] = None,
+        count: bool = True,
+        offset: int = 0,
+    ) -> ApiTokenResponse:
+        """
+        Retrieves a list of API tokens defined in Atlan.
+
+        :param limit: maximum number of results to be returned
+        :param post_filter: which API tokens to retrieve
+        :param sort: property by which to sort the results
+        :param count: whether to return the total number of records (True) or not (False)
+        :param offset: starting point for results to return, for paging
+        :returns: a list of API tokens that match the provided criteria
+        """
+        query_params: dict[str, str] = {
+            "count": str(count),
+            "offset": str(offset),
+        }
+        if limit is not None:
+            query_params["limit"] = str(limit)
+        if post_filter is not None:
+            query_params["filter"] = post_filter
+        if sort is not None:
+            query_params["sort"] = sort
+        raw_json = self._call_api(
+            GET_API_TOKENS.format_path_with_params(), query_params
+        )
+        return ApiTokenResponse(**raw_json)
+
+    def get_api_token_by_name(self, display_name: str) -> Optional[ApiToken]:
+        """
+        Retrieves the API token with a name that exactly matches the provided string.
+
+        :param display_name: name (as it appears in the UI) by which to retrieve the API token
+        :returns: the API token whose name (in the UI) matches the provided string, or None if there is none
+        """
+        if response := self.get_api_tokens(
+            offset=0,
+            limit=5,
+            post_filter='{"displayName":"' + display_name + '"}',
+        ):
+            if response.records and len(response.records) >= 1:
+                return response.records[0]
+        return None
+
+    def get_api_token_by_id(self, client_id: str) -> Optional[ApiToken]:
+        """
+        Retrieves the API token with a client ID that exactly matches the provided string.
+
+        :param client_id: unique client identifier by which to retrieve the API token
+        :returns: the API token whose clientId matches the provided string, or None if there is none
+        """
+        if response := self.get_api_tokens(
+            offset=0,
+            limit=5,
+            post_filter='{"clientId":"' + client_id + '"}',
+        ):
+            if response.records and len(response.records) >= 1:
+                return response.records[0]
+        return None
+
+    def create_api_token(
+        self,
+        display_name: str,
+        description: str = "",
+        personas: Optional[set[str]] = None,
+        validity_seconds: int = -1,
+    ) -> ApiToken:
+        """
+        Create a new API token with the provided settings.
+
+        :param display_name: human-readable name for the API token
+        :param description: optional explanation of the API token
+        :param personas: unique identifiers (GUIDs) of personas that should  be linked to the token
+        :param validity_seconds: time in seconds after which the token should expire (negative numbers are treated as
+                                 infinite)
+        :returns: the created API token
+        """
+        request = ApiTokenRequest(
+            display_name=display_name,
+            description=description,
+            personas=personas,
+            validity_seconds=validity_seconds,
+        )
+        raw_json = self._call_api(UPSERT_API_TOKEN, request_obj=request)
+        return ApiToken(**raw_json)
+
+    def update_api_token(
+        self,
+        guid: str,
+        display_name: str,
+        description: str = "",
+        personas: Optional[set[str]] = None,
+    ) -> ApiToken:
+        """
+        Update an existing API token with the provided settings.
+
+        :param guid: unique identifier (GUID) of the API token
+        :param display_name: human-readable name for the API token
+        :param description: optional explanation of the API token
+        :param personas: unique identifiers (GUIDs) of personas that should  be linked to the token
+        :returns: the created API token
+        """
+        request = ApiTokenRequest(
+            display_name=display_name,
+            description=description,
+            personas=personas,
+            validity_seconds=None,
+        )
+        raw_json = self._call_api(
+            UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request
+        )
+        return ApiToken(**raw_json)
+
+    def purge_api_token(self, guid: str) -> None:
+        """
+        Delete (purge) the specified API token.
+
+        :param guid: unique identifier (GUID) of the API token to delete
+        """
+        self._call_api(DELETE_API_TOKEN.format_path_with_params(guid))
 
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
