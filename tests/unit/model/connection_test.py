@@ -105,6 +105,7 @@ def test_create(
     )
 
     assert sut.name == name
+    assert sut.qualified_name
     assert sut.qualified_name[:20] == connector_type.to_qualified_name()[:20]
     assert sut.connector_name == connector_type.value
     assert sut.admin_users == set(admin_users)
@@ -127,7 +128,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = Connection.create_for_modification(
         qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
     )
@@ -137,7 +137,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Connection.create_for_modification(
         qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
     ).trim_to_required()

@@ -74,6 +74,7 @@ def schema(
     connection: Connection,
     database: Database,
 ) -> Generator[Schema, None, None]:
+    assert database.qualified_name
     to_create = Schema.create(
         name=SCHEMA_NAME, database_qualified_name=database.qualified_name
     )
@@ -90,6 +91,7 @@ def table(
     database: Database,
     schema: Schema,
 ) -> Generator[Table, None, None]:
+    assert schema.qualified_name
     to_create = Table.create(
         name=TABLE_NAME, schema_qualified_name=schema.qualified_name
     )
@@ -106,6 +108,7 @@ def mview(
     database: Database,
     schema: Schema,
 ) -> Generator[MaterialisedView, None, None]:
+    assert schema.qualified_name
     to_create = MaterialisedView.create(
         name=MVIEW_NAME, schema_qualified_name=schema.qualified_name
     )
@@ -122,6 +125,7 @@ def view(
     database: Database,
     schema: Schema,
 ) -> Generator[View, None, None]:
+    assert schema.qualified_name
     to_create = View.create(name=VIEW_NAME, schema_qualified_name=schema.qualified_name)
     result = client.save(to_create)
     v = result.assets_created(asset_type=View)[0]
@@ -137,6 +141,7 @@ def column1(
     schema: Schema,
     table: Table,
 ) -> Generator[Column, None, None]:
+    assert table.qualified_name
     to_create = Column.create(
         name=COLUMN_NAME1,
         parent_type=Table,
@@ -157,6 +162,7 @@ def column2(
     schema: Schema,
     table: Table,
 ) -> Generator[Column, None, None]:
+    assert table.qualified_name
     to_create = Column.create(
         name=COLUMN_NAME2,
         parent_type=Table,
@@ -177,6 +183,7 @@ def column3(
     schema: Schema,
     mview: MaterialisedView,
 ) -> Generator[Column, None, None]:
+    assert mview.qualified_name
     to_create = Column.create(
         name=COLUMN_NAME3,
         parent_type=MaterialisedView,
@@ -197,6 +204,7 @@ def column4(
     schema: Schema,
     mview: MaterialisedView,
 ) -> Generator[Column, None, None]:
+    assert mview.qualified_name
     to_create = Column.create(
         name=COLUMN_NAME4,
         parent_type=MaterialisedView,
@@ -217,6 +225,7 @@ def column5(
     schema: Schema,
     view: View,
 ) -> Generator[Column, None, None]:
+    assert view.qualified_name
     to_create = Column.create(
         name=COLUMN_NAME5,
         parent_type=View,
@@ -237,6 +246,7 @@ def column6(
     schema: Schema,
     view: View,
 ) -> Generator[Column, None, None]:
+    assert view.qualified_name
     to_create = Column.create(
         name=COLUMN_NAME6,
         parent_type=View,
@@ -260,6 +270,7 @@ def lineage_start(
     view: View,
 ) -> Generator[Process, None, None]:
     process_name = f"{table.name} >> {mview.name}"
+    assert connection.qualified_name
     to_create = Process.create(
         name=process_name,
         connection_qualified_name=connection.qualified_name,
@@ -309,6 +320,7 @@ def lineage_end(
     view: View,
 ) -> Generator[Process, None, None]:
     process_name = f"{mview.name} >> {view.name}"
+    assert connection.qualified_name
     to_create = Process.create(
         name=process_name,
         connection_qualified_name=connection.qualified_name,
@@ -605,6 +617,7 @@ def test_search_by_lineage(
     be_active = Term.with_state("ACTIVE")
     have_lineage = Term.with_has_lineage(True)
     be_a_sql_type = Term.with_super_type_names("SQL")
+    assert connection.qualified_name
     with_qn_prefix = Prefix.with_qualified_name(connection.qualified_name)
     query = Bool(must=[be_active, have_lineage, be_a_sql_type, with_qn_prefix])
     dsl = DSL(query=query)
@@ -682,6 +695,8 @@ def test_restore_lineage(
     lineage_start: Process,
     lineage_end: Process,
 ):
+    assert lineage_start.qualified_name
+    assert lineage_start.name
     to_restore = Process.create_for_modification(
         lineage_start.qualified_name, lineage_start.name
     )

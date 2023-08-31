@@ -42,7 +42,6 @@ def database(
 def test_append_terms_with_guid(
     client: AtlanClient, term1: AtlasGlossaryTerm, database: Database
 ):
-
     assert (
         database := client.append_terms(
             guid=database.guid, asset_type=Database, terms=[term1]
@@ -59,7 +58,6 @@ def test_append_terms_with_qualified_name(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term1]
@@ -76,7 +74,6 @@ def test_append_terms_using_ref_by_guid_for_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name,
@@ -130,7 +127,6 @@ def test_replace_all_term(
     term1: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name,
@@ -161,7 +157,6 @@ def test_remove_term(
     term2: AtlasGlossaryTerm,
     database: Database,
 ):
-
     assert (
         database := client.append_terms(
             qualified_name=database.qualified_name,
@@ -238,7 +233,7 @@ def test_upsert_when_no_changes(client: AtlanClient, glossary: AtlasGlossary):
 
 
 def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
-    qualified_name = glossary.qualified_name
+    qualified_name = glossary.qualified_name or ""
     glossary = client.get_asset_by_qualified_name(
         qualified_name=qualified_name, asset_type=AtlasGlossary
     )
@@ -246,6 +241,7 @@ def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
 
 
 def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name
     client.add_atlan_tags(
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
@@ -258,6 +254,7 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 
 @pytest.mark.order(after="test_add_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
+    assert term1.qualified_name
     client.remove_atlan_tag(
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
@@ -266,6 +263,8 @@ def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 
 
 def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
+    assert glossary.qualified_name
+    assert glossary.name
     message = "An important message"
     client.update_certificate(
         asset_type=AtlasGlossary,
@@ -281,6 +280,8 @@ def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
 
 @pytest.mark.order(after="test_update_certificate")
 def test_remove_certificate(client: AtlanClient, glossary: AtlasGlossary):
+    assert glossary.qualified_name
+    assert glossary.name
     client.remove_certificate(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,
@@ -294,6 +295,8 @@ def test_remove_certificate(client: AtlanClient, glossary: AtlasGlossary):
 def test_update_announcement(
     client: AtlanClient, glossary: AtlasGlossary, announcement: Announcement
 ):
+    assert glossary.qualified_name
+    assert glossary.name
     client.update_announcement(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,
@@ -306,6 +309,8 @@ def test_update_announcement(
 
 @pytest.mark.order(after="test_update_certificate")
 def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
+    assert glossary.qualified_name
+    assert glossary.name
     client.remove_announcement(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,

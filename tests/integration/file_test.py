@@ -39,6 +39,7 @@ def connection(client: AtlanClient) -> Generator[Connection, None, None]:
 
 @pytest.fixture(scope="module")
 def file(client: AtlanClient, connection: Connection) -> Generator[File, None, None]:
+    assert connection.qualified_name
     to_create = File.create(
         name=FILE_NAME,
         connection_qualified_name=connection.qualified_name,
@@ -72,6 +73,8 @@ def test_update_file(
     connection: Connection,
     file: File,
 ):
+    assert file.qualified_name
+    assert file.name
     updated = client.update_certificate(
         qualified_name=file.qualified_name,
         name=file.name,
@@ -82,6 +85,8 @@ def test_update_file(
     assert updated
     assert updated.certificate_status == CERTIFICATE_STATUS
     assert updated.certificate_status_message == CERTIFICATE_MESSAGE
+    assert file.qualified_name
+    assert file.name
     updated = client.update_announcement(
         qualified_name=file.qualified_name,
         name=file.name,

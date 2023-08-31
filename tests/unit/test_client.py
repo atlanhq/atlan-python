@@ -406,7 +406,6 @@ def test_find_glossary_by_name_with_bad_values_raises_value_error(
 )
 @patch.object(AtlanClient, "search")
 def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
-
     mock_search.return_value.count = 0
 
     client = AtlanClient()
@@ -423,7 +422,6 @@ def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
 )
 @patch.object(AtlanClient, "search")
 def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_search):
-
     mock_search.return_value.count = 1
     mock_search.return_value.current_page.return_value = [Table()]
 
@@ -554,7 +552,6 @@ def test_find_category_fast_by_name_with_bad_values_raises_value_error(
 )
 @patch.object(AtlanClient, "search")
 def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_search):
-
     mock_search.return_value.count = 0
 
     client = AtlanClient()
@@ -575,7 +572,6 @@ def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_
 def test_find_category_fast_by_name_when_non_category_found_raises_not_found_error(
     mock_search,
 ):
-
     mock_search.return_value.count = 1
     mock_search.return_value.current_page.return_value = [Table()]
 
@@ -803,7 +799,6 @@ def test_find_term_fast_by_name_with_bad_values_raises_value_error(
 )
 @patch.object(AtlanClient, "search")
 def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_search):
-
     mock_search.return_value.count = 0
 
     client = AtlanClient()
@@ -824,7 +819,6 @@ def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_sear
 def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search,
 ):
-
     mock_search.return_value.count = 1
     mock_search.return_value.current_page.return_value = [Table()]
 

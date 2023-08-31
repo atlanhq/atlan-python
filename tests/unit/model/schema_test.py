@@ -33,7 +33,6 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 def test_create():
-
     sut = Schema.create(
         name=SCHEMA_NAME, database_qualified_name=DATABASE_QUALIFIED_NAME
     )
@@ -57,13 +56,11 @@ def test_create():
 def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
-
     with pytest.raises(ValueError, match=message):
         Schema.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-
     sut = Schema.create_for_modification(
         qualified_name=SCHEMA_QUALIFIED_NAME, name=SCHEMA_NAME
     )
@@ -73,7 +70,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Schema.create_for_modification(
         qualified_name=SCHEMA_QUALIFIED_NAME, name=SCHEMA_NAME
     ).trim_to_required()

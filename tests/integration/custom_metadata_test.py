@@ -755,6 +755,8 @@ def test_update_replacing_cm(
     raci[CM_ATTR_RACI_CONSULTED] = [group1.name]
     raci[CM_ATTR_RACI_INFORMED] = [group1.name, group2.name]
     raci[CM_ATTR_RACI_EXTRA] = "something extra..."
+    assert term.qualified_name
+    assert term.name
     to_update = AtlasGlossaryTerm.create_for_modification(
         qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
     )
@@ -768,6 +770,7 @@ def test_update_replacing_cm(
     assert isinstance(t, AtlasGlossaryTerm)
     assert t.guid == term.guid
     assert t.qualified_name == term.qualified_name
+    assert term.qualified_name
     x = client.get_asset_by_qualified_name(
         qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm
     )

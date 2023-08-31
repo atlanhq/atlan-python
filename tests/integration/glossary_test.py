@@ -174,6 +174,7 @@ def test_compound_queries(
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
 ):
+    assert glossary.qualified_name
     cq = (
         CompoundQuery()
         .where(CompoundQuery.active_assets())
@@ -185,6 +186,8 @@ def test_compound_queries(
     response = client.search(request)
     assert response
     assert response.count == 2
+    assert glossary.qualified_name
+    assert term2.name
 
     cq = (
         CompoundQuery()
@@ -206,6 +209,7 @@ def test_fluent_search(
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
 ):
+    assert glossary.qualified_name
     terms = (
         FluentSearch()
         .page_size(1)
@@ -230,7 +234,7 @@ def test_fluent_search(
     g_sorted.sort()
     assert guids_chained == g_sorted
 
-    terms = FluentSearch(
+    results = FluentSearch(
         _page_size=5,
         wheres=[
             CompoundQuery.active_assets(),
@@ -244,13 +248,14 @@ def test_fluent_search(
 
     guids_alt = []
     g_sorted = []
-    for asset in terms:
+    for asset in results:
         guids_alt.append(asset.guid)
         g_sorted.append(asset.guid)
     g_sorted.sort()
     assert g_sorted == guids_alt
+    assert glossary.qualified_name
 
-    terms = FluentSearch(
+    results = FluentSearch(
         _page_size=5,
         wheres=[
             CompoundQuery.active_assets(),
@@ -265,7 +270,7 @@ def test_fluent_search(
 
     names = []
     names_sorted = []
-    for asset in terms:
+    for asset in results:
         names.append(asset.name)
         names_sorted.append(asset.name)
     names_sorted.sort()

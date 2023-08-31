@@ -74,7 +74,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = S3Bucket.create_for_modification(
         qualified_name=S3_OBJECT_QUALIFIED_NAME, name=BUCKET_NAME
     )
@@ -84,7 +83,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = S3Bucket.create_for_modification(
         qualified_name=S3_OBJECT_QUALIFIED_NAME, name=BUCKET_NAME
     ).trim_to_required()

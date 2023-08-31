@@ -93,10 +93,11 @@ class TestConnection:
         self, client: AtlanClient, upsert: Callable[[Asset], AssetMutationResponse]
     ):
         assert TestConnection.connection
+        assert TestConnection.connection.name
         connection = TestConnection.connection
         description = f"{connection.description} more stuff"
         connection = Connection.create_for_modification(
-            qualified_name=TestConnection.connection.qualified_name,
+            qualified_name=TestConnection.connection.qualified_name or "",
             name=TestConnection.connection.name,
         )
         connection.description = description
@@ -124,6 +125,8 @@ class TestDatabase:
     ):
         assert TestConnection.connection
         connection = TestConnection.connection
+        assert connection
+        assert connection.qualified_name
         database_name = TestId.make_unique("My_Db")
         database = Database.create(
             name=database_name,
@@ -144,6 +147,8 @@ class TestDatabase:
         self, client, upsert: Callable[[Asset], AssetMutationResponse]
     ):
         assert TestDatabase.database
+        assert TestDatabase.database.qualified_name
+        assert TestDatabase.database.name
         database = Database.create_for_modification(
             qualified_name=TestDatabase.database.qualified_name,
             name=TestDatabase.database.name,
@@ -174,6 +179,7 @@ class TestSchema:
     ):
         schema_name = TestId.make_unique("My_Schema")
         assert TestDatabase.database is not None
+        assert TestDatabase.database.qualified_name
         schema = Schema.create(
             name=schema_name,
             database_qualified_name=TestDatabase.database.qualified_name,
@@ -197,6 +203,8 @@ class TestSchema:
     ):
         assert TestSchema.schema
         schema = TestSchema.schema
+        assert schema.qualified_name
+        assert schema.name
         description = f"{schema.description} more stuff"
         schema = Schema.create_for_modification(
             qualified_name=schema.qualified_name, name=schema.name
@@ -226,6 +234,7 @@ class TestTable:
     ):
         table_name = TestId.make_unique("My_Table")
         assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
         table = Table.create(
             name=table_name,
             schema_qualified_name=TestSchema.schema.qualified_name,
@@ -249,6 +258,8 @@ class TestTable:
     ):
         assert TestTable.table
         table = TestTable.table
+        assert table.qualified_name
+        assert table.name
         description = f"{table.description} more stuff"
         table = Table.create_for_modification(
             qualified_name=table.qualified_name, name=table.name
@@ -278,6 +289,7 @@ class TestView:
     ):
         view_name = TestId.make_unique("My_View")
         assert TestSchema.schema is not None
+        assert TestSchema.schema.qualified_name
         view = View.create(
             name=view_name,
             schema_qualified_name=TestSchema.schema.qualified_name,
@@ -297,6 +309,8 @@ class TestView:
     ):
         assert TestView.view
         view = TestView.view
+        assert view.qualified_name
+        assert view.name
         description = f"{view.description} more stuff"
         view = View.create_for_modification(
             qualified_name=view.qualified_name, name=view.name
@@ -326,6 +340,7 @@ class TestColumn:
     ):
         column_name = TestId.make_unique("My_Column")
         assert TestTable.table is not None
+        assert TestTable.table.qualified_name
         column = Column.create(
             name=column_name,
             parent_qualified_name=TestTable.table.qualified_name,
@@ -349,6 +364,8 @@ class TestColumn:
     ):
         assert TestColumn.column
         column = TestColumn.column
+        assert column.qualified_name
+        assert column.name
         description = f"{column.description} more stuff"
         column = Column.create_for_modification(
             qualified_name=column.qualified_name, name=column.name
@@ -392,6 +409,8 @@ class TestReadme:
     ):
         assert TestReadme.readme
         readme = TestReadme.readme
+        assert readme.qualified_name
+        assert readme.name
         description = f"{readme.description} more stuff"
         readme = Readme.create_for_modification(
             qualified_name=readme.qualified_name, name=readme.name

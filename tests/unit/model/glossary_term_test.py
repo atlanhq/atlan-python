@@ -123,10 +123,12 @@ def test_create(
         (anchor and sut.anchor == anchor)
         or (
             glossary_qualified_name
+            and sut.anchor is not None
+            and sut.anchor.unique_attributes is not None
             and sut.anchor.unique_attributes
             == {"qualifiedName": glossary_qualified_name}
         )
-        or (glossary_guid and sut.anchor.guid == glossary_guid)
+        or (glossary_guid and sut and sut.anchor and sut.anchor.guid == glossary_guid)
     )
 
 

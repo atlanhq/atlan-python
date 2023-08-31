@@ -1251,7 +1251,6 @@ def test_with_active_glossary_when_invalid_parameter_raises_value_error(name, me
 
 
 def test_with_active_glossary():
-
     sut = with_active_glossary(name=GLOSSARY_NAME)
 
     assert sut.filter
@@ -1301,7 +1300,6 @@ def test_with_active_category_when_invalid_parameter_raises_value_error(
 
 
 def test_with_active_category():
-
     sut = with_active_category(
         name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
     )
@@ -1356,7 +1354,6 @@ def test_with_active_term_when_invalid_parameter_raises_value_error(
 
 
 def test_with_active_term():
-
     sut = with_active_term(
         name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
     )
