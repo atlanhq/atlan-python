@@ -201,7 +201,7 @@ class Purpose(AccessControl):
     @purpose_atlan_tags.setter
     def purpose_atlan_tags(self, purpose_atlan_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
@@ -223,7 +223,9 @@ class Purpose(AccessControl):
             )
 
     attributes: "Purpose.Attributes" = Field(
-        default_factory=lambda: Purpose.Attributes(),
+        default_factory=lambda: Purpose.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

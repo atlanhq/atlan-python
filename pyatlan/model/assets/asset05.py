@@ -172,7 +172,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_type.setter
     def policy_type(self, policy_type: Optional[AuthPolicyType]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_type = policy_type
 
     @property
@@ -182,7 +182,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_service_name.setter
     def policy_service_name(self, policy_service_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_service_name = policy_service_name
 
     @property
@@ -192,7 +192,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_category.setter
     def policy_category(self, policy_category: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_category = policy_category
 
     @property
@@ -202,7 +202,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_sub_category.setter
     def policy_sub_category(self, policy_sub_category: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_sub_category = policy_sub_category
 
     @property
@@ -212,7 +212,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_users.setter
     def policy_users(self, policy_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_users = policy_users
 
     @property
@@ -222,7 +222,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_groups.setter
     def policy_groups(self, policy_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_groups = policy_groups
 
     @property
@@ -232,7 +232,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_roles.setter
     def policy_roles(self, policy_roles: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_roles = policy_roles
 
     @property
@@ -242,7 +242,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_actions.setter
     def policy_actions(self, policy_actions: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_actions = policy_actions
 
     @property
@@ -252,7 +252,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_resources.setter
     def policy_resources(self, policy_resources: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_resources = policy_resources
 
     @property
@@ -266,7 +266,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_resource_category.setter
     def policy_resource_category(self, policy_resource_category: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_resource_category = policy_resource_category
 
     @property
@@ -276,7 +276,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_priority.setter
     def policy_priority(self, policy_priority: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_priority = policy_priority
 
     @property
@@ -286,7 +286,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @is_policy_enabled.setter
     def is_policy_enabled(self, is_policy_enabled: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.is_policy_enabled = is_policy_enabled
 
     @property
@@ -296,7 +296,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_mask_type.setter
     def policy_mask_type(self, policy_mask_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_mask_type = policy_mask_type
 
     @property
@@ -312,7 +312,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
         self, policy_validity_schedule: Optional[list[AuthPolicyValiditySchedule]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_validity_schedule = policy_validity_schedule
 
     @property
@@ -326,7 +326,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_resource_signature.setter
     def policy_resource_signature(self, policy_resource_signature: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_resource_signature = policy_resource_signature
 
     @property
@@ -338,7 +338,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_delegate_admin.setter
     def policy_delegate_admin(self, policy_delegate_admin: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_delegate_admin = policy_delegate_admin
 
     @property
@@ -348,7 +348,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @policy_conditions.setter
     def policy_conditions(self, policy_conditions: Optional[list[AuthPolicyCondition]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policy_conditions = policy_conditions
 
     @property
@@ -358,7 +358,7 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
     @access_control.setter
     def access_control(self, access_control: Optional[AccessControl]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.access_control = access_control
 
     class Attributes(Asset.Attributes):
@@ -426,7 +426,9 @@ class AuthPolicy(Asset, type_name="AuthPolicy"):
             )
 
     attributes: "AuthPolicy.Attributes" = Field(
-        default_factory=lambda: AuthPolicy.Attributes(),
+        default_factory=lambda: AuthPolicy.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -495,7 +497,7 @@ class AccessControl(Asset, type_name="AccessControl"):
     @is_access_control_enabled.setter
     def is_access_control_enabled(self, is_access_control_enabled: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.is_access_control_enabled = is_access_control_enabled
 
     @property
@@ -511,7 +513,7 @@ class AccessControl(Asset, type_name="AccessControl"):
         self, deny_custom_metadata_guids: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.deny_custom_metadata_guids = deny_custom_metadata_guids
 
     @property
@@ -521,7 +523,7 @@ class AccessControl(Asset, type_name="AccessControl"):
     @deny_asset_tabs.setter
     def deny_asset_tabs(self, deny_asset_tabs: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.deny_asset_tabs = deny_asset_tabs
 
     @property
@@ -531,7 +533,7 @@ class AccessControl(Asset, type_name="AccessControl"):
     @channel_link.setter
     def channel_link(self, channel_link: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.channel_link = channel_link
 
     @property
@@ -541,7 +543,7 @@ class AccessControl(Asset, type_name="AccessControl"):
     @policies.setter
     def policies(self, policies: Optional[list[AuthPolicy]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.policies = policies
 
     class Attributes(Asset.Attributes):
@@ -560,7 +562,9 @@ class AccessControl(Asset, type_name="AccessControl"):
         )  # relationship
 
     attributes: "AccessControl.Attributes" = Field(
-        default_factory=lambda: AccessControl.Attributes(),
+        default_factory=lambda: AccessControl.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

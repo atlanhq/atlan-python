@@ -77,7 +77,7 @@ class MicroStrategyReport(MicroStrategy):
     @micro_strategy_report_type.setter
     def micro_strategy_report_type(self, micro_strategy_report_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_report_type = micro_strategy_report_type
 
     @property
@@ -91,7 +91,7 @@ class MicroStrategyReport(MicroStrategy):
         self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
@@ -105,7 +105,7 @@ class MicroStrategyReport(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     @property
@@ -121,7 +121,7 @@ class MicroStrategyReport(MicroStrategy):
         self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
@@ -139,7 +139,9 @@ class MicroStrategyReport(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyReport.Attributes" = Field(
-        default_factory=lambda: MicroStrategyReport.Attributes(),
+        default_factory=lambda: MicroStrategyReport.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -228,7 +230,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_reports = micro_strategy_reports
 
     @property
@@ -240,7 +242,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
@@ -254,7 +256,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
@@ -272,7 +274,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
     @property
@@ -288,7 +290,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_documents: Optional[list[MicroStrategyDocument]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_documents = micro_strategy_documents
 
     @property
@@ -300,7 +302,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_cubes = micro_strategy_cubes
 
     @property
@@ -314,7 +316,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_dossiers: Optional[list[MicroStrategyDossier]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_dossiers = micro_strategy_dossiers
 
     @property
@@ -330,7 +332,7 @@ class MicroStrategyProject(MicroStrategy):
         self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
@@ -362,7 +364,9 @@ class MicroStrategyProject(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyProject.Attributes" = Field(
-        default_factory=lambda: MicroStrategyProject.Attributes(),
+        default_factory=lambda: MicroStrategyProject.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -512,7 +516,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_metric_expression: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metric_expression = (
             micro_strategy_metric_expression
         )
@@ -530,7 +534,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_attribute_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attribute_qualified_names = (
             micro_strategy_attribute_qualified_names
         )
@@ -548,7 +552,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_attribute_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attribute_names = micro_strategy_attribute_names
 
     @property
@@ -564,7 +568,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_fact_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_fact_qualified_names = (
             micro_strategy_fact_qualified_names
         )
@@ -580,7 +584,7 @@ class MicroStrategyMetric(MicroStrategy):
     @micro_strategy_fact_names.setter
     def micro_strategy_fact_names(self, micro_strategy_fact_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_fact_names = micro_strategy_fact_names
 
     @property
@@ -596,7 +600,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_metric_parent_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metric_parent_qualified_names = (
             micro_strategy_metric_parent_qualified_names
         )
@@ -614,7 +618,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_metric_parent_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metric_parent_names = (
             micro_strategy_metric_parent_names
         )
@@ -632,7 +636,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_metric_parents: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metric_parents = micro_strategy_metric_parents
 
     @property
@@ -644,7 +648,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_facts: Optional[list[MicroStrategyFact]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_facts = micro_strategy_facts
 
     @property
@@ -658,7 +662,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_reports = micro_strategy_reports
 
     @property
@@ -670,7 +674,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_cubes = micro_strategy_cubes
 
     @property
@@ -686,7 +690,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_metric_children: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metric_children = micro_strategy_metric_children
 
     @property
@@ -700,7 +704,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     @property
@@ -716,7 +720,7 @@ class MicroStrategyMetric(MicroStrategy):
         self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
@@ -764,7 +768,9 @@ class MicroStrategyMetric(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyMetric.Attributes" = Field(
-        default_factory=lambda: MicroStrategyMetric.Attributes(),
+        default_factory=lambda: MicroStrategyMetric.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -837,7 +843,7 @@ class MicroStrategyCube(MicroStrategy):
     @micro_strategy_cube_type.setter
     def micro_strategy_cube_type(self, micro_strategy_cube_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_cube_type = micro_strategy_cube_type
 
     @property
@@ -851,7 +857,7 @@ class MicroStrategyCube(MicroStrategy):
     @micro_strategy_cube_query.setter
     def micro_strategy_cube_query(self, micro_strategy_cube_query: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_cube_query = micro_strategy_cube_query
 
     @property
@@ -865,7 +871,7 @@ class MicroStrategyCube(MicroStrategy):
         self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
@@ -879,7 +885,7 @@ class MicroStrategyCube(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     @property
@@ -895,7 +901,7 @@ class MicroStrategyCube(MicroStrategy):
         self, micro_strategy_attributes: Optional[list[MicroStrategyAttribute]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attributes = micro_strategy_attributes
 
     class Attributes(MicroStrategy.Attributes):
@@ -916,7 +922,9 @@ class MicroStrategyCube(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyCube.Attributes" = Field(
-        default_factory=lambda: MicroStrategyCube.Attributes(),
+        default_factory=lambda: MicroStrategyCube.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -977,7 +985,7 @@ class MicroStrategyDossier(MicroStrategy):
         self, micro_strategy_dossier_chapter_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_dossier_chapter_names = (
             micro_strategy_dossier_chapter_names
         )
@@ -997,7 +1005,7 @@ class MicroStrategyDossier(MicroStrategy):
         self, micro_strategy_visualizations: Optional[list[MicroStrategyVisualization]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_visualizations = micro_strategy_visualizations
 
     @property
@@ -1011,7 +1019,7 @@ class MicroStrategyDossier(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
@@ -1028,7 +1036,9 @@ class MicroStrategyDossier(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyDossier.Attributes" = Field(
-        default_factory=lambda: MicroStrategyDossier.Attributes(),
+        default_factory=lambda: MicroStrategyDossier.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1089,7 +1099,7 @@ class MicroStrategyFact(MicroStrategy):
         self, micro_strategy_fact_expressions: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_fact_expressions = (
             micro_strategy_fact_expressions
         )
@@ -1105,7 +1115,7 @@ class MicroStrategyFact(MicroStrategy):
         self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
@@ -1119,7 +1129,7 @@ class MicroStrategyFact(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
@@ -1134,7 +1144,9 @@ class MicroStrategyFact(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyFact.Attributes" = Field(
-        default_factory=lambda: MicroStrategyFact.Attributes(),
+        default_factory=lambda: MicroStrategyFact.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1178,7 +1190,7 @@ class MicroStrategyDocument(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
@@ -1187,7 +1199,9 @@ class MicroStrategyDocument(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyDocument.Attributes" = Field(
-        default_factory=lambda: MicroStrategyDocument.Attributes(),
+        default_factory=lambda: MicroStrategyDocument.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1260,7 +1274,7 @@ class MicroStrategyAttribute(MicroStrategy):
         self, micro_strategy_attribute_forms: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_attribute_forms = micro_strategy_attribute_forms
 
     @property
@@ -1274,7 +1288,7 @@ class MicroStrategyAttribute(MicroStrategy):
         self, micro_strategy_reports: Optional[list[MicroStrategyReport]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_reports = micro_strategy_reports
 
     @property
@@ -1288,7 +1302,7 @@ class MicroStrategyAttribute(MicroStrategy):
         self, micro_strategy_metrics: Optional[list[MicroStrategyMetric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_metrics = micro_strategy_metrics
 
     @property
@@ -1300,7 +1314,7 @@ class MicroStrategyAttribute(MicroStrategy):
         self, micro_strategy_cubes: Optional[list[MicroStrategyCube]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_cubes = micro_strategy_cubes
 
     @property
@@ -1314,7 +1328,7 @@ class MicroStrategyAttribute(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
@@ -1335,7 +1349,9 @@ class MicroStrategyAttribute(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyAttribute.Attributes" = Field(
-        default_factory=lambda: MicroStrategyAttribute.Attributes(),
+        default_factory=lambda: MicroStrategyAttribute.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1416,7 +1432,7 @@ class MicroStrategyVisualization(MicroStrategy):
         self, micro_strategy_visualization_type: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_visualization_type = (
             micro_strategy_visualization_type
         )
@@ -1434,7 +1450,7 @@ class MicroStrategyVisualization(MicroStrategy):
         self, micro_strategy_dossier_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_dossier_qualified_name = (
             micro_strategy_dossier_qualified_name
         )
@@ -1450,7 +1466,7 @@ class MicroStrategyVisualization(MicroStrategy):
     @micro_strategy_dossier_name.setter
     def micro_strategy_dossier_name(self, micro_strategy_dossier_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_dossier_name = micro_strategy_dossier_name
 
     @property
@@ -1464,7 +1480,7 @@ class MicroStrategyVisualization(MicroStrategy):
         self, micro_strategy_dossier: Optional[MicroStrategyDossier]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_dossier = micro_strategy_dossier
 
     @property
@@ -1478,7 +1494,7 @@ class MicroStrategyVisualization(MicroStrategy):
         self, micro_strategy_project: Optional[MicroStrategyProject]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.micro_strategy_project = micro_strategy_project
 
     class Attributes(MicroStrategy.Attributes):
@@ -1499,7 +1515,9 @@ class MicroStrategyVisualization(MicroStrategy):
         )  # relationship
 
     attributes: "MicroStrategyVisualization.Attributes" = Field(
-        default_factory=lambda: MicroStrategyVisualization.Attributes(),
+        default_factory=lambda: MicroStrategyVisualization.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

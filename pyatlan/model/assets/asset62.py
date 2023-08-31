@@ -101,7 +101,7 @@ class TableauWorkbook(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -113,7 +113,7 @@ class TableauWorkbook(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -125,7 +125,7 @@ class TableauWorkbook(Tableau):
     @top_level_project_name.setter
     def top_level_project_name(self, top_level_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_name = top_level_project_name
 
     @property
@@ -141,7 +141,7 @@ class TableauWorkbook(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -153,7 +153,7 @@ class TableauWorkbook(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -163,7 +163,7 @@ class TableauWorkbook(Tableau):
     @project.setter
     def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project = project
 
     @property
@@ -173,7 +173,7 @@ class TableauWorkbook(Tableau):
     @dashboards.setter
     def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dashboards = dashboards
 
     @property
@@ -183,7 +183,7 @@ class TableauWorkbook(Tableau):
     @worksheets.setter
     def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.worksheets = worksheets
 
     @property
@@ -193,7 +193,7 @@ class TableauWorkbook(Tableau):
     @datasources.setter
     def datasources(self, datasources: Optional[list[TableauDatasource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasources = datasources
 
     class Attributes(Tableau.Attributes):
@@ -226,7 +226,9 @@ class TableauWorkbook(Tableau):
         )  # relationship
 
     attributes: "TableauWorkbook.Attributes" = Field(
-        default_factory=lambda: TableauWorkbook.Attributes(),
+        default_factory=lambda: TableauWorkbook.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -384,7 +386,7 @@ class TableauDatasourceField(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -396,7 +398,7 @@ class TableauDatasourceField(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -412,7 +414,7 @@ class TableauDatasourceField(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -426,7 +428,7 @@ class TableauDatasourceField(Tableau):
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
@@ -440,7 +442,7 @@ class TableauDatasourceField(Tableau):
     @datasource_qualified_name.setter
     def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasource_qualified_name = datasource_qualified_name
 
     @property
@@ -450,7 +452,7 @@ class TableauDatasourceField(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -460,7 +462,7 @@ class TableauDatasourceField(Tableau):
     @fully_qualified_name.setter
     def fully_qualified_name(self, fully_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.fully_qualified_name = fully_qualified_name
 
     @property
@@ -476,7 +478,7 @@ class TableauDatasourceField(Tableau):
         self, tableau_datasource_field_data_category: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tableau_datasource_field_data_category = (
             tableau_datasource_field_data_category
         )
@@ -494,7 +496,7 @@ class TableauDatasourceField(Tableau):
         self, tableau_datasource_field_role: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tableau_datasource_field_role = tableau_datasource_field_role
 
     @property
@@ -510,7 +512,7 @@ class TableauDatasourceField(Tableau):
         self, tableau_datasource_field_data_type: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tableau_datasource_field_data_type = (
             tableau_datasource_field_data_type
         )
@@ -522,7 +524,7 @@ class TableauDatasourceField(Tableau):
     @upstream_tables.setter
     def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.upstream_tables = upstream_tables
 
     @property
@@ -538,7 +540,7 @@ class TableauDatasourceField(Tableau):
         self, tableau_datasource_field_formula: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tableau_datasource_field_formula = (
             tableau_datasource_field_formula
         )
@@ -556,7 +558,7 @@ class TableauDatasourceField(Tableau):
         self, tableau_datasource_field_bin_size: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tableau_datasource_field_bin_size = (
             tableau_datasource_field_bin_size
         )
@@ -568,7 +570,7 @@ class TableauDatasourceField(Tableau):
     @upstream_columns.setter
     def upstream_columns(self, upstream_columns: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.upstream_columns = upstream_columns
 
     @property
@@ -578,7 +580,7 @@ class TableauDatasourceField(Tableau):
     @upstream_fields.setter
     def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.upstream_fields = upstream_fields
 
     @property
@@ -590,7 +592,7 @@ class TableauDatasourceField(Tableau):
     @datasource_field_type.setter
     def datasource_field_type(self, datasource_field_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasource_field_type = datasource_field_type
 
     @property
@@ -600,7 +602,7 @@ class TableauDatasourceField(Tableau):
     @worksheets.setter
     def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.worksheets = worksheets
 
     @property
@@ -610,7 +612,7 @@ class TableauDatasourceField(Tableau):
     @datasource.setter
     def datasource(self, datasource: Optional[TableauDatasource]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasource = datasource
 
     class Attributes(Tableau.Attributes):
@@ -670,7 +672,9 @@ class TableauDatasourceField(Tableau):
         )  # relationship
 
     attributes: "TableauDatasourceField.Attributes" = Field(
-        default_factory=lambda: TableauDatasourceField.Attributes(),
+        default_factory=lambda: TableauDatasourceField.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -785,7 +789,7 @@ class TableauCalculatedField(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -797,7 +801,7 @@ class TableauCalculatedField(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -813,7 +817,7 @@ class TableauCalculatedField(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -827,7 +831,7 @@ class TableauCalculatedField(Tableau):
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
@@ -841,7 +845,7 @@ class TableauCalculatedField(Tableau):
     @datasource_qualified_name.setter
     def datasource_qualified_name(self, datasource_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasource_qualified_name = datasource_qualified_name
 
     @property
@@ -851,7 +855,7 @@ class TableauCalculatedField(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -861,7 +865,7 @@ class TableauCalculatedField(Tableau):
     @data_category.setter
     def data_category(self, data_category: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.data_category = data_category
 
     @property
@@ -871,7 +875,7 @@ class TableauCalculatedField(Tableau):
     @role.setter
     def role(self, role: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.role = role
 
     @property
@@ -881,7 +885,7 @@ class TableauCalculatedField(Tableau):
     @tableau_data_type.setter
     def tableau_data_type(self, tableau_data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tableau_data_type = tableau_data_type
 
     @property
@@ -891,7 +895,7 @@ class TableauCalculatedField(Tableau):
     @formula.setter
     def formula(self, formula: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.formula = formula
 
     @property
@@ -901,7 +905,7 @@ class TableauCalculatedField(Tableau):
     @upstream_fields.setter
     def upstream_fields(self, upstream_fields: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.upstream_fields = upstream_fields
 
     @property
@@ -911,7 +915,7 @@ class TableauCalculatedField(Tableau):
     @worksheets.setter
     def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.worksheets = worksheets
 
     @property
@@ -921,7 +925,7 @@ class TableauCalculatedField(Tableau):
     @datasource.setter
     def datasource(self, datasource: Optional[TableauDatasource]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasource = datasource
 
     class Attributes(Tableau.Attributes):
@@ -960,7 +964,9 @@ class TableauCalculatedField(Tableau):
         )  # relationship
 
     attributes: "TableauCalculatedField.Attributes" = Field(
-        default_factory=lambda: TableauCalculatedField.Attributes(),
+        default_factory=lambda: TableauCalculatedField.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1052,7 +1058,7 @@ class TableauProject(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -1068,7 +1074,7 @@ class TableauProject(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -1080,7 +1086,7 @@ class TableauProject(Tableau):
     @is_top_level_project.setter
     def is_top_level_project(self, is_top_level_project: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.is_top_level_project = is_top_level_project
 
     @property
@@ -1090,7 +1096,7 @@ class TableauProject(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -1100,7 +1106,7 @@ class TableauProject(Tableau):
     @parent_project.setter
     def parent_project(self, parent_project: Optional[TableauProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.parent_project = parent_project
 
     @property
@@ -1110,7 +1116,7 @@ class TableauProject(Tableau):
     @workbooks.setter
     def workbooks(self, workbooks: Optional[list[TableauWorkbook]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbooks = workbooks
 
     @property
@@ -1120,7 +1126,7 @@ class TableauProject(Tableau):
     @site.setter
     def site(self, site: Optional[TableauSite]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site = site
 
     @property
@@ -1130,7 +1136,7 @@ class TableauProject(Tableau):
     @datasources.setter
     def datasources(self, datasources: Optional[list[TableauDatasource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasources = datasources
 
     @property
@@ -1140,7 +1146,7 @@ class TableauProject(Tableau):
     @flows.setter
     def flows(self, flows: Optional[list[TableauFlow]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.flows = flows
 
     @property
@@ -1150,7 +1156,7 @@ class TableauProject(Tableau):
     @child_projects.setter
     def child_projects(self, child_projects: Optional[list[TableauProject]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.child_projects = child_projects
 
     class Attributes(Tableau.Attributes):
@@ -1186,7 +1192,9 @@ class TableauProject(Tableau):
         )  # relationship
 
     attributes: "TableauProject.Attributes" = Field(
-        default_factory=lambda: TableauProject.Attributes(),
+        default_factory=lambda: TableauProject.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1224,7 +1232,7 @@ class TableauSite(Tableau):
     @projects.setter
     def projects(self, projects: Optional[list[TableauProject]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.projects = projects
 
     class Attributes(Tableau.Attributes):
@@ -1233,7 +1241,9 @@ class TableauSite(Tableau):
         )  # relationship
 
     attributes: "TableauSite.Attributes" = Field(
-        default_factory=lambda: TableauSite.Attributes(),
+        default_factory=lambda: TableauSite.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1365,7 +1375,7 @@ class TableauDatasource(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -1377,7 +1387,7 @@ class TableauDatasource(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -1393,7 +1403,7 @@ class TableauDatasource(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -1407,7 +1417,7 @@ class TableauDatasource(Tableau):
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
@@ -1417,7 +1427,7 @@ class TableauDatasource(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -1427,7 +1437,7 @@ class TableauDatasource(Tableau):
     @is_published.setter
     def is_published(self, is_published: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.is_published = is_published
 
     @property
@@ -1437,7 +1447,7 @@ class TableauDatasource(Tableau):
     @has_extracts.setter
     def has_extracts(self, has_extracts: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.has_extracts = has_extracts
 
     @property
@@ -1447,7 +1457,7 @@ class TableauDatasource(Tableau):
     @is_certified.setter
     def is_certified(self, is_certified: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.is_certified = is_certified
 
     @property
@@ -1457,7 +1467,7 @@ class TableauDatasource(Tableau):
     @certifier.setter
     def certifier(self, certifier: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.certifier = certifier
 
     @property
@@ -1467,7 +1477,7 @@ class TableauDatasource(Tableau):
     @certification_note.setter
     def certification_note(self, certification_note: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.certification_note = certification_note
 
     @property
@@ -1479,7 +1489,7 @@ class TableauDatasource(Tableau):
     @certifier_display_name.setter
     def certifier_display_name(self, certifier_display_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.certifier_display_name = certifier_display_name
 
     @property
@@ -1489,7 +1499,7 @@ class TableauDatasource(Tableau):
     @upstream_tables.setter
     def upstream_tables(self, upstream_tables: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.upstream_tables = upstream_tables
 
     @property
@@ -1501,7 +1511,7 @@ class TableauDatasource(Tableau):
         self, upstream_datasources: Optional[list[dict[str, str]]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.upstream_datasources = upstream_datasources
 
     @property
@@ -1511,7 +1521,7 @@ class TableauDatasource(Tableau):
     @workbook.setter
     def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook = workbook
 
     @property
@@ -1521,7 +1531,7 @@ class TableauDatasource(Tableau):
     @project.setter
     def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project = project
 
     @property
@@ -1531,7 +1541,7 @@ class TableauDatasource(Tableau):
     @fields.setter
     def fields(self, fields: Optional[list[TableauDatasourceField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.fields = fields
 
     class Attributes(Tableau.Attributes):
@@ -1579,7 +1589,9 @@ class TableauDatasource(Tableau):
         )  # relationship
 
     attributes: "TableauDatasource.Attributes" = Field(
-        default_factory=lambda: TableauDatasource.Attributes(),
+        default_factory=lambda: TableauDatasource.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1658,7 +1670,7 @@ class TableauDashboard(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -1670,7 +1682,7 @@ class TableauDashboard(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -1682,7 +1694,7 @@ class TableauDashboard(Tableau):
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
@@ -1698,7 +1710,7 @@ class TableauDashboard(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -1710,7 +1722,7 @@ class TableauDashboard(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -1720,7 +1732,7 @@ class TableauDashboard(Tableau):
     @workbook.setter
     def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook = workbook
 
     @property
@@ -1730,7 +1742,7 @@ class TableauDashboard(Tableau):
     @worksheets.setter
     def worksheets(self, worksheets: Optional[list[TableauWorksheet]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.worksheets = worksheets
 
     class Attributes(Tableau.Attributes):
@@ -1757,7 +1769,9 @@ class TableauDashboard(Tableau):
         )  # relationship
 
     attributes: "TableauDashboard.Attributes" = Field(
-        default_factory=lambda: TableauDashboard.Attributes(),
+        default_factory=lambda: TableauDashboard.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1839,7 +1853,7 @@ class TableauFlow(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -1851,7 +1865,7 @@ class TableauFlow(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -1867,7 +1881,7 @@ class TableauFlow(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -1879,7 +1893,7 @@ class TableauFlow(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -1889,7 +1903,7 @@ class TableauFlow(Tableau):
     @input_fields.setter
     def input_fields(self, input_fields: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.input_fields = input_fields
 
     @property
@@ -1899,7 +1913,7 @@ class TableauFlow(Tableau):
     @output_fields.setter
     def output_fields(self, output_fields: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.output_fields = output_fields
 
     @property
@@ -1909,7 +1923,7 @@ class TableauFlow(Tableau):
     @output_steps.setter
     def output_steps(self, output_steps: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.output_steps = output_steps
 
     @property
@@ -1919,7 +1933,7 @@ class TableauFlow(Tableau):
     @project.setter
     def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project = project
 
     class Attributes(Tableau.Attributes):
@@ -1949,7 +1963,9 @@ class TableauFlow(Tableau):
         )  # relationship
 
     attributes: "TableauFlow.Attributes" = Field(
-        default_factory=lambda: TableauFlow.Attributes(),
+        default_factory=lambda: TableauFlow.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -2038,7 +2054,7 @@ class TableauWorksheet(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -2050,7 +2066,7 @@ class TableauWorksheet(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -2066,7 +2082,7 @@ class TableauWorksheet(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -2078,7 +2094,7 @@ class TableauWorksheet(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -2090,7 +2106,7 @@ class TableauWorksheet(Tableau):
     @workbook_qualified_name.setter
     def workbook_qualified_name(self, workbook_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook_qualified_name = workbook_qualified_name
 
     @property
@@ -2100,7 +2116,7 @@ class TableauWorksheet(Tableau):
     @workbook.setter
     def workbook(self, workbook: Optional[TableauWorkbook]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workbook = workbook
 
     @property
@@ -2112,7 +2128,7 @@ class TableauWorksheet(Tableau):
         self, datasource_fields: Optional[list[TableauDatasourceField]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasource_fields = datasource_fields
 
     @property
@@ -2124,7 +2140,7 @@ class TableauWorksheet(Tableau):
         self, calculated_fields: Optional[list[TableauCalculatedField]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.calculated_fields = calculated_fields
 
     @property
@@ -2134,7 +2150,7 @@ class TableauWorksheet(Tableau):
     @dashboards.setter
     def dashboards(self, dashboards: Optional[list[TableauDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dashboards = dashboards
 
     class Attributes(Tableau.Attributes):
@@ -2167,7 +2183,9 @@ class TableauWorksheet(Tableau):
         )  # relationship
 
     attributes: "TableauWorksheet.Attributes" = Field(
-        default_factory=lambda: TableauWorksheet.Attributes(),
+        default_factory=lambda: TableauWorksheet.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

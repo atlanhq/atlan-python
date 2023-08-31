@@ -95,7 +95,7 @@ class PowerBIReport(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -107,7 +107,7 @@ class PowerBIReport(PowerBI):
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
@@ -117,7 +117,7 @@ class PowerBIReport(PowerBI):
     @web_url.setter
     def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.web_url = web_url
 
     @property
@@ -127,7 +127,7 @@ class PowerBIReport(PowerBI):
     @page_count.setter
     def page_count(self, page_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.page_count = page_count
 
     @property
@@ -137,7 +137,7 @@ class PowerBIReport(PowerBI):
     @workspace.setter
     def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace = workspace
 
     @property
@@ -147,7 +147,7 @@ class PowerBIReport(PowerBI):
     @tiles.setter
     def tiles(self, tiles: Optional[list[PowerBITile]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tiles = tiles
 
     @property
@@ -157,7 +157,7 @@ class PowerBIReport(PowerBI):
     @pages.setter
     def pages(self, pages: Optional[list[PowerBIPage]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.pages = pages
 
     @property
@@ -167,7 +167,7 @@ class PowerBIReport(PowerBI):
     @dataset.setter
     def dataset(self, dataset: Optional[PowerBIDataset]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset = dataset
 
     class Attributes(PowerBI.Attributes):
@@ -193,7 +193,9 @@ class PowerBIReport(PowerBI):
         )  # relationship
 
     attributes: "PowerBIReport.Attributes" = Field(
-        default_factory=lambda: PowerBIReport.Attributes(),
+        default_factory=lambda: PowerBIReport.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -264,7 +266,7 @@ class PowerBIMeasure(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -276,7 +278,7 @@ class PowerBIMeasure(PowerBI):
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
@@ -290,7 +292,7 @@ class PowerBIMeasure(PowerBI):
     @power_b_i_measure_expression.setter
     def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_measure_expression = power_b_i_measure_expression
 
     @property
@@ -306,7 +308,7 @@ class PowerBIMeasure(PowerBI):
         self, power_b_i_is_external_measure: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
 
     @property
@@ -316,7 +318,7 @@ class PowerBIMeasure(PowerBI):
     @table.setter
     def table(self, table: Optional[PowerBITable]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.table = table
 
     class Attributes(PowerBI.Attributes):
@@ -337,7 +339,9 @@ class PowerBIMeasure(PowerBI):
         )  # relationship
 
     attributes: "PowerBIMeasure.Attributes" = Field(
-        default_factory=lambda: PowerBIMeasure.Attributes(),
+        default_factory=lambda: PowerBIMeasure.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -422,7 +426,7 @@ class PowerBIColumn(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -434,7 +438,7 @@ class PowerBIColumn(PowerBI):
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
@@ -450,7 +454,7 @@ class PowerBIColumn(PowerBI):
         self, power_b_i_column_data_category: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
 
     @property
@@ -464,7 +468,7 @@ class PowerBIColumn(PowerBI):
     @power_b_i_column_data_type.setter
     def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_column_data_type = power_b_i_column_data_type
 
     @property
@@ -478,7 +482,7 @@ class PowerBIColumn(PowerBI):
     @power_b_i_sort_by_column.setter
     def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_sort_by_column = power_b_i_sort_by_column
 
     @property
@@ -494,7 +498,7 @@ class PowerBIColumn(PowerBI):
         self, power_b_i_column_summarize_by: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
 
     @property
@@ -504,7 +508,7 @@ class PowerBIColumn(PowerBI):
     @table.setter
     def table(self, table: Optional[PowerBITable]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.table = table
 
     class Attributes(PowerBI.Attributes):
@@ -531,7 +535,9 @@ class PowerBIColumn(PowerBI):
         )  # relationship
 
     attributes: "PowerBIColumn.Attributes" = Field(
-        default_factory=lambda: PowerBIColumn.Attributes(),
+        default_factory=lambda: PowerBIColumn.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -619,7 +625,7 @@ class PowerBITable(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -631,7 +637,7 @@ class PowerBITable(PowerBI):
     @dataset_qualified_name.setter
     def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset_qualified_name = dataset_qualified_name
 
     @property
@@ -647,7 +653,7 @@ class PowerBITable(PowerBI):
         self, power_b_i_table_source_expressions: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_table_source_expressions = (
             power_b_i_table_source_expressions
         )
@@ -663,7 +669,7 @@ class PowerBITable(PowerBI):
     @power_b_i_table_column_count.setter
     def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_table_column_count = power_b_i_table_column_count
 
     @property
@@ -679,7 +685,7 @@ class PowerBITable(PowerBI):
         self, power_b_i_table_measure_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
 
     @property
@@ -689,7 +695,7 @@ class PowerBITable(PowerBI):
     @columns.setter
     def columns(self, columns: Optional[list[PowerBIColumn]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.columns = columns
 
     @property
@@ -699,7 +705,7 @@ class PowerBITable(PowerBI):
     @measures.setter
     def measures(self, measures: Optional[list[PowerBIMeasure]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.measures = measures
 
     @property
@@ -709,7 +715,7 @@ class PowerBITable(PowerBI):
     @dataset.setter
     def dataset(self, dataset: Optional[PowerBIDataset]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset = dataset
 
     class Attributes(PowerBI.Attributes):
@@ -739,7 +745,9 @@ class PowerBITable(PowerBI):
         )  # relationship
 
     attributes: "PowerBITable.Attributes" = Field(
-        default_factory=lambda: PowerBITable.Attributes(),
+        default_factory=lambda: PowerBITable.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -806,7 +814,7 @@ class PowerBITile(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -820,7 +828,7 @@ class PowerBITile(PowerBI):
     @dashboard_qualified_name.setter
     def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dashboard_qualified_name = dashboard_qualified_name
 
     @property
@@ -830,7 +838,7 @@ class PowerBITile(PowerBI):
     @report.setter
     def report(self, report: Optional[PowerBIReport]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.report = report
 
     @property
@@ -840,7 +848,7 @@ class PowerBITile(PowerBI):
     @dataset.setter
     def dataset(self, dataset: Optional[PowerBIDataset]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset = dataset
 
     @property
@@ -850,7 +858,7 @@ class PowerBITile(PowerBI):
     @dashboard.setter
     def dashboard(self, dashboard: Optional[PowerBIDashboard]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dashboard = dashboard
 
     class Attributes(PowerBI.Attributes):
@@ -871,7 +879,9 @@ class PowerBITile(PowerBI):
         )  # relationship
 
     attributes: "PowerBITile.Attributes" = Field(
-        default_factory=lambda: PowerBITile.Attributes(),
+        default_factory=lambda: PowerBITile.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -917,7 +927,7 @@ class PowerBIDatasource(PowerBI):
     @connection_details.setter
     def connection_details(self, connection_details: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.connection_details = connection_details
 
     @property
@@ -927,7 +937,7 @@ class PowerBIDatasource(PowerBI):
     @datasets.setter
     def datasets(self, datasets: Optional[list[PowerBIDataset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasets = datasets
 
     class Attributes(PowerBI.Attributes):
@@ -939,7 +949,9 @@ class PowerBIDatasource(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDatasource.Attributes" = Field(
-        default_factory=lambda: PowerBIDatasource.Attributes(),
+        default_factory=lambda: PowerBIDatasource.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1022,7 +1034,7 @@ class PowerBIWorkspace(PowerBI):
     @web_url.setter
     def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.web_url = web_url
 
     @property
@@ -1032,7 +1044,7 @@ class PowerBIWorkspace(PowerBI):
     @report_count.setter
     def report_count(self, report_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.report_count = report_count
 
     @property
@@ -1042,7 +1054,7 @@ class PowerBIWorkspace(PowerBI):
     @dashboard_count.setter
     def dashboard_count(self, dashboard_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dashboard_count = dashboard_count
 
     @property
@@ -1052,7 +1064,7 @@ class PowerBIWorkspace(PowerBI):
     @dataset_count.setter
     def dataset_count(self, dataset_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataset_count = dataset_count
 
     @property
@@ -1062,7 +1074,7 @@ class PowerBIWorkspace(PowerBI):
     @dataflow_count.setter
     def dataflow_count(self, dataflow_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataflow_count = dataflow_count
 
     @property
@@ -1072,7 +1084,7 @@ class PowerBIWorkspace(PowerBI):
     @reports.setter
     def reports(self, reports: Optional[list[PowerBIReport]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.reports = reports
 
     @property
@@ -1082,7 +1094,7 @@ class PowerBIWorkspace(PowerBI):
     @datasets.setter
     def datasets(self, datasets: Optional[list[PowerBIDataset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasets = datasets
 
     @property
@@ -1092,7 +1104,7 @@ class PowerBIWorkspace(PowerBI):
     @dashboards.setter
     def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dashboards = dashboards
 
     @property
@@ -1102,7 +1114,7 @@ class PowerBIWorkspace(PowerBI):
     @dataflows.setter
     def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataflows = dataflows
 
     class Attributes(PowerBI.Attributes):
@@ -1129,7 +1141,9 @@ class PowerBIWorkspace(PowerBI):
         )  # relationship
 
     attributes: "PowerBIWorkspace.Attributes" = Field(
-        default_factory=lambda: PowerBIWorkspace.Attributes(),
+        default_factory=lambda: PowerBIWorkspace.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1209,7 +1223,7 @@ class PowerBIDataset(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -1219,7 +1233,7 @@ class PowerBIDataset(PowerBI):
     @web_url.setter
     def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.web_url = web_url
 
     @property
@@ -1229,7 +1243,7 @@ class PowerBIDataset(PowerBI):
     @reports.setter
     def reports(self, reports: Optional[list[PowerBIReport]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.reports = reports
 
     @property
@@ -1239,7 +1253,7 @@ class PowerBIDataset(PowerBI):
     @workspace.setter
     def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace = workspace
 
     @property
@@ -1249,7 +1263,7 @@ class PowerBIDataset(PowerBI):
     @dataflows.setter
     def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.dataflows = dataflows
 
     @property
@@ -1259,7 +1273,7 @@ class PowerBIDataset(PowerBI):
     @tiles.setter
     def tiles(self, tiles: Optional[list[PowerBITile]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tiles = tiles
 
     @property
@@ -1269,7 +1283,7 @@ class PowerBIDataset(PowerBI):
     @tables.setter
     def tables(self, tables: Optional[list[PowerBITable]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tables = tables
 
     @property
@@ -1279,7 +1293,7 @@ class PowerBIDataset(PowerBI):
     @datasources.setter
     def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasources = datasources
 
     class Attributes(PowerBI.Attributes):
@@ -1307,7 +1321,9 @@ class PowerBIDataset(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDataset.Attributes" = Field(
-        default_factory=lambda: PowerBIDataset.Attributes(),
+        default_factory=lambda: PowerBIDataset.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1372,7 +1388,7 @@ class PowerBIDashboard(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -1382,7 +1398,7 @@ class PowerBIDashboard(PowerBI):
     @web_url.setter
     def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.web_url = web_url
 
     @property
@@ -1392,7 +1408,7 @@ class PowerBIDashboard(PowerBI):
     @tile_count.setter
     def tile_count(self, tile_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tile_count = tile_count
 
     @property
@@ -1402,7 +1418,7 @@ class PowerBIDashboard(PowerBI):
     @workspace.setter
     def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace = workspace
 
     @property
@@ -1412,7 +1428,7 @@ class PowerBIDashboard(PowerBI):
     @tiles.setter
     def tiles(self, tiles: Optional[list[PowerBITile]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tiles = tiles
 
     class Attributes(PowerBI.Attributes):
@@ -1429,7 +1445,9 @@ class PowerBIDashboard(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDashboard.Attributes" = Field(
-        default_factory=lambda: PowerBIDashboard.Attributes(),
+        default_factory=lambda: PowerBIDashboard.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1489,7 +1507,7 @@ class PowerBIDataflow(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -1499,7 +1517,7 @@ class PowerBIDataflow(PowerBI):
     @web_url.setter
     def web_url(self, web_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.web_url = web_url
 
     @property
@@ -1509,7 +1527,7 @@ class PowerBIDataflow(PowerBI):
     @workspace.setter
     def workspace(self, workspace: Optional[PowerBIWorkspace]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace = workspace
 
     @property
@@ -1519,7 +1537,7 @@ class PowerBIDataflow(PowerBI):
     @datasets.setter
     def datasets(self, datasets: Optional[list[PowerBIDataset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.datasets = datasets
 
     class Attributes(PowerBI.Attributes):
@@ -1535,7 +1553,9 @@ class PowerBIDataflow(PowerBI):
         )  # relationship
 
     attributes: "PowerBIDataflow.Attributes" = Field(
-        default_factory=lambda: PowerBIDataflow.Attributes(),
+        default_factory=lambda: PowerBIDataflow.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1592,7 +1612,7 @@ class PowerBIPage(PowerBI):
     @workspace_qualified_name.setter
     def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.workspace_qualified_name = workspace_qualified_name
 
     @property
@@ -1604,7 +1624,7 @@ class PowerBIPage(PowerBI):
     @report_qualified_name.setter
     def report_qualified_name(self, report_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.report_qualified_name = report_qualified_name
 
     @property
@@ -1614,7 +1634,7 @@ class PowerBIPage(PowerBI):
     @report.setter
     def report(self, report: Optional[PowerBIReport]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.report = report
 
     class Attributes(PowerBI.Attributes):
@@ -1629,7 +1649,9 @@ class PowerBIPage(PowerBI):
         )  # relationship
 
     attributes: "PowerBIPage.Attributes" = Field(
-        default_factory=lambda: PowerBIPage.Attributes(),
+        default_factory=lambda: PowerBIPage.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

@@ -51,7 +51,7 @@ class Collection(Namespace):
     @icon.setter
     def icon(self, icon: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.icon = icon
 
     @property
@@ -61,7 +61,7 @@ class Collection(Namespace):
     @icon_type.setter
     def icon_type(self, icon_type: Optional[IconType]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.icon_type = icon_type
 
     class Attributes(Namespace.Attributes):
@@ -69,7 +69,9 @@ class Collection(Namespace):
         icon_type: Optional[IconType] = Field(None, description="", alias="iconType")
 
     attributes: "Collection.Attributes" = Field(
-        default_factory=lambda: Collection.Attributes(),
+        default_factory=lambda: Collection.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

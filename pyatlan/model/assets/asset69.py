@@ -47,7 +47,7 @@ class ThoughtspotLiveboard(Thoughtspot):
         self, thoughtspot_dashlets: Optional[list[ThoughtspotDashlet]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.thoughtspot_dashlets = thoughtspot_dashlets
 
     class Attributes(Thoughtspot.Attributes):
@@ -56,7 +56,9 @@ class ThoughtspotLiveboard(Thoughtspot):
         )  # relationship
 
     attributes: "ThoughtspotLiveboard.Attributes" = Field(
-        default_factory=lambda: ThoughtspotLiveboard.Attributes(),
+        default_factory=lambda: ThoughtspotLiveboard.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -119,7 +121,7 @@ class ThoughtspotDashlet(Thoughtspot):
     @thoughtspot_liveboard_name.setter
     def thoughtspot_liveboard_name(self, thoughtspot_liveboard_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.thoughtspot_liveboard_name = thoughtspot_liveboard_name
 
     @property
@@ -135,7 +137,7 @@ class ThoughtspotDashlet(Thoughtspot):
         self, thoughtspot_liveboard_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.thoughtspot_liveboard_qualified_name = (
             thoughtspot_liveboard_qualified_name
         )
@@ -151,7 +153,7 @@ class ThoughtspotDashlet(Thoughtspot):
         self, thoughtspot_liveboard: Optional[ThoughtspotLiveboard]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.thoughtspot_liveboard = thoughtspot_liveboard
 
     class Attributes(Thoughtspot.Attributes):
@@ -166,7 +168,9 @@ class ThoughtspotDashlet(Thoughtspot):
         )  # relationship
 
     attributes: "ThoughtspotDashlet.Attributes" = Field(
-        default_factory=lambda: ThoughtspotDashlet.Attributes(),
+        default_factory=lambda: ThoughtspotDashlet.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

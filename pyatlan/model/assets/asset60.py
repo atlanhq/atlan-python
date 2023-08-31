@@ -70,7 +70,7 @@ class SigmaDatasetColumn(Sigma):
     @sigma_dataset_qualified_name.setter
     def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_dataset_qualified_name = sigma_dataset_qualified_name
 
     @property
@@ -80,7 +80,7 @@ class SigmaDatasetColumn(Sigma):
     @sigma_dataset_name.setter
     def sigma_dataset_name(self, sigma_dataset_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_dataset_name = sigma_dataset_name
 
     @property
@@ -90,7 +90,7 @@ class SigmaDatasetColumn(Sigma):
     @sigma_dataset.setter
     def sigma_dataset(self, sigma_dataset: Optional[SigmaDataset]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_dataset = sigma_dataset
 
     class Attributes(Sigma.Attributes):
@@ -105,7 +105,9 @@ class SigmaDatasetColumn(Sigma):
         )  # relationship
 
     attributes: "SigmaDatasetColumn.Attributes" = Field(
-        default_factory=lambda: SigmaDatasetColumn.Attributes(),
+        default_factory=lambda: SigmaDatasetColumn.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -157,7 +159,7 @@ class SigmaDataset(Sigma):
     @sigma_dataset_column_count.setter
     def sigma_dataset_column_count(self, sigma_dataset_column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
 
     @property
@@ -171,7 +173,7 @@ class SigmaDataset(Sigma):
         self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
     class Attributes(Sigma.Attributes):
@@ -183,7 +185,9 @@ class SigmaDataset(Sigma):
         )  # relationship
 
     attributes: "SigmaDataset.Attributes" = Field(
-        default_factory=lambda: SigmaDataset.Attributes(),
+        default_factory=lambda: SigmaDataset.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

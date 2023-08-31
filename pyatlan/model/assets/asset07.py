@@ -73,7 +73,7 @@ class AuthService(Asset, type_name="AuthService"):
     @auth_service_type.setter
     def auth_service_type(self, auth_service_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.auth_service_type = auth_service_type
 
     @property
@@ -83,7 +83,7 @@ class AuthService(Asset, type_name="AuthService"):
     @tag_service.setter
     def tag_service(self, tag_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.tag_service = tag_service
 
     @property
@@ -95,7 +95,7 @@ class AuthService(Asset, type_name="AuthService"):
     @auth_service_is_enabled.setter
     def auth_service_is_enabled(self, auth_service_is_enabled: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.auth_service_is_enabled = auth_service_is_enabled
 
     @property
@@ -105,7 +105,7 @@ class AuthService(Asset, type_name="AuthService"):
     @auth_service_config.setter
     def auth_service_config(self, auth_service_config: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.auth_service_config = auth_service_config
 
     @property
@@ -121,7 +121,7 @@ class AuthService(Asset, type_name="AuthService"):
         self, auth_service_policy_last_sync: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.auth_service_policy_last_sync = auth_service_policy_last_sync
 
     class Attributes(Asset.Attributes):
@@ -140,7 +140,9 @@ class AuthService(Asset, type_name="AuthService"):
         )
 
     attributes: "AuthService.Attributes" = Field(
-        default_factory=lambda: AuthService.Attributes(),
+        default_factory=lambda: AuthService.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

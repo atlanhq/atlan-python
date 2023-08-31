@@ -107,7 +107,7 @@ class Mode(BI):
     @mode_id.setter
     def mode_id(self, mode_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_id = mode_id
 
     @property
@@ -117,7 +117,7 @@ class Mode(BI):
     @mode_token.setter
     def mode_token(self, mode_token: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_token = mode_token
 
     @property
@@ -127,7 +127,7 @@ class Mode(BI):
     @mode_workspace_name.setter
     def mode_workspace_name(self, mode_workspace_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_workspace_name = mode_workspace_name
 
     @property
@@ -139,7 +139,7 @@ class Mode(BI):
     @mode_workspace_username.setter
     def mode_workspace_username(self, mode_workspace_username: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_workspace_username = mode_workspace_username
 
     @property
@@ -155,7 +155,7 @@ class Mode(BI):
         self, mode_workspace_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_workspace_qualified_name = mode_workspace_qualified_name
 
     @property
@@ -165,7 +165,7 @@ class Mode(BI):
     @mode_report_name.setter
     def mode_report_name(self, mode_report_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_report_name = mode_report_name
 
     @property
@@ -179,7 +179,7 @@ class Mode(BI):
     @mode_report_qualified_name.setter
     def mode_report_qualified_name(self, mode_report_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_report_qualified_name = mode_report_qualified_name
 
     @property
@@ -189,7 +189,7 @@ class Mode(BI):
     @mode_query_name.setter
     def mode_query_name(self, mode_query_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_query_name = mode_query_name
 
     @property
@@ -203,7 +203,7 @@ class Mode(BI):
     @mode_query_qualified_name.setter
     def mode_query_qualified_name(self, mode_query_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.mode_query_qualified_name = mode_query_qualified_name
 
     class Attributes(BI.Attributes):
@@ -232,7 +232,9 @@ class Mode(BI):
         )
 
     attributes: "Mode.Attributes" = Field(
-        default_factory=lambda: Mode.Attributes(),
+        default_factory=lambda: Mode.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

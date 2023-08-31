@@ -82,7 +82,7 @@ class MetabaseQuestion(Metabase):
     @metabase_dashboard_count.setter
     def metabase_dashboard_count(self, metabase_dashboard_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_dashboard_count = metabase_dashboard_count
 
     @property
@@ -92,7 +92,7 @@ class MetabaseQuestion(Metabase):
     @metabase_query_type.setter
     def metabase_query_type(self, metabase_query_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_query_type = metabase_query_type
 
     @property
@@ -102,7 +102,7 @@ class MetabaseQuestion(Metabase):
     @metabase_query.setter
     def metabase_query(self, metabase_query: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_query = metabase_query
 
     @property
@@ -114,7 +114,7 @@ class MetabaseQuestion(Metabase):
         self, metabase_dashboards: Optional[list[MetabaseDashboard]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_dashboards = metabase_dashboards
 
     @property
@@ -124,7 +124,7 @@ class MetabaseQuestion(Metabase):
     @metabase_collection.setter
     def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_collection = metabase_collection
 
     class Attributes(Metabase.Attributes):
@@ -145,7 +145,9 @@ class MetabaseQuestion(Metabase):
         )  # relationship
 
     attributes: "MetabaseQuestion.Attributes" = Field(
-        default_factory=lambda: MetabaseQuestion.Attributes(),
+        default_factory=lambda: MetabaseQuestion.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -217,7 +219,7 @@ class MetabaseCollection(Metabase):
     @metabase_slug.setter
     def metabase_slug(self, metabase_slug: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_slug = metabase_slug
 
     @property
@@ -227,7 +229,7 @@ class MetabaseCollection(Metabase):
     @metabase_color.setter
     def metabase_color(self, metabase_color: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_color = metabase_color
 
     @property
@@ -237,7 +239,7 @@ class MetabaseCollection(Metabase):
     @metabase_namespace.setter
     def metabase_namespace(self, metabase_namespace: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_namespace = metabase_namespace
 
     @property
@@ -253,7 +255,7 @@ class MetabaseCollection(Metabase):
         self, metabase_is_personal_collection: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_is_personal_collection = (
             metabase_is_personal_collection
         )
@@ -267,7 +269,7 @@ class MetabaseCollection(Metabase):
         self, metabase_dashboards: Optional[list[MetabaseDashboard]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_dashboards = metabase_dashboards
 
     @property
@@ -277,7 +279,7 @@ class MetabaseCollection(Metabase):
     @metabase_questions.setter
     def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_questions = metabase_questions
 
     class Attributes(Metabase.Attributes):
@@ -299,7 +301,9 @@ class MetabaseCollection(Metabase):
         )  # relationship
 
     attributes: "MetabaseCollection.Attributes" = Field(
-        default_factory=lambda: MetabaseCollection.Attributes(),
+        default_factory=lambda: MetabaseCollection.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -352,7 +356,7 @@ class MetabaseDashboard(Metabase):
     @metabase_question_count.setter
     def metabase_question_count(self, metabase_question_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_question_count = metabase_question_count
 
     @property
@@ -362,7 +366,7 @@ class MetabaseDashboard(Metabase):
     @metabase_questions.setter
     def metabase_questions(self, metabase_questions: Optional[list[MetabaseQuestion]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_questions = metabase_questions
 
     @property
@@ -372,7 +376,7 @@ class MetabaseDashboard(Metabase):
     @metabase_collection.setter
     def metabase_collection(self, metabase_collection: Optional[MetabaseCollection]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.metabase_collection = metabase_collection
 
     class Attributes(Metabase.Attributes):
@@ -387,7 +391,9 @@ class MetabaseDashboard(Metabase):
         )  # relationship
 
     attributes: "MetabaseDashboard.Attributes" = Field(
-        default_factory=lambda: MetabaseDashboard.Attributes(),
+        default_factory=lambda: MetabaseDashboard.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

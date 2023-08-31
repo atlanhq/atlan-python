@@ -75,7 +75,7 @@ class PowerBI(BI):
     @power_b_i_is_hidden.setter
     def power_b_i_is_hidden(self, power_b_i_is_hidden: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_is_hidden = power_b_i_is_hidden
 
     @property
@@ -91,7 +91,7 @@ class PowerBI(BI):
         self, power_b_i_table_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_table_qualified_name = power_b_i_table_qualified_name
 
     @property
@@ -103,7 +103,7 @@ class PowerBI(BI):
     @power_b_i_format_string.setter
     def power_b_i_format_string(self, power_b_i_format_string: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_format_string = power_b_i_format_string
 
     @property
@@ -117,7 +117,7 @@ class PowerBI(BI):
         self, power_b_i_endorsement: Optional[PowerbiEndorsement]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.power_b_i_endorsement = power_b_i_endorsement
 
     class Attributes(BI.Attributes):
@@ -135,7 +135,9 @@ class PowerBI(BI):
         )
 
     attributes: "PowerBI.Attributes" = Field(
-        default_factory=lambda: PowerBI.Attributes(),
+        default_factory=lambda: PowerBI.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

@@ -34,11 +34,18 @@ class AwsCloudWatchMetric(AtlanObject):
     """Description"""
 
     aws_cloud_watch_metric_name: "str" = Field(
-        None, description="", alias="awsCloudWatchMetricName"
+        description="", alias="awsCloudWatchMetricName"
     )
     aws_cloud_watch_metric_scope: "str" = Field(
-        None, description="", alias="awsCloudWatchMetricScope"
+        description="", alias="awsCloudWatchMetricScope"
     )
+
+
+class Histogram(AtlanObject):
+    """Description"""
+
+    boundaries: "set[float]" = Field(description="", alias="boundaries")
+    frequencies: "set[float]" = Field(description="", alias="frequencies")
 
 
 class KafkaTopicConsumption(AtlanObject):
@@ -54,19 +61,52 @@ class KafkaTopicConsumption(AtlanObject):
     )
 
 
-class Histogram(AtlanObject):
-    """Description"""
-
-    boundaries: "set[float]" = Field(None, description="", alias="boundaries")
-    frequencies: "set[float]" = Field(None, description="", alias="frequencies")
-
-
 class ColumnValueFrequencyMap(AtlanObject):
     """Description"""
 
     column_value: Optional["str"] = Field(None, description="", alias="columnValue")
     column_value_frequency: Optional["int"] = Field(
         None, description="", alias="columnValueFrequency"
+    )
+
+
+class SourceTagAttachment(AtlanObject):
+    """Description"""
+
+    source_tag_name: Optional["str"] = Field(
+        None, description="", alias="sourceTagName"
+    )
+    source_tag_qualified_name: Optional["str"] = Field(
+        None, description="", alias="sourceTagQualifiedName"
+    )
+    source_tag_guid: Optional["str"] = Field(
+        None, description="", alias="sourceTagGuid"
+    )
+    source_tag_connector_name: Optional["str"] = Field(
+        None, description="", alias="sourceTagConnectorName"
+    )
+    source_tag_value: Optional["list[SourceTagAttachmentValue]"] = Field(
+        None, description="", alias="sourceTagValue"
+    )
+    is_source_tag_synced: Optional["bool"] = Field(
+        None, description="", alias="isSourceTagSynced"
+    )
+    source_tag_sync_timestamp: Optional["datetime"] = Field(
+        None, description="", alias="sourceTagSyncTimestamp"
+    )
+    source_tag_sync_error: Optional["str"] = Field(
+        None, description="", alias="sourceTagSyncError"
+    )
+
+
+class SourceTagAttachmentValue(AtlanObject):
+    """Description"""
+
+    tag_attachment_key: Optional["str"] = Field(
+        None, description="", alias="tagAttachmentKey"
+    )
+    tag_attachment_value: Optional["str"] = Field(
+        None, description="", alias="tagAttachmentValue"
     )
 
 
@@ -109,46 +149,6 @@ class BadgeCondition(AtlanObject):
     )
 
 
-class SourceTagAttachmentValue(AtlanObject):
-    """Description"""
-
-    tag_attachment_key: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentKey"
-    )
-    tag_attachment_value: Optional["str"] = Field(
-        None, description="", alias="tagAttachmentValue"
-    )
-
-
-class SourceTagAttachment(AtlanObject):
-    """Description"""
-
-    source_tag_name: Optional["str"] = Field(
-        None, description="", alias="sourceTagName"
-    )
-    source_tag_qualified_name: Optional["str"] = Field(
-        None, description="", alias="sourceTagQualifiedName"
-    )
-    source_tag_guid: Optional["str"] = Field(
-        None, description="", alias="sourceTagGuid"
-    )
-    source_tag_connector_name: Optional["str"] = Field(
-        None, description="", alias="sourceTagConnectorName"
-    )
-    source_tag_value: Optional["list[SourceTagAttachmentValue]"] = Field(
-        None, description="", alias="sourceTagValue"
-    )
-    is_source_tag_synced: Optional["bool"] = Field(
-        None, description="", alias="isSourceTagSynced"
-    )
-    source_tag_sync_timestamp: Optional["datetime"] = Field(
-        None, description="", alias="sourceTagSyncTimestamp"
-    )
-    source_tag_sync_error: Optional["str"] = Field(
-        None, description="", alias="sourceTagSyncError"
-    )
-
-
 class StarredDetails(AtlanObject):
     """Description"""
 
@@ -163,26 +163,24 @@ class StarredDetails(AtlanObject):
 class AzureTag(AtlanObject):
     """Description"""
 
-    azure_tag_key: "str" = Field(None, description="", alias="azureTagKey")
-    azure_tag_value: "str" = Field(None, description="", alias="azureTagValue")
+    azure_tag_key: "str" = Field(description="", alias="azureTagKey")
+    azure_tag_value: "str" = Field(description="", alias="azureTagValue")
 
 
 class AuthPolicyCondition(AtlanObject):
     """Description"""
 
-    policy_condition_type: "str" = Field(
-        None, description="", alias="policyConditionType"
-    )
+    policy_condition_type: "str" = Field(description="", alias="policyConditionType")
     policy_condition_values: "set[str]" = Field(
-        None, description="", alias="policyConditionValues"
+        description="", alias="policyConditionValues"
     )
 
 
 class AwsTag(AtlanObject):
     """Description"""
 
-    aws_tag_key: "str" = Field(None, description="", alias="awsTagKey")
-    aws_tag_value: "str" = Field(None, description="", alias="awsTagValue")
+    aws_tag_key: "str" = Field(description="", alias="awsTagKey")
+    aws_tag_value: "str" = Field(description="", alias="awsTagValue")
 
 
 class DbtMetricFilter(AtlanObject):
@@ -205,21 +203,21 @@ class DbtMetricFilter(AtlanObject):
 class GoogleTag(AtlanObject):
     """Description"""
 
-    google_tag_key: "str" = Field(None, description="", alias="googleTagKey")
-    google_tag_value: "str" = Field(None, description="", alias="googleTagValue")
+    google_tag_key: "str" = Field(description="", alias="googleTagKey")
+    google_tag_value: "str" = Field(description="", alias="googleTagValue")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
     """Description"""
 
     policy_validity_schedule_start_time: "str" = Field(
-        None, description="", alias="policyValidityScheduleStartTime"
+        description="", alias="policyValidityScheduleStartTime"
     )
     policy_validity_schedule_end_time: "str" = Field(
-        None, description="", alias="policyValidityScheduleEndTime"
+        description="", alias="policyValidityScheduleEndTime"
     )
     policy_validity_schedule_timezone: "str" = Field(
-        None, description="", alias="policyValidityScheduleTimezone"
+        description="", alias="policyValidityScheduleTimezone"
     )
 
 
@@ -249,8 +247,8 @@ class MCRuleComparison(AtlanObject):
 class GoogleLabel(AtlanObject):
     """Description"""
 
-    google_label_key: "str" = Field(None, description="", alias="googleLabelKey")
-    google_label_value: "str" = Field(None, description="", alias="googleLabelValue")
+    google_label_key: "str" = Field(description="", alias="googleLabelKey")
+    google_label_value: "str" = Field(description="", alias="googleLabelValue")
 
 
 class PopularityInsights(AtlanObject):

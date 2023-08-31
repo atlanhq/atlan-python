@@ -88,7 +88,7 @@ class QuickSightFolder(QuickSight):
         self, quick_sight_folder_type: Optional[QuickSightFolderType]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_folder_type = quick_sight_folder_type
 
     @property
@@ -104,7 +104,7 @@ class QuickSightFolder(QuickSight):
         self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
 
     @property
@@ -118,7 +118,7 @@ class QuickSightFolder(QuickSight):
         self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboards = quick_sight_dashboards
 
     @property
@@ -130,7 +130,7 @@ class QuickSightFolder(QuickSight):
         self, quick_sight_datasets: Optional[list[QuickSightDataset]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_datasets = quick_sight_datasets
 
     @property
@@ -142,7 +142,7 @@ class QuickSightFolder(QuickSight):
         self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analyses = quick_sight_analyses
 
     class Attributes(QuickSight.Attributes):
@@ -163,7 +163,9 @@ class QuickSightFolder(QuickSight):
         )  # relationship
 
     attributes: "QuickSightFolder.Attributes" = Field(
-        default_factory=lambda: QuickSightFolder.Attributes(),
+        default_factory=lambda: QuickSightFolder.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -219,7 +221,7 @@ class QuickSightDashboardVisual(QuickSight):
         self, quick_sight_dashboard_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboard_qualified_name = (
             quick_sight_dashboard_qualified_name
         )
@@ -235,7 +237,7 @@ class QuickSightDashboardVisual(QuickSight):
         self, quick_sight_dashboard: Optional[QuickSightDashboard]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboard = quick_sight_dashboard
 
     class Attributes(QuickSight.Attributes):
@@ -247,7 +249,9 @@ class QuickSightDashboardVisual(QuickSight):
         )  # relationship
 
     attributes: "QuickSightDashboardVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
+        default_factory=lambda: QuickSightDashboardVisual.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -301,7 +305,7 @@ class QuickSightAnalysisVisual(QuickSight):
         self, quick_sight_analysis_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_qualified_name = (
             quick_sight_analysis_qualified_name
         )
@@ -313,7 +317,7 @@ class QuickSightAnalysisVisual(QuickSight):
     @quick_sight_analysis.setter
     def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis = quick_sight_analysis
 
     class Attributes(QuickSight.Attributes):
@@ -325,7 +329,9 @@ class QuickSightAnalysisVisual(QuickSight):
         )  # relationship
 
     attributes: "QuickSightAnalysisVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
+        default_factory=lambda: QuickSightAnalysisVisual.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -386,7 +392,7 @@ class QuickSightDatasetField(QuickSight):
         self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
 
     @property
@@ -402,7 +408,7 @@ class QuickSightDatasetField(QuickSight):
         self, quick_sight_dataset_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset_qualified_name = (
             quick_sight_dataset_qualified_name
         )
@@ -414,7 +420,7 @@ class QuickSightDatasetField(QuickSight):
     @quick_sight_dataset.setter
     def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset = quick_sight_dataset
 
     class Attributes(QuickSight.Attributes):
@@ -429,7 +435,9 @@ class QuickSightDatasetField(QuickSight):
         )  # relationship
 
     attributes: "QuickSightDatasetField.Attributes" = Field(
-        default_factory=lambda: QuickSightDatasetField.Attributes(),
+        default_factory=lambda: QuickSightDatasetField.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -512,7 +520,7 @@ class QuickSightAnalysis(QuickSight):
         self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
 
     @property
@@ -528,7 +536,7 @@ class QuickSightAnalysis(QuickSight):
         self, quick_sight_analysis_calculated_fields: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_calculated_fields = (
             quick_sight_analysis_calculated_fields
         )
@@ -546,7 +554,7 @@ class QuickSightAnalysis(QuickSight):
         self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_parameter_declarations = (
             quick_sight_analysis_parameter_declarations
         )
@@ -564,7 +572,7 @@ class QuickSightAnalysis(QuickSight):
         self, quick_sight_analysis_filter_groups: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_filter_groups = (
             quick_sight_analysis_filter_groups
         )
@@ -582,7 +590,7 @@ class QuickSightAnalysis(QuickSight):
         self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
 
     @property
@@ -598,7 +606,7 @@ class QuickSightAnalysis(QuickSight):
         self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
 
     class Attributes(QuickSight.Attributes):
@@ -622,7 +630,9 @@ class QuickSightAnalysis(QuickSight):
         )  # relationship
 
     attributes: "QuickSightAnalysis.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysis.Attributes(),
+        default_factory=lambda: QuickSightAnalysis.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -693,7 +703,7 @@ class QuickSightDashboard(QuickSight):
         self, quick_sight_dashboard_published_version_number: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboard_published_version_number = (
             quick_sight_dashboard_published_version_number
         )
@@ -711,7 +721,7 @@ class QuickSightDashboard(QuickSight):
         self, quick_sight_dashboard_last_published_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboard_last_published_time = (
             quick_sight_dashboard_last_published_time
         )
@@ -729,7 +739,7 @@ class QuickSightDashboard(QuickSight):
         self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
 
     @property
@@ -747,7 +757,7 @@ class QuickSightDashboard(QuickSight):
         self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
 
     class Attributes(QuickSight.Attributes):
@@ -767,7 +777,9 @@ class QuickSightDashboard(QuickSight):
         )  # relationship
 
     attributes: "QuickSightDashboard.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboard.Attributes(),
+        default_factory=lambda: QuickSightDashboard.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -835,7 +847,7 @@ class QuickSightDataset(QuickSight):
         self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset_import_mode = (
             quick_sight_dataset_import_mode
         )
@@ -853,7 +865,7 @@ class QuickSightDataset(QuickSight):
         self, quick_sight_dataset_column_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset_column_count = (
             quick_sight_dataset_column_count
         )
@@ -871,7 +883,7 @@ class QuickSightDataset(QuickSight):
         self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
 
     @property
@@ -887,7 +899,7 @@ class QuickSightDataset(QuickSight):
         self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
 
     class Attributes(QuickSight.Attributes):
@@ -905,7 +917,9 @@ class QuickSightDataset(QuickSight):
         )  # relationship
 
     attributes: "QuickSightDataset.Attributes" = Field(
-        default_factory=lambda: QuickSightDataset.Attributes(),
+        default_factory=lambda: QuickSightDataset.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

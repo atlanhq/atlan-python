@@ -116,7 +116,7 @@ class APISpec(API):
         self, api_spec_terms_of_service_url: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_terms_of_service_url = api_spec_terms_of_service_url
 
     @property
@@ -128,7 +128,7 @@ class APISpec(API):
     @api_spec_contact_email.setter
     def api_spec_contact_email(self, api_spec_contact_email: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_contact_email = api_spec_contact_email
 
     @property
@@ -140,7 +140,7 @@ class APISpec(API):
     @api_spec_contact_name.setter
     def api_spec_contact_name(self, api_spec_contact_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_contact_name = api_spec_contact_name
 
     @property
@@ -150,7 +150,7 @@ class APISpec(API):
     @api_spec_contact_url.setter
     def api_spec_contact_url(self, api_spec_contact_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_contact_url = api_spec_contact_url
 
     @property
@@ -162,7 +162,7 @@ class APISpec(API):
     @api_spec_license_name.setter
     def api_spec_license_name(self, api_spec_license_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_license_name = api_spec_license_name
 
     @property
@@ -172,7 +172,7 @@ class APISpec(API):
     @api_spec_license_url.setter
     def api_spec_license_url(self, api_spec_license_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_license_url = api_spec_license_url
 
     @property
@@ -186,7 +186,7 @@ class APISpec(API):
     @api_spec_contract_version.setter
     def api_spec_contract_version(self, api_spec_contract_version: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_contract_version = api_spec_contract_version
 
     @property
@@ -198,7 +198,7 @@ class APISpec(API):
     @api_spec_service_alias.setter
     def api_spec_service_alias(self, api_spec_service_alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec_service_alias = api_spec_service_alias
 
     @property
@@ -208,7 +208,7 @@ class APISpec(API):
     @api_paths.setter
     def api_paths(self, api_paths: Optional[list[APIPath]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_paths = api_paths
 
     class Attributes(API.Attributes):
@@ -241,7 +241,9 @@ class APISpec(API):
         )  # relationship
 
     attributes: "APISpec.Attributes" = Field(
-        default_factory=lambda: APISpec.Attributes(),
+        default_factory=lambda: APISpec.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -322,7 +324,7 @@ class APIPath(API):
     @api_path_summary.setter
     def api_path_summary(self, api_path_summary: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_path_summary = api_path_summary
 
     @property
@@ -332,7 +334,7 @@ class APIPath(API):
     @api_path_raw_u_r_i.setter
     def api_path_raw_u_r_i(self, api_path_raw_u_r_i: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_path_raw_u_r_i = api_path_raw_u_r_i
 
     @property
@@ -344,7 +346,7 @@ class APIPath(API):
     @api_path_is_templated.setter
     def api_path_is_templated(self, api_path_is_templated: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_path_is_templated = api_path_is_templated
 
     @property
@@ -360,7 +362,7 @@ class APIPath(API):
         self, api_path_available_operations: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_path_available_operations = api_path_available_operations
 
     @property
@@ -376,7 +378,7 @@ class APIPath(API):
         self, api_path_available_response_codes: Optional[dict[str, str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_path_available_response_codes = (
             api_path_available_response_codes
         )
@@ -392,7 +394,7 @@ class APIPath(API):
     @api_path_is_ingress_exposed.setter
     def api_path_is_ingress_exposed(self, api_path_is_ingress_exposed: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_path_is_ingress_exposed = api_path_is_ingress_exposed
 
     @property
@@ -402,7 +404,7 @@ class APIPath(API):
     @api_spec.setter
     def api_spec(self, api_spec: Optional[APISpec]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.api_spec = api_spec
 
     class Attributes(API.Attributes):
@@ -429,7 +431,9 @@ class APIPath(API):
         )  # relationship
 
     attributes: "APIPath.Attributes" = Field(
-        default_factory=lambda: APIPath.Attributes(),
+        default_factory=lambda: APIPath.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

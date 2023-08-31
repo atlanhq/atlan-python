@@ -77,7 +77,7 @@ class Badge(Asset, type_name="Badge"):
     @badge_conditions.setter
     def badge_conditions(self, badge_conditions: Optional[list[BadgeCondition]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.badge_conditions = badge_conditions
 
     @property
@@ -91,7 +91,7 @@ class Badge(Asset, type_name="Badge"):
     @badge_metadata_attribute.setter
     def badge_metadata_attribute(self, badge_metadata_attribute: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.badge_metadata_attribute = badge_metadata_attribute
 
     class Attributes(Asset.Attributes):
@@ -130,7 +130,9 @@ class Badge(Asset, type_name="Badge"):
             )
 
     attributes: "Badge.Attributes" = Field(
-        default_factory=lambda: Badge.Attributes(),
+        default_factory=lambda: Badge.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

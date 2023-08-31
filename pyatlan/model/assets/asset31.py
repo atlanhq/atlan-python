@@ -106,7 +106,7 @@ class S3(ObjectStore):
     @s3_e_tag.setter
     def s3_e_tag(self, s3_e_tag: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.s3_e_tag = s3_e_tag
 
     @property
@@ -116,7 +116,7 @@ class S3(ObjectStore):
     @s3_encryption.setter
     def s3_encryption(self, s3_encryption: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.s3_encryption = s3_encryption
 
     @property
@@ -126,7 +126,7 @@ class S3(ObjectStore):
     @aws_arn.setter
     def aws_arn(self, aws_arn: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_arn = aws_arn
 
     @property
@@ -136,7 +136,7 @@ class S3(ObjectStore):
     @aws_partition.setter
     def aws_partition(self, aws_partition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_partition = aws_partition
 
     @property
@@ -146,7 +146,7 @@ class S3(ObjectStore):
     @aws_service.setter
     def aws_service(self, aws_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_service = aws_service
 
     @property
@@ -156,7 +156,7 @@ class S3(ObjectStore):
     @aws_region.setter
     def aws_region(self, aws_region: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_region = aws_region
 
     @property
@@ -166,7 +166,7 @@ class S3(ObjectStore):
     @aws_account_id.setter
     def aws_account_id(self, aws_account_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_account_id = aws_account_id
 
     @property
@@ -176,7 +176,7 @@ class S3(ObjectStore):
     @aws_resource_id.setter
     def aws_resource_id(self, aws_resource_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_resource_id = aws_resource_id
 
     @property
@@ -186,7 +186,7 @@ class S3(ObjectStore):
     @aws_owner_name.setter
     def aws_owner_name(self, aws_owner_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_owner_name = aws_owner_name
 
     @property
@@ -196,7 +196,7 @@ class S3(ObjectStore):
     @aws_owner_id.setter
     def aws_owner_id(self, aws_owner_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_owner_id = aws_owner_id
 
     @property
@@ -206,7 +206,7 @@ class S3(ObjectStore):
     @aws_tags.setter
     def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.aws_tags = aws_tags
 
     class Attributes(ObjectStore.Attributes):
@@ -229,7 +229,9 @@ class S3(ObjectStore):
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
 
     attributes: "S3.Attributes" = Field(
-        default_factory=lambda: S3.Attributes(),
+        default_factory=lambda: S3.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

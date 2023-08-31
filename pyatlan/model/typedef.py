@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Optional, cast
 
 from pydantic import Field
 
@@ -186,14 +186,14 @@ class EnumDef(TypeDef):
             return EnumDef.ElementDef(ordinal=ordinal, value=value)
 
         @staticmethod
-        def list_from(values: List[str]) -> List[EnumDef.ElementDef]:
+        def list_from(values: list[str]) -> list[EnumDef.ElementDef]:
             from pyatlan.utils import validate_required_fields
 
             validate_required_fields(
                 ["values"],
                 [values],
             )
-            elements: List[EnumDef.ElementDef] = []
+            elements: list[EnumDef.ElementDef] = []
             elements.extend(
                 EnumDef.ElementDef.of(ordinal=i, value=values[i])
                 for i in range(len(values))
@@ -201,16 +201,16 @@ class EnumDef(TypeDef):
             return elements
 
     category: AtlanTypeCategory = AtlanTypeCategory.ENUM
-    element_defs: List["EnumDef.ElementDef"] = Field(
+    element_defs: list["EnumDef.ElementDef"] = Field(
         description="Valid values for the enumeration."
     )
-    options: Optional[Dict[str, Any]] = Field(
+    options: Optional[dict[str, Any]] = Field(
         description="Optional properties of the type definition."
     )
     service_type: Optional[str] = Field(description="Internal use only.")
 
     @staticmethod
-    def create(name: str, values: List[str]) -> EnumDef:
+    def create(name: str, values: list[str]) -> EnumDef:
         from pyatlan.utils import validate_required_fields
 
         validate_required_fields(
@@ -224,7 +224,7 @@ class EnumDef(TypeDef):
             element_defs=EnumDef.ElementDef.list_from(values),
         )
 
-    def get_valid_values(self) -> Optional[List[str]]:
+    def get_valid_values(self) -> Optional[list[str]]:
         """
         Translate the element definitions in this enumeration into simple list of strings.
         """
@@ -327,11 +327,11 @@ class AttributeDef(AtlanObject):
         "`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates "
         "they are unique and unordered.",
     )
-    constraints: Optional[List[Dict[str, Any]]] = Field(
+    constraints: Optional[list[dict[str, Any]]] = Field(
         description="Internal use only."
     )
-    enum_values: Optional[List[str]] = Field(
-        description="List of values for an enumeration."
+    enum_values: Optional[list[str]] = Field(
+        description="list of values for an enumeration."
     )
     description: Optional[str] = Field(
         description="Description of the attribute definition."
@@ -378,10 +378,10 @@ class AttributeDef(AtlanObject):
         description="Maximum number of values for this attribute. If greater than 1, this attribute allows "
         "multiple values.",
     )
-    index_type_es_config: Optional[Dict[str, str]] = Field(
+    index_type_es_config: Optional[dict[str, str]] = Field(
         description="Internal use only.", alias="indexTypeESConfig"
     )
-    index_type_es_fields: Optional[Dict[str, dict[str, str]]] = Field(
+    index_type_es_fields: Optional[dict[str, dict[str, str]]] = Field(
         description="Internal use only.", alias="indexTypeESFields"
     )
     is_default_value_null: Optional[bool] = Field(description="TBC")
@@ -464,9 +464,9 @@ class RelationshipAttributeDef(AttributeDef):
 
 class StructDef(TypeDef):
     category: AtlanTypeCategory = AtlanTypeCategory.STRUCT
-    attribute_defs: Optional[List[AttributeDef]] = Field(
+    attribute_defs: Optional[list[AttributeDef]] = Field(
         None,
-        description="List of attributes that should be available in the type_ definition.",
+        description="list of attributes that should be available in the type_ definition.",
     )
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
@@ -474,25 +474,25 @@ class StructDef(TypeDef):
 
 
 class AtlanTagDef(TypeDef):
-    attribute_defs: Optional[List[Dict[str, Any]]] = Field(description="Unused.")
+    attribute_defs: Optional[list[dict[str, Any]]] = Field(description="Unused.")
     category: AtlanTypeCategory = AtlanTypeCategory.CLASSIFICATION
     display_name: str = Field(
         description="Name used for display purposes (in user interfaces)."
     )
-    entity_types: Optional[List[str]] = Field(
+    entity_types: Optional[list[str]] = Field(
         description="A list of the entity types that this classification can be used against."
         " (This should be `Asset` to allow classification of any asset in Atlan.)"
     )
-    options: Optional[Dict[str, Any]] = Field(
+    options: Optional[dict[str, Any]] = Field(
         description="Optional properties of the type_ definition."
     )
-    sub_types: Optional[List[str]] = Field(
-        description="List of the sub-types that extend from this type_ definition. Generally this is not specified "
+    sub_types: Optional[list[str]] = Field(
+        description="list of the sub-types that extend from this type_ definition. Generally this is not specified "
         "in any request, but is only supplied in responses. (This is intended for internal use only, and "
         "should not be used without specific guidance.)",
     )
-    super_types: Optional[List[str]] = Field(
-        description="List of the super-types that this type_ definition should extend. (This is intended for internal "
+    super_types: Optional[list[str]] = Field(
+        description="list of the super-types that this type_ definition should extend. (This is intended for internal "
         "use only, and should not be used without specific guidance.)",
     )
     service_type: Optional[str] = Field(
@@ -535,41 +535,43 @@ class AtlanTagDef(TypeDef):
 
 
 class EntityDef(TypeDef):
-    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+    attribute_defs: Optional[list[dict[str, Any]]] = Field(
         [], description="Unused.", example=[]
     )
-    business_attribute_defs: Optional[Dict[str, List[Dict[str, Any]]]] = Field(
-        [], description="Unused.", example=[]
+    business_attribute_defs: Optional[dict[str, list[dict[str, Any]]]] = Field(
+        default_factory=cast(Callable[[], dict[str, list[dict[str, Any]]]], dict),
+        description="Unused.",
+        example=[],
     )
     category: AtlanTypeCategory = AtlanTypeCategory.ENTITY
-    relationship_attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+    relationship_attribute_defs: Optional[list[dict[str, Any]]] = Field(
         [], description="Unused.", example=[]
     )
     service_type: Optional[str] = Field(
         None, description="Internal use only.", example="atlan"
     )
-    sub_types: Optional[List[str]] = Field(
+    sub_types: Optional[list[str]] = Field(
         [],
-        description="List of the sub-types that extend from this type_ definition. Generally this is not specified in "
+        description="list of the sub-types that extend from this type_ definition. Generally this is not specified in "
         "any request, but is only supplied in responses. (This is intended for internal use only, and "
         "should not be used without specific guidance.)",
         example=[],
     )
-    super_types: Optional[List[str]] = Field(
+    super_types: Optional[list[str]] = Field(
         [],
-        description="List of the super-types that this type_ definition should extend. (This is intended for internal "
+        description="list of the super-types that this type_ definition should extend. (This is intended for internal "
         "use only, and should not be used without specific guidance.)",
         example=[],
     )
 
 
 class RelationshipDef(TypeDef):
-    attribute_defs: Optional[List[Dict[str, Any]]] = Field(
+    attribute_defs: Optional[list[dict[str, Any]]] = Field(
         [], description="Unused.", example=[]
     )
     category: AtlanTypeCategory = AtlanTypeCategory.RELATIONSHIP
-    end_def1: Optional[Dict[str, Any]] = Field({}, description="Unused.", example={})
-    end_def2: Optional[Dict[str, Any]] = Field({}, description="Unused.", example={})
+    end_def1: Optional[dict[str, Any]] = Field({}, description="Unused.", example={})
+    end_def2: Optional[dict[str, Any]] = Field({}, description="Unused.", example={})
     propagate_tags: str = Field(
         "ONE_TO_TWO", description="Unused", example="ONE_TO_TWO"
     )
@@ -632,9 +634,9 @@ class CustomMetadataDef(TypeDef):
                 logo_url=url, logo_type="image", is_locked=locked
             )
 
-    attribute_defs: List[AttributeDef] = Field(
+    attribute_defs: list[AttributeDef] = Field(
         default=[],
-        description="List of custom attributes defined within the custom metadata.",
+        description="list of custom attributes defined within the custom metadata.",
     )
     category: AtlanTypeCategory = AtlanTypeCategory.CUSTOM_METADATA
     display_name: str = Field(
@@ -661,25 +663,25 @@ class CustomMetadataDef(TypeDef):
 
 
 class TypeDefResponse(AtlanObject):
-    enum_defs: List[EnumDef] = Field(
-        [], description="List of enumeration type definitions."
+    enum_defs: list[EnumDef] = Field(
+        [], description="list of enumeration type definitions."
     )
-    struct_defs: List[StructDef] = Field(
-        [], description="List of struct type definitions."
+    struct_defs: list[StructDef] = Field(
+        [], description="list of struct type definitions."
     )
-    atlan_tag_defs: List[AtlanTagDef] = Field(
+    atlan_tag_defs: list[AtlanTagDef] = Field(
         [],
-        description="List of classification type definitions.",
+        description="list of classification type definitions.",
         alias="classificationDefs",
     )
-    entity_defs: List[EntityDef] = Field(
-        [], description="List of entity type_ definitions."
+    entity_defs: list[EntityDef] = Field(
+        [], description="list of entity type_ definitions."
     )
-    relationship_defs: List[RelationshipDef] = Field(
-        [], description="List of relationship type_ definitions."
+    relationship_defs: list[RelationshipDef] = Field(
+        [], description="list of relationship type_ definitions."
     )
-    custom_metadata_defs: List[CustomMetadataDef] = Field(
+    custom_metadata_defs: list[CustomMetadataDef] = Field(
         [],
-        description="List of custom metadata type_ definitions.",
+        description="list of custom metadata type_ definitions.",
         alias="businessMetadataDefs",
     )

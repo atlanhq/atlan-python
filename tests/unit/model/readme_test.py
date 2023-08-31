@@ -50,7 +50,7 @@ def test_create_readme_without_required_parameters_raises_exception(
             TABLE_NAME,
         ),
         (
-            Table(attributes=Table.Attributes()),
+            Table(attributes=Table.Attributes(name=TABLE_NAME)),
             "<h1>stuff</h1>",
             TABLE_NAME,
             TABLE_NAME,

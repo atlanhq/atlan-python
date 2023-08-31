@@ -98,7 +98,7 @@ class RedashQuery(Redash):
     @redash_query_s_q_l.setter
     def redash_query_s_q_l(self, redash_query_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_s_q_l = redash_query_s_q_l
 
     @property
@@ -110,7 +110,7 @@ class RedashQuery(Redash):
     @redash_query_parameters.setter
     def redash_query_parameters(self, redash_query_parameters: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_parameters = redash_query_parameters
 
     @property
@@ -122,7 +122,7 @@ class RedashQuery(Redash):
     @redash_query_schedule.setter
     def redash_query_schedule(self, redash_query_schedule: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_schedule = redash_query_schedule
 
     @property
@@ -138,7 +138,7 @@ class RedashQuery(Redash):
         self, redash_query_last_execution_runtime: Optional[float]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_last_execution_runtime = (
             redash_query_last_execution_runtime
         )
@@ -156,7 +156,7 @@ class RedashQuery(Redash):
         self, redash_query_last_executed_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_last_executed_at = redash_query_last_executed_at
 
     @property
@@ -172,7 +172,7 @@ class RedashQuery(Redash):
         self, redash_query_schedule_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_schedule_humanized = (
             redash_query_schedule_humanized
         )
@@ -188,7 +188,7 @@ class RedashQuery(Redash):
         self, redash_visualizations: Optional[list[RedashVisualization]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_visualizations = redash_visualizations
 
     class Attributes(Redash.Attributes):
@@ -215,7 +215,9 @@ class RedashQuery(Redash):
         )  # relationship
 
     attributes: "RedashQuery.Attributes" = Field(
-        default_factory=lambda: RedashQuery.Attributes(),
+        default_factory=lambda: RedashQuery.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -281,7 +283,7 @@ class RedashVisualization(Redash):
     @redash_visualization_type.setter
     def redash_visualization_type(self, redash_visualization_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_visualization_type = redash_visualization_type
 
     @property
@@ -291,7 +293,7 @@ class RedashVisualization(Redash):
     @redash_query_name.setter
     def redash_query_name(self, redash_query_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_name = redash_query_name
 
     @property
@@ -305,7 +307,7 @@ class RedashVisualization(Redash):
     @redash_query_qualified_name.setter
     def redash_query_qualified_name(self, redash_query_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query_qualified_name = redash_query_qualified_name
 
     @property
@@ -315,7 +317,7 @@ class RedashVisualization(Redash):
     @redash_query.setter
     def redash_query(self, redash_query: Optional[RedashQuery]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.redash_query = redash_query
 
     class Attributes(Redash.Attributes):
@@ -333,7 +335,9 @@ class RedashVisualization(Redash):
         )  # relationship
 
     attributes: "RedashVisualization.Attributes" = Field(
-        default_factory=lambda: RedashVisualization.Attributes(),
+        default_factory=lambda: RedashVisualization.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

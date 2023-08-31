@@ -24,14 +24,14 @@
 
     @classmethod
     def ref_by_guid(cls: type[SelfAsset], guid: str) -> SelfAsset:
-        retval: SelfAsset = cls(attributes=cls.Attributes())
+        retval: SelfAsset = cls(attributes=cls.Attributes(name=""))
         retval.guid = guid
         return retval
 
     @classmethod
     def ref_by_qualified_name(cls: type[SelfAsset], qualified_name: str) -> SelfAsset:
         ret_value: SelfAsset = cls(
-            attributes=cls.Attributes(qualified_name=qualified_name)
+            attributes=cls.Attributes(name="", qualified_name=qualified_name)
         )
         ret_value.unique_attributes = {"qualifiedName": qualified_name}
         return ret_value

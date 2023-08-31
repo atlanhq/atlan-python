@@ -95,7 +95,7 @@ class KafkaConsumerGroup(Kafka):
         ],
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_consumer_group_topic_consumption_properties = (
             kafka_consumer_group_topic_consumption_properties
         )
@@ -113,7 +113,7 @@ class KafkaConsumerGroup(Kafka):
         self, kafka_consumer_group_member_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_consumer_group_member_count = (
             kafka_consumer_group_member_count
         )
@@ -125,7 +125,7 @@ class KafkaConsumerGroup(Kafka):
     @kafka_topic_names.setter
     def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_names = kafka_topic_names
 
     @property
@@ -141,7 +141,7 @@ class KafkaConsumerGroup(Kafka):
         self, kafka_topic_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
 
     @property
@@ -151,7 +151,7 @@ class KafkaConsumerGroup(Kafka):
     @kafka_topics.setter
     def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topics = kafka_topics
 
     class Attributes(Kafka.Attributes):
@@ -174,7 +174,9 @@ class KafkaConsumerGroup(Kafka):
         )  # relationship
 
     attributes: "KafkaConsumerGroup.Attributes" = Field(
-        default_factory=lambda: KafkaConsumerGroup.Attributes(),
+        default_factory=lambda: KafkaConsumerGroup.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -273,7 +275,7 @@ class KafkaTopic(Kafka):
     @kafka_topic_is_internal.setter
     def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
 
     @property
@@ -289,7 +291,7 @@ class KafkaTopic(Kafka):
         self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
 
     @property
@@ -305,7 +307,7 @@ class KafkaTopic(Kafka):
         self, kafka_topic_replication_factor: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
 
     @property
@@ -319,7 +321,7 @@ class KafkaTopic(Kafka):
     @kafka_topic_segment_bytes.setter
     def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
 
     @property
@@ -333,7 +335,7 @@ class KafkaTopic(Kafka):
     @kafka_topic_partitions_count.setter
     def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
 
     @property
@@ -347,7 +349,7 @@ class KafkaTopic(Kafka):
     @kafka_topic_size_in_bytes.setter
     def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
 
     @property
@@ -361,7 +363,7 @@ class KafkaTopic(Kafka):
     @kafka_topic_record_count.setter
     def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_record_count = kafka_topic_record_count
 
     @property
@@ -377,7 +379,7 @@ class KafkaTopic(Kafka):
         self, kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
 
     @property
@@ -391,7 +393,7 @@ class KafkaTopic(Kafka):
         self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.kafka_consumer_groups = kafka_consumer_groups
 
     class Attributes(Kafka.Attributes):
@@ -424,7 +426,9 @@ class KafkaTopic(Kafka):
         )  # relationship
 
     attributes: "KafkaTopic.Attributes" = Field(
-        default_factory=lambda: KafkaTopic.Attributes(),
+        default_factory=lambda: KafkaTopic.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

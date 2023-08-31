@@ -167,7 +167,7 @@ class GCS(Google):
     @gcs_storage_class.setter
     def gcs_storage_class(self, gcs_storage_class: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_storage_class = gcs_storage_class
 
     @property
@@ -177,7 +177,7 @@ class GCS(Google):
     @gcs_encryption_type.setter
     def gcs_encryption_type(self, gcs_encryption_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_encryption_type = gcs_encryption_type
 
     @property
@@ -187,7 +187,7 @@ class GCS(Google):
     @gcs_e_tag.setter
     def gcs_e_tag(self, gcs_e_tag: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_e_tag = gcs_e_tag
 
     @property
@@ -197,7 +197,7 @@ class GCS(Google):
     @gcs_requester_pays.setter
     def gcs_requester_pays(self, gcs_requester_pays: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_requester_pays = gcs_requester_pays
 
     @property
@@ -207,7 +207,7 @@ class GCS(Google):
     @gcs_access_control.setter
     def gcs_access_control(self, gcs_access_control: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_access_control = gcs_access_control
 
     @property
@@ -219,7 +219,7 @@ class GCS(Google):
     @gcs_meta_generation_id.setter
     def gcs_meta_generation_id(self, gcs_meta_generation_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_meta_generation_id = gcs_meta_generation_id
 
     @property
@@ -229,7 +229,7 @@ class GCS(Google):
     @google_service.setter
     def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_service = google_service
 
     @property
@@ -239,7 +239,7 @@ class GCS(Google):
     @google_project_name.setter
     def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_project_name = google_project_name
 
     @property
@@ -249,7 +249,7 @@ class GCS(Google):
     @google_project_id.setter
     def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_project_id = google_project_id
 
     @property
@@ -261,7 +261,7 @@ class GCS(Google):
     @google_project_number.setter
     def google_project_number(self, google_project_number: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_project_number = google_project_number
 
     @property
@@ -271,7 +271,7 @@ class GCS(Google):
     @google_location.setter
     def google_location(self, google_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_location = google_location
 
     @property
@@ -281,7 +281,7 @@ class GCS(Google):
     @google_location_type.setter
     def google_location_type(self, google_location_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_location_type = google_location_type
 
     @property
@@ -291,7 +291,7 @@ class GCS(Google):
     @google_labels.setter
     def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_labels = google_labels
 
     @property
@@ -301,7 +301,7 @@ class GCS(Google):
     @google_tags.setter
     def google_tags(self, google_tags: Optional[list[GoogleTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_tags = google_tags
 
     @property
@@ -311,7 +311,7 @@ class GCS(Google):
     @input_to_processes.setter
     def input_to_processes(self, input_to_processes: Optional[list[Process]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.input_to_processes = input_to_processes
 
     @property
@@ -327,7 +327,7 @@ class GCS(Google):
         self, output_from_airflow_tasks: Optional[list[AirflowTask]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
@@ -341,7 +341,7 @@ class GCS(Google):
         self, input_to_airflow_tasks: Optional[list[AirflowTask]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
@@ -353,7 +353,7 @@ class GCS(Google):
     @output_from_processes.setter
     def output_from_processes(self, output_from_processes: Optional[list[Process]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Google.Attributes):
@@ -411,7 +411,9 @@ class GCS(Google):
         )  # relationship
 
     attributes: "GCS.Attributes" = Field(
-        default_factory=lambda: GCS.Attributes(),
+        default_factory=lambda: GCS.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

@@ -40,8 +40,8 @@ A = TypeVar("A", bound=Asset)
 
 
 class AssetMutationResponse(AtlanObject):
-    guid_assignments: dict[str, Any] = Field(
-        None, description="Map of assigned unique identifiers for the changed assets."
+    guid_assignments: Optional[dict[str, Any]] = Field(
+        description="Map of assigned unique identifiers for the changed assets."
     )
     mutated_entities: Optional[MutatedEntities] = Field(
         None, description="Assets that were changed."

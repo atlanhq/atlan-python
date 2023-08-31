@@ -97,7 +97,7 @@ class Google(Cloud):
     @google_service.setter
     def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_service = google_service
 
     @property
@@ -107,7 +107,7 @@ class Google(Cloud):
     @google_project_name.setter
     def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_project_name = google_project_name
 
     @property
@@ -117,7 +117,7 @@ class Google(Cloud):
     @google_project_id.setter
     def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_project_id = google_project_id
 
     @property
@@ -129,7 +129,7 @@ class Google(Cloud):
     @google_project_number.setter
     def google_project_number(self, google_project_number: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_project_number = google_project_number
 
     @property
@@ -139,7 +139,7 @@ class Google(Cloud):
     @google_location.setter
     def google_location(self, google_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_location = google_location
 
     @property
@@ -149,7 +149,7 @@ class Google(Cloud):
     @google_location_type.setter
     def google_location_type(self, google_location_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_location_type = google_location_type
 
     @property
@@ -159,7 +159,7 @@ class Google(Cloud):
     @google_labels.setter
     def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_labels = google_labels
 
     @property
@@ -169,7 +169,7 @@ class Google(Cloud):
     @google_tags.setter
     def google_tags(self, google_tags: Optional[list[GoogleTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.google_tags = google_tags
 
     class Attributes(Cloud.Attributes):
@@ -199,7 +199,9 @@ class Google(Cloud):
         )
 
     attributes: "Google.Attributes" = Field(
-        default_factory=lambda: Google.Attributes(),
+        default_factory=lambda: Google.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

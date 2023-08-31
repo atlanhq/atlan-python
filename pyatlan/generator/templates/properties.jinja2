@@ -9,4 +9,4 @@
     {{ gen_property_relationship_class_vars(entity_def.name, entity_def.relationship_attribute_defs) }}
     {%- endif %}
 
-    {{ gen_properties(entity_def.attribute_defs + entity_def.relationship_attribute_defs) }}
+    {{ gen_properties(entity_def, (entity_def.attribute_defs + entity_def.relationship_attribute_defs)) }}

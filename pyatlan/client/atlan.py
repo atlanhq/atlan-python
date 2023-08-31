@@ -1259,6 +1259,7 @@ class AtlanClient(BaseSettings):
             guids.append(guid)
         query_params = {"deleteType": AtlanDeleteType.PURGE.value, "guid": guids}
         raw_json = self._call_api(DELETE_ENTITIES_BY_GUIDS, query_params=query_params)
+        print("raw_json", raw_json)
         return AssetMutationResponse(**raw_json)
 
     def delete_entity_by_guid(

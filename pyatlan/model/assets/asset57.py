@@ -161,7 +161,7 @@ class GCSObject(GCS):
     @gcs_bucket_name.setter
     def gcs_bucket_name(self, gcs_bucket_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_name = gcs_bucket_name
 
     @property
@@ -175,7 +175,7 @@ class GCSObject(GCS):
     @gcs_bucket_qualified_name.setter
     def gcs_bucket_qualified_name(self, gcs_bucket_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_qualified_name = gcs_bucket_qualified_name
 
     @property
@@ -185,7 +185,7 @@ class GCSObject(GCS):
     @gcs_object_size.setter
     def gcs_object_size(self, gcs_object_size: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_size = gcs_object_size
 
     @property
@@ -195,7 +195,7 @@ class GCSObject(GCS):
     @gcs_object_key.setter
     def gcs_object_key(self, gcs_object_key: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_key = gcs_object_key
 
     @property
@@ -207,7 +207,7 @@ class GCSObject(GCS):
     @gcs_object_media_link.setter
     def gcs_object_media_link(self, gcs_object_media_link: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_media_link = gcs_object_media_link
 
     @property
@@ -217,7 +217,7 @@ class GCSObject(GCS):
     @gcs_object_hold_type.setter
     def gcs_object_hold_type(self, gcs_object_hold_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_hold_type = gcs_object_hold_type
 
     @property
@@ -231,7 +231,7 @@ class GCSObject(GCS):
     @gcs_object_generation_id.setter
     def gcs_object_generation_id(self, gcs_object_generation_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_generation_id = gcs_object_generation_id
 
     @property
@@ -245,7 +245,7 @@ class GCSObject(GCS):
     @gcs_object_c_r_c32_c_hash.setter
     def gcs_object_c_r_c32_c_hash(self, gcs_object_c_r_c32_c_hash: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_c_r_c32_c_hash = gcs_object_c_r_c32_c_hash
 
     @property
@@ -255,7 +255,7 @@ class GCSObject(GCS):
     @gcs_object_m_d5_hash.setter
     def gcs_object_m_d5_hash(self, gcs_object_m_d5_hash: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_m_d5_hash = gcs_object_m_d5_hash
 
     @property
@@ -271,7 +271,7 @@ class GCSObject(GCS):
         self, gcs_object_data_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_data_last_modified_time = (
             gcs_object_data_last_modified_time
         )
@@ -285,7 +285,7 @@ class GCSObject(GCS):
     @gcs_object_content_type.setter
     def gcs_object_content_type(self, gcs_object_content_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_content_type = gcs_object_content_type
 
     @property
@@ -299,7 +299,7 @@ class GCSObject(GCS):
     @gcs_object_content_encoding.setter
     def gcs_object_content_encoding(self, gcs_object_content_encoding: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_content_encoding = gcs_object_content_encoding
 
     @property
@@ -315,7 +315,7 @@ class GCSObject(GCS):
         self, gcs_object_content_disposition: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_content_disposition = gcs_object_content_disposition
 
     @property
@@ -329,7 +329,7 @@ class GCSObject(GCS):
     @gcs_object_content_language.setter
     def gcs_object_content_language(self, gcs_object_content_language: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_content_language = gcs_object_content_language
 
     @property
@@ -345,7 +345,7 @@ class GCSObject(GCS):
         self, gcs_object_retention_expiration_date: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_retention_expiration_date = (
             gcs_object_retention_expiration_date
         )
@@ -357,7 +357,7 @@ class GCSObject(GCS):
     @gcs_bucket.setter
     def gcs_bucket(self, gcs_bucket: Optional[GCSBucket]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket = gcs_bucket
 
     class Attributes(GCS.Attributes):
@@ -411,7 +411,9 @@ class GCSObject(GCS):
         )  # relationship
 
     attributes: "GCSObject.Attributes" = Field(
-        default_factory=lambda: GCSObject.Attributes(),
+        default_factory=lambda: GCSObject.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -499,7 +501,7 @@ class GCSBucket(GCS):
     @gcs_object_count.setter
     def gcs_object_count(self, gcs_object_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_object_count = gcs_object_count
 
     @property
@@ -515,7 +517,7 @@ class GCSBucket(GCS):
         self, gcs_bucket_versioning_enabled: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_versioning_enabled = gcs_bucket_versioning_enabled
 
     @property
@@ -529,7 +531,7 @@ class GCSBucket(GCS):
     @gcs_bucket_retention_locked.setter
     def gcs_bucket_retention_locked(self, gcs_bucket_retention_locked: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_retention_locked = gcs_bucket_retention_locked
 
     @property
@@ -543,7 +545,7 @@ class GCSBucket(GCS):
     @gcs_bucket_retention_period.setter
     def gcs_bucket_retention_period(self, gcs_bucket_retention_period: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_retention_period = gcs_bucket_retention_period
 
     @property
@@ -559,7 +561,7 @@ class GCSBucket(GCS):
         self, gcs_bucket_retention_effective_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_retention_effective_time = (
             gcs_bucket_retention_effective_time
         )
@@ -575,7 +577,7 @@ class GCSBucket(GCS):
     @gcs_bucket_lifecycle_rules.setter
     def gcs_bucket_lifecycle_rules(self, gcs_bucket_lifecycle_rules: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_lifecycle_rules = gcs_bucket_lifecycle_rules
 
     @property
@@ -589,7 +591,7 @@ class GCSBucket(GCS):
     @gcs_bucket_retention_policy.setter
     def gcs_bucket_retention_policy(self, gcs_bucket_retention_policy: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_bucket_retention_policy = gcs_bucket_retention_policy
 
     @property
@@ -599,7 +601,7 @@ class GCSBucket(GCS):
     @gcs_objects.setter
     def gcs_objects(self, gcs_objects: Optional[list[GCSObject]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.gcs_objects = gcs_objects
 
     class Attributes(GCS.Attributes):
@@ -629,7 +631,9 @@ class GCSBucket(GCS):
         )  # relationship
 
     attributes: "GCSBucket.Attributes" = Field(
-        default_factory=lambda: GCSBucket.Attributes(),
+        default_factory=lambda: GCSBucket.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

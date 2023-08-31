@@ -59,7 +59,7 @@ class SigmaWorkbook(Sigma):
     @sigma_page_count.setter
     def sigma_page_count(self, sigma_page_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_page_count = sigma_page_count
 
     @property
@@ -69,7 +69,7 @@ class SigmaWorkbook(Sigma):
     @sigma_pages.setter
     def sigma_pages(self, sigma_pages: Optional[list[SigmaPage]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_pages = sigma_pages
 
     class Attributes(Sigma.Attributes):
@@ -81,7 +81,9 @@ class SigmaWorkbook(Sigma):
         )  # relationship
 
     attributes: "SigmaWorkbook.Attributes" = Field(
-        default_factory=lambda: SigmaWorkbook.Attributes(),
+        default_factory=lambda: SigmaWorkbook.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -140,7 +142,7 @@ class SigmaDataElementField(Sigma):
         self, sigma_data_element_field_is_hidden: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_field_is_hidden = (
             sigma_data_element_field_is_hidden
         )
@@ -158,7 +160,7 @@ class SigmaDataElementField(Sigma):
         self, sigma_data_element_field_formula: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_field_formula = (
             sigma_data_element_field_formula
         )
@@ -170,7 +172,7 @@ class SigmaDataElementField(Sigma):
     @sigma_data_element.setter
     def sigma_data_element(self, sigma_data_element: Optional[SigmaDataElement]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element = sigma_data_element
 
     class Attributes(Sigma.Attributes):
@@ -185,7 +187,9 @@ class SigmaDataElementField(Sigma):
         )  # relationship
 
     attributes: "SigmaDataElementField.Attributes" = Field(
-        default_factory=lambda: SigmaDataElementField.Attributes(),
+        default_factory=lambda: SigmaDataElementField.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -240,7 +244,7 @@ class SigmaPage(Sigma):
     @sigma_data_element_count.setter
     def sigma_data_element_count(self, sigma_data_element_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_count = sigma_data_element_count
 
     @property
@@ -252,7 +256,7 @@ class SigmaPage(Sigma):
         self, sigma_data_elements: Optional[list[SigmaDataElement]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_elements = sigma_data_elements
 
     @property
@@ -262,7 +266,7 @@ class SigmaPage(Sigma):
     @sigma_workbook.setter
     def sigma_workbook(self, sigma_workbook: Optional[SigmaWorkbook]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_workbook = sigma_workbook
 
     class Attributes(Sigma.Attributes):
@@ -277,7 +281,9 @@ class SigmaPage(Sigma):
         )  # relationship
 
     attributes: "SigmaPage.Attributes" = Field(
-        default_factory=lambda: SigmaPage.Attributes(),
+        default_factory=lambda: SigmaPage.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -348,7 +354,7 @@ class SigmaDataElement(Sigma):
     @sigma_data_element_query.setter
     def sigma_data_element_query(self, sigma_data_element_query: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_query = sigma_data_element_query
 
     @property
@@ -360,7 +366,7 @@ class SigmaDataElement(Sigma):
     @sigma_data_element_type.setter
     def sigma_data_element_type(self, sigma_data_element_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_type = sigma_data_element_type
 
     @property
@@ -376,7 +382,7 @@ class SigmaDataElement(Sigma):
         self, sigma_data_element_field_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_field_count = sigma_data_element_field_count
 
     @property
@@ -386,7 +392,7 @@ class SigmaDataElement(Sigma):
     @sigma_page.setter
     def sigma_page(self, sigma_page: Optional[SigmaPage]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_page = sigma_page
 
     @property
@@ -402,7 +408,7 @@ class SigmaDataElement(Sigma):
         self, sigma_data_element_fields: Optional[list[SigmaDataElementField]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.sigma_data_element_fields = sigma_data_element_fields
 
     class Attributes(Sigma.Attributes):
@@ -423,7 +429,9 @@ class SigmaDataElement(Sigma):
         )  # relationship
 
     attributes: "SigmaDataElement.Attributes" = Field(
-        default_factory=lambda: SigmaDataElement.Attributes(),
+        default_factory=lambda: SigmaDataElement.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

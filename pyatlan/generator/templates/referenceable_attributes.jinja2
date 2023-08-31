@@ -7,7 +7,7 @@
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field(None, description='',  alias='{{attribute_def.name}}') # relationship
+        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}None,{% endif %} description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
 
         def validate_required(self):
@@ -59,6 +59,8 @@
     )
     """Unique fully-qualified name of the asset in Atlan."""
 
+    type_name: str = Field("Referenceable", description='Name of the type definition that defines this instance.\n'
+    )
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
     attributes: '{{entity_def.name}}.Attributes' = Field(
         default_factory = lambda : {{entity_def.name}}.Attributes(),
@@ -101,9 +103,6 @@
         None,
         description="Status of the entity",
         example=EntityStatus.ACTIVE
-    )
-    type_name: str = Field(
-        None, description='Name of the type definition that defines this instance.\n'
     )
     updated_by: Optional[str] = Field(
         None,

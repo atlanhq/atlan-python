@@ -95,7 +95,7 @@ class QlikApp(Qlik):
     @qlik_has_section_access.setter
     def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_has_section_access = qlik_has_section_access
 
     @property
@@ -105,7 +105,7 @@ class QlikApp(Qlik):
     @qlik_origin_app_id.setter
     def qlik_origin_app_id(self, qlik_origin_app_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_origin_app_id = qlik_origin_app_id
 
     @property
@@ -115,7 +115,7 @@ class QlikApp(Qlik):
     @qlik_is_encrypted.setter
     def qlik_is_encrypted(self, qlik_is_encrypted: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_is_encrypted = qlik_is_encrypted
 
     @property
@@ -129,7 +129,7 @@ class QlikApp(Qlik):
     @qlik_is_direct_query_mode.setter
     def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_is_direct_query_mode = qlik_is_direct_query_mode
 
     @property
@@ -143,7 +143,7 @@ class QlikApp(Qlik):
     @qlik_app_static_byte_size.setter
     def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
 
     @property
@@ -153,7 +153,7 @@ class QlikApp(Qlik):
     @qlik_space.setter
     def qlik_space(self, qlik_space: Optional[QlikSpace]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_space = qlik_space
 
     @property
@@ -163,7 +163,7 @@ class QlikApp(Qlik):
     @qlik_sheets.setter
     def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_sheets = qlik_sheets
 
     class Attributes(Qlik.Attributes):
@@ -190,7 +190,9 @@ class QlikApp(Qlik):
         )  # relationship
 
     attributes: "QlikApp.Attributes" = Field(
-        default_factory=lambda: QlikApp.Attributes(),
+        default_factory=lambda: QlikApp.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -257,7 +259,7 @@ class QlikChart(Qlik):
     @qlik_chart_subtitle.setter
     def qlik_chart_subtitle(self, qlik_chart_subtitle: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_chart_subtitle = qlik_chart_subtitle
 
     @property
@@ -267,7 +269,7 @@ class QlikChart(Qlik):
     @qlik_chart_footnote.setter
     def qlik_chart_footnote(self, qlik_chart_footnote: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_chart_footnote = qlik_chart_footnote
 
     @property
@@ -279,7 +281,7 @@ class QlikChart(Qlik):
     @qlik_chart_orientation.setter
     def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_chart_orientation = qlik_chart_orientation
 
     @property
@@ -289,7 +291,7 @@ class QlikChart(Qlik):
     @qlik_chart_type.setter
     def qlik_chart_type(self, qlik_chart_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_chart_type = qlik_chart_type
 
     @property
@@ -299,7 +301,7 @@ class QlikChart(Qlik):
     @qlik_sheet.setter
     def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_sheet = qlik_sheet
 
     class Attributes(Qlik.Attributes):
@@ -320,7 +322,9 @@ class QlikChart(Qlik):
         )  # relationship
 
     attributes: "QlikChart.Attributes" = Field(
-        default_factory=lambda: QlikChart.Attributes(),
+        default_factory=lambda: QlikChart.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -393,7 +397,7 @@ class QlikDataset(Qlik):
     @qlik_dataset_technical_name.setter
     def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_dataset_technical_name = qlik_dataset_technical_name
 
     @property
@@ -403,7 +407,7 @@ class QlikDataset(Qlik):
     @qlik_dataset_type.setter
     def qlik_dataset_type(self, qlik_dataset_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_dataset_type = qlik_dataset_type
 
     @property
@@ -413,7 +417,7 @@ class QlikDataset(Qlik):
     @qlik_dataset_uri.setter
     def qlik_dataset_uri(self, qlik_dataset_uri: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_dataset_uri = qlik_dataset_uri
 
     @property
@@ -423,7 +427,7 @@ class QlikDataset(Qlik):
     @qlik_dataset_subtype.setter
     def qlik_dataset_subtype(self, qlik_dataset_subtype: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
 
     @property
@@ -433,7 +437,7 @@ class QlikDataset(Qlik):
     @qlik_space.setter
     def qlik_space(self, qlik_space: Optional[QlikSpace]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_space = qlik_space
 
     class Attributes(Qlik.Attributes):
@@ -454,7 +458,9 @@ class QlikDataset(Qlik):
         )  # relationship
 
     attributes: "QlikDataset.Attributes" = Field(
-        default_factory=lambda: QlikDataset.Attributes(),
+        default_factory=lambda: QlikDataset.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -507,7 +513,7 @@ class QlikSheet(Qlik):
     @qlik_sheet_is_approved.setter
     def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
 
     @property
@@ -517,7 +523,7 @@ class QlikSheet(Qlik):
     @qlik_app.setter
     def qlik_app(self, qlik_app: Optional[QlikApp]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_app = qlik_app
 
     @property
@@ -527,7 +533,7 @@ class QlikSheet(Qlik):
     @qlik_charts.setter
     def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_charts = qlik_charts
 
     class Attributes(Qlik.Attributes):
@@ -542,7 +548,9 @@ class QlikSheet(Qlik):
         )  # relationship
 
     attributes: "QlikSheet.Attributes" = Field(
-        default_factory=lambda: QlikSheet.Attributes(),
+        default_factory=lambda: QlikSheet.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -593,7 +601,7 @@ class QlikSpace(Qlik):
     @qlik_space_type.setter
     def qlik_space_type(self, qlik_space_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_space_type = qlik_space_type
 
     @property
@@ -603,7 +611,7 @@ class QlikSpace(Qlik):
     @qlik_datasets.setter
     def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_datasets = qlik_datasets
 
     @property
@@ -613,7 +621,7 @@ class QlikSpace(Qlik):
     @qlik_apps.setter
     def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
         if self.attributes is None:
-            self.attributes = self.Attributes()
+            self.attributes = self.Attributes(name="")
         self.attributes.qlik_apps = qlik_apps
 
     class Attributes(Qlik.Attributes):
@@ -628,7 +636,9 @@ class QlikSpace(Qlik):
         )  # relationship
 
     attributes: "QlikSpace.Attributes" = Field(
-        default_factory=lambda: QlikSpace.Attributes(),
+        default_factory=lambda: QlikSpace.Attributes(
+            name="",
+        ),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
