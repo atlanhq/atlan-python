@@ -47,7 +47,7 @@ class Redash(BI):
     @redash_is_published.setter
     def redash_is_published(self, redash_is_published: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.redash_is_published = redash_is_published
 
     class Attributes(BI.Attributes):
@@ -56,9 +56,7 @@ class Redash(BI):
         )
 
     attributes: "Redash.Attributes" = Field(
-        default_factory=lambda: Redash.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Redash.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

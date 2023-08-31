@@ -1169,7 +1169,7 @@ class AtlanClient(BaseSettings):
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
         self.get_asset_by_qualified_name(
-            qualified_name=entity.qualified_name,
+            qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
             min_ext_info=True,
             ignore_relationships=True,
@@ -1233,7 +1233,7 @@ class AtlanClient(BaseSettings):
         """
 
         self.get_asset_by_qualified_name(
-            qualified_name=entity.qualified_name,
+            qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
             min_ext_info=True,
             ignore_relationships=True,

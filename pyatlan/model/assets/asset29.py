@@ -94,7 +94,7 @@ class AWS(Cloud):
     @aws_arn.setter
     def aws_arn(self, aws_arn: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_arn = aws_arn
 
     @property
@@ -104,7 +104,7 @@ class AWS(Cloud):
     @aws_partition.setter
     def aws_partition(self, aws_partition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_partition = aws_partition
 
     @property
@@ -114,7 +114,7 @@ class AWS(Cloud):
     @aws_service.setter
     def aws_service(self, aws_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_service = aws_service
 
     @property
@@ -124,7 +124,7 @@ class AWS(Cloud):
     @aws_region.setter
     def aws_region(self, aws_region: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_region = aws_region
 
     @property
@@ -134,7 +134,7 @@ class AWS(Cloud):
     @aws_account_id.setter
     def aws_account_id(self, aws_account_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_account_id = aws_account_id
 
     @property
@@ -144,7 +144,7 @@ class AWS(Cloud):
     @aws_resource_id.setter
     def aws_resource_id(self, aws_resource_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_resource_id = aws_resource_id
 
     @property
@@ -154,7 +154,7 @@ class AWS(Cloud):
     @aws_owner_name.setter
     def aws_owner_name(self, aws_owner_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_owner_name = aws_owner_name
 
     @property
@@ -164,7 +164,7 @@ class AWS(Cloud):
     @aws_owner_id.setter
     def aws_owner_id(self, aws_owner_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_owner_id = aws_owner_id
 
     @property
@@ -174,7 +174,7 @@ class AWS(Cloud):
     @aws_tags.setter
     def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
     class Attributes(Cloud.Attributes):
@@ -195,9 +195,7 @@ class AWS(Cloud):
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
 
     attributes: "AWS.Attributes" = Field(
-        default_factory=lambda: AWS.Attributes(
-            name="",
-        ),
+        default_factory=lambda: AWS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

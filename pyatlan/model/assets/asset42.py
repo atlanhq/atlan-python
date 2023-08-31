@@ -126,7 +126,7 @@ class DataStudio(Google):
     @google_service.setter
     def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_service = google_service
 
     @property
@@ -136,7 +136,7 @@ class DataStudio(Google):
     @google_project_name.setter
     def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_project_name = google_project_name
 
     @property
@@ -146,7 +146,7 @@ class DataStudio(Google):
     @google_project_id.setter
     def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_project_id = google_project_id
 
     @property
@@ -158,7 +158,7 @@ class DataStudio(Google):
     @google_project_number.setter
     def google_project_number(self, google_project_number: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_project_number = google_project_number
 
     @property
@@ -168,7 +168,7 @@ class DataStudio(Google):
     @google_location.setter
     def google_location(self, google_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_location = google_location
 
     @property
@@ -178,7 +178,7 @@ class DataStudio(Google):
     @google_location_type.setter
     def google_location_type(self, google_location_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_location_type = google_location_type
 
     @property
@@ -188,7 +188,7 @@ class DataStudio(Google):
     @google_labels.setter
     def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_labels = google_labels
 
     @property
@@ -198,7 +198,7 @@ class DataStudio(Google):
     @google_tags.setter
     def google_tags(self, google_tags: Optional[list[GoogleTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
     @property
@@ -208,7 +208,7 @@ class DataStudio(Google):
     @input_to_processes.setter
     def input_to_processes(self, input_to_processes: Optional[list[Process]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
 
     @property
@@ -224,7 +224,7 @@ class DataStudio(Google):
         self, output_from_airflow_tasks: Optional[list[AirflowTask]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
@@ -238,7 +238,7 @@ class DataStudio(Google):
         self, input_to_airflow_tasks: Optional[list[AirflowTask]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
@@ -250,7 +250,7 @@ class DataStudio(Google):
     @output_from_processes.setter
     def output_from_processes(self, output_from_processes: Optional[list[Process]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Google.Attributes):
@@ -292,9 +292,7 @@ class DataStudio(Google):
         )  # relationship
 
     attributes: "DataStudio.Attributes" = Field(
-        default_factory=lambda: DataStudio.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DataStudio.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

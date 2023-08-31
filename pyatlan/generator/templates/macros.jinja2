@@ -6,7 +6,7 @@
 
     {%- for attribute_def in attribute_defs %}
     {%- set type = attribute_def.typeName | get_type %}
-    {%- set property_type %}{% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %}{% endset %}
+    {%- set property_type %}Optional[{{type}}]{% endset %}
     {%- set attribute_name =  attribute_def.name | to_snake_case %}
     {%- set property_name =  'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case %}
     @property
@@ -16,7 +16,7 @@
     @{{ property_name }}.setter
     def {{ property_name }}(self, {{ property_name }}:{{ property_type }}):
         if self.attributes is None:
-            self.attributes = self.Attributes({% if entity_def.name != "Referenceable" %}name=""{% endif %})
+            self.attributes = self.Attributes()
         self.attributes.{{ attribute_name }} = {{ property_name }}
 
     {%- endfor %}

@@ -104,11 +104,11 @@ class Referenceable(AtlanObject):
     ]
 
     @property
-    def qualified_name(self) -> str:
+    def qualified_name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.qualified_name
 
     @qualified_name.setter
-    def qualified_name(self, qualified_name: str):
+    def qualified_name(self, qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qualified_name = qualified_name
@@ -124,7 +124,7 @@ class Referenceable(AtlanObject):
         self.attributes.meanings = assigned_terms
 
     class Attributes(AtlanObject):
-        qualified_name: str = Field("", description="", alias="qualifiedName")
+        qualified_name: Optional[str] = Field("", description="", alias="qualifiedName")
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -293,7 +293,7 @@ class Asset(Referenceable):
 
     def trim_to_required(self: SelfAsset) -> SelfAsset:
         return self.create_for_modification(
-            qualified_name=self.qualified_name, name=self.name
+            qualified_name=self.qualified_name or "", name=self.name or ""
         )
 
     @classmethod
@@ -1293,13 +1293,13 @@ class Asset(Referenceable):
     ]
 
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.name
 
     @name.setter
-    def name(self, name: str):
+    def name(self, name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.name = name
 
     @property
@@ -1309,7 +1309,7 @@ class Asset(Referenceable):
     @display_name.setter
     def display_name(self, display_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.display_name = display_name
 
     @property
@@ -1319,7 +1319,7 @@ class Asset(Referenceable):
     @description.setter
     def description(self, description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.description = description
 
     @property
@@ -1329,7 +1329,7 @@ class Asset(Referenceable):
     @user_description.setter
     def user_description(self, user_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.user_description = user_description
 
     @property
@@ -1339,7 +1339,7 @@ class Asset(Referenceable):
     @tenant_id.setter
     def tenant_id(self, tenant_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tenant_id = tenant_id
 
     @property
@@ -1349,7 +1349,7 @@ class Asset(Referenceable):
     @certificate_status.setter
     def certificate_status(self, certificate_status: Optional[CertificateStatus]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.certificate_status = certificate_status
 
     @property
@@ -1363,7 +1363,7 @@ class Asset(Referenceable):
     @certificate_status_message.setter
     def certificate_status_message(self, certificate_status_message: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.certificate_status_message = certificate_status_message
 
     @property
@@ -1375,7 +1375,7 @@ class Asset(Referenceable):
     @certificate_updated_by.setter
     def certificate_updated_by(self, certificate_updated_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.certificate_updated_by = certificate_updated_by
 
     @property
@@ -1387,7 +1387,7 @@ class Asset(Referenceable):
     @certificate_updated_at.setter
     def certificate_updated_at(self, certificate_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.certificate_updated_at = certificate_updated_at
 
     @property
@@ -1397,7 +1397,7 @@ class Asset(Referenceable):
     @announcement_title.setter
     def announcement_title(self, announcement_title: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.announcement_title = announcement_title
 
     @property
@@ -1407,7 +1407,7 @@ class Asset(Referenceable):
     @announcement_message.setter
     def announcement_message(self, announcement_message: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.announcement_message = announcement_message
 
     @property
@@ -1417,7 +1417,7 @@ class Asset(Referenceable):
     @announcement_type.setter
     def announcement_type(self, announcement_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.announcement_type = announcement_type
 
     @property
@@ -1429,7 +1429,7 @@ class Asset(Referenceable):
     @announcement_updated_at.setter
     def announcement_updated_at(self, announcement_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.announcement_updated_at = announcement_updated_at
 
     @property
@@ -1441,7 +1441,7 @@ class Asset(Referenceable):
     @announcement_updated_by.setter
     def announcement_updated_by(self, announcement_updated_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.announcement_updated_by = announcement_updated_by
 
     @property
@@ -1451,7 +1451,7 @@ class Asset(Referenceable):
     @owner_users.setter
     def owner_users(self, owner_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.owner_users = owner_users
 
     @property
@@ -1461,7 +1461,7 @@ class Asset(Referenceable):
     @owner_groups.setter
     def owner_groups(self, owner_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.owner_groups = owner_groups
 
     @property
@@ -1471,7 +1471,7 @@ class Asset(Referenceable):
     @admin_users.setter
     def admin_users(self, admin_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.admin_users = admin_users
 
     @property
@@ -1481,7 +1481,7 @@ class Asset(Referenceable):
     @admin_groups.setter
     def admin_groups(self, admin_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.admin_groups = admin_groups
 
     @property
@@ -1491,7 +1491,7 @@ class Asset(Referenceable):
     @viewer_users.setter
     def viewer_users(self, viewer_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.viewer_users = viewer_users
 
     @property
@@ -1501,7 +1501,7 @@ class Asset(Referenceable):
     @viewer_groups.setter
     def viewer_groups(self, viewer_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.viewer_groups = viewer_groups
 
     @property
@@ -1511,7 +1511,7 @@ class Asset(Referenceable):
     @connector_name.setter
     def connector_name(self, connector_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connector_name = connector_name
 
     @property
@@ -1521,7 +1521,7 @@ class Asset(Referenceable):
     @connection_name.setter
     def connection_name(self, connection_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connection_name = connection_name
 
     @property
@@ -1535,7 +1535,7 @@ class Asset(Referenceable):
     @connection_qualified_name.setter
     def connection_qualified_name(self, connection_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connection_qualified_name = connection_qualified_name
 
     @property
@@ -1545,7 +1545,7 @@ class Asset(Referenceable):
     @has_lineage.setter
     def has_lineage(self, has_lineage: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.has_lineage = has_lineage
 
     @property
@@ -1555,7 +1555,7 @@ class Asset(Referenceable):
     @is_discoverable.setter
     def is_discoverable(self, is_discoverable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_discoverable = is_discoverable
 
     @property
@@ -1565,7 +1565,7 @@ class Asset(Referenceable):
     @is_editable.setter
     def is_editable(self, is_editable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_editable = is_editable
 
     @property
@@ -1575,7 +1575,7 @@ class Asset(Referenceable):
     @sub_type.setter
     def sub_type(self, sub_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sub_type = sub_type
 
     @property
@@ -1585,7 +1585,7 @@ class Asset(Referenceable):
     @view_score.setter
     def view_score(self, view_score: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view_score = view_score
 
     @property
@@ -1595,7 +1595,7 @@ class Asset(Referenceable):
     @popularity_score.setter
     def popularity_score(self, popularity_score: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.popularity_score = popularity_score
 
     @property
@@ -1605,7 +1605,7 @@ class Asset(Referenceable):
     @source_owners.setter
     def source_owners(self, source_owners: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_owners = source_owners
 
     @property
@@ -1615,7 +1615,7 @@ class Asset(Referenceable):
     @source_created_by.setter
     def source_created_by(self, source_created_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_created_by = source_created_by
 
     @property
@@ -1625,7 +1625,7 @@ class Asset(Referenceable):
     @source_created_at.setter
     def source_created_at(self, source_created_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_created_at = source_created_at
 
     @property
@@ -1635,7 +1635,7 @@ class Asset(Referenceable):
     @source_updated_at.setter
     def source_updated_at(self, source_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_updated_at = source_updated_at
 
     @property
@@ -1645,7 +1645,7 @@ class Asset(Referenceable):
     @source_updated_by.setter
     def source_updated_by(self, source_updated_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_updated_by = source_updated_by
 
     @property
@@ -1655,7 +1655,7 @@ class Asset(Referenceable):
     @source_url.setter
     def source_url(self, source_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_url = source_url
 
     @property
@@ -1665,7 +1665,7 @@ class Asset(Referenceable):
     @source_embed_url.setter
     def source_embed_url(self, source_embed_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_embed_url = source_embed_url
 
     @property
@@ -1677,7 +1677,7 @@ class Asset(Referenceable):
     @last_sync_workflow_name.setter
     def last_sync_workflow_name(self, last_sync_workflow_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.last_sync_workflow_name = last_sync_workflow_name
 
     @property
@@ -1687,7 +1687,7 @@ class Asset(Referenceable):
     @last_sync_run_at.setter
     def last_sync_run_at(self, last_sync_run_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.last_sync_run_at = last_sync_run_at
 
     @property
@@ -1697,7 +1697,7 @@ class Asset(Referenceable):
     @last_sync_run.setter
     def last_sync_run(self, last_sync_run: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.last_sync_run = last_sync_run
 
     @property
@@ -1707,7 +1707,7 @@ class Asset(Referenceable):
     @admin_roles.setter
     def admin_roles(self, admin_roles: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.admin_roles = admin_roles
 
     @property
@@ -1717,7 +1717,7 @@ class Asset(Referenceable):
     @source_read_count.setter
     def source_read_count(self, source_read_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_count = source_read_count
 
     @property
@@ -1729,7 +1729,7 @@ class Asset(Referenceable):
     @source_read_user_count.setter
     def source_read_user_count(self, source_read_user_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_user_count = source_read_user_count
 
     @property
@@ -1739,7 +1739,7 @@ class Asset(Referenceable):
     @source_last_read_at.setter
     def source_last_read_at(self, source_last_read_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_last_read_at = source_last_read_at
 
     @property
@@ -1749,7 +1749,7 @@ class Asset(Referenceable):
     @last_row_changed_at.setter
     def last_row_changed_at(self, last_row_changed_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.last_row_changed_at = last_row_changed_at
 
     @property
@@ -1759,7 +1759,7 @@ class Asset(Referenceable):
     @source_total_cost.setter
     def source_total_cost(self, source_total_cost: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_total_cost = source_total_cost
 
     @property
@@ -1769,7 +1769,7 @@ class Asset(Referenceable):
     @source_cost_unit.setter
     def source_cost_unit(self, source_cost_unit: Optional[SourceCostUnitType]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_cost_unit = source_cost_unit
 
     @property
@@ -1781,7 +1781,7 @@ class Asset(Referenceable):
     @source_read_query_cost.setter
     def source_read_query_cost(self, source_read_query_cost: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_query_cost = source_read_query_cost
 
     @property
@@ -1797,7 +1797,7 @@ class Asset(Referenceable):
         self, source_read_recent_user_list: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_recent_user_list = source_read_recent_user_list
 
     @property
@@ -1813,7 +1813,7 @@ class Asset(Referenceable):
         self, source_read_recent_user_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_recent_user_record_list = (
             source_read_recent_user_record_list
         )
@@ -1829,7 +1829,7 @@ class Asset(Referenceable):
     @source_read_top_user_list.setter
     def source_read_top_user_list(self, source_read_top_user_list: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_top_user_list = source_read_top_user_list
 
     @property
@@ -1845,7 +1845,7 @@ class Asset(Referenceable):
         self, source_read_top_user_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_top_user_record_list = (
             source_read_top_user_record_list
         )
@@ -1865,7 +1865,7 @@ class Asset(Referenceable):
         self, source_read_popular_query_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_popular_query_record_list = (
             source_read_popular_query_record_list
         )
@@ -1886,7 +1886,7 @@ class Asset(Referenceable):
         source_read_expensive_query_record_list: Optional[list[PopularityInsights]],
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_expensive_query_record_list = (
             source_read_expensive_query_record_list
         )
@@ -1904,7 +1904,7 @@ class Asset(Referenceable):
         self, source_read_slow_query_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_read_slow_query_record_list = (
             source_read_slow_query_record_list
         )
@@ -1922,7 +1922,7 @@ class Asset(Referenceable):
         self, source_query_compute_cost_list: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_query_compute_cost_list = source_query_compute_cost_list
 
     @property
@@ -1940,7 +1940,7 @@ class Asset(Referenceable):
         self, source_query_compute_cost_record_list: Optional[list[PopularityInsights]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_query_compute_cost_record_list = (
             source_query_compute_cost_record_list
         )
@@ -1952,7 +1952,7 @@ class Asset(Referenceable):
     @dbt_qualified_name.setter
     def dbt_qualified_name(self, dbt_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_qualified_name = dbt_qualified_name
 
     @property
@@ -1962,7 +1962,7 @@ class Asset(Referenceable):
     @asset_dbt_alias.setter
     def asset_dbt_alias(self, asset_dbt_alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_alias = asset_dbt_alias
 
     @property
@@ -1972,7 +1972,7 @@ class Asset(Referenceable):
     @asset_dbt_meta.setter
     def asset_dbt_meta(self, asset_dbt_meta: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_meta = asset_dbt_meta
 
     @property
@@ -1982,7 +1982,7 @@ class Asset(Referenceable):
     @asset_dbt_unique_id.setter
     def asset_dbt_unique_id(self, asset_dbt_unique_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_unique_id = asset_dbt_unique_id
 
     @property
@@ -1994,7 +1994,7 @@ class Asset(Referenceable):
     @asset_dbt_account_name.setter
     def asset_dbt_account_name(self, asset_dbt_account_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_account_name = asset_dbt_account_name
 
     @property
@@ -2006,7 +2006,7 @@ class Asset(Referenceable):
     @asset_dbt_project_name.setter
     def asset_dbt_project_name(self, asset_dbt_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_project_name = asset_dbt_project_name
 
     @property
@@ -2018,7 +2018,7 @@ class Asset(Referenceable):
     @asset_dbt_package_name.setter
     def asset_dbt_package_name(self, asset_dbt_package_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_package_name = asset_dbt_package_name
 
     @property
@@ -2028,7 +2028,7 @@ class Asset(Referenceable):
     @asset_dbt_job_name.setter
     def asset_dbt_job_name(self, asset_dbt_job_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_name = asset_dbt_job_name
 
     @property
@@ -2040,7 +2040,7 @@ class Asset(Referenceable):
     @asset_dbt_job_schedule.setter
     def asset_dbt_job_schedule(self, asset_dbt_job_schedule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_schedule = asset_dbt_job_schedule
 
     @property
@@ -2050,7 +2050,7 @@ class Asset(Referenceable):
     @asset_dbt_job_status.setter
     def asset_dbt_job_status(self, asset_dbt_job_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_status = asset_dbt_job_status
 
     @property
@@ -2062,7 +2062,7 @@ class Asset(Referenceable):
     @asset_dbt_test_status.setter
     def asset_dbt_test_status(self, asset_dbt_test_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_test_status = asset_dbt_test_status
 
     @property
@@ -2078,7 +2078,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_schedule_cron_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_schedule_cron_humanized = (
             asset_dbt_job_schedule_cron_humanized
         )
@@ -2092,7 +2092,7 @@ class Asset(Referenceable):
     @asset_dbt_job_last_run.setter
     def asset_dbt_job_last_run(self, asset_dbt_job_last_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run = asset_dbt_job_last_run
 
     @property
@@ -2106,7 +2106,7 @@ class Asset(Referenceable):
     @asset_dbt_job_last_run_url.setter
     def asset_dbt_job_last_run_url(self, asset_dbt_job_last_run_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_url = asset_dbt_job_last_run_url
 
     @property
@@ -2122,7 +2122,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_created_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_created_at = (
             asset_dbt_job_last_run_created_at
         )
@@ -2140,7 +2140,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_updated_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_updated_at = (
             asset_dbt_job_last_run_updated_at
         )
@@ -2158,7 +2158,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_dequed_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_dequed_at = (
             asset_dbt_job_last_run_dequed_at
         )
@@ -2176,7 +2176,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_started_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_started_at = (
             asset_dbt_job_last_run_started_at
         )
@@ -2194,7 +2194,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_total_duration: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_total_duration = (
             asset_dbt_job_last_run_total_duration
         )
@@ -2212,7 +2212,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_total_duration_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_total_duration_humanized = (
             asset_dbt_job_last_run_total_duration_humanized
         )
@@ -2230,7 +2230,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_queued_duration: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_queued_duration = (
             asset_dbt_job_last_run_queued_duration
         )
@@ -2248,7 +2248,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_queued_duration_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_queued_duration_humanized = (
             asset_dbt_job_last_run_queued_duration_humanized
         )
@@ -2266,7 +2266,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_run_duration: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_run_duration = (
             asset_dbt_job_last_run_run_duration
         )
@@ -2284,7 +2284,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_run_duration_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_run_duration_humanized = (
             asset_dbt_job_last_run_run_duration_humanized
         )
@@ -2302,7 +2302,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_git_branch: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_git_branch = (
             asset_dbt_job_last_run_git_branch
         )
@@ -2320,7 +2320,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_git_sha: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_git_sha = asset_dbt_job_last_run_git_sha
 
     @property
@@ -2336,7 +2336,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_status_message: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_status_message = (
             asset_dbt_job_last_run_status_message
         )
@@ -2354,7 +2354,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_owner_thread_id: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_owner_thread_id = (
             asset_dbt_job_last_run_owner_thread_id
         )
@@ -2372,7 +2372,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_executed_by_thread_id: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_executed_by_thread_id = (
             asset_dbt_job_last_run_executed_by_thread_id
         )
@@ -2390,7 +2390,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_artifacts_saved: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_artifacts_saved = (
             asset_dbt_job_last_run_artifacts_saved
         )
@@ -2408,7 +2408,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_artifact_s3_path: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_artifact_s3_path = (
             asset_dbt_job_last_run_artifact_s3_path
         )
@@ -2426,7 +2426,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_has_docs_generated: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_has_docs_generated = (
             asset_dbt_job_last_run_has_docs_generated
         )
@@ -2444,7 +2444,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_has_sources_generated: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_has_sources_generated = (
             asset_dbt_job_last_run_has_sources_generated
         )
@@ -2462,7 +2462,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_last_run_notifications_sent: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_last_run_notifications_sent = (
             asset_dbt_job_last_run_notifications_sent
         )
@@ -2476,7 +2476,7 @@ class Asset(Referenceable):
     @asset_dbt_job_next_run.setter
     def asset_dbt_job_next_run(self, asset_dbt_job_next_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_next_run = asset_dbt_job_next_run
 
     @property
@@ -2492,7 +2492,7 @@ class Asset(Referenceable):
         self, asset_dbt_job_next_run_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_job_next_run_humanized = (
             asset_dbt_job_next_run_humanized
         )
@@ -2508,7 +2508,7 @@ class Asset(Referenceable):
     @asset_dbt_environment_name.setter
     def asset_dbt_environment_name(self, asset_dbt_environment_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_environment_name = asset_dbt_environment_name
 
     @property
@@ -2524,7 +2524,7 @@ class Asset(Referenceable):
         self, asset_dbt_environment_dbt_version: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_environment_dbt_version = (
             asset_dbt_environment_dbt_version
         )
@@ -2536,7 +2536,7 @@ class Asset(Referenceable):
     @asset_dbt_tags.setter
     def asset_dbt_tags(self, asset_dbt_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_tags = asset_dbt_tags
 
     @property
@@ -2552,7 +2552,7 @@ class Asset(Referenceable):
         self, asset_dbt_semantic_layer_proxy_url: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_semantic_layer_proxy_url = (
             asset_dbt_semantic_layer_proxy_url
         )
@@ -2570,7 +2570,7 @@ class Asset(Referenceable):
         self, asset_dbt_source_freshness_criteria: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_dbt_source_freshness_criteria = (
             asset_dbt_source_freshness_criteria
         )
@@ -2582,7 +2582,7 @@ class Asset(Referenceable):
     @sample_data_url.setter
     def sample_data_url(self, sample_data_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sample_data_url = sample_data_url
 
     @property
@@ -2592,7 +2592,7 @@ class Asset(Referenceable):
     @asset_tags.setter
     def asset_tags(self, asset_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_tags = asset_tags
 
     @property
@@ -2604,7 +2604,7 @@ class Asset(Referenceable):
     @asset_mc_incident_names.setter
     def asset_mc_incident_names(self, asset_mc_incident_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_names = asset_mc_incident_names
 
     @property
@@ -2620,7 +2620,7 @@ class Asset(Referenceable):
         self, asset_mc_incident_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_qualified_names = (
             asset_mc_incident_qualified_names
         )
@@ -2634,7 +2634,7 @@ class Asset(Referenceable):
     @asset_mc_monitor_names.setter
     def asset_mc_monitor_names(self, asset_mc_monitor_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_names = asset_mc_monitor_names
 
     @property
@@ -2650,7 +2650,7 @@ class Asset(Referenceable):
         self, asset_mc_monitor_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_qualified_names = (
             asset_mc_monitor_qualified_names
         )
@@ -2666,7 +2666,7 @@ class Asset(Referenceable):
     @asset_mc_monitor_statuses.setter
     def asset_mc_monitor_statuses(self, asset_mc_monitor_statuses: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_statuses = asset_mc_monitor_statuses
 
     @property
@@ -2678,7 +2678,7 @@ class Asset(Referenceable):
     @asset_mc_monitor_types.setter
     def asset_mc_monitor_types(self, asset_mc_monitor_types: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_types = asset_mc_monitor_types
 
     @property
@@ -2694,7 +2694,7 @@ class Asset(Referenceable):
         self, asset_mc_monitor_schedule_types: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_monitor_schedule_types = (
             asset_mc_monitor_schedule_types
         )
@@ -2708,7 +2708,7 @@ class Asset(Referenceable):
     @asset_mc_incident_types.setter
     def asset_mc_incident_types(self, asset_mc_incident_types: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_types = asset_mc_incident_types
 
     @property
@@ -2724,7 +2724,7 @@ class Asset(Referenceable):
         self, asset_mc_incident_sub_types: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_sub_types = asset_mc_incident_sub_types
 
     @property
@@ -2740,7 +2740,7 @@ class Asset(Referenceable):
         self, asset_mc_incident_severities: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_severities = asset_mc_incident_severities
 
     @property
@@ -2754,7 +2754,7 @@ class Asset(Referenceable):
     @asset_mc_incident_states.setter
     def asset_mc_incident_states(self, asset_mc_incident_states: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_incident_states = asset_mc_incident_states
 
     @property
@@ -2768,7 +2768,7 @@ class Asset(Referenceable):
     @asset_mc_last_sync_run_at.setter
     def asset_mc_last_sync_run_at(self, asset_mc_last_sync_run_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_mc_last_sync_run_at = asset_mc_last_sync_run_at
 
     @property
@@ -2778,7 +2778,7 @@ class Asset(Referenceable):
     @starred_by.setter
     def starred_by(self, starred_by: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.starred_by = starred_by
 
     @property
@@ -2790,7 +2790,7 @@ class Asset(Referenceable):
         self, starred_details_list: Optional[list[StarredDetails]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.starred_details_list = starred_details_list
 
     @property
@@ -2800,7 +2800,7 @@ class Asset(Referenceable):
     @starred_count.setter
     def starred_count(self, starred_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.starred_count = starred_count
 
     @property
@@ -2812,7 +2812,7 @@ class Asset(Referenceable):
     @asset_soda_d_q_status.setter
     def asset_soda_d_q_status(self, asset_soda_d_q_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_soda_d_q_status = asset_soda_d_q_status
 
     @property
@@ -2824,7 +2824,7 @@ class Asset(Referenceable):
     @asset_soda_check_count.setter
     def asset_soda_check_count(self, asset_soda_check_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_soda_check_count = asset_soda_check_count
 
     @property
@@ -2840,7 +2840,7 @@ class Asset(Referenceable):
         self, asset_soda_last_sync_run_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_soda_last_sync_run_at = asset_soda_last_sync_run_at
 
     @property
@@ -2852,7 +2852,7 @@ class Asset(Referenceable):
     @asset_soda_last_scan_at.setter
     def asset_soda_last_scan_at(self, asset_soda_last_scan_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_soda_last_scan_at = asset_soda_last_scan_at
 
     @property
@@ -2866,7 +2866,7 @@ class Asset(Referenceable):
     @asset_soda_check_statuses.setter
     def asset_soda_check_statuses(self, asset_soda_check_statuses: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_soda_check_statuses = asset_soda_check_statuses
 
     @property
@@ -2878,7 +2878,7 @@ class Asset(Referenceable):
     @asset_soda_source_url.setter
     def asset_soda_source_url(self, asset_soda_source_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_soda_source_url = asset_soda_source_url
 
     @property
@@ -2888,7 +2888,7 @@ class Asset(Referenceable):
     @asset_icon.setter
     def asset_icon(self, asset_icon: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset_icon = asset_icon
 
     @property
@@ -2904,7 +2904,7 @@ class Asset(Referenceable):
         self, schema_registry_subjects: Optional[list[SchemaRegistrySubject]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subjects = schema_registry_subjects
 
     @property
@@ -2914,7 +2914,7 @@ class Asset(Referenceable):
     @mc_monitors.setter
     def mc_monitors(self, mc_monitors: Optional[list[MCMonitor]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitors = mc_monitors
 
     @property
@@ -2924,7 +2924,7 @@ class Asset(Referenceable):
     @files.setter
     def files(self, files: Optional[list[File]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.files = files
 
     @property
@@ -2934,7 +2934,7 @@ class Asset(Referenceable):
     @mc_incidents.setter
     def mc_incidents(self, mc_incidents: Optional[list[MCIncident]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incidents = mc_incidents
 
     @property
@@ -2944,7 +2944,7 @@ class Asset(Referenceable):
     @links.setter
     def links(self, links: Optional[list[Link]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.links = links
 
     @property
@@ -2954,7 +2954,7 @@ class Asset(Referenceable):
     @metrics.setter
     def metrics(self, metrics: Optional[list[Metric]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metrics = metrics
 
     @property
@@ -2964,7 +2964,7 @@ class Asset(Referenceable):
     @readme.setter
     def readme(self, readme: Optional[Readme]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.readme = readme
 
     @property
@@ -2974,7 +2974,7 @@ class Asset(Referenceable):
     @soda_checks.setter
     def soda_checks(self, soda_checks: Optional[list[SodaCheck]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_checks = soda_checks
 
     @property
@@ -2984,11 +2984,11 @@ class Asset(Referenceable):
     @assigned_terms.setter
     def assigned_terms(self, assigned_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
-        name: str = Field(description="", alias="name")
+        name: Optional[str] = Field(None, description="", alias="name")
         display_name: Optional[str] = Field(None, description="", alias="displayName")
         description: Optional[str] = Field(None, description="", alias="description")
         user_description: Optional[str] = Field(
@@ -3369,9 +3369,7 @@ class Asset(Referenceable):
             self.announcement_type = None
 
     attributes: "Asset.Attributes" = Field(
-        default_factory=lambda: Asset.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Asset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3410,8 +3408,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
             glossary_guid=self.anchor.guid,
         )
 
@@ -3500,7 +3498,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @short_description.setter
     def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.short_description = short_description
 
     @property
@@ -3510,7 +3508,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @long_description.setter
     def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.long_description = long_description
 
     @property
@@ -3522,7 +3520,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
 
     @property
@@ -3532,17 +3530,17 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @terms.setter
     def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.terms = terms
 
     @property
-    def anchor(self) -> AtlasGlossary:
+    def anchor(self) -> Optional[AtlasGlossary]:
         return None if self.attributes is None else self.attributes.anchor
 
     @anchor.setter
-    def anchor(self, anchor: AtlasGlossary):
+    def anchor(self, anchor: Optional[AtlasGlossary]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.anchor = anchor
 
     @property
@@ -3552,7 +3550,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     @parent_category.setter
     def parent_category(self, parent_category: Optional[AtlasGlossaryCategory]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_category = parent_category
 
     @property
@@ -3564,7 +3562,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self, children_categories: Optional[list[AtlasGlossaryCategory]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.children_categories = children_categories
 
     class Attributes(Asset.Attributes):
@@ -3581,7 +3579,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             None, description="", alias="terms"
         )  # relationship
         anchor: Optional[AtlasGlossary] = Field(
-            description="", alias="anchor"
+            None, description="", alias="anchor"
         )  # relationship
         parent_category: Optional[AtlasGlossaryCategory] = Field(
             None, description="", alias="parentCategory"
@@ -3608,9 +3606,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
             )
 
     attributes: "AtlasGlossaryCategory.Attributes" = Field(
-        default_factory=lambda: AtlasGlossaryCategory.Attributes(
-            name="", anchor=AtlasGlossary()
-        ),
+        default_factory=lambda: AtlasGlossaryCategory.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3701,7 +3697,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @short_description.setter
     def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.short_description = short_description
 
     @property
@@ -3711,7 +3707,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @long_description.setter
     def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.long_description = long_description
 
     @property
@@ -3721,7 +3717,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @language.setter
     def language(self, language: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.language = language
 
     @property
@@ -3731,7 +3727,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @usage.setter
     def usage(self, usage: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.usage = usage
 
     @property
@@ -3743,7 +3739,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
 
     @property
@@ -3753,7 +3749,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @terms.setter
     def terms(self, terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.terms = terms
 
     @property
@@ -3763,7 +3759,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
     @categories.setter
     def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.categories = categories
 
     class Attributes(Asset.Attributes):
@@ -3792,9 +3788,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
             return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
 
     attributes: "AtlasGlossary.Attributes" = Field(
-        default_factory=lambda: AtlasGlossary.Attributes(
-            name="",
-        ),
+        default_factory=lambda: AtlasGlossary.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -3839,8 +3833,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
             glossary_guid=self.anchor.guid,
         )
 
@@ -4002,7 +3996,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @short_description.setter
     def short_description(self, short_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.short_description = short_description
 
     @property
@@ -4012,7 +4006,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @long_description.setter
     def long_description(self, long_description: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.long_description = long_description
 
     @property
@@ -4022,7 +4016,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @examples.setter
     def examples(self, examples: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.examples = examples
 
     @property
@@ -4032,7 +4026,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @abbreviation.setter
     def abbreviation(self, abbreviation: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.abbreviation = abbreviation
 
     @property
@@ -4042,7 +4036,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @usage.setter
     def usage(self, usage: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.usage = usage
 
     @property
@@ -4054,7 +4048,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @additional_attributes.setter
     def additional_attributes(self, additional_attributes: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.additional_attributes = additional_attributes
 
     @property
@@ -4064,7 +4058,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @valid_values_for.setter
     def valid_values_for(self, valid_values_for: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.valid_values_for = valid_values_for
 
     @property
@@ -4074,7 +4068,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @valid_values.setter
     def valid_values(self, valid_values: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.valid_values = valid_values
 
     @property
@@ -4084,7 +4078,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @see_also.setter
     def see_also(self, see_also: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.see_also = see_also
 
     @property
@@ -4094,7 +4088,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @is_a.setter
     def is_a(self, is_a: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_a = is_a
 
     @property
@@ -4104,7 +4098,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @antonyms.setter
     def antonyms(self, antonyms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.antonyms = antonyms
 
     @property
@@ -4114,7 +4108,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @assigned_entities.setter
     def assigned_entities(self, assigned_entities: Optional[list[Referenceable]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.assigned_entities = assigned_entities
 
     @property
@@ -4124,7 +4118,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @classifies.setter
     def classifies(self, classifies: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.classifies = classifies
 
     @property
@@ -4134,7 +4128,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @categories.setter
     def categories(self, categories: Optional[list[AtlasGlossaryCategory]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.categories = categories
 
     @property
@@ -4144,7 +4138,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @preferred_to_terms.setter
     def preferred_to_terms(self, preferred_to_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preferred_to_terms = preferred_to_terms
 
     @property
@@ -4154,7 +4148,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @preferred_terms.setter
     def preferred_terms(self, preferred_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preferred_terms = preferred_terms
 
     @property
@@ -4164,7 +4158,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @translation_terms.setter
     def translation_terms(self, translation_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.translation_terms = translation_terms
 
     @property
@@ -4174,7 +4168,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @synonyms.setter
     def synonyms(self, synonyms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.synonyms = synonyms
 
     @property
@@ -4184,7 +4178,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @replaced_by.setter
     def replaced_by(self, replaced_by: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.replaced_by = replaced_by
 
     @property
@@ -4194,7 +4188,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @replacement_terms.setter
     def replacement_terms(self, replacement_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.replacement_terms = replacement_terms
 
     @property
@@ -4204,17 +4198,17 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
     @translated_terms.setter
     def translated_terms(self, translated_terms: Optional[list[AtlasGlossaryTerm]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.translated_terms = translated_terms
 
     @property
-    def anchor(self) -> AtlasGlossary:
+    def anchor(self) -> Optional[AtlasGlossary]:
         return None if self.attributes is None else self.attributes.anchor
 
     @anchor.setter
-    def anchor(self, anchor: AtlasGlossary):
+    def anchor(self, anchor: Optional[AtlasGlossary]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.anchor = anchor
 
     class Attributes(Asset.Attributes):
@@ -4276,7 +4270,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             None, description="", alias="translatedTerms"
         )  # relationship
         anchor: Optional[AtlasGlossary] = Field(
-            description="", alias="anchor"
+            None, description="", alias="anchor"
         )  # relationship
 
         @classmethod
@@ -4309,9 +4303,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
             )
 
     attributes: "AtlasGlossaryTerm.Attributes" = Field(
-        default_factory=lambda: AtlasGlossaryTerm.Attributes(
-            name="", anchor=AtlasGlossary()
-        ),
+        default_factory=lambda: AtlasGlossaryTerm.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4393,7 +4385,7 @@ class Process(Asset, type_name="Process"):
     @inputs.setter
     def inputs(self, inputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     @property
@@ -4403,7 +4395,7 @@ class Process(Asset, type_name="Process"):
     @outputs.setter
     def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.outputs = outputs
 
     @property
@@ -4413,7 +4405,7 @@ class Process(Asset, type_name="Process"):
     @code.setter
     def code(self, code: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.code = code
 
     @property
@@ -4423,7 +4415,7 @@ class Process(Asset, type_name="Process"):
     @sql.setter
     def sql(self, sql: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql = sql
 
     @property
@@ -4433,7 +4425,7 @@ class Process(Asset, type_name="Process"):
     @ast.setter
     def ast(self, ast: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.ast = ast
 
     @property
@@ -4443,7 +4435,7 @@ class Process(Asset, type_name="Process"):
     @airflow_tasks.setter
     def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
@@ -4453,7 +4445,7 @@ class Process(Asset, type_name="Process"):
     @column_processes.setter
     def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
     class Attributes(Asset.Attributes):
@@ -4534,9 +4526,7 @@ class Process(Asset, type_name="Process"):
             )
 
     attributes: "Process.Attributes" = Field(
-        default_factory=lambda: Process.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Process.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4579,7 +4569,7 @@ class Namespace(Asset, type_name="Namespace"):
     @children_queries.setter
     def children_queries(self, children_queries: Optional[list[Query]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.children_queries = children_queries
 
     @property
@@ -4589,7 +4579,7 @@ class Namespace(Asset, type_name="Namespace"):
     @children_folders.setter
     def children_folders(self, children_folders: Optional[list[Folder]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.children_folders = children_folders
 
     class Attributes(Asset.Attributes):
@@ -4601,9 +4591,7 @@ class Namespace(Asset, type_name="Namespace"):
         )  # relationship
 
     attributes: "Namespace.Attributes" = Field(
-        default_factory=lambda: Namespace.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Namespace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4652,19 +4640,19 @@ class Folder(Namespace):
     ]
 
     @property
-    def parent_qualified_name(self) -> str:
+    def parent_qualified_name(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.parent_qualified_name
         )
 
     @parent_qualified_name.setter
-    def parent_qualified_name(self, parent_qualified_name: str):
+    def parent_qualified_name(self, parent_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_qualified_name = parent_qualified_name
 
     @property
-    def collection_qualified_name(self) -> str:
+    def collection_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
@@ -4672,35 +4660,34 @@ class Folder(Namespace):
         )
 
     @collection_qualified_name.setter
-    def collection_qualified_name(self, collection_qualified_name: str):
+    def collection_qualified_name(self, collection_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.collection_qualified_name = collection_qualified_name
 
     @property
-    def parent(self) -> Namespace:
+    def parent(self) -> Optional[Namespace]:
         return None if self.attributes is None else self.attributes.parent
 
     @parent.setter
-    def parent(self, parent: Namespace):
+    def parent(self, parent: Optional[Namespace]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent = parent
 
     class Attributes(Namespace.Attributes):
-        parent_qualified_name: str = Field(description="", alias="parentQualifiedName")
-        collection_qualified_name: str = Field(
-            description="", alias="collectionQualifiedName"
+        parent_qualified_name: Optional[str] = Field(
+            None, description="", alias="parentQualifiedName"
         )
-        parent: Namespace = Field(description="", alias="parent")  # relationship
+        collection_qualified_name: Optional[str] = Field(
+            None, description="", alias="collectionQualifiedName"
+        )
+        parent: Optional[Namespace] = Field(
+            None, description="", alias="parent"
+        )  # relationship
 
     attributes: "Folder.Attributes" = Field(
-        default_factory=lambda: Folder.Attributes(
-            name="",
-            parent_qualified_name="",
-            collection_qualified_name="",
-            parent=Namespace(),
-        ),
+        default_factory=lambda: Folder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4759,7 +4746,7 @@ class Catalog(Asset, type_name="Catalog"):
     @input_to_processes.setter
     def input_to_processes(self, input_to_processes: Optional[list[Process]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.input_to_processes = input_to_processes
 
     @property
@@ -4775,7 +4762,7 @@ class Catalog(Asset, type_name="Catalog"):
         self, output_from_airflow_tasks: Optional[list[AirflowTask]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.output_from_airflow_tasks = output_from_airflow_tasks
 
     @property
@@ -4789,7 +4776,7 @@ class Catalog(Asset, type_name="Catalog"):
         self, input_to_airflow_tasks: Optional[list[AirflowTask]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.input_to_airflow_tasks = input_to_airflow_tasks
 
     @property
@@ -4801,7 +4788,7 @@ class Catalog(Asset, type_name="Catalog"):
     @output_from_processes.setter
     def output_from_processes(self, output_from_processes: Optional[list[Process]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.output_from_processes = output_from_processes
 
     class Attributes(Asset.Attributes):
@@ -4819,9 +4806,7 @@ class Catalog(Asset, type_name="Catalog"):
         )  # relationship
 
     attributes: "Catalog.Attributes" = Field(
-        default_factory=lambda: Catalog.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Catalog.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4880,7 +4865,7 @@ class Tag(Catalog):
     @tag_id.setter
     def tag_id(self, tag_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tag_id = tag_id
 
     @property
@@ -4890,7 +4875,7 @@ class Tag(Catalog):
     @tag_attributes.setter
     def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tag_attributes = tag_attributes
 
     @property
@@ -4900,7 +4885,7 @@ class Tag(Catalog):
     @tag_allowed_values.setter
     def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tag_allowed_values = tag_allowed_values
 
     @property
@@ -4912,7 +4897,7 @@ class Tag(Catalog):
     @mapped_atlan_tag_name.setter
     def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     class Attributes(Catalog.Attributes):
@@ -4928,9 +4913,7 @@ class Tag(Catalog):
         )
 
     attributes: "Tag.Attributes" = Field(
-        default_factory=lambda: Tag.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Tag.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -4978,7 +4961,7 @@ class ColumnProcess(Process):
     @outputs.setter
     def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.outputs = outputs
 
     @property
@@ -4988,7 +4971,7 @@ class ColumnProcess(Process):
     @process.setter
     def process(self, process: Optional[Process]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.process = process
 
     @property
@@ -4998,7 +4981,7 @@ class ColumnProcess(Process):
     @inputs.setter
     def inputs(self, inputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     class Attributes(Process.Attributes):
@@ -5013,9 +4996,7 @@ class ColumnProcess(Process):
         )  # relationship
 
     attributes: "ColumnProcess.Attributes" = Field(
-        default_factory=lambda: ColumnProcess.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ColumnProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5102,7 +5083,7 @@ class Airflow(Catalog):
     @airflow_tags.setter
     def airflow_tags(self, airflow_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_tags = airflow_tags
 
     @property
@@ -5112,7 +5093,7 @@ class Airflow(Catalog):
     @airflow_run_version.setter
     def airflow_run_version(self, airflow_run_version: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_version = airflow_run_version
 
     @property
@@ -5128,7 +5109,7 @@ class Airflow(Catalog):
         self, airflow_run_open_lineage_version: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_open_lineage_version = (
             airflow_run_open_lineage_version
         )
@@ -5140,7 +5121,7 @@ class Airflow(Catalog):
     @airflow_run_name.setter
     def airflow_run_name(self, airflow_run_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_name = airflow_run_name
 
     @property
@@ -5150,7 +5131,7 @@ class Airflow(Catalog):
     @airflow_run_type.setter
     def airflow_run_type(self, airflow_run_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_type = airflow_run_type
 
     @property
@@ -5162,7 +5143,7 @@ class Airflow(Catalog):
     @airflow_run_start_time.setter
     def airflow_run_start_time(self, airflow_run_start_time: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_start_time = airflow_run_start_time
 
     @property
@@ -5172,7 +5153,7 @@ class Airflow(Catalog):
     @airflow_run_end_time.setter
     def airflow_run_end_time(self, airflow_run_end_time: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_end_time = airflow_run_end_time
 
     @property
@@ -5188,7 +5169,7 @@ class Airflow(Catalog):
         self, airflow_run_open_lineage_state: Optional[OpenLineageRunState]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_run_open_lineage_state = airflow_run_open_lineage_state
 
     class Attributes(Catalog.Attributes):
@@ -5218,9 +5199,7 @@ class Airflow(Catalog):
         )
 
     attributes: "Airflow.Attributes" = Field(
-        default_factory=lambda: Airflow.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Airflow.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5273,7 +5252,7 @@ class AirflowDag(Airflow):
     @airflow_dag_schedule.setter
     def airflow_dag_schedule(self, airflow_dag_schedule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_dag_schedule = airflow_dag_schedule
 
     @property
@@ -5287,7 +5266,7 @@ class AirflowDag(Airflow):
     @airflow_dag_schedule_delta.setter
     def airflow_dag_schedule_delta(self, airflow_dag_schedule_delta: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_dag_schedule_delta = airflow_dag_schedule_delta
 
     @property
@@ -5297,7 +5276,7 @@ class AirflowDag(Airflow):
     @airflow_tasks.setter
     def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
 
     class Attributes(Airflow.Attributes):
@@ -5312,9 +5291,7 @@ class AirflowDag(Airflow):
         )  # relationship
 
     attributes: "AirflowDag.Attributes" = Field(
-        default_factory=lambda: AirflowDag.Attributes(
-            name="",
-        ),
+        default_factory=lambda: AirflowDag.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5453,7 +5430,7 @@ class AirflowTask(Airflow):
     @airflow_task_operator_class.setter
     def airflow_task_operator_class(self, airflow_task_operator_class: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_operator_class = airflow_task_operator_class
 
     @property
@@ -5463,7 +5440,7 @@ class AirflowTask(Airflow):
     @airflow_dag_name.setter
     def airflow_dag_name(self, airflow_dag_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_dag_name = airflow_dag_name
 
     @property
@@ -5477,7 +5454,7 @@ class AirflowTask(Airflow):
     @airflow_dag_qualified_name.setter
     def airflow_dag_qualified_name(self, airflow_dag_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_dag_qualified_name = airflow_dag_qualified_name
 
     @property
@@ -5491,7 +5468,7 @@ class AirflowTask(Airflow):
     @airflow_task_connection_id.setter
     def airflow_task_connection_id(self, airflow_task_connection_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_connection_id = airflow_task_connection_id
 
     @property
@@ -5501,7 +5478,7 @@ class AirflowTask(Airflow):
     @airflow_task_sql.setter
     def airflow_task_sql(self, airflow_task_sql: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_sql = airflow_task_sql
 
     @property
@@ -5515,7 +5492,7 @@ class AirflowTask(Airflow):
     @airflow_task_retry_number.setter
     def airflow_task_retry_number(self, airflow_task_retry_number: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_retry_number = airflow_task_retry_number
 
     @property
@@ -5525,7 +5502,7 @@ class AirflowTask(Airflow):
     @airflow_task_pool.setter
     def airflow_task_pool(self, airflow_task_pool: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_pool = airflow_task_pool
 
     @property
@@ -5537,7 +5514,7 @@ class AirflowTask(Airflow):
     @airflow_task_pool_slots.setter
     def airflow_task_pool_slots(self, airflow_task_pool_slots: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_pool_slots = airflow_task_pool_slots
 
     @property
@@ -5547,7 +5524,7 @@ class AirflowTask(Airflow):
     @airflow_task_queue.setter
     def airflow_task_queue(self, airflow_task_queue: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_queue = airflow_task_queue
 
     @property
@@ -5561,7 +5538,7 @@ class AirflowTask(Airflow):
     @airflow_task_priority_weight.setter
     def airflow_task_priority_weight(self, airflow_task_priority_weight: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_priority_weight = airflow_task_priority_weight
 
     @property
@@ -5575,7 +5552,7 @@ class AirflowTask(Airflow):
     @airflow_task_trigger_rule.setter
     def airflow_task_trigger_rule(self, airflow_task_trigger_rule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_task_trigger_rule = airflow_task_trigger_rule
 
     @property
@@ -5585,7 +5562,7 @@ class AirflowTask(Airflow):
     @outputs.setter
     def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.outputs = outputs
 
     @property
@@ -5595,7 +5572,7 @@ class AirflowTask(Airflow):
     @process.setter
     def process(self, process: Optional[Process]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.process = process
 
     @property
@@ -5605,7 +5582,7 @@ class AirflowTask(Airflow):
     @inputs.setter
     def inputs(self, inputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     @property
@@ -5615,7 +5592,7 @@ class AirflowTask(Airflow):
     @airflow_dag.setter
     def airflow_dag(self, airflow_dag: Optional[AirflowDag]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_dag = airflow_dag
 
     class Attributes(Airflow.Attributes):
@@ -5666,9 +5643,7 @@ class AirflowTask(Airflow):
         )  # relationship
 
     attributes: "AirflowTask.Attributes" = Field(
-        default_factory=lambda: AirflowTask.Attributes(
-            name="",
-        ),
+        default_factory=lambda: AirflowTask.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5762,7 +5737,7 @@ class Metric(DataQuality):
     @metric_type.setter
     def metric_type(self, metric_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_type = metric_type
 
     @property
@@ -5772,7 +5747,7 @@ class Metric(DataQuality):
     @metric_s_q_l.setter
     def metric_s_q_l(self, metric_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_s_q_l = metric_s_q_l
 
     @property
@@ -5782,7 +5757,7 @@ class Metric(DataQuality):
     @metric_filters.setter
     def metric_filters(self, metric_filters: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_filters = metric_filters
 
     @property
@@ -5792,7 +5767,7 @@ class Metric(DataQuality):
     @metric_time_grains.setter
     def metric_time_grains(self, metric_time_grains: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_time_grains = metric_time_grains
 
     @property
@@ -5804,7 +5779,7 @@ class Metric(DataQuality):
     @metric_timestamp_column.setter
     def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_timestamp_column = metric_timestamp_column
 
     @property
@@ -5814,7 +5789,7 @@ class Metric(DataQuality):
     @assets.setter
     def assets(self, assets: Optional[list[Asset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.assets = assets
 
     @property
@@ -5830,7 +5805,7 @@ class Metric(DataQuality):
         self, metric_dimension_columns: Optional[list[Column]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_dimension_columns = metric_dimension_columns
 
     class Attributes(DataQuality.Attributes):
@@ -5853,9 +5828,7 @@ class Metric(DataQuality):
         )  # relationship
 
     attributes: "Metric.Attributes" = Field(
-        default_factory=lambda: Metric.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Metric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -5910,7 +5883,7 @@ class Resource(Catalog):
     @link.setter
     def link(self, link: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.link = link
 
     @property
@@ -5920,7 +5893,7 @@ class Resource(Catalog):
     @is_global.setter
     def is_global(self, is_global: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_global = is_global
 
     @property
@@ -5930,7 +5903,7 @@ class Resource(Catalog):
     @reference.setter
     def reference(self, reference: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.reference = reference
 
     @property
@@ -5940,7 +5913,7 @@ class Resource(Catalog):
     @resource_metadata.setter
     def resource_metadata(self, resource_metadata: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.resource_metadata = resource_metadata
 
     class Attributes(Catalog.Attributes):
@@ -5952,9 +5925,7 @@ class Resource(Catalog):
         )
 
     attributes: "Resource.Attributes" = Field(
-        default_factory=lambda: Resource.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Resource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6021,7 +5992,7 @@ class Readme(Resource):
     @see_also.setter
     def see_also(self, see_also: Optional[list[Readme]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.see_also = see_also
 
     @property
@@ -6031,7 +6002,7 @@ class Readme(Resource):
     @asset.setter
     def asset(self, asset: Optional[Asset]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset = asset
 
     class Attributes(Resource.Attributes):
@@ -6048,7 +6019,7 @@ class Readme(Resource):
             cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
         ) -> Readme.Attributes:
             validate_required_fields(["asset", "content"], [asset, content])
-            if not asset.name:
+            if not asset.name or len(asset.name) < 1:
                 if not asset_name:
                     raise ValueError(
                         "asset_name is required when name is not available from asset"
@@ -6067,9 +6038,7 @@ class Readme(Resource):
             )
 
     attributes: "Readme.Attributes" = Field(
-        default_factory=lambda: Readme.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Readme.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6131,7 +6100,7 @@ class File(Resource):
     @file_type.setter
     def file_type(self, file_type: Optional[FileType]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.file_type = file_type
 
     @property
@@ -6141,7 +6110,7 @@ class File(Resource):
     @file_path.setter
     def file_path(self, file_path: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.file_path = file_path
 
     @property
@@ -6151,7 +6120,7 @@ class File(Resource):
     @file_assets.setter
     def file_assets(self, file_assets: Optional[Asset]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.file_assets = file_assets
 
     class Attributes(Resource.Attributes):
@@ -6178,9 +6147,7 @@ class File(Resource):
             )
 
     attributes: "File.Attributes" = Field(
-        default_factory=lambda: File.Attributes(
-            name="",
-        ),
+        default_factory=lambda: File.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6229,7 +6196,7 @@ class Link(Resource):
     @icon.setter
     def icon(self, icon: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.icon = icon
 
     @property
@@ -6239,7 +6206,7 @@ class Link(Resource):
     @icon_type.setter
     def icon_type(self, icon_type: Optional[IconType]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.icon_type = icon_type
 
     @property
@@ -6249,7 +6216,7 @@ class Link(Resource):
     @asset.setter
     def asset(self, asset: Optional[Asset]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.asset = asset
 
     class Attributes(Resource.Attributes):
@@ -6260,9 +6227,7 @@ class Link(Resource):
         )  # relationship
 
     attributes: "Link.Attributes" = Field(
-        default_factory=lambda: Link.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Link.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6415,7 +6380,7 @@ class SQL(Catalog):
     @query_count.setter
     def query_count(self, query_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_count = query_count
 
     @property
@@ -6425,7 +6390,7 @@ class SQL(Catalog):
     @query_user_count.setter
     def query_user_count(self, query_user_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_user_count = query_user_count
 
     @property
@@ -6435,7 +6400,7 @@ class SQL(Catalog):
     @query_user_map.setter
     def query_user_map(self, query_user_map: Optional[dict[str, int]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_user_map = query_user_map
 
     @property
@@ -6447,7 +6412,7 @@ class SQL(Catalog):
     @query_count_updated_at.setter
     def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_count_updated_at = query_count_updated_at
 
     @property
@@ -6457,7 +6422,7 @@ class SQL(Catalog):
     @database_name.setter
     def database_name(self, database_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.database_name = database_name
 
     @property
@@ -6469,7 +6434,7 @@ class SQL(Catalog):
     @database_qualified_name.setter
     def database_qualified_name(self, database_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.database_qualified_name = database_qualified_name
 
     @property
@@ -6479,7 +6444,7 @@ class SQL(Catalog):
     @schema_name.setter
     def schema_name(self, schema_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_name = schema_name
 
     @property
@@ -6491,7 +6456,7 @@ class SQL(Catalog):
     @schema_qualified_name.setter
     def schema_qualified_name(self, schema_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_qualified_name = schema_qualified_name
 
     @property
@@ -6501,7 +6466,7 @@ class SQL(Catalog):
     @table_name.setter
     def table_name(self, table_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table_name = table_name
 
     @property
@@ -6511,7 +6476,7 @@ class SQL(Catalog):
     @table_qualified_name.setter
     def table_qualified_name(self, table_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table_qualified_name = table_qualified_name
 
     @property
@@ -6521,7 +6486,7 @@ class SQL(Catalog):
     @view_name.setter
     def view_name(self, view_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view_name = view_name
 
     @property
@@ -6531,7 +6496,7 @@ class SQL(Catalog):
     @view_qualified_name.setter
     def view_qualified_name(self, view_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view_qualified_name = view_qualified_name
 
     @property
@@ -6541,7 +6506,7 @@ class SQL(Catalog):
     @is_profiled.setter
     def is_profiled(self, is_profiled: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_profiled = is_profiled
 
     @property
@@ -6551,7 +6516,7 @@ class SQL(Catalog):
     @last_profiled_at.setter
     def last_profiled_at(self, last_profiled_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
@@ -6561,7 +6526,7 @@ class SQL(Catalog):
     @dbt_sources.setter
     def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_sources = dbt_sources
 
     @property
@@ -6571,7 +6536,7 @@ class SQL(Catalog):
     @sql_dbt_models.setter
     def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_dbt_models = sql_dbt_models
 
     @property
@@ -6581,7 +6546,7 @@ class SQL(Catalog):
     @sql_dbt_sources.setter
     def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_dbt_sources = sql_dbt_sources
 
     @property
@@ -6591,7 +6556,7 @@ class SQL(Catalog):
     @dbt_models.setter
     def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
     @property
@@ -6601,7 +6566,7 @@ class SQL(Catalog):
     @dbt_tests.setter
     def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
 
     class Attributes(Catalog.Attributes):
@@ -6652,9 +6617,7 @@ class SQL(Catalog):
         )  # relationship
 
     attributes: "SQL.Attributes" = Field(
-        default_factory=lambda: SQL.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SQL.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -6780,7 +6743,7 @@ class Query(SQL):
     @raw_query.setter
     def raw_query(self, raw_query: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.raw_query = raw_query
 
     @property
@@ -6796,7 +6759,7 @@ class Query(SQL):
         self, default_schema_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.default_schema_qualified_name = default_schema_qualified_name
 
     @property
@@ -6812,7 +6775,7 @@ class Query(SQL):
         self, default_database_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.default_database_qualified_name = (
             default_database_qualified_name
         )
@@ -6826,7 +6789,7 @@ class Query(SQL):
     @variables_schema_base64.setter
     def variables_schema_base64(self, variables_schema_base64: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.variables_schema_base64 = variables_schema_base64
 
     @property
@@ -6836,7 +6799,7 @@ class Query(SQL):
     @is_private.setter
     def is_private(self, is_private: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_private = is_private
 
     @property
@@ -6846,23 +6809,23 @@ class Query(SQL):
     @is_sql_snippet.setter
     def is_sql_snippet(self, is_sql_snippet: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_sql_snippet = is_sql_snippet
 
     @property
-    def parent_qualified_name(self) -> str:
+    def parent_qualified_name(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.parent_qualified_name
         )
 
     @parent_qualified_name.setter
-    def parent_qualified_name(self, parent_qualified_name: str):
+    def parent_qualified_name(self, parent_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_qualified_name = parent_qualified_name
 
     @property
-    def collection_qualified_name(self) -> str:
+    def collection_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
@@ -6870,9 +6833,9 @@ class Query(SQL):
         )
 
     @collection_qualified_name.setter
-    def collection_qualified_name(self, collection_qualified_name: str):
+    def collection_qualified_name(self, collection_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.collection_qualified_name = collection_qualified_name
 
     @property
@@ -6882,7 +6845,7 @@ class Query(SQL):
     @is_visual_query.setter
     def is_visual_query(self, is_visual_query: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_visual_query = is_visual_query
 
     @property
@@ -6896,17 +6859,17 @@ class Query(SQL):
     @visual_builder_schema_base64.setter
     def visual_builder_schema_base64(self, visual_builder_schema_base64: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
 
     @property
-    def parent(self) -> Namespace:
+    def parent(self) -> Optional[Namespace]:
         return None if self.attributes is None else self.attributes.parent
 
     @parent.setter
-    def parent(self, parent: Namespace):
+    def parent(self, parent: Optional[Namespace]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent = parent
 
     @property
@@ -6916,7 +6879,7 @@ class Query(SQL):
     @columns.setter
     def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
@@ -6926,7 +6889,7 @@ class Query(SQL):
     @tables.setter
     def tables(self, tables: Optional[list[Table]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tables = tables
 
     @property
@@ -6936,7 +6899,7 @@ class Query(SQL):
     @views.setter
     def views(self, views: Optional[list[View]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.views = views
 
     class Attributes(SQL.Attributes):
@@ -6954,9 +6917,11 @@ class Query(SQL):
         is_sql_snippet: Optional[bool] = Field(
             None, description="", alias="isSqlSnippet"
         )
-        parent_qualified_name: str = Field(description="", alias="parentQualifiedName")
-        collection_qualified_name: str = Field(
-            description="", alias="collectionQualifiedName"
+        parent_qualified_name: Optional[str] = Field(
+            None, description="", alias="parentQualifiedName"
+        )
+        collection_qualified_name: Optional[str] = Field(
+            None, description="", alias="collectionQualifiedName"
         )
         is_visual_query: Optional[bool] = Field(
             None, description="", alias="isVisualQuery"
@@ -6964,7 +6929,9 @@ class Query(SQL):
         visual_builder_schema_base64: Optional[str] = Field(
             None, description="", alias="visualBuilderSchemaBase64"
         )
-        parent: Namespace = Field(description="", alias="parent")  # relationship
+        parent: Optional[Namespace] = Field(
+            None, description="", alias="parent"
+        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
@@ -6976,12 +6943,7 @@ class Query(SQL):
         )  # relationship
 
     attributes: "Query.Attributes" = Field(
-        default_factory=lambda: Query.Attributes(
-            name="",
-            parent_qualified_name="",
-            collection_qualified_name="",
-            parent=Namespace(),
-        ),
+        default_factory=lambda: Query.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7088,7 +7050,7 @@ class Schema(SQL):
     @table_count.setter
     def table_count(self, table_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table_count = table_count
 
     @property
@@ -7098,7 +7060,7 @@ class Schema(SQL):
     @views_count.setter
     def views_count(self, views_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.views_count = views_count
 
     @property
@@ -7108,7 +7070,7 @@ class Schema(SQL):
     @snowflake_tags.setter
     def snowflake_tags(self, snowflake_tags: Optional[list[SnowflakeTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_tags = snowflake_tags
 
     @property
@@ -7118,7 +7080,7 @@ class Schema(SQL):
     @functions.setter
     def functions(self, functions: Optional[list[Function]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.functions = functions
 
     @property
@@ -7128,7 +7090,7 @@ class Schema(SQL):
     @tables.setter
     def tables(self, tables: Optional[list[Table]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tables = tables
 
     @property
@@ -7138,7 +7100,7 @@ class Schema(SQL):
     @database.setter
     def database(self, database: Optional[Database]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.database = database
 
     @property
@@ -7148,7 +7110,7 @@ class Schema(SQL):
     @procedures.setter
     def procedures(self, procedures: Optional[list[Procedure]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.procedures = procedures
 
     @property
@@ -7158,7 +7120,7 @@ class Schema(SQL):
     @views.setter
     def views(self, views: Optional[list[View]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.views = views
 
     @property
@@ -7168,7 +7130,7 @@ class Schema(SQL):
     @materialised_views.setter
     def materialised_views(self, materialised_views: Optional[list[MaterialisedView]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.materialised_views = materialised_views
 
     @property
@@ -7184,7 +7146,7 @@ class Schema(SQL):
         self, snowflake_dynamic_tables: Optional[list[SnowflakeDynamicTable]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_dynamic_tables = snowflake_dynamic_tables
 
     @property
@@ -7194,7 +7156,7 @@ class Schema(SQL):
     @snowflake_pipes.setter
     def snowflake_pipes(self, snowflake_pipes: Optional[list[SnowflakePipe]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_pipes = snowflake_pipes
 
     @property
@@ -7204,7 +7166,7 @@ class Schema(SQL):
     @snowflake_streams.setter
     def snowflake_streams(self, snowflake_streams: Optional[list[SnowflakeStream]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_streams = snowflake_streams
 
     class Attributes(SQL.Attributes):
@@ -7269,9 +7231,7 @@ class Schema(SQL):
             )
 
     attributes: "Schema.Attributes" = Field(
-        default_factory=lambda: Schema.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Schema.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7333,7 +7293,7 @@ class SnowflakePipe(SQL):
     @definition.setter
     def definition(self, definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.definition = definition
 
     @property
@@ -7349,7 +7309,7 @@ class SnowflakePipe(SQL):
         self, snowflake_pipe_is_auto_ingest_enabled: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_pipe_is_auto_ingest_enabled = (
             snowflake_pipe_is_auto_ingest_enabled
         )
@@ -7367,7 +7327,7 @@ class SnowflakePipe(SQL):
         self, snowflake_pipe_notification_channel_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_pipe_notification_channel_name = (
             snowflake_pipe_notification_channel_name
         )
@@ -7379,7 +7339,7 @@ class SnowflakePipe(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
@@ -7395,9 +7355,7 @@ class SnowflakePipe(SQL):
         )  # relationship
 
     attributes: "SnowflakePipe.Attributes" = Field(
-        default_factory=lambda: SnowflakePipe.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SnowflakePipe.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7501,7 +7459,7 @@ class View(SQL):
     @column_count.setter
     def column_count(self, column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_count = column_count
 
     @property
@@ -7511,7 +7469,7 @@ class View(SQL):
     @row_count.setter
     def row_count(self, row_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.row_count = row_count
 
     @property
@@ -7521,7 +7479,7 @@ class View(SQL):
     @size_bytes.setter
     def size_bytes(self, size_bytes: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.size_bytes = size_bytes
 
     @property
@@ -7531,7 +7489,7 @@ class View(SQL):
     @is_query_preview.setter
     def is_query_preview(self, is_query_preview: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_query_preview = is_query_preview
 
     @property
@@ -7541,7 +7499,7 @@ class View(SQL):
     @query_preview_config.setter
     def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
 
     @property
@@ -7551,7 +7509,7 @@ class View(SQL):
     @alias.setter
     def alias(self, alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.alias = alias
 
     @property
@@ -7561,7 +7519,7 @@ class View(SQL):
     @is_temporary.setter
     def is_temporary(self, is_temporary: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_temporary = is_temporary
 
     @property
@@ -7571,7 +7529,7 @@ class View(SQL):
     @definition.setter
     def definition(self, definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.definition = definition
 
     @property
@@ -7581,7 +7539,7 @@ class View(SQL):
     @columns.setter
     def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
@@ -7591,7 +7549,7 @@ class View(SQL):
     @queries.setter
     def queries(self, queries: Optional[list[Query]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.queries = queries
 
     @property
@@ -7601,7 +7559,7 @@ class View(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
@@ -7653,9 +7611,7 @@ class View(SQL):
             )
 
     attributes: "View.Attributes" = Field(
-        default_factory=lambda: View.Attributes(
-            name="",
-        ),
+        default_factory=lambda: View.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -7778,7 +7734,7 @@ class MaterialisedView(SQL):
     @refresh_mode.setter
     def refresh_mode(self, refresh_mode: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.refresh_mode = refresh_mode
 
     @property
@@ -7788,7 +7744,7 @@ class MaterialisedView(SQL):
     @refresh_method.setter
     def refresh_method(self, refresh_method: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.refresh_method = refresh_method
 
     @property
@@ -7798,7 +7754,7 @@ class MaterialisedView(SQL):
     @staleness.setter
     def staleness(self, staleness: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.staleness = staleness
 
     @property
@@ -7808,7 +7764,7 @@ class MaterialisedView(SQL):
     @stale_since_date.setter
     def stale_since_date(self, stale_since_date: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.stale_since_date = stale_since_date
 
     @property
@@ -7818,7 +7774,7 @@ class MaterialisedView(SQL):
     @column_count.setter
     def column_count(self, column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_count = column_count
 
     @property
@@ -7828,7 +7784,7 @@ class MaterialisedView(SQL):
     @row_count.setter
     def row_count(self, row_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.row_count = row_count
 
     @property
@@ -7838,7 +7794,7 @@ class MaterialisedView(SQL):
     @size_bytes.setter
     def size_bytes(self, size_bytes: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.size_bytes = size_bytes
 
     @property
@@ -7848,7 +7804,7 @@ class MaterialisedView(SQL):
     @is_query_preview.setter
     def is_query_preview(self, is_query_preview: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_query_preview = is_query_preview
 
     @property
@@ -7858,7 +7814,7 @@ class MaterialisedView(SQL):
     @query_preview_config.setter
     def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
 
     @property
@@ -7868,7 +7824,7 @@ class MaterialisedView(SQL):
     @alias.setter
     def alias(self, alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.alias = alias
 
     @property
@@ -7878,7 +7834,7 @@ class MaterialisedView(SQL):
     @is_temporary.setter
     def is_temporary(self, is_temporary: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_temporary = is_temporary
 
     @property
@@ -7888,7 +7844,7 @@ class MaterialisedView(SQL):
     @definition.setter
     def definition(self, definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.definition = definition
 
     @property
@@ -7898,7 +7854,7 @@ class MaterialisedView(SQL):
     @columns.setter
     def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
@@ -7908,7 +7864,7 @@ class MaterialisedView(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
@@ -7967,9 +7923,7 @@ class MaterialisedView(SQL):
             )
 
     attributes: "MaterialisedView.Attributes" = Field(
-        default_factory=lambda: MaterialisedView.Attributes(
-            name="",
-        ),
+        default_factory=lambda: MaterialisedView.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8062,7 +8016,7 @@ class Function(SQL):
     @function_definition.setter
     def function_definition(self, function_definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_definition = function_definition
 
     @property
@@ -8072,7 +8026,7 @@ class Function(SQL):
     @function_return_type.setter
     def function_return_type(self, function_return_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_return_type = function_return_type
 
     @property
@@ -8082,7 +8036,7 @@ class Function(SQL):
     @function_arguments.setter
     def function_arguments(self, function_arguments: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_arguments = function_arguments
 
     @property
@@ -8092,7 +8046,7 @@ class Function(SQL):
     @function_language.setter
     def function_language(self, function_language: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_language = function_language
 
     @property
@@ -8102,7 +8056,7 @@ class Function(SQL):
     @function_type.setter
     def function_type(self, function_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_type = function_type
 
     @property
@@ -8112,7 +8066,7 @@ class Function(SQL):
     @function_is_external.setter
     def function_is_external(self, function_is_external: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_is_external = function_is_external
 
     @property
@@ -8122,7 +8076,7 @@ class Function(SQL):
     @function_is_secure.setter
     def function_is_secure(self, function_is_secure: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_is_secure = function_is_secure
 
     @property
@@ -8134,7 +8088,7 @@ class Function(SQL):
     @function_is_memoizable.setter
     def function_is_memoizable(self, function_is_memoizable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_is_memoizable = function_is_memoizable
 
     @property
@@ -8144,7 +8098,7 @@ class Function(SQL):
     @function_schema.setter
     def function_schema(self, function_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.function_schema = function_schema
 
     class Attributes(SQL.Attributes):
@@ -8175,9 +8129,7 @@ class Function(SQL):
         )  # relationship
 
     attributes: "Function.Attributes" = Field(
-        default_factory=lambda: Function.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Function.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -8328,7 +8280,7 @@ class TablePartition(SQL):
     @constraint.setter
     def constraint(self, constraint: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.constraint = constraint
 
     @property
@@ -8338,7 +8290,7 @@ class TablePartition(SQL):
     @column_count.setter
     def column_count(self, column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_count = column_count
 
     @property
@@ -8348,7 +8300,7 @@ class TablePartition(SQL):
     @row_count.setter
     def row_count(self, row_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.row_count = row_count
 
     @property
@@ -8358,7 +8310,7 @@ class TablePartition(SQL):
     @size_bytes.setter
     def size_bytes(self, size_bytes: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.size_bytes = size_bytes
 
     @property
@@ -8368,7 +8320,7 @@ class TablePartition(SQL):
     @alias.setter
     def alias(self, alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.alias = alias
 
     @property
@@ -8378,7 +8330,7 @@ class TablePartition(SQL):
     @is_temporary.setter
     def is_temporary(self, is_temporary: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_temporary = is_temporary
 
     @property
@@ -8388,7 +8340,7 @@ class TablePartition(SQL):
     @is_query_preview.setter
     def is_query_preview(self, is_query_preview: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_query_preview = is_query_preview
 
     @property
@@ -8398,7 +8350,7 @@ class TablePartition(SQL):
     @query_preview_config.setter
     def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
 
     @property
@@ -8408,7 +8360,7 @@ class TablePartition(SQL):
     @external_location.setter
     def external_location(self, external_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.external_location = external_location
 
     @property
@@ -8422,7 +8374,7 @@ class TablePartition(SQL):
     @external_location_region.setter
     def external_location_region(self, external_location_region: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.external_location_region = external_location_region
 
     @property
@@ -8436,7 +8388,7 @@ class TablePartition(SQL):
     @external_location_format.setter
     def external_location_format(self, external_location_format: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.external_location_format = external_location_format
 
     @property
@@ -8446,7 +8398,7 @@ class TablePartition(SQL):
     @is_partitioned.setter
     def is_partitioned(self, is_partitioned: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_partitioned = is_partitioned
 
     @property
@@ -8456,7 +8408,7 @@ class TablePartition(SQL):
     @partition_strategy.setter
     def partition_strategy(self, partition_strategy: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_strategy = partition_strategy
 
     @property
@@ -8466,7 +8418,7 @@ class TablePartition(SQL):
     @partition_count.setter
     def partition_count(self, partition_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_count = partition_count
 
     @property
@@ -8476,7 +8428,7 @@ class TablePartition(SQL):
     @partition_list.setter
     def partition_list(self, partition_list: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_list = partition_list
 
     @property
@@ -8490,7 +8442,7 @@ class TablePartition(SQL):
         self, child_table_partitions: Optional[list[TablePartition]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.child_table_partitions = child_table_partitions
 
     @property
@@ -8500,7 +8452,7 @@ class TablePartition(SQL):
     @columns.setter
     def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
@@ -8512,7 +8464,7 @@ class TablePartition(SQL):
     @parent_table_partition.setter
     def parent_table_partition(self, parent_table_partition: Optional[TablePartition]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_table_partition = parent_table_partition
 
     @property
@@ -8522,7 +8474,7 @@ class TablePartition(SQL):
     @parent_table.setter
     def parent_table(self, parent_table: Optional[Table]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_table = parent_table
 
     class Attributes(SQL.Attributes):
@@ -8573,9 +8525,7 @@ class TablePartition(SQL):
         )  # relationship
 
     attributes: "TablePartition.Attributes" = Field(
-        default_factory=lambda: TablePartition.Attributes(
-            name="",
-        ),
+        default_factory=lambda: TablePartition.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -9006,7 +8956,7 @@ class Column(SQL):
     @data_type.setter
     def data_type(self, data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.data_type = data_type
 
     @property
@@ -9016,7 +8966,7 @@ class Column(SQL):
     @sub_data_type.setter
     def sub_data_type(self, sub_data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sub_data_type = sub_data_type
 
     @property
@@ -9030,7 +8980,7 @@ class Column(SQL):
     @raw_data_type_definition.setter
     def raw_data_type_definition(self, raw_data_type_definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.raw_data_type_definition = raw_data_type_definition
 
     @property
@@ -9040,7 +8990,7 @@ class Column(SQL):
     @order.setter
     def order(self, order: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.order = order
 
     @property
@@ -9050,7 +9000,7 @@ class Column(SQL):
     @nested_column_count.setter
     def nested_column_count(self, nested_column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.nested_column_count = nested_column_count
 
     @property
@@ -9060,7 +9010,7 @@ class Column(SQL):
     @is_partition.setter
     def is_partition(self, is_partition: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_partition = is_partition
 
     @property
@@ -9070,7 +9020,7 @@ class Column(SQL):
     @partition_order.setter
     def partition_order(self, partition_order: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_order = partition_order
 
     @property
@@ -9080,7 +9030,7 @@ class Column(SQL):
     @is_clustered.setter
     def is_clustered(self, is_clustered: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_clustered = is_clustered
 
     @property
@@ -9090,7 +9040,7 @@ class Column(SQL):
     @is_primary.setter
     def is_primary(self, is_primary: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_primary = is_primary
 
     @property
@@ -9100,7 +9050,7 @@ class Column(SQL):
     @is_foreign.setter
     def is_foreign(self, is_foreign: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_foreign = is_foreign
 
     @property
@@ -9110,7 +9060,7 @@ class Column(SQL):
     @is_indexed.setter
     def is_indexed(self, is_indexed: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_indexed = is_indexed
 
     @property
@@ -9120,7 +9070,7 @@ class Column(SQL):
     @is_sort.setter
     def is_sort(self, is_sort: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_sort = is_sort
 
     @property
@@ -9130,7 +9080,7 @@ class Column(SQL):
     @is_dist.setter
     def is_dist(self, is_dist: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_dist = is_dist
 
     @property
@@ -9140,7 +9090,7 @@ class Column(SQL):
     @is_pinned.setter
     def is_pinned(self, is_pinned: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_pinned = is_pinned
 
     @property
@@ -9150,7 +9100,7 @@ class Column(SQL):
     @pinned_by.setter
     def pinned_by(self, pinned_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.pinned_by = pinned_by
 
     @property
@@ -9160,7 +9110,7 @@ class Column(SQL):
     @pinned_at.setter
     def pinned_at(self, pinned_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.pinned_at = pinned_at
 
     @property
@@ -9170,7 +9120,7 @@ class Column(SQL):
     @precision.setter
     def precision(self, precision: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.precision = precision
 
     @property
@@ -9180,7 +9130,7 @@ class Column(SQL):
     @default_value.setter
     def default_value(self, default_value: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.default_value = default_value
 
     @property
@@ -9190,7 +9140,7 @@ class Column(SQL):
     @is_nullable.setter
     def is_nullable(self, is_nullable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_nullable = is_nullable
 
     @property
@@ -9200,7 +9150,7 @@ class Column(SQL):
     @numeric_scale.setter
     def numeric_scale(self, numeric_scale: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.numeric_scale = numeric_scale
 
     @property
@@ -9210,7 +9160,7 @@ class Column(SQL):
     @max_length.setter
     def max_length(self, max_length: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.max_length = max_length
 
     @property
@@ -9220,7 +9170,7 @@ class Column(SQL):
     @validations.setter
     def validations(self, validations: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.validations = validations
 
     @property
@@ -9234,7 +9184,7 @@ class Column(SQL):
     @parent_column_qualified_name.setter
     def parent_column_qualified_name(self, parent_column_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_column_qualified_name = parent_column_qualified_name
 
     @property
@@ -9244,7 +9194,7 @@ class Column(SQL):
     @parent_column_name.setter
     def parent_column_name(self, parent_column_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_column_name = parent_column_name
 
     @property
@@ -9258,7 +9208,7 @@ class Column(SQL):
     @column_distinct_values_count.setter
     def column_distinct_values_count(self, column_distinct_values_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_distinct_values_count = column_distinct_values_count
 
     @property
@@ -9274,7 +9224,7 @@ class Column(SQL):
         self, column_distinct_values_count_long: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_distinct_values_count_long = (
             column_distinct_values_count_long
         )
@@ -9286,7 +9236,7 @@ class Column(SQL):
     @column_histogram.setter
     def column_histogram(self, column_histogram: Optional[Histogram]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_histogram = column_histogram
 
     @property
@@ -9296,7 +9246,7 @@ class Column(SQL):
     @column_max.setter
     def column_max(self, column_max: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_max = column_max
 
     @property
@@ -9306,7 +9256,7 @@ class Column(SQL):
     @column_min.setter
     def column_min(self, column_min: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_min = column_min
 
     @property
@@ -9316,7 +9266,7 @@ class Column(SQL):
     @column_mean.setter
     def column_mean(self, column_mean: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_mean = column_mean
 
     @property
@@ -9326,7 +9276,7 @@ class Column(SQL):
     @column_sum.setter
     def column_sum(self, column_sum: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_sum = column_sum
 
     @property
@@ -9336,7 +9286,7 @@ class Column(SQL):
     @column_median.setter
     def column_median(self, column_median: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_median = column_median
 
     @property
@@ -9350,7 +9300,7 @@ class Column(SQL):
     @column_standard_deviation.setter
     def column_standard_deviation(self, column_standard_deviation: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_standard_deviation = column_standard_deviation
 
     @property
@@ -9364,7 +9314,7 @@ class Column(SQL):
     @column_unique_values_count.setter
     def column_unique_values_count(self, column_unique_values_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_unique_values_count = column_unique_values_count
 
     @property
@@ -9380,7 +9330,7 @@ class Column(SQL):
         self, column_unique_values_count_long: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_unique_values_count_long = (
             column_unique_values_count_long
         )
@@ -9392,7 +9342,7 @@ class Column(SQL):
     @column_average.setter
     def column_average(self, column_average: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_average = column_average
 
     @property
@@ -9404,7 +9354,7 @@ class Column(SQL):
     @column_average_length.setter
     def column_average_length(self, column_average_length: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_average_length = column_average_length
 
     @property
@@ -9420,7 +9370,7 @@ class Column(SQL):
         self, column_duplicate_values_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_duplicate_values_count = column_duplicate_values_count
 
     @property
@@ -9436,7 +9386,7 @@ class Column(SQL):
         self, column_duplicate_values_count_long: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_duplicate_values_count_long = (
             column_duplicate_values_count_long
         )
@@ -9452,7 +9402,7 @@ class Column(SQL):
     @column_maximum_string_length.setter
     def column_maximum_string_length(self, column_maximum_string_length: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_maximum_string_length = column_maximum_string_length
 
     @property
@@ -9462,7 +9412,7 @@ class Column(SQL):
     @column_maxs.setter
     def column_maxs(self, column_maxs: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_maxs = column_maxs
 
     @property
@@ -9476,7 +9426,7 @@ class Column(SQL):
     @column_minimum_string_length.setter
     def column_minimum_string_length(self, column_minimum_string_length: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_minimum_string_length = column_minimum_string_length
 
     @property
@@ -9486,7 +9436,7 @@ class Column(SQL):
     @column_mins.setter
     def column_mins(self, column_mins: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_mins = column_mins
 
     @property
@@ -9500,7 +9450,7 @@ class Column(SQL):
     @column_missing_values_count.setter
     def column_missing_values_count(self, column_missing_values_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_missing_values_count = column_missing_values_count
 
     @property
@@ -9516,7 +9466,7 @@ class Column(SQL):
         self, column_missing_values_count_long: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_missing_values_count_long = (
             column_missing_values_count_long
         )
@@ -9534,7 +9484,7 @@ class Column(SQL):
         self, column_missing_values_percentage: Optional[float]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_missing_values_percentage = (
             column_missing_values_percentage
         )
@@ -9552,7 +9502,7 @@ class Column(SQL):
         self, column_uniqueness_percentage: Optional[float]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_uniqueness_percentage = column_uniqueness_percentage
 
     @property
@@ -9562,7 +9512,7 @@ class Column(SQL):
     @column_variance.setter
     def column_variance(self, column_variance: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_variance = column_variance
 
     @property
@@ -9574,7 +9524,7 @@ class Column(SQL):
         self, column_top_values: Optional[list[ColumnValueFrequencyMap]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_top_values = column_top_values
 
     @property
@@ -9584,7 +9534,7 @@ class Column(SQL):
     @column_depth_level.setter
     def column_depth_level(self, column_depth_level: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_depth_level = column_depth_level
 
     @property
@@ -9598,7 +9548,7 @@ class Column(SQL):
         self, snowflake_dynamic_table: Optional[SnowflakeDynamicTable]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_dynamic_table = snowflake_dynamic_table
 
     @property
@@ -9608,7 +9558,7 @@ class Column(SQL):
     @view.setter
     def view(self, view: Optional[View]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view = view
 
     @property
@@ -9618,7 +9568,7 @@ class Column(SQL):
     @nested_columns.setter
     def nested_columns(self, nested_columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.nested_columns = nested_columns
 
     @property
@@ -9634,7 +9584,7 @@ class Column(SQL):
         self, data_quality_metric_dimensions: Optional[list[Metric]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.data_quality_metric_dimensions = data_quality_metric_dimensions
 
     @property
@@ -9644,7 +9594,7 @@ class Column(SQL):
     @dbt_model_columns.setter
     def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_columns = dbt_model_columns
 
     @property
@@ -9654,7 +9604,7 @@ class Column(SQL):
     @table.setter
     def table(self, table: Optional[Table]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table = table
 
     @property
@@ -9670,7 +9620,7 @@ class Column(SQL):
         self, column_dbt_model_columns: Optional[list[DbtModelColumn]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_dbt_model_columns = column_dbt_model_columns
 
     @property
@@ -9680,7 +9630,7 @@ class Column(SQL):
     @materialised_view.setter
     def materialised_view(self, materialised_view: Optional[MaterialisedView]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.materialised_view = materialised_view
 
     @property
@@ -9690,7 +9640,7 @@ class Column(SQL):
     @parent_column.setter
     def parent_column(self, parent_column: Optional[Column]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.parent_column = parent_column
 
     @property
@@ -9700,7 +9650,7 @@ class Column(SQL):
     @queries.setter
     def queries(self, queries: Optional[list[Query]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.queries = queries
 
     @property
@@ -9710,7 +9660,7 @@ class Column(SQL):
     @metric_timestamps.setter
     def metric_timestamps(self, metric_timestamps: Optional[list[Metric]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_timestamps = metric_timestamps
 
     @property
@@ -9720,7 +9670,7 @@ class Column(SQL):
     @foreign_key_to.setter
     def foreign_key_to(self, foreign_key_to: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.foreign_key_to = foreign_key_to
 
     @property
@@ -9730,7 +9680,7 @@ class Column(SQL):
     @foreign_key_from.setter
     def foreign_key_from(self, foreign_key_from: Optional[Column]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.foreign_key_from = foreign_key_from
 
     @property
@@ -9740,7 +9690,7 @@ class Column(SQL):
     @dbt_metrics.setter
     def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_metrics = dbt_metrics
 
     @property
@@ -9750,7 +9700,7 @@ class Column(SQL):
     @table_partition.setter
     def table_partition(self, table_partition: Optional[TablePartition]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table_partition = table_partition
 
     class Attributes(SQL.Attributes):
@@ -9956,9 +9906,7 @@ class Column(SQL):
             return ret_value
 
     attributes: "Column.Attributes" = Field(
-        default_factory=lambda: Column.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Column.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10034,7 +9982,7 @@ class SnowflakeStream(SQL):
     @snowflake_stream_type.setter
     def snowflake_stream_type(self, snowflake_stream_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_stream_type = snowflake_stream_type
 
     @property
@@ -10048,7 +9996,7 @@ class SnowflakeStream(SQL):
     @snowflake_stream_source_type.setter
     def snowflake_stream_source_type(self, snowflake_stream_source_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_stream_source_type = snowflake_stream_source_type
 
     @property
@@ -10060,7 +10008,7 @@ class SnowflakeStream(SQL):
     @snowflake_stream_mode.setter
     def snowflake_stream_mode(self, snowflake_stream_mode: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_stream_mode = snowflake_stream_mode
 
     @property
@@ -10074,7 +10022,7 @@ class SnowflakeStream(SQL):
     @snowflake_stream_is_stale.setter
     def snowflake_stream_is_stale(self, snowflake_stream_is_stale: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_stream_is_stale = snowflake_stream_is_stale
 
     @property
@@ -10090,7 +10038,7 @@ class SnowflakeStream(SQL):
         self, snowflake_stream_stale_after: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.snowflake_stream_stale_after = snowflake_stream_stale_after
 
     @property
@@ -10100,7 +10048,7 @@ class SnowflakeStream(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
@@ -10124,9 +10072,7 @@ class SnowflakeStream(SQL):
         )  # relationship
 
     attributes: "SnowflakeStream.Attributes" = Field(
-        default_factory=lambda: SnowflakeStream.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SnowflakeStream.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10191,7 +10137,7 @@ class Database(SQL):
     @schema_count.setter
     def schema_count(self, schema_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_count = schema_count
 
     @property
@@ -10201,7 +10147,7 @@ class Database(SQL):
     @schemas.setter
     def schemas(self, schemas: Optional[list[Schema]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schemas = schemas
 
     class Attributes(SQL.Attributes):
@@ -10233,9 +10179,7 @@ class Database(SQL):
             )
 
     attributes: "Database.Attributes" = Field(
-        default_factory=lambda: Database.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Database.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10273,13 +10217,13 @@ class Procedure(SQL):
     ]
 
     @property
-    def definition(self) -> str:
+    def definition(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.definition
 
     @definition.setter
-    def definition(self, definition: str):
+    def definition(self, definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.definition = definition
 
     @property
@@ -10289,17 +10233,17 @@ class Procedure(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        definition: str = Field(description="", alias="definition")
+        definition: Optional[str] = Field(None, description="", alias="definition")
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship
 
     attributes: "Procedure.Attributes" = Field(
-        default_factory=lambda: Procedure.Attributes(name="", definition=""),
+        default_factory=lambda: Procedure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10483,7 +10427,7 @@ class SnowflakeTag(Tag):
     @tag_id.setter
     def tag_id(self, tag_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tag_id = tag_id
 
     @property
@@ -10493,7 +10437,7 @@ class SnowflakeTag(Tag):
     @tag_attributes.setter
     def tag_attributes(self, tag_attributes: Optional[list[SourceTagAttribute]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tag_attributes = tag_attributes
 
     @property
@@ -10503,7 +10447,7 @@ class SnowflakeTag(Tag):
     @tag_allowed_values.setter
     def tag_allowed_values(self, tag_allowed_values: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tag_allowed_values = tag_allowed_values
 
     @property
@@ -10515,7 +10459,7 @@ class SnowflakeTag(Tag):
     @mapped_atlan_tag_name.setter
     def mapped_atlan_tag_name(self, mapped_atlan_tag_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mapped_atlan_tag_name = mapped_atlan_tag_name
 
     @property
@@ -10525,7 +10469,7 @@ class SnowflakeTag(Tag):
     @query_count.setter
     def query_count(self, query_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_count = query_count
 
     @property
@@ -10535,7 +10479,7 @@ class SnowflakeTag(Tag):
     @query_user_count.setter
     def query_user_count(self, query_user_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_user_count = query_user_count
 
     @property
@@ -10545,7 +10489,7 @@ class SnowflakeTag(Tag):
     @query_user_map.setter
     def query_user_map(self, query_user_map: Optional[dict[str, int]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_user_map = query_user_map
 
     @property
@@ -10557,7 +10501,7 @@ class SnowflakeTag(Tag):
     @query_count_updated_at.setter
     def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_count_updated_at = query_count_updated_at
 
     @property
@@ -10567,7 +10511,7 @@ class SnowflakeTag(Tag):
     @database_name.setter
     def database_name(self, database_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.database_name = database_name
 
     @property
@@ -10579,7 +10523,7 @@ class SnowflakeTag(Tag):
     @database_qualified_name.setter
     def database_qualified_name(self, database_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.database_qualified_name = database_qualified_name
 
     @property
@@ -10589,7 +10533,7 @@ class SnowflakeTag(Tag):
     @schema_name.setter
     def schema_name(self, schema_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_name = schema_name
 
     @property
@@ -10601,7 +10545,7 @@ class SnowflakeTag(Tag):
     @schema_qualified_name.setter
     def schema_qualified_name(self, schema_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_qualified_name = schema_qualified_name
 
     @property
@@ -10611,7 +10555,7 @@ class SnowflakeTag(Tag):
     @table_name.setter
     def table_name(self, table_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table_name = table_name
 
     @property
@@ -10621,7 +10565,7 @@ class SnowflakeTag(Tag):
     @table_qualified_name.setter
     def table_qualified_name(self, table_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.table_qualified_name = table_qualified_name
 
     @property
@@ -10631,7 +10575,7 @@ class SnowflakeTag(Tag):
     @view_name.setter
     def view_name(self, view_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view_name = view_name
 
     @property
@@ -10641,7 +10585,7 @@ class SnowflakeTag(Tag):
     @view_qualified_name.setter
     def view_qualified_name(self, view_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view_qualified_name = view_qualified_name
 
     @property
@@ -10651,7 +10595,7 @@ class SnowflakeTag(Tag):
     @is_profiled.setter
     def is_profiled(self, is_profiled: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_profiled = is_profiled
 
     @property
@@ -10661,7 +10605,7 @@ class SnowflakeTag(Tag):
     @last_profiled_at.setter
     def last_profiled_at(self, last_profiled_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.last_profiled_at = last_profiled_at
 
     @property
@@ -10671,7 +10615,7 @@ class SnowflakeTag(Tag):
     @dbt_sources.setter
     def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_sources = dbt_sources
 
     @property
@@ -10681,7 +10625,7 @@ class SnowflakeTag(Tag):
     @sql_dbt_models.setter
     def sql_dbt_models(self, sql_dbt_models: Optional[list[DbtModel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_dbt_models = sql_dbt_models
 
     @property
@@ -10691,7 +10635,7 @@ class SnowflakeTag(Tag):
     @sql_dbt_sources.setter
     def sql_dbt_sources(self, sql_dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_dbt_sources = sql_dbt_sources
 
     @property
@@ -10701,7 +10645,7 @@ class SnowflakeTag(Tag):
     @dbt_models.setter
     def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
     @property
@@ -10711,7 +10655,7 @@ class SnowflakeTag(Tag):
     @dbt_tests.setter
     def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
 
     @property
@@ -10721,7 +10665,7 @@ class SnowflakeTag(Tag):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(Tag.Attributes):
@@ -10785,9 +10729,7 @@ class SnowflakeTag(Tag):
         )  # relationship
 
     attributes: "SnowflakeTag.Attributes" = Field(
-        default_factory=lambda: SnowflakeTag.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SnowflakeTag.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -10948,7 +10890,7 @@ class Dbt(Catalog):
     @dbt_alias.setter
     def dbt_alias(self, dbt_alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_alias = dbt_alias
 
     @property
@@ -10958,7 +10900,7 @@ class Dbt(Catalog):
     @dbt_meta.setter
     def dbt_meta(self, dbt_meta: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_meta = dbt_meta
 
     @property
@@ -10968,7 +10910,7 @@ class Dbt(Catalog):
     @dbt_unique_id.setter
     def dbt_unique_id(self, dbt_unique_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_unique_id = dbt_unique_id
 
     @property
@@ -10978,7 +10920,7 @@ class Dbt(Catalog):
     @dbt_account_name.setter
     def dbt_account_name(self, dbt_account_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_account_name = dbt_account_name
 
     @property
@@ -10988,7 +10930,7 @@ class Dbt(Catalog):
     @dbt_project_name.setter
     def dbt_project_name(self, dbt_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_project_name = dbt_project_name
 
     @property
@@ -10998,7 +10940,7 @@ class Dbt(Catalog):
     @dbt_package_name.setter
     def dbt_package_name(self, dbt_package_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_package_name = dbt_package_name
 
     @property
@@ -11008,7 +10950,7 @@ class Dbt(Catalog):
     @dbt_job_name.setter
     def dbt_job_name(self, dbt_job_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_name = dbt_job_name
 
     @property
@@ -11018,7 +10960,7 @@ class Dbt(Catalog):
     @dbt_job_schedule.setter
     def dbt_job_schedule(self, dbt_job_schedule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_schedule = dbt_job_schedule
 
     @property
@@ -11028,7 +10970,7 @@ class Dbt(Catalog):
     @dbt_job_status.setter
     def dbt_job_status(self, dbt_job_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_status = dbt_job_status
 
     @property
@@ -11044,7 +10986,7 @@ class Dbt(Catalog):
         self, dbt_job_schedule_cron_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_schedule_cron_humanized = (
             dbt_job_schedule_cron_humanized
         )
@@ -11056,7 +10998,7 @@ class Dbt(Catalog):
     @dbt_job_last_run.setter
     def dbt_job_last_run(self, dbt_job_last_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_last_run = dbt_job_last_run
 
     @property
@@ -11066,7 +11008,7 @@ class Dbt(Catalog):
     @dbt_job_next_run.setter
     def dbt_job_next_run(self, dbt_job_next_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_next_run = dbt_job_next_run
 
     @property
@@ -11080,7 +11022,7 @@ class Dbt(Catalog):
     @dbt_job_next_run_humanized.setter
     def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_next_run_humanized = dbt_job_next_run_humanized
 
     @property
@@ -11090,7 +11032,7 @@ class Dbt(Catalog):
     @dbt_environment_name.setter
     def dbt_environment_name(self, dbt_environment_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_environment_name = dbt_environment_name
 
     @property
@@ -11104,7 +11046,7 @@ class Dbt(Catalog):
     @dbt_environment_dbt_version.setter
     def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
@@ -11114,7 +11056,7 @@ class Dbt(Catalog):
     @dbt_tags.setter
     def dbt_tags(self, dbt_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
 
     @property
@@ -11126,7 +11068,7 @@ class Dbt(Catalog):
     @dbt_connection_context.setter
     def dbt_connection_context(self, dbt_connection_context: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_connection_context = dbt_connection_context
 
     @property
@@ -11140,7 +11082,7 @@ class Dbt(Catalog):
     @dbt_semantic_layer_proxy_url.setter
     def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     class Attributes(Catalog.Attributes):
@@ -11190,9 +11132,7 @@ class Dbt(Catalog):
         )
 
     attributes: "Dbt.Attributes" = Field(
-        default_factory=lambda: Dbt.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Dbt.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11273,7 +11213,7 @@ class DbtModelColumn(Dbt):
     @dbt_model_qualified_name.setter
     def dbt_model_qualified_name(self, dbt_model_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_qualified_name = dbt_model_qualified_name
 
     @property
@@ -11287,7 +11227,7 @@ class DbtModelColumn(Dbt):
     @dbt_model_column_data_type.setter
     def dbt_model_column_data_type(self, dbt_model_column_data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_column_data_type = dbt_model_column_data_type
 
     @property
@@ -11299,7 +11239,7 @@ class DbtModelColumn(Dbt):
     @dbt_model_column_order.setter
     def dbt_model_column_order(self, dbt_model_column_order: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_column_order = dbt_model_column_order
 
     @property
@@ -11309,7 +11249,7 @@ class DbtModelColumn(Dbt):
     @sql_column.setter
     def sql_column(self, sql_column: Optional[Column]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_column = sql_column
 
     @property
@@ -11319,7 +11259,7 @@ class DbtModelColumn(Dbt):
     @dbt_model.setter
     def dbt_model(self, dbt_model: Optional[DbtModel]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model = dbt_model
 
     @property
@@ -11335,7 +11275,7 @@ class DbtModelColumn(Dbt):
         self, dbt_model_column_sql_columns: Optional[list[Column]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_column_sql_columns = dbt_model_column_sql_columns
 
     @property
@@ -11345,7 +11285,7 @@ class DbtModelColumn(Dbt):
     @dbt_tests.setter
     def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
 
     class Attributes(Dbt.Attributes):
@@ -11372,9 +11312,7 @@ class DbtModelColumn(Dbt):
         )  # relationship
 
     attributes: "DbtModelColumn.Attributes" = Field(
-        default_factory=lambda: DbtModelColumn.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DbtModelColumn.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11484,7 +11422,7 @@ class DbtTest(Dbt):
     @dbt_test_status.setter
     def dbt_test_status(self, dbt_test_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_status = dbt_test_status
 
     @property
@@ -11494,7 +11432,7 @@ class DbtTest(Dbt):
     @dbt_test_state.setter
     def dbt_test_state(self, dbt_test_state: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_state = dbt_test_state
 
     @property
@@ -11504,7 +11442,7 @@ class DbtTest(Dbt):
     @dbt_test_error.setter
     def dbt_test_error(self, dbt_test_error: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_error = dbt_test_error
 
     @property
@@ -11514,7 +11452,7 @@ class DbtTest(Dbt):
     @dbt_test_raw_s_q_l.setter
     def dbt_test_raw_s_q_l(self, dbt_test_raw_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_raw_s_q_l = dbt_test_raw_s_q_l
 
     @property
@@ -11526,7 +11464,7 @@ class DbtTest(Dbt):
     @dbt_test_compiled_s_q_l.setter
     def dbt_test_compiled_s_q_l(self, dbt_test_compiled_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_compiled_s_q_l = dbt_test_compiled_s_q_l
 
     @property
@@ -11536,7 +11474,7 @@ class DbtTest(Dbt):
     @dbt_test_raw_code.setter
     def dbt_test_raw_code(self, dbt_test_raw_code: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_raw_code = dbt_test_raw_code
 
     @property
@@ -11548,7 +11486,7 @@ class DbtTest(Dbt):
     @dbt_test_compiled_code.setter
     def dbt_test_compiled_code(self, dbt_test_compiled_code: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_compiled_code = dbt_test_compiled_code
 
     @property
@@ -11558,7 +11496,7 @@ class DbtTest(Dbt):
     @dbt_test_language.setter
     def dbt_test_language(self, dbt_test_language: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_test_language = dbt_test_language
 
     @property
@@ -11568,7 +11506,7 @@ class DbtTest(Dbt):
     @dbt_sources.setter
     def dbt_sources(self, dbt_sources: Optional[list[DbtSource]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_sources = dbt_sources
 
     @property
@@ -11578,7 +11516,7 @@ class DbtTest(Dbt):
     @sql_assets.setter
     def sql_assets(self, sql_assets: Optional[list[SQL]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_assets = sql_assets
 
     @property
@@ -11588,7 +11526,7 @@ class DbtTest(Dbt):
     @dbt_models.setter
     def dbt_models(self, dbt_models: Optional[list[DbtModel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_models = dbt_models
 
     @property
@@ -11598,7 +11536,7 @@ class DbtTest(Dbt):
     @dbt_model_columns.setter
     def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_columns = dbt_model_columns
 
     class Attributes(Dbt.Attributes):
@@ -11640,9 +11578,7 @@ class DbtTest(Dbt):
         )  # relationship
 
     attributes: "DbtTest.Attributes" = Field(
-        default_factory=lambda: DbtTest.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DbtTest.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -11784,7 +11720,7 @@ class DbtModel(Dbt):
     @dbt_status.setter
     def dbt_status(self, dbt_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_status = dbt_status
 
     @property
@@ -11794,7 +11730,7 @@ class DbtModel(Dbt):
     @dbt_error.setter
     def dbt_error(self, dbt_error: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_error = dbt_error
 
     @property
@@ -11804,7 +11740,7 @@ class DbtModel(Dbt):
     @dbt_raw_s_q_l.setter
     def dbt_raw_s_q_l(self, dbt_raw_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_raw_s_q_l = dbt_raw_s_q_l
 
     @property
@@ -11814,7 +11750,7 @@ class DbtModel(Dbt):
     @dbt_compiled_s_q_l.setter
     def dbt_compiled_s_q_l(self, dbt_compiled_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_compiled_s_q_l = dbt_compiled_s_q_l
 
     @property
@@ -11824,7 +11760,7 @@ class DbtModel(Dbt):
     @dbt_stats.setter
     def dbt_stats(self, dbt_stats: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_stats = dbt_stats
 
     @property
@@ -11838,7 +11774,7 @@ class DbtModel(Dbt):
     @dbt_materialization_type.setter
     def dbt_materialization_type(self, dbt_materialization_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_materialization_type = dbt_materialization_type
 
     @property
@@ -11854,7 +11790,7 @@ class DbtModel(Dbt):
         self, dbt_model_compile_started_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_compile_started_at = dbt_model_compile_started_at
 
     @property
@@ -11870,7 +11806,7 @@ class DbtModel(Dbt):
         self, dbt_model_compile_completed_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_compile_completed_at = dbt_model_compile_completed_at
 
     @property
@@ -11886,7 +11822,7 @@ class DbtModel(Dbt):
         self, dbt_model_execute_started_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_execute_started_at = dbt_model_execute_started_at
 
     @property
@@ -11902,7 +11838,7 @@ class DbtModel(Dbt):
         self, dbt_model_execute_completed_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_execute_completed_at = dbt_model_execute_completed_at
 
     @property
@@ -11916,7 +11852,7 @@ class DbtModel(Dbt):
     @dbt_model_execution_time.setter
     def dbt_model_execution_time(self, dbt_model_execution_time: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_execution_time = dbt_model_execution_time
 
     @property
@@ -11932,7 +11868,7 @@ class DbtModel(Dbt):
         self, dbt_model_run_generated_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_run_generated_at = dbt_model_run_generated_at
 
     @property
@@ -11946,7 +11882,7 @@ class DbtModel(Dbt):
     @dbt_model_run_elapsed_time.setter
     def dbt_model_run_elapsed_time(self, dbt_model_run_elapsed_time: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_run_elapsed_time = dbt_model_run_elapsed_time
 
     @property
@@ -11956,7 +11892,7 @@ class DbtModel(Dbt):
     @dbt_metrics.setter
     def dbt_metrics(self, dbt_metrics: Optional[list[DbtMetric]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_metrics = dbt_metrics
 
     @property
@@ -11966,7 +11902,7 @@ class DbtModel(Dbt):
     @dbt_tests.setter
     def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
 
     @property
@@ -11976,7 +11912,7 @@ class DbtModel(Dbt):
     @dbt_model_sql_assets.setter
     def dbt_model_sql_assets(self, dbt_model_sql_assets: Optional[list[SQL]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_sql_assets = dbt_model_sql_assets
 
     @property
@@ -11986,7 +11922,7 @@ class DbtModel(Dbt):
     @dbt_model_columns.setter
     def dbt_model_columns(self, dbt_model_columns: Optional[list[DbtModelColumn]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model_columns = dbt_model_columns
 
     @property
@@ -11996,7 +11932,7 @@ class DbtModel(Dbt):
     @sql_asset.setter
     def sql_asset(self, sql_asset: Optional[SQL]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_asset = sql_asset
 
     class Attributes(Dbt.Attributes):
@@ -12048,9 +11984,7 @@ class DbtModel(Dbt):
         )  # relationship
 
     attributes: "DbtModel.Attributes" = Field(
-        default_factory=lambda: DbtModel.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DbtModel.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12272,7 +12206,7 @@ class DbtMetric(Dbt):
     @dbt_metric_filters.setter
     def dbt_metric_filters(self, dbt_metric_filters: Optional[list[DbtMetricFilter]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_metric_filters = dbt_metric_filters
 
     @property
@@ -12282,7 +12216,7 @@ class DbtMetric(Dbt):
     @dbt_alias.setter
     def dbt_alias(self, dbt_alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_alias = dbt_alias
 
     @property
@@ -12292,7 +12226,7 @@ class DbtMetric(Dbt):
     @dbt_meta.setter
     def dbt_meta(self, dbt_meta: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_meta = dbt_meta
 
     @property
@@ -12302,7 +12236,7 @@ class DbtMetric(Dbt):
     @dbt_unique_id.setter
     def dbt_unique_id(self, dbt_unique_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_unique_id = dbt_unique_id
 
     @property
@@ -12312,7 +12246,7 @@ class DbtMetric(Dbt):
     @dbt_account_name.setter
     def dbt_account_name(self, dbt_account_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_account_name = dbt_account_name
 
     @property
@@ -12322,7 +12256,7 @@ class DbtMetric(Dbt):
     @dbt_project_name.setter
     def dbt_project_name(self, dbt_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_project_name = dbt_project_name
 
     @property
@@ -12332,7 +12266,7 @@ class DbtMetric(Dbt):
     @dbt_package_name.setter
     def dbt_package_name(self, dbt_package_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_package_name = dbt_package_name
 
     @property
@@ -12342,7 +12276,7 @@ class DbtMetric(Dbt):
     @dbt_job_name.setter
     def dbt_job_name(self, dbt_job_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_name = dbt_job_name
 
     @property
@@ -12352,7 +12286,7 @@ class DbtMetric(Dbt):
     @dbt_job_schedule.setter
     def dbt_job_schedule(self, dbt_job_schedule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_schedule = dbt_job_schedule
 
     @property
@@ -12362,7 +12296,7 @@ class DbtMetric(Dbt):
     @dbt_job_status.setter
     def dbt_job_status(self, dbt_job_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_status = dbt_job_status
 
     @property
@@ -12378,7 +12312,7 @@ class DbtMetric(Dbt):
         self, dbt_job_schedule_cron_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_schedule_cron_humanized = (
             dbt_job_schedule_cron_humanized
         )
@@ -12390,7 +12324,7 @@ class DbtMetric(Dbt):
     @dbt_job_last_run.setter
     def dbt_job_last_run(self, dbt_job_last_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_last_run = dbt_job_last_run
 
     @property
@@ -12400,7 +12334,7 @@ class DbtMetric(Dbt):
     @dbt_job_next_run.setter
     def dbt_job_next_run(self, dbt_job_next_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_next_run = dbt_job_next_run
 
     @property
@@ -12414,7 +12348,7 @@ class DbtMetric(Dbt):
     @dbt_job_next_run_humanized.setter
     def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_next_run_humanized = dbt_job_next_run_humanized
 
     @property
@@ -12424,7 +12358,7 @@ class DbtMetric(Dbt):
     @dbt_environment_name.setter
     def dbt_environment_name(self, dbt_environment_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_environment_name = dbt_environment_name
 
     @property
@@ -12438,7 +12372,7 @@ class DbtMetric(Dbt):
     @dbt_environment_dbt_version.setter
     def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
@@ -12448,7 +12382,7 @@ class DbtMetric(Dbt):
     @dbt_tags.setter
     def dbt_tags(self, dbt_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
 
     @property
@@ -12460,7 +12394,7 @@ class DbtMetric(Dbt):
     @dbt_connection_context.setter
     def dbt_connection_context(self, dbt_connection_context: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_connection_context = dbt_connection_context
 
     @property
@@ -12474,7 +12408,7 @@ class DbtMetric(Dbt):
     @dbt_semantic_layer_proxy_url.setter
     def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
@@ -12484,7 +12418,7 @@ class DbtMetric(Dbt):
     @metric_type.setter
     def metric_type(self, metric_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_type = metric_type
 
     @property
@@ -12494,7 +12428,7 @@ class DbtMetric(Dbt):
     @metric_s_q_l.setter
     def metric_s_q_l(self, metric_s_q_l: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_s_q_l = metric_s_q_l
 
     @property
@@ -12504,7 +12438,7 @@ class DbtMetric(Dbt):
     @metric_filters.setter
     def metric_filters(self, metric_filters: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_filters = metric_filters
 
     @property
@@ -12514,7 +12448,7 @@ class DbtMetric(Dbt):
     @metric_time_grains.setter
     def metric_time_grains(self, metric_time_grains: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_time_grains = metric_time_grains
 
     @property
@@ -12526,7 +12460,7 @@ class DbtMetric(Dbt):
     @metric_timestamp_column.setter
     def metric_timestamp_column(self, metric_timestamp_column: Optional[Column]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_timestamp_column = metric_timestamp_column
 
     @property
@@ -12536,7 +12470,7 @@ class DbtMetric(Dbt):
     @dbt_model.setter
     def dbt_model(self, dbt_model: Optional[DbtModel]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_model = dbt_model
 
     @property
@@ -12546,7 +12480,7 @@ class DbtMetric(Dbt):
     @assets.setter
     def assets(self, assets: Optional[list[Asset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.assets = assets
 
     @property
@@ -12562,7 +12496,7 @@ class DbtMetric(Dbt):
         self, metric_dimension_columns: Optional[list[Column]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.metric_dimension_columns = metric_dimension_columns
 
     @property
@@ -12578,7 +12512,7 @@ class DbtMetric(Dbt):
         self, dbt_metric_filter_columns: Optional[list[Column]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_metric_filter_columns = dbt_metric_filter_columns
 
     class Attributes(Dbt.Attributes):
@@ -12654,9 +12588,7 @@ class DbtMetric(Dbt):
         )  # relationship
 
     attributes: "DbtMetric.Attributes" = Field(
-        default_factory=lambda: DbtMetric.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DbtMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12717,7 +12649,7 @@ class DbtSource(Dbt):
     @dbt_state.setter
     def dbt_state(self, dbt_state: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_state = dbt_state
 
     @property
@@ -12729,7 +12661,7 @@ class DbtSource(Dbt):
     @dbt_freshness_criteria.setter
     def dbt_freshness_criteria(self, dbt_freshness_criteria: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_freshness_criteria = dbt_freshness_criteria
 
     @property
@@ -12739,7 +12671,7 @@ class DbtSource(Dbt):
     @sql_assets.setter
     def sql_assets(self, sql_assets: Optional[list[SQL]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_assets = sql_assets
 
     @property
@@ -12749,7 +12681,7 @@ class DbtSource(Dbt):
     @dbt_tests.setter
     def dbt_tests(self, dbt_tests: Optional[list[DbtTest]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tests = dbt_tests
 
     @property
@@ -12759,7 +12691,7 @@ class DbtSource(Dbt):
     @sql_asset.setter
     def sql_asset(self, sql_asset: Optional[SQL]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_asset = sql_asset
 
     class Attributes(Dbt.Attributes):
@@ -12778,9 +12710,7 @@ class DbtSource(Dbt):
         )  # relationship
 
     attributes: "DbtSource.Attributes" = Field(
-        default_factory=lambda: DbtSource.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DbtSource.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12833,7 +12763,7 @@ class SchemaRegistry(Catalog):
         self, schema_registry_schema_type: Optional[SchemaRegistrySchemaType]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_schema_type = schema_registry_schema_type
 
     @property
@@ -12847,7 +12777,7 @@ class SchemaRegistry(Catalog):
     @schema_registry_schema_id.setter
     def schema_registry_schema_id(self, schema_registry_schema_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_schema_id = schema_registry_schema_id
 
     class Attributes(Catalog.Attributes):
@@ -12859,9 +12789,7 @@ class SchemaRegistry(Catalog):
         )
 
     attributes: "SchemaRegistry.Attributes" = Field(
-        default_factory=lambda: SchemaRegistry.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SchemaRegistry.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -12956,7 +12884,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         self, schema_registry_subject_base_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subject_base_name = (
             schema_registry_subject_base_name
         )
@@ -12974,7 +12902,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         self, schema_registry_subject_is_key_schema: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subject_is_key_schema = (
             schema_registry_subject_is_key_schema
         )
@@ -12997,7 +12925,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         ],
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subject_schema_compatibility = (
             schema_registry_subject_schema_compatibility
         )
@@ -13015,7 +12943,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         self, schema_registry_subject_latest_schema_version: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subject_latest_schema_version = (
             schema_registry_subject_latest_schema_version
         )
@@ -13033,7 +12961,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         self, schema_registry_subject_latest_schema_definition: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subject_latest_schema_definition = (
             schema_registry_subject_latest_schema_definition
         )
@@ -13054,7 +12982,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         schema_registry_subject_governing_asset_qualified_names: Optional[set[str]],
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.schema_registry_subject_governing_asset_qualified_names = (
             schema_registry_subject_governing_asset_qualified_names
         )
@@ -13066,7 +12994,7 @@ class SchemaRegistrySubject(SchemaRegistry):
     @assets.setter
     def assets(self, assets: Optional[list[Asset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.assets = assets
 
     class Attributes(SchemaRegistry.Attributes):
@@ -13099,9 +13027,7 @@ class SchemaRegistrySubject(SchemaRegistry):
         )  # relationship
 
     attributes: "SchemaRegistrySubject.Attributes" = Field(
-        default_factory=lambda: SchemaRegistrySubject.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SchemaRegistrySubject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13146,7 +13072,7 @@ class MonteCarlo(DataQuality):
     @mc_labels.setter
     def mc_labels(self, mc_labels: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_labels = mc_labels
 
     @property
@@ -13160,7 +13086,7 @@ class MonteCarlo(DataQuality):
     @mc_asset_qualified_names.setter
     def mc_asset_qualified_names(self, mc_asset_qualified_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_asset_qualified_names = mc_asset_qualified_names
 
     class Attributes(DataQuality.Attributes):
@@ -13170,9 +13096,7 @@ class MonteCarlo(DataQuality):
         )
 
     attributes: "MonteCarlo.Attributes" = Field(
-        default_factory=lambda: MonteCarlo.Attributes(
-            name="",
-        ),
+        default_factory=lambda: MonteCarlo.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13258,7 +13182,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_id.setter
     def mc_incident_id(self, mc_incident_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_id = mc_incident_id
 
     @property
@@ -13268,7 +13192,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_type.setter
     def mc_incident_type(self, mc_incident_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_type = mc_incident_type
 
     @property
@@ -13280,7 +13204,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_sub_types.setter
     def mc_incident_sub_types(self, mc_incident_sub_types: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_sub_types = mc_incident_sub_types
 
     @property
@@ -13290,7 +13214,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_severity.setter
     def mc_incident_severity(self, mc_incident_severity: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_severity = mc_incident_severity
 
     @property
@@ -13300,7 +13224,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_state.setter
     def mc_incident_state(self, mc_incident_state: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_state = mc_incident_state
 
     @property
@@ -13312,7 +13236,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_warehouse.setter
     def mc_incident_warehouse(self, mc_incident_warehouse: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_warehouse = mc_incident_warehouse
 
     @property
@@ -13322,7 +13246,7 @@ class MCIncident(MonteCarlo):
     @mc_monitor.setter
     def mc_monitor(self, mc_monitor: Optional[MCMonitor]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor = mc_monitor
 
     @property
@@ -13332,7 +13256,7 @@ class MCIncident(MonteCarlo):
     @mc_incident_assets.setter
     def mc_incident_assets(self, mc_incident_assets: Optional[list[Asset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_incident_assets = mc_incident_assets
 
     class Attributes(MonteCarlo.Attributes):
@@ -13362,9 +13286,7 @@ class MCIncident(MonteCarlo):
         )  # relationship
 
     attributes: "MCIncident.Attributes" = Field(
-        default_factory=lambda: MCIncident.Attributes(
-            name="",
-        ),
+        default_factory=lambda: MCIncident.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13520,7 +13442,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_id.setter
     def mc_monitor_id(self, mc_monitor_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_id = mc_monitor_id
 
     @property
@@ -13530,7 +13452,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_status.setter
     def mc_monitor_status(self, mc_monitor_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_status = mc_monitor_status
 
     @property
@@ -13540,7 +13462,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_type.setter
     def mc_monitor_type(self, mc_monitor_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_type = mc_monitor_type
 
     @property
@@ -13550,7 +13472,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_warehouse.setter
     def mc_monitor_warehouse(self, mc_monitor_warehouse: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_warehouse = mc_monitor_warehouse
 
     @property
@@ -13564,7 +13486,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_schedule_type.setter
     def mc_monitor_schedule_type(self, mc_monitor_schedule_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_schedule_type = mc_monitor_schedule_type
 
     @property
@@ -13574,7 +13496,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_namespace.setter
     def mc_monitor_namespace(self, mc_monitor_namespace: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_namespace = mc_monitor_namespace
 
     @property
@@ -13584,7 +13506,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_rule_type.setter
     def mc_monitor_rule_type(self, mc_monitor_rule_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_type = mc_monitor_rule_type
 
     @property
@@ -13598,7 +13520,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_rule_custom_sql.setter
     def mc_monitor_rule_custom_sql(self, mc_monitor_rule_custom_sql: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_custom_sql = mc_monitor_rule_custom_sql
 
     @property
@@ -13614,7 +13536,7 @@ class MCMonitor(MonteCarlo):
         self, mc_monitor_rule_schedule_config: Optional[MCRuleSchedule]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_schedule_config = (
             mc_monitor_rule_schedule_config
         )
@@ -13632,7 +13554,7 @@ class MCMonitor(MonteCarlo):
         self, mc_monitor_rule_schedule_config_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_schedule_config_humanized = (
             mc_monitor_rule_schedule_config_humanized
         )
@@ -13648,7 +13570,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_alert_condition.setter
     def mc_monitor_alert_condition(self, mc_monitor_alert_condition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_alert_condition = mc_monitor_alert_condition
 
     @property
@@ -13664,7 +13586,7 @@ class MCMonitor(MonteCarlo):
         self, mc_monitor_rule_next_execution_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_next_execution_time = (
             mc_monitor_rule_next_execution_time
         )
@@ -13682,7 +13604,7 @@ class MCMonitor(MonteCarlo):
         self, mc_monitor_rule_previous_execution_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_previous_execution_time = (
             mc_monitor_rule_previous_execution_time
         )
@@ -13700,7 +13622,7 @@ class MCMonitor(MonteCarlo):
         self, mc_monitor_rule_comparisons: Optional[list[MCRuleComparison]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_comparisons = mc_monitor_rule_comparisons
 
     @property
@@ -13714,7 +13636,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_rule_is_snoozed.setter
     def mc_monitor_rule_is_snoozed(self, mc_monitor_rule_is_snoozed: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_rule_is_snoozed = mc_monitor_rule_is_snoozed
 
     @property
@@ -13726,7 +13648,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_breach_rate.setter
     def mc_monitor_breach_rate(self, mc_monitor_breach_rate: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_breach_rate = mc_monitor_breach_rate
 
     @property
@@ -13740,7 +13662,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_incident_count.setter
     def mc_monitor_incident_count(self, mc_monitor_incident_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_incident_count = mc_monitor_incident_count
 
     @property
@@ -13750,7 +13672,7 @@ class MCMonitor(MonteCarlo):
     @mc_monitor_assets.setter
     def mc_monitor_assets(self, mc_monitor_assets: Optional[list[Asset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mc_monitor_assets = mc_monitor_assets
 
     class Attributes(MonteCarlo.Attributes):
@@ -13808,9 +13730,7 @@ class MCMonitor(MonteCarlo):
         )  # relationship
 
     attributes: "MCMonitor.Attributes" = Field(
-        default_factory=lambda: MCMonitor.Attributes(
-            name="",
-        ),
+        default_factory=lambda: MCMonitor.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -13906,7 +13826,7 @@ class SodaCheck(Soda):
     @soda_check_id.setter
     def soda_check_id(self, soda_check_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_id = soda_check_id
 
     @property
@@ -13920,7 +13840,7 @@ class SodaCheck(Soda):
     @soda_check_evaluation_status.setter
     def soda_check_evaluation_status(self, soda_check_evaluation_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_evaluation_status = soda_check_evaluation_status
 
     @property
@@ -13932,7 +13852,7 @@ class SodaCheck(Soda):
     @soda_check_definition.setter
     def soda_check_definition(self, soda_check_definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_definition = soda_check_definition
 
     @property
@@ -13944,7 +13864,7 @@ class SodaCheck(Soda):
     @soda_check_last_scan_at.setter
     def soda_check_last_scan_at(self, soda_check_last_scan_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_last_scan_at = soda_check_last_scan_at
 
     @property
@@ -13958,7 +13878,7 @@ class SodaCheck(Soda):
     @soda_check_incident_count.setter
     def soda_check_incident_count(self, soda_check_incident_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_incident_count = soda_check_incident_count
 
     @property
@@ -13968,7 +13888,7 @@ class SodaCheck(Soda):
     @soda_check_columns.setter
     def soda_check_columns(self, soda_check_columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_columns = soda_check_columns
 
     @property
@@ -13978,7 +13898,7 @@ class SodaCheck(Soda):
     @soda_check_assets.setter
     def soda_check_assets(self, soda_check_assets: Optional[list[Asset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.soda_check_assets = soda_check_assets
 
     class Attributes(Soda.Attributes):
@@ -14003,9 +13923,7 @@ class SodaCheck(Soda):
         )  # relationship
 
     attributes: "SodaCheck.Attributes" = Field(
-        default_factory=lambda: SodaCheck.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SodaCheck.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14168,7 +14086,7 @@ class Table(SQL):
     @column_count.setter
     def column_count(self, column_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_count = column_count
 
     @property
@@ -14178,7 +14096,7 @@ class Table(SQL):
     @row_count.setter
     def row_count(self, row_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.row_count = row_count
 
     @property
@@ -14188,7 +14106,7 @@ class Table(SQL):
     @size_bytes.setter
     def size_bytes(self, size_bytes: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.size_bytes = size_bytes
 
     @property
@@ -14198,7 +14116,7 @@ class Table(SQL):
     @alias.setter
     def alias(self, alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.alias = alias
 
     @property
@@ -14208,7 +14126,7 @@ class Table(SQL):
     @is_temporary.setter
     def is_temporary(self, is_temporary: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_temporary = is_temporary
 
     @property
@@ -14218,7 +14136,7 @@ class Table(SQL):
     @is_query_preview.setter
     def is_query_preview(self, is_query_preview: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_query_preview = is_query_preview
 
     @property
@@ -14228,7 +14146,7 @@ class Table(SQL):
     @query_preview_config.setter
     def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
 
     @property
@@ -14238,7 +14156,7 @@ class Table(SQL):
     @external_location.setter
     def external_location(self, external_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.external_location = external_location
 
     @property
@@ -14252,7 +14170,7 @@ class Table(SQL):
     @external_location_region.setter
     def external_location_region(self, external_location_region: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.external_location_region = external_location_region
 
     @property
@@ -14266,7 +14184,7 @@ class Table(SQL):
     @external_location_format.setter
     def external_location_format(self, external_location_format: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.external_location_format = external_location_format
 
     @property
@@ -14276,7 +14194,7 @@ class Table(SQL):
     @is_partitioned.setter
     def is_partitioned(self, is_partitioned: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_partitioned = is_partitioned
 
     @property
@@ -14286,7 +14204,7 @@ class Table(SQL):
     @partition_strategy.setter
     def partition_strategy(self, partition_strategy: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_strategy = partition_strategy
 
     @property
@@ -14296,7 +14214,7 @@ class Table(SQL):
     @partition_count.setter
     def partition_count(self, partition_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_count = partition_count
 
     @property
@@ -14306,7 +14224,7 @@ class Table(SQL):
     @partition_list.setter
     def partition_list(self, partition_list: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partition_list = partition_list
 
     @property
@@ -14316,7 +14234,7 @@ class Table(SQL):
     @partitions.setter
     def partitions(self, partitions: Optional[list[TablePartition]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.partitions = partitions
 
     @property
@@ -14326,7 +14244,7 @@ class Table(SQL):
     @columns.setter
     def columns(self, columns: Optional[list[Column]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.columns = columns
 
     @property
@@ -14336,7 +14254,7 @@ class Table(SQL):
     @queries.setter
     def queries(self, queries: Optional[list[Query]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.queries = queries
 
     @property
@@ -14346,7 +14264,7 @@ class Table(SQL):
     @facts.setter
     def facts(self, facts: Optional[list[Table]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.facts = facts
 
     @property
@@ -14356,7 +14274,7 @@ class Table(SQL):
     @atlan_schema.setter
     def atlan_schema(self, atlan_schema: Optional[Schema]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.atlan_schema = atlan_schema
 
     @property
@@ -14366,7 +14284,7 @@ class Table(SQL):
     @dimensions.setter
     def dimensions(self, dimensions: Optional[list[Table]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dimensions = dimensions
 
     class Attributes(SQL.Attributes):
@@ -14447,9 +14365,7 @@ class Table(SQL):
             )
 
     attributes: "Table.Attributes" = Field(
-        default_factory=lambda: Table.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Table.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14487,16 +14403,14 @@ class SnowflakeDynamicTable(Table):
     @definition.setter
     def definition(self, definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.definition = definition
 
     class Attributes(Table.Attributes):
         definition: Optional[str] = Field(None, description="", alias="definition")
 
     attributes: "SnowflakeDynamicTable.Attributes" = Field(
-        default_factory=lambda: SnowflakeDynamicTable.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SnowflakeDynamicTable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

@@ -94,7 +94,7 @@ class Qlik(BI):
     @qlik_id.setter
     def qlik_id(self, qlik_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_id = qlik_id
 
     @property
@@ -104,7 +104,7 @@ class Qlik(BI):
     @qlik_q_r_i.setter
     def qlik_q_r_i(self, qlik_q_r_i: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_q_r_i = qlik_q_r_i
 
     @property
@@ -114,7 +114,7 @@ class Qlik(BI):
     @qlik_space_id.setter
     def qlik_space_id(self, qlik_space_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_space_id = qlik_space_id
 
     @property
@@ -128,7 +128,7 @@ class Qlik(BI):
     @qlik_space_qualified_name.setter
     def qlik_space_qualified_name(self, qlik_space_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_space_qualified_name = qlik_space_qualified_name
 
     @property
@@ -138,7 +138,7 @@ class Qlik(BI):
     @qlik_app_id.setter
     def qlik_app_id(self, qlik_app_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_app_id = qlik_app_id
 
     @property
@@ -150,7 +150,7 @@ class Qlik(BI):
     @qlik_app_qualified_name.setter
     def qlik_app_qualified_name(self, qlik_app_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_app_qualified_name = qlik_app_qualified_name
 
     @property
@@ -160,7 +160,7 @@ class Qlik(BI):
     @qlik_owner_id.setter
     def qlik_owner_id(self, qlik_owner_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_owner_id = qlik_owner_id
 
     @property
@@ -170,7 +170,7 @@ class Qlik(BI):
     @qlik_is_published.setter
     def qlik_is_published(self, qlik_is_published: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.qlik_is_published = qlik_is_published
 
     class Attributes(BI.Attributes):
@@ -190,9 +190,7 @@ class Qlik(BI):
         )
 
     attributes: "Qlik.Attributes" = Field(
-        default_factory=lambda: Qlik.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Qlik.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

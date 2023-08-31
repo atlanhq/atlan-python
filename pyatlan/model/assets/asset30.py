@@ -220,7 +220,7 @@ class DbtColumnProcess(Dbt):
         self, dbt_column_process_job_status: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_column_process_job_status = dbt_column_process_job_status
 
     @property
@@ -230,7 +230,7 @@ class DbtColumnProcess(Dbt):
     @dbt_alias.setter
     def dbt_alias(self, dbt_alias: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_alias = dbt_alias
 
     @property
@@ -240,7 +240,7 @@ class DbtColumnProcess(Dbt):
     @dbt_meta.setter
     def dbt_meta(self, dbt_meta: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_meta = dbt_meta
 
     @property
@@ -250,7 +250,7 @@ class DbtColumnProcess(Dbt):
     @dbt_unique_id.setter
     def dbt_unique_id(self, dbt_unique_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_unique_id = dbt_unique_id
 
     @property
@@ -260,7 +260,7 @@ class DbtColumnProcess(Dbt):
     @dbt_account_name.setter
     def dbt_account_name(self, dbt_account_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_account_name = dbt_account_name
 
     @property
@@ -270,7 +270,7 @@ class DbtColumnProcess(Dbt):
     @dbt_project_name.setter
     def dbt_project_name(self, dbt_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_project_name = dbt_project_name
 
     @property
@@ -280,7 +280,7 @@ class DbtColumnProcess(Dbt):
     @dbt_package_name.setter
     def dbt_package_name(self, dbt_package_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_package_name = dbt_package_name
 
     @property
@@ -290,7 +290,7 @@ class DbtColumnProcess(Dbt):
     @dbt_job_name.setter
     def dbt_job_name(self, dbt_job_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_name = dbt_job_name
 
     @property
@@ -300,7 +300,7 @@ class DbtColumnProcess(Dbt):
     @dbt_job_schedule.setter
     def dbt_job_schedule(self, dbt_job_schedule: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_schedule = dbt_job_schedule
 
     @property
@@ -310,7 +310,7 @@ class DbtColumnProcess(Dbt):
     @dbt_job_status.setter
     def dbt_job_status(self, dbt_job_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_status = dbt_job_status
 
     @property
@@ -326,7 +326,7 @@ class DbtColumnProcess(Dbt):
         self, dbt_job_schedule_cron_humanized: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_schedule_cron_humanized = (
             dbt_job_schedule_cron_humanized
         )
@@ -338,7 +338,7 @@ class DbtColumnProcess(Dbt):
     @dbt_job_last_run.setter
     def dbt_job_last_run(self, dbt_job_last_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_last_run = dbt_job_last_run
 
     @property
@@ -348,7 +348,7 @@ class DbtColumnProcess(Dbt):
     @dbt_job_next_run.setter
     def dbt_job_next_run(self, dbt_job_next_run: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_next_run = dbt_job_next_run
 
     @property
@@ -362,7 +362,7 @@ class DbtColumnProcess(Dbt):
     @dbt_job_next_run_humanized.setter
     def dbt_job_next_run_humanized(self, dbt_job_next_run_humanized: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_job_next_run_humanized = dbt_job_next_run_humanized
 
     @property
@@ -372,7 +372,7 @@ class DbtColumnProcess(Dbt):
     @dbt_environment_name.setter
     def dbt_environment_name(self, dbt_environment_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_environment_name = dbt_environment_name
 
     @property
@@ -386,7 +386,7 @@ class DbtColumnProcess(Dbt):
     @dbt_environment_dbt_version.setter
     def dbt_environment_dbt_version(self, dbt_environment_dbt_version: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_environment_dbt_version = dbt_environment_dbt_version
 
     @property
@@ -396,7 +396,7 @@ class DbtColumnProcess(Dbt):
     @dbt_tags.setter
     def dbt_tags(self, dbt_tags: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_tags = dbt_tags
 
     @property
@@ -408,7 +408,7 @@ class DbtColumnProcess(Dbt):
     @dbt_connection_context.setter
     def dbt_connection_context(self, dbt_connection_context: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_connection_context = dbt_connection_context
 
     @property
@@ -422,7 +422,7 @@ class DbtColumnProcess(Dbt):
     @dbt_semantic_layer_proxy_url.setter
     def dbt_semantic_layer_proxy_url(self, dbt_semantic_layer_proxy_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dbt_semantic_layer_proxy_url = dbt_semantic_layer_proxy_url
 
     @property
@@ -432,7 +432,7 @@ class DbtColumnProcess(Dbt):
     @inputs.setter
     def inputs(self, inputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     @property
@@ -442,7 +442,7 @@ class DbtColumnProcess(Dbt):
     @outputs.setter
     def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.outputs = outputs
 
     @property
@@ -452,7 +452,7 @@ class DbtColumnProcess(Dbt):
     @code.setter
     def code(self, code: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.code = code
 
     @property
@@ -462,7 +462,7 @@ class DbtColumnProcess(Dbt):
     @sql.setter
     def sql(self, sql: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql = sql
 
     @property
@@ -472,7 +472,7 @@ class DbtColumnProcess(Dbt):
     @ast.setter
     def ast(self, ast: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.ast = ast
 
     @property
@@ -482,7 +482,7 @@ class DbtColumnProcess(Dbt):
     @process.setter
     def process(self, process: Optional[Process]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.process = process
 
     @property
@@ -492,7 +492,7 @@ class DbtColumnProcess(Dbt):
     @airflow_tasks.setter
     def airflow_tasks(self, airflow_tasks: Optional[list[AirflowTask]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.airflow_tasks = airflow_tasks
 
     @property
@@ -502,7 +502,7 @@ class DbtColumnProcess(Dbt):
     @column_processes.setter
     def column_processes(self, column_processes: Optional[list[ColumnProcess]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.column_processes = column_processes
 
     class Attributes(Dbt.Attributes):
@@ -569,9 +569,7 @@ class DbtColumnProcess(Dbt):
         )  # relationship
 
     attributes: "DbtColumnProcess.Attributes" = Field(
-        default_factory=lambda: DbtColumnProcess.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DbtColumnProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

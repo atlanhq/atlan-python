@@ -67,7 +67,7 @@ class Azure(Cloud):
     @azure_resource_id.setter
     def azure_resource_id(self, azure_resource_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.azure_resource_id = azure_resource_id
 
     @property
@@ -77,7 +77,7 @@ class Azure(Cloud):
     @azure_location.setter
     def azure_location(self, azure_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.azure_location = azure_location
 
     @property
@@ -93,7 +93,7 @@ class Azure(Cloud):
         self, adls_account_secondary_location: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_secondary_location = (
             adls_account_secondary_location
         )
@@ -105,7 +105,7 @@ class Azure(Cloud):
     @azure_tags.setter
     def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
     class Attributes(Cloud.Attributes):
@@ -123,9 +123,7 @@ class Azure(Cloud):
         )
 
     attributes: "Azure.Attributes" = Field(
-        default_factory=lambda: Azure.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Azure.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

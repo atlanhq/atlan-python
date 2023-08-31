@@ -139,7 +139,7 @@ class ADLSAccount(ADLS):
     @adls_e_tag.setter
     def adls_e_tag(self, adls_e_tag: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_e_tag = adls_e_tag
 
     @property
@@ -149,7 +149,7 @@ class ADLSAccount(ADLS):
     @adls_encryption_type.setter
     def adls_encryption_type(self, adls_encryption_type: Optional[ADLSEncryptionTypes]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_encryption_type = adls_encryption_type
 
     @property
@@ -163,7 +163,7 @@ class ADLSAccount(ADLS):
     @adls_account_resource_group.setter
     def adls_account_resource_group(self, adls_account_resource_group: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_resource_group = adls_account_resource_group
 
     @property
@@ -177,7 +177,7 @@ class ADLSAccount(ADLS):
     @adls_account_subscription.setter
     def adls_account_subscription(self, adls_account_subscription: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_subscription = adls_account_subscription
 
     @property
@@ -193,7 +193,7 @@ class ADLSAccount(ADLS):
         self, adls_account_performance: Optional[ADLSPerformance]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_performance = adls_account_performance
 
     @property
@@ -209,7 +209,7 @@ class ADLSAccount(ADLS):
         self, adls_account_replication: Optional[ADLSReplicationType]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_replication = adls_account_replication
 
     @property
@@ -219,7 +219,7 @@ class ADLSAccount(ADLS):
     @adls_account_kind.setter
     def adls_account_kind(self, adls_account_kind: Optional[ADLSStorageKind]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_kind = adls_account_kind
 
     @property
@@ -233,7 +233,7 @@ class ADLSAccount(ADLS):
         self, adls_primary_disk_state: Optional[ADLSAccountStatus]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_primary_disk_state = adls_primary_disk_state
 
     @property
@@ -249,7 +249,7 @@ class ADLSAccount(ADLS):
         self, adls_account_provision_state: Optional[ADLSProvisionState]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_provision_state = adls_account_provision_state
 
     @property
@@ -265,7 +265,7 @@ class ADLSAccount(ADLS):
         self, adls_account_access_tier: Optional[ADLSAccessTier]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_access_tier = adls_account_access_tier
 
     @property
@@ -275,7 +275,7 @@ class ADLSAccount(ADLS):
     @adls_containers.setter
     def adls_containers(self, adls_containers: Optional[list[ADLSContainer]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_containers = adls_containers
 
     class Attributes(ADLS.Attributes):
@@ -312,9 +312,7 @@ class ADLSAccount(ADLS):
         )  # relationship
 
     attributes: "ADLSAccount.Attributes" = Field(
-        default_factory=lambda: ADLSAccount.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ADLSAccount.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -403,7 +401,7 @@ class ADLSContainer(ADLS):
     @adls_container_url.setter
     def adls_container_url(self, adls_container_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container_url = adls_container_url
 
     @property
@@ -419,7 +417,7 @@ class ADLSContainer(ADLS):
         self, adls_container_lease_state: Optional[ADLSLeaseState]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container_lease_state = adls_container_lease_state
 
     @property
@@ -435,7 +433,7 @@ class ADLSContainer(ADLS):
         self, adls_container_lease_status: Optional[ADLSLeaseStatus]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container_lease_status = adls_container_lease_status
 
     @property
@@ -451,7 +449,7 @@ class ADLSContainer(ADLS):
         self, adls_container_encryption_scope: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container_encryption_scope = (
             adls_container_encryption_scope
         )
@@ -469,7 +467,7 @@ class ADLSContainer(ADLS):
         self, adls_container_version_level_immutability_support: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container_version_level_immutability_support = (
             adls_container_version_level_immutability_support
         )
@@ -481,7 +479,7 @@ class ADLSContainer(ADLS):
     @adls_object_count.setter
     def adls_object_count(self, adls_object_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_count = adls_object_count
 
     @property
@@ -491,7 +489,7 @@ class ADLSContainer(ADLS):
     @adls_objects.setter
     def adls_objects(self, adls_objects: Optional[list[ADLSObject]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_objects = adls_objects
 
     @property
@@ -501,7 +499,7 @@ class ADLSContainer(ADLS):
     @adls_account.setter
     def adls_account(self, adls_account: Optional[ADLSAccount]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account = adls_account
 
     class Attributes(ADLS.Attributes):
@@ -531,9 +529,7 @@ class ADLSContainer(ADLS):
         )  # relationship
 
     attributes: "ADLSContainer.Attributes" = Field(
-        default_factory=lambda: ADLSContainer.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ADLSContainer.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -698,7 +694,7 @@ class ADLSObject(ADLS):
     @adls_object_url.setter
     def adls_object_url(self, adls_object_url: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_url = adls_object_url
 
     @property
@@ -710,7 +706,7 @@ class ADLSObject(ADLS):
     @adls_object_version_id.setter
     def adls_object_version_id(self, adls_object_version_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_version_id = adls_object_version_id
 
     @property
@@ -720,7 +716,7 @@ class ADLSObject(ADLS):
     @adls_object_type.setter
     def adls_object_type(self, adls_object_type: Optional[ADLSObjectType]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_type = adls_object_type
 
     @property
@@ -730,7 +726,7 @@ class ADLSObject(ADLS):
     @adls_object_size.setter
     def adls_object_size(self, adls_object_size: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_size = adls_object_size
 
     @property
@@ -744,7 +740,7 @@ class ADLSObject(ADLS):
         self, adls_object_access_tier: Optional[ADLSAccessTier]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_access_tier = adls_object_access_tier
 
     @property
@@ -760,7 +756,7 @@ class ADLSObject(ADLS):
         self, adls_object_access_tier_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_access_tier_last_modified_time = (
             adls_object_access_tier_last_modified_time
         )
@@ -778,7 +774,7 @@ class ADLSObject(ADLS):
         self, adls_object_archive_status: Optional[ADLSObjectArchiveStatus]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_archive_status = adls_object_archive_status
 
     @property
@@ -794,7 +790,7 @@ class ADLSObject(ADLS):
         self, adls_object_server_encrypted: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_server_encrypted = adls_object_server_encrypted
 
     @property
@@ -810,7 +806,7 @@ class ADLSObject(ADLS):
         self, adls_object_version_level_immutability_support: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_version_level_immutability_support = (
             adls_object_version_level_immutability_support
         )
@@ -826,7 +822,7 @@ class ADLSObject(ADLS):
     @adls_object_cache_control.setter
     def adls_object_cache_control(self, adls_object_cache_control: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_cache_control = adls_object_cache_control
 
     @property
@@ -840,7 +836,7 @@ class ADLSObject(ADLS):
     @adls_object_content_type.setter
     def adls_object_content_type(self, adls_object_content_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_content_type = adls_object_content_type
 
     @property
@@ -856,7 +852,7 @@ class ADLSObject(ADLS):
         self, adls_object_content_m_d5_hash: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_content_m_d5_hash = adls_object_content_m_d5_hash
 
     @property
@@ -870,7 +866,7 @@ class ADLSObject(ADLS):
     @adls_object_content_language.setter
     def adls_object_content_language(self, adls_object_content_language: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_content_language = adls_object_content_language
 
     @property
@@ -886,7 +882,7 @@ class ADLSObject(ADLS):
         self, adls_object_lease_status: Optional[ADLSLeaseStatus]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_lease_status = adls_object_lease_status
 
     @property
@@ -900,7 +896,7 @@ class ADLSObject(ADLS):
         self, adls_object_lease_state: Optional[ADLSLeaseState]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_lease_state = adls_object_lease_state
 
     @property
@@ -910,7 +906,7 @@ class ADLSObject(ADLS):
     @adls_object_metadata.setter
     def adls_object_metadata(self, adls_object_metadata: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_object_metadata = adls_object_metadata
 
     @property
@@ -926,7 +922,7 @@ class ADLSObject(ADLS):
         self, adls_container_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container_qualified_name = adls_container_qualified_name
 
     @property
@@ -936,7 +932,7 @@ class ADLSObject(ADLS):
     @adls_container.setter
     def adls_container(self, adls_container: Optional[ADLSContainer]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_container = adls_container
 
     class Attributes(ADLS.Attributes):
@@ -996,9 +992,7 @@ class ADLSObject(ADLS):
         )  # relationship
 
     attributes: "ADLSObject.Attributes" = Field(
-        default_factory=lambda: ADLSObject.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ADLSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

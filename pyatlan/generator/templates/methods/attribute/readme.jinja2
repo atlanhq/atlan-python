@@ -5,7 +5,7 @@
             cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
         ) -> Readme.Attributes:
             validate_required_fields(["asset", "content"], [asset, content])
-            if not asset.name:
+            if not asset.name or len(asset.name) < 1:
                 if not asset_name:
                     raise ValueError(
                         "asset_name is required when name is not available from asset"

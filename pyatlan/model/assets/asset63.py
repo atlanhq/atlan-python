@@ -75,7 +75,7 @@ class TableauMetric(Tableau):
     @site_qualified_name.setter
     def site_qualified_name(self, site_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.site_qualified_name = site_qualified_name
 
     @property
@@ -87,7 +87,7 @@ class TableauMetric(Tableau):
     @project_qualified_name.setter
     def project_qualified_name(self, project_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project_qualified_name = project_qualified_name
 
     @property
@@ -103,7 +103,7 @@ class TableauMetric(Tableau):
         self, top_level_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.top_level_project_qualified_name = (
             top_level_project_qualified_name
         )
@@ -115,7 +115,7 @@ class TableauMetric(Tableau):
     @project_hierarchy.setter
     def project_hierarchy(self, project_hierarchy: Optional[list[dict[str, str]]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project_hierarchy = project_hierarchy
 
     @property
@@ -125,7 +125,7 @@ class TableauMetric(Tableau):
     @project.setter
     def project(self, project: Optional[TableauProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project = project
 
     class Attributes(Tableau.Attributes):
@@ -146,9 +146,7 @@ class TableauMetric(Tableau):
         )  # relationship
 
     attributes: "TableauMetric.Attributes" = Field(
-        default_factory=lambda: TableauMetric.Attributes(
-            name="",
-        ),
+        default_factory=lambda: TableauMetric.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

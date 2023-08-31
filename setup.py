@@ -60,6 +60,7 @@ setup(
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
+    package_data={"pyatlan": ["py.typed"]},
     packages=find_packages(),
     install_requires=requirements,
     extra_requires={"dev": extra},

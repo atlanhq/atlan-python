@@ -94,7 +94,7 @@ class Sigma(BI):
         self, sigma_workbook_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
 
     @property
@@ -104,7 +104,7 @@ class Sigma(BI):
     @sigma_workbook_name.setter
     def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sigma_workbook_name = sigma_workbook_name
 
     @property
@@ -118,7 +118,7 @@ class Sigma(BI):
     @sigma_page_qualified_name.setter
     def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
 
     @property
@@ -128,7 +128,7 @@ class Sigma(BI):
     @sigma_page_name.setter
     def sigma_page_name(self, sigma_page_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sigma_page_name = sigma_page_name
 
     @property
@@ -144,7 +144,7 @@ class Sigma(BI):
         self, sigma_data_element_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sigma_data_element_qualified_name = (
             sigma_data_element_qualified_name
         )
@@ -158,7 +158,7 @@ class Sigma(BI):
     @sigma_data_element_name.setter
     def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sigma_data_element_name = sigma_data_element_name
 
     class Attributes(BI.Attributes):
@@ -182,9 +182,7 @@ class Sigma(BI):
         )
 
     attributes: "Sigma.Attributes" = Field(
-        default_factory=lambda: Sigma.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Sigma.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

@@ -53,7 +53,7 @@ class RedashDashboard(Redash):
         self, redash_dashboard_widget_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.redash_dashboard_widget_count = redash_dashboard_widget_count
 
     class Attributes(Redash.Attributes):
@@ -62,9 +62,7 @@ class RedashDashboard(Redash):
         )
 
     attributes: "RedashDashboard.Attributes" = Field(
-        default_factory=lambda: RedashDashboard.Attributes(
-            name="",
-        ),
+        default_factory=lambda: RedashDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

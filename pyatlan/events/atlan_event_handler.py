@@ -53,7 +53,7 @@ def get_current_view_of_asset(
     """
     be_active = Term.with_state("ACTIVE")
     be_of_type = Term.with_type_name(from_event.type_name)
-    have_qn = Term.with_qualified_name(from_event.qualified_name)
+    have_qn = Term.with_qualified_name(from_event.qualified_name or "")
     query = Bool(must=[be_active, be_of_type, have_qn])
     dsl = DSL(query=query)
     attributes = ["name", "anchor", "awsArn"]

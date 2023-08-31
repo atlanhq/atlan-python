@@ -58,7 +58,7 @@ class Salesforce(SaaS):
     @organization_qualified_name.setter
     def organization_qualified_name(self, organization_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.organization_qualified_name = organization_qualified_name
 
     @property
@@ -68,7 +68,7 @@ class Salesforce(SaaS):
     @api_name.setter
     def api_name(self, api_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_name = api_name
 
     class Attributes(SaaS.Attributes):
@@ -78,9 +78,7 @@ class Salesforce(SaaS):
         api_name: Optional[str] = Field(None, description="", alias="apiName")
 
     attributes: "Salesforce.Attributes" = Field(
-        default_factory=lambda: Salesforce.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Salesforce.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

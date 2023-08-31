@@ -80,7 +80,7 @@ class ADLS(ObjectStore):
     @adls_account_qualified_name.setter
     def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_qualified_name = adls_account_qualified_name
 
     @property
@@ -90,7 +90,7 @@ class ADLS(ObjectStore):
     @azure_resource_id.setter
     def azure_resource_id(self, azure_resource_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.azure_resource_id = azure_resource_id
 
     @property
@@ -100,7 +100,7 @@ class ADLS(ObjectStore):
     @azure_location.setter
     def azure_location(self, azure_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.azure_location = azure_location
 
     @property
@@ -116,7 +116,7 @@ class ADLS(ObjectStore):
         self, adls_account_secondary_location: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.adls_account_secondary_location = (
             adls_account_secondary_location
         )
@@ -128,7 +128,7 @@ class ADLS(ObjectStore):
     @azure_tags.setter
     def azure_tags(self, azure_tags: Optional[list[AzureTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
     class Attributes(ObjectStore.Attributes):
@@ -149,9 +149,7 @@ class ADLS(ObjectStore):
         )
 
     attributes: "ADLS.Attributes" = Field(
-        default_factory=lambda: ADLS.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ADLS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

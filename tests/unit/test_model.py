@@ -468,6 +468,8 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[KafkaTopicCleanupPolicy]": KafkaTopicCleanupPolicy.DELETE,
     "Optional[list[SnowflakeDynamicTable]]": [SnowflakeDynamicTable()],
     "Optional[SnowflakeDynamicTable]": SnowflakeDynamicTable(),
+    "Optional[AtlasGlossary]": AtlasGlossary(),
+    "Optional[Namespace]": Namespace(),
 }
 
 

@@ -83,7 +83,7 @@ class SalesforceObject(Salesforce):
     @is_custom.setter
     def is_custom(self, is_custom: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_custom = is_custom
 
     @property
@@ -93,7 +93,7 @@ class SalesforceObject(Salesforce):
     @is_mergable.setter
     def is_mergable(self, is_mergable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_mergable = is_mergable
 
     @property
@@ -103,7 +103,7 @@ class SalesforceObject(Salesforce):
     @is_queryable.setter
     def is_queryable(self, is_queryable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_queryable = is_queryable
 
     @property
@@ -113,7 +113,7 @@ class SalesforceObject(Salesforce):
     @field_count.setter
     def field_count(self, field_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.field_count = field_count
 
     @property
@@ -123,7 +123,7 @@ class SalesforceObject(Salesforce):
     @lookup_fields.setter
     def lookup_fields(self, lookup_fields: Optional[list[SalesforceField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.lookup_fields = lookup_fields
 
     @property
@@ -133,7 +133,7 @@ class SalesforceObject(Salesforce):
     @organization.setter
     def organization(self, organization: Optional[SalesforceOrganization]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.organization = organization
 
     @property
@@ -143,7 +143,7 @@ class SalesforceObject(Salesforce):
     @fields.setter
     def fields(self, fields: Optional[list[SalesforceField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     class Attributes(Salesforce.Attributes):
@@ -162,9 +162,7 @@ class SalesforceObject(Salesforce):
         )  # relationship
 
     attributes: "SalesforceObject.Attributes" = Field(
-        default_factory=lambda: SalesforceObject.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SalesforceObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -302,7 +300,7 @@ class SalesforceField(Salesforce):
     @data_type.setter
     def data_type(self, data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.data_type = data_type
 
     @property
@@ -314,7 +312,7 @@ class SalesforceField(Salesforce):
     @object_qualified_name.setter
     def object_qualified_name(self, object_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.object_qualified_name = object_qualified_name
 
     @property
@@ -324,7 +322,7 @@ class SalesforceField(Salesforce):
     @order.setter
     def order(self, order: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.order = order
 
     @property
@@ -334,7 +332,7 @@ class SalesforceField(Salesforce):
     @inline_help_text.setter
     def inline_help_text(self, inline_help_text: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.inline_help_text = inline_help_text
 
     @property
@@ -344,7 +342,7 @@ class SalesforceField(Salesforce):
     @is_calculated.setter
     def is_calculated(self, is_calculated: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_calculated = is_calculated
 
     @property
@@ -354,7 +352,7 @@ class SalesforceField(Salesforce):
     @formula.setter
     def formula(self, formula: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.formula = formula
 
     @property
@@ -364,7 +362,7 @@ class SalesforceField(Salesforce):
     @is_case_sensitive.setter
     def is_case_sensitive(self, is_case_sensitive: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_case_sensitive = is_case_sensitive
 
     @property
@@ -374,7 +372,7 @@ class SalesforceField(Salesforce):
     @is_encrypted.setter
     def is_encrypted(self, is_encrypted: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_encrypted = is_encrypted
 
     @property
@@ -384,7 +382,7 @@ class SalesforceField(Salesforce):
     @max_length.setter
     def max_length(self, max_length: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.max_length = max_length
 
     @property
@@ -394,7 +392,7 @@ class SalesforceField(Salesforce):
     @is_nullable.setter
     def is_nullable(self, is_nullable: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_nullable = is_nullable
 
     @property
@@ -404,7 +402,7 @@ class SalesforceField(Salesforce):
     @precision.setter
     def precision(self, precision: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.precision = precision
 
     @property
@@ -414,7 +412,7 @@ class SalesforceField(Salesforce):
     @numeric_scale.setter
     def numeric_scale(self, numeric_scale: Optional[float]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.numeric_scale = numeric_scale
 
     @property
@@ -424,7 +422,7 @@ class SalesforceField(Salesforce):
     @is_unique.setter
     def is_unique(self, is_unique: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_unique = is_unique
 
     @property
@@ -434,7 +432,7 @@ class SalesforceField(Salesforce):
     @picklist_values.setter
     def picklist_values(self, picklist_values: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.picklist_values = picklist_values
 
     @property
@@ -448,7 +446,7 @@ class SalesforceField(Salesforce):
     @is_polymorphic_foreign_key.setter
     def is_polymorphic_foreign_key(self, is_polymorphic_foreign_key: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_polymorphic_foreign_key = is_polymorphic_foreign_key
 
     @property
@@ -460,7 +458,7 @@ class SalesforceField(Salesforce):
     @default_value_formula.setter
     def default_value_formula(self, default_value_formula: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.default_value_formula = default_value_formula
 
     @property
@@ -470,7 +468,7 @@ class SalesforceField(Salesforce):
     @lookup_objects.setter
     def lookup_objects(self, lookup_objects: Optional[list[SalesforceObject]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.lookup_objects = lookup_objects
 
     @property
@@ -480,7 +478,7 @@ class SalesforceField(Salesforce):
     @object.setter
     def object(self, object: Optional[SalesforceObject]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.object = object
 
     class Attributes(Salesforce.Attributes):
@@ -524,9 +522,7 @@ class SalesforceField(Salesforce):
         )  # relationship
 
     attributes: "SalesforceField.Attributes" = Field(
-        default_factory=lambda: SalesforceField.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SalesforceField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -580,7 +576,7 @@ class SalesforceOrganization(Salesforce):
     @source_id.setter
     def source_id(self, source_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_id = source_id
 
     @property
@@ -590,7 +586,7 @@ class SalesforceOrganization(Salesforce):
     @reports.setter
     def reports(self, reports: Optional[list[SalesforceReport]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.reports = reports
 
     @property
@@ -600,7 +596,7 @@ class SalesforceOrganization(Salesforce):
     @objects.setter
     def objects(self, objects: Optional[list[SalesforceObject]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.objects = objects
 
     @property
@@ -610,7 +606,7 @@ class SalesforceOrganization(Salesforce):
     @dashboards.setter
     def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     class Attributes(Salesforce.Attributes):
@@ -626,9 +622,7 @@ class SalesforceOrganization(Salesforce):
         )  # relationship
 
     attributes: "SalesforceOrganization.Attributes" = Field(
-        default_factory=lambda: SalesforceOrganization.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SalesforceOrganization.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -689,7 +683,7 @@ class SalesforceDashboard(Salesforce):
     @source_id.setter
     def source_id(self, source_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_id = source_id
 
     @property
@@ -699,7 +693,7 @@ class SalesforceDashboard(Salesforce):
     @dashboard_type.setter
     def dashboard_type(self, dashboard_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dashboard_type = dashboard_type
 
     @property
@@ -709,7 +703,7 @@ class SalesforceDashboard(Salesforce):
     @report_count.setter
     def report_count(self, report_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.report_count = report_count
 
     @property
@@ -719,7 +713,7 @@ class SalesforceDashboard(Salesforce):
     @reports.setter
     def reports(self, reports: Optional[list[SalesforceReport]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.reports = reports
 
     @property
@@ -729,7 +723,7 @@ class SalesforceDashboard(Salesforce):
     @organization.setter
     def organization(self, organization: Optional[SalesforceOrganization]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.organization = organization
 
     class Attributes(Salesforce.Attributes):
@@ -746,9 +740,7 @@ class SalesforceDashboard(Salesforce):
         )  # relationship
 
     attributes: "SalesforceDashboard.Attributes" = Field(
-        default_factory=lambda: SalesforceDashboard.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SalesforceDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -809,7 +801,7 @@ class SalesforceReport(Salesforce):
     @source_id.setter
     def source_id(self, source_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_id = source_id
 
     @property
@@ -819,7 +811,7 @@ class SalesforceReport(Salesforce):
     @report_type.setter
     def report_type(self, report_type: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.report_type = report_type
 
     @property
@@ -829,7 +821,7 @@ class SalesforceReport(Salesforce):
     @detail_columns.setter
     def detail_columns(self, detail_columns: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.detail_columns = detail_columns
 
     @property
@@ -839,7 +831,7 @@ class SalesforceReport(Salesforce):
     @dashboards.setter
     def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     @property
@@ -849,7 +841,7 @@ class SalesforceReport(Salesforce):
     @organization.setter
     def organization(self, organization: Optional[SalesforceOrganization]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.organization = organization
 
     class Attributes(Salesforce.Attributes):
@@ -868,9 +860,7 @@ class SalesforceReport(Salesforce):
         )  # relationship
 
     attributes: "SalesforceReport.Attributes" = Field(
-        default_factory=lambda: SalesforceReport.Attributes(
-            name="",
-        ),
+        default_factory=lambda: SalesforceReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

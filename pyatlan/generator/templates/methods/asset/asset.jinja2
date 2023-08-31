@@ -5,7 +5,7 @@
         cls._subtypes_[type_name or cls.__name__.lower()] = cls
 
     def trim_to_required(self:SelfAsset) -> SelfAsset:
-        return self.create_for_modification(qualified_name=self.qualified_name, name=self.name)
+        return self.create_for_modification(qualified_name=self.qualified_name or "", name=self.name or "")
 
     @classmethod
     def create(cls:Type[SelfAsset], *args, **kwargs)->SelfAsset:

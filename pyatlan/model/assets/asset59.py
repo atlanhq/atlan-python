@@ -109,7 +109,7 @@ class ModeReport(Mode):
     @mode_collection_token.setter
     def mode_collection_token(self, mode_collection_token: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_collection_token = mode_collection_token
 
     @property
@@ -123,7 +123,7 @@ class ModeReport(Mode):
     @mode_report_published_at.setter
     def mode_report_published_at(self, mode_report_published_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_report_published_at = mode_report_published_at
 
     @property
@@ -133,7 +133,7 @@ class ModeReport(Mode):
     @mode_query_count.setter
     def mode_query_count(self, mode_query_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_query_count = mode_query_count
 
     @property
@@ -143,7 +143,7 @@ class ModeReport(Mode):
     @mode_chart_count.setter
     def mode_chart_count(self, mode_chart_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_chart_count = mode_chart_count
 
     @property
@@ -153,7 +153,7 @@ class ModeReport(Mode):
     @mode_query_preview.setter
     def mode_query_preview(self, mode_query_preview: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_query_preview = mode_query_preview
 
     @property
@@ -163,7 +163,7 @@ class ModeReport(Mode):
     @mode_is_public.setter
     def mode_is_public(self, mode_is_public: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_is_public = mode_is_public
 
     @property
@@ -173,7 +173,7 @@ class ModeReport(Mode):
     @mode_is_shared.setter
     def mode_is_shared(self, mode_is_shared: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_is_shared = mode_is_shared
 
     @property
@@ -183,7 +183,7 @@ class ModeReport(Mode):
     @mode_queries.setter
     def mode_queries(self, mode_queries: Optional[list[ModeQuery]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_queries = mode_queries
 
     @property
@@ -193,7 +193,7 @@ class ModeReport(Mode):
     @mode_collections.setter
     def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_collections = mode_collections
 
     class Attributes(Mode.Attributes):
@@ -226,9 +226,7 @@ class ModeReport(Mode):
         )  # relationship
 
     attributes: "ModeReport.Attributes" = Field(
-        default_factory=lambda: ModeReport.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ModeReport.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -284,7 +282,7 @@ class ModeQuery(Mode):
     @mode_raw_query.setter
     def mode_raw_query(self, mode_raw_query: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_raw_query = mode_raw_query
 
     @property
@@ -298,7 +296,7 @@ class ModeQuery(Mode):
     @mode_report_import_count.setter
     def mode_report_import_count(self, mode_report_import_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_report_import_count = mode_report_import_count
 
     @property
@@ -308,7 +306,7 @@ class ModeQuery(Mode):
     @mode_charts.setter
     def mode_charts(self, mode_charts: Optional[list[ModeChart]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_charts = mode_charts
 
     @property
@@ -318,7 +316,7 @@ class ModeQuery(Mode):
     @mode_report.setter
     def mode_report(self, mode_report: Optional[ModeReport]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_report = mode_report
 
     class Attributes(Mode.Attributes):
@@ -336,9 +334,7 @@ class ModeQuery(Mode):
         )  # relationship
 
     attributes: "ModeQuery.Attributes" = Field(
-        default_factory=lambda: ModeQuery.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ModeQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -384,7 +380,7 @@ class ModeChart(Mode):
     @mode_chart_type.setter
     def mode_chart_type(self, mode_chart_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_chart_type = mode_chart_type
 
     @property
@@ -394,7 +390,7 @@ class ModeChart(Mode):
     @mode_query.setter
     def mode_query(self, mode_query: Optional[ModeQuery]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_query = mode_query
 
     class Attributes(Mode.Attributes):
@@ -406,9 +402,7 @@ class ModeChart(Mode):
         )  # relationship
 
     attributes: "ModeChart.Attributes" = Field(
-        default_factory=lambda: ModeChart.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ModeChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -456,7 +450,7 @@ class ModeWorkspace(Mode):
     @mode_collection_count.setter
     def mode_collection_count(self, mode_collection_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_collection_count = mode_collection_count
 
     @property
@@ -466,7 +460,7 @@ class ModeWorkspace(Mode):
     @mode_collections.setter
     def mode_collections(self, mode_collections: Optional[list[ModeCollection]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_collections = mode_collections
 
     class Attributes(Mode.Attributes):
@@ -478,9 +472,7 @@ class ModeWorkspace(Mode):
         )  # relationship
 
     attributes: "ModeWorkspace.Attributes" = Field(
-        default_factory=lambda: ModeWorkspace.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ModeWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -538,7 +530,7 @@ class ModeCollection(Mode):
     @mode_collection_type.setter
     def mode_collection_type(self, mode_collection_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_collection_type = mode_collection_type
 
     @property
@@ -550,7 +542,7 @@ class ModeCollection(Mode):
     @mode_collection_state.setter
     def mode_collection_state(self, mode_collection_state: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_collection_state = mode_collection_state
 
     @property
@@ -560,7 +552,7 @@ class ModeCollection(Mode):
     @mode_workspace.setter
     def mode_workspace(self, mode_workspace: Optional[ModeWorkspace]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_workspace = mode_workspace
 
     @property
@@ -570,7 +562,7 @@ class ModeCollection(Mode):
     @mode_reports.setter
     def mode_reports(self, mode_reports: Optional[list[ModeReport]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.mode_reports = mode_reports
 
     class Attributes(Mode.Attributes):
@@ -588,9 +580,7 @@ class ModeCollection(Mode):
         )  # relationship
 
     attributes: "ModeCollection.Attributes" = Field(
-        default_factory=lambda: ModeCollection.Attributes(
-            name="",
-        ),
+        default_factory=lambda: ModeCollection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

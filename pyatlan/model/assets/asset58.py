@@ -74,7 +74,7 @@ class PresetChart(Preset):
         self, preset_chart_description_markdown: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_chart_description_markdown = (
             preset_chart_description_markdown
         )
@@ -88,7 +88,7 @@ class PresetChart(Preset):
     @preset_chart_form_data.setter
     def preset_chart_form_data(self, preset_chart_form_data: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_chart_form_data = preset_chart_form_data
 
     @property
@@ -98,7 +98,7 @@ class PresetChart(Preset):
     @preset_dashboard.setter
     def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard = preset_dashboard
 
     class Attributes(Preset.Attributes):
@@ -113,9 +113,7 @@ class PresetChart(Preset):
         )  # relationship
 
     attributes: "PresetChart.Attributes" = Field(
-        default_factory=lambda: PresetChart.Attributes(
-            name="",
-        ),
+        default_factory=lambda: PresetChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -186,7 +184,7 @@ class PresetDataset(Preset):
         self, preset_dataset_datasource_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dataset_datasource_name = preset_dataset_datasource_name
 
     @property
@@ -196,7 +194,7 @@ class PresetDataset(Preset):
     @preset_dataset_id.setter
     def preset_dataset_id(self, preset_dataset_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dataset_id = preset_dataset_id
 
     @property
@@ -206,7 +204,7 @@ class PresetDataset(Preset):
     @preset_dataset_type.setter
     def preset_dataset_type(self, preset_dataset_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dataset_type = preset_dataset_type
 
     @property
@@ -216,7 +214,7 @@ class PresetDataset(Preset):
     @preset_dashboard.setter
     def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard = preset_dashboard
 
     class Attributes(Preset.Attributes):
@@ -234,9 +232,7 @@ class PresetDataset(Preset):
         )  # relationship
 
     attributes: "PresetDataset.Attributes" = Field(
-        default_factory=lambda: PresetDataset.Attributes(
-            name="",
-        ),
+        default_factory=lambda: PresetDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -338,7 +334,7 @@ class PresetDashboard(Preset):
         self, preset_dashboard_changed_by_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard_changed_by_name = (
             preset_dashboard_changed_by_name
         )
@@ -356,7 +352,7 @@ class PresetDashboard(Preset):
         self, preset_dashboard_changed_by_url: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard_changed_by_url = (
             preset_dashboard_changed_by_url
         )
@@ -374,7 +370,7 @@ class PresetDashboard(Preset):
         self, preset_dashboard_is_managed_externally: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard_is_managed_externally = (
             preset_dashboard_is_managed_externally
         )
@@ -392,7 +388,7 @@ class PresetDashboard(Preset):
         self, preset_dashboard_is_published: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard_is_published = preset_dashboard_is_published
 
     @property
@@ -408,7 +404,7 @@ class PresetDashboard(Preset):
         self, preset_dashboard_thumbnail_url: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard_thumbnail_url = preset_dashboard_thumbnail_url
 
     @property
@@ -422,7 +418,7 @@ class PresetDashboard(Preset):
     @preset_dashboard_chart_count.setter
     def preset_dashboard_chart_count(self, preset_dashboard_chart_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
 
     @property
@@ -432,7 +428,7 @@ class PresetDashboard(Preset):
     @preset_datasets.setter
     def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_datasets = preset_datasets
 
     @property
@@ -442,7 +438,7 @@ class PresetDashboard(Preset):
     @preset_charts.setter
     def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_charts = preset_charts
 
     @property
@@ -452,7 +448,7 @@ class PresetDashboard(Preset):
     @preset_workspace.setter
     def preset_workspace(self, preset_workspace: Optional[PresetWorkspace]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace = preset_workspace
 
     class Attributes(Preset.Attributes):
@@ -485,9 +481,7 @@ class PresetDashboard(Preset):
         )  # relationship
 
     attributes: "PresetDashboard.Attributes" = Field(
-        default_factory=lambda: PresetDashboard.Attributes(
-            name="",
-        ),
+        default_factory=lambda: PresetDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -598,7 +592,7 @@ class PresetWorkspace(Preset):
         self, preset_workspace_public_dashboards_allowed: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_public_dashboards_allowed = (
             preset_workspace_public_dashboards_allowed
         )
@@ -614,7 +608,7 @@ class PresetWorkspace(Preset):
     @preset_workspace_cluster_id.setter
     def preset_workspace_cluster_id(self, preset_workspace_cluster_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_cluster_id = preset_workspace_cluster_id
 
     @property
@@ -628,7 +622,7 @@ class PresetWorkspace(Preset):
     @preset_workspace_hostname.setter
     def preset_workspace_hostname(self, preset_workspace_hostname: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_hostname = preset_workspace_hostname
 
     @property
@@ -644,7 +638,7 @@ class PresetWorkspace(Preset):
         self, preset_workspace_is_in_maintenance_mode: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_is_in_maintenance_mode = (
             preset_workspace_is_in_maintenance_mode
         )
@@ -658,7 +652,7 @@ class PresetWorkspace(Preset):
     @preset_workspace_region.setter
     def preset_workspace_region(self, preset_workspace_region: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_region = preset_workspace_region
 
     @property
@@ -670,7 +664,7 @@ class PresetWorkspace(Preset):
     @preset_workspace_status.setter
     def preset_workspace_status(self, preset_workspace_status: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_status = preset_workspace_status
 
     @property
@@ -686,7 +680,7 @@ class PresetWorkspace(Preset):
         self, preset_workspace_deployment_id: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
 
     @property
@@ -702,7 +696,7 @@ class PresetWorkspace(Preset):
         self, preset_workspace_dashboard_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_dashboard_count = (
             preset_workspace_dashboard_count
         )
@@ -720,7 +714,7 @@ class PresetWorkspace(Preset):
         self, preset_workspace_dataset_count: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
 
     @property
@@ -730,7 +724,7 @@ class PresetWorkspace(Preset):
     @preset_dashboards.setter
     def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preset_dashboards = preset_dashboards
 
     class Attributes(Preset.Attributes):
@@ -766,9 +760,7 @@ class PresetWorkspace(Preset):
         )  # relationship
 
     attributes: "PresetWorkspace.Attributes" = Field(
-        default_factory=lambda: PresetWorkspace.Attributes(
-            name="",
-        ),
+        default_factory=lambda: PresetWorkspace.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

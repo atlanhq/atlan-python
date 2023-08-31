@@ -3,7 +3,7 @@
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
         {%- set default_value = "''" if attribute_def.name == "qualifiedName" else "None" %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({{ default_value }}, description='' , alias='{{attribute_def.name}}')
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}]= Field({{ default_value }}, description='' , alias='{{attribute_def.name}}')
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}

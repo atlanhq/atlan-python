@@ -236,7 +236,7 @@ class Connection(Asset, type_name="Connection"):
     @category.setter
     def category(self, category: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.category = category
 
     @property
@@ -246,7 +246,7 @@ class Connection(Asset, type_name="Connection"):
     @sub_category.setter
     def sub_category(self, sub_category: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sub_category = sub_category
 
     @property
@@ -256,7 +256,7 @@ class Connection(Asset, type_name="Connection"):
     @host.setter
     def host(self, host: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.host = host
 
     @property
@@ -266,7 +266,7 @@ class Connection(Asset, type_name="Connection"):
     @port.setter
     def port(self, port: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.port = port
 
     @property
@@ -276,7 +276,7 @@ class Connection(Asset, type_name="Connection"):
     @allow_query.setter
     def allow_query(self, allow_query: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.allow_query = allow_query
 
     @property
@@ -286,7 +286,7 @@ class Connection(Asset, type_name="Connection"):
     @allow_query_preview.setter
     def allow_query_preview(self, allow_query_preview: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.allow_query_preview = allow_query_preview
 
     @property
@@ -296,7 +296,7 @@ class Connection(Asset, type_name="Connection"):
     @query_preview_config.setter
     def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_preview_config = query_preview_config
 
     @property
@@ -306,7 +306,7 @@ class Connection(Asset, type_name="Connection"):
     @query_config.setter
     def query_config(self, query_config: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_config = query_config
 
     @property
@@ -316,7 +316,7 @@ class Connection(Asset, type_name="Connection"):
     @credential_strategy.setter
     def credential_strategy(self, credential_strategy: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.credential_strategy = credential_strategy
 
     @property
@@ -330,7 +330,7 @@ class Connection(Asset, type_name="Connection"):
     @preview_credential_strategy.setter
     def preview_credential_strategy(self, preview_credential_strategy: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.preview_credential_strategy = preview_credential_strategy
 
     @property
@@ -340,7 +340,7 @@ class Connection(Asset, type_name="Connection"):
     @policy_strategy.setter
     def policy_strategy(self, policy_strategy: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.policy_strategy = policy_strategy
 
     @property
@@ -354,7 +354,7 @@ class Connection(Asset, type_name="Connection"):
         self, query_username_strategy: Optional[QueryUsernameStrategy]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_username_strategy = query_username_strategy
 
     @property
@@ -364,7 +364,7 @@ class Connection(Asset, type_name="Connection"):
     @row_limit.setter
     def row_limit(self, row_limit: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.row_limit = row_limit
 
     @property
@@ -374,7 +374,7 @@ class Connection(Asset, type_name="Connection"):
     @query_timeout.setter
     def query_timeout(self, query_timeout: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_timeout = query_timeout
 
     @property
@@ -386,7 +386,7 @@ class Connection(Asset, type_name="Connection"):
     @default_credential_guid.setter
     def default_credential_guid(self, default_credential_guid: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.default_credential_guid = default_credential_guid
 
     @property
@@ -396,7 +396,7 @@ class Connection(Asset, type_name="Connection"):
     @connector_icon.setter
     def connector_icon(self, connector_icon: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connector_icon = connector_icon
 
     @property
@@ -406,7 +406,7 @@ class Connection(Asset, type_name="Connection"):
     @connector_image.setter
     def connector_image(self, connector_image: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connector_image = connector_image
 
     @property
@@ -416,7 +416,7 @@ class Connection(Asset, type_name="Connection"):
     @source_logo.setter
     def source_logo(self, source_logo: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_logo = source_logo
 
     @property
@@ -432,7 +432,7 @@ class Connection(Asset, type_name="Connection"):
         self, is_sample_data_preview_enabled: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_sample_data_preview_enabled = is_sample_data_preview_enabled
 
     @property
@@ -448,7 +448,7 @@ class Connection(Asset, type_name="Connection"):
         self, popularity_insights_timeframe: Optional[int]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.popularity_insights_timeframe = popularity_insights_timeframe
 
     @property
@@ -460,7 +460,7 @@ class Connection(Asset, type_name="Connection"):
     @has_popularity_insights.setter
     def has_popularity_insights(self, has_popularity_insights: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.has_popularity_insights = has_popularity_insights
 
     @property
@@ -476,7 +476,7 @@ class Connection(Asset, type_name="Connection"):
         self, connection_dbt_environments: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connection_dbt_environments = connection_dbt_environments
 
     @property
@@ -492,7 +492,7 @@ class Connection(Asset, type_name="Connection"):
         self, connection_s_s_o_credential_guid: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.connection_s_s_o_credential_guid = (
             connection_s_s_o_credential_guid
         )
@@ -551,9 +551,7 @@ class Connection(Asset, type_name="Connection"):
         )
 
     attributes: "Connection.Attributes" = Field(
-        default_factory=lambda: Connection.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Connection.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

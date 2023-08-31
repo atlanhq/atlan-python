@@ -48,22 +48,18 @@ class {{ entity_def.name }}({{super_classes[0]}} {%- if "Asset" in super_classes
     class Attributes({{super_classes[0]}}.Attributes):
         {%- for attribute_def in entity_def.attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}None,{% endif %} description='' , alias='{{attribute_def.name}}')
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}] = Field(None, description='' , alias='{{attribute_def.name}}')
         {%- endfor %}
         {%- for attribute_def in entity_def.relationship_attribute_defs %}
         {%- set type = attribute_def.typeName | get_type %}
-        {{attribute_def.name | to_snake_case }}: {% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %} = Field({% if attribute_def.isOptional %}None,{% endif %} description='',  alias='{{attribute_def.name}}') # relationship
+        {{attribute_def.name | to_snake_case }}: Optional[{{type}}]= Field(None, description='',  alias='{{attribute_def.name}}') # relationship
         {%- endfor %}
         {% set file_name = 'methods/attribute/' + entity_def.name | to_snake_case + '.jinja2' %}
         {%  if existz('templates/' + file_name) %}
             {% include file_name %}
         {% endif %}
     attributes: '{{entity_def.name}}.Attributes' = Field(
-        default_factory = lambda: {{entity_def.name}}.Attributes({% if entity_def.name != 'Referenceable' %}name="",{% endif %}
-        {% if entity_def.name == 'AtlasGlossaryTerm' or entity_def.name == 'AtlasGlossaryCategory' %} anchor=AtlasGlossary(){% endif %}
-        {% if entity_def.name == 'Folder' or  entity_def.name == 'Query' %} parent_qualified_name="", collection_qualified_name="", parent=Namespace(){% endif %}
-        {% if entity_def.name == 'Procedure' %} definition=""{% endif %}
-        ),
+        default_factory = lambda: {{entity_def.name}}.Attributes(),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
                     'type, so are described in the sub-types of this schema.\n',
     )

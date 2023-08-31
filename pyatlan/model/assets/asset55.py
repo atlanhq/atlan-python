@@ -85,7 +85,7 @@ class S3Bucket(S3):
     @s3_object_count.setter
     def s3_object_count(self, s3_object_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_count = s3_object_count
 
     @property
@@ -101,7 +101,7 @@ class S3Bucket(S3):
         self, s3_bucket_versioning_enabled: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
 
     @property
@@ -111,7 +111,7 @@ class S3Bucket(S3):
     @objects.setter
     def objects(self, objects: Optional[list[S3Object]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.objects = objects
 
     class Attributes(S3.Attributes):
@@ -154,9 +154,7 @@ class S3Bucket(S3):
             )
 
     attributes: "S3Bucket.Attributes" = Field(
-        default_factory=lambda: S3Bucket.Attributes(
-            name="",
-        ),
+        default_factory=lambda: S3Bucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -289,7 +287,7 @@ class S3Object(S3):
         self, s3_object_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
 
     @property
@@ -299,7 +297,7 @@ class S3Object(S3):
     @s3_bucket_name.setter
     def s3_bucket_name(self, s3_bucket_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_bucket_name = s3_bucket_name
 
     @property
@@ -313,7 +311,7 @@ class S3Object(S3):
     @s3_bucket_qualified_name.setter
     def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
 
     @property
@@ -323,7 +321,7 @@ class S3Object(S3):
     @s3_object_size.setter
     def s3_object_size(self, s3_object_size: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_size = s3_object_size
 
     @property
@@ -335,7 +333,7 @@ class S3Object(S3):
     @s3_object_storage_class.setter
     def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_storage_class = s3_object_storage_class
 
     @property
@@ -345,7 +343,7 @@ class S3Object(S3):
     @s3_object_key.setter
     def s3_object_key(self, s3_object_key: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_key = s3_object_key
 
     @property
@@ -357,7 +355,7 @@ class S3Object(S3):
     @s3_object_content_type.setter
     def s3_object_content_type(self, s3_object_content_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_content_type = s3_object_content_type
 
     @property
@@ -373,7 +371,7 @@ class S3Object(S3):
         self, s3_object_content_disposition: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_content_disposition = s3_object_content_disposition
 
     @property
@@ -383,7 +381,7 @@ class S3Object(S3):
     @s3_object_version_id.setter
     def s3_object_version_id(self, s3_object_version_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.s3_object_version_id = s3_object_version_id
 
     @property
@@ -393,7 +391,7 @@ class S3Object(S3):
     @bucket.setter
     def bucket(self, bucket: Optional[S3Bucket]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.bucket = bucket
 
     class Attributes(S3.Attributes):
@@ -467,9 +465,7 @@ class S3Object(S3):
             )
 
     attributes: "S3Object.Attributes" = Field(
-        default_factory=lambda: S3Object.Attributes(
-            name="",
-        ),
+        default_factory=lambda: S3Object.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

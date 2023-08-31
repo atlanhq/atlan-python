@@ -138,7 +138,7 @@ class MicroStrategy(BI):
         self, micro_strategy_project_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_project_qualified_name = (
             micro_strategy_project_qualified_name
         )
@@ -154,7 +154,7 @@ class MicroStrategy(BI):
     @micro_strategy_project_name.setter
     def micro_strategy_project_name(self, micro_strategy_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_project_name = micro_strategy_project_name
 
     @property
@@ -170,7 +170,7 @@ class MicroStrategy(BI):
         self, micro_strategy_cube_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_cube_qualified_names = (
             micro_strategy_cube_qualified_names
         )
@@ -186,7 +186,7 @@ class MicroStrategy(BI):
     @micro_strategy_cube_names.setter
     def micro_strategy_cube_names(self, micro_strategy_cube_names: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_cube_names = micro_strategy_cube_names
 
     @property
@@ -202,7 +202,7 @@ class MicroStrategy(BI):
         self, micro_strategy_report_qualified_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_report_qualified_names = (
             micro_strategy_report_qualified_names
         )
@@ -220,7 +220,7 @@ class MicroStrategy(BI):
         self, micro_strategy_report_names: Optional[set[str]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_report_names = micro_strategy_report_names
 
     @property
@@ -234,7 +234,7 @@ class MicroStrategy(BI):
     @micro_strategy_is_certified.setter
     def micro_strategy_is_certified(self, micro_strategy_is_certified: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_is_certified = micro_strategy_is_certified
 
     @property
@@ -248,7 +248,7 @@ class MicroStrategy(BI):
     @micro_strategy_certified_by.setter
     def micro_strategy_certified_by(self, micro_strategy_certified_by: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_certified_by = micro_strategy_certified_by
 
     @property
@@ -264,7 +264,7 @@ class MicroStrategy(BI):
         self, micro_strategy_certified_at: Optional[datetime]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_certified_at = micro_strategy_certified_at
 
     @property
@@ -278,7 +278,7 @@ class MicroStrategy(BI):
         self, micro_strategy_location: Optional[list[dict[str, str]]]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.micro_strategy_location = micro_strategy_location
 
     class Attributes(BI.Attributes):
@@ -314,9 +314,7 @@ class MicroStrategy(BI):
         )
 
     attributes: "MicroStrategy.Attributes" = Field(
-        default_factory=lambda: MicroStrategy.Attributes(
-            name="",
-        ),
+        default_factory=lambda: MicroStrategy.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

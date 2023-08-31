@@ -131,7 +131,7 @@ class LookerLook(Looker):
     @folder_name.setter
     def folder_name(self, folder_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.folder_name = folder_name
 
     @property
@@ -141,7 +141,7 @@ class LookerLook(Looker):
     @source_user_id.setter
     def source_user_id(self, source_user_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_user_id = source_user_id
 
     @property
@@ -151,7 +151,7 @@ class LookerLook(Looker):
     @source_view_count.setter
     def source_view_count(self, source_view_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_view_count = source_view_count
 
     @property
@@ -163,7 +163,7 @@ class LookerLook(Looker):
     @sourcelast_updater_id.setter
     def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sourcelast_updater_id = sourcelast_updater_id
 
     @property
@@ -175,7 +175,7 @@ class LookerLook(Looker):
     @source_last_accessed_at.setter
     def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_last_accessed_at = source_last_accessed_at
 
     @property
@@ -187,7 +187,7 @@ class LookerLook(Looker):
     @source_last_viewed_at.setter
     def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_last_viewed_at = source_last_viewed_at
 
     @property
@@ -201,7 +201,7 @@ class LookerLook(Looker):
     @source_content_metadata_id.setter
     def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_content_metadata_id = source_content_metadata_id
 
     @property
@@ -211,7 +211,7 @@ class LookerLook(Looker):
     @source_query_id.setter
     def source_query_id(self, source_query_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_query_id = source_query_id
 
     @property
@@ -221,7 +221,7 @@ class LookerLook(Looker):
     @model_name.setter
     def model_name(self, model_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model_name = model_name
 
     @property
@@ -231,7 +231,7 @@ class LookerLook(Looker):
     @query.setter
     def query(self, query: Optional[LookerQuery]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query = query
 
     @property
@@ -241,7 +241,7 @@ class LookerLook(Looker):
     @folder.setter
     def folder(self, folder: Optional[LookerFolder]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.folder = folder
 
     @property
@@ -251,7 +251,7 @@ class LookerLook(Looker):
     @tile.setter
     def tile(self, tile: Optional[LookerTile]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tile = tile
 
     @property
@@ -261,7 +261,7 @@ class LookerLook(Looker):
     @model.setter
     def model(self, model: Optional[LookerModel]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model = model
 
     @property
@@ -271,7 +271,7 @@ class LookerLook(Looker):
     @dashboard.setter
     def dashboard(self, dashboard: Optional[LookerDashboard]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dashboard = dashboard
 
     class Attributes(Looker.Attributes):
@@ -315,9 +315,7 @@ class LookerLook(Looker):
         )  # relationship
 
     attributes: "LookerLook.Attributes" = Field(
-        default_factory=lambda: LookerLook.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerLook.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -413,7 +411,7 @@ class LookerDashboard(Looker):
     @folder_name.setter
     def folder_name(self, folder_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.folder_name = folder_name
 
     @property
@@ -423,7 +421,7 @@ class LookerDashboard(Looker):
     @source_user_id.setter
     def source_user_id(self, source_user_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_user_id = source_user_id
 
     @property
@@ -433,7 +431,7 @@ class LookerDashboard(Looker):
     @source_view_count.setter
     def source_view_count(self, source_view_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_view_count = source_view_count
 
     @property
@@ -443,7 +441,7 @@ class LookerDashboard(Looker):
     @source_metadata_id.setter
     def source_metadata_id(self, source_metadata_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_metadata_id = source_metadata_id
 
     @property
@@ -455,7 +453,7 @@ class LookerDashboard(Looker):
     @sourcelast_updater_id.setter
     def sourcelast_updater_id(self, sourcelast_updater_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sourcelast_updater_id = sourcelast_updater_id
 
     @property
@@ -467,7 +465,7 @@ class LookerDashboard(Looker):
     @source_last_accessed_at.setter
     def source_last_accessed_at(self, source_last_accessed_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_last_accessed_at = source_last_accessed_at
 
     @property
@@ -479,7 +477,7 @@ class LookerDashboard(Looker):
     @source_last_viewed_at.setter
     def source_last_viewed_at(self, source_last_viewed_at: Optional[datetime]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_last_viewed_at = source_last_viewed_at
 
     @property
@@ -489,7 +487,7 @@ class LookerDashboard(Looker):
     @tiles.setter
     def tiles(self, tiles: Optional[list[LookerTile]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tiles = tiles
 
     @property
@@ -499,7 +497,7 @@ class LookerDashboard(Looker):
     @looks.setter
     def looks(self, looks: Optional[list[LookerLook]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looks = looks
 
     @property
@@ -509,7 +507,7 @@ class LookerDashboard(Looker):
     @folder.setter
     def folder(self, folder: Optional[LookerFolder]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.folder = folder
 
     class Attributes(Looker.Attributes):
@@ -543,9 +541,7 @@ class LookerDashboard(Looker):
         )  # relationship
 
     attributes: "LookerDashboard.Attributes" = Field(
-        default_factory=lambda: LookerDashboard.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -621,7 +617,7 @@ class LookerFolder(Looker):
     @source_content_metadata_id.setter
     def source_content_metadata_id(self, source_content_metadata_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_content_metadata_id = source_content_metadata_id
 
     @property
@@ -631,7 +627,7 @@ class LookerFolder(Looker):
     @source_creator_id.setter
     def source_creator_id(self, source_creator_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_creator_id = source_creator_id
 
     @property
@@ -641,7 +637,7 @@ class LookerFolder(Looker):
     @source_child_count.setter
     def source_child_count(self, source_child_count: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_child_count = source_child_count
 
     @property
@@ -651,7 +647,7 @@ class LookerFolder(Looker):
     @source_parent_i_d.setter
     def source_parent_i_d(self, source_parent_i_d: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_parent_i_d = source_parent_i_d
 
     @property
@@ -661,7 +657,7 @@ class LookerFolder(Looker):
     @dashboards.setter
     def dashboards(self, dashboards: Optional[list[LookerDashboard]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dashboards = dashboards
 
     @property
@@ -671,7 +667,7 @@ class LookerFolder(Looker):
     @looks.setter
     def looks(self, looks: Optional[list[LookerLook]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looks = looks
 
     class Attributes(Looker.Attributes):
@@ -695,9 +691,7 @@ class LookerFolder(Looker):
         )  # relationship
 
     attributes: "LookerFolder.Attributes" = Field(
-        default_factory=lambda: LookerFolder.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -787,7 +781,7 @@ class LookerTile(Looker):
     @lookml_link_id.setter
     def lookml_link_id(self, lookml_link_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.lookml_link_id = lookml_link_id
 
     @property
@@ -797,7 +791,7 @@ class LookerTile(Looker):
     @merge_result_id.setter
     def merge_result_id(self, merge_result_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.merge_result_id = merge_result_id
 
     @property
@@ -807,7 +801,7 @@ class LookerTile(Looker):
     @note_text.setter
     def note_text(self, note_text: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.note_text = note_text
 
     @property
@@ -817,7 +811,7 @@ class LookerTile(Looker):
     @query_i_d.setter
     def query_i_d(self, query_i_d: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query_i_d = query_i_d
 
     @property
@@ -827,7 +821,7 @@ class LookerTile(Looker):
     @result_maker_i_d.setter
     def result_maker_i_d(self, result_maker_i_d: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.result_maker_i_d = result_maker_i_d
 
     @property
@@ -837,7 +831,7 @@ class LookerTile(Looker):
     @subtitle_text.setter
     def subtitle_text(self, subtitle_text: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.subtitle_text = subtitle_text
 
     @property
@@ -847,7 +841,7 @@ class LookerTile(Looker):
     @look_id.setter
     def look_id(self, look_id: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.look_id = look_id
 
     @property
@@ -857,7 +851,7 @@ class LookerTile(Looker):
     @query.setter
     def query(self, query: Optional[LookerQuery]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.query = query
 
     @property
@@ -867,7 +861,7 @@ class LookerTile(Looker):
     @look.setter
     def look(self, look: Optional[LookerLook]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.look = look
 
     @property
@@ -877,7 +871,7 @@ class LookerTile(Looker):
     @dashboard.setter
     def dashboard(self, dashboard: Optional[LookerDashboard]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.dashboard = dashboard
 
     class Attributes(Looker.Attributes):
@@ -905,9 +899,7 @@ class LookerTile(Looker):
         )  # relationship
 
     attributes: "LookerTile.Attributes" = Field(
-        default_factory=lambda: LookerTile.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerTile.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -971,7 +963,7 @@ class LookerModel(Looker):
     @project_name.setter
     def project_name(self, project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project_name = project_name
 
     @property
@@ -981,7 +973,7 @@ class LookerModel(Looker):
     @explores.setter
     def explores(self, explores: Optional[list[LookerExplore]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.explores = explores
 
     @property
@@ -991,7 +983,7 @@ class LookerModel(Looker):
     @project.setter
     def project(self, project: Optional[LookerProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project = project
 
     @property
@@ -1001,7 +993,7 @@ class LookerModel(Looker):
     @look.setter
     def look(self, look: Optional[LookerLook]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.look = look
 
     @property
@@ -1011,7 +1003,7 @@ class LookerModel(Looker):
     @queries.setter
     def queries(self, queries: Optional[list[LookerQuery]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.queries = queries
 
     @property
@@ -1021,7 +1013,7 @@ class LookerModel(Looker):
     @fields.setter
     def fields(self, fields: Optional[list[LookerField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
@@ -1043,9 +1035,7 @@ class LookerModel(Looker):
         )  # relationship
 
     attributes: "LookerModel.Attributes" = Field(
-        default_factory=lambda: LookerModel.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerModel.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1123,7 +1113,7 @@ class LookerExplore(Looker):
     @project_name.setter
     def project_name(self, project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project_name = project_name
 
     @property
@@ -1133,7 +1123,7 @@ class LookerExplore(Looker):
     @model_name.setter
     def model_name(self, model_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model_name = model_name
 
     @property
@@ -1145,7 +1135,7 @@ class LookerExplore(Looker):
     @source_connection_name.setter
     def source_connection_name(self, source_connection_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_connection_name = source_connection_name
 
     @property
@@ -1155,7 +1145,7 @@ class LookerExplore(Looker):
     @view_name.setter
     def view_name(self, view_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view_name = view_name
 
     @property
@@ -1165,7 +1155,7 @@ class LookerExplore(Looker):
     @sql_table_name.setter
     def sql_table_name(self, sql_table_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.sql_table_name = sql_table_name
 
     @property
@@ -1175,7 +1165,7 @@ class LookerExplore(Looker):
     @project.setter
     def project(self, project: Optional[LookerProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project = project
 
     @property
@@ -1185,7 +1175,7 @@ class LookerExplore(Looker):
     @model.setter
     def model(self, model: Optional[LookerModel]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model = model
 
     @property
@@ -1195,7 +1185,7 @@ class LookerExplore(Looker):
     @fields.setter
     def fields(self, fields: Optional[list[LookerField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
@@ -1219,9 +1209,7 @@ class LookerExplore(Looker):
         )  # relationship
 
     attributes: "LookerExplore.Attributes" = Field(
-        default_factory=lambda: LookerExplore.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerExplore.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1274,7 +1262,7 @@ class LookerProject(Looker):
     @models.setter
     def models(self, models: Optional[list[LookerModel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.models = models
 
     @property
@@ -1284,7 +1272,7 @@ class LookerProject(Looker):
     @explores.setter
     def explores(self, explores: Optional[list[LookerExplore]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.explores = explores
 
     @property
@@ -1294,7 +1282,7 @@ class LookerProject(Looker):
     @fields.setter
     def fields(self, fields: Optional[list[LookerField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     @property
@@ -1304,7 +1292,7 @@ class LookerProject(Looker):
     @views.setter
     def views(self, views: Optional[list[LookerView]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.views = views
 
     class Attributes(Looker.Attributes):
@@ -1322,9 +1310,7 @@ class LookerProject(Looker):
         )  # relationship
 
     attributes: "LookerProject.Attributes" = Field(
-        default_factory=lambda: LookerProject.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerProject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1399,7 +1385,7 @@ class LookerQuery(Looker):
     @source_definition.setter
     def source_definition(self, source_definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_definition = source_definition
 
     @property
@@ -1413,7 +1399,7 @@ class LookerQuery(Looker):
     @source_definition_database.setter
     def source_definition_database(self, source_definition_database: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_definition_database = source_definition_database
 
     @property
@@ -1427,7 +1413,7 @@ class LookerQuery(Looker):
     @source_definition_schema.setter
     def source_definition_schema(self, source_definition_schema: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_definition_schema = source_definition_schema
 
     @property
@@ -1437,7 +1423,7 @@ class LookerQuery(Looker):
     @fields.setter
     def fields(self, fields: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     @property
@@ -1447,7 +1433,7 @@ class LookerQuery(Looker):
     @tiles.setter
     def tiles(self, tiles: Optional[list[LookerTile]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.tiles = tiles
 
     @property
@@ -1457,7 +1443,7 @@ class LookerQuery(Looker):
     @looks.setter
     def looks(self, looks: Optional[list[LookerLook]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looks = looks
 
     @property
@@ -1467,7 +1453,7 @@ class LookerQuery(Looker):
     @model.setter
     def model(self, model: Optional[LookerModel]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model = model
 
     class Attributes(Looker.Attributes):
@@ -1492,9 +1478,7 @@ class LookerQuery(Looker):
         )  # relationship
 
     attributes: "LookerQuery.Attributes" = Field(
-        default_factory=lambda: LookerQuery.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerQuery.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1597,7 +1581,7 @@ class LookerField(Looker):
     @project_name.setter
     def project_name(self, project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project_name = project_name
 
     @property
@@ -1613,7 +1597,7 @@ class LookerField(Looker):
         self, looker_explore_qualified_name: Optional[str]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looker_explore_qualified_name = looker_explore_qualified_name
 
     @property
@@ -1627,7 +1611,7 @@ class LookerField(Looker):
     @looker_view_qualified_name.setter
     def looker_view_qualified_name(self, looker_view_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looker_view_qualified_name = looker_view_qualified_name
 
     @property
@@ -1637,7 +1621,7 @@ class LookerField(Looker):
     @model_name.setter
     def model_name(self, model_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model_name = model_name
 
     @property
@@ -1647,7 +1631,7 @@ class LookerField(Looker):
     @source_definition.setter
     def source_definition(self, source_definition: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.source_definition = source_definition
 
     @property
@@ -1659,7 +1643,7 @@ class LookerField(Looker):
     @looker_field_data_type.setter
     def looker_field_data_type(self, looker_field_data_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looker_field_data_type = looker_field_data_type
 
     @property
@@ -1669,7 +1653,7 @@ class LookerField(Looker):
     @looker_times_used.setter
     def looker_times_used(self, looker_times_used: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looker_times_used = looker_times_used
 
     @property
@@ -1679,7 +1663,7 @@ class LookerField(Looker):
     @explore.setter
     def explore(self, explore: Optional[LookerExplore]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.explore = explore
 
     @property
@@ -1689,7 +1673,7 @@ class LookerField(Looker):
     @project.setter
     def project(self, project: Optional[LookerProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project = project
 
     @property
@@ -1699,7 +1683,7 @@ class LookerField(Looker):
     @view.setter
     def view(self, view: Optional[LookerView]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.view = view
 
     @property
@@ -1709,7 +1693,7 @@ class LookerField(Looker):
     @model.setter
     def model(self, model: Optional[LookerModel]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.model = model
 
     class Attributes(Looker.Attributes):
@@ -1744,9 +1728,7 @@ class LookerField(Looker):
         )  # relationship
 
     attributes: "LookerField.Attributes" = Field(
-        default_factory=lambda: LookerField.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -1809,7 +1791,7 @@ class LookerView(Looker):
     @project_name.setter
     def project_name(self, project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project_name = project_name
 
     @property
@@ -1821,7 +1803,7 @@ class LookerView(Looker):
     @looker_view_file_path.setter
     def looker_view_file_path(self, looker_view_file_path: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looker_view_file_path = looker_view_file_path
 
     @property
@@ -1833,7 +1815,7 @@ class LookerView(Looker):
     @looker_view_file_name.setter
     def looker_view_file_name(self, looker_view_file_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.looker_view_file_name = looker_view_file_name
 
     @property
@@ -1843,7 +1825,7 @@ class LookerView(Looker):
     @project.setter
     def project(self, project: Optional[LookerProject]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.project = project
 
     @property
@@ -1853,7 +1835,7 @@ class LookerView(Looker):
     @fields.setter
     def fields(self, fields: Optional[list[LookerField]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.fields = fields
 
     class Attributes(Looker.Attributes):
@@ -1872,9 +1854,7 @@ class LookerView(Looker):
         )  # relationship
 
     attributes: "LookerView.Attributes" = Field(
-        default_factory=lambda: LookerView.Attributes(
-            name="",
-        ),
+        default_factory=lambda: LookerView.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

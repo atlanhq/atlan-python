@@ -137,7 +137,7 @@ class DataStudioAsset(DataStudio):
         self, data_studio_asset_type: Optional[GoogleDatastudioAssetType]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.data_studio_asset_type = data_studio_asset_type
 
     @property
@@ -149,7 +149,7 @@ class DataStudioAsset(DataStudio):
     @data_studio_asset_title.setter
     def data_studio_asset_title(self, data_studio_asset_title: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.data_studio_asset_title = data_studio_asset_title
 
     @property
@@ -161,7 +161,7 @@ class DataStudioAsset(DataStudio):
     @data_studio_asset_owner.setter
     def data_studio_asset_owner(self, data_studio_asset_owner: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.data_studio_asset_owner = data_studio_asset_owner
 
     @property
@@ -177,7 +177,7 @@ class DataStudioAsset(DataStudio):
         self, is_trashed_data_studio_asset: Optional[bool]
     ):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.is_trashed_data_studio_asset = is_trashed_data_studio_asset
 
     @property
@@ -187,7 +187,7 @@ class DataStudioAsset(DataStudio):
     @google_service.setter
     def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_service = google_service
 
     @property
@@ -197,7 +197,7 @@ class DataStudioAsset(DataStudio):
     @google_project_name.setter
     def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_project_name = google_project_name
 
     @property
@@ -207,7 +207,7 @@ class DataStudioAsset(DataStudio):
     @google_project_id.setter
     def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_project_id = google_project_id
 
     @property
@@ -219,7 +219,7 @@ class DataStudioAsset(DataStudio):
     @google_project_number.setter
     def google_project_number(self, google_project_number: Optional[int]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_project_number = google_project_number
 
     @property
@@ -229,7 +229,7 @@ class DataStudioAsset(DataStudio):
     @google_location.setter
     def google_location(self, google_location: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_location = google_location
 
     @property
@@ -239,7 +239,7 @@ class DataStudioAsset(DataStudio):
     @google_location_type.setter
     def google_location_type(self, google_location_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_location_type = google_location_type
 
     @property
@@ -249,7 +249,7 @@ class DataStudioAsset(DataStudio):
     @google_labels.setter
     def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_labels = google_labels
 
     @property
@@ -259,7 +259,7 @@ class DataStudioAsset(DataStudio):
     @google_tags.setter
     def google_tags(self, google_tags: Optional[list[GoogleTag]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
     class Attributes(DataStudio.Attributes):
@@ -301,9 +301,7 @@ class DataStudioAsset(DataStudio):
         )
 
     attributes: "DataStudioAsset.Attributes" = Field(
-        default_factory=lambda: DataStudioAsset.Attributes(
-            name="",
-        ),
+        default_factory=lambda: DataStudioAsset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

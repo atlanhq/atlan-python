@@ -84,7 +84,7 @@ class API(Catalog):
     @api_spec_type.setter
     def api_spec_type(self, api_spec_type: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_spec_type = api_spec_type
 
     @property
@@ -94,7 +94,7 @@ class API(Catalog):
     @api_spec_version.setter
     def api_spec_version(self, api_spec_version: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_spec_version = api_spec_version
 
     @property
@@ -104,7 +104,7 @@ class API(Catalog):
     @api_spec_name.setter
     def api_spec_name(self, api_spec_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_spec_name = api_spec_name
 
     @property
@@ -116,7 +116,7 @@ class API(Catalog):
     @api_spec_qualified_name.setter
     def api_spec_qualified_name(self, api_spec_qualified_name: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_spec_qualified_name = api_spec_qualified_name
 
     @property
@@ -126,7 +126,7 @@ class API(Catalog):
     @api_external_docs.setter
     def api_external_docs(self, api_external_docs: Optional[dict[str, str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_external_docs = api_external_docs
 
     @property
@@ -136,7 +136,7 @@ class API(Catalog):
     @api_is_auth_optional.setter
     def api_is_auth_optional(self, api_is_auth_optional: Optional[bool]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.api_is_auth_optional = api_is_auth_optional
 
     class Attributes(Catalog.Attributes):
@@ -156,9 +156,7 @@ class API(Catalog):
         )
 
     attributes: "API.Attributes" = Field(
-        default_factory=lambda: API.Attributes(
-            name="",
-        ),
+        default_factory=lambda: API.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

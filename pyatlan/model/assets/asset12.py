@@ -181,7 +181,7 @@ class Persona(AccessControl):
     @persona_groups.setter
     def persona_groups(self, persona_groups: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.persona_groups = persona_groups
 
     @property
@@ -191,7 +191,7 @@ class Persona(AccessControl):
     @persona_users.setter
     def persona_users(self, persona_users: Optional[set[str]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.persona_users = persona_users
 
     @property
@@ -201,7 +201,7 @@ class Persona(AccessControl):
     @role_id.setter
     def role_id(self, role_id: Optional[str]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.role_id = role_id
 
     class Attributes(AccessControl.Attributes):
@@ -228,9 +228,7 @@ class Persona(AccessControl):
             )
 
     attributes: "Persona.Attributes" = Field(
-        default_factory=lambda: Persona.Attributes(
-            name="",
-        ),
+        default_factory=lambda: Persona.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )

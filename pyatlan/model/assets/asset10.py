@@ -50,7 +50,7 @@ class BIProcess(Process):
     @outputs.setter
     def outputs(self, outputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.outputs = outputs
 
     @property
@@ -60,7 +60,7 @@ class BIProcess(Process):
     @inputs.setter
     def inputs(self, inputs: Optional[list[Catalog]]):
         if self.attributes is None:
-            self.attributes = self.Attributes(name="")
+            self.attributes = self.Attributes()
         self.attributes.inputs = inputs
 
     class Attributes(Process.Attributes):
@@ -72,9 +72,7 @@ class BIProcess(Process):
         )  # relationship
 
     attributes: "BIProcess.Attributes" = Field(
-        default_factory=lambda: BIProcess.Attributes(
-            name="",
-        ),
+        default_factory=lambda: BIProcess.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
