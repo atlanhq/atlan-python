@@ -1,3 +1,6 @@
+## 0.6.3 (August 31, 2023)
+* Add ability to get, create and modify API tokens
+
 ## 0.6.2 (August 24, 2023)
 * Fix bug in generating field class vars
 
