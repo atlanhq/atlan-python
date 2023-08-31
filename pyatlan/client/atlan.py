@@ -1923,6 +1923,98 @@ class AtlanClient(BaseSettings):
             assets=assets,
         )
 
+    def add_api_token_as_admin(
+        self, asset_guid: str, impersonation_token: str
+    ) -> AssetMutationResponse:
+        """
+        Add the API token configured for the default client as an admin to the asset with the provided GUID.
+        This is primarily useful for connections, to allow the API token to manage policies for the connection, and
+        for query collections, to allow the API token to manage the queries in a collection or the collection itself.
+
+        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
+        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
+                                    NOT an API token
+        """
+        from pyatlan.model.assets.asset00 import Asset
+        from pyatlan.model.fluent_search import FluentSearch
+
+        token_user = str(self.get_current_user().username)
+        existing_token = self.api_key
+        self.api_key = impersonation_token
+
+        # Look for the asset as the impersonated user, ensuring we include the admin users
+        # in the results (so we avoid clobbering any existing admin users)
+        request = (
+            FluentSearch()
+            .where(Asset.GUID.eq(asset_guid))
+            .include_on_results(Asset.ADMIN_USERS)
+            .page_size(1)
+        ).to_request()
+        results = self.search(request)
+        if results.current_page():
+            asset = results.current_page()[0]
+            existing_admins = asset.admin_users or set()
+            existing_admins.add(token_user)
+            to_update = asset.trim_to_required()
+            to_update.admin_users = existing_admins
+            response = self.save(to_update)
+        else:
+            self.api_key = existing_token
+            raise NotFoundError(
+                message=f"Asset with GUID {asset_guid} does not exist.",
+                code="ATLAN-PYTHON-404-001",
+            )
+
+        self.api_key = existing_token
+
+        return response
+
+    def add_api_token_as_viewer(
+        self, asset_guid: str, impersonation_token: str
+    ) -> AssetMutationResponse:
+        """
+        Add the API token configured for the default client as a viewer to the asset with the provided GUID.
+        This is primarily useful for query collections, to allow the API token to view or run queries within the
+        collection, but not make any changes to them.
+
+        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
+        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
+                                    NOT an API token
+        """
+        from pyatlan.model.assets.asset00 import Asset
+        from pyatlan.model.fluent_search import FluentSearch
+
+        token_user = str(self.get_current_user().username)
+        existing_token = self.api_key
+        self.api_key = impersonation_token
+
+        # Look for the asset as the impersonated user, ensuring we include the admin users
+        # in the results (so we avoid clobbering any existing admin users)
+        request = (
+            FluentSearch()
+            .where(Asset.GUID.eq(asset_guid))
+            .include_on_results(Asset.VIEWER_USERS)
+            .page_size(1)
+        ).to_request()
+        results = self.search(request)
+        if results.current_page():
+            asset = results.current_page()[0]
+            existing_viewers = asset.viewer_users or set()
+            existing_viewers.add(token_user)
+            to_update = asset.trim_to_required()
+            to_update.viewer_users = existing_viewers
+            response = self.save(to_update)
+        else:
+            self.api_key = existing_token
+            raise NotFoundError(
+                message=f"Asset with GUID {asset_guid} does not exist.",
+                code="ATLAN-PYTHON-404-001",
+            )
+
+        self.api_key = existing_token
+
+        return response
+
     def get_api_tokens(
         self,
         limit: Optional[int] = None,

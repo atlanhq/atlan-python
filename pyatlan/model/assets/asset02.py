@@ -52,12 +52,18 @@ class Connection(Asset, type_name="Connection"):
                     )
         if admin_users:
             from pyatlan.cache.user_cache import UserCache
+            from pyatlan.client.atlan import AtlanClient
 
             for username in admin_users:
                 if not UserCache.get_id_for_name(username):
-                    raise ValueError(
-                        f"Provided username {username} was not found in Atlan."
-                    )
+                    # If we cannot find the username, fallback to looking for an API token
+                    client = AtlanClient.get_default_client()
+                    if client is None:
+                        client = AtlanClient()
+                    if not client.get_api_token_by_id(username):
+                        raise ValueError(
+                            f"Provided username {username} was not found in Atlan."
+                        )
         attr = cls.Attributes(
             name=name,
             qualified_name=connector_type.to_qualified_name(),
