@@ -9,10 +9,16 @@ from pyatlan.model.core import AtlanObject
 
 
 class ApiTokenPersona(AtlanObject):
-    idstr: Optional[str] = Field(
+    class Config:
+        frozen = True
+
+    guid: Optional[str] = Field(
         description="Unique identifier (GUID) of the linked persona.", alias="id"
     )
     persona: Optional[str] = Field(description="Unique name of the linked persona.")
+    persona_qualified_name: Optional[str] = Field(
+        description="Unique qualified_name of the persona"
+    )
 
 
 class ApiToken(AtlanObject):
@@ -35,7 +41,11 @@ class ApiToken(AtlanObject):
         display_name: Optional[str] = Field(
             description="Human-readable name provided when creating the token."
         )
-        personas: Optional[set[ApiTokenPersona]] = Field(
+        personas: Optional[set[Any]] = Field(
+            default=set(),
+            description="Deprecated (now unused): personas associated with the API token.",
+        )
+        persona_qualified_name: Optional[set[ApiTokenPersona]] = Field(
             default=set(), description="Personas associated with the API token."
         )
         purposes: Optional[Any] = Field(
@@ -55,6 +65,15 @@ class ApiToken(AtlanObject):
                 )
             if "personas" in values and isinstance(values["personas"], str):
                 values["personas"] = json.loads(values["personas"])
+            if "personaQualifiedName" in values and isinstance(
+                values["personaQualifiedName"], str
+            ):
+                persona_qns = json.loads(values["personaQualifiedName"])
+                values["personaQualifiedName"] = set()
+                for persona_qn in persona_qns:
+                    values["personaQualifiedName"].add(
+                        ApiTokenPersona(persona_qualified_name=persona_qn)
+                    )
             return values
 
     guid: Optional[str] = Field(
@@ -91,7 +110,10 @@ class ApiTokenRequest(AtlanObject):
     )
     description: str = Field(default="", description="Explanation of the token.")
     personas: Optional[set[str]] = Field(
-        description="Unique identifiers (GUIDs) of personas that are associated with the token.",
+        description="Deprecated (now unused): GUIDs of personas that are associated with the token.",
+    )
+    persona_qualified_names: Optional[set[str]] = Field(
+        description="Unique qualified_names of personas that are associated with the token.",
     )
     validity_seconds: Optional[int] = Field(
         "Length of time, in seconds, after which the token will expire and no longer be usable."
