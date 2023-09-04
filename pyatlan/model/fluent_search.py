@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import copy
 import dataclasses
-from typing import Optional, Union
+from typing import Optional, TypeVar, Union
 
 from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem
+
+SelfQuery = TypeVar("SelfQuery", bound="CompoundQuery")
 
 
 @dataclasses.dataclass
@@ -145,7 +147,7 @@ class CompoundQuery:
         self.where_somes = where_somes
         self._min_somes = _min_somes
 
-    def _clone(self) -> "CompoundQuery":
+    def _clone(self: SelfQuery) -> SelfQuery:
         """
         Returns a copy of the current CompoundQuery that's ready for further operations.
 
@@ -153,7 +155,7 @@ class CompoundQuery:
         """
         return copy.deepcopy(self)
 
-    def where(self, query: Query) -> "CompoundQuery":
+    def where(self: SelfQuery, query: Query) -> SelfQuery:
         """
         Add a single criterion that must be present on every search result.
         (Note: these are translated to filters.)
@@ -167,7 +169,7 @@ class CompoundQuery:
         clone.wheres.append(query)
         return clone
 
-    def where_not(self, query: Query) -> "CompoundQuery":
+    def where_not(self: SelfQuery, query: Query) -> SelfQuery:
         """
         Add a single criterion that must not be present on any search result.
 
@@ -180,7 +182,7 @@ class CompoundQuery:
         clone.where_nots.append(query)
         return clone
 
-    def where_some(self, query: Query) -> "CompoundQuery":
+    def where_some(self: SelfQuery, query: Query) -> SelfQuery:
         """
         Add a single criterion at least some of which should be present on each search result.
         You can control "how many" of the criteria added this way are a minimum for each search
@@ -195,7 +197,7 @@ class CompoundQuery:
         clone.where_somes.append(query)
         return clone
 
-    def min_somes(self, minimum: int) -> "CompoundQuery":
+    def min_somes(self: SelfQuery, minimum: int) -> SelfQuery:
         """
         Sets the minimum number of 'where_somes' that must match for a result to be included.
 

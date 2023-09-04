@@ -77,6 +77,8 @@ def test_update_persona(
     connection: Connection,
     glossary: AtlasGlossary,
 ):
+    assert persona.qualified_name
+    assert persona.name
     to_update = Persona.create_for_modification(
         persona.qualified_name, persona.name, True
     )
@@ -124,6 +126,7 @@ def test_add_policies_to_persona(
     connection: Connection,
     glossary: AtlasGlossary,
 ):
+    assert connection.qualified_name
     metadata = Persona.create_metadata_policy(
         name="Simple read access",
         persona_id=persona.guid,
@@ -132,6 +135,7 @@ def test_add_policies_to_persona(
         connection_qualified_name=connection.qualified_name,
         resources={f"entity:{connection.qualified_name}"},
     )
+    assert connection.qualified_name
     data = Persona.create_data_policy(
         name="Allow access to data",
         persona_id=persona.guid,
@@ -164,6 +168,7 @@ def test_retrieve_persona(
     connection: Connection,
     glossary: AtlasGlossary,
 ):
+    assert persona.qualified_name
     one = client.get_asset_by_qualified_name(
         qualified_name=persona.qualified_name, asset_type=Persona
     )

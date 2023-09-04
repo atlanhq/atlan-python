@@ -76,6 +76,7 @@ def connection(client: AtlanClient) -> Generator[Connection, None, None]:
 def bucket(
     client: AtlanClient, connection: Connection
 ) -> Generator[S3Bucket, None, None]:
+    assert connection.qualified_name
     to_create = S3Bucket.create(
         name=BUCKET_NAME,
         connection_qualified_name=connection.qualified_name,
@@ -106,6 +107,8 @@ def s3object(
     connection: Connection,
     bucket: S3Bucket,
 ) -> Generator[S3Object, None, None]:
+    assert connection.qualified_name
+    assert bucket.qualified_name
     to_create = S3Object.create(
         name=OBJECT_NAME,
         connection_qualified_name=connection.qualified_name,
@@ -138,6 +141,8 @@ def test_update_bucket(
     bucket: S3Bucket,
     s3object: S3Object,
 ):
+    assert bucket.qualified_name
+    assert bucket.name
     updated = client.update_certificate(
         asset_type=S3Bucket,
         qualified_name=bucket.qualified_name,
@@ -148,6 +153,8 @@ def test_update_bucket(
     assert updated
     assert updated.certificate_status == CERTIFICATE_STATUS
     assert updated.certificate_status_message == CERTIFICATE_MESSAGE
+    assert bucket.qualified_name
+    assert bucket.name
     updated = client.update_announcement(
         asset_type=S3Bucket,
         qualified_name=bucket.qualified_name,
@@ -192,6 +199,8 @@ def test_update_bucket_again(
     bucket: S3Bucket,
     s3object: S3Object,
 ):
+    assert bucket.qualified_name
+    assert bucket.name
     updated = client.remove_certificate(
         qualified_name=bucket.qualified_name,
         asset_type=S3Bucket,
@@ -203,6 +212,7 @@ def test_update_bucket_again(
     assert updated.announcement_type == ANNOUNCEMENT_TYPE.value
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
+    assert bucket.qualified_name
     updated = client.remove_announcement(
         qualified_name=bucket.qualified_name,
         asset_type=S3Bucket,
@@ -256,7 +266,9 @@ def test_restore_object(
     bucket: S3Bucket,
     s3object: S3Object,
 ):
+    assert s3object.qualified_name
     assert client.restore(asset_type=S3Object, qualified_name=s3object.qualified_name)
+    assert s3object.qualified_name
     restored = client.get_asset_by_qualified_name(
         asset_type=S3Object, qualified_name=s3object.qualified_name
     )

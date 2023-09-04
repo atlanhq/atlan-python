@@ -72,7 +72,6 @@ def test_list_attributes_to_params_with_query_parms():
     ],
 )
 def test_unflatten_custom_metadata(attributes, flattened_attributes, custom_metadata):
-
     assert custom_metadata == unflatten_custom_metadata(
         attributes=attributes, asset_attributes=flattened_attributes
     )

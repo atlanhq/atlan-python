@@ -80,7 +80,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = Readme.create_for_modification(
         qualified_name=README_QUALIFIED_NAME, name=README_NAME
     )
@@ -90,7 +89,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Readme.create_for_modification(
         qualified_name=README_QUALIFIED_NAME, name=README_NAME
     ).trim_to_required()

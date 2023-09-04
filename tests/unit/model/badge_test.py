@@ -48,7 +48,6 @@ def test_create_when_required_parameters_are_missing_raises_value_error(
 
 
 def test_create(mock_custom_metadata_cache):
-
     mock_custom_metadata_cache.get_attr_id_for_name.return_value = CM_ATTR_ID
     mock_custom_metadata_cache.get_id_for_name.return_value = CM_ID
 
@@ -79,7 +78,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = Badge.create_for_modification(
         qualified_name=BADGE_QUALIFIED_NAME, name=BADGE_NAME
     )
@@ -89,7 +87,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Badge.create_for_modification(
         qualified_name=BADGE_QUALIFIED_NAME, name=BADGE_NAME
     ).trim_to_required()

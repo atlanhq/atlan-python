@@ -34,7 +34,6 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 def test_create():
-
     sut = View.create(name=VIEW_NAME, schema_qualified_name=SCHEMA_QUALIFIED_NAME)
 
     assert sut.name == VIEW_NAME
@@ -58,13 +57,11 @@ def test_create():
 def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
-
     with pytest.raises(ValueError, match=message):
         View.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-
     sut = View.create_for_modification(
         qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME
     )
@@ -74,7 +71,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = View.create_for_modification(
         qualified_name=VIEW_QUALIFIED_NAME, name=VIEW_NAME
     ).trim_to_required()

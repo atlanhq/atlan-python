@@ -1,4 +1,4 @@
-{%- macro gen_properties(attribute_defs) %}
+{%- macro gen_properties(entity_def, attribute_defs) %}
     _convenience_properties: ClassVar[list[str]] = [
         {%- for attribute_def in attribute_defs %}
         "{{ 'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case }}",
@@ -6,7 +6,7 @@
 
     {%- for attribute_def in attribute_defs %}
     {%- set type = attribute_def.typeName | get_type %}
-    {%- set property_type %}{% if attribute_def.isOptional %}Optional[{% endif %}{{type}}{% if attribute_def.isOptional %}]{% endif %}{% endset %}
+    {%- set property_type %}Optional[{{type}}]{% endset %}
     {%- set attribute_name =  attribute_def.name | to_snake_case %}
     {%- set property_name =  'assigned_terms' if attribute_def.name == 'meanings' else attribute_def.name | to_snake_case %}
     @property

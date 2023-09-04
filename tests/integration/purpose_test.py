@@ -60,6 +60,8 @@ def test_update_purpose(
     client: AtlanClient,
     purpose: Purpose,
 ):
+    assert purpose.qualified_name
+    assert purpose.name
     to_update = Purpose.create_for_modification(
         purpose.qualified_name, purpose.name, True
     )
@@ -133,6 +135,7 @@ def test_retrieve_purpose(
     client: AtlanClient,
     purpose: Purpose,
 ):
+    assert purpose.qualified_name
     one = client.get_asset_by_qualified_name(
         qualified_name=purpose.qualified_name, asset_type=Purpose
     )

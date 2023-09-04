@@ -76,7 +76,6 @@ def test_create_with_missing_parameters_raise_value_error(
 
 
 def test_create_when_parent_is_table():
-
     sut = Column.create(
         name=COLUMN_NAME,
         parent_qualified_name=TABLE_QUALIFIED_NAME,
@@ -99,7 +98,6 @@ def test_create_when_parent_is_table():
 
 
 def test_create_when_parent_is_view():
-
     sut = Column.create(
         name=COLUMN_NAME,
         parent_qualified_name=VIEW_QUALIFIED_NAME,
@@ -122,7 +120,6 @@ def test_create_when_parent_is_view():
 
 
 def test_create_when_parent_is_materialized_view():
-
     sut = Column.create(
         name=COLUMN_NAME,
         parent_qualified_name=VIEW_QUALIFIED_NAME,
@@ -154,13 +151,11 @@ def test_create_when_parent_is_materialized_view():
 def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
-
     with pytest.raises(ValueError, match=message):
         Column.create_for_modification(qualified_name=qualified_name, name=name)
 
 
 def test_create_for_modification():
-
     sut = Column.create_for_modification(
         qualified_name=TABLE_COLUMN_QUALIFIED_NAME, name=COLUMN_NAME
     )
@@ -170,7 +165,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = Table.create_for_modification(
         qualified_name=TABLE_COLUMN_QUALIFIED_NAME, name=COLUMN_NAME
     ).trim_to_required()

@@ -1,3 +1,6 @@
+## 0.7.0 (September 4, 2023)
+* Upgrade to pydantic 1.10.12
+
 ## 0.6.3 (August 31, 2023)
 * Add ability to get, create and modify API tokens
 

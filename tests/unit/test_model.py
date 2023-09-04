@@ -242,11 +242,13 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[SourceCostUnitType]": SourceCostUnitType.CREDITS,
     "Optional[list[PopularityInsights]]": [PopularityInsights()],
     "Optional[QueryUsernameStrategy]": QueryUsernameStrategy.CONNECTION_USERNAME,
-    "Optional[list[GoogleLabel]]": [GoogleLabel()],
-    "Optional[list[GoogleTag]]": [GoogleTag()],
+    "Optional[list[GoogleLabel]]": [
+        GoogleLabel(google_label_key="", google_label_value="")
+    ],
+    "Optional[list[GoogleTag]]": [GoogleTag(google_tag_key="", google_tag_value="")],
     "Optional[GoogleDatastudioAssetType]": GoogleDatastudioAssetType.REPORT,
-    "Optional[list[AzureTag]]": [AzureTag()],
-    "Optional[list[AwsTag]]": [AwsTag()],
+    "Optional[list[AzureTag]]": [AzureTag(azure_tag_key="", azure_tag_value="")],
+    "Optional[list[AwsTag]]": [AwsTag(aws_tag_key="", aws_tag_value="")],
     "Optional[list[Catalog]]": [S3Object()],
     "Optional[list[BadgeCondition]]": [BadgeCondition()],
     "Optional[IconType]": IconType.EMOJI,
@@ -265,7 +267,7 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[list[dict[str, str]]]": [{STRING_VALUE: STRING_VALUE}],
     "Optional[list[DbtMetricFilter]]": [DbtMetricFilter()],
     "Optional[list[SourceTagAttribute]]": [SourceTagAttribute()],
-    "Optional[Histogram]": Histogram(),
+    "Optional[Histogram]": Histogram(boundaries={0.0}, frequencies={0.0}),
     "Optional[list[ColumnValueFrequencyMap]]": [ColumnValueFrequencyMap()],
     "Optional[KafkaTopicCompressionType]": KafkaTopicCompressionType.GZIP,
     "Optional[MCRuleSchedule]": MCRuleSchedule(),
@@ -442,8 +444,16 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[MicroStrategyDossier]": MicroStrategyDossier(),
     "Optional[list[AuthPolicy]]": [AuthPolicy()],
     "Optional[AccessControl]": AccessControl(),
-    "Optional[list[AuthPolicyCondition]]": [AuthPolicyCondition()],
-    "Optional[list[AuthPolicyValiditySchedule]]": [AuthPolicyValiditySchedule()],
+    "Optional[list[AuthPolicyCondition]]": [
+        AuthPolicyCondition(policy_condition_type="", policy_condition_values={""})
+    ],
+    "Optional[list[AuthPolicyValiditySchedule]]": [
+        AuthPolicyValiditySchedule(
+            policy_validity_schedule_start_time="",
+            policy_validity_schedule_timezone="",
+            policy_validity_schedule_end_time="",
+        )
+    ],
     "Optional[list[SchemaRegistrySubject]]": [SchemaRegistrySubject()],
     "Optional[list[StarredDetails]]": [StarredDetails()],
     "Optional[list[SodaCheck]]": [SodaCheck()],
@@ -458,6 +468,8 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[KafkaTopicCleanupPolicy]": KafkaTopicCleanupPolicy.DELETE,
     "Optional[list[SnowflakeDynamicTable]]": [SnowflakeDynamicTable()],
     "Optional[SnowflakeDynamicTable]": SnowflakeDynamicTable(),
+    "Optional[AtlasGlossary]": AtlasGlossary(),
+    "Optional[Namespace]": Namespace(),
 }
 
 

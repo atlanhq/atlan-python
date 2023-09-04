@@ -104,11 +104,11 @@ class Referenceable(AtlanObject):
     ]
 
     @property
-    def qualified_name(self) -> str:
+    def qualified_name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.qualified_name
 
     @qualified_name.setter
-    def qualified_name(self, qualified_name: str):
+    def qualified_name(self, qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.qualified_name = qualified_name
@@ -124,7 +124,7 @@ class Referenceable(AtlanObject):
         self.attributes.meanings = assigned_terms
 
     class Attributes(AtlanObject):
-        qualified_name: str = Field("", description="", alias="qualifiedName")
+        qualified_name: Optional[str] = Field("", description="", alias="qualifiedName")
         meanings: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="meanings"
         )  # relationship
@@ -184,8 +184,12 @@ class Referenceable(AtlanObject):
     )
     """Unique fully-qualified name of the asset in Atlan."""
 
+    type_name: str = Field(
+        "Referenceable",
+        description="Name of the type definition that defines this instance.\n",
+    )
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
-    attributes: "Referenceable.Attributes" = Field(
+    attributes: Referenceable.Attributes = Field(
         default_factory=lambda: Referenceable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",
@@ -224,9 +228,6 @@ class Referenceable(AtlanObject):
     )
     status: Optional[EntityStatus] = Field(
         None, description="Status of the entity", example=EntityStatus.ACTIVE
-    )
-    type_name: str = Field(
-        None, description="Name of the type definition that defines this instance.\n"
     )
     updated_by: Optional[str] = Field(
         None,
@@ -292,7 +293,7 @@ class Asset(Referenceable):
 
     def trim_to_required(self: SelfAsset) -> SelfAsset:
         return self.create_for_modification(
-            qualified_name=self.qualified_name, name=self.name
+            qualified_name=self.qualified_name or "", name=self.name or ""
         )
 
     @classmethod
@@ -321,7 +322,7 @@ class Asset(Referenceable):
     @classmethod
     def ref_by_qualified_name(cls: type[SelfAsset], qualified_name: str) -> SelfAsset:
         ret_value: SelfAsset = cls(
-            attributes=cls.Attributes(qualified_name=qualified_name)
+            attributes=cls.Attributes(name="", qualified_name=qualified_name)
         )
         ret_value.unique_attributes = {"qualifiedName": qualified_name}
         return ret_value
@@ -332,7 +333,6 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
-
         if isinstance(data, Asset):
             return data
 
@@ -1293,11 +1293,11 @@ class Asset(Referenceable):
     ]
 
     @property
-    def name(self) -> str:
+    def name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.name
 
     @name.setter
-    def name(self, name: str):
+    def name(self, name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.name = name
@@ -2988,7 +2988,7 @@ class Asset(Referenceable):
         self.attributes.meanings = assigned_terms
 
     class Attributes(Referenceable.Attributes):
-        name: str = Field(None, description="", alias="name")
+        name: Optional[str] = Field(None, description="", alias="name")
         display_name: Optional[str] = Field(None, description="", alias="displayName")
         description: Optional[str] = Field(None, description="", alias="description")
         user_description: Optional[str] = Field(
@@ -3408,8 +3408,8 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
             glossary_guid=self.anchor.guid,
         )
 
@@ -3534,11 +3534,11 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         self.attributes.terms = terms
 
     @property
-    def anchor(self) -> AtlasGlossary:
+    def anchor(self) -> Optional[AtlasGlossary]:
         return None if self.attributes is None else self.attributes.anchor
 
     @anchor.setter
-    def anchor(self, anchor: AtlasGlossary):
+    def anchor(self, anchor: Optional[AtlasGlossary]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anchor = anchor
@@ -3578,7 +3578,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
         terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="terms"
         )  # relationship
-        anchor: AtlasGlossary = Field(
+        anchor: Optional[AtlasGlossary] = Field(
             None, description="", alias="anchor"
         )  # relationship
         parent_category: Optional[AtlasGlossaryCategory] = Field(
@@ -3833,8 +3833,8 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
             glossary_guid=self.anchor.guid,
         )
 
@@ -4202,11 +4202,11 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         self.attributes.translated_terms = translated_terms
 
     @property
-    def anchor(self) -> AtlasGlossary:
+    def anchor(self) -> Optional[AtlasGlossary]:
         return None if self.attributes is None else self.attributes.anchor
 
     @anchor.setter
-    def anchor(self, anchor: AtlasGlossary):
+    def anchor(self, anchor: Optional[AtlasGlossary]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.anchor = anchor
@@ -4269,7 +4269,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
         translated_terms: Optional[list[AtlasGlossaryTerm]] = Field(
             None, description="", alias="translatedTerms"
         )  # relationship
-        anchor: AtlasGlossary = Field(
+        anchor: Optional[AtlasGlossary] = Field(
             None, description="", alias="anchor"
         )  # relationship
 
@@ -4640,19 +4640,19 @@ class Folder(Namespace):
     ]
 
     @property
-    def parent_qualified_name(self) -> str:
+    def parent_qualified_name(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.parent_qualified_name
         )
 
     @parent_qualified_name.setter
-    def parent_qualified_name(self, parent_qualified_name: str):
+    def parent_qualified_name(self, parent_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent_qualified_name = parent_qualified_name
 
     @property
-    def collection_qualified_name(self) -> str:
+    def collection_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
@@ -4660,29 +4660,31 @@ class Folder(Namespace):
         )
 
     @collection_qualified_name.setter
-    def collection_qualified_name(self, collection_qualified_name: str):
+    def collection_qualified_name(self, collection_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.collection_qualified_name = collection_qualified_name
 
     @property
-    def parent(self) -> Namespace:
+    def parent(self) -> Optional[Namespace]:
         return None if self.attributes is None else self.attributes.parent
 
     @parent.setter
-    def parent(self, parent: Namespace):
+    def parent(self, parent: Optional[Namespace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent = parent
 
     class Attributes(Namespace.Attributes):
-        parent_qualified_name: str = Field(
+        parent_qualified_name: Optional[str] = Field(
             None, description="", alias="parentQualifiedName"
         )
-        collection_qualified_name: str = Field(
+        collection_qualified_name: Optional[str] = Field(
             None, description="", alias="collectionQualifiedName"
         )
-        parent: Namespace = Field(None, description="", alias="parent")  # relationship
+        parent: Optional[Namespace] = Field(
+            None, description="", alias="parent"
+        )  # relationship
 
     attributes: "Folder.Attributes" = Field(
         default_factory=lambda: Folder.Attributes(),
@@ -6017,7 +6019,7 @@ class Readme(Resource):
             cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
         ) -> Readme.Attributes:
             validate_required_fields(["asset", "content"], [asset, content])
-            if not asset.name:
+            if not asset.name or len(asset.name) < 1:
                 if not asset_name:
                     raise ValueError(
                         "asset_name is required when name is not available from asset"
@@ -6811,19 +6813,19 @@ class Query(SQL):
         self.attributes.is_sql_snippet = is_sql_snippet
 
     @property
-    def parent_qualified_name(self) -> str:
+    def parent_qualified_name(self) -> Optional[str]:
         return (
             None if self.attributes is None else self.attributes.parent_qualified_name
         )
 
     @parent_qualified_name.setter
-    def parent_qualified_name(self, parent_qualified_name: str):
+    def parent_qualified_name(self, parent_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent_qualified_name = parent_qualified_name
 
     @property
-    def collection_qualified_name(self) -> str:
+    def collection_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
@@ -6831,7 +6833,7 @@ class Query(SQL):
         )
 
     @collection_qualified_name.setter
-    def collection_qualified_name(self, collection_qualified_name: str):
+    def collection_qualified_name(self, collection_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.collection_qualified_name = collection_qualified_name
@@ -6861,11 +6863,11 @@ class Query(SQL):
         self.attributes.visual_builder_schema_base64 = visual_builder_schema_base64
 
     @property
-    def parent(self) -> Namespace:
+    def parent(self) -> Optional[Namespace]:
         return None if self.attributes is None else self.attributes.parent
 
     @parent.setter
-    def parent(self, parent: Namespace):
+    def parent(self, parent: Optional[Namespace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.parent = parent
@@ -6915,10 +6917,10 @@ class Query(SQL):
         is_sql_snippet: Optional[bool] = Field(
             None, description="", alias="isSqlSnippet"
         )
-        parent_qualified_name: str = Field(
+        parent_qualified_name: Optional[str] = Field(
             None, description="", alias="parentQualifiedName"
         )
-        collection_qualified_name: str = Field(
+        collection_qualified_name: Optional[str] = Field(
             None, description="", alias="collectionQualifiedName"
         )
         is_visual_query: Optional[bool] = Field(
@@ -6927,7 +6929,9 @@ class Query(SQL):
         visual_builder_schema_base64: Optional[str] = Field(
             None, description="", alias="visualBuilderSchemaBase64"
         )
-        parent: Namespace = Field(None, description="", alias="parent")  # relationship
+        parent: Optional[Namespace] = Field(
+            None, description="", alias="parent"
+        )  # relationship
         columns: Optional[list[Column]] = Field(
             None, description="", alias="columns"
         )  # relationship
@@ -10213,11 +10217,11 @@ class Procedure(SQL):
     ]
 
     @property
-    def definition(self) -> str:
+    def definition(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.definition
 
     @definition.setter
-    def definition(self, definition: str):
+    def definition(self, definition: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.definition = definition
@@ -10233,7 +10237,7 @@ class Procedure(SQL):
         self.attributes.atlan_schema = atlan_schema
 
     class Attributes(SQL.Attributes):
-        definition: str = Field(None, description="", alias="definition")
+        definition: Optional[str] = Field(None, description="", alias="definition")
         atlan_schema: Optional[Schema] = Field(
             None, description="", alias="atlanSchema"
         )  # relationship

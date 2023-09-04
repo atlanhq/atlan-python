@@ -29,7 +29,8 @@ class CustomMetadataDict(UserDict):
 
     def __setitem__(self, key: str, value):
         """Set the value of a property of the custom metadata set using the human readable name as the key.
-        The name will be validated to ensure that it's valid for this custom metadata set"""
+        The name will be validated to ensure that it's valid for this custom metadata set
+        """
         if key not in self._names:
             raise KeyError(f"'{key}' is not a valid property name for {self._name}")
         self._modified = True
@@ -37,7 +38,8 @@ class CustomMetadataDict(UserDict):
 
     def __getitem__(self, key: str):
         """Retrieve the value of a property of the custom metadata set using the human readable name as the key.
-        The name will be validated to ensure that it's valid for this custom metadata set"""
+        The name will be validated to ensure that it's valid for this custom metadata set
+        """
         if key not in self._names:
             raise KeyError(f"'{key}' is not a valid property name for {self._name}")
         if key not in self.data:
@@ -58,7 +60,8 @@ class CustomMetadataDict(UserDict):
 
     def is_set(self, key: str):
         """Returns a boolean indicating whether the given property has been set in the metadata set. The key
-        will be validated to ensure that it's a valid property name for this metadata set"""
+        will be validated to ensure that it's a valid property name for this metadata set
+        """
         if key not in self._names:
             raise KeyError(f"'{key}' is not a valid property name for {self._name}")
         return key in self.data

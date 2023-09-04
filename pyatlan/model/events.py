@@ -9,7 +9,6 @@ from pyatlan.model.core import AtlanObject, AtlanTag
 
 
 class AtlanEventPayload(AtlanObject):
-
     _subtypes_: dict[str, type] = dict()
 
     def __init_subclass__(

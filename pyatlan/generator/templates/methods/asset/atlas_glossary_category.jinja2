@@ -25,8 +25,8 @@
         if self.anchor is None or not self.anchor.guid:
             raise ValueError("anchor.guid must be available")
         return self.create_for_modification(
-            qualified_name=self.qualified_name,
-            name=self.name,
+            qualified_name=self.qualified_name or "",
+            name=self.name or "",
             glossary_guid=self.anchor.guid,
         )
 

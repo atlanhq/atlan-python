@@ -59,7 +59,6 @@ def test_create_for_modification_with_invalid_parameter_raises_value_error(
 
 
 def test_create_for_modification():
-
     sut = File.create_for_modification(
         qualified_name=FILE_QUALIFIED_NAME, name=FILE_NAME
     )
@@ -69,7 +68,6 @@ def test_create_for_modification():
 
 
 def test_trim_to_required():
-
     sut = File.create_for_modification(
         qualified_name=FILE_QUALIFIED_NAME, name=FILE_NAME
     ).trim_to_required()

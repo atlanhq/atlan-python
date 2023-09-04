@@ -94,7 +94,6 @@ class Test_CustomMetadataDict:
         assert sut[ATTR_FIRST_NAME] is None
 
     def test_business_attributes_when_no_changes(self, sut):
-
         assert sut.business_attributes == {}
 
     def test_business_attributes_with_data(self, sut, mock_cache):
@@ -156,7 +155,6 @@ class TestCustomMetadataProxy:
         assert sut.business_attributes is ba
 
     def test_when_modified_returns_updated_business_attributes(self, mock_cache):
-
         mock_cache.get_name_for_id.return_value = CM_NAME
         mock_cache.get_attr_name_for_id.side_effect = get_attr_name_for_id
         mock_cache.get_id_for_name.return_value = CM_ID
