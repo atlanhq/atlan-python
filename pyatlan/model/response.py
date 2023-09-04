@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
-from typing import Any, Optional, Type, TypeVar
+from typing import Optional, Type, TypeVar
 
 from pydantic import Field
 
@@ -40,7 +40,7 @@ A = TypeVar("A", bound=Asset)
 
 
 class AssetMutationResponse(AtlanObject):
-    guid_assignments: Optional[dict[str, Any]] = Field(
+    guid_assignments: Optional[dict[str, str]] = Field(
         description="Map of assigned unique identifiers for the changed assets."
     )
     mutated_entities: Optional[MutatedEntities] = Field(

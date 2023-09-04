@@ -315,7 +315,7 @@ class Asset(Referenceable):
 
     @classmethod
     def ref_by_guid(cls: type[SelfAsset], guid: str) -> SelfAsset:
-        retval: SelfAsset = cls(attributes=cls.Attributes(name=""))
+        retval: SelfAsset = cls(attributes=cls.Attributes())
         retval.guid = guid
         return retval
 
