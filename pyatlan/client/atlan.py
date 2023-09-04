@@ -2092,7 +2092,7 @@ class AtlanClient(BaseSettings):
 
         :param display_name: human-readable name for the API token
         :param description: optional explanation of the API token
-        :param personas: unique identifiers (GUIDs) of personas that should  be linked to the token
+        :param personas: qualified_names of personas that should  be linked to the token
         :param validity_seconds: time in seconds after which the token should expire (negative numbers are treated as
                                  infinite)
         :returns: the created API token
@@ -2100,7 +2100,7 @@ class AtlanClient(BaseSettings):
         request = ApiTokenRequest(
             display_name=display_name,
             description=description,
-            personas=personas,
+            persona_qualified_names=personas or set(),
             validity_seconds=validity_seconds,
         )
         raw_json = self._call_api(UPSERT_API_TOKEN, request_obj=request)
@@ -2119,14 +2119,15 @@ class AtlanClient(BaseSettings):
         :param guid: unique identifier (GUID) of the API token
         :param display_name: human-readable name for the API token
         :param description: optional explanation of the API token
-        :param personas: unique identifiers (GUIDs) of personas that should  be linked to the token
+        :param personas: qualified_names of personas that should  be linked to the token, note that you MUST
+                         provide the complete list on any update (any not included in the list will be removed,
+                         so if you do not specify any personas then ALL personas will be unlinked from the API token)
         :returns: the created API token
         """
         request = ApiTokenRequest(
             display_name=display_name,
             description=description,
-            personas=personas,
-            validity_seconds=None,
+            persona_qualified_names=personas or set(),
         )
         raw_json = self._call_api(
             UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request
