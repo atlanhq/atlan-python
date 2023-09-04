@@ -189,7 +189,7 @@ class Referenceable(AtlanObject):
         description="Name of the type definition that defines this instance.\n",
     )
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
-    attributes: "Referenceable.Attributes" = Field(
+    attributes: Referenceable.Attributes = Field(
         default_factory=lambda: Referenceable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",

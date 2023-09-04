@@ -62,7 +62,7 @@
     type_name: str = Field("Referenceable", description='Name of the type definition that defines this instance.\n'
     )
     _metadata_proxy: CustomMetadataProxy = PrivateAttr()
-    attributes: '{{entity_def.name}}.Attributes' = Field(
+    attributes: {{entity_def.name}}.Attributes = Field(
         default_factory = lambda : {{entity_def.name}}.Attributes(),
         description='Map of attributes in the instance and their values. The specific keys of this map will vary '
                     'by type, so are described in the sub-types of this schema.\n',
