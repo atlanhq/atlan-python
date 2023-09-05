@@ -116,7 +116,7 @@ class ApiTokenRequest(AtlanObject):
         description="Unique qualified_names of personas that are associated with the token.",
     )
     validity_seconds: Optional[int] = Field(
-        "Length of time, in seconds, after which the token will expire and no longer be usable."
+        description="Length of time, in seconds, after which the token will expire and no longer be usable."
     )
 
     @root_validator(pre=True)

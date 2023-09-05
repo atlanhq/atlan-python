@@ -165,3 +165,13 @@ class LogicError(AtlanError):
 
     def __init__(self, message: str, code: str, status_code: int = 500):
         super().__init__(message, code, status_code)
+
+
+class ConnectionRetryError(AtlanError):
+    """
+    Error that occurs when the maximum number of retries are exceeded when trying to verify that a connection
+    was created.
+    """
+
+    def __init__(self, message: str, code: str, status_code: int = 403):
+        super().__init__(message, code, status_code)

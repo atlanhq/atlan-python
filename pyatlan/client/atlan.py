@@ -66,7 +66,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
-from pyatlan.error import AtlanError, NotFoundError
+from pyatlan.error import AtlanError, ConnectionRetryError, NotFoundError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
@@ -173,18 +173,27 @@ Asset_Types = Union[
     Type[View],
     Type[MaterialisedView],
 ]
+HTTPS_PREFIX = "https://"
+
+DEFAULT_RETRY = Retry(
+    total=4,
+    backoff_factor=1,
+    status_forcelist=[500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
+)
+CONNECTION_RETRY = Retry(
+    total=10,
+    backoff_factor=1,
+    status_forcelist=[403],
+    allowed_methods=["GET"],
+)
 
 
 def get_session():
-    retry_strategy = Retry(
-        total=10,
-        backoff_factor=1,
-        status_forcelist=[403, 500, 502, 503, 504],
-        allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
-    )
+    retry_strategy = DEFAULT_RETRY
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
-    session.mount("https://", adapter)
+    session.mount(HTTPS_PREFIX, adapter)
     session.headers.update({"x-atlan-agent": "sdk", "x-atlan-agent-id": "python"})
     return session
 
@@ -1138,7 +1147,25 @@ class AtlanClient(BaseSettings):
             asset.validate_required()
         request = BulkRequest[Asset](entities=entities)
         raw_json = self._call_api(BULK_UPDATE, query_params, request)
-        return AssetMutationResponse(**raw_json)
+        response = AssetMutationResponse(**raw_json)
+        if connections_created := response.assets_created(Connection):
+            self._wait_for_connections_to_be_created(connections_created)
+        return response
+
+    def _wait_for_connections_to_be_created(self, connections_created):
+        adapter = self._session.adapters[HTTPS_PREFIX]
+        adapter.max_retries = CONNECTION_RETRY
+        try:
+            for connection in connections_created:
+                guid = connection.guid
+                self.get_asset_by_guid(guid=guid, asset_type=Connection)
+        except requests.exceptions.RetryError as err:
+            raise ConnectionRetryError(
+                "Loop for retrying a failed action hit the maximum number of retries.",
+                code="ATLAN-PYTHON-403-007",
+            ) from err
+        finally:
+            adapter.max_retries = DEFAULT_RETRY
 
     def upsert_merging_cm(
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
