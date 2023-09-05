@@ -6,7 +6,12 @@ import urllib.request
 from typing import Callable, Generator
 
 import pytest
-from retry import retry
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
@@ -31,13 +36,9 @@ def make_atlan_tag(
     created_names = []
 
     @retry(
-        AtlanError,
-        delay=1,
-        tries=3,
-        max_delay=5,
-        backoff=2,
-        jitter=(0, 1),
-        logger=LOGGER,
+        retry=retry_if_exception_type(AtlanError),
+        wait=wait_random_exponential(multiplier=1, max=5),
+        stop=stop_after_attempt(3),
     )
     def _wait_for_successful_purge(name: str):
         client.purge_typedef(name, typedef_type=AtlanTagDef)

@@ -232,7 +232,6 @@ def test_delete_object(
     s3object: S3Object,
 ):
     response = client.delete_entity_by_guid(s3object.guid)
-    response = block(client, response)
     assert response
     assert not response.assets_created(asset_type=S3Object)
     assert not response.assets_updated(asset_type=S3Object)

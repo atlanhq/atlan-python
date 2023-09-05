@@ -165,3 +165,12 @@ class LogicError(AtlanError):
 
     def __init__(self, message: str, code: str, status_code: int = 500):
         super().__init__(message, code, status_code)
+
+
+class RetryError(AtlanError):
+    """
+    Error that occurs when the maximum number of retries are exceeded.
+    """
+
+    def __init__(self, message: str, code: str, status_code: int = 403):
+        super().__init__(message, code, status_code)

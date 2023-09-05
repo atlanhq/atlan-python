@@ -6,7 +6,7 @@ from typing import Generator
 
 import pytest
 from pydantic import StrictStr
-from retry import retry
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.error import NotFoundError
@@ -305,7 +305,11 @@ def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
 def test_find_category_fast_by_name(
     client: AtlanClient, category: AtlasGlossaryCategory, glossary: AtlasGlossary
 ):
-    @retry(NotFoundError, tries=3, delay=2, logger=LOGGER)
+    @retry(
+        wait=wait_fixed(2),
+        retry=retry_if_exception_type(NotFoundError),
+        stop=stop_after_attempt(3),
+    )
     def check_it():
         assert (
             category.guid
@@ -331,7 +335,11 @@ def test_find_category_by_name(
 def test_find_term_fast_by_name(
     client: AtlanClient, term1: AtlasGlossaryTerm, glossary: AtlasGlossary
 ):
-    @retry(NotFoundError, tries=3, delay=2, logger=LOGGER)
+    @retry(
+        wait=wait_fixed(2),
+        retry=retry_if_exception_type(NotFoundError),
+        stop=stop_after_attempt(3),
+    )
     def check_it():
         assert (
             term1.guid
