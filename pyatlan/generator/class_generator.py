@@ -53,6 +53,16 @@ TYPE_REPLACEMENTS = [
     ("file_type", "FileType"),
     ("atlas_operation", "AtlasOperation"),
 ]
+PRIMITIVE_MAPPINGS = {
+    "string": "str",
+    "boolean": "bool",
+    "int": "int",
+    "long": "int",
+    "date": "int",
+    "float": "float",
+    "string,string": "str, str",
+    "string,long": "str, int",
+}
 ARRAY_REPLACEMENTS = [("array<string>", "set{string}")]
 ADDITIONAL_IMPORTS = {
     "datetime": "from datetime import datetime",
@@ -63,6 +73,7 @@ ADDITIONAL_IMPORTS = {
 PARENT = Path(__file__).parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
 MODEL_DIR = PARENT.parent / "model"
+DOCS_DIR = PARENT.parent / "documentation"
 
 
 def get_type(type_: str):
@@ -345,6 +356,82 @@ class AssetInfo:
                     asset_info.module_info.add_asset_info(asset_info=asset_info)
 
 
+class AttributeType(Enum):
+    PRIMITIVE = "PRIMITIVE"
+    ENUM = "ENUM"
+    STRUCT = "STRUCT"
+    ASSET = "ASSET"
+
+
+class MappedType:
+    original_base: str
+    name: str
+    container: str
+    attr_type: AttributeType
+
+
+def get_cached_type(type_name: str) -> Optional[MappedType]:
+    for enum_def in type_defs.enum_defs:
+        if enum_def.name == type_name:
+            mt = MappedType()
+            mt.attr_type = AttributeType.ENUM
+            mt.name = enum_def.name
+            return mt
+    for struct_def in type_defs.struct_defs:
+        if struct_def.name == type_name:
+            mt = MappedType()
+            mt.attr_type = AttributeType.STRUCT
+            mt.name = struct_def.name
+            return mt
+    for entity_def in type_defs.entity_defs:
+        if entity_def.name == type_name:
+            mt = MappedType()
+            mt.attr_type = AttributeType.ASSET
+            mt.name = entity_def.name
+            return mt
+    return None
+
+
+def get_embedded_type(attr_type: str) -> str:
+    return attr_type[attr_type.index("<") + 1 : attr_type.index(">")]  # noqa: E203
+
+
+def get_mapped_type(type_name: str) -> MappedType:
+    base_type = type_name
+    container = None
+    if "<" in type_name:
+        if type_name.startswith("array<"):
+            if type_name.startswith("array<map<"):
+                base_type = get_embedded_type(type_name[len("array<") :])  # noqa: E203
+                container = "list[dict["
+            else:
+                base_type = get_embedded_type(type_name)
+                container = "set["
+        elif type_name.startswith("map<"):
+            base_type = get_embedded_type(type_name)
+            container = "dict["
+    builder = MappedType()
+    builder.original_base = base_type
+    if primitive_name := PRIMITIVE_MAPPINGS.get(base_type):
+        builder.attr_type = AttributeType.PRIMITIVE
+        builder.name = primitive_name
+    else:
+        if mapped_type := get_cached_type(base_type):
+            base_type_of_mapped = mapped_type.attr_type
+            builder.attr_type = base_type_of_mapped
+            builder.name = mapped_type.name
+            if base_type_of_mapped == AttributeType.STRUCT:
+                # If the referred object is a struct, change the container to a list rather than a set
+                container = "list["
+        else:
+            # Failing any cached type, fallback to just the name of the object
+            builder.attr_type = AttributeType.ASSET
+            builder.name = base_type
+    if container:
+        builder.container = container
+    return builder
+
+
 def get_class_var_for_attr(attr_name: str) -> str:
     replace1 = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", attr_name.replace("_", ""))
     replace2 = re.sub(r"([a-z])([A-Z])", r"\1_\2", replace1)
@@ -481,6 +568,7 @@ class Generator:
         self.environment.filters["to_snake_case"] = to_snake_case
         self.environment.filters["get_type"] = get_type
         self.environment.filters["get_search_type"] = get_search_type
+        self.environment.filters["get_mapped_type"] = get_mapped_type
         self.environment.filters["get_class_var_for_attr"] = get_class_var_for_attr
 
     def merge_attributes(self, entity_def):
@@ -576,6 +664,53 @@ class Generator:
             new_file.write(content)
         new_enums.replace(existing_enums)
 
+    def render_docs_struct_snippets(self, struct_defs):
+        template = self.environment.get_template(
+            "documentation/struct_attributes.jinja2"
+        )
+        for struct_def in struct_defs:
+            content = template.render({"struct_def": struct_def})
+            with (DOCS_DIR / f"{struct_def.name.lower()}-properties.md").open(
+                "w"
+            ) as doc:
+                doc.write(content)
+
+    def render_docs_entity_properties(self, entity_defs):
+        template = self.environment.get_template(
+            "documentation/entity_attributes.jinja2"
+        )
+        for entity_def in entity_defs:
+            attr_def_alpha = sorted(entity_def.attribute_defs, key=lambda x: x["name"])
+            content = template.render(
+                {
+                    "entity_def_name": entity_def.name,
+                    "attribute_defs": attr_def_alpha,
+                }
+            )
+            with (DOCS_DIR / f"{entity_def.name.lower()}-properties.md").open(
+                "w"
+            ) as doc:
+                doc.write(content)
+
+    def render_docs_entity_relationships(self, entity_defs):
+        template = self.environment.get_template(
+            "documentation/entity_relationships.jinja2"
+        )
+        for entity_def in entity_defs:
+            attr_def_alpha = sorted(
+                entity_def.relationship_attribute_defs, key=lambda x: x["name"]
+            )
+            content = template.render(
+                {
+                    "entity_def_name": entity_def.name,
+                    "attribute_defs": attr_def_alpha,
+                }
+            )
+            with (DOCS_DIR / f"{entity_def.name.lower()}-relationships.md").open(
+                "w"
+            ) as doc:
+                doc.write(content)
+
 
 class KeyValue(NamedTuple):
     key: str
@@ -623,3 +758,6 @@ if __name__ == "__main__":
     generator.render_structs(type_defs.struct_defs)
     EnumDefInfo.create(type_defs.enum_defs)
     generator.render_enums(EnumDefInfo.enum_def_info)
+    generator.render_docs_struct_snippets(type_defs.struct_defs)
+    generator.render_docs_entity_properties(type_defs.entity_defs)
+    generator.render_docs_entity_relationships(type_defs.entity_defs)
