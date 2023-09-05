@@ -1,0 +1,84 @@
+{%- for attribute_def in attribute_defs %}
+{%- set type = attribute_def.typeName | get_mapped_type %}
+{%- set search_type = attribute_def | get_search_type %}
+{%- set attr_name = attribute_def.name | to_snake_case %}
+{%- set class_var = attribute_def.name | get_class_var_for_attr %}
+{%- set instance_name = entity_def_name | to_snake_case %}
+
+{%- if type.attr_type == "ENUM" %}
+??? type-enum "{{attr_name}}"
+{%- elif type.attr_type == "STRUCT" %}
+??? type-struct "{{attr_name}}"
+{%- elif type.container and type.container == "dict[" %}
+??? type-map "{{attr_name}}"
+{%- else %}
+??? type-{{type.original_base}} "{{attr_name}}"
+{%- endif %}
+
+    ```python linenums="1" title="{{attribute_def.description | default('TBC',true)}}"
+    {%- if type.container == "dict[" or type.container == "set[" %}
+    builder.{{attr_name}} = {...}  # (1)
+    {%- elif type.container == "list[" %}
+    builder.{{attr_name}} = [...]  # (1)
+    {%- else %}
+    builder.{{attr_name}} = ...  # (1)
+    {%- endif %}
+    {{instance_name}}.{{attr_name}}  # (2)
+    {%- if search_type.name != "RelationField" %}
+    {%- set comment_count = 3 %}
+    {%- if search_type.name.startswith("Keyword") %}
+    FluentSearch().where(FluentSearch.asset_type({{entity_def_name}})).where({{entity_def_name}}.{{class_var}}.eq("String0"))  # ({{comment_count}})
+    {%- set comment_count = comment_count + 1 %}
+    {%- elif search_type.name == "BooleanField" %}
+    FluentSearch().where(FluentSearch.asset_type({{entity_def_name}})).where({{entity_def_name}}.{{class_var}}.eq(True))  # ({{comment_count}})
+    {%- set comment_count = comment_count + 1 %}
+    {%- endif %}
+    {%- if "Text" in search_type.name %}
+    FluentSearch().where(FluentSearch.asset_type({{entity_def_name}})).where({{entity_def_name}}.{{class_var}}.match("String0"))  # ({{comment_count}})
+    {%- set comment_count = comment_count + 1 %}
+    {%- endif %}
+    {%- if search_type.name.startswith("Numeric") %}
+    FluentSearch().where(FluentSearch.asset_type({{entity_def_name}})).where({{entity_def_name}}.{{class_var}}.gt(123))  # ({{comment_count}})
+    {%- set comment_count = comment_count + 1 %}
+    {%- endif %}
+    {%- endif %}
+    ```
+
+    1. Set the `{{attr_name}}` for a `{{entity_def_name}}`.
+
+        !!! details "For more details"
+            For more information, see the asset CRUD snippets on either [creating](../../snippets/advanced-examples/create.md) or [updating](../../snippets/advanced-examples/update.md) assets.
+
+    2. Retrieve the `{{attr_name}}` from a `{{entity_def_name}}`.
+
+        !!! details "For more details"
+            For more information, see the asset CRUD snippets on [retrieving](../../snippets/advanced-examples/read.md) assets.
+
+    {%- if search_type.name != "RelationField" %}
+    {%- set comment_count = 3 %}
+    {%- if search_type.name.startswith("Keyword") or search_type.name == "BooleanField" %}
+
+    {{comment_count}}. Find all assets in Atlan with their `{{attr_name}}` exactly matching the provided value.
+
+        !!! details "For more details"
+            For more information, see the searching section on [term queries](../../search/queries/terms.md#term).
+    {%- set comment_count = comment_count + 1 %}
+    {%- endif %}
+    {%- if "Text" in search_type.name %}
+
+    {{comment_count}}. Find all assets in Atlan with their `{{attr_name}}` textually matching the provided value.
+
+        !!! details "For more details"
+            For more information, see the searching section on [full text queries](../../search/queries/text.md).
+    {%- set comment_count = comment_count + 1 %}
+    {%- endif %}
+    {%- if search_type.name.startswith("Numeric") %}
+
+    {{comment_count}}. Find all assets in Atlan with their `{{attr_name}}` greater than the provided value.
+
+        !!! details "For more details"
+            For more information, see the searching section on [range queries](../../search/queries/terms.md#range).
+    {%- set comment_count = comment_count + 1 %}
+    {%- endif %}
+    {%- endif %}
+{% endfor %}

@@ -51,3 +51,6 @@ wheels/
 *.egg
 *.DS_Store
 examples/
+
+# Generated documentation
+pyatlan/documentation/*.md
