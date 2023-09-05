@@ -26,6 +26,7 @@ from pydantic import (
     validate_arguments,
 )
 from requests.adapters import HTTPAdapter
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 from urllib3.util.retry import Retry
 
 from pyatlan.client.constants import (
@@ -66,7 +67,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
-from pyatlan.error import AtlanError, ConnectionRetryError, NotFoundError
+from pyatlan.error import AtlanError, NotFoundError, RetryError
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
@@ -1158,9 +1159,9 @@ class AtlanClient(BaseSettings):
         try:
             for connection in connections_created:
                 guid = connection.guid
-                self.get_asset_by_guid(guid=guid, asset_type=Connection)
+                self.retrieve_minimal(guid=guid, asset_type=Connection)
         except requests.exceptions.RetryError as err:
-            raise ConnectionRetryError(
+            raise RetryError(
                 "Loop for retrying a failed action hit the maximum number of retries.",
                 code="ATLAN-PYTHON-403-007",
             ) from err
@@ -1317,7 +1318,27 @@ class AtlanClient(BaseSettings):
             guids.append(guid)
         query_params = {"deleteType": AtlanDeleteType.SOFT.value, "guid": guids}
         raw_json = self._call_api(DELETE_ENTITIES_BY_GUIDS, query_params=query_params)
-        return AssetMutationResponse(**raw_json)
+        response = AssetMutationResponse(**raw_json)
+        for asset in response.assets_deleted(asset_type=Asset):
+            self._wait_till_deleted(asset)
+        return response
+
+    @retry(
+        reraise=True,
+        retry=(retry_if_exception_type(AtlanError)),
+        stop=stop_after_attempt(20),
+        wait=wait_fixed(1),
+    )
+    def _wait_till_deleted(self, asset: Asset):
+        try:
+            asset = self.retrieve_minimal(guid=asset.guid, asset_type=Asset)
+            if asset.status == EntityStatus.DELETED:
+                return
+        except requests.exceptions.RetryError as err:
+            raise RetryError(
+                "Loop for retrying a failed action hit the maximum number of retries.",
+                code="ATLAN-PYTHON-403-007",
+            ) from err
 
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """
