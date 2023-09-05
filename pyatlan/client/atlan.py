@@ -177,9 +177,9 @@ Asset_Types = Union[
 HTTPS_PREFIX = "https://"
 
 DEFAULT_RETRY = Retry(
-    total=4,
+    total=3,
     backoff_factor=1,
-    status_forcelist=[500, 502, 503, 504],
+    status_forcelist=[403, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
 )
 CONNECTION_RETRY = Retry(
