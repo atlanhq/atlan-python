@@ -1,0 +1,11 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, asset: Asset, name: str, link: str
+    ) -> Link:
+        return Link(
+            attributes=Link.Attributes.create(
+                asset=asset, name=name, link=link
+            )
+        )
