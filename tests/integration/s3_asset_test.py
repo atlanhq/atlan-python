@@ -6,7 +6,8 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import AtlanError, NotFoundError
+from pyatlan.error import AtlanError
+from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import Asset, Connection, S3Bucket, S3Object
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (

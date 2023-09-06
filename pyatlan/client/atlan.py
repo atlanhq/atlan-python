@@ -67,7 +67,8 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
-from pyatlan.error import AtlanError, NotFoundError, RetryError
+from pyatlan.error import AtlanError
+from pyatlan.errors import ErrorCode
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
@@ -1020,15 +1021,15 @@ class AtlanClient(BaseSettings):
             )
             asset = self._handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
-                raise NotFoundError(
-                    message=f"Asset with qualifiedName {qualified_name} "
-                    f"is not of the type requested: {asset_type.__name__}.",
-                    code="ATLAN-PYTHON-404-002",
+                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    asset_type.__name__, qualified_name
                 )
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
+                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                    asset_type.__name__, qualified_name
+                )
             raise ae
 
     @validate_arguments()
@@ -1061,14 +1062,13 @@ class AtlanClient(BaseSettings):
             )
             asset = self._handle_relationships(raw_json)
             if not isinstance(asset, asset_type):
-                raise NotFoundError(
-                    message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
-                    code="ATLAN-PYTHON-404-002",
+                raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                    guid, asset_type.__name__
                 )
             return asset
         except AtlanError as ae:
             if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
             raise ae
 
     def _handle_relationships(self, raw_json):
@@ -1161,10 +1161,7 @@ class AtlanClient(BaseSettings):
                 guid = connection.guid
                 self.retrieve_minimal(guid=guid, asset_type=Connection)
         except requests.exceptions.RetryError as err:
-            raise RetryError(
-                "Loop for retrying a failed action hit the maximum number of retries.",
-                code="ATLAN-PYTHON-403-007",
-            ) from err
+            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
             adapter.max_retries = DEFAULT_RETRY
 
@@ -1335,10 +1332,7 @@ class AtlanClient(BaseSettings):
             if asset.status == EntityStatus.DELETED:
                 return
         except requests.exceptions.RetryError as err:
-            raise RetryError(
-                "Loop for retrying a failed action hit the maximum number of retries.",
-                code="ATLAN-PYTHON-403-007",
-            ) from err
+            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
 
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """
@@ -1499,10 +1493,7 @@ class AtlanClient(BaseSettings):
                 DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
             )
         else:
-            raise NotFoundError(
-                message=f"Unable to find {typedef_type} with name: {name}",
-                code="ATLAN-PYTHON-404-000",
-            )
+            raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
         if typedef_type == CustomMetadataDef:
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
@@ -2008,9 +1999,8 @@ class AtlanClient(BaseSettings):
             response = self.save(to_update)
         else:
             self.api_key = existing_token
-            raise NotFoundError(
-                message=f"Asset with GUID {asset_guid} does not exist.",
-                code="ATLAN-PYTHON-404-001",
+            raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
+                asset_guid
             )
 
         self.api_key = existing_token
@@ -2054,11 +2044,9 @@ class AtlanClient(BaseSettings):
             response = self.save(to_update)
         else:
             self.api_key = existing_token
-            raise NotFoundError(
-                message=f"Asset with GUID {asset_guid} does not exist.",
-                code="ATLAN-PYTHON-404-001",
+            raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
+                asset_guid
             )
-
         self.api_key = existing_token
 
         return response
@@ -2409,9 +2397,8 @@ class AtlanClient(BaseSettings):
                     name,
                 )
             return assets
-        raise NotFoundError(
-            f"The {asset_type.__name__} asset could not be found by name: {name}.",
-            "ATLAN-PYTHON-404-014",
+        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+            asset_type.__name__, name
         )
 
     @validate_arguments()

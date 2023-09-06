@@ -6,7 +6,7 @@ from unittest.mock import DEFAULT, Mock, patch
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import NotFoundError
+from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,

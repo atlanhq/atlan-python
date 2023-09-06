@@ -3,7 +3,7 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import NotFoundError
+from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryTerm,
@@ -221,7 +221,8 @@ def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
     client: AtlanClient,
 ):
     with pytest.raises(
-        NotFoundError, match="Given instance guid 76d54dd6 is invalid/not found"
+        NotFoundError,
+        match="ATLAN-PYTHON-404-001 Asset with GUID 76d54dd6 does not exist.",
     ):
         client.get_asset_by_guid("76d54dd6", AtlasGlossary)
 

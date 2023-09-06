@@ -9,7 +9,7 @@ from pydantic import StrictStr
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import NotFoundError
+from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
 from pyatlan.model.fluent_search import CompoundQuery, FluentSearch
 from pyatlan.model.search import DSL, IndexSearchRequest
@@ -101,7 +101,7 @@ def test_term_failure(
 ):
     with pytest.raises(
         NotFoundError,
-        match="Instance AtlasGlossaryTerm with unique attribute .* does not exist",
+        match="ATLAN-PYTHON-404-014 The AtlasGlossaryTerm asset could not be found by name: *",
     ):
         client.update_merging_cm(
             AtlasGlossaryTerm.create(
