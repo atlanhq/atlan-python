@@ -1973,7 +1973,7 @@ class AtlanClient(BaseSettings):
 
     def add_api_token_as_admin(
         self, asset_guid: str, impersonation_token: str
-    ) -> AssetMutationResponse:
+    ) -> Optional[AssetMutationResponse]:
         """
         Add the API token configured for the default client as an admin to the asset with the provided GUID.
         This is primarily useful for connections, to allow the API token to manage policies for the connection, and
@@ -1987,39 +1987,43 @@ class AtlanClient(BaseSettings):
         from pyatlan.model.fluent_search import FluentSearch
 
         token_user = str(self.get_current_user().username)
-        existing_token = self.api_key
-        self.api_key = impersonation_token
+        if existing_client := self.get_default_client():
+            tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
+            AtlanClient.register_client(tmp)
 
-        # Look for the asset as the impersonated user, ensuring we include the admin users
-        # in the results (so we avoid clobbering any existing admin users)
-        request = (
-            FluentSearch()
-            .where(Asset.GUID.eq(asset_guid))
-            .include_on_results(Asset.ADMIN_USERS)
-            .page_size(1)
-        ).to_request()
-        results = self.search(request)
-        if results.current_page():
-            asset = results.current_page()[0]
-            existing_admins = asset.admin_users or set()
-            existing_admins.add(token_user)
-            to_update = asset.trim_to_required()
-            to_update.admin_users = existing_admins
-            response = self.save(to_update)
-        else:
-            self.api_key = existing_token
-            raise NotFoundError(
-                message=f"Asset with GUID {asset_guid} does not exist.",
-                code="ATLAN-PYTHON-404-001",
-            )
+            # Look for the asset as the impersonated user, ensuring we include the admin users
+            # in the results (so we avoid clobbering any existing admin users)
+            request = (
+                FluentSearch()
+                .where(Asset.GUID.eq(asset_guid))
+                .include_on_results(Asset.ADMIN_USERS)
+                .page_size(1)
+            ).to_request()
+            results = tmp.search(request)
+            if results.current_page():
+                asset = results.current_page()[0]
+                existing_admins = asset.admin_users or set()
+                existing_admins.add(token_user)
+                to_update = asset.trim_to_required()
+                to_update.admin_users = existing_admins
+                response = tmp.save(to_update)
+            else:
+                AtlanClient.reset_default_client()
+                AtlanClient.register_client(existing_client)
+                raise NotFoundError(
+                    message=f"Asset with GUID {asset_guid} does not exist.",
+                    code="ATLAN-PYTHON-404-001",
+                )
 
-        self.api_key = existing_token
+            AtlanClient.reset_default_client()
+            AtlanClient.register_client(existing_client)
+            return response
 
-        return response
+        return None
 
     def add_api_token_as_viewer(
         self, asset_guid: str, impersonation_token: str
-    ) -> AssetMutationResponse:
+    ) -> Optional[AssetMutationResponse]:
         """
         Add the API token configured for the default client as a viewer to the asset with the provided GUID.
         This is primarily useful for query collections, to allow the API token to view or run queries within the
@@ -2033,35 +2037,39 @@ class AtlanClient(BaseSettings):
         from pyatlan.model.fluent_search import FluentSearch
 
         token_user = str(self.get_current_user().username)
-        existing_token = self.api_key
-        self.api_key = impersonation_token
+        if existing_client := self.get_default_client():
+            tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
+            AtlanClient.register_client(tmp)
 
-        # Look for the asset as the impersonated user, ensuring we include the admin users
-        # in the results (so we avoid clobbering any existing admin users)
-        request = (
-            FluentSearch()
-            .where(Asset.GUID.eq(asset_guid))
-            .include_on_results(Asset.VIEWER_USERS)
-            .page_size(1)
-        ).to_request()
-        results = self.search(request)
-        if results.current_page():
-            asset = results.current_page()[0]
-            existing_viewers = asset.viewer_users or set()
-            existing_viewers.add(token_user)
-            to_update = asset.trim_to_required()
-            to_update.viewer_users = existing_viewers
-            response = self.save(to_update)
-        else:
-            self.api_key = existing_token
-            raise NotFoundError(
-                message=f"Asset with GUID {asset_guid} does not exist.",
-                code="ATLAN-PYTHON-404-001",
-            )
+            # Look for the asset as the impersonated user, ensuring we include the admin users
+            # in the results (so we avoid clobbering any existing admin users)
+            request = (
+                FluentSearch()
+                .where(Asset.GUID.eq(asset_guid))
+                .include_on_results(Asset.VIEWER_USERS)
+                .page_size(1)
+            ).to_request()
+            results = tmp.search(request)
+            if results.current_page():
+                asset = results.current_page()[0]
+                existing_viewers = asset.viewer_users or set()
+                existing_viewers.add(token_user)
+                to_update = asset.trim_to_required()
+                to_update.viewer_users = existing_viewers
+                response = tmp.save(to_update)
+            else:
+                AtlanClient.reset_default_client()
+                AtlanClient.register_client(existing_client)
+                raise NotFoundError(
+                    message=f"Asset with GUID {asset_guid} does not exist.",
+                    code="ATLAN-PYTHON-404-001",
+                )
 
-        self.api_key = existing_token
+            AtlanClient.reset_default_client()
+            AtlanClient.register_client(existing_client)
+            return response
 
-        return response
+        return None
 
     def get_api_tokens(
         self,
