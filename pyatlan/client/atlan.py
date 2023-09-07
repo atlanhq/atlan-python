@@ -430,7 +430,7 @@ class AtlanClient(BaseSettings):
         through environment variables.
         """
         if not isinstance(client, AtlanClient):
-            raise ValueError("client must be an instance of AtlanClient")
+            raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
         cls._default_client = client
 
     @classmethod
@@ -1575,7 +1575,9 @@ class AtlanClient(BaseSettings):
 
         classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
         if not classification_id:
-            raise ValueError(f"{atlan_tag_name} is not a valid AtlanTag")
+            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
+                atlan_tag_name
+            )
         query_params = {"attr:qualifiedName": qualified_name}
         self._call_api(
             DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
@@ -1783,16 +1785,14 @@ class AtlanClient(BaseSettings):
         """
         if guid:
             if qualified_name:
-                raise ValueError(
-                    "Either guid or qualified_name can be be specified not both"
-                )
+                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
             asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
             asset = self.get_asset_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
-            raise ValueError("Either guid or qualified name must be specified")
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         if not terms:
             return asset
         replacement_terms: list[AtlasGlossaryTerm] = []
@@ -1827,16 +1827,14 @@ class AtlanClient(BaseSettings):
         """
         if guid:
             if qualified_name:
-                raise ValueError(
-                    "Either guid or qualified_name can be be specified not both"
-                )
+                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
             asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
             asset = self.get_asset_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
-            raise ValueError("Either guid or qualified name must be specified")
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         asset.assigned_terms = terms
         response = self.save(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
@@ -1864,19 +1862,17 @@ class AtlanClient(BaseSettings):
         :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
         """
         if not terms:
-            raise ValueError("A list of assigned_terms to remove must be specified")
+            raise ErrorCode.MISSING_TERMS.exception_with_parameters()
         if guid:
             if qualified_name:
-                raise ValueError(
-                    "Either guid or qualified_name can be be specified not both"
-                )
+                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
             asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
             asset = self.get_asset_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
-            raise ValueError("Either guid or qualified name must be specified")
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         replacement_terms: list[AtlasGlossaryTerm] = []
         guids_to_be_removed = {t.guid for t in terms}
         if existing_terms := asset.assigned_terms:

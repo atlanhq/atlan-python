@@ -386,6 +386,34 @@ class ErrorCode(Enum):
         "Verify that this is the correct typedef.",
         InvalidRequestError,
     )
+    QN_OR_GUID_NOT_BOTH = (
+        400,
+        "ATLAN-PYTHON-400-042",
+        "Only qualified_name or guid should be provided but not both.",
+        "Verify that either qualified_name of guid are provided but not both.",
+        InvalidRequestError,
+    )
+    QN_OR_GUID = (
+        400,
+        "ATLAN-PYTHON-400-043",
+        "Either qualified_name or guid should be provided.",
+        "Verify that either qualified_name of guid are provided.",
+        InvalidRequestError,
+    )
+    MISSING_TERMS = (
+        400,
+        "ATLAN-PYTHON-400-044",
+        "A list of assigned_terms to remove must be specified.",
+        "Verify that you have provided a list of assigned_terms to remove.",
+        InvalidRequestError,
+    )
+    MISSING_ATLAN_CLIENT = (
+        400,
+        "ATLAN-PYTHON-400-045",
+        "The client must be an instance of AtlanClient.",
+        "Verify that you have provided an instance of AtlanClient.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
