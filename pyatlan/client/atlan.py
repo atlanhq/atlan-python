@@ -69,7 +69,6 @@ from pyatlan.client.constants import (
     UPSERT_API_TOKEN,
 )
 from pyatlan.errors import AtlanError, ErrorCode
-from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
@@ -241,11 +240,9 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             custom_metadata_defs=[],
         )
     else:
-        raise InvalidRequestException(
-            f"Unable to update type definitions of category: {typedef.category.value}",
-            param="category",
+        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
+            typedef.category.value
         )
-        # Throw an invalid request exception
     return payload
 
 
@@ -500,12 +497,10 @@ class AtlanClient(BaseSettings):
                     )
                     LOGGER.debug(response.json())
                 return response.json()
-            except Exception as e:
-                print(e)
-                LOGGER.exception(
-                    "Exception occurred while parsing response with msg: %s", e
-                )
-                raise AtlanServiceException(api, response) from e
+            except requests.exceptions.JSONDecodeError as e:
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    response.text, response.status_code, str(e)
+                ) from e
         elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
             LOGGER.error(
                 "Atlas Service unavailable. HTTP Status: %s",
@@ -1485,10 +1480,9 @@ class AtlanClient(BaseSettings):
 
             internal_name = str(AtlanTagCache.get_id_for_name(name))
         else:
-            raise InvalidRequestException(
-                message=f"Unable to purge type definitions of type: {typedef_type}",
+            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
+                typedef_type
             )
-            # Throw an invalid request exception
         if internal_name:
             self._call_api(
                 DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
@@ -1938,9 +1932,7 @@ class AtlanClient(BaseSettings):
         :returns: the results of the lineage request
         """
         if lineage_request.direction == LineageDirection.BOTH:
-            raise InvalidRequestException(
-                message="Unable to request both directions of lineage at the same time through the lineage list API.",
-            )
+            raise ErrorCode.INVALID_LINEAGE_DIRECTION.exception_with_parameters()
         raw_json = self._call_api(
             GET_LINEAGE_LIST, None, request_obj=lineage_request, exclude_unset=True
         )

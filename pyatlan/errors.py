@@ -370,6 +370,20 @@ class ErrorCode(Enum):
         "You can either try a different field, or try a different kind of query.",
         InvalidRequestError,
     )
+    UNABLE_TO_PURGE_TYPEDEF_OF_TYPE = (
+        400,
+        "ATLAN-PYTHON-400-040",
+        "Unable to purge type definitions of type: {1}.",
+        "Atlan currently only allows you to purge type definitions for custom metadata, enumerations and Atlan tags.",
+        InvalidRequestError,
+    )
+    UNABLE_TO_PURGE_TYPEDEF_CATEGORY = (
+        400,
+        "ATLAN-PYTHON-400-041",
+        "Unable to purge type definitions of type: {1}.",
+        "Verify that this is the correct typedef.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
