@@ -332,8 +332,9 @@ class AtlanClient(BaseSettings):
                 self._assets = parse_obj_as(list[Asset], raw_json["entities"])
                 return raw_json
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
 
         def __iter__(self) -> Generator[Asset, None, None]:
             """
@@ -1408,8 +1409,9 @@ class AtlanClient(BaseSettings):
                     )
                 assets = parse_obj_as(list[Asset], raw_json["entities"])
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             assets = []
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
@@ -1977,8 +1979,9 @@ class AtlanClient(BaseSettings):
                 assets = parse_obj_as(list[Asset], raw_json["entities"])
                 has_more = parse_obj_as(bool, raw_json["hasMore"])
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             assets = []
             has_more = False
@@ -2235,8 +2238,9 @@ class AtlanClient(BaseSettings):
             try:
                 events = parse_obj_as(list[KeycloakEvent], raw_json)
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json)
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             events = []
         return KeycloakEventResponse(
@@ -2261,8 +2265,9 @@ class AtlanClient(BaseSettings):
             try:
                 events = parse_obj_as(list[AdminEvent], raw_json)
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json)
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             events = []
         return AdminEventResponse(
