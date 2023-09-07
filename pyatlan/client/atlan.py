@@ -68,7 +68,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
-from pyatlan.errors import AtlanError, ErrorCode
+from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
@@ -188,15 +188,6 @@ CONNECTION_RETRY = Retry(
     status_forcelist=[403],
     allowed_methods=["GET"],
 )
-
-ERROR_CODE_FOR_HTTP_STATUS: dict[int, ErrorCode] = {
-    400: ErrorCode.INVALID_REQUEST_PASSTHROUGH,
-    401: ErrorCode.AUTHENTICATION_PASSTHROUGH,
-    403: ErrorCode.PERMISSION_PASSTHROUGH,
-    404: ErrorCode.NOT_FOUND_PASSTHROUGH,
-    409: ErrorCode.CONFLICT_PASSTHROUGH,
-    429: ErrorCode.RATE_LIMIT_PASSTHROUGH,
-}
 
 
 def get_session():

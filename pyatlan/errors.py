@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from __future__ import annotations
+
 from enum import Enum
 from typing import Protocol, Type, TypeVar
 
@@ -713,3 +715,13 @@ class ErrorCode(Enum):
 
     def exception_with_parameters(self, *args):
         return self.exception_type(self, *args)
+
+
+ERROR_CODE_FOR_HTTP_STATUS: dict[int, ErrorCode] = {
+    400: ErrorCode.INVALID_REQUEST_PASSTHROUGH,
+    401: ErrorCode.AUTHENTICATION_PASSTHROUGH,
+    403: ErrorCode.PERMISSION_PASSTHROUGH,
+    404: ErrorCode.NOT_FOUND_PASSTHROUGH,
+    409: ErrorCode.CONFLICT_PASSTHROUGH,
+    429: ErrorCode.RATE_LIMIT_PASSTHROUGH,
+}
