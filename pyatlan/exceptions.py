@@ -70,13 +70,3 @@ class InvalidRequestException(AtlanException):
     ):
         super().__init__(message, 400, code, cause)
         self.param = param
-
-
-class LogicException(AtlanException):
-    """
-    Error that occurs when an unexpected logic problem arises. If these are ever experienced, they should be
-    immediately reported against the SDK as bugs.
-    """
-
-    def __init__(self, message: str, code: str, cause: Optional[Exception] = None):
-        super().__init__(message, 500, code, cause)

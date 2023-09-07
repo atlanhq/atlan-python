@@ -12,6 +12,7 @@ import os
 import time
 import uuid
 from abc import ABC
+from types import SimpleNamespace
 from typing import ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
 
 import requests
@@ -67,8 +68,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
-from pyatlan.error import AtlanError
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import AtlanError, ErrorCode
 from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
@@ -189,6 +189,15 @@ CONNECTION_RETRY = Retry(
     status_forcelist=[403],
     allowed_methods=["GET"],
 )
+
+ERROR_CODE_FOR_HTTP_STATUS: dict[int, ErrorCode] = {
+    400: ErrorCode.INVALID_REQUEST_PASSTHROUGH,
+    401: ErrorCode.AUTHENTICATION_PASSTHROUGH,
+    403: ErrorCode.PERMISSION_PASSTHROUGH,
+    404: ErrorCode.NOT_FOUND_PASSTHROUGH,
+    409: ErrorCode.CONFLICT_PASSTHROUGH,
+    429: ErrorCode.RATE_LIMIT_PASSTHROUGH,
+}
 
 
 def get_session():
@@ -510,12 +519,18 @@ class AtlanClient(BaseSettings):
                 error_code = error_info.get("errorCode", 0)
                 error_message = error_info.get("errorMessage", "")
                 if error_code and error_message:
-                    raise AtlanError(
-                        message=error_message,
-                        code=error_code,
-                        status_code=response.status_code,
+                    error = ERROR_CODE_FOR_HTTP_STATUS.get(
+                        response.status_code, ErrorCode.ERROR_PASSTHROUGH
                     )
-            raise AtlanServiceException(api, response)
+                    raise error.exception_with_parameters(error_code, error_message)
+            raise AtlanError(
+                SimpleNamespace(
+                    http_error_code=response.status_code,
+                    error_id=f"ATLAN-PYTHON-{response.status_code}-000",
+                    error_message="",
+                    user_action=ErrorCode.ERROR_PASSTHROUGH.user_action,
+                )
+            )
 
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
@@ -1012,25 +1027,16 @@ class AtlanClient(BaseSettings):
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-        try:
-            raw_json = self._call_api(
-                GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
-                    asset_type.__name__
-                ),
-                query_params,
+        raw_json = self._call_api(
+            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
+            query_params,
+        )
+        asset = self._handle_relationships(raw_json)
+        if not isinstance(asset, asset_type):
+            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                asset_type.__name__, qualified_name
             )
-            asset = self._handle_relationships(raw_json)
-            if not isinstance(asset, asset_type):
-                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                    asset_type.__name__, qualified_name
-                )
-            return asset
-        except AtlanError as ae:
-            if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-                    asset_type.__name__, qualified_name
-                )
-            raise ae
+        return asset
 
     @validate_arguments()
     def get_asset_by_guid(
@@ -1055,21 +1061,16 @@ class AtlanClient(BaseSettings):
             "ignoreRelationships": ignore_relationships,
         }
 
-        try:
-            raw_json = self._call_api(
-                GET_ENTITY_BY_GUID.format_path_with_params(guid),
-                query_params,
+        raw_json = self._call_api(
+            GET_ENTITY_BY_GUID.format_path_with_params(guid),
+            query_params,
+        )
+        asset = self._handle_relationships(raw_json)
+        if not isinstance(asset, asset_type):
+            raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                guid, asset_type.__name__
             )
-            asset = self._handle_relationships(raw_json)
-            if not isinstance(asset, asset_type):
-                raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
-                    guid, asset_type.__name__
-                )
-            return asset
-        except AtlanError as ae:
-            if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(guid)
-            raise ae
+        return asset
 
     def _handle_relationships(self, raw_json):
         if (

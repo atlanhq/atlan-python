@@ -101,7 +101,8 @@ def test_term_failure(
 ):
     with pytest.raises(
         NotFoundError,
-        match="ATLAN-PYTHON-404-014 The AtlasGlossaryTerm asset could not be found by name: *",
+        match="ATLAN-PYTHON-404-000 Server responded with ATLAS-404-00-009: Instance AtlasGlossaryTerm with "
+        "unique attribute *",
     ):
         client.update_merging_cm(
             AtlasGlossaryTerm.create(

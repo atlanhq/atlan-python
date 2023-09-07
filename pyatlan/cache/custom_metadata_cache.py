@@ -2,7 +2,6 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
-from pyatlan.error import InvalidRequestError
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
@@ -75,11 +74,7 @@ class CustomMetadataCache:
         :returns: Atlan-internal ID string of the custom metadata set
         """
         if name is None or not name.strip():
-            raise InvalidRequestError(
-                message="No name was provided when attempting to retrieve custom metadata.",
-                code="ATLAN-PYTHON-404-008",
-                param="",
-            )
+            raise ErrorCode.MISSING_CM_NAME.exception_with_parameters()
         if cm_id := cls.map_name_to_id.get(name):
             return cm_id
         # If not found, refresh the cache and look again (could be stale)
@@ -97,11 +92,7 @@ class CustomMetadataCache:
         :returns: human-readable name of the custom metadata set
         """
         if idstr is None or not idstr.strip():
-            raise InvalidRequestError(
-                message="No ID was provided when attempting to retrieve custom metadata.",
-                code="ATLAN-PYTHON-404-008",
-                param="",
-            )
+            raise ErrorCode.MISSING_CM_ID.exception_with_parameters()
         if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
         # If not found, refresh the cache and look again (could be stale)

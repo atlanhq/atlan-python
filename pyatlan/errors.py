@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from enum import Enum
-from typing import Type, TypeVar
+from typing import Protocol, Type, TypeVar
 
 E = TypeVar("E", bound="AtlanError")
 RAISE_GITHUB_ISSUE = (
@@ -10,8 +10,15 @@ RAISE_GITHUB_ISSUE = (
 )
 
 
+class ErrorInfo(Protocol):
+    http_error_code: int
+    error_id: str
+    error_message: str
+    user_action: str
+
+
 class AtlanError(Exception):
-    def __init__(self, error_code: "ErrorCode", *args):
+    def __init__(self, error_code: ErrorInfo, *args):
         message = error_code.error_message.format(*args)
         super().__init__(message)
         self.code = error_code.error_id
@@ -172,7 +179,7 @@ class ErrorCode(Enum):
     NO_GRAPH_WITH_PROCESS = (
         400,
         "ATLAN-PYTHON-400-013",
-        "Lineage was retrieved using hideProces=false. We do not provide a graph view in this case.",
+        "Lineage was retrieved using hideProces=False. We do not provide a graph view in this case.",
         "Retry your request for lineage setting hideProcess=true.",
         InvalidRequestError,
     )

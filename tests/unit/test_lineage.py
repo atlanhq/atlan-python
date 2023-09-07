@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from pyatlan.error import InvalidRequestError
+from pyatlan.errors import InvalidRequestError
 from pyatlan.model.lineage import LineageGraph, LineageRelation, LineageResponse
 
 BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
@@ -36,7 +36,7 @@ class TestLineageGraph:
     ):
         with pytest.raises(
             InvalidRequestError,
-            match="Lineage was retrieved using hideProces=false. We do not provide a graph view in this case.",
+            match="Lineage was retrieved using hideProces=False. We do not provide a graph view in this case.",
         ):
             LineageGraph.create(
                 [

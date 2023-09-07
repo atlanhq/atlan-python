@@ -208,13 +208,12 @@ def test_get_asset_by_guid_good_guid(client: AtlanClient, glossary: AtlasGlossar
 def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not_found_error(
     client: AtlanClient, glossary: AtlasGlossary
 ):
-    with pytest.raises(NotFoundError) as ex_info:
-        guid = glossary.guid
+    guid = glossary.guid
+    with pytest.raises(
+        NotFoundError,
+        match=f"ATLAN-PYTHON-404-002 Asset with GUID {guid} is not of the type requested: Table.",
+    ):
         client.get_asset_by_guid(guid, Table)
-    assert (
-        f"Asset with GUID {guid} is not of the type requested: Table."
-        in ex_info.value.args[0]
-    )
 
 
 def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
@@ -222,7 +221,8 @@ def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
 ):
     with pytest.raises(
         NotFoundError,
-        match="ATLAN-PYTHON-404-001 Asset with GUID 76d54dd6 does not exist.",
+        match="ATLAN-PYTHON-404-000 Server responded with ATLAS-404-00-005: Given instance guid 76d54dd6 "
+        "is invalid/not found",
     ):
         client.get_asset_by_guid("76d54dd6", AtlasGlossary)
 
