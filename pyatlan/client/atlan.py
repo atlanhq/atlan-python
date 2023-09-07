@@ -12,6 +12,7 @@ import os
 import time
 import uuid
 from abc import ABC
+from types import SimpleNamespace
 from typing import ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
 
 import requests
@@ -67,8 +68,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
-from pyatlan.error import AtlanError, NotFoundError, RetryError
-from pyatlan.exceptions import AtlanServiceException, InvalidRequestException
+from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
@@ -231,11 +231,9 @@ def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
             custom_metadata_defs=[],
         )
     else:
-        raise InvalidRequestException(
-            f"Unable to update type definitions of category: {typedef.category.value}",
-            param="category",
+        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
+            typedef.category.value
         )
-        # Throw an invalid request exception
     return payload
 
 
@@ -334,8 +332,9 @@ class AtlanClient(BaseSettings):
                 self._assets = parse_obj_as(list[Asset], raw_json["entities"])
                 return raw_json
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
 
         def __iter__(self) -> Generator[Asset, None, None]:
             """
@@ -431,7 +430,7 @@ class AtlanClient(BaseSettings):
         through environment variables.
         """
         if not isinstance(client, AtlanClient):
-            raise ValueError("client must be an instance of AtlanClient")
+            raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
         cls._default_client = client
 
     @classmethod
@@ -490,12 +489,10 @@ class AtlanClient(BaseSettings):
                     )
                     LOGGER.debug(response.json())
                 return response.json()
-            except Exception as e:
-                print(e)
-                LOGGER.exception(
-                    "Exception occurred while parsing response with msg: %s", e
-                )
-                raise AtlanServiceException(api, response) from e
+            except requests.exceptions.JSONDecodeError as e:
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    response.text, response.status_code, str(e)
+                ) from e
         elif response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
             LOGGER.error(
                 "Atlas Service unavailable. HTTP Status: %s",
@@ -509,12 +506,18 @@ class AtlanClient(BaseSettings):
                 error_code = error_info.get("errorCode", 0)
                 error_message = error_info.get("errorMessage", "")
                 if error_code and error_message:
-                    raise AtlanError(
-                        message=error_message,
-                        code=error_code,
-                        status_code=response.status_code,
+                    error = ERROR_CODE_FOR_HTTP_STATUS.get(
+                        response.status_code, ErrorCode.ERROR_PASSTHROUGH
                     )
-            raise AtlanServiceException(api, response)
+                    raise error.exception_with_parameters(error_code, error_message)
+            raise AtlanError(
+                SimpleNamespace(
+                    http_error_code=response.status_code,
+                    error_id=f"ATLAN-PYTHON-{response.status_code}-000",
+                    error_message="",
+                    user_action=ErrorCode.ERROR_PASSTHROUGH.user_action,
+                )
+            )
 
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
@@ -567,6 +570,7 @@ class AtlanClient(BaseSettings):
         :param file: local file to upload
         :param filename: name of the file to be uploaded
         :returns: details of the uploaded image
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._upload_file(UPLOAD_IMAGE, file=file, filename=filename)
         return AtlanImage(**raw_json)
@@ -588,6 +592,7 @@ class AtlanClient(BaseSettings):
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
         :returns: a list of roles that match the provided criteria
+        :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, str] = {
             "count": str(count),
@@ -606,6 +611,7 @@ class AtlanClient(BaseSettings):
         Retrieve all roles defined in Atlan.
 
         :returns: a list of all the roles in Atlan
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(GET_ROLES.format_path_with_params())
         return RoleResponse(**raw_json)
@@ -621,6 +627,7 @@ class AtlanClient(BaseSettings):
         :param group: details of the new group
         :param user_ids: list of unique identifiers (GUIDs) of users to associate with the group
         :returns: details of the created group and user association
+        :raises AtlanError: on any API communication issue
         """
         payload = CreateGroupRequest(group=group)
         if user_ids:
@@ -636,6 +643,7 @@ class AtlanClient(BaseSettings):
         Update a group. Note that the provided 'group' must have its id populated.
 
         :param group: details to update on the group
+        :raises AtlanError: on any API communication issue
         """
         self._call_api(
             UPDATE_GROUP.format_path_with_params(group.id),
@@ -651,6 +659,7 @@ class AtlanClient(BaseSettings):
         Delete a group.
 
         :param guid: unique identifier (GUID) of the group to delete
+        :raises AtlanError: on any API communication issue
         """
         self._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
 
@@ -671,6 +680,7 @@ class AtlanClient(BaseSettings):
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
         :returns: a list of groups that match the provided criteria
+        :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, str] = {
             "count": str(count),
@@ -737,6 +747,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the group from which to retrieve members
         :returns: list of users that are members of the group
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(GET_GROUP_MEMBERS.format_path({"group_guid": guid}))
         return UserResponse(**raw_json)
@@ -747,6 +758,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the group from which to remove users
         :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
+        :raises AtlanError: on any API communication issue
         """
         rfgr = RemoveFromGroupRequest(users=user_ids)
         self._call_api(
@@ -763,6 +775,7 @@ class AtlanClient(BaseSettings):
         Create one or more new users.
 
         :param users: the details of the new users
+        :raises AtlanError: on any API communication issue
         """
         from pyatlan.cache.role_cache import RoleCache
 
@@ -791,6 +804,7 @@ class AtlanClient(BaseSettings):
         :param guid: unique identifier (GUID) of the user to update
         :param user: details to update on the user
         :returns: basic details about the updated user
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(
             UPDATE_USER.format_path_with_params(guid),
@@ -808,6 +822,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the user
         :returns: groups this user belongs to
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(GET_USER_GROUPS.format_path({"user_guid": guid}))
         return GroupResponse(**raw_json)
@@ -822,6 +837,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the user to add into groups
         :param group_ids: unique identifiers (GUIDs) of the groups to add the user into
+        :raises AtlanError: on any API communication issue
         """
         atgr = AddToGroupsRequest(groups=group_ids)
         self._call_api(
@@ -840,6 +856,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the user whose role should be changed
         :param role_id: unique identifier (GUID) of the role to move the user into
+        :raises AtlanError: on any API communication issue
         """
         crr = ChangeRoleRequest(role_id=role_id)
         self._call_api(
@@ -855,6 +872,7 @@ class AtlanClient(BaseSettings):
         Retrieve the current user (representing the API token).
 
         :returns: basic details about the current user (API token)
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(GET_CURRENT_USER)
         return UserMinimalResponse(**raw_json)
@@ -876,6 +894,7 @@ class AtlanClient(BaseSettings):
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
         :returns: a list of users that match the provided criteria
+        :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, str] = {
             "count": str(count),
@@ -960,6 +979,7 @@ class AtlanClient(BaseSettings):
 
         :param query: query to parse and configuration options
         :returns: parsed explanation of the query
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(
             PARSE_QUERY,
@@ -985,31 +1005,23 @@ class AtlanClient(BaseSettings):
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :returns: the requested asset
         :raises NotFoundError: if the asset does not exist
+        :raises AtlanError: on any API communication issue
         """
         query_params = {
             "attr:qualifiedName": qualified_name,
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
-        try:
-            raw_json = self._call_api(
-                GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(
-                    asset_type.__name__
-                ),
-                query_params,
+        raw_json = self._call_api(
+            GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
+            query_params,
+        )
+        asset = self._handle_relationships(raw_json)
+        if not isinstance(asset, asset_type):
+            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                asset_type.__name__, qualified_name
             )
-            asset = self._handle_relationships(raw_json)
-            if not isinstance(asset, asset_type):
-                raise NotFoundError(
-                    message=f"Asset with qualifiedName {qualified_name} "
-                    f"is not of the type requested: {asset_type.__name__}.",
-                    code="ATLAN-PYTHON-404-002",
-                )
-            return asset
-        except AtlanError as ae:
-            if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
-            raise ae
+        return asset
 
     @validate_arguments()
     def get_asset_by_guid(
@@ -1027,29 +1039,24 @@ class AtlanClient(BaseSettings):
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :returns: the requested asset
-        :raises NotFoundError: if the asset does not exist
+        :raises NotFoundError: if the asset does not exist, or is not of the type requested
+        :raises AtlanError: on any API communication issue
         """
         query_params = {
             "minExtInfo": min_ext_info,
             "ignoreRelationships": ignore_relationships,
         }
 
-        try:
-            raw_json = self._call_api(
-                GET_ENTITY_BY_GUID.format_path_with_params(guid),
-                query_params,
+        raw_json = self._call_api(
+            GET_ENTITY_BY_GUID.format_path_with_params(guid),
+            query_params,
+        )
+        asset = self._handle_relationships(raw_json)
+        if not isinstance(asset, asset_type):
+            raise ErrorCode.ASSET_NOT_TYPE_REQUESTED.exception_with_parameters(
+                guid, asset_type.__name__
             )
-            asset = self._handle_relationships(raw_json)
-            if not isinstance(asset, asset_type):
-                raise NotFoundError(
-                    message=f"Asset with GUID {guid} is not of the type requested: {asset_type.__name__}.",
-                    code="ATLAN-PYTHON-404-002",
-                )
-            return asset
-        except AtlanError as ae:
-            if ae.status_code == HTTPStatus.NOT_FOUND:
-                raise NotFoundError(message=ae.user_message, code=ae.code) from ae
-            raise ae
+        return asset
 
     def _handle_relationships(self, raw_json):
         if (
@@ -1113,6 +1120,8 @@ class AtlanClient(BaseSettings):
         :param replace_custom_metadata: replaces any custom metadata with non-empty values provided
         :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values
         :returns: the result of the save
+        :raises AtlanError: on any API communication issue
+        :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit
         """
         query_params = {
             "replaceClassifications": replace_atlan_tags,
@@ -1141,10 +1150,7 @@ class AtlanClient(BaseSettings):
                 guid = connection.guid
                 self.retrieve_minimal(guid=guid, asset_type=Connection)
         except requests.exceptions.RetryError as err:
-            raise RetryError(
-                "Loop for retrying a failed action hit the maximum number of retries.",
-                code="ATLAN-PYTHON-403-007",
-            ) from err
+            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
         finally:
             adapter.max_retries = DEFAULT_RETRY
 
@@ -1219,6 +1225,7 @@ class AtlanClient(BaseSettings):
         :param entity: one or more assets to save
         :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)
         :returns: details of the created or updated assets
+        :raises AtlanError: on any API communication issue
         """
 
         query_params = {
@@ -1271,6 +1278,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier(s) (GUIDs) of one or more assets to hard-delete
         :returns: details of the hard-deleted asset(s)
+        :raises AtlanError: on any API communication issue
         """
         guids: list[str] = []
         if isinstance(guid, list):
@@ -1290,6 +1298,8 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier(s) (GUIDs) of one or more assets to soft-delete
         :returns: details of the soft-deleted asset(s)
+        :raises AtlanError: on any API communication issue
+        :raises ApiError: if the retry limit is overrun waiting for confirmation the asset is deleted
         """
         guids: list[str] = []
         if isinstance(guid, list):
@@ -1315,10 +1325,7 @@ class AtlanClient(BaseSettings):
             if asset.status == EntityStatus.DELETED:
                 return
         except requests.exceptions.RetryError as err:
-            raise RetryError(
-                "Loop for retrying a failed action hit the maximum number of retries.",
-                code="ATLAN-PYTHON-403-007",
-            ) from err
+            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters() from err
 
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """
@@ -1327,6 +1334,7 @@ class AtlanClient(BaseSettings):
         :param asset_type: type of the asset to restore
         :param qualified_name: of the asset to restore
         :returns: True if the asset is now restored, or False if not
+        :raises AtlanError: on any API communication issue
         """
         return self._restore(asset_type, qualified_name, 0)
 
@@ -1367,6 +1375,7 @@ class AtlanClient(BaseSettings):
 
         :param criteria: detailing the search query, parameters, and so on to run
         :returns: the results of the search
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(
             INDEX_SEARCH,
@@ -1380,8 +1389,9 @@ class AtlanClient(BaseSettings):
                     )
                 assets = parse_obj_as(list[Asset], raw_json["entities"])
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             assets = []
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
@@ -1399,6 +1409,7 @@ class AtlanClient(BaseSettings):
         Retrieves a list of all the type definitions in Atlan.
 
         :returns: a list of all the type definitions in Atlan
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
@@ -1409,6 +1420,7 @@ class AtlanClient(BaseSettings):
 
         :param type_category: category of type definitions to retrieve
         :returns: the requested list of type definitions
+        :raises AtlanError: on any API communication issue
         """
         query_params = {"type": type_category.value}
         raw_json = self._call_api(
@@ -1426,6 +1438,8 @@ class AtlanClient(BaseSettings):
 
         :param typedef: type definition to create
         :returns: the resulting type definition that was created
+        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
+        :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
         raw_json = self._call_api(
@@ -1442,6 +1456,8 @@ class AtlanClient(BaseSettings):
 
         :param typedef: type definition to update
         :returns: the resulting type definition that was updated
+        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
+        :raises AtlanError: on any API communication issue
         """
         payload = _build_typedef_request(typedef)
         raw_json = self._call_api(
@@ -1458,6 +1474,9 @@ class AtlanClient(BaseSettings):
 
         :param name: internal hashed-string name of the type definition
         :param typedef_type: type of the type definition that is being deleted
+        :raises InvalidRequestError: if the typedef you are trying to delete is not one of the allowed types
+        :raises NotFoundError: if the typedef you are trying to delete cannot be found
+        :raises AtlanError: on any API communication issue
         """
         if typedef_type == CustomMetadataDef:
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
@@ -1470,19 +1489,15 @@ class AtlanClient(BaseSettings):
 
             internal_name = str(AtlanTagCache.get_id_for_name(name))
         else:
-            raise InvalidRequestException(
-                message=f"Unable to purge type definitions of type: {typedef_type}",
+            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
+                typedef_type
             )
-            # Throw an invalid request exception
         if internal_name:
             self._call_api(
                 DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
             )
         else:
-            raise NotFoundError(
-                message=f"Unable to find {typedef_type} with name: {name}",
-                code="ATLAN-PYTHON-404-000",
-            )
+            raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
         if typedef_type == CustomMetadataDef:
             from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
@@ -1520,6 +1535,7 @@ class AtlanClient(BaseSettings):
                                              from this asset (True) or not (False)
         :param restrict_lineage_propagation: whether to avoid propagating through lineage (True) or do propagate
                                              through lineage (False)
+        :raises AtlanError: on any API communication issue
         """
         atlan_tags = AtlanTags(
             __root__=[
@@ -1553,12 +1569,15 @@ class AtlanClient(BaseSettings):
         :param asset_type: type of asset to which to add the Atlan tags
         :param qualified_name: qualified_name of the asset to which to add the Atlan tags
         :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset
+        :raises AtlanError: on any API communication issue
         """
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
         classification_id = AtlanTagCache.get_id_for_name(atlan_tag_name)
         if not classification_id:
-            raise ValueError(f"{atlan_tag_name} is not a valid AtlanTag")
+            raise ErrorCode.ATLAN_TAG_NOT_FOUND_BY_NAME.exception_with_parameters(
+                atlan_tag_name
+            )
         query_params = {"attr:qualifiedName": qualified_name}
         self._call_api(
             DELETE_ENTITY_BY_ATTRIBUTE.format_path_with_params(
@@ -1585,6 +1604,7 @@ class AtlanClient(BaseSettings):
         :param certificate_status: specific certificate to set on the asset
         :param message: (optional) message to set (or None for no message)
         :returns: the result of the update, or None if the update failed
+        :raises AtlanError: on any API communication issue
         """
         asset = asset_type()
         asset.qualified_name = qualified_name
@@ -1677,6 +1697,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the asset
         :param custom_metadata: custom metadata to update, as human-readable names mapped to values
+        :raises AtlanError: on any API communication issue
         """
         custom_metadata_request = CustomMetadataRequest.create(
             custom_metadata_dict=custom_metadata
@@ -1699,6 +1720,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the asset
         :param custom_metadata: custom metadata to replace, as human-readable names mapped to values
+        :raises AtlanError: on any API communication issue
         """
         # clear unset attributes so that they are removed
         custom_metadata.clear_unset()
@@ -1722,6 +1744,7 @@ class AtlanClient(BaseSettings):
 
         :param guid: unique identifier (GUID) of the asset
         :param cm_name: human-readable name of the custom metadata to remove
+        :raises AtlanError: on any API communication issue
         """
         custom_metadata = CustomMetadataDict(name=cm_name)
         # invoke clear_all so all attributes are set to None and consequently removed
@@ -1762,16 +1785,14 @@ class AtlanClient(BaseSettings):
         """
         if guid:
             if qualified_name:
-                raise ValueError(
-                    "Either guid or qualified_name can be be specified not both"
-                )
+                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
             asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
             asset = self.get_asset_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
-            raise ValueError("Either guid or qualified name must be specified")
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         if not terms:
             return asset
         replacement_terms: list[AtlasGlossaryTerm] = []
@@ -1806,16 +1827,14 @@ class AtlanClient(BaseSettings):
         """
         if guid:
             if qualified_name:
-                raise ValueError(
-                    "Either guid or qualified_name can be be specified not both"
-                )
+                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
             asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
             asset = self.get_asset_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
-            raise ValueError("Either guid or qualified name must be specified")
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         asset.assigned_terms = terms
         response = self.save(entity=asset)
         if assets := response.assets_updated(asset_type=asset_type):
@@ -1843,19 +1862,17 @@ class AtlanClient(BaseSettings):
         :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)
         """
         if not terms:
-            raise ValueError("A list of assigned_terms to remove must be specified")
+            raise ErrorCode.MISSING_TERMS.exception_with_parameters()
         if guid:
             if qualified_name:
-                raise ValueError(
-                    "Either guid or qualified_name can be be specified not both"
-                )
+                raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
             asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
             asset = self.get_asset_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
-            raise ValueError("Either guid or qualified name must be specified")
+            raise ErrorCode.QN_OR_GUID.exception_with_parameters()
         replacement_terms: list[AtlasGlossaryTerm] = []
         guids_to_be_removed = {t.guid for t in terms}
         if existing_terms := asset.assigned_terms:
@@ -1910,6 +1927,7 @@ class AtlanClient(BaseSettings):
 
         :param lineage_request: detailing the lineage query, parameters, and so on to run
         :returns: the results of the lineage request
+        :raises AtlanError: on any API communication issue
         """
         raw_json = self._call_api(
             GET_LINEAGE, None, lineage_request, exclude_unset=False
@@ -1924,11 +1942,11 @@ class AtlanClient(BaseSettings):
 
         :param lineage_request: detailing the lineage query, parameters, and so on to run
         :returns: the results of the lineage request
+        :raises InvalidRequestError: if the requested lineage direction is 'BOTH' (unsupported for this operation)
+        :raises AtlanError: on any API communication issue
         """
         if lineage_request.direction == LineageDirection.BOTH:
-            raise InvalidRequestException(
-                message="Unable to request both directions of lineage at the same time through the lineage list API.",
-            )
+            raise ErrorCode.INVALID_LINEAGE_DIRECTION.exception_with_parameters()
         raw_json = self._call_api(
             GET_LINEAGE_LIST, None, request_obj=lineage_request, exclude_unset=True
         )
@@ -1937,8 +1955,9 @@ class AtlanClient(BaseSettings):
                 assets = parse_obj_as(list[Asset], raw_json["entities"])
                 has_more = parse_obj_as(bool, raw_json["hasMore"])
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json["entities"])
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             assets = []
             has_more = False
@@ -1962,6 +1981,7 @@ class AtlanClient(BaseSettings):
         :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
         :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
                                     NOT an API token
+        :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
         """
         from pyatlan.model.assets.asset00 import Asset
         from pyatlan.model.fluent_search import FluentSearch
@@ -1970,7 +1990,6 @@ class AtlanClient(BaseSettings):
         if existing_client := self.get_default_client():
             tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
             AtlanClient.register_client(tmp)
-
             # Look for the asset as the impersonated user, ensuring we include the admin users
             # in the results (so we avoid clobbering any existing admin users)
             request = (
@@ -1990,11 +2009,9 @@ class AtlanClient(BaseSettings):
             else:
                 AtlanClient.reset_default_client()
                 AtlanClient.register_client(existing_client)
-                raise NotFoundError(
-                    message=f"Asset with GUID {asset_guid} does not exist.",
-                    code="ATLAN-PYTHON-404-001",
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
+                    asset_guid
                 )
-
             AtlanClient.reset_default_client()
             AtlanClient.register_client(existing_client)
             return response
@@ -2012,6 +2029,7 @@ class AtlanClient(BaseSettings):
         :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
         :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
                                     NOT an API token
+        :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.model.assets.asset00 import Asset
         from pyatlan.model.fluent_search import FluentSearch
@@ -2020,7 +2038,6 @@ class AtlanClient(BaseSettings):
         if existing_client := self.get_default_client():
             tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
             AtlanClient.register_client(tmp)
-
             # Look for the asset as the impersonated user, ensuring we include the admin users
             # in the results (so we avoid clobbering any existing admin users)
             request = (
@@ -2040,15 +2057,12 @@ class AtlanClient(BaseSettings):
             else:
                 AtlanClient.reset_default_client()
                 AtlanClient.register_client(existing_client)
-                raise NotFoundError(
-                    message=f"Asset with GUID {asset_guid} does not exist.",
-                    code="ATLAN-PYTHON-404-001",
+                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
+                    asset_guid
                 )
-
             AtlanClient.reset_default_client()
             AtlanClient.register_client(existing_client)
             return response
-
         return None
 
     def get_api_tokens(
@@ -2068,6 +2082,7 @@ class AtlanClient(BaseSettings):
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
         :returns: a list of API tokens that match the provided criteria
+        :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, str] = {
             "count": str(count),
@@ -2132,6 +2147,7 @@ class AtlanClient(BaseSettings):
         :param validity_seconds: time in seconds after which the token should expire (negative numbers are treated as
                                  infinite)
         :returns: the created API token
+        :raises AtlanError: on any API communication issue
         """
         request = ApiTokenRequest(
             display_name=display_name,
@@ -2159,6 +2175,7 @@ class AtlanClient(BaseSettings):
                          provide the complete list on any update (any not included in the list will be removed,
                          so if you do not specify any personas then ALL personas will be unlinked from the API token)
         :returns: the created API token
+        :raises AtlanError: on any API communication issue
         """
         request = ApiTokenRequest(
             display_name=display_name,
@@ -2175,6 +2192,7 @@ class AtlanClient(BaseSettings):
         Delete (purge) the specified API token.
 
         :param guid: unique identifier (GUID) of the API token to delete
+        :raises AtlanError: on any API communication issue
         """
         self._call_api(DELETE_API_TOKEN.format_path_with_params(guid))
 
@@ -2186,6 +2204,7 @@ class AtlanClient(BaseSettings):
 
         :param keycloak_request: details of the filters to apply when retrieving events
         :returns: the events that match the supplied filters
+        :raises AtlanError: on any API communication issue
         """
         if raw_json := self._call_api(
             KEYCLOAK_EVENTS,
@@ -2195,8 +2214,9 @@ class AtlanClient(BaseSettings):
             try:
                 events = parse_obj_as(list[KeycloakEvent], raw_json)
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json)
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             events = []
         return KeycloakEventResponse(
@@ -2213,6 +2233,7 @@ class AtlanClient(BaseSettings):
 
         :param admin_request: details of the filters to apply when retrieving admin events
         :returns: the admin events that match the supplied filters
+        :raises AtlanError: on any API communication issue
         """
         if raw_json := self._call_api(
             ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
@@ -2220,8 +2241,9 @@ class AtlanClient(BaseSettings):
             try:
                 events = parse_obj_as(list[AdminEvent], raw_json)
             except ValidationError as err:
-                LOGGER.error("Problem parsing JSON: %s", raw_json)
-                raise err
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
         else:
             events = []
         return AdminEventResponse(
@@ -2397,9 +2419,8 @@ class AtlanClient(BaseSettings):
                     name,
                 )
             return assets
-        raise NotFoundError(
-            f"The {asset_type.__name__} asset could not be found by name: {name}.",
-            "ATLAN-PYTHON-404-014",
+        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+            asset_type.__name__, name
         )
 
     @validate_arguments()

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 else:
     from pydantic.dataclasses import dataclass
 
-from pyatlan.error import InvalidRequestError
+from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
@@ -70,12 +70,7 @@ class LineageGraph:
             if relation.is_full_link:
                 add_relation(relation)
             else:
-                raise InvalidRequestError(
-                    param="",
-                    code="ATLAN-JAVA-400-013",
-                    message="Lineage was retrieved using hideProces=false. "
-                    "We do not provide a graph view in this case.",
-                )
+                raise ErrorCode.NO_GRAPH_WITH_PROCESS.exception_with_parameters()
         return cls(downstream_list=downstream_list, upstream_list=upstream_list)
 
     @staticmethod

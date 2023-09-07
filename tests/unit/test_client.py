@@ -6,7 +6,7 @@ from unittest.mock import DEFAULT, Mock, patch
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import NotFoundError
+from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
@@ -29,7 +29,7 @@ GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSAR
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, assigned_terms, message",
+    "guid, qualified_name, asset_type, assigned_terms, message, error",
     [
         (
             "123",
@@ -37,13 +37,7 @@ GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSAR
             Table,
             None,
             "1 validation error for AppendTerms\\nterms\\n  none is not an allowed value ",
-        ),
-        (
-            None,
-            None,
-            Table,
-            [AtlasGlossaryTerm()],
-            "Either guid or qualified name must be specified",
+            ValueError,
         ),
         (
             "123",
@@ -51,29 +45,40 @@ GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSAR
             None,
             [AtlasGlossaryTerm()],
             "1 validation error for AppendTerms\\nasset_type\\n  none is not an allowed value ",
+            ValueError,
+        ),
+        (
+            None,
+            None,
+            Table,
+            [AtlasGlossaryTerm()],
+            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+            InvalidRequestError,
         ),
         (
             "123",
             "default/abc",
             Table,
             [AtlasGlossaryTerm()],
-            "Either guid or qualified_name can be be specified not both",
+            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+            InvalidRequestError,
         ),
     ],
 )
-def test_append_terms_with_invalid_parameter_raises_valueerror(
+def test_append_terms_with_invalid_parameter_raises_error(
     guid,
     qualified_name,
     asset_type,
     assigned_terms,
     message,
+    error,
     monkeypatch,
 ):
     monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     client = AtlanClient()
 
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(error, match=message):
         client.append_terms(
             guid=guid,
             qualified_name=qualified_name,
@@ -178,14 +183,15 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, assigned_terms, message",
+    "guid, qualified_name, asset_type, assigned_terms, message, error",
     [
         (
             None,
             None,
             Table,
             [AtlasGlossaryTerm()],
-            "Either guid or qualified name must be specified",
+            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+            InvalidRequestError,
         ),
         (
             "123",
@@ -193,13 +199,15 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
             None,
             [AtlasGlossaryTerm()],
             "1 validation error for ReplaceTerms\\nasset_type\\n  none is not an allowed value ",
+            ValueError,
         ),
         (
             "123",
             "default/abc",
             Table,
             [AtlasGlossaryTerm()],
-            "Either guid or qualified_name can be be specified not both",
+            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+            InvalidRequestError,
         ),
         (
             "123",
@@ -207,22 +215,24 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
             Table,
             None,
             "1 validation error for ReplaceTerms\\nterms\\n  none is not an allowed value ",
+            ValueError,
         ),
     ],
 )
-def test_replace_terms_with_invalid_parameter_raises_valueerror(
+def test_replace_terms_with_invalid_parameter_raises_error(
     guid,
     qualified_name,
     asset_type,
     assigned_terms,
     message,
+    error,
     monkeypatch,
 ):
     monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     client = AtlanClient()
 
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(error, match=message):
         client.replace_terms(
             guid=guid,
             qualified_name=qualified_name,
@@ -254,14 +264,15 @@ def test_replace_terms(
 
 
 @pytest.mark.parametrize(
-    "guid, qualified_name, asset_type, assigned_terms, message",
+    "guid, qualified_name, asset_type, assigned_terms, message, error",
     [
         (
             None,
             None,
             Table,
             [AtlasGlossaryTerm()],
-            "Either guid or qualified name must be specified",
+            "ATLAN-PYTHON-400-043 Either qualified_name or guid should be provided.",
+            InvalidRequestError,
         ),
         (
             "123",
@@ -269,13 +280,15 @@ def test_replace_terms(
             None,
             [AtlasGlossaryTerm()],
             "1 validation error for RemoveTerms\\nasset_type\\n  none is not an allowed value ",
+            ValueError,
         ),
         (
             "123",
             "default/abc",
             Table,
             [AtlasGlossaryTerm()],
-            "Either guid or qualified_name can be be specified not both",
+            "ATLAN-PYTHON-400-042 Only qualified_name or guid should be provided but not both.",
+            InvalidRequestError,
         ),
         (
             "123",
@@ -283,29 +296,32 @@ def test_replace_terms(
             Table,
             None,
             "1 validation error for RemoveTerms\\nterms\\n  none is not an allowed value ",
+            ValueError,
         ),
         (
             "123",
             None,
             Table,
             [],
-            "A list of assigned_terms to remove must be specified",
+            "ATLAN-PYTHON-400-044 A list of assigned_terms to remove must be specified.",
+            InvalidRequestError,
         ),
     ],
 )
-def test_remove_terms_with_invalid_parameter_raises_valueerror(
+def test_remove_terms_with_invalid_parameter_raises_error(
     guid,
     qualified_name,
     asset_type,
     assigned_terms,
     message,
+    error,
     monkeypatch,
 ):
     monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     client = AtlanClient()
 
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(error, match=message):
         client.remove_terms(
             guid=guid,
             qualified_name=qualified_name,
@@ -345,7 +361,9 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
 
 
 def test_register_client_with_bad_parameter_raises_value_error():
-    with pytest.raises(ValueError, match="client must be an instance of AtlanClient"):
+    with pytest.raises(
+        InvalidRequestError, match="client must be an instance of AtlanClient"
+    ):
         AtlanClient.register_client("")
     assert AtlanClient.get_default_client() is None
 

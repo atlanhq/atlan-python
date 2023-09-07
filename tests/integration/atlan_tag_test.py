@@ -15,7 +15,7 @@ from tenacity import (
 
 from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.error import AtlanError
+from pyatlan.errors import AtlanError
 from pyatlan.model.atlan_image import AtlanImage
 from pyatlan.model.enums import AtlanIcon, AtlanTagColor, TagIconType
 from pyatlan.model.typedef import AtlanTagDef

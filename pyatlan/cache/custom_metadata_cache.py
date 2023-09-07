@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
-from pyatlan.error import InvalidRequestError, LogicError, NotFoundError
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
@@ -27,6 +27,7 @@ class CustomMetadataCache:
         """
         Refreshes the cache of custom metadata structures by requesting the full set of custom metadata
         structures from Atlan.
+        :raises LogicError: if duplicate custom attributes are detected
         """
         from pyatlan.client.atlan import AtlanClient
 
@@ -59,10 +60,8 @@ class CustomMetadataCache:
                         if attr.options and attr.options.is_archived:
                             cls.archived_attr_ids[attr_id] = attr_name
                         elif attr_name in cls.map_attr_name_to_id[type_id]:
-                            raise LogicError(
-                                f"Multiple custom attributes with exactly the same name ({attr_name}) "
-                                f"found for: {type_name}",
-                                code="ATLAN-PYTHON-500-100",
+                            raise ErrorCode.DUPLICATE_CUSTOM_ATTRIBUTES.exception_with_parameters(
+                                attr_name, type_name
                             )
                         else:
                             cls.map_attr_name_to_id[type_id][attr_name] = attr_id
@@ -74,23 +73,18 @@ class CustomMetadataCache:
 
         :param name: human-readable name of the custom metadata set
         :returns: Atlan-internal ID string of the custom metadata set
+        :raises InvalidRequestError: if no name was provided
+        :raises NotFoundError: if the custom metadata cannot be found
         """
         if name is None or not name.strip():
-            raise InvalidRequestError(
-                message="No name was provided when attempting to retrieve custom metadata.",
-                code="ATLAN-PYTHON-404-008",
-                param="",
-            )
+            raise ErrorCode.MISSING_CM_NAME.exception_with_parameters()
         if cm_id := cls.map_name_to_id.get(name):
             return cm_id
         # If not found, refresh the cache and look again (could be stale)
         cls.refresh_cache()
         if cm_id := cls.map_name_to_id.get(name):
             return cm_id
-        raise NotFoundError(
-            message=f"Custom metadata with name {name} does not exist.",
-            code="ATLAN-PYTHON-404-009",
-        )
+        raise ErrorCode.CM_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     @classmethod
     def get_name_for_id(cls, idstr: str) -> str:
@@ -99,23 +93,18 @@ class CustomMetadataCache:
 
         :param idstr: Atlan-internal ID string of the custom metadata set
         :returns: human-readable name of the custom metadata set
+        :raises InvalidRequestError: if no ID was provided
+        :raises NotFoundError: if the custom metadata cannot be found
         """
         if idstr is None or not idstr.strip():
-            raise InvalidRequestError(
-                message="No ID was provided when attempting to retrieve custom metadata.",
-                code="ATLAN-PYTHON-404-008",
-                param="",
-            )
+            raise ErrorCode.MISSING_CM_ID.exception_with_parameters()
         if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
         # If not found, refresh the cache and look again (could be stale)
         cls.refresh_cache()
         if cm_name := cls.map_id_to_name.get(idstr):
             return cm_name
-        raise NotFoundError(
-            message=f"Custom metadata with ID {idstr} does not exist.",
-            code="ATLAN-PYTHON-404-009",
-        )
+        raise ErrorCode.CM_NOT_FOUND_BY_ID.exception_with_parameters(idstr)
 
     @classmethod
     def get_all_custom_attributes(
@@ -131,6 +120,7 @@ class CustomMetadataCache:
         :param force_refresh: if True, will refresh the custom metadata cache; if False, will only refresh the
                               cache if it is empty
         :returns: a dict from custom metadata set name to all details about its attributes
+        :raises NotFoundError: if the custom metadata cannot be found
         """
         if len(cls.cache_by_id) == 0 or force_refresh:
             cls.refresh_cache()
@@ -138,9 +128,7 @@ class CustomMetadataCache:
         for type_id, cm in cls.cache_by_id.items():
             type_name = cls.get_name_for_id(type_id)
             if not type_name:
-                raise NotFoundError(
-                    f"The type_name for {type_id} could not be found.", code="fixme"
-                )
+                raise ErrorCode.CM_NOT_FOUND_BY_ID.exception_with_parameters(type_id)
             attribute_defs = cm.attribute_defs
             if include_deleted:
                 to_include = attribute_defs
@@ -164,6 +152,7 @@ class CustomMetadataCache:
         :param set_name: human-readable name of the custom metadata set
         :param attr_name: human-readable name of the attribute
         :returns: Atlan-internal ID string for the attribute
+        :raises NotFoundError: if the custom metadata attribute cannot be found
         """
         set_id = cls.get_id_for_name(set_name)
         if sub_map := cls.map_attr_name_to_id.get(set_id):
@@ -178,14 +167,10 @@ class CustomMetadataCache:
             if attr_id:
                 # If found, return straight away
                 return attr_id
-            raise NotFoundError(
-                message=f"Custom metadata property with name {attr_name} does not exist in custom metadata {set_name}.",
-                code="ATLAN-PYTHON-404-009",
+            raise ErrorCode.CM_ATTR_NOT_FOUND_BY_NAME.exception_with_parameters(
+                set_name
             )
-        raise NotFoundError(
-            message=f"Custom metadata with ID {set_id} does not exist.",
-            code="ATLAN-PYTHON-404-009",
-        )
+        raise ErrorCode.CM_ATTR_NOT_FOUND_BY_ID.exception_with_parameters(set_id)
 
     @classmethod
     def get_attr_name_for_id(cls, set_id: str, attr_id: str) -> str:
@@ -196,6 +181,7 @@ class CustomMetadataCache:
         :param set_id: Atlan-internal ID string for the custom metadata set
         :param attr_id: Atlan-internal ID string for the attribute
         :returns: human-readable name of the attribute
+        :raises NotFoundError: if the custom metadata attribute cannot be found
         """
         if sub_map := cls.map_attr_id_to_name.get(set_id):
             if attr_name := sub_map.get(attr_id):
@@ -204,9 +190,8 @@ class CustomMetadataCache:
             if sub_map := cls.map_attr_id_to_name.get(set_id):
                 if attr_name := sub_map.get(attr_id):
                     return attr_name
-        raise NotFoundError(
-            message=f"Custom metadata property with ID {attr_id} does not exist in the custom metadata {set_id}.",
-            code="ATLAN-PYTHON-404-009",
+        raise ErrorCode.CM_ATTR_NOT_FOUND_BY_ID.exception_with_parameters(
+            attr_id, set_id
         )
 
     @classmethod
@@ -265,14 +250,14 @@ class CustomMetadataCache:
 
         :param name: human-readable name of the custom metadata set
         :returns: the full custom metadata structure definition for that set
+        :raises InvalidRequestError: if no name was provided
+        :raises NotFoundError: if the custom metadata cannot be found
         """
         ba_id = cls.get_id_for_name(name)
-        if ba_id is None:
-            raise ValueError(f"No custom metadata with the name: {name} exist")
         if typedef := cls.cache_by_id.get(ba_id):
             return typedef
         else:
-            raise ValueError(f"No custom metadata with the name: {name} found")
+            raise ErrorCode.CM_NOT_FOUND_BY_NAME.exception_with_parameters(name)
 
     @classmethod
     def get_attribute_def(cls, attr_id: str) -> AttributeDef:
@@ -281,13 +266,15 @@ class CustomMetadataCache:
 
         :param attr_id: Atlan-internal ID string for the custom metadata attribute
         :returns: attribute definition for the custom metadata attribute
+        :raises InvalidRequestError: if no attribute ID was provided
+        :raises NotFoundError: if the custom metadata attribute cannot be found
         """
         if not attr_id:
-            raise ValueError(
-                "No custom metadata attribute ID was provided, cannot lookup attribute definition."
-            )
+            raise ErrorCode.MISSING_CM_ATTR_ID.exception_with_parameters()
         if cls.attr_cache_by_id is None:
             cls.refresh_cache()
         if attr_def := cls.attr_cache_by_id.get(attr_id):
             return attr_def
-        raise ValueError(f"No custom metadata attribute with the id: {attr_id} found")
+        raise ErrorCode.CM_ATTR_NOT_FOUND_BY_ID.exception_with_parameters(
+            attr_id, "(unknown)"
+        )

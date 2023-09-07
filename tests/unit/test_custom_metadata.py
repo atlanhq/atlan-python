@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pyatlan.error import NotFoundError
+from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.custom_metadata import (
     CustomMetadataDict,
     CustomMetadataProxy,
@@ -46,7 +46,9 @@ class Test_CustomMetadataDict:
         return CustomMetadataDict(CM_NAME)
 
     def test_init_when_invalid_name_throws_not_found_error(self, mock_cache):
-        mock_cache.get_id_for_name.side_effect = NotFoundError(message="", code="123")
+        mock_cache.get_id_for_name.side_effect = (
+            ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters("123")
+        )
         with pytest.raises(NotFoundError):
             CustomMetadataDict(CM_NAME)
         mock_cache.get_id_for_name.assert_called_with(CM_NAME)
