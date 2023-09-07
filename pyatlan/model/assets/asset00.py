@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import sys
+import uuid
 from datetime import datetime
 from io import StringIO
 from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
@@ -6156,6 +6157,13 @@ class File(Resource):
 class Link(Resource):
     """Description"""
 
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, asset: Asset, name: str, link: str) -> Link:
+        return Link(
+            attributes=Link.Attributes.create(asset=asset, name=name, link=link)
+        )
+
     type_name: str = Field("Link", allow_mutation=False)
 
     @validator("type_name")
@@ -6225,6 +6233,17 @@ class Link(Resource):
         asset: Optional[Asset] = Field(
             None, description="", alias="asset"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(cls, *, asset: Asset, name: str, link: str) -> Link.Attributes:
+            validate_required_fields(["asset", "name", "link"], [asset, name, link])
+            return Link.Attributes(
+                qualified_name=str(uuid.uuid4()),
+                name=name,
+                link=link,
+                asset=asset,
+            )
 
     attributes: "Link.Attributes" = Field(
         default_factory=lambda: Link.Attributes(),
