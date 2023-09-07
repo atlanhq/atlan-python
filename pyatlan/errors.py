@@ -685,14 +685,14 @@ class ErrorCode(Enum):
     )
     RETRIES_INTERRUPTED = (
         500,
-        "ATLAN-JAVA-500-005",
+        "ATLAN-PYTHON-500-005",
         "Loop for retrying a failed action was interrupted.",
         "Allow the retry loop to complete, or ignore this error if it was your intention to interrupt the retries.",
         ApiError,
     )
     RETRY_OVERRUN = (
         500,
-        "ATLAN-JAVA-500-006",
+        "ATLAN-PYTHON-500-006",
         "Loop for retrying a failed action hit the maximum number of retries.",
         "Increase the maximum number of retries through Atlan.setMaxNetworkRetries= () or ignore this error if it was "
         "your intention to fail after a maximum number of retries was reached.",
