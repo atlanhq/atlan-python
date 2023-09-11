@@ -1,3 +1,11 @@
+## 0.8.0 (September 11, 20023)
+* Improve retry strategy for HTTP
+* Adds generators for developer portal docs
+* Adds create helper for Links
+* Fixes bug in adding API tokens as admins and viewers
+* Removes ability to activate and deactivate users
+* Refactored Exception hierarchy
+
 ## 0.7.0 (September 4, 2023)
 * Upgrade to pydantic 1.10.12
 
