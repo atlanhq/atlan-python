@@ -27,11 +27,8 @@ class TestId:
 @pytest.fixture(scope="module")
 def client() -> Generator[AtlanClient, None, None]:
     client = AtlanClient()
-    client.register_client(client)
 
     yield client
-
-    AtlanClient.reset_default_client()
 
 
 def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:

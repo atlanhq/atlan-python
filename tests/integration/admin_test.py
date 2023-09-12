@@ -33,7 +33,7 @@ def delete_group(client: AtlanClient, guid: str) -> None:
     client.purge_group(guid)
 
 
-def test_retrieve_roles():
+def test_retrieve_roles(client: AtlanClient):
     admin_role_guid = RoleCache.get_id_for_name("$admin")
     assert admin_role_guid
 

@@ -434,20 +434,15 @@ class AtlanClient(BaseSettings):
         cls._default_client = client
 
     @classmethod
-    def get_default_client(cls) -> "Optional[AtlanClient]":
+    def get_default_client(cls) -> AtlanClient:
         """
         Retrieves the default client.
 
         :returns: the default client, if it has been set
         """
+        if cls._default_client is None:
+            raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
         return cls._default_client
-
-    @classmethod
-    def reset_default_client(cls):
-        """
-        Sets the default_client to None
-        """
-        cls._default_client = None
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -459,6 +454,7 @@ class AtlanClient(BaseSettings):
                 "x-atlan-agent-id": "python",
             }
         }
+        AtlanClient._default_client = self
 
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
@@ -2007,12 +2003,10 @@ class AtlanClient(BaseSettings):
                 to_update.admin_users = existing_admins
                 response = tmp.save(to_update)
             else:
-                AtlanClient.reset_default_client()
                 AtlanClient.register_client(existing_client)
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
                     asset_guid
                 )
-            AtlanClient.reset_default_client()
             AtlanClient.register_client(existing_client)
             return response
 
@@ -2055,12 +2049,10 @@ class AtlanClient(BaseSettings):
                 to_update.viewer_users = existing_viewers
                 response = tmp.save(to_update)
             else:
-                AtlanClient.reset_default_client()
                 AtlanClient.register_client(existing_client)
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
                     asset_guid
                 )
-            AtlanClient.reset_default_client()
             AtlanClient.register_client(existing_client)
             return response
         return None
