@@ -456,6 +456,10 @@ class AtlanClient(BaseSettings):
         }
         AtlanClient._default_client = self
 
+    @property
+    def cache_key(self) -> int:
+        return f"{self.base_url}/{self.api_key}".__hash__()
+
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
             response = self._session.request(
