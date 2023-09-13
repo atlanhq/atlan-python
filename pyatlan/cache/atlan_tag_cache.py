@@ -87,7 +87,7 @@ class AtlanTagCache:
         cls_id = self.map_name_to_id.get(name)
         if not cls_id and name not in self.deleted_names:
             # If not found, refresh the cache and look again (could be stale)
-            self.refresh_cache()
+            self._refresh_cache()
             cls_id = self.map_name_to_id.get(name)
             if not cls_id:
                 # If still not found after refresh, mark it as deleted (could be
@@ -106,7 +106,7 @@ class AtlanTagCache:
         cls_name = self.map_id_to_name.get(idstr)
         if not cls_name and idstr not in self.deleted_ids:
             # If not found, refresh the cache and look again (could be stale)
-            self.refresh_cache()
+            self._refresh_cache()
             cls_name = self.map_id_to_name.get(idstr)
             if not cls_name:
                 # If still not found after refresh, mark it as deleted (could be
