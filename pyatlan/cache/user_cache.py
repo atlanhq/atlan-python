@@ -10,9 +10,6 @@ class UserCache:
     Lazily-loaded cache for translating Atlan-internal users into their various IDs.
     """
 
-    map_id_to_name: dict[str, str] = dict()
-    map_name_to_id: dict[str, str] = dict()
-    map_email_to_id: dict[str, str] = dict()
     caches: dict[int, "UserCache"] = {}
 
     @classmethod
