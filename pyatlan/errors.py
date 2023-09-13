@@ -416,9 +416,9 @@ class ErrorCode(Enum):
     )
     NO_ATLAN_CLIENT_AVAILABLE = (
         400,
-        "ATLAN-PYTHON-400-037",
+        "ATLAN-PYTHON-400-046",
         "No instance of AtlanClient has been created.",
-        "You must provide create an instance of AtlanClient.",
+        "You must create an instance of AtlanClient.",
         InvalidRequestError,
     )
     AUTHENTICATION_PASSTHROUGH = (
