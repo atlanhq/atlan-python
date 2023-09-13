@@ -11,7 +11,6 @@ class EnumCache:
     Lazily-loaded cache for accessing details of an enumeration.
     """
 
-    cache_by_name: dict[str, EnumDef] = dict()
     caches: dict[int, "EnumCache"] = {}
 
     @classmethod

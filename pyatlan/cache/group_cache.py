@@ -10,9 +10,6 @@ class GroupCache:
     Lazily-loaded cache for translating Atlan-internal groups into their various IDs.
     """
 
-    map_id_to_name: dict[str, str] = dict()
-    map_name_to_id: dict[str, str] = dict()
-    map_alias_to_id: dict[str, str] = dict()
     caches: dict[int, "GroupCache"] = {}
 
     @classmethod
@@ -57,9 +54,9 @@ class GroupCache:
 
     def __init__(self, provider: GroupProvider):
         self.provider = provider
-        self.map_id_to_name: dict[str, str] = dict()
-        self.map_name_to_id: dict[str, str] = dict()
-        self.map_alias_to_id: dict[str, str] = dict()
+        self.map_id_to_name: dict[str, str] = {}
+        self.map_name_to_id: dict[str, str] = {}
+        self.map_alias_to_id: dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
         groups = self.provider.get_all_groups()
