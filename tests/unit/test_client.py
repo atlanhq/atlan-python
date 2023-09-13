@@ -360,25 +360,21 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
         assert other_term in updated_terms
 
 
-def test_register_client_with_bad_parameter_raises_value_error():
+def test_register_client_with_bad_parameter_raises_value_error(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+    client = AtlanClient()
     with pytest.raises(
         InvalidRequestError, match="client must be an instance of AtlanClient"
     ):
-        AtlanClient.register_client("")
-    assert AtlanClient.get_default_client() is None
+        AtlanClient.set_default_client("")
+    assert AtlanClient.get_default_client() is client
 
 
 def test_register_client():
     client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
-    AtlanClient.register_client(client)
+    AtlanClient.set_default_client(client)
     assert AtlanClient.get_default_client() == client
-
-
-def test_reset_client():
-    client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
-    AtlanClient.register_client(client)
-    AtlanClient.reset_default_client()
-    assert AtlanClient.get_default_client() is None
 
 
 @pytest.mark.parametrize(

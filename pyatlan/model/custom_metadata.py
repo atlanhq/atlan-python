@@ -20,7 +20,9 @@ class CustomMetadataDict(UserDict):
         self._name = name
         self._modified = False
         id = CustomMetadataCache.get_id_for_name(name)
-        self._names = set(CustomMetadataCache.map_attr_id_to_name[id].values())
+        self._names = set(
+            CustomMetadataCache.get_cache().map_attr_id_to_name[id].values()
+        )
 
     @property
     def modified(self):

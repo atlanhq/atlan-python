@@ -2,6 +2,7 @@ from typing import Optional
 
 import pytest
 
+from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
 from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
@@ -64,6 +65,7 @@ def test_create_with_missing_parameters_raise_value_error(
     mock_user_cache.get_id_for_name.side_effect = side_effect
     mock_group_cache.get_id_for_alias.side_effect = side_effect
 
+    AtlanClient()
     with pytest.raises(ValueError, match=message):
         Connection.create(
             name=name,

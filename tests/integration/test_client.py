@@ -5,6 +5,7 @@ import pytest
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import NotFoundError
 from pyatlan.model.assets import (
+    Asset,
     AtlasGlossary,
     AtlasGlossaryTerm,
     Connection,
@@ -239,6 +240,19 @@ def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
         qualified_name=qualified_name, asset_type=AtlasGlossary
     )
     assert glossary.attributes.qualified_name == qualified_name
+
+
+def test_get_by_qualified_name_when_superclass_specified_raises_not_found_error(
+    client: AtlanClient, glossary: AtlasGlossary
+):
+    qualified_name = glossary.qualified_name or ""
+    with pytest.raises(
+        NotFoundError,
+        match="ATLAN-PYTHON-404-014 The Asset asset could not be found by name: ",
+    ):
+        client.get_asset_by_qualified_name(
+            qualified_name=qualified_name, asset_type=Asset
+        )
 
 
 def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):

@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Protocol
 
 from pydantic import Field
 
@@ -211,3 +211,17 @@ class ChangeRoleRequest(AtlanObject):
     role_id: str = Field(
         description="Unique identifier (GUID) of the new workspace role for the user."
     )
+
+
+class UserProvider(Protocol):
+    """Protocol that is implemented by classes that can provide a list of all the users in Atlan"""
+
+    def get_all_users(
+        self,
+        limit: int = 20,
+    ) -> list[AtlanUser]:
+        """
+        Retrieve all users defined in Atlan.
+
+        :returns: a list of all the users in Atlan
+        """

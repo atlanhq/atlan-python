@@ -414,6 +414,13 @@ class ErrorCode(Enum):
         "Verify that you have provided an instance of AtlanClient.",
         InvalidRequestError,
     )
+    NO_ATLAN_CLIENT_AVAILABLE = (
+        400,
+        "ATLAN-PYTHON-400-046",
+        "No instance of AtlanClient has been created.",
+        "You must create an instance of AtlanClient.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
