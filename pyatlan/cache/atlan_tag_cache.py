@@ -53,9 +53,9 @@ class AtlanTagCache:
 
     def __init__(self, provider: TypeDefResponseProvider):
         self.provider = provider
-        self.cache_by_id: dict[str, AtlanTagDef] = dict()
-        self.map_id_to_name: dict[str, str] = dict()
-        self.map_name_to_id: dict[str, str] = dict()
+        self.cache_by_id: dict[str, AtlanTagDef] = {}
+        self.map_id_to_name: dict[str, str] = {}
+        self.map_name_to_id: dict[str, str] = {}
         self.deleted_ids: set[str] = set()
         self.deleted_names: set[str] = set()
 
