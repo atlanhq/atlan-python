@@ -1,4 +1,10 @@
-## 0.8.0 (September 11, 20023)
+## 1.0.0 (September 13, 2023)
+* Initial production release
+* Adds column projections for listing users
+* Renamed register_client method to set_default_client from AtlanClient
+* Removed reset_default_client from AtlanClient
+
+## 0.8.0 (September 11, 2023)
 * Improve retry strategy for HTTP
 * Adds generators for developer portal docs
 * Adds create helper for Links
