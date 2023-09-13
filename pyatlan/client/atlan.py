@@ -424,10 +424,9 @@ class AtlanClient(BaseSettings):
             return self._has_more
 
     @classmethod
-    def register_client(cls, client: "AtlanClient"):
+    def set_default_client(cls, client: "AtlanClient"):
         """
-        Registers a client that was initialized directly in code, rather than automatically,
-        through environment variables.
+        Sets the default client to be used by caches
         """
         if not isinstance(client, AtlanClient):
             raise ErrorCode.MISSING_ATLAN_CLIENT.exception_with_parameters()
@@ -438,7 +437,7 @@ class AtlanClient(BaseSettings):
         """
         Retrieves the default client.
 
-        :returns: the default client, if it has been set
+        :returns: the default client
         """
         if cls._default_client is None:
             raise ErrorCode.NO_ATLAN_CLIENT_AVAILABLE.exception_with_parameters()
@@ -2008,7 +2007,7 @@ class AtlanClient(BaseSettings):
         token_user = str(self.get_current_user().username)
         if existing_client := self.get_default_client():
             tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
-            AtlanClient.register_client(tmp)
+            AtlanClient.set_default_client(tmp)
             # Look for the asset as the impersonated user, ensuring we include the admin users
             # in the results (so we avoid clobbering any existing admin users)
             request = (
@@ -2026,11 +2025,11 @@ class AtlanClient(BaseSettings):
                 to_update.admin_users = existing_admins
                 response = tmp.save(to_update)
             else:
-                AtlanClient.register_client(existing_client)
+                AtlanClient.set_default_client(existing_client)
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
                     asset_guid
                 )
-            AtlanClient.register_client(existing_client)
+            AtlanClient.set_default_client(existing_client)
             return response
 
         return None
@@ -2054,7 +2053,7 @@ class AtlanClient(BaseSettings):
         token_user = str(self.get_current_user().username)
         if existing_client := self.get_default_client():
             tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
-            AtlanClient.register_client(tmp)
+            AtlanClient.set_default_client(tmp)
             # Look for the asset as the impersonated user, ensuring we include the admin users
             # in the results (so we avoid clobbering any existing admin users)
             request = (
@@ -2072,11 +2071,11 @@ class AtlanClient(BaseSettings):
                 to_update.viewer_users = existing_viewers
                 response = tmp.save(to_update)
             else:
-                AtlanClient.register_client(existing_client)
+                AtlanClient.set_default_client(existing_client)
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
                     asset_guid
                 )
-            AtlanClient.register_client(existing_client)
+            AtlanClient.set_default_client(existing_client)
             return response
         return None
 
