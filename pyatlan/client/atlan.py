@@ -1018,7 +1018,7 @@ class AtlanClient(BaseSettings):
         Retrieves an asset by its qualified_name.
 
         :param qualified_name: qualified_name of the asset to be retrieved
-        :param asset_type: type of asset to be retrieved
+        :param asset_type: type of asset to be retrieved ( must be the actual asset type not a super type)
         :param min_ext_info: whether to minimize extra info (True) or not (False)
         :param ignore_relationships: whether to include relationships (False) or exclude them (True)
         :returns: the requested asset
@@ -1034,6 +1034,10 @@ class AtlanClient(BaseSettings):
             GET_ENTITY_BY_UNIQUE_ATTRIBUTE.format_path_with_params(asset_type.__name__),
             query_params,
         )
+        if raw_json["entity"]["typeName"] != asset_type.__name__:
+            raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+                asset_type.__name__, qualified_name
+            )
         asset = self._handle_relationships(raw_json)
         if not isinstance(asset, asset_type):
             raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(

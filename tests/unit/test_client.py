@@ -367,13 +367,13 @@ def test_register_client_with_bad_parameter_raises_value_error(monkeypatch):
     with pytest.raises(
         InvalidRequestError, match="client must be an instance of AtlanClient"
     ):
-        AtlanClient.register_client("")
+        AtlanClient.set_default_client("")
     assert AtlanClient.get_default_client() is client
 
 
 def test_register_client():
     client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
-    AtlanClient.register_client(client)
+    AtlanClient.set_default_client(client)
     assert AtlanClient.get_default_client() == client
 
 
