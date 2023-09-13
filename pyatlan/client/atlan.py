@@ -13,7 +13,7 @@ import time
 import uuid
 from abc import ABC
 from types import SimpleNamespace
-from typing import ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
+from typing import Any, ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
 
 import requests
 from pydantic import (
@@ -896,7 +896,7 @@ class AtlanClient(BaseSettings):
         :returns: a list of users that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
-        query_params: dict[str, str] = {
+        query_params: dict[str, Any] = {
             "count": str(count),
             "offset": str(offset),
         }
@@ -906,6 +906,25 @@ class AtlanClient(BaseSettings):
             query_params["filter"] = post_filter
         if sort is not None:
             query_params["sort"] = sort
+        query_params["maxLoginEvents"] = 1
+        query_params["columns"] = [
+            "firstName",
+            "lastName",
+            "username",
+            "id",
+            "email",
+            "emailVerified",
+            "enabled",
+            "roles",
+            "defaultRoles",
+            "groupCount",
+            "attributes",
+            "personas",
+            "createdTimestamp",
+            "lastLoginTime",
+            "loginEvents",
+            "isLocked",
+        ]
         raw_json = self._call_api(GET_USERS.format_path_with_params(), query_params)
         return UserResponse(**raw_json)
 
