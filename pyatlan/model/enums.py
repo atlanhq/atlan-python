@@ -1721,6 +1721,22 @@ class TypeName(str, Enum):
     ARRAY_STRING = "array<string>"
 
 
+class AtlanWorkflowPhase(str, Enum):
+    SUCCESS = "Succeeded"
+    RUNNING = "Running"
+    FAILED = "Failed"
+    ERROR = "Error"
+    PENDING = "Pending"
+
+
+class ChildScoreMode(str, Enum):
+    NONE = "none"
+    AVG = "avg"
+    SUM = "sum"
+    MAX = "max"
+    MIN = "min"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************

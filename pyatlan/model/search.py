@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/elastic/elasticsearch-dsl-py.git (under Apache-2.0 license)
+import copy
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from itertools import chain
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union
 
 from pydantic import (
     ConfigDict,
@@ -18,16 +19,16 @@ from pydantic import (
     validate_arguments,
     validator,
 )
+from pydantic.config import Extra
+from pydantic.dataclasses import dataclass
 
 from pyatlan.model.core import AtlanObject, SearchRequest
-from pyatlan.model.enums import AtlanConnectorType, CertificateStatus, SortOrder
-
-if TYPE_CHECKING:
-    from dataclasses import dataclass
-else:
-    from pydantic.dataclasses import dataclass
-
-import copy
+from pyatlan.model.enums import (
+    AtlanConnectorType,
+    CertificateStatus,
+    ChildScoreMode,
+    SortOrder,
+)
 
 SearchFieldType = Union[StrictStr, StrictInt, StrictFloat, StrictBool, datetime]
 
@@ -334,6 +335,23 @@ class Exists(Query):
 
     def to_dict(self):
         return {self.type_name: {"field": self.field}}
+
+
+@dataclass(config=ConfigDict(extra=Extra.forbid))
+class NestedQuery(Query):
+    path: str
+    query: Query
+    score_mode: Optional[ChildScoreMode] = Field(default=None)
+    ignore_unmapped: Optional[bool] = Field(default=None)
+    type_name: Literal["nested"] = "nested"
+
+    def to_dict(self):
+        parameters = {"path": self.path, "query": self.query.to_dict()}
+        if self.score_mode:
+            parameters["score_more"] = str(self.score_mode)
+        if self.ignore_unmapped is not None:
+            parameters["ignore_unmapped"] = self.ignore_unmapped
+        return {self.type_name: parameters}
 
 
 @dataclass(config=ConfigDict(smart_union=True, extra="forbid"))  # type: ignore
@@ -1760,9 +1778,13 @@ class Match(Query):
 class SortItem:
     field: StrictStr
     order: Optional[SortOrder] = None
+    nested_path: Optional[str] = None
 
     def to_dict(self):
-        return {self.field: {"order": self.order.value}}
+        parameters = {"order": self.order.value}
+        if self.nested_path is not None:
+            parameters["nested"] = {"path": self.nested_path}
+        return {self.field: parameters}
 
     @validator("order", always=True)
     def validate_order(cls, v, values):
