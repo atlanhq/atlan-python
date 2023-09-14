@@ -9,13 +9,13 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AtlanWorkflowPhase, SortOrder
-from pyatlan.model.search import Bool, NestedQuery, Query, SortItem, Term
+from pyatlan.model.search import Bool, NestedQuery, Prefix, Query, SortItem, Term
 
 
 class WorkflowMetadata(AtlanObject):
     annotations: dict[str, str]
     creation_timestamp: str
-    generate_name: str
+    generate_name: Optional[str]
     generation: int
     labels: dict[str, str]
     managed_fields: Optional[list[Any]]
@@ -72,7 +72,7 @@ class WorkflowSearchResultStatus(AtlanObject):
     estimated_duration: Optional[int]
     conditions: list[Any]
     message: Optional[str]
-    finished_at: str
+    finished_at: Optional[str]
     nodes: Optional[Any]
     outputs: Optional[WorkflowParameters]
     phase: AtlanWorkflowPhase
@@ -145,6 +145,7 @@ class WorkflowClient:
         self._client = client
 
     def find_run_by_name(self, workflow_run_name) -> Optional[WorkflowSearchResult]:
+        """Find a specific run of a workflow with the given name."""
         query = Bool(
             filter=[
                 NestedQuery(
@@ -158,17 +159,40 @@ class WorkflowClient:
             return results[0]
         return None
 
-    def _find_run(self, query: Query) -> WorkflowSearchResponse:
-        request = WorkflowSearchRequest(query=query, size=1)
+    def find_by_type(self, prefix: str, max_results: int) -> list[WorkflowSearchResult]:
+        query = Bool(
+            filter=[
+                NestedQuery(
+                    query=Prefix(field="metadata.name.keyword", value=prefix),
+                    path="metadata",
+                )
+            ]
+        )
+        response = self._find_run(query, size=max_results)
+        return response.hits.hits or []
+
+    def find_latest_run(self, workflow_name: str) -> Optional[WorkflowSearchResult]:
+        query = Bool(
+            filter=[
+                NestedQuery(
+                    query=Term(
+                        field="spec.workflowTemplateRef.name.keyword",
+                        value=workflow_name,
+                    ),
+                    path="spec",
+                )
+            ]
+        )
+        response = self._find_run(query)
+        if results := response.hits.hits:
+            return results[0]
+        return None
+
+    def _find_run(self, query: Query, size=1) -> WorkflowSearchResponse:
+        request = WorkflowSearchRequest(query=query, size=size)
         raw_json = self._client._call_api(
             WORKFLOW_INDEX_SEARCH,
             request_obj=request,
         )
         response = WorkflowSearchResponse(**raw_json)
         return response
-
-
-if __name__ == "__main__":
-    client = WorkflowClient(AtlanClient())
-    result = client.find_run_by_name("atlan-sigma-1694427200-b6w42")
-    print(result)
