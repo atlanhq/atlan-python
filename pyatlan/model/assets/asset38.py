@@ -8,184 +8,138 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordTextField
+from pyatlan.model.fields.atlan_fields import KeywordTextField, NumericField
 
 from .asset18 import BI
 
 
-class Sigma(BI):
+class Preset(BI):
     """Description"""
 
-    type_name: str = Field("Sigma", allow_mutation=False)
+    type_name: str = Field("Preset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Sigma":
-            raise ValueError("must be Sigma")
+        if v != "Preset":
+            raise ValueError("must be Preset")
         return v
 
     def __setattr__(self, name, value):
-        if name in Sigma._convenience_properties:
+        if name in Preset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    SIGMA_WORKBOOK_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaWorkbookQualifiedName",
-        "sigmaWorkbookQualifiedName",
-        "sigmaWorkbookQualifiedName.text",
+    PRESET_WORKSPACE_ID: ClassVar[NumericField] = NumericField(
+        "presetWorkspaceId", "presetWorkspaceId"
     )
     """
     TBC
     """
-    SIGMA_WORKBOOK_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaWorkbookName", "sigmaWorkbookName.keyword", "sigmaWorkbookName"
+    PRESET_WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetWorkspaceQualifiedName",
+        "presetWorkspaceQualifiedName",
+        "presetWorkspaceQualifiedName.text",
     )
     """
     TBC
     """
-    SIGMA_PAGE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaPageQualifiedName",
-        "sigmaPageQualifiedName",
-        "sigmaPageQualifiedName.text",
+    PRESET_DASHBOARD_ID: ClassVar[NumericField] = NumericField(
+        "presetDashboardId", "presetDashboardId"
     )
     """
     TBC
     """
-    SIGMA_PAGE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaPageName", "sigmaPageName.keyword", "sigmaPageName"
-    )
-    """
-    TBC
-    """
-    SIGMA_DATA_ELEMENT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaDataElementQualifiedName",
-        "sigmaDataElementQualifiedName",
-        "sigmaDataElementQualifiedName.text",
-    )
-    """
-    TBC
-    """
-    SIGMA_DATA_ELEMENT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "sigmaDataElementName", "sigmaDataElementName.keyword", "sigmaDataElementName"
+    PRESET_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "presetDashboardQualifiedName",
+        "presetDashboardQualifiedName",
+        "presetDashboardQualifiedName.text",
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "sigma_workbook_qualified_name",
-        "sigma_workbook_name",
-        "sigma_page_qualified_name",
-        "sigma_page_name",
-        "sigma_data_element_qualified_name",
-        "sigma_data_element_name",
+        "preset_workspace_id",
+        "preset_workspace_qualified_name",
+        "preset_dashboard_id",
+        "preset_dashboard_qualified_name",
     ]
 
     @property
-    def sigma_workbook_qualified_name(self) -> Optional[str]:
+    def preset_workspace_id(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.preset_workspace_id
+
+    @preset_workspace_id.setter
+    def preset_workspace_id(self, preset_workspace_id: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.preset_workspace_id = preset_workspace_id
+
+    @property
+    def preset_workspace_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sigma_workbook_qualified_name
+            else self.attributes.preset_workspace_qualified_name
         )
 
-    @sigma_workbook_qualified_name.setter
-    def sigma_workbook_qualified_name(
-        self, sigma_workbook_qualified_name: Optional[str]
+    @preset_workspace_qualified_name.setter
+    def preset_workspace_qualified_name(
+        self, preset_workspace_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_qualified_name = sigma_workbook_qualified_name
+        self.attributes.preset_workspace_qualified_name = (
+            preset_workspace_qualified_name
+        )
 
     @property
-    def sigma_workbook_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_workbook_name
+    def preset_dashboard_id(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.preset_dashboard_id
 
-    @sigma_workbook_name.setter
-    def sigma_workbook_name(self, sigma_workbook_name: Optional[str]):
+    @preset_dashboard_id.setter
+    def preset_dashboard_id(self, preset_dashboard_id: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_workbook_name = sigma_workbook_name
+        self.attributes.preset_dashboard_id = preset_dashboard_id
 
     @property
-    def sigma_page_qualified_name(self) -> Optional[str]:
+    def preset_dashboard_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.sigma_page_qualified_name
+            else self.attributes.preset_dashboard_qualified_name
         )
 
-    @sigma_page_qualified_name.setter
-    def sigma_page_qualified_name(self, sigma_page_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_qualified_name = sigma_page_qualified_name
-
-    @property
-    def sigma_page_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_page_name
-
-    @sigma_page_name.setter
-    def sigma_page_name(self, sigma_page_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_page_name = sigma_page_name
-
-    @property
-    def sigma_data_element_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.sigma_data_element_qualified_name
-        )
-
-    @sigma_data_element_qualified_name.setter
-    def sigma_data_element_qualified_name(
-        self, sigma_data_element_qualified_name: Optional[str]
+    @preset_dashboard_qualified_name.setter
+    def preset_dashboard_qualified_name(
+        self, preset_dashboard_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_qualified_name = (
-            sigma_data_element_qualified_name
+        self.attributes.preset_dashboard_qualified_name = (
+            preset_dashboard_qualified_name
         )
-
-    @property
-    def sigma_data_element_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.sigma_data_element_name
-        )
-
-    @sigma_data_element_name.setter
-    def sigma_data_element_name(self, sigma_data_element_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.sigma_data_element_name = sigma_data_element_name
 
     class Attributes(BI.Attributes):
-        sigma_workbook_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookQualifiedName"
+        preset_workspace_id: Optional[int] = Field(
+            None, description="", alias="presetWorkspaceId"
         )
-        sigma_workbook_name: Optional[str] = Field(
-            None, description="", alias="sigmaWorkbookName"
+        preset_workspace_qualified_name: Optional[str] = Field(
+            None, description="", alias="presetWorkspaceQualifiedName"
         )
-        sigma_page_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageQualifiedName"
+        preset_dashboard_id: Optional[int] = Field(
+            None, description="", alias="presetDashboardId"
         )
-        sigma_page_name: Optional[str] = Field(
-            None, description="", alias="sigmaPageName"
-        )
-        sigma_data_element_qualified_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementQualifiedName"
-        )
-        sigma_data_element_name: Optional[str] = Field(
-            None, description="", alias="sigmaDataElementName"
+        preset_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="presetDashboardQualifiedName"
         )
 
-    attributes: "Sigma.Attributes" = Field(
-        default_factory=lambda: Sigma.Attributes(),
+    attributes: "Preset.Attributes" = Field(
+        default_factory=lambda: Preset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-Sigma.Attributes.update_forward_refs()
+Preset.Attributes.update_forward_refs()

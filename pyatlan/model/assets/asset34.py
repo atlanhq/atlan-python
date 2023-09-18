@@ -11,25 +11,33 @@ from pydantic import Field, validator
 from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 from pyatlan.model.structs import AzureTag
 
-from .asset08 import Cloud
+from .asset16 import ObjectStore
 
 
-class Azure(Cloud):
+class ADLS(ObjectStore):
     """Description"""
 
-    type_name: str = Field("Azure", allow_mutation=False)
+    type_name: str = Field("ADLS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Azure":
-            raise ValueError("must be Azure")
+        if v != "ADLS":
+            raise ValueError("must be ADLS")
         return v
 
     def __setattr__(self, name, value):
-        if name in Azure._convenience_properties:
+        if name in ADLS._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
+    ADLS_ACCOUNT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "adlsAccountQualifiedName",
+        "adlsAccountQualifiedName",
+        "adlsAccountQualifiedName.text",
+    )
+    """
+    TBC
+    """
     AZURE_RESOURCE_ID: ClassVar[KeywordTextField] = KeywordTextField(
         "azureResourceId", "azureResourceId", "azureResourceId.text"
     )
@@ -54,11 +62,26 @@ class Azure(Cloud):
     """
 
     _convenience_properties: ClassVar[list[str]] = [
+        "adls_account_qualified_name",
         "azure_resource_id",
         "azure_location",
         "adls_account_secondary_location",
         "azure_tags",
     ]
+
+    @property
+    def adls_account_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.adls_account_qualified_name
+        )
+
+    @adls_account_qualified_name.setter
+    def adls_account_qualified_name(self, adls_account_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.adls_account_qualified_name = adls_account_qualified_name
 
     @property
     def azure_resource_id(self) -> Optional[str]:
@@ -108,7 +131,10 @@ class Azure(Cloud):
             self.attributes = self.Attributes()
         self.attributes.azure_tags = azure_tags
 
-    class Attributes(Cloud.Attributes):
+    class Attributes(ObjectStore.Attributes):
+        adls_account_qualified_name: Optional[str] = Field(
+            None, description="", alias="adlsAccountQualifiedName"
+        )
         azure_resource_id: Optional[str] = Field(
             None, description="", alias="azureResourceId"
         )
@@ -122,11 +148,11 @@ class Azure(Cloud):
             None, description="", alias="azureTags"
         )
 
-    attributes: "Azure.Attributes" = Field(
-        default_factory=lambda: Azure.Attributes(),
+    attributes: "ADLS.Attributes" = Field(
+        default_factory=lambda: ADLS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-Azure.Attributes.update_forward_refs()
+ADLS.Attributes.update_forward_refs()

@@ -4,1665 +4,929 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import (
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
+)
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
-    TextField,
 )
 
-from .asset46 import PowerBI
+from .asset46 import QuickSight
 
 
-class PowerBIReport(PowerBI):
+class QuickSightFolder(QuickSight):
     """Description"""
 
-    type_name: str = Field("PowerBIReport", allow_mutation=False)
+    type_name: str = Field("QuickSightFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBIReport":
-            raise ValueError("must be PowerBIReport")
+        if v != "QuickSightFolder":
+            raise ValueError("must be QuickSightFolder")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIReport._convenience_properties:
+        if name in QuickSightFolder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField(
+        "quickSightFolderType", "quickSightFolderType"
     )
     """
-    TBC
+    Shared or private type of folder
     """
-    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "datasetQualifiedName", "datasetQualifiedName"
+    QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
+        "quickSightFolderHierarchy", "quickSightFolderHierarchy"
     )
     """
-    TBC
-    """
-    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
-    """
-    TBC
-    """
-    PAGE_COUNT: ClassVar[NumericField] = NumericField("pageCount", "pageCount")
-    """
-    TBC
+    Detailed path of the folder
     """
 
-    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
+    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboards"
+    )
     """
     TBC
     """
-    TILES: ClassVar[RelationField] = RelationField("tiles")
+    QUICK_SIGHT_DATASETS: ClassVar[RelationField] = RelationField("quickSightDatasets")
     """
     TBC
     """
-    PAGES: ClassVar[RelationField] = RelationField("pages")
-    """
-    TBC
-    """
-    DATASET: ClassVar[RelationField] = RelationField("dataset")
+    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "web_url",
-        "page_count",
-        "workspace",
-        "tiles",
-        "pages",
-        "dataset",
+        "quick_sight_folder_type",
+        "quick_sight_folder_hierarchy",
+        "quick_sight_dashboards",
+        "quick_sight_datasets",
+        "quick_sight_analyses",
     ]
 
     @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            None if self.attributes is None else self.attributes.quick_sight_folder_type
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dataset_qualified_name
-        )
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def page_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.page_count
-
-    @page_count.setter
-    def page_count(self, page_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.page_count = page_count
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return None if self.attributes is None else self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def pages(self) -> Optional[list[PowerBIPage]]:
-        return None if self.attributes is None else self.attributes.pages
-
-    @pages.setter
-    def pages(self, pages: Optional[list[PowerBIPage]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.pages = pages
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return None if self.attributes is None else self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        page_count: Optional[int] = Field(None, description="", alias="pageCount")
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        pages: Optional[list[PowerBIPage]] = Field(
-            None, description="", alias="pages"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-
-    attributes: "PowerBIReport.Attributes" = Field(
-        default_factory=lambda: PowerBIReport.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIMeasure(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBIMeasure", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIMeasure":
-            raise ValueError("must be PowerBIMeasure")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PowerBIMeasure._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
-    )
-    """
-    TBC
-    """
-    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "datasetQualifiedName", "datasetQualifiedName"
-    )
-    """
-    TBC
-    """
-    POWER_BI_MEASURE_EXPRESSION: ClassVar[TextField] = TextField(
-        "powerBIMeasureExpression", "powerBIMeasureExpression"
-    )
-    """
-    TBC
-    """
-    POWER_BI_IS_EXTERNAL_MEASURE: ClassVar[BooleanField] = BooleanField(
-        "powerBIIsExternalMeasure", "powerBIIsExternalMeasure"
-    )
-    """
-    TBC
-    """
-
-    TABLE: ClassVar[RelationField] = RelationField("table")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "power_b_i_measure_expression",
-        "power_b_i_is_external_measure",
-        "table",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workspace_qualified_name
-        )
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dataset_qualified_name
-        )
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def power_b_i_measure_expression(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_measure_expression
-        )
-
-    @power_b_i_measure_expression.setter
-    def power_b_i_measure_expression(self, power_b_i_measure_expression: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_measure_expression = power_b_i_measure_expression
-
-    @property
-    def power_b_i_is_external_measure(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_is_external_measure
-        )
-
-    @power_b_i_is_external_measure.setter
-    def power_b_i_is_external_measure(
-        self, power_b_i_is_external_measure: Optional[bool]
+    @quick_sight_folder_type.setter
+    def quick_sight_folder_type(
+        self, quick_sight_folder_type: Optional[QuickSightFolderType]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_is_external_measure = power_b_i_is_external_measure
+        self.attributes.quick_sight_folder_type = quick_sight_folder_type
 
     @property
-    def table(self) -> Optional[PowerBITable]:
-        return None if self.attributes is None else self.attributes.table
-
-    @table.setter
-    def table(self, table: Optional[PowerBITable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table = table
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        power_b_i_measure_expression: Optional[str] = Field(
-            None, description="", alias="powerBIMeasureExpression"
-        )
-        power_b_i_is_external_measure: Optional[bool] = Field(
-            None, description="", alias="powerBIIsExternalMeasure"
-        )
-        table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
-        )  # relationship
-
-    attributes: "PowerBIMeasure.Attributes" = Field(
-        default_factory=lambda: PowerBIMeasure.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIColumn(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBIColumn", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIColumn":
-            raise ValueError("must be PowerBIColumn")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PowerBIColumn._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
-    )
-    """
-    TBC
-    """
-    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "datasetQualifiedName", "datasetQualifiedName"
-    )
-    """
-    TBC
-    """
-    POWER_BI_COLUMN_DATA_CATEGORY: ClassVar[KeywordField] = KeywordField(
-        "powerBIColumnDataCategory", "powerBIColumnDataCategory"
-    )
-    """
-    TBC
-    """
-    POWER_BI_COLUMN_DATA_TYPE: ClassVar[KeywordField] = KeywordField(
-        "powerBIColumnDataType", "powerBIColumnDataType"
-    )
-    """
-    TBC
-    """
-    POWER_BI_SORT_BY_COLUMN: ClassVar[KeywordField] = KeywordField(
-        "powerBISortByColumn", "powerBISortByColumn"
-    )
-    """
-    TBC
-    """
-    POWER_BI_COLUMN_SUMMARIZE_BY: ClassVar[KeywordField] = KeywordField(
-        "powerBIColumnSummarizeBy", "powerBIColumnSummarizeBy"
-    )
-    """
-    TBC
-    """
-
-    TABLE: ClassVar[RelationField] = RelationField("table")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "power_b_i_column_data_category",
-        "power_b_i_column_data_type",
-        "power_b_i_sort_by_column",
-        "power_b_i_column_summarize_by",
-        "table",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
         return (
             None
             if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            else self.attributes.quick_sight_folder_hierarchy
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dataset_qualified_name
-        )
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def power_b_i_column_data_category(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_column_data_category
-        )
-
-    @power_b_i_column_data_category.setter
-    def power_b_i_column_data_category(
-        self, power_b_i_column_data_category: Optional[str]
+    @quick_sight_folder_hierarchy.setter
+    def quick_sight_folder_hierarchy(
+        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_column_data_category = power_b_i_column_data_category
+        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
 
     @property
-    def power_b_i_column_data_type(self) -> Optional[str]:
+    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_column_data_type
+            None if self.attributes is None else self.attributes.quick_sight_dashboards
         )
 
-    @power_b_i_column_data_type.setter
-    def power_b_i_column_data_type(self, power_b_i_column_data_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_column_data_type = power_b_i_column_data_type
-
-    @property
-    def power_b_i_sort_by_column(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_sort_by_column
-        )
-
-    @power_b_i_sort_by_column.setter
-    def power_b_i_sort_by_column(self, power_b_i_sort_by_column: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_sort_by_column = power_b_i_sort_by_column
-
-    @property
-    def power_b_i_column_summarize_by(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_column_summarize_by
-        )
-
-    @power_b_i_column_summarize_by.setter
-    def power_b_i_column_summarize_by(
-        self, power_b_i_column_summarize_by: Optional[str]
+    @quick_sight_dashboards.setter
+    def quick_sight_dashboards(
+        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_column_summarize_by = power_b_i_column_summarize_by
+        self.attributes.quick_sight_dashboards = quick_sight_dashboards
 
     @property
-    def table(self) -> Optional[PowerBITable]:
-        return None if self.attributes is None else self.attributes.table
+    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
+        return None if self.attributes is None else self.attributes.quick_sight_datasets
 
-    @table.setter
-    def table(self, table: Optional[PowerBITable]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table = table
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
-        )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
-        )
-        power_b_i_column_data_category: Optional[str] = Field(
-            None, description="", alias="powerBIColumnDataCategory"
-        )
-        power_b_i_column_data_type: Optional[str] = Field(
-            None, description="", alias="powerBIColumnDataType"
-        )
-        power_b_i_sort_by_column: Optional[str] = Field(
-            None, description="", alias="powerBISortByColumn"
-        )
-        power_b_i_column_summarize_by: Optional[str] = Field(
-            None, description="", alias="powerBIColumnSummarizeBy"
-        )
-        table: Optional[PowerBITable] = Field(
-            None, description="", alias="table"
-        )  # relationship
-
-    attributes: "PowerBIColumn.Attributes" = Field(
-        default_factory=lambda: PowerBIColumn.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBITable(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBITable", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBITable":
-            raise ValueError("must be PowerBITable")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PowerBITable._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
-    )
-    """
-    TBC
-    """
-    DATASET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "datasetQualifiedName", "datasetQualifiedName"
-    )
-    """
-    TBC
-    """
-    POWER_BI_TABLE_SOURCE_EXPRESSIONS: ClassVar[KeywordField] = KeywordField(
-        "powerBITableSourceExpressions", "powerBITableSourceExpressions"
-    )
-    """
-    TBC
-    """
-    POWER_BI_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
-        "powerBITableColumnCount", "powerBITableColumnCount"
-    )
-    """
-    TBC
-    """
-    POWER_BI_TABLE_MEASURE_COUNT: ClassVar[NumericField] = NumericField(
-        "powerBITableMeasureCount", "powerBITableMeasureCount"
-    )
-    """
-    TBC
-    """
-
-    COLUMNS: ClassVar[RelationField] = RelationField("columns")
-    """
-    TBC
-    """
-    MEASURES: ClassVar[RelationField] = RelationField("measures")
-    """
-    TBC
-    """
-    DATASET: ClassVar[RelationField] = RelationField("dataset")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dataset_qualified_name",
-        "power_b_i_table_source_expressions",
-        "power_b_i_table_column_count",
-        "power_b_i_table_measure_count",
-        "columns",
-        "measures",
-        "dataset",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.workspace_qualified_name
-        )
-
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def dataset_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.dataset_qualified_name
-        )
-
-    @dataset_qualified_name.setter
-    def dataset_qualified_name(self, dataset_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_qualified_name = dataset_qualified_name
-
-    @property
-    def power_b_i_table_source_expressions(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_table_source_expressions
-        )
-
-    @power_b_i_table_source_expressions.setter
-    def power_b_i_table_source_expressions(
-        self, power_b_i_table_source_expressions: Optional[set[str]]
+    @quick_sight_datasets.setter
+    def quick_sight_datasets(
+        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_source_expressions = (
-            power_b_i_table_source_expressions
-        )
+        self.attributes.quick_sight_datasets = quick_sight_datasets
 
     @property
-    def power_b_i_table_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_table_column_count
-        )
+    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
+        return None if self.attributes is None else self.attributes.quick_sight_analyses
 
-    @power_b_i_table_column_count.setter
-    def power_b_i_table_column_count(self, power_b_i_table_column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_column_count = power_b_i_table_column_count
-
-    @property
-    def power_b_i_table_measure_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_table_measure_count
-        )
-
-    @power_b_i_table_measure_count.setter
-    def power_b_i_table_measure_count(
-        self, power_b_i_table_measure_count: Optional[int]
+    @quick_sight_analyses.setter
+    def quick_sight_analyses(
+        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_measure_count = power_b_i_table_measure_count
+        self.attributes.quick_sight_analyses = quick_sight_analyses
 
-    @property
-    def columns(self) -> Optional[list[PowerBIColumn]]:
-        return None if self.attributes is None else self.attributes.columns
-
-    @columns.setter
-    def columns(self, columns: Optional[list[PowerBIColumn]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.columns = columns
-
-    @property
-    def measures(self) -> Optional[list[PowerBIMeasure]]:
-        return None if self.attributes is None else self.attributes.measures
-
-    @measures.setter
-    def measures(self, measures: Optional[list[PowerBIMeasure]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.measures = measures
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return None if self.attributes is None else self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+    class Attributes(QuickSight.Attributes):
+        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
+            None, description="", alias="quickSightFolderType"
         )
-        dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="datasetQualifiedName"
+        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
+            None, description="", alias="quickSightFolderHierarchy"
         )
-        power_b_i_table_source_expressions: Optional[set[str]] = Field(
-            None, description="", alias="powerBITableSourceExpressions"
-        )
-        power_b_i_table_column_count: Optional[int] = Field(
-            None, description="", alias="powerBITableColumnCount"
-        )
-        power_b_i_table_measure_count: Optional[int] = Field(
-            None, description="", alias="powerBITableMeasureCount"
-        )
-        columns: Optional[list[PowerBIColumn]] = Field(
-            None, description="", alias="columns"
+        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
+            None, description="", alias="quickSightDashboards"
         )  # relationship
-        measures: Optional[list[PowerBIMeasure]] = Field(
-            None, description="", alias="measures"
+        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
+            None, description="", alias="quickSightDatasets"
         )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
+        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
+            None, description="", alias="quickSightAnalyses"
         )  # relationship
 
-    attributes: "PowerBITable.Attributes" = Field(
-        default_factory=lambda: PowerBITable.Attributes(),
+    attributes: "QuickSightFolder.Attributes" = Field(
+        default_factory=lambda: QuickSightFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PowerBITile(PowerBI):
+class QuickSightDashboardVisual(QuickSight):
     """Description"""
 
-    type_name: str = Field("PowerBITile", allow_mutation=False)
+    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBITile":
-            raise ValueError("must be PowerBITile")
+        if v != "QuickSightDashboardVisual":
+            raise ValueError("must be QuickSightDashboardVisual")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBITile._convenience_properties:
+        if name in QuickSightDashboardVisual._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
-    )
-    """
-    TBC
-    """
-    DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "dashboardQualifiedName", "dashboardQualifiedName"
+    QUICK_SIGHT_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightDashboardQualifiedName",
+        "quickSightDashboardQualifiedName",
+        "quickSightDashboardQualifiedName.text",
     )
     """
     TBC
     """
 
-    REPORT: ClassVar[RelationField] = RelationField("report")
-    """
-    TBC
-    """
-    DATASET: ClassVar[RelationField] = RelationField("dataset")
-    """
-    TBC
-    """
-    DASHBOARD: ClassVar[RelationField] = RelationField("dashboard")
+    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
+        "quickSightDashboard"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "dashboard_qualified_name",
-        "report",
-        "dataset",
-        "dashboard",
+        "quick_sight_dashboard_qualified_name",
+        "quick_sight_dashboard",
     ]
 
     @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            else self.attributes.quick_sight_dashboard_qualified_name
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+    @quick_sight_dashboard_qualified_name.setter
+    def quick_sight_dashboard_qualified_name(
+        self, quick_sight_dashboard_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
+        self.attributes.quick_sight_dashboard_qualified_name = (
+            quick_sight_dashboard_qualified_name
+        )
 
     @property
-    def dashboard_qualified_name(self) -> Optional[str]:
+    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
+        return (
+            None if self.attributes is None else self.attributes.quick_sight_dashboard
+        )
+
+    @quick_sight_dashboard.setter
+    def quick_sight_dashboard(
+        self, quick_sight_dashboard: Optional[QuickSightDashboard]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard = quick_sight_dashboard
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDashboardQualifiedName"
+        )
+        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
+            None, description="", alias="quickSightDashboard"
+        )  # relationship
+
+    attributes: "QuickSightDashboardVisual.Attributes" = Field(
+        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QuickSightAnalysisVisual(QuickSight):
+    """Description"""
+
+    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QuickSightAnalysisVisual":
+            raise ValueError("must be QuickSightAnalysisVisual")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QuickSightAnalysisVisual._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightAnalysisQualifiedName",
+        "quickSightAnalysisQualifiedName",
+        "quickSightAnalysisQualifiedName.text",
+    )
+    """
+    Qualified name of the QuickSight Analysis
+    """
+
+    QUICK_SIGHT_ANALYSIS: ClassVar[RelationField] = RelationField("quickSightAnalysis")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "quick_sight_analysis_qualified_name",
+        "quick_sight_analysis",
+    ]
+
+    @property
+    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.dashboard_qualified_name
+            else self.attributes.quick_sight_analysis_qualified_name
         )
 
-    @dashboard_qualified_name.setter
-    def dashboard_qualified_name(self, dashboard_qualified_name: Optional[str]):
+    @quick_sight_analysis_qualified_name.setter
+    def quick_sight_analysis_qualified_name(
+        self, quick_sight_analysis_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.dashboard_qualified_name = dashboard_qualified_name
-
-    @property
-    def report(self) -> Optional[PowerBIReport]:
-        return None if self.attributes is None else self.attributes.report
-
-    @report.setter
-    def report(self, report: Optional[PowerBIReport]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report = report
-
-    @property
-    def dataset(self) -> Optional[PowerBIDataset]:
-        return None if self.attributes is None else self.attributes.dataset
-
-    @dataset.setter
-    def dataset(self, dataset: Optional[PowerBIDataset]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset = dataset
-
-    @property
-    def dashboard(self) -> Optional[PowerBIDashboard]:
-        return None if self.attributes is None else self.attributes.dashboard
-
-    @dashboard.setter
-    def dashboard(self, dashboard: Optional[PowerBIDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard = dashboard
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+        self.attributes.quick_sight_analysis_qualified_name = (
+            quick_sight_analysis_qualified_name
         )
-        dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="dashboardQualifiedName"
+
+    @property
+    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
+        return None if self.attributes is None else self.attributes.quick_sight_analysis
+
+    @quick_sight_analysis.setter
+    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis = quick_sight_analysis
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightAnalysisQualifiedName"
         )
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
-        )  # relationship
-        dataset: Optional[PowerBIDataset] = Field(
-            None, description="", alias="dataset"
-        )  # relationship
-        dashboard: Optional[PowerBIDashboard] = Field(
-            None, description="", alias="dashboard"
+        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
+            None, description="", alias="quickSightAnalysis"
         )  # relationship
 
-    attributes: "PowerBITile.Attributes" = Field(
-        default_factory=lambda: PowerBITile.Attributes(),
+    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PowerBIDatasource(PowerBI):
+class QuickSightDatasetField(QuickSight):
     """Description"""
 
-    type_name: str = Field("PowerBIDatasource", allow_mutation=False)
+    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBIDatasource":
-            raise ValueError("must be PowerBIDatasource")
+        if v != "QuickSightDatasetField":
+            raise ValueError("must be QuickSightDatasetField")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDatasource._convenience_properties:
+        if name in QuickSightDatasetField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    CONNECTION_DETAILS: ClassVar[KeywordField] = KeywordField(
-        "connectionDetails", "connectionDetails"
+    QUICK_SIGHT_DATASET_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "quickSightDatasetFieldType", "quickSightDatasetFieldType"
     )
     """
-    TBC
+    Datatype of column in the dataset
+    """
+    QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightDatasetQualifiedName",
+        "quickSightDatasetQualifiedName",
+        "quickSightDatasetQualifiedName.text",
+    )
+    """
+    Qualified name of the parent dataset
     """
 
-    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    QUICK_SIGHT_DATASET: ClassVar[RelationField] = RelationField("quickSightDataset")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "connection_details",
-        "datasets",
+        "quick_sight_dataset_field_type",
+        "quick_sight_dataset_qualified_name",
+        "quick_sight_dataset",
     ]
 
     @property
-    def connection_details(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.connection_details
-
-    @connection_details.setter
-    def connection_details(self, connection_details: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.connection_details = connection_details
-
-    @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
-        return None if self.attributes is None else self.attributes.datasets
-
-    @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasets = datasets
-
-    class Attributes(PowerBI.Attributes):
-        connection_details: Optional[dict[str, str]] = Field(
-            None, description="", alias="connectionDetails"
-        )
-        datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
-        )  # relationship
-
-    attributes: "PowerBIDatasource.Attributes" = Field(
-        default_factory=lambda: PowerBIDatasource.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIWorkspace(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBIWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIWorkspace":
-            raise ValueError("must be PowerBIWorkspace")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PowerBIWorkspace._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
-    """
-    TBC
-    """
-    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
-    """
-    TBC
-    """
-    DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
-        "dashboardCount", "dashboardCount"
-    )
-    """
-    TBC
-    """
-    DATASET_COUNT: ClassVar[NumericField] = NumericField("datasetCount", "datasetCount")
-    """
-    TBC
-    """
-    DATAFLOW_COUNT: ClassVar[NumericField] = NumericField(
-        "dataflowCount", "dataflowCount"
-    )
-    """
-    TBC
-    """
-
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
-    """
-    TBC
-    """
-    DATASETS: ClassVar[RelationField] = RelationField("datasets")
-    """
-    TBC
-    """
-    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
-    """
-    TBC
-    """
-    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "web_url",
-        "report_count",
-        "dashboard_count",
-        "dataset_count",
-        "dataflow_count",
-        "reports",
-        "datasets",
-        "dashboards",
-        "dataflows",
-    ]
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def report_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.report_count
-
-    @report_count.setter
-    def report_count(self, report_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.report_count = report_count
-
-    @property
-    def dashboard_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.dashboard_count
-
-    @dashboard_count.setter
-    def dashboard_count(self, dashboard_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboard_count = dashboard_count
-
-    @property
-    def dataset_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.dataset_count
-
-    @dataset_count.setter
-    def dataset_count(self, dataset_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataset_count = dataset_count
-
-    @property
-    def dataflow_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.dataflow_count
-
-    @dataflow_count.setter
-    def dataflow_count(self, dataflow_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflow_count = dataflow_count
-
-    @property
-    def reports(self) -> Optional[list[PowerBIReport]]:
-        return None if self.attributes is None else self.attributes.reports
-
-    @reports.setter
-    def reports(self, reports: Optional[list[PowerBIReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reports = reports
-
-    @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
-        return None if self.attributes is None else self.attributes.datasets
-
-    @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasets = datasets
-
-    @property
-    def dashboards(self) -> Optional[list[PowerBIDashboard]]:
-        return None if self.attributes is None else self.attributes.dashboards
-
-    @dashboards.setter
-    def dashboards(self, dashboards: Optional[list[PowerBIDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dashboards = dashboards
-
-    @property
-    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
-        return None if self.attributes is None else self.attributes.dataflows
-
-    @dataflows.setter
-    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflows = dataflows
-
-    class Attributes(PowerBI.Attributes):
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        report_count: Optional[int] = Field(None, description="", alias="reportCount")
-        dashboard_count: Optional[int] = Field(
-            None, description="", alias="dashboardCount"
-        )
-        dataset_count: Optional[int] = Field(None, description="", alias="datasetCount")
-        dataflow_count: Optional[int] = Field(
-            None, description="", alias="dataflowCount"
-        )
-        reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
-        )  # relationship
-        datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
-        )  # relationship
-        dashboards: Optional[list[PowerBIDashboard]] = Field(
-            None, description="", alias="dashboards"
-        )  # relationship
-        dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
-        )  # relationship
-
-    attributes: "PowerBIWorkspace.Attributes" = Field(
-        default_factory=lambda: PowerBIWorkspace.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PowerBIDataset(PowerBI):
-    """Description"""
-
-    type_name: str = Field("PowerBIDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PowerBIDataset":
-            raise ValueError("must be PowerBIDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PowerBIDataset._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
-    )
-    """
-    TBC
-    """
-    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
-    """
-    TBC
-    """
-
-    REPORTS: ClassVar[RelationField] = RelationField("reports")
-    """
-    TBC
-    """
-    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
-    """
-    TBC
-    """
-    DATAFLOWS: ClassVar[RelationField] = RelationField("dataflows")
-    """
-    TBC
-    """
-    TILES: ClassVar[RelationField] = RelationField("tiles")
-    """
-    TBC
-    """
-    TABLES: ClassVar[RelationField] = RelationField("tables")
-    """
-    TBC
-    """
-    DATASOURCES: ClassVar[RelationField] = RelationField("datasources")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "web_url",
-        "reports",
-        "workspace",
-        "dataflows",
-        "tiles",
-        "tables",
-        "datasources",
-    ]
-
-    @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
         return (
             None
             if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            else self.attributes.quick_sight_dataset_field_type
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+    @quick_sight_dataset_field_type.setter
+    def quick_sight_dataset_field_type(
+        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
+        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
 
     @property
-    def web_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def reports(self) -> Optional[list[PowerBIReport]]:
-        return None if self.attributes is None else self.attributes.reports
-
-    @reports.setter
-    def reports(self, reports: Optional[list[PowerBIReport]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.reports = reports
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return None if self.attributes is None else self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def dataflows(self) -> Optional[list[PowerBIDataflow]]:
-        return None if self.attributes is None else self.attributes.dataflows
-
-    @dataflows.setter
-    def dataflows(self, dataflows: Optional[list[PowerBIDataflow]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.dataflows = dataflows
-
-    @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    @property
-    def tables(self) -> Optional[list[PowerBITable]]:
-        return None if self.attributes is None else self.attributes.tables
-
-    @tables.setter
-    def tables(self, tables: Optional[list[PowerBITable]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tables = tables
-
-    @property
-    def datasources(self) -> Optional[list[PowerBIDatasource]]:
-        return None if self.attributes is None else self.attributes.datasources
-
-    @datasources.setter
-    def datasources(self, datasources: Optional[list[PowerBIDatasource]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasources = datasources
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_qualified_name
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        reports: Optional[list[PowerBIReport]] = Field(
-            None, description="", alias="reports"
-        )  # relationship
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
-        )  # relationship
-        dataflows: Optional[list[PowerBIDataflow]] = Field(
-            None, description="", alias="dataflows"
-        )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
-        )  # relationship
-        tables: Optional[list[PowerBITable]] = Field(
-            None, description="", alias="tables"
-        )  # relationship
-        datasources: Optional[list[PowerBIDatasource]] = Field(
-            None, description="", alias="datasources"
+
+    @quick_sight_dataset_qualified_name.setter
+    def quick_sight_dataset_qualified_name(
+        self, quick_sight_dataset_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_qualified_name = (
+            quick_sight_dataset_qualified_name
+        )
+
+    @property
+    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
+        return None if self.attributes is None else self.attributes.quick_sight_dataset
+
+    @quick_sight_dataset.setter
+    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset = quick_sight_dataset
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
+            None, description="", alias="quickSightDatasetFieldType"
+        )
+        quick_sight_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="quickSightDatasetQualifiedName"
+        )
+        quick_sight_dataset: Optional[QuickSightDataset] = Field(
+            None, description="", alias="quickSightDataset"
         )  # relationship
 
-    attributes: "PowerBIDataset.Attributes" = Field(
-        default_factory=lambda: PowerBIDataset.Attributes(),
+    attributes: "QuickSightDatasetField.Attributes" = Field(
+        default_factory=lambda: QuickSightDatasetField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PowerBIDashboard(PowerBI):
+class QuickSightAnalysis(QuickSight):
     """Description"""
 
-    type_name: str = Field("PowerBIDashboard", allow_mutation=False)
+    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBIDashboard":
-            raise ValueError("must be PowerBIDashboard")
+        if v != "QuickSightAnalysis":
+            raise ValueError("must be QuickSightAnalysis")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDashboard._convenience_properties:
+        if name in QuickSightAnalysis._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisStatus", "quickSightAnalysisStatus"
+    )
+    """
+    Status of quicksight analysis
+    """
+    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
+    )
+    """
+    Calculated fields of quicksight analysis
+    """
+    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisParameterDeclarations",
+        "quickSightAnalysisParameterDeclarations",
+    )
+    """
+    parameters used for quicksight analysis
+    """
+    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
+        "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
+    )
+    """
+    Filter groups used for quicksight analysis
+    """
+
+    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisVisuals"
     )
     """
     TBC
     """
-    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
-    """
-    TBC
-    """
-    TILE_COUNT: ClassVar[NumericField] = NumericField("tileCount", "tileCount")
-    """
-    TBC
-    """
-
-    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
-    """
-    TBC
-    """
-    TILES: ClassVar[RelationField] = RelationField("tiles")
+    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightAnalysisFolders"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "web_url",
-        "tile_count",
-        "workspace",
-        "tiles",
+        "quick_sight_analysis_status",
+        "quick_sight_analysis_calculated_fields",
+        "quick_sight_analysis_parameter_declarations",
+        "quick_sight_analysis_filter_groups",
+        "quick_sight_analysis_visuals",
+        "quick_sight_analysis_folders",
     ]
 
     @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
         return (
             None
             if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            else self.attributes.quick_sight_analysis_status
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+    @quick_sight_analysis_status.setter
+    def quick_sight_analysis_status(
+        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
+        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
 
     @property
-    def web_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def tile_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.tile_count
-
-    @tile_count.setter
-    def tile_count(self, tile_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tile_count = tile_count
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return None if self.attributes is None else self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def tiles(self) -> Optional[list[PowerBITile]]:
-        return None if self.attributes is None else self.attributes.tiles
-
-    @tiles.setter
-    def tiles(self, tiles: Optional[list[PowerBITile]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.tiles = tiles
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_calculated_fields
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        tile_count: Optional[int] = Field(None, description="", alias="tileCount")
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+
+    @quick_sight_analysis_calculated_fields.setter
+    def quick_sight_analysis_calculated_fields(
+        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_calculated_fields = (
+            quick_sight_analysis_calculated_fields
+        )
+
+    @property
+    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_parameter_declarations
+        )
+
+    @quick_sight_analysis_parameter_declarations.setter
+    def quick_sight_analysis_parameter_declarations(
+        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_parameter_declarations = (
+            quick_sight_analysis_parameter_declarations
+        )
+
+    @property
+    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_filter_groups
+        )
+
+    @quick_sight_analysis_filter_groups.setter
+    def quick_sight_analysis_filter_groups(
+        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_filter_groups = (
+            quick_sight_analysis_filter_groups
+        )
+
+    @property
+    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_visuals
+        )
+
+    @quick_sight_analysis_visuals.setter
+    def quick_sight_analysis_visuals(
+        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
+
+    @property
+    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_analysis_folders
+        )
+
+    @quick_sight_analysis_folders.setter
+    def quick_sight_analysis_folders(
+        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
+            None, description="", alias="quickSightAnalysisStatus"
+        )
+        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisCalculatedFields"
+        )
+        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisParameterDeclarations"
+        )
+        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
+            None, description="", alias="quickSightAnalysisFilterGroups"
+        )
+        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
+            None, description="", alias="quickSightAnalysisVisuals"
         )  # relationship
-        tiles: Optional[list[PowerBITile]] = Field(
-            None, description="", alias="tiles"
+        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightAnalysisFolders"
         )  # relationship
 
-    attributes: "PowerBIDashboard.Attributes" = Field(
-        default_factory=lambda: PowerBIDashboard.Attributes(),
+    attributes: "QuickSightAnalysis.Attributes" = Field(
+        default_factory=lambda: QuickSightAnalysis.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PowerBIDataflow(PowerBI):
+class QuickSightDashboard(QuickSight):
     """Description"""
 
-    type_name: str = Field("PowerBIDataflow", allow_mutation=False)
+    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBIDataflow":
-            raise ValueError("must be PowerBIDataflow")
+        if v != "QuickSightDashboard":
+            raise ValueError("must be QuickSightDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIDataflow._convenience_properties:
+        if name in QuickSightDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[
+        NumericField
+    ] = NumericField(
+        "quickSightDashboardPublishedVersionNumber",
+        "quickSightDashboardPublishedVersionNumber",
+    )
+    """
+    Version number of the dashboard published
+    """
+    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[NumericField] = NumericField(
+        "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
+    )
+    """
+    Last published time of dashboard
+    """
+
+    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardFolders"
     )
     """
     TBC
     """
-    WEB_URL: ClassVar[KeywordField] = KeywordField("webUrl", "webUrl")
-    """
-    TBC
-    """
-
-    WORKSPACE: ClassVar[RelationField] = RelationField("workspace")
-    """
-    TBC
-    """
-    DATASETS: ClassVar[RelationField] = RelationField("datasets")
+    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField(
+        "quickSightDashboardVisuals"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "web_url",
-        "workspace",
-        "datasets",
+        "quick_sight_dashboard_published_version_number",
+        "quick_sight_dashboard_last_published_time",
+        "quick_sight_dashboard_folders",
+        "quick_sight_dashboard_visuals",
     ]
 
     @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            else self.attributes.quick_sight_dashboard_published_version_number
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+    @quick_sight_dashboard_published_version_number.setter
+    def quick_sight_dashboard_published_version_number(
+        self, quick_sight_dashboard_published_version_number: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
-
-    @property
-    def web_url(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.web_url
-
-    @web_url.setter
-    def web_url(self, web_url: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.web_url = web_url
-
-    @property
-    def workspace(self) -> Optional[PowerBIWorkspace]:
-        return None if self.attributes is None else self.attributes.workspace
-
-    @workspace.setter
-    def workspace(self, workspace: Optional[PowerBIWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.workspace = workspace
-
-    @property
-    def datasets(self) -> Optional[list[PowerBIDataset]]:
-        return None if self.attributes is None else self.attributes.datasets
-
-    @datasets.setter
-    def datasets(self, datasets: Optional[list[PowerBIDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.datasets = datasets
-
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+        self.attributes.quick_sight_dashboard_published_version_number = (
+            quick_sight_dashboard_published_version_number
         )
-        web_url: Optional[str] = Field(None, description="", alias="webUrl")
-        workspace: Optional[PowerBIWorkspace] = Field(
-            None, description="", alias="workspace"
+
+    @property
+    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_last_published_time
+        )
+
+    @quick_sight_dashboard_last_published_time.setter
+    def quick_sight_dashboard_last_published_time(
+        self, quick_sight_dashboard_last_published_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_last_published_time = (
+            quick_sight_dashboard_last_published_time
+        )
+
+    @property
+    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_folders
+        )
+
+    @quick_sight_dashboard_folders.setter
+    def quick_sight_dashboard_folders(
+        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
+
+    @property
+    def quick_sight_dashboard_visuals(
+        self,
+    ) -> Optional[list[QuickSightDashboardVisual]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dashboard_visuals
+        )
+
+    @quick_sight_dashboard_visuals.setter
+    def quick_sight_dashboard_visuals(
+        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dashboard_published_version_number: Optional[int] = Field(
+            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+        )
+        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
+            None, description="", alias="quickSightDashboardLastPublishedTime"
+        )
+        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDashboardFolders"
         )  # relationship
-        datasets: Optional[list[PowerBIDataset]] = Field(
-            None, description="", alias="datasets"
+        quick_sight_dashboard_visuals: Optional[
+            list[QuickSightDashboardVisual]
+        ] = Field(
+            None, description="", alias="quickSightDashboardVisuals"
         )  # relationship
 
-    attributes: "PowerBIDataflow.Attributes" = Field(
-        default_factory=lambda: PowerBIDataflow.Attributes(),
+    attributes: "QuickSightDashboard.Attributes" = Field(
+        default_factory=lambda: QuickSightDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PowerBIPage(PowerBI):
+class QuickSightDataset(QuickSight):
     """Description"""
 
-    type_name: str = Field("PowerBIPage", allow_mutation=False)
+    type_name: str = Field("QuickSightDataset", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBIPage":
-            raise ValueError("must be PowerBIPage")
+        if v != "QuickSightDataset":
+            raise ValueError("must be QuickSightDataset")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBIPage._convenience_properties:
+        if name in QuickSightDataset._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    WORKSPACE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "workspaceQualifiedName", "workspaceQualifiedName"
+    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[KeywordField] = KeywordField(
+        "quickSightDatasetImportMode", "quickSightDatasetImportMode"
     )
     """
-    TBC
+    Quicksight dataset importMode indicates a value that indicates whether you want to import the data into SPICE
     """
-    REPORT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "reportQualifiedName", "reportQualifiedName"
+    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
     )
     """
-    TBC
+    Quicksight dataset column count indicates number of columns present in the dataset
     """
 
-    REPORT: ClassVar[RelationField] = RelationField("report")
+    QUICK_SIGHT_DATASET_FOLDERS: ClassVar[RelationField] = RelationField(
+        "quickSightDatasetFolders"
+    )
+    """
+    TBC
+    """
+    QUICK_SIGHT_DATASET_FIELDS: ClassVar[RelationField] = RelationField(
+        "quickSightDatasetFields"
+    )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "workspace_qualified_name",
-        "report_qualified_name",
-        "report",
+        "quick_sight_dataset_import_mode",
+        "quick_sight_dataset_column_count",
+        "quick_sight_dataset_folders",
+        "quick_sight_dataset_fields",
     ]
 
     @property
-    def workspace_qualified_name(self) -> Optional[str]:
+    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
         return (
             None
             if self.attributes is None
-            else self.attributes.workspace_qualified_name
+            else self.attributes.quick_sight_dataset_import_mode
         )
 
-    @workspace_qualified_name.setter
-    def workspace_qualified_name(self, workspace_qualified_name: Optional[str]):
+    @quick_sight_dataset_import_mode.setter
+    def quick_sight_dataset_import_mode(
+        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.workspace_qualified_name = workspace_qualified_name
+        self.attributes.quick_sight_dataset_import_mode = (
+            quick_sight_dataset_import_mode
+        )
 
     @property
-    def report_qualified_name(self) -> Optional[str]:
+    def quick_sight_dataset_column_count(self) -> Optional[int]:
         return (
-            None if self.attributes is None else self.attributes.report_qualified_name
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_column_count
         )
 
-    @report_qualified_name.setter
-    def report_qualified_name(self, report_qualified_name: Optional[str]):
+    @quick_sight_dataset_column_count.setter
+    def quick_sight_dataset_column_count(
+        self, quick_sight_dataset_column_count: Optional[int]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.report_qualified_name = report_qualified_name
+        self.attributes.quick_sight_dataset_column_count = (
+            quick_sight_dataset_column_count
+        )
 
     @property
-    def report(self) -> Optional[PowerBIReport]:
-        return None if self.attributes is None else self.attributes.report
+    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_folders
+        )
 
-    @report.setter
-    def report(self, report: Optional[PowerBIReport]):
+    @quick_sight_dataset_folders.setter
+    def quick_sight_dataset_folders(
+        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.report = report
+        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
 
-    class Attributes(PowerBI.Attributes):
-        workspace_qualified_name: Optional[str] = Field(
-            None, description="", alias="workspaceQualifiedName"
+    @property
+    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.quick_sight_dataset_fields
         )
-        report_qualified_name: Optional[str] = Field(
-            None, description="", alias="reportQualifiedName"
+
+    @quick_sight_dataset_fields.setter
+    def quick_sight_dataset_fields(
+        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
+
+    class Attributes(QuickSight.Attributes):
+        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
+            None, description="", alias="quickSightDatasetImportMode"
         )
-        report: Optional[PowerBIReport] = Field(
-            None, description="", alias="report"
+        quick_sight_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="quickSightDatasetColumnCount"
+        )
+        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
+            None, description="", alias="quickSightDatasetFolders"
+        )  # relationship
+        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
+            None, description="", alias="quickSightDatasetFields"
         )  # relationship
 
-    attributes: "PowerBIPage.Attributes" = Field(
-        default_factory=lambda: PowerBIPage.Attributes(),
+    attributes: "QuickSightDataset.Attributes" = Field(
+        default_factory=lambda: QuickSightDataset.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-PowerBIReport.Attributes.update_forward_refs()
+QuickSightFolder.Attributes.update_forward_refs()
 
 
-PowerBIMeasure.Attributes.update_forward_refs()
+QuickSightDashboardVisual.Attributes.update_forward_refs()
 
 
-PowerBIColumn.Attributes.update_forward_refs()
+QuickSightAnalysisVisual.Attributes.update_forward_refs()
 
 
-PowerBITable.Attributes.update_forward_refs()
+QuickSightDatasetField.Attributes.update_forward_refs()
 
 
-PowerBITile.Attributes.update_forward_refs()
+QuickSightAnalysis.Attributes.update_forward_refs()
 
 
-PowerBIDatasource.Attributes.update_forward_refs()
+QuickSightDashboard.Attributes.update_forward_refs()
 
 
-PowerBIWorkspace.Attributes.update_forward_refs()
-
-
-PowerBIDataset.Attributes.update_forward_refs()
-
-
-PowerBIDashboard.Attributes.update_forward_refs()
-
-
-PowerBIDataflow.Attributes.update_forward_refs()
-
-
-PowerBIPage.Attributes.update_forward_refs()
+QuickSightDataset.Attributes.update_forward_refs()

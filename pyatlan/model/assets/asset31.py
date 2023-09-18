@@ -11,35 +11,25 @@ from pydantic import Field, validator
 from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 from pyatlan.model.structs import AwsTag
 
-from .asset16 import ObjectStore
+from .asset08 import Cloud
 
 
-class S3(ObjectStore):
+class AWS(Cloud):
     """Description"""
 
-    type_name: str = Field("S3", allow_mutation=False)
+    type_name: str = Field("AWS", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "S3":
-            raise ValueError("must be S3")
+        if v != "AWS":
+            raise ValueError("must be AWS")
         return v
 
     def __setattr__(self, name, value):
-        if name in S3._convenience_properties:
+        if name in AWS._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    S3E_TAG: ClassVar[KeywordTextField] = KeywordTextField(
-        "s3ETag", "s3ETag", "s3ETag.text"
-    )
-    """
-    TBC
-    """
-    S3ENCRYPTION: ClassVar[KeywordField] = KeywordField("s3Encryption", "s3Encryption")
-    """
-    TBC
-    """
     AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
         "awsArn", "awsArn", "awsArn.text"
     )
@@ -86,8 +76,6 @@ class S3(ObjectStore):
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "s3_e_tag",
-        "s3_encryption",
         "aws_arn",
         "aws_partition",
         "aws_service",
@@ -98,26 +86,6 @@ class S3(ObjectStore):
         "aws_owner_id",
         "aws_tags",
     ]
-
-    @property
-    def s3_e_tag(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_e_tag
-
-    @s3_e_tag.setter
-    def s3_e_tag(self, s3_e_tag: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_e_tag = s3_e_tag
-
-    @property
-    def s3_encryption(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.s3_encryption
-
-    @s3_encryption.setter
-    def s3_encryption(self, s3_encryption: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.s3_encryption = s3_encryption
 
     @property
     def aws_arn(self) -> Optional[str]:
@@ -209,9 +177,7 @@ class S3(ObjectStore):
             self.attributes = self.Attributes()
         self.attributes.aws_tags = aws_tags
 
-    class Attributes(ObjectStore.Attributes):
-        s3_e_tag: Optional[str] = Field(None, description="", alias="s3ETag")
-        s3_encryption: Optional[str] = Field(None, description="", alias="s3Encryption")
+    class Attributes(Cloud.Attributes):
         aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
         aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
         aws_service: Optional[str] = Field(None, description="", alias="awsService")
@@ -228,11 +194,11 @@ class S3(ObjectStore):
         aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
         aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
 
-    attributes: "S3.Attributes" = Field(
-        default_factory=lambda: S3.Attributes(),
+    attributes: "AWS.Attributes" = Field(
+        default_factory=lambda: AWS.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-S3.Attributes.update_forward_refs()
+AWS.Attributes.update_forward_refs()

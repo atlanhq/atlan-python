@@ -8,429 +8,642 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import KafkaTopicCleanupPolicy, KafkaTopicCompressionType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
+    KeywordTextField,
     NumericField,
     RelationField,
+    TextField,
 )
-from pyatlan.model.structs import KafkaTopicConsumption
 
-from .asset51 import Kafka
+from .asset50 import Qlik
 
 
-class KafkaConsumerGroup(Kafka):
+class QlikApp(Qlik):
     """Description"""
 
-    type_name: str = Field("KafkaConsumerGroup", allow_mutation=False)
+    type_name: str = Field("QlikApp", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "KafkaConsumerGroup":
-            raise ValueError("must be KafkaConsumerGroup")
+        if v != "QlikApp":
+            raise ValueError("must be QlikApp")
         return v
 
     def __setattr__(self, name, value):
-        if name in KafkaConsumerGroup._convenience_properties:
+        if name in QlikApp._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    KAFKA_CONSUMER_GROUP_TOPIC_CONSUMPTION_PROPERTIES: ClassVar[
-        KeywordField
-    ] = KeywordField(
-        "kafkaConsumerGroupTopicConsumptionProperties",
-        "kafkaConsumerGroupTopicConsumptionProperties",
+    QLIK_HAS_SECTION_ACCESS: ClassVar[BooleanField] = BooleanField(
+        "qlikHasSectionAccess", "qlikHasSectionAccess"
     )
     """
-    TBC
+    Whether section access/data masking is enabled on source
     """
-    KAFKA_CONSUMER_GROUP_MEMBER_COUNT: ClassVar[NumericField] = NumericField(
-        "kafkaConsumerGroupMemberCount", "kafkaConsumerGroupMemberCount"
+    QLIK_ORIGIN_APP_ID: ClassVar[KeywordField] = KeywordField(
+        "qlikOriginAppId", "qlikOriginAppId"
     )
     """
-    TBC
+    originAppId value for a qlik app
     """
-    KAFKA_TOPIC_NAMES: ClassVar[KeywordField] = KeywordField(
-        "kafkaTopicNames", "kafkaTopicNames"
+    QLIK_IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField(
+        "qlikIsEncrypted", "qlikIsEncrypted"
     )
     """
-    TBC
+    Whether a qlik app is encrypted
     """
-    KAFKA_TOPIC_QUALIFIED_NAMES: ClassVar[KeywordField] = KeywordField(
-        "kafkaTopicQualifiedNames", "kafkaTopicQualifiedNames"
+    QLIK_IS_DIRECT_QUERY_MODE: ClassVar[BooleanField] = BooleanField(
+        "qlikIsDirectQueryMode", "qlikIsDirectQueryMode"
     )
     """
-    TBC
+    Whether a qlik app is in direct query mode
+    """
+    QLIK_APP_STATIC_BYTE_SIZE: ClassVar[NumericField] = NumericField(
+        "qlikAppStaticByteSize", "qlikAppStaticByteSize"
+    )
+    """
+    Static space taken by a qlik app
     """
 
-    KAFKA_TOPICS: ClassVar[RelationField] = RelationField("kafkaTopics")
+    QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
+    """
+    TBC
+    """
+    QLIK_SHEETS: ClassVar[RelationField] = RelationField("qlikSheets")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "kafka_consumer_group_topic_consumption_properties",
-        "kafka_consumer_group_member_count",
-        "kafka_topic_names",
-        "kafka_topic_qualified_names",
-        "kafka_topics",
+        "qlik_has_section_access",
+        "qlik_origin_app_id",
+        "qlik_is_encrypted",
+        "qlik_is_direct_query_mode",
+        "qlik_app_static_byte_size",
+        "qlik_space",
+        "qlik_sheets",
     ]
 
     @property
-    def kafka_consumer_group_topic_consumption_properties(
-        self,
-    ) -> Optional[list[KafkaTopicConsumption]]:
+    def qlik_has_section_access(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.qlik_has_section_access
+        )
+
+    @qlik_has_section_access.setter
+    def qlik_has_section_access(self, qlik_has_section_access: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_has_section_access = qlik_has_section_access
+
+    @property
+    def qlik_origin_app_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_origin_app_id
+
+    @qlik_origin_app_id.setter
+    def qlik_origin_app_id(self, qlik_origin_app_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_origin_app_id = qlik_origin_app_id
+
+    @property
+    def qlik_is_encrypted(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.qlik_is_encrypted
+
+    @qlik_is_encrypted.setter
+    def qlik_is_encrypted(self, qlik_is_encrypted: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_is_encrypted = qlik_is_encrypted
+
+    @property
+    def qlik_is_direct_query_mode(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.kafka_consumer_group_topic_consumption_properties
+            else self.attributes.qlik_is_direct_query_mode
         )
 
-    @kafka_consumer_group_topic_consumption_properties.setter
-    def kafka_consumer_group_topic_consumption_properties(
-        self,
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
-        ],
-    ):
+    @qlik_is_direct_query_mode.setter
+    def qlik_is_direct_query_mode(self, qlik_is_direct_query_mode: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_topic_consumption_properties = (
-            kafka_consumer_group_topic_consumption_properties
-        )
+        self.attributes.qlik_is_direct_query_mode = qlik_is_direct_query_mode
 
     @property
-    def kafka_consumer_group_member_count(self) -> Optional[int]:
+    def qlik_app_static_byte_size(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.kafka_consumer_group_member_count
+            else self.attributes.qlik_app_static_byte_size
         )
 
-    @kafka_consumer_group_member_count.setter
-    def kafka_consumer_group_member_count(
-        self, kafka_consumer_group_member_count: Optional[int]
-    ):
+    @qlik_app_static_byte_size.setter
+    def qlik_app_static_byte_size(self, qlik_app_static_byte_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_group_member_count = (
-            kafka_consumer_group_member_count
-        )
+        self.attributes.qlik_app_static_byte_size = qlik_app_static_byte_size
 
     @property
-    def kafka_topic_names(self) -> Optional[set[str]]:
-        return None if self.attributes is None else self.attributes.kafka_topic_names
+    def qlik_space(self) -> Optional[QlikSpace]:
+        return None if self.attributes is None else self.attributes.qlik_space
 
-    @kafka_topic_names.setter
-    def kafka_topic_names(self, kafka_topic_names: Optional[set[str]]):
+    @qlik_space.setter
+    def qlik_space(self, qlik_space: Optional[QlikSpace]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_names = kafka_topic_names
+        self.attributes.qlik_space = qlik_space
 
     @property
-    def kafka_topic_qualified_names(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_qualified_names
-        )
+    def qlik_sheets(self) -> Optional[list[QlikSheet]]:
+        return None if self.attributes is None else self.attributes.qlik_sheets
 
-    @kafka_topic_qualified_names.setter
-    def kafka_topic_qualified_names(
-        self, kafka_topic_qualified_names: Optional[set[str]]
-    ):
+    @qlik_sheets.setter
+    def qlik_sheets(self, qlik_sheets: Optional[list[QlikSheet]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_qualified_names = kafka_topic_qualified_names
+        self.attributes.qlik_sheets = qlik_sheets
 
-    @property
-    def kafka_topics(self) -> Optional[list[KafkaTopic]]:
-        return None if self.attributes is None else self.attributes.kafka_topics
-
-    @kafka_topics.setter
-    def kafka_topics(self, kafka_topics: Optional[list[KafkaTopic]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topics = kafka_topics
-
-    class Attributes(Kafka.Attributes):
-        kafka_consumer_group_topic_consumption_properties: Optional[
-            list[KafkaTopicConsumption]
-        ] = Field(
-            None, description="", alias="kafkaConsumerGroupTopicConsumptionProperties"
+    class Attributes(Qlik.Attributes):
+        qlik_has_section_access: Optional[bool] = Field(
+            None, description="", alias="qlikHasSectionAccess"
         )
-        kafka_consumer_group_member_count: Optional[int] = Field(
-            None, description="", alias="kafkaConsumerGroupMemberCount"
+        qlik_origin_app_id: Optional[str] = Field(
+            None, description="", alias="qlikOriginAppId"
         )
-        kafka_topic_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicNames"
+        qlik_is_encrypted: Optional[bool] = Field(
+            None, description="", alias="qlikIsEncrypted"
         )
-        kafka_topic_qualified_names: Optional[set[str]] = Field(
-            None, description="", alias="kafkaTopicQualifiedNames"
+        qlik_is_direct_query_mode: Optional[bool] = Field(
+            None, description="", alias="qlikIsDirectQueryMode"
         )
-        kafka_topics: Optional[list[KafkaTopic]] = Field(
-            None, description="", alias="kafkaTopics"
+        qlik_app_static_byte_size: Optional[int] = Field(
+            None, description="", alias="qlikAppStaticByteSize"
+        )
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+        qlik_sheets: Optional[list[QlikSheet]] = Field(
+            None, description="", alias="qlikSheets"
         )  # relationship
 
-    attributes: "KafkaConsumerGroup.Attributes" = Field(
-        default_factory=lambda: KafkaConsumerGroup.Attributes(),
+    attributes: "QlikApp.Attributes" = Field(
+        default_factory=lambda: QlikApp.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class KafkaTopic(Kafka):
+class QlikChart(Qlik):
     """Description"""
 
-    type_name: str = Field("KafkaTopic", allow_mutation=False)
+    type_name: str = Field("QlikChart", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "KafkaTopic":
-            raise ValueError("must be KafkaTopic")
+        if v != "QlikChart":
+            raise ValueError("must be QlikChart")
         return v
 
     def __setattr__(self, name, value):
-        if name in KafkaTopic._convenience_properties:
+        if name in QlikChart._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    KAFKA_TOPIC_IS_INTERNAL: ClassVar[BooleanField] = BooleanField(
-        "kafkaTopicIsInternal", "kafkaTopicIsInternal"
+    QLIK_CHART_SUBTITLE: ClassVar[TextField] = TextField(
+        "qlikChartSubtitle", "qlikChartSubtitle"
     )
     """
-    TBC
+    Subtitle of a qlik chart
     """
-    KAFKA_TOPIC_COMPRESSION_TYPE: ClassVar[KeywordField] = KeywordField(
-        "kafkaTopicCompressionType", "kafkaTopicCompressionType"
+    QLIK_CHART_FOOTNOTE: ClassVar[TextField] = TextField(
+        "qlikChartFootnote", "qlikChartFootnote"
     )
     """
-    TBC
+    Footnote of a qlik chart
     """
-    KAFKA_TOPIC_REPLICATION_FACTOR: ClassVar[NumericField] = NumericField(
-        "kafkaTopicReplicationFactor", "kafkaTopicReplicationFactor"
+    QLIK_CHART_ORIENTATION: ClassVar[KeywordField] = KeywordField(
+        "qlikChartOrientation", "qlikChartOrientation"
     )
     """
-    TBC
+    Orientation of a qlik chart
     """
-    KAFKA_TOPIC_SEGMENT_BYTES: ClassVar[NumericField] = NumericField(
-        "kafkaTopicSegmentBytes", "kafkaTopicSegmentBytes"
+    QLIK_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikChartType", "qlikChartType"
     )
     """
-    TBC
-    """
-    KAFKA_TOPIC_PARTITIONS_COUNT: ClassVar[NumericField] = NumericField(
-        "kafkaTopicPartitionsCount", "kafkaTopicPartitionsCount"
-    )
-    """
-    TBC
-    """
-    KAFKA_TOPIC_SIZE_IN_BYTES: ClassVar[NumericField] = NumericField(
-        "kafkaTopicSizeInBytes", "kafkaTopicSizeInBytes"
-    )
-    """
-    TBC
-    """
-    KAFKA_TOPIC_RECORD_COUNT: ClassVar[NumericField] = NumericField(
-        "kafkaTopicRecordCount", "kafkaTopicRecordCount"
-    )
-    """
-    TBC
-    """
-    KAFKA_TOPIC_CLEANUP_POLICY: ClassVar[KeywordField] = KeywordField(
-        "kafkaTopicCleanupPolicy", "kafkaTopicCleanupPolicy"
-    )
-    """
-    TBC
+    Subtype of an qlik chart. E.g. bar, graph, pie etc
     """
 
-    KAFKA_CONSUMER_GROUPS: ClassVar[RelationField] = RelationField(
-        "kafkaConsumerGroups"
-    )
+    QLIK_SHEET: ClassVar[RelationField] = RelationField("qlikSheet")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "kafka_topic_is_internal",
-        "kafka_topic_compression_type",
-        "kafka_topic_replication_factor",
-        "kafka_topic_segment_bytes",
-        "kafka_topic_partitions_count",
-        "kafka_topic_size_in_bytes",
-        "kafka_topic_record_count",
-        "kafka_topic_cleanup_policy",
-        "kafka_consumer_groups",
+        "qlik_chart_subtitle",
+        "qlik_chart_footnote",
+        "qlik_chart_orientation",
+        "qlik_chart_type",
+        "qlik_sheet",
     ]
 
     @property
-    def kafka_topic_is_internal(self) -> Optional[bool]:
-        return (
-            None if self.attributes is None else self.attributes.kafka_topic_is_internal
-        )
+    def qlik_chart_subtitle(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_chart_subtitle
 
-    @kafka_topic_is_internal.setter
-    def kafka_topic_is_internal(self, kafka_topic_is_internal: Optional[bool]):
+    @qlik_chart_subtitle.setter
+    def qlik_chart_subtitle(self, qlik_chart_subtitle: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_is_internal = kafka_topic_is_internal
+        self.attributes.qlik_chart_subtitle = qlik_chart_subtitle
 
     @property
-    def kafka_topic_compression_type(self) -> Optional[KafkaTopicCompressionType]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_compression_type
-        )
+    def qlik_chart_footnote(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_chart_footnote
 
-    @kafka_topic_compression_type.setter
-    def kafka_topic_compression_type(
-        self, kafka_topic_compression_type: Optional[KafkaTopicCompressionType]
-    ):
+    @qlik_chart_footnote.setter
+    def qlik_chart_footnote(self, qlik_chart_footnote: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_compression_type = kafka_topic_compression_type
+        self.attributes.qlik_chart_footnote = qlik_chart_footnote
 
     @property
-    def kafka_topic_replication_factor(self) -> Optional[int]:
+    def qlik_chart_orientation(self) -> Optional[str]:
         return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_replication_factor
+            None if self.attributes is None else self.attributes.qlik_chart_orientation
         )
 
-    @kafka_topic_replication_factor.setter
-    def kafka_topic_replication_factor(
-        self, kafka_topic_replication_factor: Optional[int]
-    ):
+    @qlik_chart_orientation.setter
+    def qlik_chart_orientation(self, qlik_chart_orientation: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_replication_factor = kafka_topic_replication_factor
+        self.attributes.qlik_chart_orientation = qlik_chart_orientation
 
     @property
-    def kafka_topic_segment_bytes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_segment_bytes
-        )
+    def qlik_chart_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_chart_type
 
-    @kafka_topic_segment_bytes.setter
-    def kafka_topic_segment_bytes(self, kafka_topic_segment_bytes: Optional[int]):
+    @qlik_chart_type.setter
+    def qlik_chart_type(self, qlik_chart_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_segment_bytes = kafka_topic_segment_bytes
+        self.attributes.qlik_chart_type = qlik_chart_type
 
     @property
-    def kafka_topic_partitions_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_partitions_count
-        )
+    def qlik_sheet(self) -> Optional[QlikSheet]:
+        return None if self.attributes is None else self.attributes.qlik_sheet
 
-    @kafka_topic_partitions_count.setter
-    def kafka_topic_partitions_count(self, kafka_topic_partitions_count: Optional[int]):
+    @qlik_sheet.setter
+    def qlik_sheet(self, qlik_sheet: Optional[QlikSheet]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.kafka_topic_partitions_count = kafka_topic_partitions_count
+        self.attributes.qlik_sheet = qlik_sheet
 
-    @property
-    def kafka_topic_size_in_bytes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_size_in_bytes
+    class Attributes(Qlik.Attributes):
+        qlik_chart_subtitle: Optional[str] = Field(
+            None, description="", alias="qlikChartSubtitle"
         )
-
-    @kafka_topic_size_in_bytes.setter
-    def kafka_topic_size_in_bytes(self, kafka_topic_size_in_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_size_in_bytes = kafka_topic_size_in_bytes
-
-    @property
-    def kafka_topic_record_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_record_count
+        qlik_chart_footnote: Optional[str] = Field(
+            None, description="", alias="qlikChartFootnote"
         )
-
-    @kafka_topic_record_count.setter
-    def kafka_topic_record_count(self, kafka_topic_record_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_record_count = kafka_topic_record_count
-
-    @property
-    def kafka_topic_cleanup_policy(self) -> Optional[KafkaTopicCleanupPolicy]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.kafka_topic_cleanup_policy
+        qlik_chart_orientation: Optional[str] = Field(
+            None, description="", alias="qlikChartOrientation"
         )
-
-    @kafka_topic_cleanup_policy.setter
-    def kafka_topic_cleanup_policy(
-        self, kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_topic_cleanup_policy = kafka_topic_cleanup_policy
-
-    @property
-    def kafka_consumer_groups(self) -> Optional[list[KafkaConsumerGroup]]:
-        return (
-            None if self.attributes is None else self.attributes.kafka_consumer_groups
+        qlik_chart_type: Optional[str] = Field(
+            None, description="", alias="qlikChartType"
         )
-
-    @kafka_consumer_groups.setter
-    def kafka_consumer_groups(
-        self, kafka_consumer_groups: Optional[list[KafkaConsumerGroup]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.kafka_consumer_groups = kafka_consumer_groups
-
-    class Attributes(Kafka.Attributes):
-        kafka_topic_is_internal: Optional[bool] = Field(
-            None, description="", alias="kafkaTopicIsInternal"
-        )
-        kafka_topic_compression_type: Optional[KafkaTopicCompressionType] = Field(
-            None, description="", alias="kafkaTopicCompressionType"
-        )
-        kafka_topic_replication_factor: Optional[int] = Field(
-            None, description="", alias="kafkaTopicReplicationFactor"
-        )
-        kafka_topic_segment_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSegmentBytes"
-        )
-        kafka_topic_partitions_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicPartitionsCount"
-        )
-        kafka_topic_size_in_bytes: Optional[int] = Field(
-            None, description="", alias="kafkaTopicSizeInBytes"
-        )
-        kafka_topic_record_count: Optional[int] = Field(
-            None, description="", alias="kafkaTopicRecordCount"
-        )
-        kafka_topic_cleanup_policy: Optional[KafkaTopicCleanupPolicy] = Field(
-            None, description="", alias="kafkaTopicCleanupPolicy"
-        )
-        kafka_consumer_groups: Optional[list[KafkaConsumerGroup]] = Field(
-            None, description="", alias="kafkaConsumerGroups"
+        qlik_sheet: Optional[QlikSheet] = Field(
+            None, description="", alias="qlikSheet"
         )  # relationship
 
-    attributes: "KafkaTopic.Attributes" = Field(
-        default_factory=lambda: KafkaTopic.Attributes(),
+    attributes: "QlikChart.Attributes" = Field(
+        default_factory=lambda: QlikChart.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-KafkaConsumerGroup.Attributes.update_forward_refs()
+class QlikDataset(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikDataset", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikDataset":
+            raise ValueError("must be QlikDataset")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QlikDataset._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QLIK_DATASET_TECHNICAL_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikDatasetTechnicalName",
+        "qlikDatasetTechnicalName.keyword",
+        "qlikDatasetTechnicalName",
+    )
+    """
+    Technical name of a qlik data asset
+    """
+    QLIK_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikDatasetType", "qlikDatasetType"
+    )
+    """
+    Type of an qlik data asset. E.g. qix-df, snowflake etc
+    """
+    QLIK_DATASET_URI: ClassVar[KeywordTextField] = KeywordTextField(
+        "qlikDatasetUri", "qlikDatasetUri", "qlikDatasetUri.text"
+    )
+    """
+    URI of a qlik dataset
+    """
+    QLIK_DATASET_SUBTYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikDatasetSubtype", "qlikDatasetSubtype"
+    )
+    """
+    Subtype of an qlik dataset asset
+    """
+
+    QLIK_SPACE: ClassVar[RelationField] = RelationField("qlikSpace")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "qlik_dataset_technical_name",
+        "qlik_dataset_type",
+        "qlik_dataset_uri",
+        "qlik_dataset_subtype",
+        "qlik_space",
+    ]
+
+    @property
+    def qlik_dataset_technical_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.qlik_dataset_technical_name
+        )
+
+    @qlik_dataset_technical_name.setter
+    def qlik_dataset_technical_name(self, qlik_dataset_technical_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_technical_name = qlik_dataset_technical_name
+
+    @property
+    def qlik_dataset_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_dataset_type
+
+    @qlik_dataset_type.setter
+    def qlik_dataset_type(self, qlik_dataset_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_type = qlik_dataset_type
+
+    @property
+    def qlik_dataset_uri(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_dataset_uri
+
+    @qlik_dataset_uri.setter
+    def qlik_dataset_uri(self, qlik_dataset_uri: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_uri = qlik_dataset_uri
+
+    @property
+    def qlik_dataset_subtype(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_dataset_subtype
+
+    @qlik_dataset_subtype.setter
+    def qlik_dataset_subtype(self, qlik_dataset_subtype: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_dataset_subtype = qlik_dataset_subtype
+
+    @property
+    def qlik_space(self) -> Optional[QlikSpace]:
+        return None if self.attributes is None else self.attributes.qlik_space
+
+    @qlik_space.setter
+    def qlik_space(self, qlik_space: Optional[QlikSpace]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_space = qlik_space
+
+    class Attributes(Qlik.Attributes):
+        qlik_dataset_technical_name: Optional[str] = Field(
+            None, description="", alias="qlikDatasetTechnicalName"
+        )
+        qlik_dataset_type: Optional[str] = Field(
+            None, description="", alias="qlikDatasetType"
+        )
+        qlik_dataset_uri: Optional[str] = Field(
+            None, description="", alias="qlikDatasetUri"
+        )
+        qlik_dataset_subtype: Optional[str] = Field(
+            None, description="", alias="qlikDatasetSubtype"
+        )
+        qlik_space: Optional[QlikSpace] = Field(
+            None, description="", alias="qlikSpace"
+        )  # relationship
+
+    attributes: "QlikDataset.Attributes" = Field(
+        default_factory=lambda: QlikDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-KafkaTopic.Attributes.update_forward_refs()
+class QlikSheet(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikSheet", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSheet":
+            raise ValueError("must be QlikSheet")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QlikSheet._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QLIK_SHEET_IS_APPROVED: ClassVar[BooleanField] = BooleanField(
+        "qlikSheetIsApproved", "qlikSheetIsApproved"
+    )
+    """
+    Whether a qlik sheet is approved
+    """
+
+    QLIK_APP: ClassVar[RelationField] = RelationField("qlikApp")
+    """
+    TBC
+    """
+    QLIK_CHARTS: ClassVar[RelationField] = RelationField("qlikCharts")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "qlik_sheet_is_approved",
+        "qlik_app",
+        "qlik_charts",
+    ]
+
+    @property
+    def qlik_sheet_is_approved(self) -> Optional[bool]:
+        return (
+            None if self.attributes is None else self.attributes.qlik_sheet_is_approved
+        )
+
+    @qlik_sheet_is_approved.setter
+    def qlik_sheet_is_approved(self, qlik_sheet_is_approved: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_sheet_is_approved = qlik_sheet_is_approved
+
+    @property
+    def qlik_app(self) -> Optional[QlikApp]:
+        return None if self.attributes is None else self.attributes.qlik_app
+
+    @qlik_app.setter
+    def qlik_app(self, qlik_app: Optional[QlikApp]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_app = qlik_app
+
+    @property
+    def qlik_charts(self) -> Optional[list[QlikChart]]:
+        return None if self.attributes is None else self.attributes.qlik_charts
+
+    @qlik_charts.setter
+    def qlik_charts(self, qlik_charts: Optional[list[QlikChart]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_charts = qlik_charts
+
+    class Attributes(Qlik.Attributes):
+        qlik_sheet_is_approved: Optional[bool] = Field(
+            None, description="", alias="qlikSheetIsApproved"
+        )
+        qlik_app: Optional[QlikApp] = Field(
+            None, description="", alias="qlikApp"
+        )  # relationship
+        qlik_charts: Optional[list[QlikChart]] = Field(
+            None, description="", alias="qlikCharts"
+        )  # relationship
+
+    attributes: "QlikSheet.Attributes" = Field(
+        default_factory=lambda: QlikSheet.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class QlikSpace(Qlik):
+    """Description"""
+
+    type_name: str = Field("QlikSpace", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "QlikSpace":
+            raise ValueError("must be QlikSpace")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in QlikSpace._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    QLIK_SPACE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "qlikSpaceType", "qlikSpaceType"
+    )
+    """
+    Type of a qlik space. E.g. Private, Shared etc
+    """
+
+    QLIK_DATASETS: ClassVar[RelationField] = RelationField("qlikDatasets")
+    """
+    TBC
+    """
+    QLIK_APPS: ClassVar[RelationField] = RelationField("qlikApps")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "qlik_space_type",
+        "qlik_datasets",
+        "qlik_apps",
+    ]
+
+    @property
+    def qlik_space_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.qlik_space_type
+
+    @qlik_space_type.setter
+    def qlik_space_type(self, qlik_space_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_space_type = qlik_space_type
+
+    @property
+    def qlik_datasets(self) -> Optional[list[QlikDataset]]:
+        return None if self.attributes is None else self.attributes.qlik_datasets
+
+    @qlik_datasets.setter
+    def qlik_datasets(self, qlik_datasets: Optional[list[QlikDataset]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_datasets = qlik_datasets
+
+    @property
+    def qlik_apps(self) -> Optional[list[QlikApp]]:
+        return None if self.attributes is None else self.attributes.qlik_apps
+
+    @qlik_apps.setter
+    def qlik_apps(self, qlik_apps: Optional[list[QlikApp]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.qlik_apps = qlik_apps
+
+    class Attributes(Qlik.Attributes):
+        qlik_space_type: Optional[str] = Field(
+            None, description="", alias="qlikSpaceType"
+        )
+        qlik_datasets: Optional[list[QlikDataset]] = Field(
+            None, description="", alias="qlikDatasets"
+        )  # relationship
+        qlik_apps: Optional[list[QlikApp]] = Field(
+            None, description="", alias="qlikApps"
+        )  # relationship
+
+    attributes: "QlikSpace.Attributes" = Field(
+        default_factory=lambda: QlikSpace.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+QlikApp.Attributes.update_forward_refs()
+
+
+QlikChart.Attributes.update_forward_refs()
+
+
+QlikDataset.Attributes.update_forward_refs()
+
+
+QlikSheet.Attributes.update_forward_refs()
+
+
+QlikSpace.Attributes.update_forward_refs()

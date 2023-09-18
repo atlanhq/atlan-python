@@ -8,26 +8,26 @@ from typing import ClassVar
 
 from pydantic import Field, validator
 
-from .asset21 import EventStore
+from .asset80 import KafkaConsumerGroup
 
 
-class Kafka(EventStore):
+class AzureEventHubConsumerGroup(KafkaConsumerGroup):
     """Description"""
 
-    type_name: str = Field("Kafka", allow_mutation=False)
+    type_name: str = Field("AzureEventHubConsumerGroup", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Kafka":
-            raise ValueError("must be Kafka")
+        if v != "AzureEventHubConsumerGroup":
+            raise ValueError("must be AzureEventHubConsumerGroup")
         return v
 
     def __setattr__(self, name, value):
-        if name in Kafka._convenience_properties:
+        if name in AzureEventHubConsumerGroup._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
 
 
-Kafka.Attributes.update_forward_refs()
+AzureEventHubConsumerGroup.Attributes.update_forward_refs()

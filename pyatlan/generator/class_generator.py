@@ -52,6 +52,7 @@ TYPE_REPLACEMENTS = [
     ("quick_sight_dataset_import_mode", "QuickSightDatasetImportMode"),
     ("file_type", "FileType"),
     ("atlas_operation", "AtlasOperation"),
+    ("matillion_job_type", "MatillionJobType"),
 ]
 PRIMITIVE_MAPPINGS = {
     "string": "str",

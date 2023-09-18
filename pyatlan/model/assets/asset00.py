@@ -23,6 +23,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     FileType,
     IconType,
+    MatillionJobType,
     OpenLineageRunState,
     SchemaRegistrySchemaCompatibility,
     SchemaRegistrySchemaType,
@@ -334,6 +335,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -4360,6 +4362,10 @@ class Process(Asset, type_name="Process"):
     TBC
     """
 
+    MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
+    """
+    TBC
+    """
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
     """
     TBC
@@ -4375,6 +4381,7 @@ class Process(Asset, type_name="Process"):
         "code",
         "sql",
         "ast",
+        "matillion_component",
         "airflow_tasks",
         "column_processes",
     ]
@@ -4430,6 +4437,16 @@ class Process(Asset, type_name="Process"):
         self.attributes.ast = ast
 
     @property
+    def matillion_component(self) -> Optional[MatillionComponent]:
+        return None if self.attributes is None else self.attributes.matillion_component
+
+    @matillion_component.setter
+    def matillion_component(self, matillion_component: Optional[MatillionComponent]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component = matillion_component
+
+    @property
     def airflow_tasks(self) -> Optional[list[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
@@ -4455,6 +4472,9 @@ class Process(Asset, type_name="Process"):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
+        matillion_component: Optional[MatillionComponent] = Field(
+            None, description="", alias="matillionComponent"
+        )  # relationship
         airflow_tasks: Optional[list[AirflowTask]] = Field(
             None, description="", alias="airflowTasks"
         )  # relationship
@@ -6662,6 +6682,16 @@ class Query(SQL):
     """
     TBC
     """
+    LONG_RAW_QUERY: ClassVar[KeywordField] = KeywordField(
+        "longRawQuery", "longRawQuery"
+    )
+    """
+    TBC
+    """
+    RAW_QUERY_TEXT: ClassVar[RelationField] = RelationField("rawQueryText")
+    """
+    TBC
+    """
     DEFAULT_SCHEMA_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
         "defaultSchemaQualifiedName",
         "defaultSchemaQualifiedName",
@@ -6740,6 +6770,8 @@ class Query(SQL):
 
     _convenience_properties: ClassVar[list[str]] = [
         "raw_query",
+        "long_raw_query",
+        "raw_query_text",
         "default_schema_qualified_name",
         "default_database_qualified_name",
         "variables_schema_base64",
@@ -6764,6 +6796,26 @@ class Query(SQL):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.raw_query = raw_query
+
+    @property
+    def long_raw_query(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.long_raw_query
+
+    @long_raw_query.setter
+    def long_raw_query(self, long_raw_query: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.long_raw_query = long_raw_query
+
+    @property
+    def raw_query_text(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.raw_query_text
+
+    @raw_query_text.setter
+    def raw_query_text(self, raw_query_text: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.raw_query_text = raw_query_text
 
     @property
     def default_schema_qualified_name(self) -> Optional[str]:
@@ -6923,6 +6975,12 @@ class Query(SQL):
 
     class Attributes(SQL.Attributes):
         raw_query: Optional[str] = Field(None, description="", alias="rawQuery")
+        long_raw_query: Optional[str] = Field(
+            None, description="", alias="longRawQuery"
+        )
+        raw_query_text: Optional[str] = Field(
+            None, description="", alias="rawQueryText"
+        )
         default_schema_qualified_name: Optional[str] = Field(
             None, description="", alias="defaultSchemaQualifiedName"
         )
@@ -10097,113 +10155,6 @@ class SnowflakeStream(SQL):
     )
 
 
-class Database(SQL):
-    """Description"""
-
-    @classmethod
-    # @validate_arguments()
-    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
-        validate_required_fields(
-            ["name", "connection_qualified_name"], [name, connection_qualified_name]
-        )
-        fields = connection_qualified_name.split("/")
-        if len(fields) != 3:
-            raise ValueError("Invalid connection_qualified_name")
-        try:
-            connector_type = AtlanConnectorType(fields[1])  # type:ignore
-        except ValueError as e:
-            raise ValueError("Invalid connection_qualified_name") from e
-        attributes = Database.Attributes(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            qualified_name=f"{connection_qualified_name}/{name}",
-            connector_name=connector_type.value,
-        )
-        return cls(attributes=attributes)
-
-    type_name: str = Field("Database", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "Database":
-            raise ValueError("must be Database")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in Database._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
-    """
-    TBC
-    """
-
-    SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "schema_count",
-        "schemas",
-    ]
-
-    @property
-    def schema_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.schema_count
-
-    @schema_count.setter
-    def schema_count(self, schema_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_count = schema_count
-
-    @property
-    def schemas(self) -> Optional[list[Schema]]:
-        return None if self.attributes is None else self.attributes.schemas
-
-    @schemas.setter
-    def schemas(self, schemas: Optional[list[Schema]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schemas = schemas
-
-    class Attributes(SQL.Attributes):
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        schemas: Optional[list[Schema]] = Field(
-            None, description="", alias="schemas"
-        )  # relationship
-
-        @classmethod
-        # @validate_arguments()
-        def create(
-            cls, name: str, connection_qualified_name: str
-        ) -> Database.Attributes:
-            validate_required_fields(
-                ["name", "connection_qualified_name"], [name, connection_qualified_name]
-            )
-            fields = connection_qualified_name.split("/")
-            if len(fields) != 3:
-                raise ValueError("Invalid connection_qualified_name")
-            try:
-                connector_type = AtlanConnectorType(fields[1])  # type:ignore
-            except ValueError as e:
-                raise ValueError("Invalid connection_qualified_name") from e
-            return Database.Attributes(
-                name=name,
-                connection_qualified_name=connection_qualified_name,
-                qualified_name=f"{connection_qualified_name}/{name}",
-                connector_name=connector_type.value,
-            )
-
-    attributes: "Database.Attributes" = Field(
-        default_factory=lambda: Database.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
 class Procedure(SQL):
     """Description"""
 
@@ -10749,6 +10700,781 @@ class SnowflakeTag(Tag):
 
     attributes: "SnowflakeTag.Attributes" = Field(
         default_factory=lambda: SnowflakeTag.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class Matillion(Catalog):
+    """Description"""
+
+    type_name: str = Field("Matillion", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Matillion":
+            raise ValueError("must be Matillion")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Matillion._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MATILLION_VERSION: ClassVar[KeywordField] = KeywordField(
+        "matillionVersion", "matillionVersion"
+    )
+    """
+    This designates the current point in time state of a project. We can think it to be branch or version control in github
+    """  # noqa: E501
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "matillion_version",
+    ]
+
+    @property
+    def matillion_version(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.matillion_version
+
+    @matillion_version.setter
+    def matillion_version(self, matillion_version: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_version = matillion_version
+
+    class Attributes(Catalog.Attributes):
+        matillion_version: Optional[str] = Field(
+            None, description="", alias="matillionVersion"
+        )
+
+    attributes: "Matillion.Attributes" = Field(
+        default_factory=lambda: Matillion.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MatillionGroup(Matillion):
+    """Description"""
+
+    type_name: str = Field("MatillionGroup", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MatillionGroup":
+            raise ValueError("must be MatillionGroup")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MatillionGroup._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MATILLION_PROJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "matillionProjectCount", "matillionProjectCount"
+    )
+    """
+    Count of the number of matillion projects under a matillion group
+    """
+
+    MATILLION_PROJECTS: ClassVar[RelationField] = RelationField("matillionProjects")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "matillion_project_count",
+        "matillion_projects",
+    ]
+
+    @property
+    def matillion_project_count(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.matillion_project_count
+        )
+
+    @matillion_project_count.setter
+    def matillion_project_count(self, matillion_project_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_project_count = matillion_project_count
+
+    @property
+    def matillion_projects(self) -> Optional[list[MatillionProject]]:
+        return None if self.attributes is None else self.attributes.matillion_projects
+
+    @matillion_projects.setter
+    def matillion_projects(self, matillion_projects: Optional[list[MatillionProject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_projects = matillion_projects
+
+    class Attributes(Matillion.Attributes):
+        matillion_project_count: Optional[int] = Field(
+            None, description="", alias="matillionProjectCount"
+        )
+        matillion_projects: Optional[list[MatillionProject]] = Field(
+            None, description="", alias="matillionProjects"
+        )  # relationship
+
+    attributes: "MatillionGroup.Attributes" = Field(
+        default_factory=lambda: MatillionGroup.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MatillionJob(Matillion):
+    """Description"""
+
+    type_name: str = Field("MatillionJob", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MatillionJob":
+            raise ValueError("must be MatillionJob")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MatillionJob._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MATILLION_JOB_TYPE: ClassVar[KeywordField] = KeywordField(
+        "matillionJobType", "matillionJobType"
+    )
+    """
+    The type of a job. There are two kinds of jobs in matillion - orchestration and transformation
+    """
+    MATILLION_JOB_PATH: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionJobPath", "matillionJobPath", "matillionJobPath.text"
+    )
+    """
+    The hierarchy path of a job under a matillion project. Jobs can be managed at multiple folder levels under a matillion project
+    """  # noqa: E501
+    MATILLION_JOB_COMPONENT_COUNT: ClassVar[NumericField] = NumericField(
+        "matillionJobComponentCount", "matillionJobComponentCount"
+    )
+    """
+    The count of components under a specific matillion job
+    """
+    MATILLION_JOB_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "matillionJobSchedule", "matillionJobSchedule"
+    )
+    """
+    Specifies whether a matillion job is scheduled weekly or monthly
+    """
+    MATILLION_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionProjectName", "matillionProjectName.keyword", "matillionProjectName"
+    )
+    """
+    Name of the matillion project to which the matillion job belongs
+    """
+    MATILLION_PROJECT_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionProjectQualifiedName",
+        "matillionProjectQualifiedName",
+        "matillionProjectQualifiedName.text",
+    )
+    """
+    Qualified name of the matillion project to which the matillion job belongs
+    """
+
+    MATILLION_PROJECT: ClassVar[RelationField] = RelationField("matillionProject")
+    """
+    TBC
+    """
+    MATILLION_COMPONENTS: ClassVar[RelationField] = RelationField("matillionComponents")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "matillion_job_type",
+        "matillion_job_path",
+        "matillion_job_component_count",
+        "matillion_job_schedule",
+        "matillion_project_name",
+        "matillion_project_qualified_name",
+        "matillion_project",
+        "matillion_components",
+    ]
+
+    @property
+    def matillion_job_type(self) -> Optional[MatillionJobType]:
+        return None if self.attributes is None else self.attributes.matillion_job_type
+
+    @matillion_job_type.setter
+    def matillion_job_type(self, matillion_job_type: Optional[MatillionJobType]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job_type = matillion_job_type
+
+    @property
+    def matillion_job_path(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.matillion_job_path
+
+    @matillion_job_path.setter
+    def matillion_job_path(self, matillion_job_path: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job_path = matillion_job_path
+
+    @property
+    def matillion_job_component_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_job_component_count
+        )
+
+    @matillion_job_component_count.setter
+    def matillion_job_component_count(
+        self, matillion_job_component_count: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job_component_count = matillion_job_component_count
+
+    @property
+    def matillion_job_schedule(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.matillion_job_schedule
+        )
+
+    @matillion_job_schedule.setter
+    def matillion_job_schedule(self, matillion_job_schedule: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job_schedule = matillion_job_schedule
+
+    @property
+    def matillion_project_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.matillion_project_name
+        )
+
+    @matillion_project_name.setter
+    def matillion_project_name(self, matillion_project_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_project_name = matillion_project_name
+
+    @property
+    def matillion_project_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_project_qualified_name
+        )
+
+    @matillion_project_qualified_name.setter
+    def matillion_project_qualified_name(
+        self, matillion_project_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_project_qualified_name = (
+            matillion_project_qualified_name
+        )
+
+    @property
+    def matillion_project(self) -> Optional[MatillionProject]:
+        return None if self.attributes is None else self.attributes.matillion_project
+
+    @matillion_project.setter
+    def matillion_project(self, matillion_project: Optional[MatillionProject]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_project = matillion_project
+
+    @property
+    def matillion_components(self) -> Optional[list[MatillionComponent]]:
+        return None if self.attributes is None else self.attributes.matillion_components
+
+    @matillion_components.setter
+    def matillion_components(
+        self, matillion_components: Optional[list[MatillionComponent]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_components = matillion_components
+
+    class Attributes(Matillion.Attributes):
+        matillion_job_type: Optional[MatillionJobType] = Field(
+            None, description="", alias="matillionJobType"
+        )
+        matillion_job_path: Optional[str] = Field(
+            None, description="", alias="matillionJobPath"
+        )
+        matillion_job_component_count: Optional[int] = Field(
+            None, description="", alias="matillionJobComponentCount"
+        )
+        matillion_job_schedule: Optional[str] = Field(
+            None, description="", alias="matillionJobSchedule"
+        )
+        matillion_project_name: Optional[str] = Field(
+            None, description="", alias="matillionProjectName"
+        )
+        matillion_project_qualified_name: Optional[str] = Field(
+            None, description="", alias="matillionProjectQualifiedName"
+        )
+        matillion_project: Optional[MatillionProject] = Field(
+            None, description="", alias="matillionProject"
+        )  # relationship
+        matillion_components: Optional[list[MatillionComponent]] = Field(
+            None, description="", alias="matillionComponents"
+        )  # relationship
+
+    attributes: "MatillionJob.Attributes" = Field(
+        default_factory=lambda: MatillionJob.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MatillionProject(Matillion):
+    """Description"""
+
+    type_name: str = Field("MatillionProject", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MatillionProject":
+            raise ValueError("must be MatillionProject")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MatillionProject._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MATILLION_VERSIONS: ClassVar[KeywordField] = KeywordField(
+        "matillionVersions", "matillionVersions"
+    )
+    """
+    List of versions under a matillion project
+    """
+    MATILLION_ENVIRONMENTS: ClassVar[KeywordField] = KeywordField(
+        "matillionEnvironments", "matillionEnvironments"
+    )
+    """
+    List of environments under a matillion project
+    """
+    MATILLION_PROJECT_JOB_COUNT: ClassVar[NumericField] = NumericField(
+        "matillionProjectJobCount", "matillionProjectJobCount"
+    )
+    """
+    Count of jobs under a matillion project
+    """
+    MATILLION_GROUP_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionGroupName", "matillionGroupName.keyword", "matillionGroupName"
+    )
+    """
+    Name of the matillion group to which the matillion project belongs
+    """
+    MATILLION_GROUP_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionGroupQualifiedName",
+        "matillionGroupQualifiedName",
+        "matillionGroupQualifiedName.text",
+    )
+    """
+    Qualified name of the matillion group to which the matillion project belongs
+    """
+
+    MATILLION_JOBS: ClassVar[RelationField] = RelationField("matillionJobs")
+    """
+    TBC
+    """
+    MATILLION_GROUP: ClassVar[RelationField] = RelationField("matillionGroup")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "matillion_versions",
+        "matillion_environments",
+        "matillion_project_job_count",
+        "matillion_group_name",
+        "matillion_group_qualified_name",
+        "matillion_jobs",
+        "matillion_group",
+    ]
+
+    @property
+    def matillion_versions(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.matillion_versions
+
+    @matillion_versions.setter
+    def matillion_versions(self, matillion_versions: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_versions = matillion_versions
+
+    @property
+    def matillion_environments(self) -> Optional[set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.matillion_environments
+        )
+
+    @matillion_environments.setter
+    def matillion_environments(self, matillion_environments: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_environments = matillion_environments
+
+    @property
+    def matillion_project_job_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_project_job_count
+        )
+
+    @matillion_project_job_count.setter
+    def matillion_project_job_count(self, matillion_project_job_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_project_job_count = matillion_project_job_count
+
+    @property
+    def matillion_group_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.matillion_group_name
+
+    @matillion_group_name.setter
+    def matillion_group_name(self, matillion_group_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_group_name = matillion_group_name
+
+    @property
+    def matillion_group_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_group_qualified_name
+        )
+
+    @matillion_group_qualified_name.setter
+    def matillion_group_qualified_name(
+        self, matillion_group_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_group_qualified_name = matillion_group_qualified_name
+
+    @property
+    def matillion_jobs(self) -> Optional[list[MatillionJob]]:
+        return None if self.attributes is None else self.attributes.matillion_jobs
+
+    @matillion_jobs.setter
+    def matillion_jobs(self, matillion_jobs: Optional[list[MatillionJob]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_jobs = matillion_jobs
+
+    @property
+    def matillion_group(self) -> Optional[MatillionGroup]:
+        return None if self.attributes is None else self.attributes.matillion_group
+
+    @matillion_group.setter
+    def matillion_group(self, matillion_group: Optional[MatillionGroup]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_group = matillion_group
+
+    class Attributes(Matillion.Attributes):
+        matillion_versions: Optional[set[str]] = Field(
+            None, description="", alias="matillionVersions"
+        )
+        matillion_environments: Optional[set[str]] = Field(
+            None, description="", alias="matillionEnvironments"
+        )
+        matillion_project_job_count: Optional[int] = Field(
+            None, description="", alias="matillionProjectJobCount"
+        )
+        matillion_group_name: Optional[str] = Field(
+            None, description="", alias="matillionGroupName"
+        )
+        matillion_group_qualified_name: Optional[str] = Field(
+            None, description="", alias="matillionGroupQualifiedName"
+        )
+        matillion_jobs: Optional[list[MatillionJob]] = Field(
+            None, description="", alias="matillionJobs"
+        )  # relationship
+        matillion_group: Optional[MatillionGroup] = Field(
+            None, description="", alias="matillionGroup"
+        )  # relationship
+
+    attributes: "MatillionProject.Attributes" = Field(
+        default_factory=lambda: MatillionProject.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class MatillionComponent(Matillion):
+    """Description"""
+
+    type_name: str = Field("MatillionComponent", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "MatillionComponent":
+            raise ValueError("must be MatillionComponent")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in MatillionComponent._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    MATILLION_COMPONENT_ID: ClassVar[KeywordField] = KeywordField(
+        "matillionComponentId", "matillionComponentId"
+    )
+    """
+    Unique id of a matillion component
+    """
+    MATILLION_COMPONENT_IMPLEMENTATION_ID: ClassVar[KeywordField] = KeywordField(
+        "matillionComponentImplementationId", "matillionComponentImplementationId"
+    )
+    """
+    Unique id which represents the type of a component in matillion
+    """
+    MATILLION_COMPONENT_LINKED_JOB: ClassVar[KeywordField] = KeywordField(
+        "matillionComponentLinkedJob", "matillionComponentLinkedJob"
+    )
+    """
+    Job details of the matillion job to which the matillion component internally links to
+    """
+    MATILLION_COMPONENT_LAST_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
+        "matillionComponentLastRunStatus", "matillionComponentLastRunStatus"
+    )
+    """
+    The latest run status of a matillion component under a matillion job
+    """
+    MATILLION_COMPONENT_LAST_FIVE_RUN_STATUS: ClassVar[KeywordField] = KeywordField(
+        "matillionComponentLastFiveRunStatus", "matillionComponentLastFiveRunStatus"
+    )
+    """
+    The last five run status of a matillion component under a matillion job
+    """
+    MATILLION_COMPONENT_SQLS: ClassVar[KeywordField] = KeywordField(
+        "matillionComponentSqls", "matillionComponentSqls"
+    )
+    """
+    SQL Query involved with a matillion component
+    """
+    MATILLION_JOB_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionJobName", "matillionJobName.keyword", "matillionJobName"
+    )
+    """
+    Name of the matillion job to which the matillion component belongs
+    """
+    MATILLION_JOB_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "matillionJobQualifiedName",
+        "matillionJobQualifiedName",
+        "matillionJobQualifiedName.text",
+    )
+    """
+    Qualified name of the matillion job to which the matillion component belongs
+    """
+
+    MATILLION_PROCESS: ClassVar[RelationField] = RelationField("matillionProcess")
+    """
+    TBC
+    """
+    MATILLION_JOB: ClassVar[RelationField] = RelationField("matillionJob")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "matillion_component_id",
+        "matillion_component_implementation_id",
+        "matillion_component_linked_job",
+        "matillion_component_last_run_status",
+        "matillion_component_last_five_run_status",
+        "matillion_component_sqls",
+        "matillion_job_name",
+        "matillion_job_qualified_name",
+        "matillion_process",
+        "matillion_job",
+    ]
+
+    @property
+    def matillion_component_id(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.matillion_component_id
+        )
+
+    @matillion_component_id.setter
+    def matillion_component_id(self, matillion_component_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component_id = matillion_component_id
+
+    @property
+    def matillion_component_implementation_id(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_component_implementation_id
+        )
+
+    @matillion_component_implementation_id.setter
+    def matillion_component_implementation_id(
+        self, matillion_component_implementation_id: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component_implementation_id = (
+            matillion_component_implementation_id
+        )
+
+    @property
+    def matillion_component_linked_job(self) -> Optional[dict[str, str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_component_linked_job
+        )
+
+    @matillion_component_linked_job.setter
+    def matillion_component_linked_job(
+        self, matillion_component_linked_job: Optional[dict[str, str]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component_linked_job = matillion_component_linked_job
+
+    @property
+    def matillion_component_last_run_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_component_last_run_status
+        )
+
+    @matillion_component_last_run_status.setter
+    def matillion_component_last_run_status(
+        self, matillion_component_last_run_status: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component_last_run_status = (
+            matillion_component_last_run_status
+        )
+
+    @property
+    def matillion_component_last_five_run_status(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_component_last_five_run_status
+        )
+
+    @matillion_component_last_five_run_status.setter
+    def matillion_component_last_five_run_status(
+        self, matillion_component_last_five_run_status: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component_last_five_run_status = (
+            matillion_component_last_five_run_status
+        )
+
+    @property
+    def matillion_component_sqls(self) -> Optional[set[str]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_component_sqls
+        )
+
+    @matillion_component_sqls.setter
+    def matillion_component_sqls(self, matillion_component_sqls: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component_sqls = matillion_component_sqls
+
+    @property
+    def matillion_job_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.matillion_job_name
+
+    @matillion_job_name.setter
+    def matillion_job_name(self, matillion_job_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job_name = matillion_job_name
+
+    @property
+    def matillion_job_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.matillion_job_qualified_name
+        )
+
+    @matillion_job_qualified_name.setter
+    def matillion_job_qualified_name(self, matillion_job_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job_qualified_name = matillion_job_qualified_name
+
+    @property
+    def matillion_process(self) -> Optional[Process]:
+        return None if self.attributes is None else self.attributes.matillion_process
+
+    @matillion_process.setter
+    def matillion_process(self, matillion_process: Optional[Process]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_process = matillion_process
+
+    @property
+    def matillion_job(self) -> Optional[MatillionJob]:
+        return None if self.attributes is None else self.attributes.matillion_job
+
+    @matillion_job.setter
+    def matillion_job(self, matillion_job: Optional[MatillionJob]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_job = matillion_job
+
+    class Attributes(Matillion.Attributes):
+        matillion_component_id: Optional[str] = Field(
+            None, description="", alias="matillionComponentId"
+        )
+        matillion_component_implementation_id: Optional[str] = Field(
+            None, description="", alias="matillionComponentImplementationId"
+        )
+        matillion_component_linked_job: Optional[dict[str, str]] = Field(
+            None, description="", alias="matillionComponentLinkedJob"
+        )
+        matillion_component_last_run_status: Optional[str] = Field(
+            None, description="", alias="matillionComponentLastRunStatus"
+        )
+        matillion_component_last_five_run_status: Optional[str] = Field(
+            None, description="", alias="matillionComponentLastFiveRunStatus"
+        )
+        matillion_component_sqls: Optional[set[str]] = Field(
+            None, description="", alias="matillionComponentSqls"
+        )
+        matillion_job_name: Optional[str] = Field(
+            None, description="", alias="matillionJobName"
+        )
+        matillion_job_qualified_name: Optional[str] = Field(
+            None, description="", alias="matillionJobQualifiedName"
+        )
+        matillion_process: Optional[Process] = Field(
+            None, description="", alias="matillionProcess"
+        )  # relationship
+        matillion_job: Optional[MatillionJob] = Field(
+            None, description="", alias="matillionJob"
+        )  # relationship
+
+    attributes: "MatillionComponent.Attributes" = Field(
+        default_factory=lambda: MatillionComponent.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
@@ -14435,6 +15161,113 @@ class SnowflakeDynamicTable(Table):
     )
 
 
+class Database(SQL):
+    """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> Database:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        fields = connection_qualified_name.split("/")
+        if len(fields) != 3:
+            raise ValueError("Invalid connection_qualified_name")
+        try:
+            connector_type = AtlanConnectorType(fields[1])  # type:ignore
+        except ValueError as e:
+            raise ValueError("Invalid connection_qualified_name") from e
+        attributes = Database.Attributes(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            qualified_name=f"{connection_qualified_name}/{name}",
+            connector_name=connector_type.value,
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("Database", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "Database":
+            raise ValueError("must be Database")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in Database._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
+    """
+    TBC
+    """
+
+    SCHEMAS: ClassVar[RelationField] = RelationField("schemas")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "schema_count",
+        "schemas",
+    ]
+
+    @property
+    def schema_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.schema_count
+
+    @schema_count.setter
+    def schema_count(self, schema_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schema_count = schema_count
+
+    @property
+    def schemas(self) -> Optional[list[Schema]]:
+        return None if self.attributes is None else self.attributes.schemas
+
+    @schemas.setter
+    def schemas(self, schemas: Optional[list[Schema]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.schemas = schemas
+
+    class Attributes(SQL.Attributes):
+        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
+        schemas: Optional[list[Schema]] = Field(
+            None, description="", alias="schemas"
+        )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, name: str, connection_qualified_name: str
+        ) -> Database.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return Database.Attributes(
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connector_name=connector_type.value,
+            )
+
+    attributes: "Database.Attributes" = Field(
+        default_factory=lambda: Database.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
 Referenceable.Attributes.update_forward_refs()
 
 
@@ -14525,13 +15358,25 @@ Column.Attributes.update_forward_refs()
 SnowflakeStream.Attributes.update_forward_refs()
 
 
-Database.Attributes.update_forward_refs()
-
-
 Procedure.Attributes.update_forward_refs()
 
 
 SnowflakeTag.Attributes.update_forward_refs()
+
+
+Matillion.Attributes.update_forward_refs()
+
+
+MatillionGroup.Attributes.update_forward_refs()
+
+
+MatillionJob.Attributes.update_forward_refs()
+
+
+MatillionProject.Attributes.update_forward_refs()
+
+
+MatillionComponent.Attributes.update_forward_refs()
 
 
 Dbt.Attributes.update_forward_refs()
@@ -14577,3 +15422,6 @@ Table.Attributes.update_forward_refs()
 
 
 SnowflakeDynamicTable.Attributes.update_forward_refs()
+
+
+Database.Attributes.update_forward_refs()
