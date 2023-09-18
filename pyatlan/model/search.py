@@ -870,7 +870,7 @@ class Range(Query):
             "time_zone",
         ]:
             value = get_value(name)
-            if value:
+            if value is not None:
                 parameters[name] = value
         return {self.type_name: {self.field: parameters}}
 

@@ -564,6 +564,17 @@ def test_by_methods_on_exists(with_name, field):
             {"range": {"Bob": {}}},
         ),
         (
+            0,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            {"range": {"Bob": {"gt": 0}}},
+        ),
+        (
             10,
             None,
             None,
