@@ -1,7 +1,7 @@
 .. _salesforcereport:
 
 SalesforceReport
-=============
+================
 
 .. module:: pyatlan.model.assets
     :no-index:

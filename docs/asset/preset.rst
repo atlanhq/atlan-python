@@ -1,7 +1,7 @@
 .. _preset:
 
 Preset
-=============
+======
 
 .. module:: pyatlan.model.assets
     :no-index:

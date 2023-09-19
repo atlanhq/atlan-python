@@ -1,7 +1,7 @@
 .. _dbtmodelcolumn:
 
 DbtModelColumn
-=============
+==============
 
 .. module:: pyatlan.model.assets
     :no-index:

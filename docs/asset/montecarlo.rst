@@ -1,7 +1,7 @@
 .. _montecarlo:
 
 MonteCarlo
-=============
+==========
 
 .. module:: pyatlan.model.assets
     :no-index:

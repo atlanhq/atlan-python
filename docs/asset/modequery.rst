@@ -1,7 +1,7 @@
 .. _modequery:
 
 ModeQuery
-=============
+=========
 
 .. module:: pyatlan.model.assets
     :no-index:

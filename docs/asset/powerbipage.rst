@@ -1,7 +1,7 @@
 .. _powerbipage:
 
 PowerBIPage
-=============
+===========
 
 .. module:: pyatlan.model.assets
     :no-index:

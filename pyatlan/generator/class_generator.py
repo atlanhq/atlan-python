@@ -719,7 +719,10 @@ class Generator:
         )
         to_include = []
         for entity_def in entity_defs:
-            if not entity_def.name.startswith("__"):
+            if (
+                not entity_def.name.startswith("__")
+                and not entity_def.name == "AtlasServer"
+            ):
                 to_include.append(entity_def)
         sorted_defs = sorted(to_include, key=(lambda x: x.name))
         content = template.render(
@@ -735,6 +738,7 @@ class Generator:
             content = template.render(
                 {
                     "entity_def_name": entity_def.name,
+                    "title_underline": "=" * len(entity_def.name),
                 }
             )
             with (SPHINX_DIR / "asset" / f"{entity_def.name.lower()}.rst").open(

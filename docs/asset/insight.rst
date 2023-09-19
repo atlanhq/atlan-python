@@ -1,7 +1,7 @@
 .. _insight:
 
 Insight
-=============
+=======
 
 .. module:: pyatlan.model.assets
     :no-index:

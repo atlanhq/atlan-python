@@ -1,7 +1,7 @@
 .. _connection:
 
 Connection
-=============
+==========
 
 .. module:: pyatlan.model.assets
     :no-index:

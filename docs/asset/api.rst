@@ -1,7 +1,7 @@
 .. _api:
 
 API
-=============
+===
 
 .. module:: pyatlan.model.assets
     :no-index:

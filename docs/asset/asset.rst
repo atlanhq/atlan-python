@@ -1,7 +1,7 @@
 .. _asset:
 
 Asset
-=============
+=====
 
 .. module:: pyatlan.model.assets
     :no-index:

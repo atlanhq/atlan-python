@@ -1,7 +1,7 @@
 .. _datastudioasset:
 
 DataStudioAsset
-=============
+===============
 
 .. module:: pyatlan.model.assets
     :no-index:

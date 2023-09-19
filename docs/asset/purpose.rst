@@ -1,7 +1,7 @@
 .. _purpose:
 
 Purpose
-=============
+=======
 
 .. module:: pyatlan.model.assets
     :no-index:

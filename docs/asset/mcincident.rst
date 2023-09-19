@@ -1,7 +1,7 @@
 .. _mcincident:
 
 MCIncident
-=============
+==========
 
 .. module:: pyatlan.model.assets
     :no-index:

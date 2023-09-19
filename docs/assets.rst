@@ -24,7 +24,6 @@ You can interact with all of the following different kinds of assets:
     asset/atlasglossary
     asset/atlasglossarycategory
     asset/atlasglossaryterm
-    asset/atlasserver
     asset/authpolicy
     asset/authservice
     asset/azure

@@ -1,7 +1,7 @@
 .. _google:
 
 Google
-=============
+======
 
 .. module:: pyatlan.model.assets
     :no-index:

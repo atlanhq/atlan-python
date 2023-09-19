@@ -1,7 +1,7 @@
 .. _modecollection:
 
 ModeCollection
-=============
+==============
 
 .. module:: pyatlan.model.assets
     :no-index:

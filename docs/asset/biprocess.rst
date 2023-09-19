@@ -1,7 +1,7 @@
 .. _biprocess:
 
 BIProcess
-=============
+=========
 
 .. module:: pyatlan.model.assets
     :no-index:

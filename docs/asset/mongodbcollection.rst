@@ -1,7 +1,7 @@
 .. _mongodbcollection:
 
 MongoDBCollection
-=============
+=================
 
 .. module:: pyatlan.model.assets
     :no-index:

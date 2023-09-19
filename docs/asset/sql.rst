@@ -1,7 +1,7 @@
 .. _sql:
 
 SQL
-=============
+===
 
 .. module:: pyatlan.model.assets
     :no-index:

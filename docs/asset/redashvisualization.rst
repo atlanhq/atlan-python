@@ -1,7 +1,7 @@
 .. _redashvisualization:
 
 RedashVisualization
-=============
+===================
 
 .. module:: pyatlan.model.assets
     :no-index:

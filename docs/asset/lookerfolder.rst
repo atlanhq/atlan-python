@@ -1,7 +1,7 @@
 .. _lookerfolder:
 
 LookerFolder
-=============
+============
 
 .. module:: pyatlan.model.assets
     :no-index:

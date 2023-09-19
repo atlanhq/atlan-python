@@ -1,7 +1,7 @@
 .. _adls:
 
 ADLS
-=============
+====
 
 .. module:: pyatlan.model.assets
     :no-index:

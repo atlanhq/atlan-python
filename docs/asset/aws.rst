@@ -1,7 +1,7 @@
 .. _aws:
 
 AWS
-=============
+===
 
 .. module:: pyatlan.model.assets
     :no-index:

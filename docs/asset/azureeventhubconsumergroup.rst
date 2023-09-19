@@ -1,7 +1,7 @@
 .. _azureeventhubconsumergroup:
 
 AzureEventHubConsumerGroup
-=============
+==========================
 
 .. module:: pyatlan.model.assets
     :no-index:

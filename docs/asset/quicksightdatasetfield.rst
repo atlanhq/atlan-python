@@ -1,7 +1,7 @@
 .. _quicksightdatasetfield:
 
 QuickSightDatasetField
-=============
+======================
 
 .. module:: pyatlan.model.assets
     :no-index:

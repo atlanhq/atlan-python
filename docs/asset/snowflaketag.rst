@@ -1,7 +1,7 @@
 .. _snowflaketag:
 
 SnowflakeTag
-=============
+============
 
 .. module:: pyatlan.model.assets
     :no-index:

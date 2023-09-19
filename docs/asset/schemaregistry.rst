@@ -1,7 +1,7 @@
 .. _schemaregistry:
 
 SchemaRegistry
-=============
+==============
 
 .. module:: pyatlan.model.assets
     :no-index:

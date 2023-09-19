@@ -1,7 +1,7 @@
 .. _airflowtask:
 
 AirflowTask
-=============
+===========
 
 .. module:: pyatlan.model.assets
     :no-index:

@@ -1,7 +1,7 @@
 .. _mcmonitor:
 
 MCMonitor
-=============
+=========
 
 .. module:: pyatlan.model.assets
     :no-index:

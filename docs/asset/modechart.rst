@@ -1,7 +1,7 @@
 .. _modechart:
 
 ModeChart
-=============
+=========
 
 .. module:: pyatlan.model.assets
     :no-index:

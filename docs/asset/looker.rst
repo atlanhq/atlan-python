@@ -1,7 +1,7 @@
 .. _looker:
 
 Looker
-=============
+======
 
 .. module:: pyatlan.model.assets
     :no-index:

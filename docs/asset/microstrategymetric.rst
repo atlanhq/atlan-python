@@ -1,7 +1,7 @@
 .. _microstrategymetric:
 
 MicroStrategyMetric
-=============
+===================
 
 .. module:: pyatlan.model.assets
     :no-index:

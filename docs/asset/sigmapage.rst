@@ -1,7 +1,7 @@
 .. _sigmapage:
 
 SigmaPage
-=============
+=========
 
 .. module:: pyatlan.model.assets
     :no-index:

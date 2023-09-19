@@ -1,7 +1,7 @@
 .. _snowflakedynamictable:
 
 SnowflakeDynamicTable
-=============
+=====================
 
 .. module:: pyatlan.model.assets
     :no-index:

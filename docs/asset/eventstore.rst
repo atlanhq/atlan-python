@@ -1,7 +1,7 @@
 .. _eventstore:
 
 EventStore
-=============
+==========
 
 .. module:: pyatlan.model.assets
     :no-index:

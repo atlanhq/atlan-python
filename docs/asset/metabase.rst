@@ -1,7 +1,7 @@
 .. _metabase:
 
 Metabase
-=============
+========
 
 .. module:: pyatlan.model.assets
     :no-index:

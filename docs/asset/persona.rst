@@ -1,7 +1,7 @@
 .. _persona:
 
 Persona
-=============
+=======
 
 .. module:: pyatlan.model.assets
     :no-index:

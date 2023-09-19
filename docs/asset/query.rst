@@ -1,7 +1,7 @@
 .. _query:
 
 Query
-=============
+=====
 
 .. module:: pyatlan.model.assets
     :no-index:

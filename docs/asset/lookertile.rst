@@ -1,7 +1,7 @@
 .. _lookertile:
 
 LookerTile
-=============
+==========
 
 .. module:: pyatlan.model.assets
     :no-index:

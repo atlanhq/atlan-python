@@ -1,7 +1,7 @@
 .. _powerbidataflow:
 
 PowerBIDataflow
-=============
+===============
 
 .. module:: pyatlan.model.assets
     :no-index:

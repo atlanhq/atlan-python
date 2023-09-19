@@ -1,7 +1,7 @@
 .. _quicksightanalysisvisual:
 
 QuickSightAnalysisVisual
-=============
+========================
 
 .. module:: pyatlan.model.assets
     :no-index:

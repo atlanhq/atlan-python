@@ -1,7 +1,7 @@
 .. _dbtsource:
 
 DbtSource
-=============
+=========
 
 .. module:: pyatlan.model.assets
     :no-index:

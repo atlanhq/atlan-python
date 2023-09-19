@@ -1,7 +1,7 @@
 .. _tableau:
 
 Tableau
-=============
+=======
 
 .. module:: pyatlan.model.assets
     :no-index:
