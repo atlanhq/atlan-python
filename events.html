@@ -434,6 +434,116 @@
 <section id="atlaneventhandler">
 <h2>AtlanEventHandler<a class="headerlink" href="#atlaneventhandler" title="Link to this heading">#</a></h2>
 <p>An interface you can implement to split the overall functionality required for an event processor down into small pieces:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.events.atlan_event_handler.</span></span><span class="sig-name descname"><span class="pre">AtlanEventHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="client.html#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler" title="Link to this definition">#</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler.calculate_changes">
+<span class="sig-name descname"><span class="pre">calculate_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_view</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler.calculate_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.calculate_changes" title="Link to this definition">#</a></dt>
+<dd><p>Calculate any changes to apply to assets, and return a collection of the minimally-updated form of the assets
+with those changes applied (in-memory). Typically, you will want to call trim_to_required()
+on the current_view of each asset before making any changes, to ensure a minimal set of changes are applied to
+the asset (minimizing the risk of accidentally clobbering any other changes someone may make to the asset
+between this in-memory set of changes and the subsequent application of those changes to Atlan itself).
+Also, you should call your has_changes() method for each asset to determine whether it actually has any changes
+to include before returning it from this method.
+NOTE: The returned assets from this method should be ONLY those assets on which updates are actually being
+applied, or you will risk an infinite loop of events triggering changes, more events, more changes, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>current_view</strong> – the current view / state of the asset in Atlan, as the starting point for any changes</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a list of only those assets that have changes to send to Atlan (empty, if there are no changes to
+send)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler.get_current_state">
+<span class="sig-name descname"><span class="pre">get_current_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler.get_current_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.get_current_state" title="Link to this definition">#</a></dt>
+<dd><p>Retrieve the current state of the asset, with minimal required info to handle any logic
+the event handler requires to make its decisions.
+This default implementation will only really check that the asset still exists in Atlan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>from_event</strong> – the asset from the event (which could be stale at this point)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the current state of the asset, as retrieved from Atlan</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler.has_changes">
+<span class="sig-name descname"><span class="pre">has_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler.has_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.has_changes" title="Link to this definition">#</a></dt>
+<dd><p>Check the key information this event processing is meant to handle between the original asset and the
+in-memory-modified asset. Only return true if there is actually a change to be applied to this asset in
+Atlan - this ensures idempotency, and avoids an infinite loop of making changes repeatedly in Atlan,
+which triggers a new event, a new change, a new event, and so on.
+This default implementation only blindly checks for equality. It is likely you would want to check
+specific attributes’ values, rather than the entire object, for equality when determining whether a relevant
+change has been made (or not) to the asset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> – the current view / state of the asset in Atlan, that was the starting point for any change
+calculations</p></li>
+<li><p><strong>modified</strong> – the in-memory-modified asset against which to check if any changes actually need to be sent
+to Atlan</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the modified asset should be sent on to (updated in) Atlan, or False if there are no actual
+changes to apply</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler.save_changes">
+<span class="sig-name descname"><span class="pre">save_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">changed_assets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler.save_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.save_changes" title="Link to this definition">#</a></dt>
+<dd><p>Actually send the changed assets to Atlan so that they are persisted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>changed_assets</strong> – the in-memory-modified assets to send to Atlan</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler.upsert_changes">
+<span class="sig-name descname"><span class="pre">upsert_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">changed_assets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler.upsert_changes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.upsert_changes" title="Link to this definition">#</a></dt>
+<dd><p>Actually send the changed assets to Atlan so that they are persisted.
+(Deprecated: use save_changes instead.)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>changed_assets</strong> – the in-memory-modified assets to send to Atlan</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.events.atlan_event_handler.AtlanEventHandler.validate_prerequisites">
+<span class="sig-name descname"><span class="pre">validate_prerequisites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtlanEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/pyatlan/events/atlan_event_handler.html#AtlanEventHandler.validate_prerequisites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.validate_prerequisites" title="Link to this definition">#</a></dt>
+<dd><p>Validate the prerequisites expected by the event handler. These should generally run before
+trying to do any other actions.
+This default implementation will only confirm that an event has been received and there are
+details of an asset embedded within the event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> – the event to be processed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the prerequisites are met, otherwise False</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -485,7 +595,18 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Events</a><ul>
-<li><a class="reference internal" href="#atlaneventhandler">AtlanEventHandler</a></li>
+<li><a class="reference internal" href="#atlaneventhandler">AtlanEventHandler</a><ul>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.calculate_changes"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler.calculate_changes()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.get_current_state"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler.get_current_state()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.has_changes"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler.has_changes()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.save_changes"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler.save_changes()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.upsert_changes"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler.upsert_changes()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.events.atlan_event_handler.AtlanEventHandler.validate_prerequisites"><code class="docutils literal notranslate"><span class="pre">AtlanEventHandler.validate_prerequisites()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
