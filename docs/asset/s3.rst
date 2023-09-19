@@ -1,0 +1,10 @@
+.. _s3:
+
+S3
+=============
+
+.. module:: pyatlan.model.assets
+    :no-index:
+
+.. autoclass:: S3
+    :members:
