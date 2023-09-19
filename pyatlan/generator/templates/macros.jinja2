@@ -28,7 +28,7 @@
     {{ attribute_def.name | get_class_var_for_attr }}: ClassVar[{{ search_type.name }}] = {{ search_type.name }}("{{ attribute_def.name }}"{% if search_type.args %}, {{ search_type.args }}{% endif %})
     """
     {{ attribute_def.description | default("TBC") }}
-    """
+    """{% if attribute_def.description | length > 116 %}  # noqa: E501{% endif %}
 
     {%- endif %}{%- endfor %}
 {% endmacro %}

@@ -8,137 +8,100 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import PowerbiEndorsement
-from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
-    KeywordField,
-    KeywordTextField,
-)
+from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
 
 from .asset18 import BI
 
 
-class PowerBI(BI):
+class QuickSight(BI):
     """Description"""
 
-    type_name: str = Field("PowerBI", allow_mutation=False)
+    type_name: str = Field("QuickSight", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PowerBI":
-            raise ValueError("must be PowerBI")
+        if v != "QuickSight":
+            raise ValueError("must be QuickSight")
         return v
 
     def __setattr__(self, name, value):
-        if name in PowerBI._convenience_properties:
+        if name in QuickSight._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    POWER_BI_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
-        "powerBIIsHidden", "powerBIIsHidden"
+    QUICK_SIGHT_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightId", "quickSightId"
     )
     """
     TBC
     """
-    POWER_BI_TABLE_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "powerBITableQualifiedName",
-        "powerBITableQualifiedName",
-        "powerBITableQualifiedName.text",
+    QUICK_SIGHT_SHEET_ID: ClassVar[KeywordField] = KeywordField(
+        "quickSightSheetId", "quickSightSheetId"
     )
     """
     TBC
     """
-    POWER_BI_FORMAT_STRING: ClassVar[KeywordField] = KeywordField(
-        "powerBIFormatString", "powerBIFormatString"
-    )
-    """
-    TBC
-    """
-    POWER_BI_ENDORSEMENT: ClassVar[KeywordField] = KeywordField(
-        "powerBIEndorsement", "powerBIEndorsement"
+    QUICK_SIGHT_SHEET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "quickSightSheetName", "quickSightSheetName.keyword", "quickSightSheetName"
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "power_b_i_is_hidden",
-        "power_b_i_table_qualified_name",
-        "power_b_i_format_string",
-        "power_b_i_endorsement",
+        "quick_sight_id",
+        "quick_sight_sheet_id",
+        "quick_sight_sheet_name",
     ]
 
     @property
-    def power_b_i_is_hidden(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.power_b_i_is_hidden
+    def quick_sight_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.quick_sight_id
 
-    @power_b_i_is_hidden.setter
-    def power_b_i_is_hidden(self, power_b_i_is_hidden: Optional[bool]):
+    @quick_sight_id.setter
+    def quick_sight_id(self, quick_sight_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_is_hidden = power_b_i_is_hidden
+        self.attributes.quick_sight_id = quick_sight_id
 
     @property
-    def power_b_i_table_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.power_b_i_table_qualified_name
-        )
+    def quick_sight_sheet_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.quick_sight_sheet_id
 
-    @power_b_i_table_qualified_name.setter
-    def power_b_i_table_qualified_name(
-        self, power_b_i_table_qualified_name: Optional[str]
-    ):
+    @quick_sight_sheet_id.setter
+    def quick_sight_sheet_id(self, quick_sight_sheet_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_table_qualified_name = power_b_i_table_qualified_name
+        self.attributes.quick_sight_sheet_id = quick_sight_sheet_id
 
     @property
-    def power_b_i_format_string(self) -> Optional[str]:
+    def quick_sight_sheet_name(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.power_b_i_format_string
+            None if self.attributes is None else self.attributes.quick_sight_sheet_name
         )
 
-    @power_b_i_format_string.setter
-    def power_b_i_format_string(self, power_b_i_format_string: Optional[str]):
+    @quick_sight_sheet_name.setter
+    def quick_sight_sheet_name(self, quick_sight_sheet_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.power_b_i_format_string = power_b_i_format_string
-
-    @property
-    def power_b_i_endorsement(self) -> Optional[PowerbiEndorsement]:
-        return (
-            None if self.attributes is None else self.attributes.power_b_i_endorsement
-        )
-
-    @power_b_i_endorsement.setter
-    def power_b_i_endorsement(
-        self, power_b_i_endorsement: Optional[PowerbiEndorsement]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.power_b_i_endorsement = power_b_i_endorsement
+        self.attributes.quick_sight_sheet_name = quick_sight_sheet_name
 
     class Attributes(BI.Attributes):
-        power_b_i_is_hidden: Optional[bool] = Field(
-            None, description="", alias="powerBIIsHidden"
+        quick_sight_id: Optional[str] = Field(
+            None, description="", alias="quickSightId"
         )
-        power_b_i_table_qualified_name: Optional[str] = Field(
-            None, description="", alias="powerBITableQualifiedName"
+        quick_sight_sheet_id: Optional[str] = Field(
+            None, description="", alias="quickSightSheetId"
         )
-        power_b_i_format_string: Optional[str] = Field(
-            None, description="", alias="powerBIFormatString"
-        )
-        power_b_i_endorsement: Optional[PowerbiEndorsement] = Field(
-            None, description="", alias="powerBIEndorsement"
+        quick_sight_sheet_name: Optional[str] = Field(
+            None, description="", alias="quickSightSheetName"
         )
 
-    attributes: "PowerBI.Attributes" = Field(
-        default_factory=lambda: PowerBI.Attributes(),
+    attributes: "QuickSight.Attributes" = Field(
+        default_factory=lambda: QuickSight.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-PowerBI.Attributes.update_forward_refs()
+QuickSight.Attributes.update_forward_refs()

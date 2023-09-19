@@ -8,84 +8,94 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, TextField
+from pyatlan.model.fields.atlan_fields import KeywordTextField
 
 from .asset18 import BI
 
 
-class Thoughtspot(BI):
+class Metabase(BI):
     """Description"""
 
-    type_name: str = Field("Thoughtspot", allow_mutation=False)
+    type_name: str = Field("Metabase", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Thoughtspot":
-            raise ValueError("must be Thoughtspot")
+        if v != "Metabase":
+            raise ValueError("must be Metabase")
         return v
 
     def __setattr__(self, name, value):
-        if name in Thoughtspot._convenience_properties:
+        if name in Metabase._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    THOUGHTSPOT_CHART_TYPE: ClassVar[KeywordField] = KeywordField(
-        "thoughtspotChartType", "thoughtspotChartType"
+    METABASE_COLLECTION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseCollectionName",
+        "metabaseCollectionName.keyword",
+        "metabaseCollectionName",
     )
     """
     TBC
     """
-    THOUGHTSPOT_QUESTION_TEXT: ClassVar[TextField] = TextField(
-        "thoughtspotQuestionText", "thoughtspotQuestionText"
+    METABASE_COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "metabaseCollectionQualifiedName",
+        "metabaseCollectionQualifiedName",
+        "metabaseCollectionQualifiedName.text",
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "thoughtspot_chart_type",
-        "thoughtspot_question_text",
+        "metabase_collection_name",
+        "metabase_collection_qualified_name",
     ]
 
     @property
-    def thoughtspot_chart_type(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.thoughtspot_chart_type
-        )
-
-    @thoughtspot_chart_type.setter
-    def thoughtspot_chart_type(self, thoughtspot_chart_type: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.thoughtspot_chart_type = thoughtspot_chart_type
-
-    @property
-    def thoughtspot_question_text(self) -> Optional[str]:
+    def metabase_collection_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.thoughtspot_question_text
+            else self.attributes.metabase_collection_name
         )
 
-    @thoughtspot_question_text.setter
-    def thoughtspot_question_text(self, thoughtspot_question_text: Optional[str]):
+    @metabase_collection_name.setter
+    def metabase_collection_name(self, metabase_collection_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.thoughtspot_question_text = thoughtspot_question_text
+        self.attributes.metabase_collection_name = metabase_collection_name
+
+    @property
+    def metabase_collection_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.metabase_collection_qualified_name
+        )
+
+    @metabase_collection_qualified_name.setter
+    def metabase_collection_qualified_name(
+        self, metabase_collection_qualified_name: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.metabase_collection_qualified_name = (
+            metabase_collection_qualified_name
+        )
 
     class Attributes(BI.Attributes):
-        thoughtspot_chart_type: Optional[str] = Field(
-            None, description="", alias="thoughtspotChartType"
+        metabase_collection_name: Optional[str] = Field(
+            None, description="", alias="metabaseCollectionName"
         )
-        thoughtspot_question_text: Optional[str] = Field(
-            None, description="", alias="thoughtspotQuestionText"
+        metabase_collection_qualified_name: Optional[str] = Field(
+            None, description="", alias="metabaseCollectionQualifiedName"
         )
 
-    attributes: "Thoughtspot.Attributes" = Field(
-        default_factory=lambda: Thoughtspot.Attributes(),
+    attributes: "Metabase.Attributes" = Field(
+        default_factory=lambda: Metabase.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-Thoughtspot.Attributes.update_forward_refs()
+Metabase.Attributes.update_forward_refs()

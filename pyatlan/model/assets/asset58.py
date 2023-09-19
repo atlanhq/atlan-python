@@ -4,775 +4,474 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
     KeywordTextField,
-    KeywordTextStemmedField,
     NumericField,
     RelationField,
-    TextField,
 )
+from pyatlan.utils import validate_required_fields
 
-from .asset36 import Preset
+from .asset33 import S3
 
 
-class PresetChart(Preset):
+class S3Bucket(S3):
     """Description"""
 
-    type_name: str = Field("PresetChart", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls, *, name: str, connection_qualified_name: str, aws_arn: str
+    ) -> S3Bucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "aws_arn"],
+            [name, connection_qualified_name, aws_arn],
+        )
+        attributes = S3Bucket.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("S3Bucket", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PresetChart":
-            raise ValueError("must be PresetChart")
+        if v != "S3Bucket":
+            raise ValueError("must be S3Bucket")
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetChart._convenience_properties:
+        if name in S3Bucket._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_CHART_DESCRIPTION_MARKDOWN: ClassVar[TextField] = TextField(
-        "presetChartDescriptionMarkdown", "presetChartDescriptionMarkdown"
+    S3OBJECT_COUNT: ClassVar[NumericField] = NumericField(
+        "s3ObjectCount", "s3ObjectCount"
     )
     """
     TBC
     """
-    PRESET_CHART_FORM_DATA: ClassVar[KeywordField] = KeywordField(
-        "presetChartFormData", "presetChartFormData"
+    S3BUCKET_VERSIONING_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "s3BucketVersioningEnabled", "s3BucketVersioningEnabled"
     )
     """
     TBC
     """
 
-    PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
+    OBJECTS: ClassVar[RelationField] = RelationField("objects")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "preset_chart_description_markdown",
-        "preset_chart_form_data",
-        "preset_dashboard",
+        "s3_object_count",
+        "s3_bucket_versioning_enabled",
+        "objects",
     ]
 
     @property
-    def preset_chart_description_markdown(self) -> Optional[str]:
+    def s3_object_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.s3_object_count
+
+    @s3_object_count.setter
+    def s3_object_count(self, s3_object_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_count = s3_object_count
+
+    @property
+    def s3_bucket_versioning_enabled(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_chart_description_markdown
+            else self.attributes.s3_bucket_versioning_enabled
         )
 
-    @preset_chart_description_markdown.setter
-    def preset_chart_description_markdown(
-        self, preset_chart_description_markdown: Optional[str]
+    @s3_bucket_versioning_enabled.setter
+    def s3_bucket_versioning_enabled(
+        self, s3_bucket_versioning_enabled: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_chart_description_markdown = (
-            preset_chart_description_markdown
-        )
+        self.attributes.s3_bucket_versioning_enabled = s3_bucket_versioning_enabled
 
     @property
-    def preset_chart_form_data(self) -> Optional[dict[str, str]]:
-        return (
-            None if self.attributes is None else self.attributes.preset_chart_form_data
-        )
+    def objects(self) -> Optional[list[S3Object]]:
+        return None if self.attributes is None else self.attributes.objects
 
-    @preset_chart_form_data.setter
-    def preset_chart_form_data(self, preset_chart_form_data: Optional[dict[str, str]]):
+    @objects.setter
+    def objects(self, objects: Optional[list[S3Object]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_chart_form_data = preset_chart_form_data
+        self.attributes.objects = objects
 
-    @property
-    def preset_dashboard(self) -> Optional[PresetDashboard]:
-        return None if self.attributes is None else self.attributes.preset_dashboard
-
-    @preset_dashboard.setter
-    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard = preset_dashboard
-
-    class Attributes(Preset.Attributes):
-        preset_chart_description_markdown: Optional[str] = Field(
-            None, description="", alias="presetChartDescriptionMarkdown"
+    class Attributes(S3.Attributes):
+        s3_object_count: Optional[int] = Field(
+            None, description="", alias="s3ObjectCount"
         )
-        preset_chart_form_data: Optional[dict[str, str]] = Field(
-            None, description="", alias="presetChartFormData"
+        s3_bucket_versioning_enabled: Optional[bool] = Field(
+            None, description="", alias="s3BucketVersioningEnabled"
         )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+        objects: Optional[list[S3Object]] = Field(
+            None, description="", alias="objects"
         )  # relationship
 
-    attributes: "PresetChart.Attributes" = Field(
-        default_factory=lambda: PresetChart.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str, aws_arn: str
+        ) -> S3Bucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "aws_arn"],
+                [name, connection_qualified_name, aws_arn],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Bucket.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+            )
+
+    attributes: "S3Bucket.Attributes" = Field(
+        default_factory=lambda: S3Bucket.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PresetDataset(Preset):
+class S3Object(S3):
     """Description"""
 
-    type_name: str = Field("PresetDataset", allow_mutation=False)
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        aws_arn: str,
+        s3_bucket_qualified_name: str,
+    ) -> S3Object:
+        validate_required_fields(
+            [
+                "name",
+                "connection_qualified_name",
+                "aws_arn",
+                "s3_bucket_qualified_name",
+            ],
+            [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
+        )
+        attributes = S3Object.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            aws_arn=aws_arn,
+            s3_bucket_qualified_name=s3_bucket_qualified_name,
+        )
+        return cls(attributes=attributes)
+
+    type_name: str = Field("S3Object", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "PresetDataset":
-            raise ValueError("must be PresetDataset")
+        if v != "S3Object":
+            raise ValueError("must be S3Object")
         return v
 
     def __setattr__(self, name, value):
-        if name in PresetDataset._convenience_properties:
+        if name in S3Object._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    PRESET_DATASET_DATASOURCE_NAME: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.keyword",
-        "presetDatasetDatasourceName",
-        "presetDatasetDatasourceName.stemmed",
+    S3OBJECT_LAST_MODIFIED_TIME: ClassVar[NumericField] = NumericField(
+        "s3ObjectLastModifiedTime", "s3ObjectLastModifiedTime"
     )
     """
     TBC
     """
-    PRESET_DATASET_ID: ClassVar[NumericField] = NumericField(
-        "presetDatasetId", "presetDatasetId"
+    S3BUCKET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3BucketName", "s3BucketName", "s3BucketName.text"
     )
     """
     TBC
     """
-    PRESET_DATASET_TYPE: ClassVar[KeywordField] = KeywordField(
-        "presetDatasetType", "presetDatasetType"
+    S3BUCKET_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "s3BucketQualifiedName", "s3BucketQualifiedName"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_SIZE: ClassVar[NumericField] = NumericField("s3ObjectSize", "s3ObjectSize")
+    """
+    TBC
+    """
+    S3OBJECT_STORAGE_CLASS: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectStorageClass", "s3ObjectStorageClass"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_KEY: ClassVar[KeywordTextField] = KeywordTextField(
+        "s3ObjectKey", "s3ObjectKey", "s3ObjectKey.text"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_CONTENT_TYPE: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectContentType", "s3ObjectContentType"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_CONTENT_DISPOSITION: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectContentDisposition", "s3ObjectContentDisposition"
+    )
+    """
+    TBC
+    """
+    S3OBJECT_VERSION_ID: ClassVar[KeywordField] = KeywordField(
+        "s3ObjectVersionId", "s3ObjectVersionId"
     )
     """
     TBC
     """
 
-    PRESET_DASHBOARD: ClassVar[RelationField] = RelationField("presetDashboard")
+    BUCKET: ClassVar[RelationField] = RelationField("bucket")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "preset_dataset_datasource_name",
-        "preset_dataset_id",
-        "preset_dataset_type",
-        "preset_dashboard",
+        "s3_object_last_modified_time",
+        "s3_bucket_name",
+        "s3_bucket_qualified_name",
+        "s3_object_size",
+        "s3_object_storage_class",
+        "s3_object_key",
+        "s3_object_content_type",
+        "s3_object_content_disposition",
+        "s3_object_version_id",
+        "bucket",
     ]
 
     @property
-    def preset_dataset_datasource_name(self) -> Optional[str]:
+    def s3_object_last_modified_time(self) -> Optional[datetime]:
         return (
             None
             if self.attributes is None
-            else self.attributes.preset_dataset_datasource_name
+            else self.attributes.s3_object_last_modified_time
         )
 
-    @preset_dataset_datasource_name.setter
-    def preset_dataset_datasource_name(
-        self, preset_dataset_datasource_name: Optional[str]
+    @s3_object_last_modified_time.setter
+    def s3_object_last_modified_time(
+        self, s3_object_last_modified_time: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dataset_datasource_name = preset_dataset_datasource_name
+        self.attributes.s3_object_last_modified_time = s3_object_last_modified_time
 
     @property
-    def preset_dataset_id(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.preset_dataset_id
+    def s3_bucket_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_bucket_name
 
-    @preset_dataset_id.setter
-    def preset_dataset_id(self, preset_dataset_id: Optional[int]):
+    @s3_bucket_name.setter
+    def s3_bucket_name(self, s3_bucket_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dataset_id = preset_dataset_id
+        self.attributes.s3_bucket_name = s3_bucket_name
 
     @property
-    def preset_dataset_type(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.preset_dataset_type
+    def s3_bucket_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_bucket_qualified_name
+        )
 
-    @preset_dataset_type.setter
-    def preset_dataset_type(self, preset_dataset_type: Optional[str]):
+    @s3_bucket_qualified_name.setter
+    def s3_bucket_qualified_name(self, s3_bucket_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dataset_type = preset_dataset_type
+        self.attributes.s3_bucket_qualified_name = s3_bucket_qualified_name
 
     @property
-    def preset_dashboard(self) -> Optional[PresetDashboard]:
-        return None if self.attributes is None else self.attributes.preset_dashboard
+    def s3_object_size(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.s3_object_size
 
-    @preset_dashboard.setter
-    def preset_dashboard(self, preset_dashboard: Optional[PresetDashboard]):
+    @s3_object_size.setter
+    def s3_object_size(self, s3_object_size: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.preset_dashboard = preset_dashboard
+        self.attributes.s3_object_size = s3_object_size
 
-    class Attributes(Preset.Attributes):
-        preset_dataset_datasource_name: Optional[str] = Field(
-            None, description="", alias="presetDatasetDatasourceName"
+    @property
+    def s3_object_storage_class(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.s3_object_storage_class
         )
-        preset_dataset_id: Optional[int] = Field(
-            None, description="", alias="presetDatasetId"
+
+    @s3_object_storage_class.setter
+    def s3_object_storage_class(self, s3_object_storage_class: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_storage_class = s3_object_storage_class
+
+    @property
+    def s3_object_key(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_object_key
+
+    @s3_object_key.setter
+    def s3_object_key(self, s3_object_key: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_key = s3_object_key
+
+    @property
+    def s3_object_content_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.s3_object_content_type
         )
-        preset_dataset_type: Optional[str] = Field(
-            None, description="", alias="presetDatasetType"
+
+    @s3_object_content_type.setter
+    def s3_object_content_type(self, s3_object_content_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_content_type = s3_object_content_type
+
+    @property
+    def s3_object_content_disposition(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.s3_object_content_disposition
         )
-        preset_dashboard: Optional[PresetDashboard] = Field(
-            None, description="", alias="presetDashboard"
+
+    @s3_object_content_disposition.setter
+    def s3_object_content_disposition(
+        self, s3_object_content_disposition: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_content_disposition = s3_object_content_disposition
+
+    @property
+    def s3_object_version_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.s3_object_version_id
+
+    @s3_object_version_id.setter
+    def s3_object_version_id(self, s3_object_version_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.s3_object_version_id = s3_object_version_id
+
+    @property
+    def bucket(self) -> Optional[S3Bucket]:
+        return None if self.attributes is None else self.attributes.bucket
+
+    @bucket.setter
+    def bucket(self, bucket: Optional[S3Bucket]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.bucket = bucket
+
+    class Attributes(S3.Attributes):
+        s3_object_last_modified_time: Optional[datetime] = Field(
+            None, description="", alias="s3ObjectLastModifiedTime"
+        )
+        s3_bucket_name: Optional[str] = Field(
+            None, description="", alias="s3BucketName"
+        )
+        s3_bucket_qualified_name: Optional[str] = Field(
+            None, description="", alias="s3BucketQualifiedName"
+        )
+        s3_object_size: Optional[int] = Field(
+            None, description="", alias="s3ObjectSize"
+        )
+        s3_object_storage_class: Optional[str] = Field(
+            None, description="", alias="s3ObjectStorageClass"
+        )
+        s3_object_key: Optional[str] = Field(None, description="", alias="s3ObjectKey")
+        s3_object_content_type: Optional[str] = Field(
+            None, description="", alias="s3ObjectContentType"
+        )
+        s3_object_content_disposition: Optional[str] = Field(
+            None, description="", alias="s3ObjectContentDisposition"
+        )
+        s3_object_version_id: Optional[str] = Field(
+            None, description="", alias="s3ObjectVersionId"
+        )
+        bucket: Optional[S3Bucket] = Field(
+            None, description="", alias="bucket"
         )  # relationship
 
-    attributes: "PresetDataset.Attributes" = Field(
-        default_factory=lambda: PresetDataset.Attributes(),
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            aws_arn: str,
+            s3_bucket_qualified_name: str,
+        ) -> S3Object.Attributes:
+            validate_required_fields(
+                [
+                    "name",
+                    "connection_qualified_name",
+                    "aws_arn",
+                    "s3_bucket_qualified_name",
+                ],
+                [name, connection_qualified_name, aws_arn, s3_bucket_qualified_name],
+            )
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+            try:
+                if fields[0].replace(" ", "") == "" or fields[2].replace(" ", "") == "":
+                    raise ValueError("Invalid connection_qualified_name")
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+                if connector_type != AtlanConnectorType.S3:
+                    raise ValueError("Connector type must be s3")
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+            return S3Object.Attributes(
+                aws_arn=aws_arn,
+                name=name,
+                connection_qualified_name=connection_qualified_name,
+                qualified_name=f"{connection_qualified_name}/{aws_arn}",
+                connector_name=connector_type.value,
+                s3_bucket_qualified_name=s3_bucket_qualified_name,
+                bucket=S3Bucket.ref_by_qualified_name(s3_bucket_qualified_name),
+            )
+
+    attributes: "S3Object.Attributes" = Field(
+        default_factory=lambda: S3Object.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class PresetDashboard(Preset):
-    """Description"""
+S3Bucket.Attributes.update_forward_refs()
 
-    type_name: str = Field("PresetDashboard", allow_mutation=False)
 
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetDashboard":
-            raise ValueError("must be PresetDashboard")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetDashboard._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PRESET_DASHBOARD_CHANGED_BY_NAME: ClassVar[
-        KeywordTextStemmedField
-    ] = KeywordTextStemmedField(
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.keyword",
-        "presetDashboardChangedByName",
-        "presetDashboardChangedByName.stemmed",
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_CHANGED_BY_URL: ClassVar[KeywordField] = KeywordField(
-        "presetDashboardChangedByURL", "presetDashboardChangedByURL"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_IS_MANAGED_EXTERNALLY: ClassVar[BooleanField] = BooleanField(
-        "presetDashboardIsManagedExternally", "presetDashboardIsManagedExternally"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
-        "presetDashboardIsPublished", "presetDashboardIsPublished"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_THUMBNAIL_URL: ClassVar[KeywordField] = KeywordField(
-        "presetDashboardThumbnailURL", "presetDashboardThumbnailURL"
-    )
-    """
-    TBC
-    """
-    PRESET_DASHBOARD_CHART_COUNT: ClassVar[NumericField] = NumericField(
-        "presetDashboardChartCount", "presetDashboardChartCount"
-    )
-    """
-    TBC
-    """
-
-    PRESET_DATASETS: ClassVar[RelationField] = RelationField("presetDatasets")
-    """
-    TBC
-    """
-    PRESET_CHARTS: ClassVar[RelationField] = RelationField("presetCharts")
-    """
-    TBC
-    """
-    PRESET_WORKSPACE: ClassVar[RelationField] = RelationField("presetWorkspace")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "preset_dashboard_changed_by_name",
-        "preset_dashboard_changed_by_url",
-        "preset_dashboard_is_managed_externally",
-        "preset_dashboard_is_published",
-        "preset_dashboard_thumbnail_url",
-        "preset_dashboard_chart_count",
-        "preset_datasets",
-        "preset_charts",
-        "preset_workspace",
-    ]
-
-    @property
-    def preset_dashboard_changed_by_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_changed_by_name
-        )
-
-    @preset_dashboard_changed_by_name.setter
-    def preset_dashboard_changed_by_name(
-        self, preset_dashboard_changed_by_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_name = (
-            preset_dashboard_changed_by_name
-        )
-
-    @property
-    def preset_dashboard_changed_by_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_changed_by_url
-        )
-
-    @preset_dashboard_changed_by_url.setter
-    def preset_dashboard_changed_by_url(
-        self, preset_dashboard_changed_by_url: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_changed_by_url = (
-            preset_dashboard_changed_by_url
-        )
-
-    @property
-    def preset_dashboard_is_managed_externally(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_is_managed_externally
-        )
-
-    @preset_dashboard_is_managed_externally.setter
-    def preset_dashboard_is_managed_externally(
-        self, preset_dashboard_is_managed_externally: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_managed_externally = (
-            preset_dashboard_is_managed_externally
-        )
-
-    @property
-    def preset_dashboard_is_published(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_is_published
-        )
-
-    @preset_dashboard_is_published.setter
-    def preset_dashboard_is_published(
-        self, preset_dashboard_is_published: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_is_published = preset_dashboard_is_published
-
-    @property
-    def preset_dashboard_thumbnail_url(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_thumbnail_url
-        )
-
-    @preset_dashboard_thumbnail_url.setter
-    def preset_dashboard_thumbnail_url(
-        self, preset_dashboard_thumbnail_url: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_thumbnail_url = preset_dashboard_thumbnail_url
-
-    @property
-    def preset_dashboard_chart_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_dashboard_chart_count
-        )
-
-    @preset_dashboard_chart_count.setter
-    def preset_dashboard_chart_count(self, preset_dashboard_chart_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboard_chart_count = preset_dashboard_chart_count
-
-    @property
-    def preset_datasets(self) -> Optional[list[PresetDataset]]:
-        return None if self.attributes is None else self.attributes.preset_datasets
-
-    @preset_datasets.setter
-    def preset_datasets(self, preset_datasets: Optional[list[PresetDataset]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_datasets = preset_datasets
-
-    @property
-    def preset_charts(self) -> Optional[list[PresetChart]]:
-        return None if self.attributes is None else self.attributes.preset_charts
-
-    @preset_charts.setter
-    def preset_charts(self, preset_charts: Optional[list[PresetChart]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_charts = preset_charts
-
-    @property
-    def preset_workspace(self) -> Optional[PresetWorkspace]:
-        return None if self.attributes is None else self.attributes.preset_workspace
-
-    @preset_workspace.setter
-    def preset_workspace(self, preset_workspace: Optional[PresetWorkspace]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace = preset_workspace
-
-    class Attributes(Preset.Attributes):
-        preset_dashboard_changed_by_name: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByName"
-        )
-        preset_dashboard_changed_by_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardChangedByURL"
-        )
-        preset_dashboard_is_managed_externally: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsManagedExternally"
-        )
-        preset_dashboard_is_published: Optional[bool] = Field(
-            None, description="", alias="presetDashboardIsPublished"
-        )
-        preset_dashboard_thumbnail_url: Optional[str] = Field(
-            None, description="", alias="presetDashboardThumbnailURL"
-        )
-        preset_dashboard_chart_count: Optional[int] = Field(
-            None, description="", alias="presetDashboardChartCount"
-        )
-        preset_datasets: Optional[list[PresetDataset]] = Field(
-            None, description="", alias="presetDatasets"
-        )  # relationship
-        preset_charts: Optional[list[PresetChart]] = Field(
-            None, description="", alias="presetCharts"
-        )  # relationship
-        preset_workspace: Optional[PresetWorkspace] = Field(
-            None, description="", alias="presetWorkspace"
-        )  # relationship
-
-    attributes: "PresetDashboard.Attributes" = Field(
-        default_factory=lambda: PresetDashboard.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class PresetWorkspace(Preset):
-    """Description"""
-
-    type_name: str = Field("PresetWorkspace", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "PresetWorkspace":
-            raise ValueError("must be PresetWorkspace")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in PresetWorkspace._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PRESET_WORKSPACE_PUBLIC_DASHBOARDS_ALLOWED: ClassVar[BooleanField] = BooleanField(
-        "presetWorkspacePublicDashboardsAllowed",
-        "presetWorkspacePublicDashboardsAllowed",
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_CLUSTER_ID: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceClusterId", "presetWorkspaceClusterId"
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_HOSTNAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "presetWorkspaceHostname",
-        "presetWorkspaceHostname",
-        "presetWorkspaceHostname.text",
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_IS_IN_MAINTENANCE_MODE: ClassVar[BooleanField] = BooleanField(
-        "presetWorkspaceIsInMaintenanceMode", "presetWorkspaceIsInMaintenanceMode"
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_REGION: ClassVar[KeywordTextField] = KeywordTextField(
-        "presetWorkspaceRegion", "presetWorkspaceRegion", "presetWorkspaceRegion.text"
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_STATUS: ClassVar[KeywordField] = KeywordField(
-        "presetWorkspaceStatus", "presetWorkspaceStatus"
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_DEPLOYMENT_ID: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDeploymentId", "presetWorkspaceDeploymentId"
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_DASHBOARD_COUNT: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDashboardCount", "presetWorkspaceDashboardCount"
-    )
-    """
-    TBC
-    """
-    PRESET_WORKSPACE_DATASET_COUNT: ClassVar[NumericField] = NumericField(
-        "presetWorkspaceDatasetCount", "presetWorkspaceDatasetCount"
-    )
-    """
-    TBC
-    """
-
-    PRESET_DASHBOARDS: ClassVar[RelationField] = RelationField("presetDashboards")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "preset_workspace_public_dashboards_allowed",
-        "preset_workspace_cluster_id",
-        "preset_workspace_hostname",
-        "preset_workspace_is_in_maintenance_mode",
-        "preset_workspace_region",
-        "preset_workspace_status",
-        "preset_workspace_deployment_id",
-        "preset_workspace_dashboard_count",
-        "preset_workspace_dataset_count",
-        "preset_dashboards",
-    ]
-
-    @property
-    def preset_workspace_public_dashboards_allowed(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_public_dashboards_allowed
-        )
-
-    @preset_workspace_public_dashboards_allowed.setter
-    def preset_workspace_public_dashboards_allowed(
-        self, preset_workspace_public_dashboards_allowed: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_public_dashboards_allowed = (
-            preset_workspace_public_dashboards_allowed
-        )
-
-    @property
-    def preset_workspace_cluster_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_cluster_id
-        )
-
-    @preset_workspace_cluster_id.setter
-    def preset_workspace_cluster_id(self, preset_workspace_cluster_id: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_cluster_id = preset_workspace_cluster_id
-
-    @property
-    def preset_workspace_hostname(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_hostname
-        )
-
-    @preset_workspace_hostname.setter
-    def preset_workspace_hostname(self, preset_workspace_hostname: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_hostname = preset_workspace_hostname
-
-    @property
-    def preset_workspace_is_in_maintenance_mode(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_is_in_maintenance_mode
-        )
-
-    @preset_workspace_is_in_maintenance_mode.setter
-    def preset_workspace_is_in_maintenance_mode(
-        self, preset_workspace_is_in_maintenance_mode: Optional[bool]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_is_in_maintenance_mode = (
-            preset_workspace_is_in_maintenance_mode
-        )
-
-    @property
-    def preset_workspace_region(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_region
-        )
-
-    @preset_workspace_region.setter
-    def preset_workspace_region(self, preset_workspace_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_region = preset_workspace_region
-
-    @property
-    def preset_workspace_status(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.preset_workspace_status
-        )
-
-    @preset_workspace_status.setter
-    def preset_workspace_status(self, preset_workspace_status: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_status = preset_workspace_status
-
-    @property
-    def preset_workspace_deployment_id(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_deployment_id
-        )
-
-    @preset_workspace_deployment_id.setter
-    def preset_workspace_deployment_id(
-        self, preset_workspace_deployment_id: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_deployment_id = preset_workspace_deployment_id
-
-    @property
-    def preset_workspace_dashboard_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_dashboard_count
-        )
-
-    @preset_workspace_dashboard_count.setter
-    def preset_workspace_dashboard_count(
-        self, preset_workspace_dashboard_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dashboard_count = (
-            preset_workspace_dashboard_count
-        )
-
-    @property
-    def preset_workspace_dataset_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.preset_workspace_dataset_count
-        )
-
-    @preset_workspace_dataset_count.setter
-    def preset_workspace_dataset_count(
-        self, preset_workspace_dataset_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_workspace_dataset_count = preset_workspace_dataset_count
-
-    @property
-    def preset_dashboards(self) -> Optional[list[PresetDashboard]]:
-        return None if self.attributes is None else self.attributes.preset_dashboards
-
-    @preset_dashboards.setter
-    def preset_dashboards(self, preset_dashboards: Optional[list[PresetDashboard]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.preset_dashboards = preset_dashboards
-
-    class Attributes(Preset.Attributes):
-        preset_workspace_public_dashboards_allowed: Optional[bool] = Field(
-            None, description="", alias="presetWorkspacePublicDashboardsAllowed"
-        )
-        preset_workspace_cluster_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceClusterId"
-        )
-        preset_workspace_hostname: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceHostname"
-        )
-        preset_workspace_is_in_maintenance_mode: Optional[bool] = Field(
-            None, description="", alias="presetWorkspaceIsInMaintenanceMode"
-        )
-        preset_workspace_region: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceRegion"
-        )
-        preset_workspace_status: Optional[str] = Field(
-            None, description="", alias="presetWorkspaceStatus"
-        )
-        preset_workspace_deployment_id: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDeploymentId"
-        )
-        preset_workspace_dashboard_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDashboardCount"
-        )
-        preset_workspace_dataset_count: Optional[int] = Field(
-            None, description="", alias="presetWorkspaceDatasetCount"
-        )
-        preset_dashboards: Optional[list[PresetDashboard]] = Field(
-            None, description="", alias="presetDashboards"
-        )  # relationship
-
-    attributes: "PresetWorkspace.Attributes" = Field(
-        default_factory=lambda: PresetWorkspace.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-PresetChart.Attributes.update_forward_refs()
-
-
-PresetDataset.Attributes.update_forward_refs()
-
-
-PresetDashboard.Attributes.update_forward_refs()
-
-
-PresetWorkspace.Attributes.update_forward_refs()
+S3Object.Attributes.update_forward_refs()

@@ -8,26 +8,26 @@ from typing import ClassVar
 
 from pydantic import Field, validator
 
-from .asset21 import EventStore
+from .asset00 import Catalog
 
 
-class Kafka(EventStore):
+class NoSQL(Catalog):
     """Description"""
 
-    type_name: str = Field("Kafka", allow_mutation=False)
+    type_name: str = Field("NoSQL", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Kafka":
-            raise ValueError("must be Kafka")
+        if v != "NoSQL":
+            raise ValueError("must be NoSQL")
         return v
 
     def __setattr__(self, name, value):
-        if name in Kafka._convenience_properties:
+        if name in NoSQL._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
     _convenience_properties: ClassVar[list[str]] = []
 
 
-Kafka.Attributes.update_forward_refs()
+NoSQL.Attributes.update_forward_refs()

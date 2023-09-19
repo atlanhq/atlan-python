@@ -1890,6 +1890,22 @@ class KafkaTopicCompressionType(str, Enum):
     PRODUCER = "producer"
 
 
+class MatillionJobType(str, Enum):
+    ORCHESTRATION = "ORCHESTRATION"
+    TRANSFORMATION = "TRANSFORMATION"
+
+
+class MongoDBCollectionValidationAction(str, Enum):
+    ERROR = "ERROR"
+    WARN = "WARN"
+
+
+class MongoDBCollectionValidationLevel(str, Enum):
+    OFF = "OFF"
+    STRICT = "STRICT"
+    MODERATE = "MODERATE"
+
+
 class OpenLineageRunState(str, Enum):
     START = "START"
     RUNNING = "RUNNING"

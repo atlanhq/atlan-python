@@ -8,197 +8,201 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordField, KeywordTextField
-from pyatlan.model.structs import AwsTag
+from pyatlan.model.fields.atlan_fields import (
+    KeywordField,
+    KeywordTextField,
+    NumericField,
+)
+from pyatlan.model.structs import GoogleLabel, GoogleTag
 
 from .asset08 import Cloud
 
 
-class AWS(Cloud):
+class Google(Cloud):
     """Description"""
 
-    type_name: str = Field("AWS", allow_mutation=False)
+    type_name: str = Field("Google", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "AWS":
-            raise ValueError("must be AWS")
+        if v != "Google":
+            raise ValueError("must be Google")
         return v
 
     def __setattr__(self, name, value):
-        if name in AWS._convenience_properties:
+        if name in Google._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    AWS_ARN: ClassVar[KeywordTextField] = KeywordTextField(
-        "awsArn", "awsArn", "awsArn.text"
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
     )
     """
     TBC
     """
-    AWS_PARTITION: ClassVar[KeywordField] = KeywordField("awsPartition", "awsPartition")
-    """
-    TBC
-    """
-    AWS_SERVICE: ClassVar[KeywordField] = KeywordField("awsService", "awsService")
-    """
-    TBC
-    """
-    AWS_REGION: ClassVar[KeywordField] = KeywordField("awsRegion", "awsRegion")
-    """
-    TBC
-    """
-    AWS_ACCOUNT_ID: ClassVar[KeywordField] = KeywordField(
-        "awsAccountId", "awsAccountId"
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
     )
     """
     TBC
     """
-    AWS_RESOURCE_ID: ClassVar[KeywordField] = KeywordField(
-        "awsResourceId", "awsResourceId"
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
     )
     """
     TBC
     """
-    AWS_OWNER_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "awsOwnerName", "awsOwnerName", "awsOwnerName.text"
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
     )
     """
     TBC
     """
-    AWS_OWNER_ID: ClassVar[KeywordField] = KeywordField("awsOwnerId", "awsOwnerId")
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
     """
     TBC
     """
-    AWS_TAGS: ClassVar[KeywordField] = KeywordField("awsTags", "awsTags")
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
+    """
+    TBC
+    """
+    GOOGLE_LABELS: ClassVar[KeywordField] = KeywordField("googleLabels", "googleLabels")
+    """
+    TBC
+    """
+    GOOGLE_TAGS: ClassVar[KeywordField] = KeywordField("googleTags", "googleTags")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "aws_arn",
-        "aws_partition",
-        "aws_service",
-        "aws_region",
-        "aws_account_id",
-        "aws_resource_id",
-        "aws_owner_name",
-        "aws_owner_id",
-        "aws_tags",
+        "google_service",
+        "google_project_name",
+        "google_project_id",
+        "google_project_number",
+        "google_location",
+        "google_location_type",
+        "google_labels",
+        "google_tags",
     ]
 
     @property
-    def aws_arn(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_arn
+    def google_service(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_service
 
-    @aws_arn.setter
-    def aws_arn(self, aws_arn: Optional[str]):
+    @google_service.setter
+    def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_arn = aws_arn
+        self.attributes.google_service = google_service
 
     @property
-    def aws_partition(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_partition
+    def google_project_name(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_project_name
 
-    @aws_partition.setter
-    def aws_partition(self, aws_partition: Optional[str]):
+    @google_project_name.setter
+    def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_partition = aws_partition
+        self.attributes.google_project_name = google_project_name
 
     @property
-    def aws_service(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_service
+    def google_project_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_project_id
 
-    @aws_service.setter
-    def aws_service(self, aws_service: Optional[str]):
+    @google_project_id.setter
+    def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_service = aws_service
+        self.attributes.google_project_id = google_project_id
 
     @property
-    def aws_region(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_region
+    def google_project_number(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.google_project_number
+        )
 
-    @aws_region.setter
-    def aws_region(self, aws_region: Optional[str]):
+    @google_project_number.setter
+    def google_project_number(self, google_project_number: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_region = aws_region
+        self.attributes.google_project_number = google_project_number
 
     @property
-    def aws_account_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_account_id
+    def google_location(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_location
 
-    @aws_account_id.setter
-    def aws_account_id(self, aws_account_id: Optional[str]):
+    @google_location.setter
+    def google_location(self, google_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_account_id = aws_account_id
+        self.attributes.google_location = google_location
 
     @property
-    def aws_resource_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_resource_id
+    def google_location_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.google_location_type
 
-    @aws_resource_id.setter
-    def aws_resource_id(self, aws_resource_id: Optional[str]):
+    @google_location_type.setter
+    def google_location_type(self, google_location_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_resource_id = aws_resource_id
+        self.attributes.google_location_type = google_location_type
 
     @property
-    def aws_owner_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_owner_name
+    def google_labels(self) -> Optional[list[GoogleLabel]]:
+        return None if self.attributes is None else self.attributes.google_labels
 
-    @aws_owner_name.setter
-    def aws_owner_name(self, aws_owner_name: Optional[str]):
+    @google_labels.setter
+    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_owner_name = aws_owner_name
+        self.attributes.google_labels = google_labels
 
     @property
-    def aws_owner_id(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.aws_owner_id
+    def google_tags(self) -> Optional[list[GoogleTag]]:
+        return None if self.attributes is None else self.attributes.google_tags
 
-    @aws_owner_id.setter
-    def aws_owner_id(self, aws_owner_id: Optional[str]):
+    @google_tags.setter
+    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.aws_owner_id = aws_owner_id
-
-    @property
-    def aws_tags(self) -> Optional[list[AwsTag]]:
-        return None if self.attributes is None else self.attributes.aws_tags
-
-    @aws_tags.setter
-    def aws_tags(self, aws_tags: Optional[list[AwsTag]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.aws_tags = aws_tags
+        self.attributes.google_tags = google_tags
 
     class Attributes(Cloud.Attributes):
-        aws_arn: Optional[str] = Field(None, description="", alias="awsArn")
-        aws_partition: Optional[str] = Field(None, description="", alias="awsPartition")
-        aws_service: Optional[str] = Field(None, description="", alias="awsService")
-        aws_region: Optional[str] = Field(None, description="", alias="awsRegion")
-        aws_account_id: Optional[str] = Field(
-            None, description="", alias="awsAccountId"
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
         )
-        aws_resource_id: Optional[str] = Field(
-            None, description="", alias="awsResourceId"
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
         )
-        aws_owner_name: Optional[str] = Field(
-            None, description="", alias="awsOwnerName"
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
         )
-        aws_owner_id: Optional[str] = Field(None, description="", alias="awsOwnerId")
-        aws_tags: Optional[list[AwsTag]] = Field(None, description="", alias="awsTags")
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
 
-    attributes: "AWS.Attributes" = Field(
-        default_factory=lambda: AWS.Attributes(),
+    attributes: "Google.Attributes" = Field(
+        default_factory=lambda: Google.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-AWS.Attributes.update_forward_refs()
+Google.Attributes.update_forward_refs()

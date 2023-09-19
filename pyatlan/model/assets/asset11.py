@@ -16,7 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
 )
 
-from .asset00 import AirflowTask, Catalog, ColumnProcess, Dbt
+from .asset00 import AirflowTask, Catalog, ColumnProcess, Dbt, MatillionComponent
 
 
 class DbtProcess(Dbt):
@@ -164,6 +164,10 @@ class DbtProcess(Dbt):
     TBC
     """
 
+    MATILLION_COMPONENT: ClassVar[RelationField] = RelationField("matillionComponent")
+    """
+    TBC
+    """
     AIRFLOW_TASKS: ClassVar[RelationField] = RelationField("airflowTasks")
     """
     TBC
@@ -198,6 +202,7 @@ class DbtProcess(Dbt):
         "code",
         "sql",
         "ast",
+        "matillion_component",
         "airflow_tasks",
         "column_processes",
     ]
@@ -467,6 +472,16 @@ class DbtProcess(Dbt):
         self.attributes.ast = ast
 
     @property
+    def matillion_component(self) -> Optional[MatillionComponent]:
+        return None if self.attributes is None else self.attributes.matillion_component
+
+    @matillion_component.setter
+    def matillion_component(self, matillion_component: Optional[MatillionComponent]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.matillion_component = matillion_component
+
+    @property
     def airflow_tasks(self) -> Optional[list[AirflowTask]]:
         return None if self.attributes is None else self.attributes.airflow_tasks
 
@@ -539,6 +554,9 @@ class DbtProcess(Dbt):
         code: Optional[str] = Field(None, description="", alias="code")
         sql: Optional[str] = Field(None, description="", alias="sql")
         ast: Optional[str] = Field(None, description="", alias="ast")
+        matillion_component: Optional[MatillionComponent] = Field(
+            None, description="", alias="matillionComponent"
+        )  # relationship
         airflow_tasks: Optional[list[AirflowTask]] = Field(
             None, description="", alias="airflowTasks"
         )  # relationship

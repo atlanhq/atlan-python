@@ -8,94 +8,58 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.fields.atlan_fields import KeywordTextField
+from pyatlan.model.fields.atlan_fields import BooleanField
 
 from .asset18 import BI
 
 
-class Metabase(BI):
+class Redash(BI):
     """Description"""
 
-    type_name: str = Field("Metabase", allow_mutation=False)
+    type_name: str = Field("Redash", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "Metabase":
-            raise ValueError("must be Metabase")
+        if v != "Redash":
+            raise ValueError("must be Redash")
         return v
 
     def __setattr__(self, name, value):
-        if name in Metabase._convenience_properties:
+        if name in Redash._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    METABASE_COLLECTION_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseCollectionName",
-        "metabaseCollectionName.keyword",
-        "metabaseCollectionName",
+    REDASH_IS_PUBLISHED: ClassVar[BooleanField] = BooleanField(
+        "redashIsPublished", "redashIsPublished"
     )
     """
-    TBC
-    """
-    METABASE_COLLECTION_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "metabaseCollectionQualifiedName",
-        "metabaseCollectionQualifiedName",
-        "metabaseCollectionQualifiedName.text",
-    )
-    """
-    TBC
+    Status whether the asset is published or not on source
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "metabase_collection_name",
-        "metabase_collection_qualified_name",
+        "redash_is_published",
     ]
 
     @property
-    def metabase_collection_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metabase_collection_name
-        )
+    def redash_is_published(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.redash_is_published
 
-    @metabase_collection_name.setter
-    def metabase_collection_name(self, metabase_collection_name: Optional[str]):
+    @redash_is_published.setter
+    def redash_is_published(self, redash_is_published: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.metabase_collection_name = metabase_collection_name
-
-    @property
-    def metabase_collection_qualified_name(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.metabase_collection_qualified_name
-        )
-
-    @metabase_collection_qualified_name.setter
-    def metabase_collection_qualified_name(
-        self, metabase_collection_qualified_name: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.metabase_collection_qualified_name = (
-            metabase_collection_qualified_name
-        )
+        self.attributes.redash_is_published = redash_is_published
 
     class Attributes(BI.Attributes):
-        metabase_collection_name: Optional[str] = Field(
-            None, description="", alias="metabaseCollectionName"
-        )
-        metabase_collection_qualified_name: Optional[str] = Field(
-            None, description="", alias="metabaseCollectionQualifiedName"
+        redash_is_published: Optional[bool] = Field(
+            None, description="", alias="redashIsPublished"
         )
 
-    attributes: "Metabase.Attributes" = Field(
-        default_factory=lambda: Metabase.Attributes(),
+    attributes: "Redash.Attributes" = Field(
+        default_factory=lambda: Redash.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-Metabase.Attributes.update_forward_refs()
+Redash.Attributes.update_forward_refs()

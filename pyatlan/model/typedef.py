@@ -271,6 +271,10 @@ class AttributeDef(AtlanObject):
         custom_type: Optional[str] = Field(
             description="Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`."
         )
+        has_time_precision: Optional[bool] = Field(
+            description="If true for a date attribute, then time-level precision is also available in the UI "
+            "(otherwise only date-level)"
+        )
         is_archived: Optional[bool] = Field(
             description="Whether the attribute has been deleted (true) or is still active (false)."
         )
