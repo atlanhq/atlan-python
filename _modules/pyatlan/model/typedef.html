@@ -1,0 +1,1203 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>pyatlan.model.typedef - pyatlan documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">pyatlan  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">pyatlan  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../client.html">Atlan Client Interface</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../assets.html">Assets</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Assets</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/adls.html">ADLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/adlsaccount.html">ADLSAccount</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/adlscontainer.html">ADLSContainer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/adlsobject.html">ADLSObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/api.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/apipath.html">APIPath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/apispec.html">APISpec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/aws.html">AWS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/accesscontrol.html">AccessControl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/airflow.html">Airflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/airflowdag.html">AirflowDag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/airflowtask.html">AirflowTask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/asset.html">Asset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/atlasglossary.html">AtlasGlossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/atlasglossarycategory.html">AtlasGlossaryCategory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/atlasglossaryterm.html">AtlasGlossaryTerm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/authpolicy.html">AuthPolicy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/authservice.html">AuthService</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/azure.html">Azure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/azureeventhub.html">AzureEventHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/azureeventhubconsumergroup.html">AzureEventHubConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/bi.html">BI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/biprocess.html">BIProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/badge.html">Badge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/catalog.html">Catalog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/cloud.html">Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/collection.html">Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/column.html">Column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/columnprocess.html">ColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/connection.html">Connection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dataquality.html">DataQuality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dataset.html">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/datastudio.html">DataStudio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/datastudioasset.html">DataStudioAsset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/database.html">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbt.html">Dbt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtcolumnprocess.html">DbtColumnProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmetric.html">DbtMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmodel.html">DbtModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtmodelcolumn.html">DbtModelColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtprocess.html">DbtProcess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbtsource.html">DbtSource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbttag.html">DbtTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/dbttest.html">DbtTest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/eventstore.html">EventStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/file.html">File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/folder.html">Folder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/function.html">Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/gcs.html">GCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/gcsbucket.html">GCSBucket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/gcsobject.html">GCSObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/google.html">Google</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/infrastructure.html">Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/insight.html">Insight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/kafka.html">Kafka</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/kafkaconsumergroup.html">KafkaConsumerGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/kafkatopic.html">KafkaTopic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/link.html">Link</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/looker.html">Looker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerdashboard.html">LookerDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerexplore.html">LookerExplore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerfield.html">LookerField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerfolder.html">LookerFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerlook.html">LookerLook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookermodel.html">LookerModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerproject.html">LookerProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerquery.html">LookerQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookertile.html">LookerTile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/lookerview.html">LookerView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/mcincident.html">MCIncident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/mcmonitor.html">MCMonitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/materialisedview.html">MaterialisedView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/matillion.html">Matillion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/matillioncomponent.html">MatillionComponent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/matilliongroup.html">MatillionGroup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/matillionjob.html">MatillionJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/matillionproject.html">MatillionProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/metabase.html">Metabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/metabasecollection.html">MetabaseCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/metabasedashboard.html">MetabaseDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/metabasequestion.html">MetabaseQuestion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/metric.html">Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategy.html">MicroStrategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategyattribute.html">MicroStrategyAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategycube.html">MicroStrategyCube</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategydocument.html">MicroStrategyDocument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategydossier.html">MicroStrategyDossier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategyfact.html">MicroStrategyFact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategymetric.html">MicroStrategyMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategyproject.html">MicroStrategyProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategyreport.html">MicroStrategyReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/microstrategyvisualization.html">MicroStrategyVisualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/mode.html">Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/modechart.html">ModeChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/modecollection.html">ModeCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/modequery.html">ModeQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/modereport.html">ModeReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/modeworkspace.html">ModeWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/mongodb.html">MongoDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/mongodbcollection.html">MongoDBCollection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/mongodbdatabase.html">MongoDBDatabase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/montecarlo.html">MonteCarlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/namespace.html">Namespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/nosql.html">NoSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/objectstore.html">ObjectStore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/persona.html">Persona</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbi.html">PowerBI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbicolumn.html">PowerBIColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbidashboard.html">PowerBIDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbidataflow.html">PowerBIDataflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbidataset.html">PowerBIDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbidatasource.html">PowerBIDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbimeasure.html">PowerBIMeasure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbipage.html">PowerBIPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbireport.html">PowerBIReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbitable.html">PowerBITable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbitile.html">PowerBITile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/powerbiworkspace.html">PowerBIWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/preset.html">Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/presetchart.html">PresetChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/presetdashboard.html">PresetDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/presetdataset.html">PresetDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/presetworkspace.html">PresetWorkspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/procedure.html">Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/process.html">Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/processexecution.html">ProcessExecution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/purpose.html">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlik.html">Qlik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikapp.html">QlikApp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikchart.html">QlikChart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikdataset.html">QlikDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qliksheet.html">QlikSheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikspace.html">QlikSpace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/qlikstream.html">QlikStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/query.html">Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksight.html">QuickSight</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightanalysis.html">QuickSightAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightanalysisvisual.html">QuickSightAnalysisVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightdashboard.html">QuickSightDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightdashboardvisual.html">QuickSightDashboardVisual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightdataset.html">QuickSightDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightdatasetfield.html">QuickSightDatasetField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/quicksightfolder.html">QuickSightFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/readme.html">Readme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/readmetemplate.html">ReadmeTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/redash.html">Redash</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/redashdashboard.html">RedashDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/redashquery.html">RedashQuery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/redashvisualization.html">RedashVisualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/referenceable.html">Referenceable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/resource.html">Resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/s3.html">S3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/s3bucket.html">S3Bucket</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/s3object.html">S3Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sql.html">SQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/saas.html">SaaS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforce.html">Salesforce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforcedashboard.html">SalesforceDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforcefield.html">SalesforceField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforceobject.html">SalesforceObject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforceorganization.html">SalesforceOrganization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/salesforcereport.html">SalesforceReport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/schema.html">Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/schemaregistry.html">SchemaRegistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/schemaregistrysubject.html">SchemaRegistrySubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigma.html">Sigma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmadataelement.html">SigmaDataElement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmadataelementfield.html">SigmaDataElementField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmadataset.html">SigmaDataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmadatasetcolumn.html">SigmaDatasetColumn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmapage.html">SigmaPage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sigmaworkbook.html">SigmaWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/snowflakedynamictable.html">SnowflakeDynamicTable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/snowflakepipe.html">SnowflakePipe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/snowflakestream.html">SnowflakeStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/snowflaketag.html">SnowflakeTag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/soda.html">Soda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/sodacheck.html">SodaCheck</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/table.html">Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tablepartition.html">TablePartition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableau.html">Tableau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableaucalculatedfield.html">TableauCalculatedField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableaudashboard.html">TableauDashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableaudatasource.html">TableauDatasource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableaudatasourcefield.html">TableauDatasourceField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableauflow.html">TableauFlow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableaumetric.html">TableauMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableauproject.html">TableauProject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableausite.html">TableauSite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableauworkbook.html">TableauWorkbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tableauworksheet.html">TableauWorksheet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/tag.html">Tag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/thoughtspot.html">Thoughtspot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/thoughtspotanswer.html">ThoughtspotAnswer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/thoughtspotdashlet.html">ThoughtspotDashlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/thoughtspotliveboard.html">ThoughtspotLiveboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../asset/view.html">View</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../other_models.html">Other models</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Other models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/core.html">Core model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/custom_metadata.html">Custom metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/user.html">User</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/group.html">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/role.html">Role</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/keycloak_events.html">Keycloak events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/lineage.html">Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/typedef.html">TypeDef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../other_model/atlan_image.html">Atlan image</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exceptions.html">Error Handling</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../caches.html">Caches</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Caches</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cache/atlan_tag_cache.html">AtlanTagCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cache/custom_metadata_cache.html">CustomMetadataCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cache/enum_cache.html">EnumCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cache/group_cache.html">GroupCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cache/role_cache.html">RoleCache</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cache/user_cache.html">UserCache</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../fields.html">Fields</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Fields</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/relation_field.html">RelationField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/searchable_field.html">SearchableField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/boolean_field.html">BooleanField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/keyword_field.html">KeywordField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/text_field.html">TextField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/numeric_field.html">NumericField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/numeric_rank_field.html">NumericRankField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/keyword_text_field.html">KeywordTextField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/keyword_text_stemmed_field.html">KeywordTextStemmedField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../field/custom_metadata_field.html">CustomMetadataField</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../events.html">Events</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for pyatlan.model.typedef</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+
+<span class="kn">from</span> <span class="nn">pyatlan.model.atlan_image</span> <span class="kn">import</span> <span class="n">AtlanImage</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AtlanCustomAttributePrimitiveType</span><span class="p">,</span>
+    <span class="n">AtlanIcon</span><span class="p">,</span>
+    <span class="n">AtlanTagColor</span><span class="p">,</span>
+    <span class="n">AtlanTypeCategory</span><span class="p">,</span>
+    <span class="n">Cardinality</span><span class="p">,</span>
+    <span class="n">IndexType</span><span class="p">,</span>
+    <span class="n">TagIconType</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_complete_type_list</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;[&quot;ADLSAccount&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ADLSAccount&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ADLSContainer&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ADLSObject&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;APIPath&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;APISpec&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Collection&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Query&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;BIProcess&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Badge&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Column&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ColumnProcess&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Connection&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DataStudioAsset&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Database&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DbtColumnProcess&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DbtMetric&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DbtModel&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DbtModelColumn&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DbtProcess&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;DbtSource&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Folder&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;GCSBucket&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;GCSObject&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;AtlasGlossary&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;AtlasGlossaryCategory&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;AtlasGlossaryTerm&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Insight&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;KafkaConsumerGroup&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;KafkaTopic&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Process&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Link&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerExplore&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerField&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerFolder&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerLook&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerModel&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerProject&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerQuery&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerTile&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;LookerView&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;MCIncident&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;MCMonitor&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;MaterialisedView&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;MetabaseCollection&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;MetabaseDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;MetabaseQuestion&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ModeChart&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ModeCollection&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ModeQuery&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ModeReport&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ModeWorkspace&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIColumn&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIDataflow&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIDataset&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIDatasource&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIMeasure&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIPage&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIReport&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBITable&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBITile&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PowerBIWorkspace&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PresetChart&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PresetDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PresetDataset&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;PresetWorkspace&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Procedure&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QlikApp&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QlikChart&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QlikDataset&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QlikSheet&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QlikSpace&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QlikStream&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightAnalysis&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightAnalysisVisual&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightDashboardVisual&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightDataset&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightDatasetField&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;QuickSightFolder&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Readme&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ReadmeTemplate&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;RedashDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;RedashQuery&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;RedashVisualization&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;S3Bucket&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;S3Object&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SalesforceDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SalesforceField&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SalesforceObject&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SalesforceOrganization&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SalesforceReport&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Schema&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SigmaDataElement&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SigmaDataElementField&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SigmaDataset&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SigmaDatasetColumn&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SigmaPage&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SigmaWorkbook&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SnowflakePipe&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SnowflakeStream&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;SnowflakeTag&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;Table&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TablePartition&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauCalculatedField&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauDashboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauDatasource&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauDatasourceField&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauFlow&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauMetric&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauProject&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauSite&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauWorkbook&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;TableauWorksheet&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ThoughtspotAnswer&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ThoughtspotDashlet&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;ThoughtspotLiveboard&quot;,&#39;</span>
+    <span class="s1">&#39;&quot;View&quot;]&#39;</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="TypeDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.TypeDef">[docs]</a>
+<span class="k">class</span> <span class="nc">TypeDef</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the type definition.&quot;</span><span class="p">)</span>
+    <span class="n">create_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time (epoch) at which this object was created, in milliseconds.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">created_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username of the user who created the object.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the type definition.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier that represents the type definition.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique name of this type definition.&quot;</span><span class="p">)</span>
+    <span class="n">type_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
+    <span class="n">update_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time (epoch) at which this object was last assets_updated, in milliseconds.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">updated_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Username of the user who last assets_updated the object.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Version of this type definition.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EnumDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EnumDef">[docs]</a>
+<span class="k">class</span> <span class="nc">EnumDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">ElementDef</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;One unique value within the enumeration.&quot;</span><span class="p">)</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
+        <span class="n">ordinal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique numeric identifier for the value.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">ordinal</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;ordinal&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">ordinal</span><span class="p">,</span> <span class="n">value</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">(</span><span class="n">ordinal</span><span class="o">=</span><span class="n">ordinal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">list_from</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">values</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">elements</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">ordinal</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">elements</span>
+
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENUM</span>
+    <span class="n">element_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;EnumDef.ElementDef&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Valid values for the enumeration.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">EnumDef</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">values</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
+        <span class="k">return</span> <span class="n">EnumDef</span><span class="p">(</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENUM</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">element_defs</span><span class="o">=</span><span class="n">EnumDef</span><span class="o">.</span><span class="n">ElementDef</span><span class="o">.</span><span class="n">list_from</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="EnumDef.get_valid_values">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EnumDef.get_valid_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_valid_values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translate the element definitions in this enumeration into simple list of strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">one</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">one</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_defs</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_defs</span> <span class="k">else</span> <span class="p">[]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="AttributeDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.AttributeDef">[docs]</a>
+<span class="k">class</span> <span class="nc">AttributeDef</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional description of the attribute.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">applicable_entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute can be applied.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">custom_applicable_entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of entities on which this attribute should appear.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">allow_search</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute should be searchable (true) or not (false).&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">max_str_length</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum length allowed for a string value.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">allow_filtering</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this attribute should appear in the filterable facets of discovery (true) or not &quot;</span>
+            <span class="s2">&quot;(false).&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">multi_value_select</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this attribute can have multiple values (true) or only a single value (false).&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">show_in_overview</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether users will see this attribute in the overview tab of the sidebar (true) or not &quot;</span>
+            <span class="s2">&quot;(false).&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">is_deprecated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is deprecated (&#39;true&#39;) or not (None or &#39;false&#39;).&quot;</span>
+        <span class="p">)</span>
+        <span class="n">is_enum</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is an enumeration (true) or not (None or false).&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">enum_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the enumeration (options), when the attribute is an enumeration.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">custom_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Used for Atlan-specific types like `users`, `groups`, `url`, and `SQL`.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">has_time_precision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If true for a date attribute, then time-level precision is also available in the UI &quot;</span>
+            <span class="s2">&quot;(otherwise only date-level)&quot;</span>
+        <span class="p">)</span>
+        <span class="n">is_archived</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute has been deleted (true) or is still active (false).&quot;</span>
+        <span class="p">)</span>
+        <span class="n">archived_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the attribute was deleted.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">archived_by</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User who deleted the attribute.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">is_soft_reference</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+        <span class="n">is_append_on_partial_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+        <span class="n">primitive_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the attribute.&quot;</span><span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+            <span class="n">attribute_type</span><span class="p">:</span> <span class="n">AtlanCustomAttributePrimitiveType</span><span class="p">,</span>
+            <span class="n">options_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeDef</span><span class="o">.</span><span class="n">Options</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="nb">type</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="n">AttributeDef</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span>
+                <span class="n">primitive_type</span><span class="o">=</span><span class="n">attribute_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">applicable_entity_types</span><span class="o">=</span><span class="s1">&#39;[&quot;Asset&quot;]&#39;</span><span class="p">,</span>
+                <span class="n">custom_applicable_entity_types</span><span class="o">=</span><span class="n">_complete_type_list</span><span class="p">,</span>
+                <span class="n">allow_search</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">max_str_length</span><span class="o">=</span><span class="s2">&quot;100000000&quot;</span><span class="p">,</span>
+                <span class="n">allow_filtering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">multi_value_select</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">show_in_overview</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">is_enum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">attribute_type</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">USERS</span><span class="p">,</span>
+                <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">GROUPS</span><span class="p">,</span>
+                <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span>
+                <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">SQL</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">custom_type</span> <span class="o">=</span> <span class="n">attribute_type</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">elif</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">OPTIONS</span><span class="p">:</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">is_enum</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">enum_type</span> <span class="o">=</span> <span class="n">options_name</span>
+            <span class="k">return</span> <span class="n">options</span>
+
+    <span class="n">is_new</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute is being newly created (true) or not (false).&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cardinality</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Cardinality</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the attribute allows a single or multiple values. In the case of multiple values, &quot;</span>
+        <span class="s2">&quot;`LIST` indicates they are ordered and duplicates are allowed, while `SET` indicates &quot;</span>
+        <span class="s2">&quot;they are unique and unordered.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">constraints</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">enum_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of values for an enumeration.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description of the attribute definition.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">default_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default value for this attribute (if any).&quot;</span>
+    <span class="p">)</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name to use within all user interactions through the user interface. Note that this may not &quot;</span>
+        <span class="s2">&quot;be the same name used to update or interact with the attribute through API operations, for &quot;</span>
+        <span class="s2">&quot;that see the `name` property. (This property can be used instead of `name` for the creation &quot;</span>
+        <span class="s2">&quot;of an attribute definition as well.)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique name of this attribute definition. When provided during creation, this should be the &quot;</span>
+        <span class="s2">&quot;human-readable name for the attribute. When returned (or provided for an update) this will be &quot;</span>
+        <span class="s2">&quot;the static-hashed name that Atlan uses internally. (This is to allow the name to be changed &quot;</span>
+        <span class="s2">&quot;by the user without impacting existing instances of the attribute.)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">include_in_notification</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+    <span class="n">index_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IndexType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">)</span>
+    <span class="n">is_indexable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, values for this attribute will be indexed for searching.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">is_optional</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, a value will not be required for this attribute.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">is_unique</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, this attribute must be unique across all assets.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributeDef</span><span class="o">.</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extensible options for the attribute.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">search_weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+    <span class="n">skip_scrubbing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When true, scrubbing of data will be skipped.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">type_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of this attribute.&quot;</span><span class="p">)</span>
+    <span class="n">values_min_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minimum number of values for this attribute. If greater than 0, this attribute &quot;</span>
+        <span class="s2">&quot;becomes required.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">values_max_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of values for this attribute. If greater than 1, this attribute allows &quot;</span>
+        <span class="s2">&quot;multiple values.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">index_type_es_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESConfig&quot;</span>
+    <span class="p">)</span>
+    <span class="n">index_type_es_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;indexTypeESFields&quot;</span>
+    <span class="p">)</span>
+    <span class="n">is_default_value_null</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+        <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">attribute_type</span><span class="p">:</span> <span class="n">AtlanCustomAttributePrimitiveType</span><span class="p">,</span>
+        <span class="n">multi_valued</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">options_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeDef</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">,</span> <span class="s2">&quot;attribute_type&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">display_name</span><span class="p">,</span> <span class="n">attribute_type</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
+        <span class="n">attr_def</span> <span class="o">=</span> <span class="n">AttributeDef</span><span class="p">(</span>
+            <span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">AttributeDef</span><span class="o">.</span><span class="n">Options</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">attribute_type</span><span class="o">=</span><span class="n">attribute_type</span><span class="p">,</span> <span class="n">options_name</span><span class="o">=</span><span class="n">options_name</span>
+            <span class="p">),</span>
+            <span class="n">is_new</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">cardinality</span><span class="o">=</span><span class="n">Cardinality</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">include_in_notification</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">is_indexable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">is_optional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">is_unique</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">values_min_count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">values_max_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">add_enum_values</span> <span class="o">=</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">OPTIONS</span>
+        <span class="k">if</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">OPTIONS</span><span class="p">:</span>
+            <span class="n">base_type</span> <span class="o">=</span> <span class="n">options_name</span>
+        <span class="k">elif</span> <span class="n">attribute_type</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">USERS</span><span class="p">,</span>
+            <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">GROUPS</span><span class="p">,</span>
+            <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span>
+            <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">SQL</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="n">base_type</span> <span class="o">=</span> <span class="n">AtlanCustomAttributePrimitiveType</span><span class="o">.</span><span class="n">STRING</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">base_type</span> <span class="o">=</span> <span class="n">attribute_type</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="n">multi_valued</span><span class="p">:</span>
+            <span class="n">attr_def</span><span class="o">.</span><span class="n">type_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;array&lt;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">base_type</span><span class="p">)</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+            <span class="n">attr_def</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">multi_value_select</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># type: ignore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_def</span><span class="o">.</span><span class="n">type_name</span> <span class="o">=</span> <span class="n">base_type</span>
+        <span class="k">if</span> <span class="n">add_enum_values</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.cache.enum_cache</span> <span class="kn">import</span> <span class="n">EnumCache</span>
+
+            <span class="k">if</span> <span class="n">enum_def</span> <span class="o">:=</span> <span class="n">EnumCache</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">options_name</span><span class="p">)):</span>
+                <span class="n">attr_def</span><span class="o">.</span><span class="n">enum_values</span> <span class="o">=</span> <span class="n">enum_def</span><span class="o">.</span><span class="n">get_valid_values</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attr_def</span><span class="o">.</span><span class="n">enum_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">attr_def</span>
+
+    <span class="k">def</span> <span class="nf">is_archived</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">opt</span><span class="o">.</span><span class="n">is_archived</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">opt</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">archive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeDef</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
+            <span class="n">removal_epoch</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">is_archived</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">archived_by</span> <span class="o">=</span> <span class="n">by</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">archived_at</span> <span class="o">=</span> <span class="n">removal_epoch</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s2">-archived-</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">removal_epoch</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+
+<div class="viewcode-block" id="RelationshipAttributeDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.RelationshipAttributeDef">[docs]</a>
+<span class="k">class</span> <span class="nc">RelationshipAttributeDef</span><span class="p">(</span><span class="n">AttributeDef</span><span class="p">):</span>
+    <span class="n">is_legacy_attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
+    <span class="n">relationship_type_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the relationship type.&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StructDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.StructDef">[docs]</a>
+<span class="k">class</span> <span class="nc">StructDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">STRUCT</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of attributes that should be available in the type_ definition.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AtlanTagDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.AtlanTagDef">[docs]</a>
+<span class="k">class</span> <span class="nc">AtlanTagDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">)</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CLASSIFICATION</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
+    <span class="p">)</span>
+    <span class="n">entity_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A list of the entity types that this classification can be used against.&quot;</span>
+        <span class="s2">&quot; (This should be `Asset` to allow classification of any asset in Atlan.)&quot;</span>
+    <span class="p">)</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type_ definition.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the sub-types that extend from this type_ definition. Generally this is not specified &quot;</span>
+        <span class="s2">&quot;in any request, but is only supplied in responses. (This is intended for internal use only, and &quot;</span>
+        <span class="s2">&quot;should not be used without specific guidance.)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the super-types that this type_ definition should extend. (This is intended for internal &quot;</span>
+        <span class="s2">&quot;use only, and should not be used without specific guidance.)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
+    <span class="p">)</span>
+    <span class="n">skip_display_name_uniqueness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;TBC&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">AtlanTagColor</span><span class="p">,</span>
+        <span class="n">icon</span><span class="p">:</span> <span class="n">AtlanIcon</span> <span class="o">=</span> <span class="n">AtlanIcon</span><span class="o">.</span><span class="n">ATLAN_TAG</span><span class="p">,</span>
+        <span class="n">image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanImage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlanTagDef</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">color</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">cls_options</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;iconName&quot;</span><span class="p">:</span> <span class="n">icon</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">image</span><span class="p">:</span>
+            <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;imageID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;iconType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TagIconType</span><span class="o">.</span><span class="n">IMAGE</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;imageID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;iconType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TagIconType</span><span class="o">.</span><span class="n">ICON</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
+        <span class="k">return</span> <span class="n">AtlanTagDef</span><span class="p">(</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CLASSIFICATION</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">display_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="n">cls_options</span><span class="p">,</span>
+            <span class="n">skip_display_name_uniqueness_check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EntityDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.EntityDef">[docs]</a>
+<span class="k">class</span> <span class="nc">EntityDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span>
+    <span class="n">business_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">cast</span><span class="p">(</span><span class="n">Callable</span><span class="p">[[],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]],</span> <span class="nb">dict</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span>
+        <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">ENTITY</span>
+    <span class="n">relationship_attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span>
+    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
+    <span class="p">)</span>
+    <span class="n">sub_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the sub-types that extend from this type_ definition. Generally this is not specified in &quot;</span>
+        <span class="s2">&quot;any request, but is only supplied in responses. (This is intended for internal use only, and &quot;</span>
+        <span class="s2">&quot;should not be used without specific guidance.)&quot;</span><span class="p">,</span>
+        <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span>
+    <span class="n">super_types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of the super-types that this type_ definition should extend. (This is intended for internal &quot;</span>
+        <span class="s2">&quot;use only, and should not be used without specific guidance.)&quot;</span><span class="p">,</span>
+        <span class="n">example</span><span class="o">=</span><span class="p">[],</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RelationshipDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.RelationshipDef">[docs]</a>
+<span class="k">class</span> <span class="nc">RelationshipDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">[]</span>
+    <span class="p">)</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">RELATIONSHIP</span>
+    <span class="n">end_def1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">({},</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">end_def2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">({},</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="p">{})</span>
+    <span class="n">propagate_tags</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;ONE_TO_TWO&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;ONE_TO_TWO&quot;</span>
+    <span class="p">)</span>
+    <span class="n">relationship_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;AGGREGATION&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;AGGREGATION&quot;</span>
+    <span class="p">)</span>
+    <span class="n">relationship_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;__SalesforceOrganization.reports&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unused&quot;</span><span class="p">,</span>
+        <span class="n">example</span><span class="o">=</span><span class="s2">&quot;__SalesforceOrganization.reports&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">service_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Internal use only.&quot;</span><span class="p">,</span> <span class="n">example</span><span class="o">=</span><span class="s2">&quot;atlan&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CustomMetadataDef">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.CustomMetadataDef">[docs]</a>
+<span class="k">class</span> <span class="nc">CustomMetadataDef</span><span class="p">(</span><span class="n">TypeDef</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+        <span class="n">emoji</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is emoji, this should hold the emoji character.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">image_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The id of the image used for the logo.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">is_locked</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Indicates whether the custom metadata can be managed in the UI (false) or not (true).&quot;</span>
+        <span class="p">)</span>
+        <span class="n">logo_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of logo used for the custom metadata.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">logo_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is image, this should hold a URL to the image.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">with_logo_as_emoji</span><span class="p">(</span>
+            <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">locked</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;emoji&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">emoji</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span>
+                <span class="n">emoji</span><span class="o">=</span><span class="n">emoji</span><span class="p">,</span> <span class="n">logo_type</span><span class="o">=</span><span class="s2">&quot;emoji&quot;</span><span class="p">,</span> <span class="n">is_locked</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">locked</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">with_logo_from_url</span><span class="p">(</span>
+            <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">locked</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">url</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span>
+                <span class="n">logo_url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">logo_type</span><span class="o">=</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">is_locked</span><span class="o">=</span><span class="n">locked</span>
+            <span class="p">)</span>
+
+    <span class="n">attribute_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of custom attributes defined within the custom metadata.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span> <span class="o">=</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name used for display purposes (in user interfaces).&quot;</span>
+    <span class="p">)</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional properties of the type definition.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomMetadataDef</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">display_name</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="c1"># Explicitly set all defaults to ensure inclusion during pydantic serialization</span>
+        <span class="k">return</span> <span class="n">CustomMetadataDef</span><span class="p">(</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span><span class="p">,</span>
+            <span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="TypeDefResponse">
+<a class="viewcode-back" href="../../../other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse">[docs]</a>
+<span class="k">class</span> <span class="nc">TypeDefResponse</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+    <span class="n">enum_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EnumDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of enumeration type definitions.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">struct_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">StructDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of struct type definitions.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">atlan_tag_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTagDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of classification type definitions.&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;classificationDefs&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">entity_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EntityDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of entity type_ definitions.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">relationship_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RelationshipDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of relationship type_ definitions.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">custom_metadata_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CustomMetadataDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="p">[],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;list of custom metadata type_ definitions.&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;businessMetadataDefs&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">class</span> <span class="nc">TypeDefResponseProvider</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The protocol for retrieving a TypeDefResponse&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_typedefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a list of the type definitions in Atlan.</span>
+
+<span class="sd">        :param type_category: category of type definitions to retrieve</span>
+<span class="sd">        :returns: the requested list of type definitions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Atlan Pte. Ltd.
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

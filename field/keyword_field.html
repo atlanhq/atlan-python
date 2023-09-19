@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -422,7 +422,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -430,6 +430,103 @@
         <article role="main">
           <section id="keywordfield">
 <span id="keyword-field"></span><h1>KeywordField<a class="headerlink" href="#keywordfield" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.fields.atlan_fields.</span></span><span class="sig-name descname"><span class="pre">KeywordField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atlan_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#KeywordField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField" title="Link to this definition">#</a></dt>
+<dd><p>Represents any field in Atlan that can be searched only by keyword (no text-analyzed fuzziness).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField.eq">
+<span class="sig-name descname"><span class="pre">eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_insensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#KeywordField.eq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField.eq" title="Link to this definition">#</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that exactly matches
+the provided string value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the value (string) to check the field’s value is exactly equal to</p></li>
+<li><p><strong>case_insensitive</strong> – if True, will match the value irrespective of case, otherwise will be a case-sensitive
+match</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field is exactly equal to the value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField.has_any_value">
+<span class="sig-name descname"><span class="pre">has_any_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField.has_any_value" title="Link to this definition">#</a></dt>
+<dd><p>Returns a query that will only match assets that have some non-null, non-empty value
+(no matter what actual value) for the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a query that will only match assets that have some non-null, non-empty value for the field</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField.keyword_field_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">keyword_field_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField.keyword_field_name" title="Link to this definition">#</a></dt>
+<dd><p>Returns the name of the keyword field index for this attribute in Elastic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the field name for the keyword index on this attribute</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField.order">
+<span class="sig-name descname"><span class="pre">order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SortOrder</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SortOrder.ASCENDING</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SortItem</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField.order" title="Link to this definition">#</a></dt>
+<dd><p>Returns a condition to sort results by the field, in the specified order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – in which to sort the results</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sort condition for the field, in the specified order</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField.startswith">
+<span class="sig-name descname"><span class="pre">startswith</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_insensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#KeywordField.startswith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField.startswith" title="Link to this definition">#</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that starts with
+the provided value. Note that this can also be a case-insensitive match.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – the value (prefix) to check the field’s value starts with</p></li>
+<li><p><strong>case_insensitive</strong> – if True, will match the value irrespective of case, otherwise will be a case-sensitive
+match</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field starts with the value provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordField.within">
+<span class="sig-name descname"><span class="pre">within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#KeywordField.within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordField.within" title="Link to this definition">#</a></dt>
+<dd><p>Returns a query that will match all assets whose field has a value that exactly matches
+at least one of the provided string values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> – the values (strings) to check the field’s value is exactly equal to</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a query that will only match assets whose value for the field is exactly equal to at least one of
+the values provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>
@@ -475,8 +572,35 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">KeywordField</a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField"><code class="docutils literal notranslate"><span class="pre">KeywordField</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField.eq"><code class="docutils literal notranslate"><span class="pre">KeywordField.eq()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField.has_any_value"><code class="docutils literal notranslate"><span class="pre">KeywordField.has_any_value()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField.keyword_field_name"><code class="docutils literal notranslate"><span class="pre">KeywordField.keyword_field_name</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField.order"><code class="docutils literal notranslate"><span class="pre">KeywordField.order()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField.startswith"><code class="docutils literal notranslate"><span class="pre">KeywordField.startswith()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordField.within"><code class="docutils literal notranslate"><span class="pre">KeywordField.within()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

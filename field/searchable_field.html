@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -422,7 +422,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -430,6 +430,38 @@
         <article role="main">
           <section id="searchablefield">
 <span id="searchable-field"></span><h1>SearchableField<a class="headerlink" href="#searchablefield" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.SearchableField">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.fields.atlan_fields.</span></span><span class="sig-name descname"><span class="pre">SearchableField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atlan_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elastic_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#SearchableField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.SearchableField" title="Link to this definition">#</a></dt>
+<dd><p>Base class for any field in Atlan that can be searched.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.SearchableField.has_any_value">
+<span class="sig-name descname"><span class="pre">has_any_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#SearchableField.has_any_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.SearchableField.has_any_value" title="Link to this definition">#</a></dt>
+<dd><p>Returns a query that will only match assets that have some non-null, non-empty value
+(no matter what actual value) for the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a query that will only match assets that have some non-null, non-empty value for the field</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.SearchableField.order">
+<span class="sig-name descname"><span class="pre">order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SortOrder</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">SortOrder.ASCENDING</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SortItem</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#SearchableField.order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.SearchableField.order" title="Link to this definition">#</a></dt>
+<dd><p>Returns a condition to sort results by the field, in the specified order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – in which to sort the results</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>sort condition for the field, in the specified order</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>
@@ -475,8 +507,31 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">SearchableField</a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.SearchableField"><code class="docutils literal notranslate"><span class="pre">SearchableField</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.SearchableField.has_any_value"><code class="docutils literal notranslate"><span class="pre">SearchableField.has_any_value()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.SearchableField.order"><code class="docutils literal notranslate"><span class="pre">SearchableField.order()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
