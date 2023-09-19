@@ -1,0 +1,12 @@
+.. _assets:
+
+Assets
+======
+
+You can interact with all of the following different kinds of assets:
+
+.. toctree::
+    :maxdepth: 1
+{% for entity_def in entity_defs %}
+    asset/{{ entity_def.name | lower }}
+{%- endfor %}
