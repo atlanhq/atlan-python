@@ -421,6 +421,13 @@ class ErrorCode(Enum):
         "You must create an instance of AtlanClient.",
         InvalidRequestError,
     )
+    NO_PRIOR_RUN_AVAILABLE = (
+        400,
+        "ATLAN-PYTHON-400-047",
+        "No prior runs of {0} were available.",
+        "You can only re-run a workflow that has been previously run.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
