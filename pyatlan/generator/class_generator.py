@@ -75,6 +75,7 @@ PARENT = Path(__file__).parent
 ASSETS_DIR = PARENT.parent / "model" / "assets"
 MODEL_DIR = PARENT.parent / "model"
 DOCS_DIR = PARENT.parent / "documentation"
+SPHINX_DIR = PARENT.parent.parent / "docs"
 
 
 def get_type(type_: str):
@@ -712,6 +713,39 @@ class Generator:
             ) as doc:
                 doc.write(content)
 
+    def render_sphinx_docs(self, entity_defs):
+        template = self.environment.get_template(
+            "documentation/sphinx_asset_index.jinja2"
+        )
+        to_include = []
+        for entity_def in entity_defs:
+            if (
+                not entity_def.name.startswith("__")
+                and not entity_def.name == "AtlasServer"
+            ):
+                to_include.append(entity_def)
+        sorted_defs = sorted(to_include, key=(lambda x: x.name))
+        content = template.render(
+            {
+                "entity_defs": sorted_defs,
+            }
+        )
+        with (SPHINX_DIR / "assets.rst").open("w") as doc:
+            doc.write(content)
+
+        template = self.environment.get_template("documentation/sphinx_asset.jinja2")
+        for entity_def in sorted_defs:
+            content = template.render(
+                {
+                    "entity_def_name": entity_def.name,
+                    "title_underline": "=" * len(entity_def.name),
+                }
+            )
+            with (SPHINX_DIR / "asset" / f"{entity_def.name.lower()}.rst").open(
+                "w"
+            ) as doc:
+                doc.write(content)
+
 
 class KeyValue(NamedTuple):
     key: str
@@ -762,3 +796,4 @@ if __name__ == "__main__":
     generator.render_docs_struct_snippets(type_defs.struct_defs)
     generator.render_docs_entity_properties(type_defs.entity_defs)
     generator.render_docs_entity_relationships(type_defs.entity_defs)
+    generator.render_sphinx_docs(type_defs.entity_defs)
