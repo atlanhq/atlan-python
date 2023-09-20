@@ -95,7 +95,7 @@ def test_find_by_type(client: WorkflowClient, mock_api_caller):
     raw_json = {"shards": {"dummy": None}, "hits": {"total": {"dummy": None}}}
     mock_api_caller._call_api.return_value = raw_json
 
-    assert client.find_by_type(prefix=WorkflowPackage.ATLAN_FIVETRAN) == []
+    assert client.find_by_type(prefix=WorkflowPackage.FIVETRAN) == []
     mock_api_caller._call_api.called_once()
     assert mock_api_caller._call_api.call_args.args[0] == WORKFLOW_INDEX_SEARCH
     assert isinstance(
@@ -112,7 +112,7 @@ def test_re_run_when_given_wrong_parameter_raises_invalid_request_error(
         match="ATLAN-PYTHON-400-048 Invalid parameter type for workflow should be WorkflowPackage, "
         "WorkflowSearchResult or WorkflowSearchResultDetail",
     ):
-        client.re_run(workflow)
+        client.rerun(workflow)
 
 
 def test_re_run_when_given_workflowpackage_with_no_prior_runs_raises_invalid_request_error(
@@ -125,7 +125,7 @@ def test_re_run_when_given_workflowpackage_with_no_prior_runs_raises_invalid_req
         InvalidRequestError,
         match="ATLAN-PYTHON-400-047 No prior runs of atlan-fivetran were available.",
     ):
-        client.re_run(WorkflowPackage.ATLAN_FIVETRAN)
+        client.rerun(WorkflowPackage.FIVETRAN)
 
 
 def test_re_run_when_given_workflowpackage(
@@ -139,7 +139,7 @@ def test_re_run_when_given_workflowpackage(
         run_response.dict(),
     ]
 
-    assert client.re_run(WorkflowPackage.ATLAN_FIVETRAN) == run_response
+    assert client.rerun(WorkflowPackage.FIVETRAN) == run_response
 
 
 def test_re_run_when_given_workflowsearchresultdetail(
@@ -150,7 +150,7 @@ def test_re_run_when_given_workflowsearchresultdetail(
 ):
     mock_api_caller._call_api.return_value = run_response.dict()
 
-    assert client.re_run(workflow=search_result_detail) == run_response
+    assert client.rerun(workflow=search_result_detail) == run_response
 
 
 def test_re_run_when_given_workflowsearchresult(
@@ -161,7 +161,7 @@ def test_re_run_when_given_workflowsearchresult(
 ):
     mock_api_caller._call_api.return_value = run_response.dict()
 
-    assert client.re_run(workflow=search_result) == run_response
+    assert client.rerun(workflow=search_result) == run_response
 
 
 @pytest.mark.parametrize("workflow_response", ["abc", None])

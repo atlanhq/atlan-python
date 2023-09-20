@@ -35,7 +35,7 @@ class ApiCaller(Protocol):
 
 class WorkflowClient:
     """
-    This class can be used to retrieve information and re_run workflows. This class does not need to be instantiated
+    This class can be used to retrieve information and rerun workflows. This class does not need to be instantiated
     directly by can be obtained through the workflow property of AtlanClient.
     """
 
@@ -52,7 +52,7 @@ class WorkflowClient:
         """
         Find workflows based on their type (prefix). Note: Only workflows that have been run will be found.
 
-        :param prefix: name of the specific workflow re_run to find (for example ATLAN_CONNECTION_DELETE)
+        :param prefix: name of the specific workflow to find (for example CONNECTION_DELETE)
         :param max_results: the maximum number of results to retrieve
         :returns: the list of workflows of the provided type, with the most-recently created first
         """
@@ -100,26 +100,26 @@ class WorkflowClient:
         return WorkflowSearchResponse(**raw_json)
 
     @overload
-    def re_run(self, workflow: WorkflowPackage) -> WorkflowRunResponse:
+    def rerun(self, workflow: WorkflowPackage) -> WorkflowRunResponse:
         ...
 
     @overload
-    def re_run(self, workflow: WorkflowSearchResultDetail) -> WorkflowRunResponse:
+    def rerun(self, workflow: WorkflowSearchResultDetail) -> WorkflowRunResponse:
         ...
 
     @overload
-    def re_run(self, workflow: WorkflowSearchResult) -> WorkflowRunResponse:
+    def rerun(self, workflow: WorkflowSearchResult) -> WorkflowRunResponse:
         ...
 
-    def re_run(
+    def rerun(
         self,
         workflow: Union[
             WorkflowPackage, WorkflowSearchResultDetail, WorkflowSearchResult
         ],
     ) -> WorkflowRunResponse:
         """
-        Re-Run the workflow immediately. Not this must be a workflow that was previously run.
-        :param workflow: The workflow to re_run.
+        Rerun the workflow immediately. Note: this must be a workflow that was previously run.
+        :param workflow: The workflow to rerun.
         :returns: the details of the workflow run
 
         """

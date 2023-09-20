@@ -342,7 +342,7 @@ def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
 
 def test_workflow_find_by_type(client: AtlanClient):
     results = client.workflow.find_by_type(
-        prefix=WorkflowPackage.ATLAN_FIVETRAN, max_results=10
+        prefix=WorkflowPackage.FIVETRAN, max_results=10
     )
     assert results
     assert len(results) == 1
