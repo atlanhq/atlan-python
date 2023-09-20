@@ -178,8 +178,10 @@ class CustomMetadataCache:
         :raises LogicError: if duplicate custom attributes are detected
         """
         response = self.provider.get_typedefs(
-            type_category=AtlanTypeCategory.CUSTOM_METADATA
+            type_category=[AtlanTypeCategory.CUSTOM_METADATA, AtlanTypeCategory.STRUCT]
         )
+        if not response or not response.struct_defs:
+            raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
         if response is not None:
             self.map_id_to_name = {}
             self.map_name_to_id = {}
