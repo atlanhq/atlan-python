@@ -497,6 +497,7 @@
     <span class="n">UPLOAD_IMAGE</span><span class="p">,</span>
     <span class="n">UPSERT_API_TOKEN</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.workflow</span> <span class="kn">import</span> <span class="n">WorkflowClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">,</span> <span class="n">AtlanError</span><span class="p">,</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.api_tokens</span> <span class="kn">import</span> <span class="n">ApiToken</span><span class="p">,</span> <span class="n">ApiTokenRequest</span><span class="p">,</span> <span class="n">ApiTokenResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="p">(</span>
@@ -689,6 +690,7 @@
     <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">_session</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_session</span><span class="p">)</span>
     <span class="n">_request_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
+    <span class="n">_workflow_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WorkflowClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;atlan_&quot;</span>
@@ -911,6 +913,12 @@
     <span class="k">def</span> <span class="nf">cache_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">workflow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WorkflowClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_client</span> <span class="o">=</span> <span class="n">WorkflowClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_client</span>
+
     <span class="k">def</span> <span class="nf">_call_api_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">binary_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">binary_data</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
@@ -954,8 +962,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">):</span>
                 <span class="n">error_info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-                <span class="n">error_code</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                <span class="n">error_message</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">error_code</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorCode&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">error_message</span> <span class="o">=</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;errorMessage&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">error_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">error_code</span> <span class="ow">and</span> <span class="n">error_message</span><span class="p">:</span>
                     <span class="n">error</span> <span class="o">=</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
                         <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ERROR_PASSTHROUGH</span>

@@ -880,6 +880,20 @@
         <span class="s2">&quot;You must create an instance of AtlanClient.&quot;</span><span class="p">,</span>
         <span class="n">InvalidRequestError</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">NO_PRIOR_RUN_AVAILABLE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-047&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;No prior runs of </span><span class="si">{0}</span><span class="s2"> were available.&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;You can only re-run a workflow that has been previously run.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">INVALID_PARAMETER_TYPE</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="mi">400</span><span class="p">,</span>
+        <span class="s2">&quot;ATLAN-PYTHON-400-048&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Invalid parameter type for </span><span class="si">{0}</span><span class="s2"> should be </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Check that you have used the correct type of parameter.&quot;</span><span class="p">,</span>
+        <span class="n">InvalidRequestError</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">AUTHENTICATION_PASSTHROUGH</span> <span class="o">=</span> <span class="p">(</span>
         <span class="mi">401</span><span class="p">,</span>
         <span class="s2">&quot;ATLAN-PYTHON-401-000&quot;</span><span class="p">,</span>
