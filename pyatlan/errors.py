@@ -470,6 +470,15 @@ class ErrorCode(Enum):
         + "https://ask.atlan.com/hc/en-us/requests/new if you have any questions.",
         AuthenticationError,
     )
+    EXPIRED_API_TOKEN = (
+        401,
+        "ATLAN-PYTHON-401-004",
+        "Your API token is no longer valid, it can no longer lookup base Atlan structures.",
+        "You can double-check your API token from the Atlan Admin Center. See "
+        + "https://ask.atlan.com/hc/en-us/articles/8312649180049 for details or contact support at "
+        + "https://ask.atlan.com/hc/en-us/requests/new if you have any questions.",
+        AuthenticationError,
+    )
     PERMISSION_PASSTHROUGH = (
         403,
         "ATLAN-PYTHON-403-000",

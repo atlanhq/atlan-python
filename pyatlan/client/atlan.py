@@ -1446,7 +1446,9 @@ class AtlanClient(BaseSettings):
         raw_json = self._call_api(GET_ALL_TYPE_DEFS)
         return TypeDefResponse(**raw_json)
 
-    def get_typedefs(self, type_category: AtlanTypeCategory) -> TypeDefResponse:
+    def get_typedefs(
+        self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
+    ) -> TypeDefResponse:
         """
         Retrieves a list of the type definitions in Atlan.
 
@@ -1454,7 +1456,12 @@ class AtlanClient(BaseSettings):
         :returns: the requested list of type definitions
         :raises AtlanError: on any API communication issue
         """
-        query_params = {"type": type_category.value}
+        categories: list[str] = []
+        if isinstance(type_category, list):
+            categories.extend(map(lambda x: x.value, type_category))
+        else:
+            categories.append(type_category.value)
+        query_params = {"type": categories}
         raw_json = self._call_api(
             GET_ALL_TYPE_DEFS.format_path_with_params(),
             query_params,
