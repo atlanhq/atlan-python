@@ -2004,7 +2004,9 @@
 
 <div class="viewcode-block" id="AtlanClient.get_typedefs">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_typedefs">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_typedefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_category</span><span class="p">:</span> <span class="n">AtlanTypeCategory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_typedefs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">type_category</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves a list of the type definitions in Atlan.</span>
 
@@ -2012,7 +2014,12 @@
 <span class="sd">        :returns: the requested list of type definitions</span>
 <span class="sd">        :raises AtlanError: on any API communication issue</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">type_category</span><span class="o">.</span><span class="n">value</span><span class="p">}</span>
+        <span class="n">categories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">type_category</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">categories</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">type_category</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">categories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_category</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">categories</span><span class="p">}</span>
         <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
             <span class="n">GET_ALL_TYPE_DEFS</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(),</span>
             <span class="n">query_params</span><span class="p">,</span>

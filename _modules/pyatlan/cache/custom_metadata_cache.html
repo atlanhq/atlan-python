@@ -639,8 +639,10 @@
 <span class="sd">        :raises LogicError: if duplicate custom attributes are detected</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">get_typedefs</span><span class="p">(</span>
-            <span class="n">type_category</span><span class="o">=</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span>
+            <span class="n">type_category</span><span class="o">=</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">CUSTOM_METADATA</span><span class="p">,</span> <span class="n">AtlanTypeCategory</span><span class="o">.</span><span class="n">STRUCT</span><span class="p">]</span>
         <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">struct_defs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">EXPIRED_API_TOKEN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">map_name_to_id</span> <span class="o">=</span> <span class="p">{}</span>
