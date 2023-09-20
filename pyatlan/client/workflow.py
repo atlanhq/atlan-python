@@ -36,7 +36,7 @@ class ApiCaller(Protocol):
 class WorkflowClient:
     """
     This class can be used to retrieve information and rerun workflows. This class does not need to be instantiated
-    directly by can be obtained through the workflow property of AtlanClient.
+    directly but can be obtained through the workflow property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
