@@ -1721,6 +1721,76 @@ class TypeName(str, Enum):
     ARRAY_STRING = "array<string>"
 
 
+class AtlanWorkflowPhase(str, Enum):
+    SUCCESS = "Succeeded"
+    RUNNING = "Running"
+    FAILED = "Failed"
+    ERROR = "Error"
+    PENDING = "Pending"
+
+
+class ChildScoreMode(str, Enum):
+    NONE = "none"
+    AVG = "avg"
+    SUM = "sum"
+    MAX = "max"
+    MIN = "min"
+
+
+class WorkflowPackage(str, Enum):
+    AIRFLOW = "atlan-airflow"
+    ATHENA = "atlan-athena"
+    AWS_LAMBDA_TRIGGER = "atlan-aws-lambda-trigger"
+    AZURE_EVENT_HUB = "atlan-azure-event-hub"
+    BIGQUERY = "atlan-bigquery"
+    BIGQUERY_MINER = "atlan-bigquery-miner"
+    CONNECTION_DELETE = "atlan-connection-delete"
+    DATABRICKS = "atlan-databricks"
+    DATABRICKS_LINEAGE = "atlan-databricks-lineage"
+    DBT = "atlan-dbt"
+    FIVETRAN = "atlan-fivetran"
+    GLUE = "atlan-glue"
+    HIVE = "atlan-hive"
+    HIVE_MINER = "atlan-hive-miner"
+    KAFKA = "atlan-kafka"
+    KAFKA_AIVEN = "atlan-kafka-aiven"
+    KAFKA_CONFLUENT_CLOUD = "atlan-kafka-confluent-cloud"
+    KAFKA_REDPANDA = "atlan-kafka-redpanda"
+    LOOKER = "atlan-looker"
+    MATILLION = "atlan-matillion"
+    METABASE = "atlan-metabase"
+    MICROSTRATEGY = "atlan-microstrategy"
+    MODE = "atlan-mode"
+    MONTE_CARLO = "atlan-monte-carlo"
+    MSSQL = "atlan-mssql"
+    MSSQL_MINER = "atlan-mssql-miner"
+    MYSQL = "atlan-mysql"
+    ORACLE = "atlan-oracle"
+    POSTGRES = "atlan-postgres"
+    POWERBI = "atlan-powerbi"
+    POWERBI_MINER = "atlan-powerbi-miner"
+    PRESTO = "atlan-presto"
+    QLIK_SENSE = "atlan-qlik-sense"
+    QLIK_SENSE_ENTERPRISE_WINDOWS = "atlan-qlik-sense-enterprise-windows"
+    QUICKSIGHT = "atlan-quicksight"
+    REDASH = "atlan-redash"
+    REDSHIFT = "atlan-redshift"
+    REDSHIFT_MINER = "atlan-redshift-miner"
+    SALESFORCE = "atlan-salesforce"
+    SAP_HANA = "atlan-sap-hana"
+    SCHEMA_REGISTRY_CONFLUENT = "atlan-schema-registry-confluent"
+    SIGMA = "atlan-sigma"
+    SNOWFLAKE = "atlan-snowflake"
+    SNOWFLAKE_MINER = "atlan-snowflake-miner"
+    SODA = "atlan-soda"
+    SYNAPSE = "atlan-synapse"
+    TABLEAU = "atlan-tableau"
+    TERADATA = "atlan-teradata"
+    TERADATA_MINER = "atlan-teradata-miner"
+    THOUGHTSPOT = "atlan-thoughtspot"
+    TRINO = "atlan-trino"
+
+
 # **************************************
 # CODE BELOW IS GENERATED NOT MODIFY  **
 # **************************************

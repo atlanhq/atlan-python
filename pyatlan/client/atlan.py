@@ -68,6 +68,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
+from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
@@ -258,6 +259,7 @@ class AtlanClient(BaseSettings):
     api_key: str
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
+    _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -459,6 +461,12 @@ class AtlanClient(BaseSettings):
     def cache_key(self) -> int:
         return f"{self.base_url}/{self.api_key}".__hash__()
 
+    @property
+    def workflow(self) -> WorkflowClient:
+        if self._workflow_client is None:
+            self._workflow_client = WorkflowClient(client=self)
+        return self._workflow_client
+
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
             response = self._session.request(
@@ -502,8 +510,10 @@ class AtlanClient(BaseSettings):
         else:
             with contextlib.suppress(ValueError, json.decoder.JSONDecodeError):
                 error_info = json.loads(response.text)
-                error_code = error_info.get("errorCode", 0)
-                error_message = error_info.get("errorMessage", "")
+                error_code = error_info.get("errorCode", 0) or error_info.get("code", 0)
+                error_message = error_info.get("errorMessage", "") or error_info.get(
+                    "message", ""
+                )
                 if error_code and error_message:
                     error = ERROR_CODE_FOR_HTTP_STATUS.get(
                         response.status_code, ErrorCode.ERROR_PASSTHROUGH

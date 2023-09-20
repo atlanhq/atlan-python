@@ -13,7 +13,12 @@ from pyatlan.model.assets import (
     Table,
 )
 from pyatlan.model.core import Announcement
-from pyatlan.model.enums import AnnouncementType, AtlanConnectorType, CertificateStatus
+from pyatlan.model.enums import (
+    AnnouncementType,
+    AtlanConnectorType,
+    CertificateStatus,
+    WorkflowPackage,
+)
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
 
@@ -333,3 +338,11 @@ def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
     )
     glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
     assert glossary.get_announcment() is None
+
+
+def test_workflow_find_by_type(client: AtlanClient):
+    results = client.workflow.find_by_type(
+        prefix=WorkflowPackage.FIVETRAN, max_results=10
+    )
+    assert results
+    assert len(results) == 1
