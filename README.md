@@ -1,5 +1,8 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 <!-- Copyright 2022 Atlan Pte. Ltd. -->
+
+[![SphinxDocs](https://img.shields.io/badge/sphinx--docs-passing-success)](https://atlanhq.github.io/atlan-python/)
+
 # Atlan Python SDK
 
 This repository houses the code for a Python SDK to interact with [Atlan](https://atlan.com).
