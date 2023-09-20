@@ -2,6 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import AtlanTagDef, TypeDefResponseProvider
 
@@ -64,8 +65,10 @@ class AtlanTagCache:
         Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
         """
         response = self.provider.get_typedefs(
-            type_category=AtlanTypeCategory.CLASSIFICATION
+            type_category=[AtlanTypeCategory.CLASSIFICATION, AtlanTypeCategory.STRUCT]
         )
+        if not response or not response.struct_defs:
+            raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
         if response is not None:
             self.cache_by_id = {}
             self.map_id_to_name = {}

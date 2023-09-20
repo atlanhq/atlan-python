@@ -2,6 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 from typing import Optional
 
+from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.typedef import EnumDef, TypeDefResponseProvider
 
@@ -49,6 +50,8 @@ class EnumCache:
         Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
         """
         response = self.provider.get_typedefs(type_category=AtlanTypeCategory.ENUM)
+        if not response or not response.enum_defs:
+            raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
         self.cache_by_name = {}
         if response is not None:
             for enum in response.enum_defs:
