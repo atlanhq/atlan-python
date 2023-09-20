@@ -1,3 +1,16 @@
+## 1.0.1 (September 20, 20023)
+
+* Add capability to find and re-run workflows
+* Fix Range query with 0 not generating expected request
+* Adds Matillion, MongoDB, and time granularity for custom metadata
+* Sphinx docs generation for the SDK
+* Adds Furo theme for Sphinx docs
+* Move Sphinx needs into own requirements.txt
+* Self-contain documentation generation
+* Adds full requirements for full self-containment
+* Adds Sphinx doc link for Python SDK
+* Adds an API token check as part of cache refreshes
+
 ## 1.0.0 (September 13, 2023)
 * Initial production release
 * Adds column projections for listing users
