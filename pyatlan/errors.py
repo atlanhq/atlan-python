@@ -428,6 +428,13 @@ class ErrorCode(Enum):
         "You can only re-run a workflow that has been previously run.",
         InvalidRequestError,
     )
+    INVALID_PARAMETER_TYPE = (
+        400,
+        "ATLAN-PYTHON-400-048",
+        "Invalid parameter type for {0} should be {1}",
+        "Check that you have used the correct type of parameter.",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",

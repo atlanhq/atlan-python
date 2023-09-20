@@ -68,6 +68,7 @@ from pyatlan.client.constants import (
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
+from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
@@ -141,7 +142,6 @@ from pyatlan.model.user import (
     UserMinimalResponse,
     UserResponse,
 )
-from pyatlan.model.workflow import WorkflowClient
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,

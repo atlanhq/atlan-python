@@ -1,4 +1,5 @@
 from typing import Optional
+from unittest.mock import patch
 
 import pytest
 
@@ -57,6 +58,7 @@ def test_create_with_missing_parameters_raise_value_error(
     mock_role_cache,
     mock_user_cache,
     mock_group_cache,
+    monkeypatch,
 ):
     def side_effect(*args, **kwargs):
         return None if args and args[0] == "bad" else "123"
@@ -65,15 +67,18 @@ def test_create_with_missing_parameters_raise_value_error(
     mock_user_cache.get_id_for_name.side_effect = side_effect
     mock_group_cache.get_id_for_alias.side_effect = side_effect
 
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     AtlanClient()
-    with pytest.raises(ValueError, match=message):
-        Connection.create(
-            name=name,
-            connector_type=connector_type,
-            admin_users=admin_users,
-            admin_groups=admin_groups,
-            admin_roles=admin_roles,
-        )
+    with patch.object(AtlanClient, "get_api_token_by_id", return_value=None):
+        with pytest.raises(ValueError, match=message):
+            Connection.create(
+                name=name,
+                connector_type=connector_type,
+                admin_users=admin_users,
+                admin_groups=admin_groups,
+                admin_roles=admin_roles,
+            )
 
 
 @pytest.mark.parametrize(
