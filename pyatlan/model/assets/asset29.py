@@ -2,146 +2,71 @@
 # Copyright 2022 Atlan Pte. Ltd.
 
 
-
-
 from __future__ import annotations
 
-import hashlib
-import sys
-import uuid
-from datetime import datetime
-from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
-from urllib.parse import quote, unquote
+from typing import ClassVar, Optional
 
-from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic import Field, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
-from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
-from pyatlan.model.enums import (
-    ADLSAccessTier,
-    ADLSAccountStatus,
-    ADLSEncryptionTypes,
-    ADLSLeaseState,
-    ADLSLeaseStatus,
-    ADLSObjectArchiveStatus,
-    ADLSObjectType,
-    ADLSPerformance,
-    ADLSProvisionState,
-    ADLSReplicationType,
-    ADLSStorageKind,
-    AnnouncementType,
-    AtlanConnectorType,
-    AuthPolicyCategory,
-    AuthPolicyResourceCategory,
-    AuthPolicyType,
-    CertificateStatus,
-    DataAction,
-    EntityStatus,
-    FileType,
-    GoogleDatastudioAssetType,
-    IconType,
-    KafkaTopicCleanupPolicy,
-    KafkaTopicCompressionType,
-    MatillionJobType,
-    OpenLineageRunState,
-    PersonaGlossaryAction,
-    PersonaMetadataAction,
-    PowerbiEndorsement,
-    PurposeMetadataAction,
-    QueryUsernameStrategy,
-    QuickSightAnalysisStatus,
-    QuickSightDatasetFieldType,
-    QuickSightDatasetImportMode,
-    QuickSightFolderType,
-    SchemaRegistrySchemaCompatibility,
-    SchemaRegistrySchemaType,
-    SourceCostUnitType,
-)
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
     KeywordField,
     KeywordTextField,
-    KeywordTextStemmedField,
     NumericField,
-    NumericRankField,
-    RelationField,
-    TextField,
 )
-from pyatlan.model.internal import AtlasServer, Internal
-from pyatlan.model.structs import (
-    AuthPolicyCondition,
-    AuthPolicyValiditySchedule,
-    AwsTag,
-    AzureTag,
-    BadgeCondition,
-    ColumnValueFrequencyMap,
-    DbtMetricFilter,
-    GoogleLabel,
-    GoogleTag,
-    Histogram,
-    KafkaTopicConsumption,
-    MCRuleComparison,
-    MCRuleSchedule,
-    PopularityInsights,
-    SourceTagAttribute,
-    StarredDetails,
-)
-from pyatlan.utils import next_id, validate_required_fields
+from pyatlan.model.structs import GoogleLabel, GoogleTag
 
-from. asset08 import Cloud
+from .asset08 import Cloud
 
-
-    
-    
-    
-
-
-
-
-    
 
 class Google(Cloud):
     """Description"""
 
-    
-    
-
     type_name: str = Field("Google", allow_mutation=False)
 
-    @validator('type_name')
+    @validator("type_name")
     def validate_type_name(cls, v):
         if v != "Google":
-            raise ValueError('must be Google')
+            raise ValueError("must be Google")
         return v
 
-    
     def __setattr__(self, name, value):
-            if name in Google._convenience_properties:
-                return object.__setattr__(self, name, value)
-            super().__setattr__( name, value)
-    
-    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField("googleService", "googleService")
+        if name in Google._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    GOOGLE_SERVICE: ClassVar[KeywordField] = KeywordField(
+        "googleService", "googleService"
+    )
     """
     TBC
     """
-    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField("googleProjectName", "googleProjectName", "googleProjectName.text")
+    GOOGLE_PROJECT_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectName", "googleProjectName", "googleProjectName.text"
+    )
     """
     TBC
     """
-    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField("googleProjectId", "googleProjectId", "googleProjectId.text")
+    GOOGLE_PROJECT_ID: ClassVar[KeywordTextField] = KeywordTextField(
+        "googleProjectId", "googleProjectId", "googleProjectId.text"
+    )
     """
     TBC
     """
-    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField("googleProjectNumber", "googleProjectNumber")
+    GOOGLE_PROJECT_NUMBER: ClassVar[NumericField] = NumericField(
+        "googleProjectNumber", "googleProjectNumber"
+    )
     """
     TBC
     """
-    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField("googleLocation", "googleLocation")
+    GOOGLE_LOCATION: ClassVar[KeywordField] = KeywordField(
+        "googleLocation", "googleLocation"
+    )
     """
     TBC
     """
-    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField("googleLocationType", "googleLocationType")
+    GOOGLE_LOCATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "googleLocationType", "googleLocationType"
+    )
     """
     TBC
     """
@@ -154,10 +79,6 @@ class Google(Cloud):
     TBC
     """
 
-    
-
-
-    
     _convenience_properties: ClassVar[list[str]] = [
         "google_service",
         "google_project_name",
@@ -166,99 +87,122 @@ class Google(Cloud):
         "google_location",
         "google_location_type",
         "google_labels",
-        "google_tags",]
+        "google_tags",
+    ]
+
     @property
-    def google_service(self)->Optional[str]:
+    def google_service(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.google_service
 
     @google_service.setter
-    def google_service(self, google_service:Optional[str]):
+    def google_service(self, google_service: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_service = google_service
+
     @property
-    def google_project_name(self)->Optional[str]:
+    def google_project_name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.google_project_name
 
     @google_project_name.setter
-    def google_project_name(self, google_project_name:Optional[str]):
+    def google_project_name(self, google_project_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_project_name = google_project_name
+
     @property
-    def google_project_id(self)->Optional[str]:
+    def google_project_id(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.google_project_id
 
     @google_project_id.setter
-    def google_project_id(self, google_project_id:Optional[str]):
+    def google_project_id(self, google_project_id: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_project_id = google_project_id
+
     @property
-    def google_project_number(self)->Optional[int]:
-        return None if self.attributes is None else self.attributes.google_project_number
+    def google_project_number(self) -> Optional[int]:
+        return (
+            None if self.attributes is None else self.attributes.google_project_number
+        )
 
     @google_project_number.setter
-    def google_project_number(self, google_project_number:Optional[int]):
+    def google_project_number(self, google_project_number: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_project_number = google_project_number
+
     @property
-    def google_location(self)->Optional[str]:
+    def google_location(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.google_location
 
     @google_location.setter
-    def google_location(self, google_location:Optional[str]):
+    def google_location(self, google_location: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_location = google_location
+
     @property
-    def google_location_type(self)->Optional[str]:
+    def google_location_type(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.google_location_type
 
     @google_location_type.setter
-    def google_location_type(self, google_location_type:Optional[str]):
+    def google_location_type(self, google_location_type: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_location_type = google_location_type
+
     @property
-    def google_labels(self)->Optional[list[GoogleLabel]]:
+    def google_labels(self) -> Optional[list[GoogleLabel]]:
         return None if self.attributes is None else self.attributes.google_labels
 
     @google_labels.setter
-    def google_labels(self, google_labels:Optional[list[GoogleLabel]]):
+    def google_labels(self, google_labels: Optional[list[GoogleLabel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_labels = google_labels
+
     @property
-    def google_tags(self)->Optional[list[GoogleTag]]:
+    def google_tags(self) -> Optional[list[GoogleTag]]:
         return None if self.attributes is None else self.attributes.google_tags
 
     @google_tags.setter
-    def google_tags(self, google_tags:Optional[list[GoogleTag]]):
+    def google_tags(self, google_tags: Optional[list[GoogleTag]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.google_tags = google_tags
 
     class Attributes(Cloud.Attributes):
-        google_service: Optional[str] = Field(None, description='' , alias='googleService')
-        google_project_name: Optional[str] = Field(None, description='' , alias='googleProjectName')
-        google_project_id: Optional[str] = Field(None, description='' , alias='googleProjectId')
-        google_project_number: Optional[int] = Field(None, description='' , alias='googleProjectNumber')
-        google_location: Optional[str] = Field(None, description='' , alias='googleLocation')
-        google_location_type: Optional[str] = Field(None, description='' , alias='googleLocationType')
-        google_labels: Optional[list[GoogleLabel]] = Field(None, description='' , alias='googleLabels')
-        google_tags: Optional[list[GoogleTag]] = Field(None, description='' , alias='googleTags')
-        
-        
-    attributes: 'Google.Attributes' = Field(
-        default_factory = lambda: Google.Attributes(),
-        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
-                    'type, so are described in the sub-types of this schema.\n',
+        google_service: Optional[str] = Field(
+            None, description="", alias="googleService"
+        )
+        google_project_name: Optional[str] = Field(
+            None, description="", alias="googleProjectName"
+        )
+        google_project_id: Optional[str] = Field(
+            None, description="", alias="googleProjectId"
+        )
+        google_project_number: Optional[int] = Field(
+            None, description="", alias="googleProjectNumber"
+        )
+        google_location: Optional[str] = Field(
+            None, description="", alias="googleLocation"
+        )
+        google_location_type: Optional[str] = Field(
+            None, description="", alias="googleLocationType"
+        )
+        google_labels: Optional[list[GoogleLabel]] = Field(
+            None, description="", alias="googleLabels"
+        )
+        google_tags: Optional[list[GoogleTag]] = Field(
+            None, description="", alias="googleTags"
+        )
+
+    attributes: "Google.Attributes" = Field(
+        default_factory=lambda: Google.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
     )
 
 
-
-
-    
 Google.Attributes.update_forward_refs()

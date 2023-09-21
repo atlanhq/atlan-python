@@ -2,264 +2,194 @@
 # Copyright 2022 Atlan Pte. Ltd.
 
 
-
-
 from __future__ import annotations
 
-import hashlib
-import sys
-import uuid
-from datetime import datetime
-from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
-from urllib.parse import quote, unquote
+from typing import ClassVar, Optional
 
-from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
+from pydantic import Field, validator
 
-from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
-from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
-from pyatlan.model.enums import (
-    ADLSAccessTier,
-    ADLSAccountStatus,
-    ADLSEncryptionTypes,
-    ADLSLeaseState,
-    ADLSLeaseStatus,
-    ADLSObjectArchiveStatus,
-    ADLSObjectType,
-    ADLSPerformance,
-    ADLSProvisionState,
-    ADLSReplicationType,
-    ADLSStorageKind,
-    AnnouncementType,
-    AtlanConnectorType,
-    AuthPolicyCategory,
-    AuthPolicyResourceCategory,
-    AuthPolicyType,
-    CertificateStatus,
-    DataAction,
-    EntityStatus,
-    FileType,
-    GoogleDatastudioAssetType,
-    IconType,
-    KafkaTopicCleanupPolicy,
-    KafkaTopicCompressionType,
-    MatillionJobType,
-    OpenLineageRunState,
-    PersonaGlossaryAction,
-    PersonaMetadataAction,
-    PowerbiEndorsement,
-    PurposeMetadataAction,
-    QueryUsernameStrategy,
-    QuickSightAnalysisStatus,
-    QuickSightDatasetFieldType,
-    QuickSightDatasetImportMode,
-    QuickSightFolderType,
-    SchemaRegistrySchemaCompatibility,
-    SchemaRegistrySchemaType,
-    SourceCostUnitType,
-)
 from pyatlan.model.fields.atlan_fields import (
-    BooleanField,
-    KeywordField,
     KeywordTextField,
-    KeywordTextStemmedField,
     NumericField,
-    NumericRankField,
     RelationField,
-    TextField,
 )
-from pyatlan.model.internal import AtlasServer, Internal
-from pyatlan.model.structs import (
-    AuthPolicyCondition,
-    AuthPolicyValiditySchedule,
-    AwsTag,
-    AzureTag,
-    BadgeCondition,
-    ColumnValueFrequencyMap,
-    DbtMetricFilter,
-    GoogleLabel,
-    GoogleTag,
-    Histogram,
-    KafkaTopicConsumption,
-    MCRuleComparison,
-    MCRuleSchedule,
-    PopularityInsights,
-    SourceTagAttribute,
-    StarredDetails,
-)
-from pyatlan.utils import next_id, validate_required_fields
 
-from. asset40 import Sigma
+from .asset40 import Sigma
 
-
-    
-    
-    
-
-    
-    
-    
-
-
-
-
-    
 
 class SigmaDatasetColumn(Sigma):
     """Description"""
 
-    
-    
-
     type_name: str = Field("SigmaDatasetColumn", allow_mutation=False)
 
-    @validator('type_name')
+    @validator("type_name")
     def validate_type_name(cls, v):
         if v != "SigmaDatasetColumn":
-            raise ValueError('must be SigmaDatasetColumn')
+            raise ValueError("must be SigmaDatasetColumn")
         return v
 
-    
     def __setattr__(self, name, value):
-            if name in SigmaDatasetColumn._convenience_properties:
-                return object.__setattr__(self, name, value)
-            super().__setattr__( name, value)
-    
-    SIGMA_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField("sigmaDatasetQualifiedName", "sigmaDatasetQualifiedName", "sigmaDatasetQualifiedName.text")
+        if name in SigmaDatasetColumn._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SIGMA_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaDatasetQualifiedName",
+        "sigmaDatasetQualifiedName",
+        "sigmaDatasetQualifiedName.text",
+    )
     """
     TBC
     """
-    SIGMA_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField("sigmaDatasetName", "sigmaDatasetName.keyword", "sigmaDatasetName")
+    SIGMA_DATASET_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sigmaDatasetName", "sigmaDatasetName.keyword", "sigmaDatasetName"
+    )
     """
     TBC
     """
 
-    
     SIGMA_DATASET: ClassVar[RelationField] = RelationField("sigmaDataset")
     """
     TBC
     """
 
-
-    
     _convenience_properties: ClassVar[list[str]] = [
         "sigma_dataset_qualified_name",
         "sigma_dataset_name",
-        "sigma_dataset",]
+        "sigma_dataset",
+    ]
+
     @property
-    def sigma_dataset_qualified_name(self)->Optional[str]:
-        return None if self.attributes is None else self.attributes.sigma_dataset_qualified_name
+    def sigma_dataset_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_dataset_qualified_name
+        )
 
     @sigma_dataset_qualified_name.setter
-    def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name:Optional[str]):
+    def sigma_dataset_qualified_name(self, sigma_dataset_qualified_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_qualified_name = sigma_dataset_qualified_name
+
     @property
-    def sigma_dataset_name(self)->Optional[str]:
+    def sigma_dataset_name(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.sigma_dataset_name
 
     @sigma_dataset_name.setter
-    def sigma_dataset_name(self, sigma_dataset_name:Optional[str]):
+    def sigma_dataset_name(self, sigma_dataset_name: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_name = sigma_dataset_name
+
     @property
-    def sigma_dataset(self)->Optional[SigmaDataset]:
+    def sigma_dataset(self) -> Optional[SigmaDataset]:
         return None if self.attributes is None else self.attributes.sigma_dataset
 
     @sigma_dataset.setter
-    def sigma_dataset(self, sigma_dataset:Optional[SigmaDataset]):
+    def sigma_dataset(self, sigma_dataset: Optional[SigmaDataset]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset = sigma_dataset
 
     class Attributes(Sigma.Attributes):
-        sigma_dataset_qualified_name: Optional[str] = Field(None, description='' , alias='sigmaDatasetQualifiedName')
-        sigma_dataset_name: Optional[str] = Field(None, description='' , alias='sigmaDatasetName')
-        sigma_dataset: Optional[SigmaDataset]= Field(None, description='',  alias='sigmaDataset') # relationship
-        
-        
-    attributes: 'SigmaDatasetColumn.Attributes' = Field(
-        default_factory = lambda: SigmaDatasetColumn.Attributes(),
-        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
-                    'type, so are described in the sub-types of this schema.\n',
+        sigma_dataset_qualified_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetQualifiedName"
+        )
+        sigma_dataset_name: Optional[str] = Field(
+            None, description="", alias="sigmaDatasetName"
+        )
+        sigma_dataset: Optional[SigmaDataset] = Field(
+            None, description="", alias="sigmaDataset"
+        )  # relationship
+
+    attributes: "SigmaDatasetColumn.Attributes" = Field(
+        default_factory=lambda: SigmaDatasetColumn.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
     )
 
-
-    
 
 class SigmaDataset(Sigma):
     """Description"""
 
-    
-    
-
     type_name: str = Field("SigmaDataset", allow_mutation=False)
 
-    @validator('type_name')
+    @validator("type_name")
     def validate_type_name(cls, v):
         if v != "SigmaDataset":
-            raise ValueError('must be SigmaDataset')
+            raise ValueError("must be SigmaDataset")
         return v
 
-    
     def __setattr__(self, name, value):
-            if name in SigmaDataset._convenience_properties:
-                return object.__setattr__(self, name, value)
-            super().__setattr__( name, value)
-    
-    SIGMA_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField("sigmaDatasetColumnCount", "sigmaDatasetColumnCount")
+        if name in SigmaDataset._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SIGMA_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "sigmaDatasetColumnCount", "sigmaDatasetColumnCount"
+    )
     """
     TBC
     """
 
-    
-    SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField("sigmaDatasetColumns")
+    SIGMA_DATASET_COLUMNS: ClassVar[RelationField] = RelationField(
+        "sigmaDatasetColumns"
+    )
     """
     TBC
     """
 
-
-    
     _convenience_properties: ClassVar[list[str]] = [
         "sigma_dataset_column_count",
-        "sigma_dataset_columns",]
+        "sigma_dataset_columns",
+    ]
+
     @property
-    def sigma_dataset_column_count(self)->Optional[int]:
-        return None if self.attributes is None else self.attributes.sigma_dataset_column_count
+    def sigma_dataset_column_count(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sigma_dataset_column_count
+        )
 
     @sigma_dataset_column_count.setter
-    def sigma_dataset_column_count(self, sigma_dataset_column_count:Optional[int]):
+    def sigma_dataset_column_count(self, sigma_dataset_column_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_column_count = sigma_dataset_column_count
+
     @property
-    def sigma_dataset_columns(self)->Optional[list[SigmaDatasetColumn]]:
-        return None if self.attributes is None else self.attributes.sigma_dataset_columns
+    def sigma_dataset_columns(self) -> Optional[list[SigmaDatasetColumn]]:
+        return (
+            None if self.attributes is None else self.attributes.sigma_dataset_columns
+        )
 
     @sigma_dataset_columns.setter
-    def sigma_dataset_columns(self, sigma_dataset_columns:Optional[list[SigmaDatasetColumn]]):
+    def sigma_dataset_columns(
+        self, sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.sigma_dataset_columns = sigma_dataset_columns
 
     class Attributes(Sigma.Attributes):
-        sigma_dataset_column_count: Optional[int] = Field(None, description='' , alias='sigmaDatasetColumnCount')
-        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]]= Field(None, description='',  alias='sigmaDatasetColumns') # relationship
-        
-        
-    attributes: 'SigmaDataset.Attributes' = Field(
-        default_factory = lambda: SigmaDataset.Attributes(),
-        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
-                    'type, so are described in the sub-types of this schema.\n',
+        sigma_dataset_column_count: Optional[int] = Field(
+            None, description="", alias="sigmaDatasetColumnCount"
+        )
+        sigma_dataset_columns: Optional[list[SigmaDatasetColumn]] = Field(
+            None, description="", alias="sigmaDatasetColumns"
+        )  # relationship
+
+    attributes: "SigmaDataset.Attributes" = Field(
+        default_factory=lambda: SigmaDataset.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
     )
 
 
-
-
-    
 SigmaDatasetColumn.Attributes.update_forward_refs()
 
-    
+
 SigmaDataset.Attributes.update_forward_refs()

@@ -1800,17 +1800,17 @@ class ADLSAccessTier(str, Enum):
     COOL = "Cool"
     HOT = "Hot"
     ARCHIVE = "Archive"
-    
+
 
 class ADLSAccountStatus(str, Enum):
     AVAILABLE = "Available"
     UNAVAILABLE = "Unavailable"
-    
+
 
 class ADLSEncryptionTypes(str, Enum):
     MICROSOFT_STORAGE = "Microsoft.Storage"
     MICROSOFT_KEYVAULT = "Microsoft.Keyvault"
-    
+
 
 class ADLSLeaseState(str, Enum):
     AVAILABLE = "Available"
@@ -1818,34 +1818,34 @@ class ADLSLeaseState(str, Enum):
     EXPIRED = "Expired"
     BREAKING = "Breaking"
     BROKEN = "Broken"
-    
+
 
 class ADLSLeaseStatus(str, Enum):
     LOCKED = "Locked"
     UNLOCKED = "Unlocked"
-    
+
 
 class ADLSObjectArchiveStatus(str, Enum):
     REHYDRATE_PENDING_TO_HOT = "rehydrate-pending-to-hot"
     REHYDRATE_PENDING_TO_COOL = "rehydrate-pending-to-cool"
-    
+
 
 class ADLSObjectType(str, Enum):
     BLOCK_BLOB = "BlockBlob"
     PAGE_BLOB = "PageBlob"
     APPEND_BLOB = "AppendBlob"
-    
+
 
 class ADLSPerformance(str, Enum):
     STANDARD = "Standard"
     PREMIUM = "Premium"
-    
+
 
 class ADLSProvisionState(str, Enum):
     CREATING = "Creating"
     RESOLVING_DNS = "ResolvingDNS"
     SUCCEEDED = "Succeeded"
-    
+
 
 class ADLSReplicationType(str, Enum):
     LRS = "LRS"
@@ -1853,7 +1853,7 @@ class ADLSReplicationType(str, Enum):
     GRS = "GRS"
     GZRS = "GZRS"
     RA_GRS = "RA-GRS"
-    
+
 
 class ADLSStorageKind(str, Enum):
     BLOB_STORAGE = "BlobStorage"
@@ -1861,7 +1861,7 @@ class ADLSStorageKind(str, Enum):
     FILE_STORAGE = "FileStorage"
     STORAGE = "Storage"
     STORAGE_V2 = "StorageV2"
-    
+
 
 class AtlasGlossaryTermAssignmentStatus(str, Enum):
     DISCOVERED = "DISCOVERED"
@@ -1871,7 +1871,7 @@ class AtlasGlossaryTermAssignmentStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     OBSOLETE = "OBSOLETE"
     OTHER = "OTHER"
-    
+
 
 class AtlasGlossaryTermRelationshipStatus(str, Enum):
     DRAFT = "DRAFT"
@@ -1879,7 +1879,7 @@ class AtlasGlossaryTermRelationshipStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     OBSOLETE = "OBSOLETE"
     OTHER = "OTHER"
-    
+
 
 class AtlasOperation(str, Enum):
     OTHERS = "OTHERS"
@@ -1892,13 +1892,13 @@ class AtlasOperation(str, Enum):
     TYPE_DEF_DELETE = "TYPE_DEF_DELETE"
     SERVER_START = "SERVER_START"
     SERVER_STATE_ACTIVE = "SERVER_STATE_ACTIVE"
-    
+
 
 class AuthPolicyCategory(str, Enum):
     BOOTSTRAP = "bootstrap"
     PERSONA = "persona"
     PURPOSE = "purpose"
-    
+
 
 class AuthPolicyResourceCategory(str, Enum):
     ENTITY = "ENTITY"
@@ -1907,7 +1907,7 @@ class AuthPolicyResourceCategory(str, Enum):
     CUSTOM = "CUSTOM"
     TYPEDEFS = "TYPEDEFS"
     ADMIN = "ADMIN"
-    
+
 
 class AuthPolicyType(str, Enum):
     ALLOW = "allow"
@@ -1916,13 +1916,13 @@ class AuthPolicyType(str, Enum):
     DENY_EXCEPTIONS = "denyExceptions"
     DATA_MASK = "dataMask"
     ROW_FILTER = "rowFilter"
-    
+
 
 class CertificateStatus(str, Enum):
     DEPRECATED = "DEPRECATED"
     DRAFT = "DRAFT"
     VERIFIED = "VERIFIED"
-    
+
 
 class FileType(str, Enum):
     PDF = "pdf"
@@ -1934,22 +1934,22 @@ class FileType(str, Enum):
     JSON = "json"
     XML = "xml"
     ZIP = "zip"
-    
+
 
 class GoogleDatastudioAssetType(str, Enum):
     REPORT = "REPORT"
     DATA_SOURCE = "DATA_SOURCE"
-    
+
 
 class IconType(str, Enum):
     IMAGE = "image"
     EMOJI = "emoji"
-    
+
 
 class KafkaTopicCleanupPolicy(str, Enum):
     COMPACT = "compact"
     DELETE = "delete"
-    
+
 
 class KafkaTopicCompressionType(str, Enum):
     UNCOMPRESSED = "uncompressed"
@@ -1958,23 +1958,23 @@ class KafkaTopicCompressionType(str, Enum):
     SNAPPY = "snappy"
     GZIP = "gzip"
     PRODUCER = "producer"
-    
+
 
 class MatillionJobType(str, Enum):
     ORCHESTRATION = "ORCHESTRATION"
     TRANSFORMATION = "TRANSFORMATION"
-    
+
 
 class MongoDBCollectionValidationAction(str, Enum):
     ERROR = "ERROR"
     WARN = "WARN"
-    
+
 
 class MongoDBCollectionValidationLevel(str, Enum):
     OFF = "OFF"
     STRICT = "STRICT"
     MODERATE = "MODERATE"
-    
+
 
 class OpenLineageRunState(str, Enum):
     START = "START"
@@ -1983,17 +1983,17 @@ class OpenLineageRunState(str, Enum):
     ABORT = "ABORT"
     FAIL = "FAIL"
     OTHER = "OTHER"
-    
+
 
 class PowerbiEndorsement(str, Enum):
     PROMOTED = "Promoted"
     CERTIFIED = "Certified"
-    
+
 
 class QueryUsernameStrategy(str, Enum):
     CONNECTION_USERNAME = "connectionUsername"
     ATLAN_USERNAME = "atlanUsername"
-    
+
 
 class QuickSightAnalysisStatus(str, Enum):
     CREATION_IN_PROGRESS = "CREATION_IN_PROGRESS"
@@ -2003,23 +2003,23 @@ class QuickSightAnalysisStatus(str, Enum):
     UPDATE_SUCCESSFUL = "UPDATE_SUCCESSFUL"
     UPDATE_FAILED = "UPDATE_FAILED"
     DELETED = "DELETED"
-    
+
 
 class QuickSightDatasetFieldType(str, Enum):
     STRING = "STRING"
     INTEGER = "INTEGER"
     DECIMAL = "DECIMAL"
     DATETIME = "DATETIME"
-    
+
 
 class QuickSightDatasetImportMode(str, Enum):
     SPICE = "SPICE"
     DIRECT_QUERY = "DIRECT_QUERY"
-    
+
 
 class QuickSightFolderType(str, Enum):
     SHARED = "SHARED"
-    
+
 
 class SchemaRegistrySchemaCompatibility(str, Enum):
     BACKWARD = "BACKWARD"
@@ -2029,16 +2029,15 @@ class SchemaRegistrySchemaCompatibility(str, Enum):
     FULL = "FULL"
     FULL_TRANSITIVE = "FULL_TRANSITIVE"
     NONE = "NONE"
-    
+
 
 class SchemaRegistrySchemaType(str, Enum):
     AVRO = "AVRO"
     JSON = "JSON"
     PROTOBUF = "PROTOBUF"
-    
+
 
 class SourceCostUnitType(str, Enum):
     CREDITS = "Credits"
     BYTES = "bytes"
     SLOT_MS = "slot-ms"
-    
