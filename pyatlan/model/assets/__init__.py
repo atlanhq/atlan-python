@@ -1,64 +1,63 @@
 # Copyright 2022 Atlan Pte. Ltd.
-from .asset00 import (
-    SQL,
-    Airflow,
-    AirflowDag,
-    AirflowTask,
-    Asset,
-    AtlasGlossary,
-    AtlasGlossaryCategory,
-    AtlasGlossaryTerm,
-    Catalog,
-    Column,
-    ColumnProcess,
-    Database,
-    DataQuality,
-    Dbt,
-    DbtMetric,
-    DbtModel,
-    DbtModelColumn,
-    DbtSource,
-    DbtTest,
-    File,
-    Folder,
-    Function,
-    Link,
-    MaterialisedView,
-    Matillion,
-    MatillionComponent,
-    MatillionGroup,
-    MatillionJob,
-    MatillionProject,
-    MCIncident,
-    MCMonitor,
-    Metric,
-    MonteCarlo,
-    Namespace,
-    Procedure,
-    Process,
-    Query,
-    Readme,
-    Referenceable,
-    Resource,
-    Schema,
-    SchemaRegistry,
-    SchemaRegistrySubject,
-    SnowflakeDynamicTable,
-    SnowflakePipe,
-    SnowflakeStream,
-    SnowflakeTag,
-    Soda,
-    SodaCheck,
-    Table,
-    TablePartition,
-    Tag,
-    View,
-    validate_single_required_field,
-)
+from .asset00 import validate_single_required_field
+from .asset00 import Airflow
+from .asset00 import AirflowDag
+from .asset00 import AirflowTask
+from .asset00 import Asset
+from .asset00 import AtlasGlossary
+from .asset00 import AtlasGlossaryCategory
+from .asset00 import AtlasGlossaryTerm
+from .asset00 import Catalog
+from .asset00 import Column
+from .asset00 import ColumnProcess
+from .asset00 import DataQuality
+from .asset00 import Database
+from .asset00 import Dbt
+from .asset00 import DbtMetric
+from .asset00 import DbtModel
+from .asset00 import DbtModelColumn
+from .asset00 import DbtSource
+from .asset00 import DbtTest
+from .asset00 import File
+from .asset00 import Folder
+from .asset00 import Function
+from .asset00 import Link
+from .asset00 import MCIncident
+from .asset00 import MCMonitor
+from .asset00 import MaterialisedView
+from .asset00 import Matillion
+from .asset00 import MatillionComponent
+from .asset00 import MatillionGroup
+from .asset00 import MatillionJob
+from .asset00 import MatillionProject
+from .asset00 import Metric
+from .asset00 import MonteCarlo
+from .asset00 import Namespace
+from .asset00 import Procedure
+from .asset00 import Process
+from .asset00 import Query
+from .asset00 import Readme
+from .asset00 import Referenceable
+from .asset00 import Resource
+from .asset00 import SQL
+from .asset00 import Schema
+from .asset00 import SchemaRegistry
+from .asset00 import SchemaRegistrySubject
+from .asset00 import SnowflakeDynamicTable
+from .asset00 import SnowflakePipe
+from .asset00 import SnowflakeStream
+from .asset00 import SnowflakeTag
+from .asset00 import Soda
+from .asset00 import SodaCheck
+from .asset00 import Table
+from .asset00 import TablePartition
+from .asset00 import Tag
+from .asset00 import View
 from .asset01 import DataSet
 from .asset02 import Connection
 from .asset04 import Badge
-from .asset05 import AccessControl, AuthPolicy
+from .asset05 import AccessControl
+from .asset05 import AuthPolicy
 from .asset06 import ProcessExecution
 from .asset07 import AuthService
 from .asset08 import Cloud
@@ -100,87 +99,101 @@ from .asset52 import ReadmeTemplate
 from .asset53 import Kafka
 from .asset54 import MongoDB
 from .asset55 import DbtTag
-from .asset56 import APIPath, APISpec
+from .asset56 import APIPath
+from .asset56 import APISpec
 from .asset57 import DataStudioAsset
-from .asset58 import S3Bucket, S3Object
-from .asset59 import ADLSAccount, ADLSContainer, ADLSObject
-from .asset60 import GCSBucket, GCSObject
-from .asset61 import PresetChart, PresetDashboard, PresetDataset, PresetWorkspace
-from .asset62 import ModeChart, ModeCollection, ModeQuery, ModeReport, ModeWorkspace
-from .asset63 import SigmaDataset, SigmaDatasetColumn
-from .asset64 import SigmaDataElement, SigmaDataElementField, SigmaPage, SigmaWorkbook
-from .asset65 import (
-    TableauCalculatedField,
-    TableauDashboard,
-    TableauDatasource,
-    TableauDatasourceField,
-    TableauFlow,
-    TableauProject,
-    TableauSite,
-    TableauWorkbook,
-    TableauWorksheet,
-)
+from .asset58 import S3Bucket
+from .asset58 import S3Object
+from .asset59 import ADLSAccount
+from .asset59 import ADLSContainer
+from .asset59 import ADLSObject
+from .asset60 import GCSBucket
+from .asset60 import GCSObject
+from .asset61 import PresetChart
+from .asset61 import PresetDashboard
+from .asset61 import PresetDataset
+from .asset61 import PresetWorkspace
+from .asset62 import ModeChart
+from .asset62 import ModeCollection
+from .asset62 import ModeQuery
+from .asset62 import ModeReport
+from .asset62 import ModeWorkspace
+from .asset63 import SigmaDataset
+from .asset63 import SigmaDatasetColumn
+from .asset64 import SigmaDataElement
+from .asset64 import SigmaDataElementField
+from .asset64 import SigmaPage
+from .asset64 import SigmaWorkbook
+from .asset65 import TableauCalculatedField
+from .asset65 import TableauDashboard
+from .asset65 import TableauDatasource
+from .asset65 import TableauDatasourceField
+from .asset65 import TableauFlow
+from .asset65 import TableauProject
+from .asset65 import TableauSite
+from .asset65 import TableauWorkbook
+from .asset65 import TableauWorksheet
 from .asset66 import TableauMetric
-from .asset67 import (
-    LookerDashboard,
-    LookerExplore,
-    LookerField,
-    LookerFolder,
-    LookerLook,
-    LookerModel,
-    LookerProject,
-    LookerQuery,
-    LookerTile,
-    LookerView,
-)
+from .asset67 import LookerDashboard
+from .asset67 import LookerExplore
+from .asset67 import LookerField
+from .asset67 import LookerFolder
+from .asset67 import LookerLook
+from .asset67 import LookerModel
+from .asset67 import LookerProject
+from .asset67 import LookerQuery
+from .asset67 import LookerTile
+from .asset67 import LookerView
 from .asset68 import RedashDashboard
-from .asset69 import RedashQuery, RedashVisualization
-from .asset70 import MetabaseCollection, MetabaseDashboard, MetabaseQuestion
-from .asset71 import (
-    QuickSightAnalysis,
-    QuickSightAnalysisVisual,
-    QuickSightDashboard,
-    QuickSightDashboardVisual,
-    QuickSightDataset,
-    QuickSightDatasetField,
-    QuickSightFolder,
-)
-from .asset72 import ThoughtspotDashlet, ThoughtspotLiveboard
+from .asset69 import RedashQuery
+from .asset69 import RedashVisualization
+from .asset70 import MetabaseCollection
+from .asset70 import MetabaseDashboard
+from .asset70 import MetabaseQuestion
+from .asset71 import QuickSightAnalysis
+from .asset71 import QuickSightAnalysisVisual
+from .asset71 import QuickSightDashboard
+from .asset71 import QuickSightDashboardVisual
+from .asset71 import QuickSightDataset
+from .asset71 import QuickSightDatasetField
+from .asset71 import QuickSightFolder
+from .asset72 import ThoughtspotDashlet
+from .asset72 import ThoughtspotLiveboard
 from .asset73 import ThoughtspotAnswer
-from .asset74 import (
-    PowerBIColumn,
-    PowerBIDashboard,
-    PowerBIDataflow,
-    PowerBIDataset,
-    PowerBIDatasource,
-    PowerBIMeasure,
-    PowerBIPage,
-    PowerBIReport,
-    PowerBITable,
-    PowerBITile,
-    PowerBIWorkspace,
-)
-from .asset75 import (
-    MicroStrategyAttribute,
-    MicroStrategyCube,
-    MicroStrategyDocument,
-    MicroStrategyDossier,
-    MicroStrategyFact,
-    MicroStrategyMetric,
-    MicroStrategyProject,
-    MicroStrategyReport,
-    MicroStrategyVisualization,
-)
-from .asset76 import QlikApp, QlikChart, QlikDataset, QlikSheet, QlikSpace
-from .asset77 import (
-    SalesforceDashboard,
-    SalesforceField,
-    SalesforceObject,
-    SalesforceOrganization,
-    SalesforceReport,
-)
-from .asset79 import MongoDBCollection, MongoDBDatabase
-from .asset80 import KafkaConsumerGroup, KafkaTopic
+from .asset74 import PowerBIColumn
+from .asset74 import PowerBIDashboard
+from .asset74 import PowerBIDataflow
+from .asset74 import PowerBIDataset
+from .asset74 import PowerBIDatasource
+from .asset74 import PowerBIMeasure
+from .asset74 import PowerBIPage
+from .asset74 import PowerBIReport
+from .asset74 import PowerBITable
+from .asset74 import PowerBITile
+from .asset74 import PowerBIWorkspace
+from .asset75 import MicroStrategyAttribute
+from .asset75 import MicroStrategyCube
+from .asset75 import MicroStrategyDocument
+from .asset75 import MicroStrategyDossier
+from .asset75 import MicroStrategyFact
+from .asset75 import MicroStrategyMetric
+from .asset75 import MicroStrategyProject
+from .asset75 import MicroStrategyReport
+from .asset75 import MicroStrategyVisualization
+from .asset76 import QlikApp
+from .asset76 import QlikChart
+from .asset76 import QlikDataset
+from .asset76 import QlikSheet
+from .asset76 import QlikSpace
+from .asset77 import SalesforceDashboard
+from .asset77 import SalesforceField
+from .asset77 import SalesforceObject
+from .asset77 import SalesforceOrganization
+from .asset77 import SalesforceReport
+from .asset79 import MongoDBCollection
+from .asset79 import MongoDBDatabase
+from .asset80 import KafkaConsumerGroup
+from .asset80 import KafkaTopic
 from .asset81 import QlikStream
 from .asset82 import AzureEventHub
 from .asset83 import AzureEventHubConsumerGroup

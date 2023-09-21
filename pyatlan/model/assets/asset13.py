@@ -2,29 +2,114 @@
 # Copyright 2022 Atlan Pte. Ltd.
 
 
+
+
 from __future__ import annotations
 
-from typing import ClassVar, Optional, Set
+import hashlib
+import sys
+import uuid
+from datetime import datetime
+from io import StringIO
+from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
+from urllib.parse import quote, unquote
 
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
+from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
+from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
+    ADLSAccessTier,
+    ADLSAccountStatus,
+    ADLSEncryptionTypes,
+    ADLSLeaseState,
+    ADLSLeaseStatus,
+    ADLSObjectArchiveStatus,
+    ADLSObjectType,
+    ADLSPerformance,
+    ADLSProvisionState,
+    ADLSReplicationType,
+    ADLSStorageKind,
+    AnnouncementType,
+    AtlanConnectorType,
     AuthPolicyCategory,
     AuthPolicyResourceCategory,
     AuthPolicyType,
+    CertificateStatus,
     DataAction,
+    EntityStatus,
+    FileType,
+    GoogleDatastudioAssetType,
+    IconType,
+    KafkaTopicCleanupPolicy,
+    KafkaTopicCompressionType,
+    MatillionJobType,
+    OpenLineageRunState,
+    PersonaGlossaryAction,
+    PersonaMetadataAction,
+    PowerbiEndorsement,
     PurposeMetadataAction,
+    QueryUsernameStrategy,
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
+    SchemaRegistrySchemaCompatibility,
+    SchemaRegistrySchemaType,
+    SourceCostUnitType,
 )
-from pyatlan.model.fields.atlan_fields import KeywordField
-from pyatlan.utils import validate_required_fields
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    KeywordTextStemmedField,
+    NumericField,
+    NumericRankField,
+    RelationField,
+    TextField,
+)
+from pyatlan.model.internal import AtlasServer, Internal
+from pyatlan.model.structs import (
+    AuthPolicyCondition,
+    AuthPolicyValiditySchedule,
+    AwsTag,
+    AzureTag,
+    BadgeCondition,
+    ColumnValueFrequencyMap,
+    DbtMetricFilter,
+    GoogleLabel,
+    GoogleTag,
+    Histogram,
+    KafkaTopicConsumption,
+    MCRuleComparison,
+    MCRuleSchedule,
+    PopularityInsights,
+    SourceTagAttribute,
+    StarredDetails,
+)
+from pyatlan.utils import next_id, validate_required_fields
 
+from. asset05 import AccessControl
+
+
+    
+    
+    
+from .asset05 import AuthPolicy
 from .asset00 import SelfAsset
-from .asset05 import AccessControl, AuthPolicy
+    
 
+
+
+
+    
 
 class Purpose(AccessControl):
     """Description"""
 
+    
+    
+        
     @classmethod
     # @validate_arguments()
     def create(cls, *, name: str, atlan_tags: list[str]) -> Purpose:
@@ -34,23 +119,10 @@ class Purpose(AccessControl):
 
     @classmethod
     # @validate_arguments()
-    def create_metadata_policy(
-        cls,
-        *,
-        name: str,
-        purpose_id: str,
-        policy_type: AuthPolicyType,
-        actions: Set[PurposeMetadataAction],
-        policy_groups: Optional[Set[str]] = None,
-        policy_users: Optional[Set[str]] = None,
-        all_users: bool = False,
-    ) -> AuthPolicy:
-        validate_required_fields(
-            ["name", "purpose_id", "policy_type", "actions"],
-            [name, purpose_id, policy_type, actions],
-        )
+    def create_metadata_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, actions: Set[PurposeMetadataAction], policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
+        validate_required_fields(["name", "purpose_id", "policy_type", "actions"], [name, purpose_id, policy_type, actions])
         target_found = False
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -66,7 +138,6 @@ class Purpose(AccessControl):
         else:
             if policy_groups:
                 from pyatlan.cache.group_cache import GroupCache
-
                 for group_alias in policy_groups:
                     if not GroupCache.get_id_for_alias(group_alias):
                         raise ValueError(
@@ -78,7 +149,6 @@ class Purpose(AccessControl):
                 policy.policy_groups = None
             if policy_users:
                 from pyatlan.cache.user_cache import UserCache
-
                 for username in policy_users:
                     if not UserCache.get_id_for_name(username):
                         raise ValueError(
@@ -91,24 +161,15 @@ class Purpose(AccessControl):
         if target_found:
             return policy
         else:
-            raise ValueError("No user or group specified for the policy.")
+            raise ValueError(
+                "No user or group specified for the policy."
+            )
 
     @classmethod
     # @validate_arguments()
-    def create_data_policy(
-        cls,
-        *,
-        name: str,
-        purpose_id: str,
-        policy_type: AuthPolicyType,
-        policy_groups: Optional[Set[str]] = None,
-        policy_users: Optional[Set[str]] = None,
-        all_users: bool = False,
-    ) -> AuthPolicy:
-        validate_required_fields(
-            ["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type]
-        )
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+    def create_data_policy(cls, *, name: str, purpose_id: str, policy_type: AuthPolicyType, policy_groups: Optional[Set[str]] = None, policy_users: Optional[Set[str]] = None, all_users: bool = False) -> AuthPolicy:
+        validate_required_fields(["name", "purpose_id", "policy_type"], [name, purpose_id, policy_type])
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PURPOSE.value
         policy.policy_type = policy_type
@@ -124,7 +185,6 @@ class Purpose(AccessControl):
         else:
             if policy_groups:
                 from pyatlan.cache.group_cache import GroupCache
-
                 for group_alias in policy_groups:
                     if not GroupCache.get_id_for_alias(group_alias):
                         raise ValueError(
@@ -136,7 +196,6 @@ class Purpose(AccessControl):
                 policy.policy_groups = None
             if policy_users:
                 from pyatlan.cache.user_cache import UserCache
-
                 for username in policy_users:
                     if not UserCache.get_id_for_name(username):
                         raise ValueError(
@@ -149,7 +208,9 @@ class Purpose(AccessControl):
         if target_found:
             return policy
         else:
-            raise ValueError("No user or group specified for the policy.")
+            raise ValueError(
+                "No user or group specified for the policy."
+            )
 
     @classmethod
     def create_for_modification(
@@ -166,49 +227,51 @@ class Purpose(AccessControl):
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                is_access_control_enabled=is_enabled,
+                is_access_control_enabled=is_enabled
             )
         )
+    
 
     type_name: str = Field("Purpose", allow_mutation=False)
 
-    @validator("type_name")
+    @validator('type_name')
     def validate_type_name(cls, v):
         if v != "Purpose":
-            raise ValueError("must be Purpose")
+            raise ValueError('must be Purpose')
         return v
 
+    
     def __setattr__(self, name, value):
-        if name in Purpose._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PURPOSE_CLASSIFICATIONS: ClassVar[KeywordField] = KeywordField(
-        "purposeClassifications", "purposeClassifications"
-    )
+            if name in Purpose._convenience_properties:
+                return object.__setattr__(self, name, value)
+            super().__setattr__( name, value)
+    
+    PURPOSE_CLASSIFICATIONS: ClassVar[KeywordField] = KeywordField("purposeClassifications", "purposeClassifications")
     """
     TBC
     """
 
-    _convenience_properties: ClassVar[list[str]] = [
-        "purpose_atlan_tags",
-    ]
+    
 
+
+    
+    _convenience_properties: ClassVar[list[str]] = [
+        "purpose_atlan_tags",]
     @property
-    def purpose_atlan_tags(self) -> Optional[set[str]]:
+    def purpose_atlan_tags(self)->Optional[set[str]]:
         return None if self.attributes is None else self.attributes.purpose_atlan_tags
 
     @purpose_atlan_tags.setter
-    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[set[str]]):
+    def purpose_atlan_tags(self, purpose_atlan_tags:Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
-        purpose_atlan_tags: Optional[set[str]] = Field(
-            None, description="", alias="purposeClassifications"
-        )
-
+        purpose_atlan_tags: Optional[set[str]] = Field(None, description='' , alias='purposeClassifications')
+        
+        
+            
         @classmethod
         # @validate_arguments()
         def create(cls, name: str, atlan_tags: list[str]) -> Purpose.Attributes:
@@ -219,14 +282,17 @@ class Purpose(AccessControl):
                 display_name=name,
                 is_access_control_enabled=True,
                 description="",
-                purpose_atlan_tags=atlan_tags,
+                purpose_atlan_tags=atlan_tags
             )
-
-    attributes: "Purpose.Attributes" = Field(
-        default_factory=lambda: Purpose.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        
+    attributes: 'Purpose.Attributes' = Field(
+        default_factory = lambda: Purpose.Attributes(),
+        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
+                    'type, so are described in the sub-types of this schema.\n',
     )
 
 
+
+
+    
 Purpose.Attributes.update_forward_refs()

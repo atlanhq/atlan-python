@@ -2,30 +2,114 @@
 # Copyright 2022 Atlan Pte. Ltd.
 
 
+
+
 from __future__ import annotations
 
-from typing import ClassVar, Optional, Set
+import hashlib
+import sys
+import uuid
+from datetime import datetime
+from io import StringIO
+from typing import Any, ClassVar, Dict, List, Optional, Set, Type, TypeVar
+from urllib.parse import quote, unquote
 
-from pydantic import Field, validator
+from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
 
+from pyatlan.model.core import Announcement, AtlanObject, AtlanTag, Meaning
+from pyatlan.model.custom_metadata import CustomMetadataDict, CustomMetadataProxy
 from pyatlan.model.enums import (
+    ADLSAccessTier,
+    ADLSAccountStatus,
+    ADLSEncryptionTypes,
+    ADLSLeaseState,
+    ADLSLeaseStatus,
+    ADLSObjectArchiveStatus,
+    ADLSObjectType,
+    ADLSPerformance,
+    ADLSProvisionState,
+    ADLSReplicationType,
+    ADLSStorageKind,
+    AnnouncementType,
+    AtlanConnectorType,
     AuthPolicyCategory,
     AuthPolicyResourceCategory,
     AuthPolicyType,
+    CertificateStatus,
     DataAction,
+    EntityStatus,
+    FileType,
+    GoogleDatastudioAssetType,
+    IconType,
+    KafkaTopicCleanupPolicy,
+    KafkaTopicCompressionType,
+    MatillionJobType,
+    OpenLineageRunState,
     PersonaGlossaryAction,
     PersonaMetadataAction,
+    PowerbiEndorsement,
+    PurposeMetadataAction,
+    QueryUsernameStrategy,
+    QuickSightAnalysisStatus,
+    QuickSightDatasetFieldType,
+    QuickSightDatasetImportMode,
+    QuickSightFolderType,
+    SchemaRegistrySchemaCompatibility,
+    SchemaRegistrySchemaType,
+    SourceCostUnitType,
 )
-from pyatlan.model.fields.atlan_fields import KeywordField
-from pyatlan.utils import validate_required_fields
+from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
+    KeywordField,
+    KeywordTextField,
+    KeywordTextStemmedField,
+    NumericField,
+    NumericRankField,
+    RelationField,
+    TextField,
+)
+from pyatlan.model.internal import AtlasServer, Internal
+from pyatlan.model.structs import (
+    AuthPolicyCondition,
+    AuthPolicyValiditySchedule,
+    AwsTag,
+    AzureTag,
+    BadgeCondition,
+    ColumnValueFrequencyMap,
+    DbtMetricFilter,
+    GoogleLabel,
+    GoogleTag,
+    Histogram,
+    KafkaTopicConsumption,
+    MCRuleComparison,
+    MCRuleSchedule,
+    PopularityInsights,
+    SourceTagAttribute,
+    StarredDetails,
+)
+from pyatlan.utils import next_id, validate_required_fields
 
+from. asset05 import AccessControl
+
+
+    
+    
+    
+from .asset05 import AuthPolicy
 from .asset00 import SelfAsset
-from .asset05 import AccessControl, AuthPolicy
+    
 
+
+
+
+    
 
 class Persona(AccessControl):
     """Description"""
 
+    
+    
+        
     @classmethod
     # @validate_arguments()
     def create(cls, *, name: str) -> Persona:
@@ -35,21 +119,9 @@ class Persona(AccessControl):
 
     @classmethod
     # @validate_arguments()
-    def create_metadata_policy(
-        cls,
-        *,
-        name: str,
-        persona_id: str,
-        policy_type: AuthPolicyType,
-        actions: Set[PersonaMetadataAction],
-        connection_qualified_name: str,
-        resources: Set[str],
-    ) -> AuthPolicy:
-        validate_required_fields(
-            ["name", "persona_id", "policy_type", "actions", "resources"],
-            [name, persona_id, policy_type, actions, resources],
-        )
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+    def create_metadata_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaMetadataAction], connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -65,20 +137,9 @@ class Persona(AccessControl):
 
     @classmethod
     # @validate_arguments()
-    def create_data_policy(
-        cls,
-        *,
-        name: str,
-        persona_id: str,
-        policy_type: AuthPolicyType,
-        connection_qualified_name: str,
-        resources: Set[str],
-    ) -> AuthPolicy:
-        validate_required_fields(
-            ["name", "persona_id", "policy_type", "resources"],
-            [name, persona_id, policy_type, resources],
-        )
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+    def create_data_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, connection_qualified_name: str, resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "resources"], [name, persona_id, policy_type, resources])
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {DataAction.SELECT.value}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -95,20 +156,9 @@ class Persona(AccessControl):
 
     @classmethod
     # @validate_arguments()
-    def create_glossary_policy(
-        cls,
-        *,
-        name: str,
-        persona_id: str,
-        policy_type: AuthPolicyType,
-        actions: Set[PersonaGlossaryAction],
-        resources: Set[str],
-    ) -> AuthPolicy:
-        validate_required_fields(
-            ["name", "persona_id", "policy_type", "actions", "resources"],
-            [name, persona_id, policy_type, actions, resources],
-        )
-        policy = AuthPolicy._AuthPolicy__create(name=name)  # type: ignore
+    def create_glossary_policy(cls, *, name: str, persona_id: str, policy_type: AuthPolicyType, actions: Set[PersonaGlossaryAction], resources: Set[str]) -> AuthPolicy:
+        validate_required_fields(["name", "persona_id", "policy_type", "actions", "resources"], [name, persona_id, policy_type, actions, resources])
+        policy = AuthPolicy._AuthPolicy__create(name=name) #type: ignore
         policy.policy_actions = {x.value for x in actions}
         policy.policy_category = AuthPolicyCategory.PERSONA.value
         policy.policy_type = policy_type
@@ -136,26 +186,26 @@ class Persona(AccessControl):
             attributes=cls.Attributes(
                 qualified_name=qualified_name,
                 name=name,
-                is_access_control_enabled=is_enabled,
+                is_access_control_enabled=is_enabled
             )
         )
+    
 
     type_name: str = Field("Persona", allow_mutation=False)
 
-    @validator("type_name")
+    @validator('type_name')
     def validate_type_name(cls, v):
         if v != "Persona":
-            raise ValueError("must be Persona")
+            raise ValueError('must be Persona')
         return v
 
+    
     def __setattr__(self, name, value):
-        if name in Persona._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    PERSONA_GROUPS: ClassVar[KeywordField] = KeywordField(
-        "personaGroups", "personaGroups"
-    )
+            if name in Persona._convenience_properties:
+                return object.__setattr__(self, name, value)
+            super().__setattr__( name, value)
+    
+    PERSONA_GROUPS: ClassVar[KeywordField] = KeywordField("personaGroups", "personaGroups")
     """
     TBC
     """
@@ -168,51 +218,49 @@ class Persona(AccessControl):
     TBC
     """
 
+    
+
+
+    
     _convenience_properties: ClassVar[list[str]] = [
         "persona_groups",
         "persona_users",
-        "role_id",
-    ]
-
+        "role_id",]
     @property
-    def persona_groups(self) -> Optional[set[str]]:
+    def persona_groups(self)->Optional[set[str]]:
         return None if self.attributes is None else self.attributes.persona_groups
 
     @persona_groups.setter
-    def persona_groups(self, persona_groups: Optional[set[str]]):
+    def persona_groups(self, persona_groups:Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.persona_groups = persona_groups
-
     @property
-    def persona_users(self) -> Optional[set[str]]:
+    def persona_users(self)->Optional[set[str]]:
         return None if self.attributes is None else self.attributes.persona_users
 
     @persona_users.setter
-    def persona_users(self, persona_users: Optional[set[str]]):
+    def persona_users(self, persona_users:Optional[set[str]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.persona_users = persona_users
-
     @property
-    def role_id(self) -> Optional[str]:
+    def role_id(self)->Optional[str]:
         return None if self.attributes is None else self.attributes.role_id
 
     @role_id.setter
-    def role_id(self, role_id: Optional[str]):
+    def role_id(self, role_id:Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.role_id = role_id
 
     class Attributes(AccessControl.Attributes):
-        persona_groups: Optional[set[str]] = Field(
-            None, description="", alias="personaGroups"
-        )
-        persona_users: Optional[set[str]] = Field(
-            None, description="", alias="personaUsers"
-        )
-        role_id: Optional[str] = Field(None, description="", alias="roleId")
-
+        persona_groups: Optional[set[str]] = Field(None, description='' , alias='personaGroups')
+        persona_users: Optional[set[str]] = Field(None, description='' , alias='personaUsers')
+        role_id: Optional[str] = Field(None, description='' , alias='roleId')
+        
+        
+            
         @classmethod
         # @validate_arguments()
         def create(cls, name: str) -> Persona.Attributes:
@@ -224,14 +272,17 @@ class Persona(AccessControl):
                 name=name,
                 display_name=name,
                 is_access_control_enabled=True,
-                description="",
+                description=""
             )
-
-    attributes: "Persona.Attributes" = Field(
-        default_factory=lambda: Persona.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
+        
+    attributes: 'Persona.Attributes' = Field(
+        default_factory = lambda: Persona.Attributes(),
+        description='Map of attributes in the instance and their values. The specific keys of this map will vary by '
+                    'type, so are described in the sub-types of this schema.\n',
     )
 
 
+
+
+    
 Persona.Attributes.update_forward_refs()

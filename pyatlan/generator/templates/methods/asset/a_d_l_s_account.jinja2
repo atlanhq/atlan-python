@@ -1,0 +1,11 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connectionQualifiedName: str) -> {{ entity_def.name }}:
+        validate_required_fields(
+            ["name", "connectionQualifiedName"], [name, connectionQualifiedName]
+        )
+        attributes = {{ entity_def.name }}.Attributes.create(
+            name=name, connectionQualifiedName=connectionQualifiedName
+        )
+        return cls(attributes=attributes)
