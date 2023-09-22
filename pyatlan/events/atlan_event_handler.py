@@ -2,6 +2,7 @@
 # Copyright 2023 Atlan Pte. Ltd.
 from abc import ABC
 from typing import Iterable, Optional
+from warnings import warn
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import Asset, Catalog
@@ -185,11 +186,17 @@ class AtlanEventHandler(ABC):  # noqa: B024
 
     def upsert_changes(self, changed_assets: list[Asset]):
         """
-        Actually send the changed assets to Atlan so that they are persisted.
-        (Deprecated: use save_changes instead.)
+        Deprecated — send the changed assets to Atlan so that they are persisted.
+        Use 'save_changes' instead.
 
         :param changed_assets: the in-memory-modified assets to send to Atlan
         """
+        warn(
+            "This method is deprecated, please use 'save_changes' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.save_changes(changed_assets)
 
     def save_changes(self, changed_assets: list[Asset]):
