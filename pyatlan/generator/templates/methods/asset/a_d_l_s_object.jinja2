@@ -6,12 +6,12 @@
         *,
         name: str,
         adls_container_qualified_name: str,
-    ) -> ADLSObject:
+    ) -> {{ entity_def.name }}:
         validate_required_fields(
             ["name", "adls_container_qualified_name"],
             [name, adls_container_qualified_name],
         )
-        attributes = ADLSObject.Attributes.create(
+        attributes = {{ entity_def.name }}.create(
             name=name,
             adls_container_qualified_name=adls_container_qualified_name,
         )
