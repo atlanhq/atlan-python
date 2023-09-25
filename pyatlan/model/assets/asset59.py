@@ -590,7 +590,7 @@ class ADLSContainer(ADLS):
 
             # Split the adls_account_qualified_name to extract necessary information
             fields = adls_account_qualified_name.split("/")
-            if len(fields) != 5:
+            if len(fields) != 4:
                 raise ValueError("Invalid adls_account_qualified_name")
 
             try:
@@ -1094,11 +1094,7 @@ class ADLSObject(ADLS):
         @classmethod
         # @validate_arguments()
         def create(
-            cls,
-            *,
-            name: str,
-            qualified_name: str,
-            adls_container_qualified_name: str,
+            cls, *, name: str, adls_container_qualified_name: str
         ) -> ADLSObject.Attributes:
             validate_required_fields(
                 ["name", "adls_container_qualified_name"],
@@ -1117,6 +1113,7 @@ class ADLSObject(ADLS):
 
             return ADLSObject.Attributes(
                 name=name,
+                adls_container_qualified_name=adls_container_qualified_name,
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
                 connector_name=connector_type.value,

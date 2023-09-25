@@ -1,16 +1,9 @@
 
         @classmethod
         # @validate_arguments()
-        def create(
-            cls,
-            *,
-            name: str,
-            qualified_name: str,
-            adls_container_qualified_name: str,
-        ) -> ADLSObject.Attributes:
+        def create(cls, *, name: str, adls_container_qualified_name: str) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(
-                ["name", "adls_container_qualified_name"],
-                [name, adls_container_qualified_name],
+                ["name", "adls_container_qualified_name"], [name, adls_container_qualified_name]
             )
 
             # Split the qualified_name to extract necessary information
@@ -23,8 +16,9 @@
             except ValueError as e:
                 raise ValueError("Invalid qualified_name") from e
 
-            return ADLSObject.Attributes(
+            return {{ entity_def.name }}.Attributes(
                 name=name,
+                adls_container_qualified_name=adls_container_qualified_name,
                 qualified_name=f"{adls_container_qualified_name}/{name}",
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
                 connector_name=connector_type.value,
