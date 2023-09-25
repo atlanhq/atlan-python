@@ -14,6 +14,7 @@ import uuid
 from abc import ABC
 from types import SimpleNamespace
 from typing import Any, ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
+from warnings import warn
 
 import requests
 from pydantic import (
@@ -1128,6 +1129,11 @@ class AtlanClient(BaseSettings):
         overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
         """Deprecated - use save() instead."""
+        warn(
+            "This method is deprecated, please use 'save' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.save(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
@@ -1190,6 +1196,12 @@ class AtlanClient(BaseSettings):
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_merging_cm() instead."""
+        warn(
+            "This method is deprecated, please use 'save_merging_cm' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.save_merging_cm(
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
@@ -1240,6 +1252,12 @@ class AtlanClient(BaseSettings):
         self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_replacing_cm() instead."""
+        warn(
+            "This method is deprecated, please use 'save_replacing_cm' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.save_replacing_cm(
             entity=entity, replace_atlan_tags=replace_atlan_tagss
         )
@@ -1961,13 +1979,18 @@ class AtlanClient(BaseSettings):
 
     def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
         """
-        Fetch the requested lineage. This is an older, slower operation that may be deprecated in
-        the future. If possible, use the get_lineage_list operation instead.
+        Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
+        Use the get_lineage_list operation instead.
 
         :param lineage_request: detailing the lineage query, parameters, and so on to run
         :returns: the results of the lineage request
         :raises AtlanError: on any API communication issue
         """
+        warn(
+            "Lineage retrieval using this method is deprecated, please use 'get_lineage_list' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         raw_json = self._call_api(
             GET_LINEAGE, None, lineage_request, exclude_unset=False
         )
