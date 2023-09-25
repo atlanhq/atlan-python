@@ -11,7 +11,7 @@
             ["name", "adls_container_qualified_name"],
             [name, adls_container_qualified_name],
         )
-        attributes = {{ entity_def.name }}.create(
+        attributes = {{ entity_def.name }}.Attributes.create(
             name=name,
             adls_container_qualified_name=adls_container_qualified_name,
         )

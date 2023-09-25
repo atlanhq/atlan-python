@@ -632,7 +632,7 @@ class ADLSObject(ADLS):
             ["name", "adls_container_qualified_name"],
             [name, adls_container_qualified_name],
         )
-        attributes = ADLSObject.create(
+        attributes = ADLSObject.Attributes.create(
             name=name,
             adls_container_qualified_name=adls_container_qualified_name,
         )
