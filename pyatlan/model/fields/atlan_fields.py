@@ -3,6 +3,7 @@ from typing import Union
 
 from pydantic import StrictBool, StrictFloat, StrictInt, StrictStr
 
+from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.enums import SortOrder
 from pyatlan.model.search import (
     Exists,
@@ -76,6 +77,14 @@ class SearchableField(AtlanField):
         :returns: sort condition for the field, in the specified order
         """
         return SortItem(field=self.elastic_field_name, order=order)
+
+    def bucket_by(
+        self,
+        size: int = 10,
+    ) -> Aggregation:
+        return Aggregation(
+            __root__={"terms": {"field": self.elastic_field_name, "size": size}}
+        )
 
 
 class BooleanField(SearchableField):

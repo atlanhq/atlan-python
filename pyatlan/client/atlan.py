@@ -71,6 +71,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
+from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
@@ -278,6 +279,7 @@ class AtlanClient(BaseSettings):
             start: int,
             size: int,
             assets: list[Asset],
+            aggregations: Optional[Aggregations],
         ):
             self._client = client
             self._endpoint = endpoint
@@ -285,6 +287,7 @@ class AtlanClient(BaseSettings):
             self._start = start
             self._size = size
             self._assets = assets
+            self._aggregations = aggregations
 
         def current_page(self) -> list[Asset]:
             """
@@ -339,6 +342,10 @@ class AtlanClient(BaseSettings):
                     raw_json, 200, str(err)
                 ) from err
 
+        @property
+        def aggregations(self) -> Optional[Aggregations]:
+            return self._aggregations
+
         def __iter__(self) -> Generator[Asset, None, None]:
             """
             Iterates through the results, lazily-fetching each next page until there
@@ -366,8 +373,11 @@ class AtlanClient(BaseSettings):
             size: int,
             count: int,
             assets: list[Asset],
+            aggregations: Optional[Aggregations],
         ):
-            super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
+            super().__init__(
+                client, INDEX_SEARCH, criteria, start, size, assets, aggregations
+            )
             self._count = count
 
         def _get_next_page(self):
@@ -405,8 +415,11 @@ class AtlanClient(BaseSettings):
             size: int,
             has_more: bool,
             assets: list[Asset],
+            aggregations: Optional[Aggregations],
         ):
-            super().__init__(client, GET_LINEAGE_LIST, criteria, start, size, assets)
+            super().__init__(
+                client, GET_LINEAGE_LIST, criteria, start, size, assets, aggregations
+            )
             self._has_more = has_more
 
         def _get_next_page(self):
@@ -1444,6 +1457,7 @@ class AtlanClient(BaseSettings):
                 ) from err
         else:
             assets = []
+        aggregations = self.get_aggregations(raw_json)
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
         return AtlanClient.IndexSearchResults(
             client=self,
@@ -1452,7 +1466,20 @@ class AtlanClient(BaseSettings):
             size=criteria.dsl.size,
             count=count,
             assets=assets,
+            aggregations=aggregations,
         )
+
+    def get_aggregations(self, raw_json) -> Optional[Aggregations]:
+        if "aggregations" in raw_json:
+            try:
+                aggregations = Aggregations.parse_obj(raw_json["aggregations"])
+            except ValidationError as err:
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
+        else:
+            aggregations = None
+        return aggregations
 
     def get_all_typedefs(self) -> TypeDefResponse:
         """
@@ -2023,6 +2050,7 @@ class AtlanClient(BaseSettings):
         else:
             assets = []
             has_more = False
+        aggregations = self.get_aggregations(raw_json)
         return AtlanClient.LineageListResults(
             client=self,
             criteria=lineage_request,
@@ -2030,6 +2058,7 @@ class AtlanClient(BaseSettings):
             size=lineage_request.size or 10,
             has_more=has_more,
             assets=assets,
+            aggregations=aggregations,
         )
 
     def add_api_token_as_admin(
