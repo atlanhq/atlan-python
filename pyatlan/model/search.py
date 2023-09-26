@@ -22,6 +22,7 @@ from pydantic import (
 from pydantic.config import Extra
 from pydantic.dataclasses import dataclass
 
+from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import (
     AtlanConnectorType,
@@ -1796,6 +1797,7 @@ class SortItem:
 class DSL(AtlanObject):
     from_: int = Field(0, alias="from")
     size: int = 100
+    aggregations: dict[str, Aggregation] = Field(default_factory=dict)
     track_total_hits: bool = Field(True, alias="track_total_hits")
     post_filter: Optional[Query] = Field(alias="post_filter")
     query: Optional[Query]
@@ -1809,7 +1811,7 @@ class DSL(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(
-            ["from_", "size", "track_total_hits", "sort"]
+            ["from_", "size", "track_total_hits", "sort", "aggregations"]
         )
 
     @validator("query", always=True)

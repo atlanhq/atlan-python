@@ -1,4 +1,9 @@
-## 1.1.0 (September 20, 20023)
+## 1.2.0 (September 26, 2023)
+
+* Add capability to do bucket and metric aggregations
+* Mark lineage method (and others) deprecated, including DeprecationWarning
+
+## 1.1.0 (September 20, 2023)
 
 * Add capability to find and re-run workflows
 * Fix Range query with 0 not generating expected request

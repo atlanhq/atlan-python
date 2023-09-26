@@ -4,10 +4,11 @@ import copy
 import dataclasses
 from typing import Optional, TypeVar, Union
 
+from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem
+from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem, Term
 
 SelfQuery = TypeVar("SelfQuery", bound="CompoundQuery")
 
@@ -230,10 +231,31 @@ class FluentSearch(CompoundQuery):
     """
 
     sorts: Optional[list[SortItem]] = None
-    # TODO aggregations: Optional[dict[str, Aggregation]] = None
+    aggregations: Optional[dict[str, Aggregation]] = None
     _page_size: Optional[int] = None
     _includes_on_results: Optional[list[str]] = None
     _includes_on_relations: Optional[list[str]] = None
+
+    @classmethod
+    def select(cls, include_archived=False) -> "FluentSearch":
+        """
+        Start a fluent search that will return all assets.
+        Additional conditions can be chained onto the returned object before any
+        asset retrieval is attempted, ensuring all conditions are pushed-down for
+        optimal retrieval. Only active (non-archived) assets will be included.
+
+        :param include_archived: when True, archived (soft-deleted) assets will be included
+        :returns: a fluent search that includes all assets
+        """
+        return cls(
+            wheres=[Term.with_state("ACTIVE")] if not include_archived else [],
+            where_nots=[
+                Term.with_type_name("__AtlasAuditEntry"),
+                Term.with_type_name("__AtlasUserProfile"),
+                Term.with_type_name("__AtlasUserSavedSearch"),
+                Term.with_type_name("__ExportImportAuditEntry"),
+            ],
+        )
 
     def __init__(
         self,
@@ -242,12 +264,14 @@ class FluentSearch(CompoundQuery):
         where_somes: Optional[list[Query]] = None,
         _min_somes: int = 1,
         sorts: Optional[list[SortItem]] = None,
+        aggregations: Optional[dict[str, Aggregation]] = None,
         _page_size: Optional[int] = None,
         _includes_on_results: Optional[list[str]] = None,
         _includes_on_relations: Optional[list[str]] = None,
     ):
         super().__init__(wheres, where_nots, where_somes, _min_somes)
         self.sorts = sorts
+        self.aggregations = aggregations
         self._page_size = _page_size
         self._includes_on_results = _includes_on_results
         self._includes_on_relations = _includes_on_relations
@@ -273,20 +297,20 @@ class FluentSearch(CompoundQuery):
         clone.sorts.append(by)
         return clone
 
-    # def aggregate(self, key: str, aggregation: Aggregation) -> "FluentSearch":
-    #     """
-    #     Add an aggregation to run against the results of the search.
-    #     You provide any key you want (you'll use it to look at the results of a specific aggregation).
+    def aggregate(self, key: str, aggregation: Aggregation) -> "FluentSearch":
+        """
+        Add an aggregation to run against the results of the search.
+        You provide any key you want (you'll use it to look at the results of a specific aggregation).
 
-    #     :param key: you want to use to look at the results of the aggregation
-    #     :param aggregation: you want to calculate
-    #     :returns: the fluent search with this aggregation added
-    #     """
-    #     clone = self._clone()
-    #     if clone.aggregations is None:
-    #         clone.aggregations = {}
-    #     clone.aggregations[key] = aggregation
-    #     return clone
+        :param key: you want to use to look at the results of the aggregation
+        :param aggregation: you want to calculate
+        :returns: the fluent search with this aggregation added
+        """
+        clone = self._clone()
+        if clone.aggregations is None:
+            clone.aggregations = {}
+        clone.aggregations[key] = aggregation
+        return clone
 
     def page_size(self, size: int) -> "FluentSearch":
         """
@@ -350,8 +374,8 @@ class FluentSearch(CompoundQuery):
             dsl.size = self._page_size
         if self.sorts:
             dsl.sort = self.sorts
-        # if self.aggregations:
-        #     dsl.aggregations.extend(self.aggregations)
+        if self.aggregations:
+            dsl.aggregations.update(self.aggregations)
         request = IndexSearchRequest(dsl=dsl)
         if self._includes_on_results:
             request.attributes = self._includes_on_results

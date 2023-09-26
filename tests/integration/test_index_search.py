@@ -8,8 +8,9 @@ from typing import Generator
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.model.assets import Asset
+from pyatlan.model.assets import Asset, Table
 from pyatlan.model.enums import AtlanConnectorType, CertificateStatus
+from pyatlan.model.fluent_search import FluentSearch
 from pyatlan.model.search import (
     DSL,
     Exists,
@@ -276,3 +277,39 @@ def test_range_factory(client: AtlanClient, value, method, format):
     )
     results = client.search(criteria=request)
     assert results.count >= 0
+
+
+def test_bucket_aggregation(client: AtlanClient):
+    request = (
+        FluentSearch.select()
+        .aggregate("type", Asset.TYPE_NAME.bucket_by())
+        .sort(Asset.CREATE_TIME.order())
+    ).to_request()
+    results = client.search(criteria=request)
+    assert results.aggregations
+    result = results.aggregations["type"]
+    assert result
+    assert result.buckets
+    assert len(result.buckets) > 0
+    for bucket in result.buckets:
+        assert bucket.key
+        assert bucket.doc_count
+
+
+def test_metric_aggregation(client: AtlanClient):
+    request = (
+        FluentSearch()
+        .where(Term.with_type_name("Table"))
+        .aggregate("avg_columns", Table.COLUMN_COUNT.avg())
+        .aggregate("min_columns", Table.COLUMN_COUNT.min())
+        .aggregate("max_columns", Table.COLUMN_COUNT.max())
+        .aggregate("sum_columns", Table.COLUMN_COUNT.sum())
+        .sort(Asset.CREATE_TIME.order())
+    ).to_request()
+    results = client.search(criteria=request)
+    assert results
+    assert results.aggregations
+    assert results.aggregations["avg_columns"]
+    assert results.aggregations["min_columns"]
+    assert results.aggregations["max_columns"]
+    assert results.aggregations["sum_columns"]

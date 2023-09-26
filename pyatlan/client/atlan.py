@@ -71,6 +71,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
+from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
@@ -366,9 +367,15 @@ class AtlanClient(BaseSettings):
             size: int,
             count: int,
             assets: list[Asset],
+            aggregations: Optional[Aggregations],
         ):
             super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
             self._count = count
+            self._aggregations = aggregations
+
+        @property
+        def aggregations(self) -> Optional[Aggregations]:
+            return self._aggregations
 
         def _get_next_page(self):
             """
@@ -1444,6 +1451,7 @@ class AtlanClient(BaseSettings):
                 ) from err
         else:
             assets = []
+        aggregations = self.get_aggregations(raw_json)
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
         return AtlanClient.IndexSearchResults(
             client=self,
@@ -1452,7 +1460,20 @@ class AtlanClient(BaseSettings):
             size=criteria.dsl.size,
             count=count,
             assets=assets,
+            aggregations=aggregations,
         )
+
+    def get_aggregations(self, raw_json) -> Optional[Aggregations]:
+        if "aggregations" in raw_json:
+            try:
+                aggregations = Aggregations.parse_obj(raw_json["aggregations"])
+            except ValidationError as err:
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
+        else:
+            aggregations = None
+        return aggregations
 
     def get_all_typedefs(self) -> TypeDefResponse:
         """
