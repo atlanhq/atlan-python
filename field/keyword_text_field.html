@@ -435,6 +435,24 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.model.fields.atlan_fields.</span></span><span class="sig-name descname"><span class="pre">KeywordTextField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atlan_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyword_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#KeywordTextField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordTextField" title="Link to this definition">#</a></dt>
 <dd><p>Represents any field in Atlan that can be searched by keyword or text-based search operations.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordTextField.bucket_by">
+<span class="sig-name descname"><span class="pre">bucket_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordTextField.bucket_by" title="Link to this definition">#</a></dt>
+<dd><dl>
+<dt>Return criteria to bucket results based on the provided field.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of buckets to include results across.</p>
+</dd>
+<dt class="field-even">returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>criteria to bucket results by the provided field, across a maximum number of buckets defined by</p>
+</dd>
+</dl>
+<p>the provided size</p>
+</dd>
+</dl>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>/</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.KeywordTextField.eq">
 <span class="sig-name descname"><span class="pre">eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictStr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_insensitive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.KeywordTextField.eq" title="Link to this definition">#</a></dt>
 <dd><p>Returns a query that will match all assets whose field has a value that exactly matches
@@ -614,6 +632,7 @@ the values provided</p>
             <ul>
 <li><a class="reference internal" href="#">KeywordTextField</a><ul>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordTextField"><code class="docutils literal notranslate"><span class="pre">KeywordTextField</span></code></a><ul>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordTextField.bucket_by"><code class="docutils literal notranslate"><span class="pre">KeywordTextField.bucket_by()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordTextField.eq"><code class="docutils literal notranslate"><span class="pre">KeywordTextField.eq()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordTextField.has_any_value"><code class="docutils literal notranslate"><span class="pre">KeywordTextField.has_any_value()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.KeywordTextField.keyword_field_name"><code class="docutils literal notranslate"><span class="pre">KeywordTextField.keyword_field_name</span></code></a></li>

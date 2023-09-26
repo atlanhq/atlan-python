@@ -500,6 +500,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.workflow</span> <span class="kn">import</span> <span class="n">WorkflowClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">,</span> <span class="n">AtlanError</span><span class="p">,</span> <span class="n">ErrorCode</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.aggregation</span> <span class="kn">import</span> <span class="n">Aggregations</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.api_tokens</span> <span class="kn">import</span> <span class="n">ApiToken</span><span class="p">,</span> <span class="n">ApiTokenRequest</span><span class="p">,</span> <span class="n">ApiTokenResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Asset</span><span class="p">,</span>
@@ -808,9 +809,15 @@
             <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">assets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span>
+            <span class="n">aggregations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Aggregations</span><span class="p">],</span>
         <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">INDEX_SEARCH</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">assets</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">count</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_aggregations</span> <span class="o">=</span> <span class="n">aggregations</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">aggregations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Aggregations</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregations</span>
 
         <span class="k">def</span> <span class="nf">_get_next_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2006,6 +2013,7 @@
                 <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">assets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">aggregations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_aggregations</span><span class="p">(</span><span class="n">raw_json</span><span class="p">)</span>
         <span class="n">count</span> <span class="o">=</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;approximateCount&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;approximateCount&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span> <span class="k">else</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">IndexSearchResults</span><span class="p">(</span>
             <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
@@ -2014,8 +2022,21 @@
             <span class="n">size</span><span class="o">=</span><span class="n">criteria</span><span class="o">.</span><span class="n">dsl</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
             <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span>
             <span class="n">assets</span><span class="o">=</span><span class="n">assets</span><span class="p">,</span>
+            <span class="n">aggregations</span><span class="o">=</span><span class="n">aggregations</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+
+    <span class="k">def</span> <span class="nf">get_aggregations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_json</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Aggregations</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s2">&quot;aggregations&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">aggregations</span> <span class="o">=</span> <span class="n">Aggregations</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;aggregations&quot;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">aggregations</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">aggregations</span>
 
 <div class="viewcode-block" id="AtlanClient.get_all_typedefs">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_all_typedefs">[docs]</a>

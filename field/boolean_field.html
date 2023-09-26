@@ -446,6 +446,24 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.BooleanField.bucket_by">
+<span class="sig-name descname"><span class="pre">bucket_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Aggregation</span></span></span><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.BooleanField.bucket_by" title="Link to this definition">#</a></dt>
+<dd><dl>
+<dt>Return criteria to bucket results based on the provided field.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param size<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of buckets to include results across.</p>
+</dd>
+<dt class="field-even">returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>criteria to bucket results by the provided field, across a maximum number of buckets defined by</p>
+</dd>
+</dl>
+<p>the provided size</p>
+</dd>
+</dl>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>/</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.model.fields.atlan_fields.BooleanField.eq">
 <span class="sig-name descname"><span class="pre">eq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrictBool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Query</span></span></span><a class="reference internal" href="../_modules/pyatlan/model/fields/atlan_fields.html#BooleanField.eq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.model.fields.atlan_fields.BooleanField.eq" title="Link to this definition">#</a></dt>
 <dd><p>Returns a query that will match all assets whose field has a value that exactly equals
@@ -549,6 +567,7 @@ provided</p>
 <li><a class="reference internal" href="#">BooleanField</a><ul>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.BooleanField"><code class="docutils literal notranslate"><span class="pre">BooleanField</span></code></a><ul>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.BooleanField.boolean_field_name"><code class="docutils literal notranslate"><span class="pre">BooleanField.boolean_field_name</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.BooleanField.bucket_by"><code class="docutils literal notranslate"><span class="pre">BooleanField.bucket_by()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.BooleanField.eq"><code class="docutils literal notranslate"><span class="pre">BooleanField.eq()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.BooleanField.has_any_value"><code class="docutils literal notranslate"><span class="pre">BooleanField.has_any_value()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.fields.atlan_fields.BooleanField.order"><code class="docutils literal notranslate"><span class="pre">BooleanField.order()</span></code></a></li>
