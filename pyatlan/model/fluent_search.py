@@ -375,7 +375,7 @@ class FluentSearch(CompoundQuery):
         if self.sorts:
             dsl.sort = self.sorts
         if self.aggregations:
-            dsl.aggregations = self.aggregations
+            dsl.aggregations.update(self.aggregations)
         request = IndexSearchRequest(dsl=dsl)
         if self._includes_on_results:
             request.attributes = self._includes_on_results

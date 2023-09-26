@@ -279,7 +279,6 @@ class AtlanClient(BaseSettings):
             start: int,
             size: int,
             assets: list[Asset],
-            aggregations: Optional[Aggregations],
         ):
             self._client = client
             self._endpoint = endpoint
@@ -287,7 +286,6 @@ class AtlanClient(BaseSettings):
             self._start = start
             self._size = size
             self._assets = assets
-            self._aggregations = aggregations
 
         def current_page(self) -> list[Asset]:
             """
@@ -342,10 +340,6 @@ class AtlanClient(BaseSettings):
                     raw_json, 200, str(err)
                 ) from err
 
-        @property
-        def aggregations(self) -> Optional[Aggregations]:
-            return self._aggregations
-
         def __iter__(self) -> Generator[Asset, None, None]:
             """
             Iterates through the results, lazily-fetching each next page until there
@@ -375,10 +369,13 @@ class AtlanClient(BaseSettings):
             assets: list[Asset],
             aggregations: Optional[Aggregations],
         ):
-            super().__init__(
-                client, INDEX_SEARCH, criteria, start, size, assets, aggregations
-            )
+            super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
             self._count = count
+            self._aggregations = aggregations
+
+        @property
+        def aggregations(self) -> Optional[Aggregations]:
+            return self._aggregations
 
         def _get_next_page(self):
             """
@@ -415,11 +412,8 @@ class AtlanClient(BaseSettings):
             size: int,
             has_more: bool,
             assets: list[Asset],
-            aggregations: Optional[Aggregations],
         ):
-            super().__init__(
-                client, GET_LINEAGE_LIST, criteria, start, size, assets, aggregations
-            )
+            super().__init__(client, GET_LINEAGE_LIST, criteria, start, size, assets)
             self._has_more = has_more
 
         def _get_next_page(self):
@@ -2050,7 +2044,6 @@ class AtlanClient(BaseSettings):
         else:
             assets = []
             has_more = False
-        aggregations = self.get_aggregations(raw_json)
         return AtlanClient.LineageListResults(
             client=self,
             criteria=lineage_request,
@@ -2058,7 +2051,6 @@ class AtlanClient(BaseSettings):
             size=lineage_request.size or 10,
             has_more=has_more,
             assets=assets,
-            aggregations=aggregations,
         )
 
     def add_api_token_as_admin(
