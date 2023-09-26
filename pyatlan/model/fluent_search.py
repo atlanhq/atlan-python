@@ -8,7 +8,7 @@ from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import AtlanField
-from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem
+from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Query, SortItem, Term
 
 SelfQuery = TypeVar("SelfQuery", bound="CompoundQuery")
 
@@ -235,6 +235,27 @@ class FluentSearch(CompoundQuery):
     _page_size: Optional[int] = None
     _includes_on_results: Optional[list[str]] = None
     _includes_on_relations: Optional[list[str]] = None
+
+    @classmethod
+    def select(cls, include_archived=False) -> "FluentSearch":
+        """
+        Start a fluent search that will return all assets.
+        Additional conditions can be chained onto the returned object before any
+        asset retrieval is attempted, ensuring all conditions are pushed-down for
+        optimal retrieval. Only active (non-archived) assets will be included.
+
+        :param include_archived: when True, archived (soft-deleted) assets will be included
+        :returns: a fluent search that includes all assets
+        """
+        return cls(
+            wheres=[Term.with_state("ACTIVE")] if not include_archived else [],
+            where_nots=[
+                Term.with_type_name("__AtlasAuditEntry"),
+                Term.with_type_name("__AtlasUserProfile"),
+                Term.with_type_name("__AtlasUserSavedSearch"),
+                Term.with_type_name("__ExportImportAuditEntry"),
+            ],
+        )
 
     def __init__(
         self,

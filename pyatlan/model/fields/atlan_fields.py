@@ -316,6 +316,18 @@ class NumericField(SearchableField):
         """
         return Range(field=self.numeric_field_name, gte=minimum, lte=maximum)
 
+    def avg(self) -> Aggregation:
+        return Aggregation(__root__={"avg": {"field": self.elastic_field_name}})
+
+    def sum(self) -> Aggregation:
+        return Aggregation(__root__={"sum": {"field": self.elastic_field_name}})
+
+    def min(self) -> Aggregation:
+        return Aggregation(__root__={"min": {"field": self.elastic_field_name}})
+
+    def max(self) -> Aggregation:
+        return Aggregation(__root__={"max": {"field": self.elastic_field_name}})
+
 
 class NumericRankField(NumericField):
     """
