@@ -33,6 +33,8 @@ class Aggregation(AtlanObject):
 
 
 class Aggregations(AtlanObject):
+    """Aggregation results from a search"""
+
     __root__: dict[str, Union[AggregationMetricResult, AggregationBucketResult]]
 
     def __iter__(self):

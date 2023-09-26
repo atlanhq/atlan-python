@@ -82,6 +82,11 @@ class SearchableField(AtlanField):
         self,
         size: int = 10,
     ) -> Aggregation:
+        """Return criteria to bucket results based on the provided field.
+           :param size: the number of buckets to include results across.
+           :returns: criteria to bucket results by the provided field, across a maximum number of buckets defined by
+           the provided size
+        */"""
         return Aggregation(
             __root__={"terms": {"field": self.elastic_field_name, "size": size}}
         )
@@ -317,15 +322,19 @@ class NumericField(SearchableField):
         return Range(field=self.numeric_field_name, gte=minimum, lte=maximum)
 
     def avg(self) -> Aggregation:
+        """Returns criteria to calculate the average value of the provided field across all results."""
         return Aggregation(__root__={"avg": {"field": self.elastic_field_name}})
 
     def sum(self) -> Aggregation:
+        """Returns criteria to calculate the sum value of the provided field across all results."""
         return Aggregation(__root__={"sum": {"field": self.elastic_field_name}})
 
     def min(self) -> Aggregation:
+        """Returns criteria to calculate the minimum value of the provided field across all results."""
         return Aggregation(__root__={"min": {"field": self.elastic_field_name}})
 
     def max(self) -> Aggregation:
+        """Returns criteria to calculate the maximum value of the provided field across all results."""
         return Aggregation(__root__={"max": {"field": self.elastic_field_name}})
 
 
