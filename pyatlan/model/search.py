@@ -1811,7 +1811,7 @@ class DSL(AtlanObject):
     def __init__(__pydantic_self__, **data: Any) -> None:
         super().__init__(**data)
         __pydantic_self__.__fields_set__.update(
-            ["from_", "size", "track_total_hits", "sort"]
+            ["from_", "size", "track_total_hits", "sort", "aggregations"]
         )
 
     @validator("query", always=True)
