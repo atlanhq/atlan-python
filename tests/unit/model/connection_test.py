@@ -60,12 +60,24 @@ def test_create_with_missing_parameters_raise_value_error(
     mock_group_cache,
     monkeypatch,
 ):
-    def side_effect(*args, **kwargs):
-        return None if args and args[0] == "bad" else "123"
+    def role_side_effect(*args, **kwargs):
+        if "names" in kwargs:
+            if "bad" in kwargs["names"]:
+                raise ValueError("Provided role ID bad was not found in Atlan.")
 
-    mock_role_cache.get_name_for_id.side_effect = side_effect
-    mock_user_cache.get_id_for_name.side_effect = side_effect
-    mock_group_cache.get_id_for_alias.side_effect = side_effect
+    def user_side_effect(*args, **kwargs):
+        if "names" in kwargs:
+            if "bad" in kwargs["names"]:
+                raise ValueError("Provided username bad was not found in Atlan.")
+
+    def group_side_effect(*args, **kwargs):
+        if "names" in kwargs:
+            if "bad" in kwargs["names"]:
+                raise ValueError("Provided group name bad was not found in Atlan.")
+
+    mock_role_cache.validate_names.side_effect = role_side_effect
+    mock_user_cache.validate_names.side_effect = user_side_effect
+    mock_group_cache.validate_names.side_effect = group_side_effect
 
     monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
@@ -99,9 +111,9 @@ def test_create(
     mock_user_cache,
     mock_group_cache,
 ):
-    mock_role_cache.get_name_for_id.return_value = "123"
-    mock_user_cache.get_id_for_name.return_value = "456"
-    mock_group_cache.get_id_for_alias.return_value = "789"
+    mock_role_cache.validate_names
+    mock_user_cache.validate_names
+    mock_group_cache.validate_names
 
     sut = Connection.create(
         name=name,
@@ -150,3 +162,72 @@ def test_trim_to_required():
 
     assert sut.qualified_name == CONNECTION_QUALIFIED_NAME
     assert sut.name == CONNECTION_NAME
+
+
+def test_admin_users_when_set_to_bad_name_raise_value_error(mock_user_cache):
+    mock_user_cache.validate_names.side_effect = ValueError("Bad User")
+
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    ).trim_to_required()
+
+    with pytest.raises(ValueError, match="Bad User"):
+        sut.admin_users = ["bogus"]
+
+
+def test_admin_groups_when_set_to_bad_name_raise_value_error(mock_group_cache):
+    mock_group_cache.validate_names.side_effect = ValueError("Bad Group")
+
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    ).trim_to_required()
+
+    with pytest.raises(ValueError, match="Bad Group"):
+        sut.admin_groups = ["bogus"]
+
+
+def test_admin_roles_when_set_to_bad_name_raise_value_error(mock_role_cache):
+    mock_role_cache.validate_names.side_effect = ValueError("Bad Role")
+
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    ).trim_to_required()
+
+    with pytest.raises(ValueError, match="Bad Role"):
+        sut.admin_roles = ["bogus"]
+
+
+def test_admin_users_when_set_to_good_name(mock_user_cache):
+    mock_user_cache.validate_names
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    ).trim_to_required()
+
+    sut.admin_users = ["ernest"]
+
+    assert sut.admin_users == {"ernest"}
+    mock_user_cache.validate_names.assert_called_once
+
+
+def test_admin_groups_when_set_to_good_name(mock_group_cache):
+    mock_group_cache.validate_names
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    ).trim_to_required()
+
+    sut.admin_groups = ["ernest"]
+
+    assert sut.admin_groups == {"ernest"}
+    mock_group_cache.validate_names.assert_called_once
+
+
+def test_admin_roles_when_set_to_good_name(mock_role_cache):
+    mock_role_cache.validate_names
+    sut = Connection.create_for_modification(
+        qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
+    ).trim_to_required()
+
+    sut.admin_roles = ["ernest"]
+
+    assert sut.admin_roles == {"ernest"}
+    mock_role_cache.validate_names.assert_called_once

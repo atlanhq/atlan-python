@@ -34,36 +34,6 @@ class Connection(Asset, type_name="Connection"):
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
-        if admin_roles:
-            from pyatlan.cache.role_cache import RoleCache
-
-            for role_id in admin_roles:
-                if not RoleCache.get_name_for_id(role_id):
-                    raise ValueError(
-                        f"Provided role ID {role_id} was not found in Atlan."
-                    )
-        if admin_groups:
-            from pyatlan.cache.group_cache import GroupCache
-
-            for group_alias in admin_groups:
-                if not GroupCache.get_id_for_alias(group_alias):
-                    raise ValueError(
-                        f"Provided group name {group_alias} was not found in Atlan."
-                    )
-        if admin_users:
-            from pyatlan.cache.user_cache import UserCache
-            from pyatlan.client.atlan import AtlanClient
-
-            for username in admin_users:
-                if not UserCache.get_id_for_name(username):
-                    # If we cannot find the username, fallback to looking for an API token
-                    client = AtlanClient.get_default_client()
-                    if client is None:
-                        client = AtlanClient()
-                    if not client.get_api_token_by_id(username):
-                        raise ValueError(
-                            f"Provided username {username} was not found in Atlan."
-                        )
         attr = cls.Attributes(
             name=name,
             qualified_name=connector_type.to_qualified_name(),
@@ -208,6 +178,24 @@ class Connection(Asset, type_name="Connection"):
     """
     TBC
     """
+    USE_OBJECT_STORAGE: ClassVar[BooleanField] = BooleanField(
+        "useObjectStorage", "useObjectStorage"
+    )
+    """
+    A Boolean flag indicating whether to upload to S3, GCP, or another storage location
+    """
+    OBJECT_STORAGE_UPLOAD_THRESHOLD: ClassVar[NumericField] = NumericField(
+        "objectStorageUploadThreshold", "objectStorageUploadThreshold"
+    )
+    """
+    A long integer indicating after how many rows heka should start uploading result to storage
+    """
+    VECTOR_EMBEDDINGS_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[list[str]] = [
         "category",
@@ -233,6 +221,9 @@ class Connection(Asset, type_name="Connection"):
         "has_popularity_insights",
         "connection_dbt_environments",
         "connection_s_s_o_credential_guid",
+        "use_object_storage",
+        "object_storage_upload_threshold",
+        "vector_embeddings_enabled",
     ]
 
     @property
@@ -503,6 +494,48 @@ class Connection(Asset, type_name="Connection"):
             connection_s_s_o_credential_guid
         )
 
+    @property
+    def use_object_storage(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.use_object_storage
+
+    @use_object_storage.setter
+    def use_object_storage(self, use_object_storage: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.use_object_storage = use_object_storage
+
+    @property
+    def object_storage_upload_threshold(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.object_storage_upload_threshold
+        )
+
+    @object_storage_upload_threshold.setter
+    def object_storage_upload_threshold(
+        self, object_storage_upload_threshold: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.object_storage_upload_threshold = (
+            object_storage_upload_threshold
+        )
+
+    @property
+    def vector_embeddings_enabled(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.vector_embeddings_enabled
+        )
+
+    @vector_embeddings_enabled.setter
+    def vector_embeddings_enabled(self, vector_embeddings_enabled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.vector_embeddings_enabled = vector_embeddings_enabled
+
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
         sub_category: Optional[str] = Field(None, description="", alias="subCategory")
@@ -555,6 +588,36 @@ class Connection(Asset, type_name="Connection"):
         connection_s_s_o_credential_guid: Optional[str] = Field(
             None, description="", alias="connectionSSOCredentialGuid"
         )
+        use_object_storage: Optional[bool] = Field(
+            None, description="", alias="useObjectStorage"
+        )
+        object_storage_upload_threshold: Optional[int] = Field(
+            None, description="", alias="objectStorageUploadThreshold"
+        )
+        vector_embeddings_enabled: Optional[bool] = Field(
+            None, description="", alias="vectorEmbeddingsEnabled"
+        )
+
+        @validator("admin_users")
+        def admin_users_valid(cls, admin_users):
+            from pyatlan.cache.user_cache import UserCache
+
+            UserCache.validate_names(names=admin_users)
+            return admin_users
+
+        @validator("admin_roles")
+        def admin_roles_valid(cls, admin_roles):
+            from pyatlan.cache.role_cache import RoleCache
+
+            RoleCache.validate_names(names=admin_roles)
+            return admin_roles
+
+        @validator("admin_groups")
+        def admin_groups_valid(cls, admin_groups):
+            from pyatlan.cache.group_cache import GroupCache
+
+            GroupCache.validate_names(names=admin_groups)
+            return admin_groups
 
     attributes: "Connection.Attributes" = Field(
         default_factory=lambda: Connection.Attributes(),

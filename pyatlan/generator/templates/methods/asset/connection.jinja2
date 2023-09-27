@@ -15,33 +15,6 @@
             raise ValueError(
                 "One of admin_user, admin_groups or admin_roles is required"
             )
-        if admin_roles:
-            from pyatlan.cache.role_cache import RoleCache
-            for role_id in admin_roles:
-                if not RoleCache.get_name_for_id(role_id):
-                    raise ValueError(
-                        f"Provided role ID {role_id} was not found in Atlan."
-                    )
-        if admin_groups:
-            from pyatlan.cache.group_cache import GroupCache
-            for group_alias in admin_groups:
-                if not GroupCache.get_id_for_alias(group_alias):
-                    raise ValueError(
-                        f"Provided group name {group_alias} was not found in Atlan."
-                    )
-        if admin_users:
-            from pyatlan.cache.user_cache import UserCache
-            from pyatlan.client.atlan import AtlanClient
-            for username in admin_users:
-                if not UserCache.get_id_for_name(username):
-                    # If we cannot find the username, fallback to looking for an API token
-                    client = AtlanClient.get_default_client()
-                    if client is None:
-                        client = AtlanClient()
-                    if not client.get_api_token_by_id(username):
-                        raise ValueError(
-                            f"Provided username {username} was not found in Atlan."
-                        )
         attr = cls.Attributes(
             name=name,
             qualified_name=connector_type.to_qualified_name(),

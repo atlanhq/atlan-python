@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Optional
+from typing import Iterable, Optional
 
 from pyatlan.model.user import UserProvider
 
@@ -51,6 +51,15 @@ class UserCache:
         :returns: username of the user
         """
         return cls.get_cache()._get_name_for_id(idstr=idstr)
+
+    @classmethod
+    def validate_names(cls, names: Iterable[str]):
+        """
+        Validate that the given human-readable usernames are valid. A ValueError will be raised in any are not.
+
+        :param names: a collection of usernames to be checked
+        """
+        return cls.get_cache()._validate_names(names)
 
     def __init__(self, provider: UserProvider):
         self.provider = provider
@@ -107,3 +116,17 @@ class UserCache:
             return username
         self._refresh_cache()
         return self.map_id_to_name.get(idstr)
+
+    def _validate_names(self, names: Iterable[str]):
+        """
+        Validate that the given human-readable usernames are valid. A ValueError will be raised in any are not.
+
+        :param names: a collection of usernames to be checked
+        """
+        for username in names:
+            if not self.get_id_for_name(
+                username
+            ) and not self.provider.get_api_token_by_id(username):
+                raise ValueError(
+                    f"Provided username {username} was not found in Atlan."
+                )
