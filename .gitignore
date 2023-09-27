@@ -57,4 +57,5 @@ examples/
 pyatlan/documentation/*.md
 
 # Sphinx
-docs/
+docs/_build/
+docs/generated/
