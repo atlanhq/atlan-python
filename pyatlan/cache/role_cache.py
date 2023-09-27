@@ -45,9 +45,9 @@ class RoleCache:
     @classmethod
     def validate_idstrs(cls, idstrs: Iterable[str]):
         """
-        Validate that the given provided role GUIDs are valid. A ValueError will be raised in any are not.
+        Validate that the given role GUIDs are valid. A ValueError will be raised in any are not.
 
-        :param idstrs: a collection of unique identifiers (GUID) of the role to be checked
+        :param idstrs: a collection of unique identifiers (GUID) of the roles to be checked
         """
         return cls.get_cache()._validate_idstrs(idstrs=idstrs)
 
@@ -98,9 +98,9 @@ class RoleCache:
 
     def _validate_idstrs(self, idstrs: Iterable[str]):
         """
-        Validate that the given provided role GUIDs are valid. A ValueError will be raised in any are not.
+        Validate that the given role GUIDs are valid. A ValueError will be raised in any are not.
 
-        :param idstrs: a collection of unique identifiers (GUID) of the role to be checked
+        :param idstrs: a collection of unique identifiers (GUID) of the roles to be checked
         """
         for role_id in idstrs:
             if not self.get_name_for_id(role_id):
