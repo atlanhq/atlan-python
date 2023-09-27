@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, Optional, Protocol, Union, cast
+from typing import Any, Callable, Literal, Optional, Protocol, Union, cast
 
 from pydantic import Field
 
@@ -455,7 +455,7 @@ class AttributeDef(AtlanObject):
             self.options.is_archived = True
             self.options.archived_by = by
             self.options.archived_at = removal_epoch
-            self.display_name = f"{self.display_name}-archived-{str(removal_epoch)}"
+            self.display_name = f"{self.display_name}-archived-{removal_epoch}"
         return self
 
 
@@ -600,7 +600,7 @@ class CustomMetadataDef(TypeDef):
         image_id: Optional[str] = Field(
             description="The id of the image used for the logo."
         )
-        is_locked: Optional[str] = Field(
+        is_locked: Optional[Literal["true", "false"]] = Field(
             description="Indicates whether the custom metadata can be managed in the UI (false) or not (true)."
         )
         logo_type: Optional[str] = Field(
@@ -621,7 +621,7 @@ class CustomMetadataDef(TypeDef):
                 [emoji],
             )
             return CustomMetadataDef.Options(
-                emoji=emoji, logo_type="emoji", is_locked=str(locked).lower()
+                emoji=emoji, logo_type="emoji", is_locked="true" if locked else "false"
             )
 
         @staticmethod
@@ -635,7 +635,7 @@ class CustomMetadataDef(TypeDef):
                 [url],
             )
             return CustomMetadataDef.Options(
-                logo_url=url, logo_type="image", is_locked=locked
+                logo_url=url, logo_type="image", is_locked="true" if locked else "false"
             )
 
     attribute_defs: list[AttributeDef] = Field(
