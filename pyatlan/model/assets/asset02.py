@@ -609,7 +609,7 @@ class Connection(Asset, type_name="Connection"):
         def admin_roles_valid(cls, admin_roles):
             from pyatlan.cache.role_cache import RoleCache
 
-            RoleCache.validate_names(names=admin_roles)
+            RoleCache.validate_idstrs(idstrs=admin_roles)
             return admin_roles
 
         @validator("admin_groups")

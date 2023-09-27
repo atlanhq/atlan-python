@@ -61,8 +61,8 @@ def test_create_with_missing_parameters_raise_value_error(
     monkeypatch,
 ):
     def role_side_effect(*args, **kwargs):
-        if "names" in kwargs:
-            if "bad" in kwargs["names"]:
+        if "idstrs" in kwargs:
+            if "bad" in kwargs["idstrs"]:
                 raise ValueError("Provided role ID bad was not found in Atlan.")
 
     def user_side_effect(*args, **kwargs):
@@ -75,7 +75,7 @@ def test_create_with_missing_parameters_raise_value_error(
             if "bad" in kwargs["names"]:
                 raise ValueError("Provided group name bad was not found in Atlan.")
 
-    mock_role_cache.validate_names.side_effect = role_side_effect
+    mock_role_cache.validate_idstrs.side_effect = role_side_effect
     mock_user_cache.validate_names.side_effect = user_side_effect
     mock_group_cache.validate_names.side_effect = group_side_effect
 
@@ -111,7 +111,7 @@ def test_create(
     mock_user_cache,
     mock_group_cache,
 ):
-    mock_role_cache.validate_names
+    mock_role_cache.validate_idstrs
     mock_user_cache.validate_names
     mock_group_cache.validate_names
 
@@ -187,7 +187,7 @@ def test_admin_groups_when_set_to_bad_name_raise_value_error(mock_group_cache):
 
 
 def test_admin_roles_when_set_to_bad_name_raise_value_error(mock_role_cache):
-    mock_role_cache.validate_names.side_effect = ValueError("Bad Role")
+    mock_role_cache.validate_idstrs.side_effect = ValueError("Bad Role")
 
     sut = Connection.create_for_modification(
         qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
@@ -222,7 +222,7 @@ def test_admin_groups_when_set_to_good_name(mock_group_cache):
 
 
 def test_admin_roles_when_set_to_good_name(mock_role_cache):
-    mock_role_cache.validate_names
+    mock_role_cache.validate_idstrs
     sut = Connection.create_for_modification(
         qualified_name=CONNECTION_QUALIFIED_NAME, name=CONNECTION_NAME
     ).trim_to_required()
@@ -230,4 +230,4 @@ def test_admin_roles_when_set_to_good_name(mock_role_cache):
     sut.admin_roles = ["ernest"]
 
     assert sut.admin_roles == {"ernest"}
-    mock_role_cache.validate_names.assert_called_once
+    mock_role_cache.validate_idstrs.assert_called_once

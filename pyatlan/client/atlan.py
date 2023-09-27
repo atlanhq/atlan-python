@@ -152,6 +152,8 @@ from pyatlan.utils import (
     unflatten_custom_metadata_for_entity,
 )
 
+SERVICE_ACCOUNT_ = "service-account-"
+
 LOGGER = get_logger()
 T = TypeVar("T", bound=Referenceable)
 A = TypeVar("A", bound=Asset)
@@ -2201,6 +2203,8 @@ class AtlanClient(BaseSettings):
         :param client_id: unique client identifier by which to retrieve the API token
         :returns: the API token whose clientId matches the provided string, or None if there is none
         """
+        if client_id and client_id.startswith(SERVICE_ACCOUNT_):
+            client_id = client_id[len(SERVICE_ACCOUNT_) :]  # noqa: E203
         if response := self.get_api_tokens(
             offset=0,
             limit=5,

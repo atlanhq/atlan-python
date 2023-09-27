@@ -43,13 +43,13 @@ class RoleCache:
         return cls.get_cache()._get_name_for_id(idstr=idstr)
 
     @classmethod
-    def validate_names(cls, names: Iterable[str]):
+    def validate_idstrs(cls, idstrs: Iterable[str]):
         """
-        Validate that the given human-readable role names are valid. A ValueError will be raised in any are not.
+        Validate that the given provided role GUIDs are valid. A ValueError will be raised in any are not.
 
-        :param names: a collection of role names to be checked
+        :param idstrs: a collection of unique identifiers (GUID) of the role to be checked
         """
-        return cls.get_cache()._validate_names(names=names)
+        return cls.get_cache()._validate_idstrs(idstrs=idstrs)
 
     def __init__(self, provider: RoleProvider):
         self.provider = provider
@@ -96,12 +96,12 @@ class RoleCache:
         self._refresh_cache()
         return self.map_id_to_name.get(idstr)
 
-    def _validate_names(self, names: Iterable[str]):
+    def _validate_idstrs(self, idstrs: Iterable[str]):
         """
-        Validate that the given human-readable role names are valid. A ValueError will be raised in any are not.
+        Validate that the given provided role GUIDs are valid. A ValueError will be raised in any are not.
 
-        :param names: a collection of role names to be checked
+        :param idstrs: a collection of unique identifiers (GUID) of the role to be checked
         """
-        for role_id in names:
+        for role_id in idstrs:
             if not self.get_name_for_id(role_id):
                 raise ValueError(f"Provided role ID {role_id} was not found in Atlan.")
