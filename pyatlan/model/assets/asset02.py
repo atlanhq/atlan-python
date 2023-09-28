@@ -39,10 +39,10 @@ class Connection(Asset, type_name="Connection"):
             qualified_name=connector_type.to_qualified_name(),
             connector_name=connector_type.value,
             category=connector_type.category.value,
-            admin_users=admin_users or [],
-            admin_groups=admin_groups or [],
-            admin_roles=admin_roles or [],
         )
+        attr.admin_users = admin_users or []
+        attr.admin_groups = admin_groups or []
+        attr.admin_roles = admin_roles or []
         return cls(attributes=attr)
 
     type_name: str = Field("Connection", allow_mutation=False)
@@ -598,26 +598,31 @@ class Connection(Asset, type_name="Connection"):
             None, description="", alias="vectorEmbeddingsEnabled"
         )
 
+        is_loaded: bool = Field(default=True)
+
         @validator("admin_users")
-        def admin_users_valid(cls, admin_users):
+        def admin_users_valid(cls, admin_users, values):
             from pyatlan.cache.user_cache import UserCache
 
-            UserCache.validate_names(names=admin_users)
+            if values.get("is_loaded", False):
+                UserCache.validate_names(names=admin_users)
             return admin_users
 
         @validator("admin_roles")
-        def admin_roles_valid(cls, admin_roles):
+        def admin_roles_valid(cls, admin_roles, values):
             from pyatlan.cache.role_cache import RoleCache
 
-            RoleCache.validate_idstrs(idstrs=admin_roles)
+            if values.get("is_loaded", False):
+                RoleCache.validate_idstrs(idstrs=admin_roles)
             return admin_roles
 
         @validator("admin_groups")
-        def admin_groups_valid(cls, admin_groups):
+        def admin_groups_valid(cls, admin_groups, values):
             from pyatlan.cache.group_cache import GroupCache
 
-            GroupCache.validate_names(names=admin_groups)
-            return admin_groups
+            if values.get("is_loaded", False):
+                GroupCache.validate_aliases(aliases=admin_groups)
+                return admin_groups
 
     attributes: "Connection.Attributes" = Field(
         default_factory=lambda: Connection.Attributes(),

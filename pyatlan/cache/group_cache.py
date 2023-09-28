@@ -53,13 +53,13 @@ class GroupCache:
         return cls.get_cache()._get_name_for_id(idstr=idstr)
 
     @classmethod
-    def validate_names(cls, names: Iterable[str]):
+    def validate_aliases(cls, aliases: Iterable[str]):
         """
-        Validate that the given human-readable group names are valid. A ValueError will be raised in any are not.
+        Validate that the given human-readable group aliases are valid. A ValueError will be raised in any are not.
 
-        :param names: a collection of group names to be checked
+        :param aliases: a collection of group aliases to be checked
         """
-        return cls.get_cache()._validate_names(names)
+        return cls.get_cache()._validate_aliases(aliases)
 
     def __init__(self, provider: GroupProvider):
         self.provider = provider
@@ -117,13 +117,13 @@ class GroupCache:
         self._refresh_cache()
         return self.map_id_to_name.get(idstr)
 
-    def _validate_names(self, names: Iterable[str]):
+    def _validate_aliases(self, aliases: Iterable[str]):
         """
-        Validate that the given human-readable group names are valid. A ValueError will be raised in any are not.
+        Validate that the given human-readable group aliases are valid. A ValueError will be raised in any are not.
 
-        :param names: a collection of group names to be checked
+        :param aliases: a collection of group aliases to be checked
         """
-        for group_alias in names:
+        for group_alias in aliases:
             if not self.get_id_for_alias(group_alias):
                 raise ValueError(
                     f"Provided group name {group_alias} was not found in Atlan."
