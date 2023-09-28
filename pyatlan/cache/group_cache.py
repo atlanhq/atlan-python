@@ -55,9 +55,9 @@ class GroupCache:
     @classmethod
     def validate_aliases(cls, aliases: Iterable[str]):
         """
-        Validate that the given human-readable group aliases are valid. A ValueError will be raised in any are not.
+        Validate that the given (internal) group names are valid. A ValueError will be raised in any are not.
 
-        :param aliases: a collection of group aliases to be checked
+        :param aliases: a collection of (internal) group names to be checked
         """
         return cls.get_cache()._validate_aliases(aliases)
 
@@ -119,12 +119,12 @@ class GroupCache:
 
     def _validate_aliases(self, aliases: Iterable[str]):
         """
-        Validate that the given human-readable group aliases are valid. A ValueError will be raised in any are not.
+        Validate that the given (internal) group names are valid. A ValueError will be raised in any are not.
 
-        :param aliases: a collection of group aliases to be checked
+        :param aliases: a collection of (internal) group names to be checked
         """
         for group_alias in aliases:
-            if not self.get_id_for_alias(group_alias):
+            if not self.get_id_for_name(group_alias):
                 raise ValueError(
                     f"Provided group name {group_alias} was not found in Atlan."
                 )
