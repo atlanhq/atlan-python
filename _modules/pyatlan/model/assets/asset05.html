@@ -900,6 +900,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DENY_ASSET_FILTERS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span>
+        <span class="s2">&quot;denyAssetFilters&quot;</span><span class="p">,</span> <span class="s2">&quot;denyAssetFilters&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">CHANNEL_LINK</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">KeywordField</span><span class="p">]</span> <span class="o">=</span> <span class="n">KeywordField</span><span class="p">(</span><span class="s2">&quot;channelLink&quot;</span><span class="p">,</span> <span class="s2">&quot;channelLink&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
@@ -914,6 +920,7 @@
         <span class="s2">&quot;is_access_control_enabled&quot;</span><span class="p">,</span>
         <span class="s2">&quot;deny_custom_metadata_guids&quot;</span><span class="p">,</span>
         <span class="s2">&quot;deny_asset_tabs&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;deny_asset_filters&quot;</span><span class="p">,</span>
         <span class="s2">&quot;channel_link&quot;</span><span class="p">,</span>
         <span class="s2">&quot;policies&quot;</span><span class="p">,</span>
     <span class="p">]</span>
@@ -959,6 +966,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">deny_asset_tabs</span> <span class="o">=</span> <span class="n">deny_asset_tabs</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">deny_asset_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">deny_asset_filters</span>
+
+    <span class="nd">@deny_asset_filters</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">deny_asset_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deny_asset_filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">deny_asset_filters</span> <span class="o">=</span> <span class="n">deny_asset_filters</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">channel_link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">channel_link</span>
 
@@ -987,6 +1004,9 @@
         <span class="p">)</span>
         <span class="n">deny_asset_tabs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;denyAssetTabs&quot;</span>
+        <span class="p">)</span>
+        <span class="n">deny_asset_filters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;denyAssetFilters&quot;</span>
         <span class="p">)</span>
         <span class="n">channel_link</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;channelLink&quot;</span><span class="p">)</span>
         <span class="n">policies</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AuthPolicy</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

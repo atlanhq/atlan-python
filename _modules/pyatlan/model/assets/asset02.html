@@ -465,45 +465,15 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;One of admin_user, admin_groups or admin_roles is required&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">admin_roles</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.role_cache</span> <span class="kn">import</span> <span class="n">RoleCache</span>
-
-            <span class="k">for</span> <span class="n">role_id</span> <span class="ow">in</span> <span class="n">admin_roles</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">RoleCache</span><span class="o">.</span><span class="n">get_name_for_id</span><span class="p">(</span><span class="n">role_id</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Provided role ID </span><span class="si">{</span><span class="n">role_id</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
-                    <span class="p">)</span>
-        <span class="k">if</span> <span class="n">admin_groups</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.group_cache</span> <span class="kn">import</span> <span class="n">GroupCache</span>
-
-            <span class="k">for</span> <span class="n">group_alias</span> <span class="ow">in</span> <span class="n">admin_groups</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">GroupCache</span><span class="o">.</span><span class="n">get_id_for_alias</span><span class="p">(</span><span class="n">group_alias</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Provided group name </span><span class="si">{</span><span class="n">group_alias</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
-                    <span class="p">)</span>
-        <span class="k">if</span> <span class="n">admin_users</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.user_cache</span> <span class="kn">import</span> <span class="n">UserCache</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.client.atlan</span> <span class="kn">import</span> <span class="n">AtlanClient</span>
-
-            <span class="k">for</span> <span class="n">username</span> <span class="ow">in</span> <span class="n">admin_users</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">UserCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
-                    <span class="c1"># If we cannot find the username, fallback to looking for an API token</span>
-                    <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">get_default_client</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">client</span><span class="o">.</span><span class="n">get_api_token_by_id</span><span class="p">(</span><span class="n">username</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Provided username </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
-                        <span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">qualified_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">to_qualified_name</span><span class="p">(),</span>
             <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="n">admin_users</span><span class="o">=</span><span class="n">admin_users</span> <span class="ow">or</span> <span class="p">[],</span>
-            <span class="n">admin_groups</span><span class="o">=</span><span class="n">admin_groups</span> <span class="ow">or</span> <span class="p">[],</span>
-            <span class="n">admin_roles</span><span class="o">=</span><span class="n">admin_roles</span> <span class="ow">or</span> <span class="p">[],</span>
         <span class="p">)</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">admin_users</span> <span class="o">=</span> <span class="n">admin_users</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">admin_groups</span> <span class="o">=</span> <span class="n">admin_groups</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">attr</span><span class="o">.</span><span class="n">admin_roles</span> <span class="o">=</span> <span class="n">admin_roles</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;Connection&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -639,6 +609,24 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">USE_OBJECT_STORAGE</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;useObjectStorage&quot;</span><span class="p">,</span> <span class="s2">&quot;useObjectStorage&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Boolean flag indicating whether to upload to S3, GCP, or another storage location</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">OBJECT_STORAGE_UPLOAD_THRESHOLD</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">NumericField</span><span class="p">]</span> <span class="o">=</span> <span class="n">NumericField</span><span class="p">(</span>
+        <span class="s2">&quot;objectStorageUploadThreshold&quot;</span><span class="p">,</span> <span class="s2">&quot;objectStorageUploadThreshold&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A long integer indicating after how many rows heka should start uploading result to storage</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">VECTOR_EMBEDDINGS_ENABLED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;vectorEmbeddingsEnabled&quot;</span><span class="p">,</span> <span class="s2">&quot;vectorEmbeddingsEnabled&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_convenience_properties</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;category&quot;</span><span class="p">,</span>
@@ -664,6 +652,9 @@
         <span class="s2">&quot;has_popularity_insights&quot;</span><span class="p">,</span>
         <span class="s2">&quot;connection_dbt_environments&quot;</span><span class="p">,</span>
         <span class="s2">&quot;connection_s_s_o_credential_guid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;use_object_storage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;object_storage_upload_threshold&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vector_embeddings_enabled&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="nd">@property</span>
@@ -934,6 +925,48 @@
             <span class="n">connection_s_s_o_credential_guid</span>
         <span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">use_object_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">use_object_storage</span>
+
+    <span class="nd">@use_object_storage</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">use_object_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_object_storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">use_object_storage</span> <span class="o">=</span> <span class="n">use_object_storage</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">object_storage_upload_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">object_storage_upload_threshold</span>
+        <span class="p">)</span>
+
+    <span class="nd">@object_storage_upload_threshold</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">object_storage_upload_threshold</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">object_storage_upload_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">object_storage_upload_threshold</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">object_storage_upload_threshold</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vector_embeddings_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">vector_embeddings_enabled</span>
+        <span class="p">)</span>
+
+    <span class="nd">@vector_embeddings_enabled</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">vector_embeddings_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_embeddings_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">vector_embeddings_enabled</span> <span class="o">=</span> <span class="n">vector_embeddings_enabled</span>
+
     <span class="k">class</span> <span class="nc">Attributes</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">Attributes</span><span class="p">):</span>
         <span class="n">category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
         <span class="n">sub_category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;subCategory&quot;</span><span class="p">)</span>
@@ -986,6 +1019,41 @@
         <span class="n">connection_s_s_o_credential_guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;connectionSSOCredentialGuid&quot;</span>
         <span class="p">)</span>
+        <span class="n">use_object_storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;useObjectStorage&quot;</span>
+        <span class="p">)</span>
+        <span class="n">object_storage_upload_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;objectStorageUploadThreshold&quot;</span>
+        <span class="p">)</span>
+        <span class="n">vector_embeddings_enabled</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;vectorEmbeddingsEnabled&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">is_loaded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;admin_users&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">admin_users_valid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">admin_users</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.cache.user_cache</span> <span class="kn">import</span> <span class="n">UserCache</span>
+
+            <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_loaded&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">UserCache</span><span class="o">.</span><span class="n">validate_names</span><span class="p">(</span><span class="n">names</span><span class="o">=</span><span class="n">admin_users</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">admin_users</span>
+
+        <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;admin_roles&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">admin_roles_valid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">admin_roles</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.cache.role_cache</span> <span class="kn">import</span> <span class="n">RoleCache</span>
+
+            <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_loaded&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">RoleCache</span><span class="o">.</span><span class="n">validate_idstrs</span><span class="p">(</span><span class="n">idstrs</span><span class="o">=</span><span class="n">admin_roles</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">admin_roles</span>
+
+        <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;admin_groups&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">admin_groups_valid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">admin_groups</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.cache.group_cache</span> <span class="kn">import</span> <span class="n">GroupCache</span>
+
+            <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_loaded&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">GroupCache</span><span class="o">.</span><span class="n">validate_aliases</span><span class="p">(</span><span class="n">aliases</span><span class="o">=</span><span class="n">admin_groups</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">admin_groups</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;Connection.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>

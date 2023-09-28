@@ -1562,6 +1562,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TBC</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">IS_AI_GENERATED</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">BooleanField</span><span class="p">]</span> <span class="o">=</span> <span class="n">BooleanField</span><span class="p">(</span>
+        <span class="s2">&quot;isAIGenerated&quot;</span><span class="p">,</span> <span class="s2">&quot;isAIGenerated&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TBC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SCHEMA_REGISTRY_SUBJECTS</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">RelationField</span><span class="p">]</span> <span class="o">=</span> <span class="n">RelationField</span><span class="p">(</span>
         <span class="s2">&quot;schemaRegistrySubjects&quot;</span>
@@ -1720,6 +1726,7 @@
         <span class="s2">&quot;asset_soda_check_statuses&quot;</span><span class="p">,</span>
         <span class="s2">&quot;asset_soda_source_url&quot;</span><span class="p">,</span>
         <span class="s2">&quot;asset_icon&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;is_a_i_generated&quot;</span><span class="p">,</span>
         <span class="s2">&quot;schema_registry_subjects&quot;</span><span class="p">,</span>
         <span class="s2">&quot;mc_monitors&quot;</span><span class="p">,</span>
         <span class="s2">&quot;files&quot;</span><span class="p">,</span>
@@ -3331,6 +3338,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">asset_icon</span> <span class="o">=</span> <span class="n">asset_icon</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_a_i_generated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_a_i_generated</span>
+
+    <span class="nd">@is_a_i_generated</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_a_i_generated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_a_i_generated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Attributes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">is_a_i_generated</span> <span class="o">=</span> <span class="n">is_a_i_generated</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">schema_registry_subjects</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SchemaRegistrySubject</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">None</span>
@@ -3760,6 +3777,9 @@
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetSodaSourceURL&quot;</span>
         <span class="p">)</span>
         <span class="n">asset_icon</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;assetIcon&quot;</span><span class="p">)</span>
+        <span class="n">is_a_i_generated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;isAIGenerated&quot;</span>
+        <span class="p">)</span>
         <span class="n">schema_registry_subjects</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">SchemaRegistrySubject</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;schemaRegistrySubjects&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>

@@ -507,6 +507,12 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.OBJECT_STORAGE_UPLOAD_THRESHOLD">
+<span class="sig-name descname"><span class="pre">OBJECT_STORAGE_UPLOAD_THRESHOLD</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField" title="pyatlan.model.fields.atlan_fields.NumericField"><span class="pre">NumericField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.NumericField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.OBJECT_STORAGE_UPLOAD_THRESHOLD" title="Link to this definition">#</a></dt>
+<dd><p>A long integer indicating after how many rows heka should start uploading result to storage</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pyatlan.model.assets.Connection.POLICY_STRATEGY">
 <span class="sig-name descname"><span class="pre">POLICY_STRATEGY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.POLICY_STRATEGY" title="Link to this definition">#</a></dt>
 <dd><p>TBC</p>
@@ -570,6 +576,18 @@
 <dt class="sig sig-object py" id="pyatlan.model.assets.Connection.SUB_CATEGORY">
 <span class="sig-name descname"><span class="pre">SUB_CATEGORY</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField" title="pyatlan.model.fields.atlan_fields.KeywordField"><span class="pre">KeywordField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.KeywordField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.SUB_CATEGORY" title="Link to this definition">#</a></dt>
 <dd><p>WAREHOUSE, RDBMS, LAKE, BI</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.USE_OBJECT_STORAGE">
+<span class="sig-name descname"><span class="pre">USE_OBJECT_STORAGE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.USE_OBJECT_STORAGE" title="Link to this definition">#</a></dt>
+<dd><p>A Boolean flag indicating whether to upload to S3, GCP, or another storage location</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyatlan.model.assets.Connection.VECTOR_EMBEDDINGS_ENABLED">
+<span class="sig-name descname"><span class="pre">VECTOR_EMBEDDINGS_ENABLED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField" title="pyatlan.model.fields.atlan_fields.BooleanField"><span class="pre">BooleanField</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pyatlan.model.fields.atlan_fields.BooleanField</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pyatlan.model.assets.Connection.VECTOR_EMBEDDINGS_ENABLED" title="Link to this definition">#</a></dt>
+<dd><p>TBC</p>
 </dd></dl>
 
 </dd></dl>
@@ -645,6 +663,7 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.HAS_POPULARITY_INSIGHTS"><code class="docutils literal notranslate"><span class="pre">Connection.HAS_POPULARITY_INSIGHTS</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.HOST"><code class="docutils literal notranslate"><span class="pre">Connection.HOST</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.IS_SAMPLE_DATA_PREVIEW_ENABLED"><code class="docutils literal notranslate"><span class="pre">Connection.IS_SAMPLE_DATA_PREVIEW_ENABLED</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.OBJECT_STORAGE_UPLOAD_THRESHOLD"><code class="docutils literal notranslate"><span class="pre">Connection.OBJECT_STORAGE_UPLOAD_THRESHOLD</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.POLICY_STRATEGY"><code class="docutils literal notranslate"><span class="pre">Connection.POLICY_STRATEGY</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.POPULARITY_INSIGHTS_TIMEFRAME"><code class="docutils literal notranslate"><span class="pre">Connection.POPULARITY_INSIGHTS_TIMEFRAME</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.PORT"><code class="docutils literal notranslate"><span class="pre">Connection.PORT</span></code></a></li>
@@ -656,6 +675,8 @@
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.ROW_LIMIT"><code class="docutils literal notranslate"><span class="pre">Connection.ROW_LIMIT</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.SOURCE_LOGO"><code class="docutils literal notranslate"><span class="pre">Connection.SOURCE_LOGO</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.model.assets.Connection.SUB_CATEGORY"><code class="docutils literal notranslate"><span class="pre">Connection.SUB_CATEGORY</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.USE_OBJECT_STORAGE"><code class="docutils literal notranslate"><span class="pre">Connection.USE_OBJECT_STORAGE</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.model.assets.Connection.VECTOR_EMBEDDINGS_ENABLED"><code class="docutils literal notranslate"><span class="pre">Connection.VECTOR_EMBEDDINGS_ENABLED</span></code></a></li>
 </ul>
 </li>
 </ul>

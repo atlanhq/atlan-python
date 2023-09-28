@@ -429,7 +429,7 @@
           <h1>Source code for pyatlan.cache.group_cache</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.group</span> <span class="kn">import</span> <span class="n">GroupProvider</span>
 
@@ -492,6 +492,18 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_get_name_for_id</span><span class="p">(</span><span class="n">idstr</span><span class="o">=</span><span class="n">idstr</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="GroupCache.validate_aliases">
+<a class="viewcode-back" href="../../../cache/group_cache.html#pyatlan.cache.group_cache.GroupCache.validate_aliases">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">validate_aliases</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">aliases</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate that the given human-readable group aliases are valid. A ValueError will be raised in any are not.</span>
+
+<span class="sd">        :param aliases: a collection of group aliases to be checked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">_validate_aliases</span><span class="p">(</span><span class="n">aliases</span><span class="p">)</span></div>
+
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">GroupProvider</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">provider</span> <span class="o">=</span> <span class="n">provider</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -546,7 +558,19 @@
         <span class="k">if</span> <span class="n">group_name</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">group_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_cache</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idstr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aliases</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate that the given human-readable group aliases are valid. A ValueError will be raised in any are not.</span>
+
+<span class="sd">        :param aliases: a collection of group aliases to be checked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">group_alias</span> <span class="ow">in</span> <span class="n">aliases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_id_for_alias</span><span class="p">(</span><span class="n">group_alias</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Provided group name </span><span class="si">{</span><span class="n">group_alias</span><span class="si">}</span><span class="s2"> was not found in Atlan.&quot;</span>
+                <span class="p">)</span></div>
 
 </pre></div>
         </article>
