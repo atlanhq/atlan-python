@@ -956,9 +956,10 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">color</span><span class="p">:</span> <span class="n">AtlanTagColor</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="n">AtlanTagColor</span> <span class="o">=</span> <span class="n">AtlanTagColor</span><span class="o">.</span><span class="n">GRAY</span><span class="p">,</span>
         <span class="n">icon</span><span class="p">:</span> <span class="n">AtlanIcon</span> <span class="o">=</span> <span class="n">AtlanIcon</span><span class="o">.</span><span class="n">ATLAN_TAG</span><span class="p">,</span>
         <span class="n">image</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanImage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">emoji</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlanTagDef</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
 
@@ -973,6 +974,9 @@
         <span class="k">if</span> <span class="n">image</span><span class="p">:</span>
             <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;imageID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;iconType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TagIconType</span><span class="o">.</span><span class="n">IMAGE</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">elif</span> <span class="n">emoji</span><span class="p">:</span>
+            <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;emoji&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">emoji</span>
+            <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;iconType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TagIconType</span><span class="o">.</span><span class="n">EMOJI</span><span class="o">.</span><span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;imageID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="n">cls_options</span><span class="p">[</span><span class="s2">&quot;iconType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TagIconType</span><span class="o">.</span><span class="n">ICON</span><span class="o">.</span><span class="n">value</span>
@@ -1067,6 +1071,12 @@
         <span class="n">logo_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="n">description</span><span class="o">=</span><span class="s2">&quot;If the logoType is image, this should hold a URL to the image.&quot;</span>
         <span class="p">)</span>
+        <span class="n">icon_color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanTagColor</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Color to use for the icon.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">icon_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanIcon</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Icon to use to represent the custom metadata.&quot;</span>
+        <span class="p">)</span>
 
         <span class="nd">@staticmethod</span>
         <span class="k">def</span> <span class="nf">with_logo_as_emoji</span><span class="p">(</span>
@@ -1094,6 +1104,23 @@
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span>
                 <span class="n">logo_url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">logo_type</span><span class="o">=</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="n">is_locked</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">locked</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span>
+            <span class="p">)</span>
+
+        <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">with_logo_from_icon</span><span class="p">(</span>
+            <span class="n">icon</span><span class="p">:</span> <span class="n">AtlanIcon</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="n">AtlanTagColor</span><span class="p">,</span> <span class="n">locked</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;icon&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">icon</span><span class="p">,</span> <span class="n">color</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">CustomMetadataDef</span><span class="o">.</span><span class="n">Options</span><span class="p">(</span>
+                <span class="n">logo_type</span><span class="o">=</span><span class="s2">&quot;icon&quot;</span><span class="p">,</span>
+                <span class="n">icon_color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                <span class="n">icon_name</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
+                <span class="n">is_locked</span><span class="o">=</span><span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">locked</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="n">attribute_defs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AttributeDef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
