@@ -1731,6 +1731,7 @@ class SortOrder(str, Enum):
 class TagIconType(str, Enum):
     IMAGE = "image"
     ICON = "icon"
+    EMOJI = "emoji"
 
 
 class TypeName(str, Enum):

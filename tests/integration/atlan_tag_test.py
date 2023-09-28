@@ -25,6 +25,7 @@ MODULE_NAME = TestId.make_unique("CLS")
 
 CLS_IMAGE = f"{MODULE_NAME}_image"
 CLS_ICON = f"{MODULE_NAME}_icon"
+CLS_EMOJI = f"{MODULE_NAME}_emoji"
 
 LOGGER = logging.getLogger(__name__)
 
@@ -94,6 +95,18 @@ def atlan_tag_with_icon(
     client.purge_typedef(CLS_ICON, typedef_type=AtlanTagDef)
 
 
+@pytest.fixture(scope="module")
+def atlan_tag_with_emoji(
+    client: AtlanClient,
+) -> Generator[AtlanTagDef, None, None]:
+    cls = AtlanTagDef.create(
+        name=CLS_EMOJI,
+        emoji="👍",
+    )
+    yield client.create_typedef(cls).atlan_tag_defs[0]
+    client.purge_typedef(CLS_EMOJI, typedef_type=AtlanTagDef)
+
+
 def test_atlan_tag_with_image(atlan_tag_with_image):
     assert atlan_tag_with_image
     assert atlan_tag_with_image.guid
@@ -129,3 +142,14 @@ def test_atlan_tag_with_icon(atlan_tag_with_icon):
     assert not atlan_tag_with_icon.options.get("imageID")
     assert "iconType" in atlan_tag_with_icon.options.keys()
     assert atlan_tag_with_icon.options.get("iconType") == TagIconType.ICON.value
+
+
+def test_atlan_tag_with_emoji(atlan_tag_with_emoji):
+    assert atlan_tag_with_emoji
+    assert atlan_tag_with_emoji.guid
+    assert atlan_tag_with_emoji.display_name == CLS_EMOJI
+    assert atlan_tag_with_emoji.name != CLS_EMOJI
+    assert atlan_tag_with_emoji.options
+    assert not atlan_tag_with_emoji.options.get("imageID")
+    assert "iconType" in atlan_tag_with_emoji.options.keys()
+    assert atlan_tag_with_emoji.options.get("iconType") == TagIconType.EMOJI.value

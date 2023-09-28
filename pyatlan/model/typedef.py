@@ -507,9 +507,10 @@ class AtlanTagDef(TypeDef):
     @staticmethod
     def create(
         name: str,
-        color: AtlanTagColor,
+        color: AtlanTagColor = AtlanTagColor.GRAY,
         icon: AtlanIcon = AtlanIcon.ATLAN_TAG,
         image: Optional[AtlanImage] = None,
+        emoji: Optional[str] = None,
     ) -> AtlanTagDef:
         from pyatlan.utils import validate_required_fields
 
@@ -524,6 +525,9 @@ class AtlanTagDef(TypeDef):
         if image:
             cls_options["imageID"] = str(image.id)
             cls_options["iconType"] = TagIconType.IMAGE.value
+        elif emoji:
+            cls_options["emoji"] = emoji
+            cls_options["iconType"] = TagIconType.EMOJI.value
         else:
             cls_options["imageID"] = ""
             cls_options["iconType"] = TagIconType.ICON.value
@@ -609,6 +613,12 @@ class CustomMetadataDef(TypeDef):
         logo_url: Optional[str] = Field(
             description="If the logoType is image, this should hold a URL to the image."
         )
+        icon_color: Optional[AtlanTagColor] = Field(
+            description="Color to use for the icon."
+        )
+        icon_name: Optional[AtlanIcon] = Field(
+            description="Icon to use to represent the custom metadata."
+        )
 
         @staticmethod
         def with_logo_as_emoji(
@@ -636,6 +646,23 @@ class CustomMetadataDef(TypeDef):
             )
             return CustomMetadataDef.Options(
                 logo_url=url, logo_type="image", is_locked="true" if locked else "false"
+            )
+
+        @staticmethod
+        def with_logo_from_icon(
+            icon: AtlanIcon, color: AtlanTagColor, locked: bool = False
+        ) -> CustomMetadataDef.Options:
+            from pyatlan.utils import validate_required_fields
+
+            validate_required_fields(
+                ["icon", "color"],
+                [icon, color],
+            )
+            return CustomMetadataDef.Options(
+                logo_type="icon",
+                icon_color=color,
+                icon_name=icon,
+                is_locked="true" if locked else "false",
             )
 
     attribute_defs: list[AttributeDef] = Field(
