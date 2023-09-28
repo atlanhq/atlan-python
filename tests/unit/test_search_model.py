@@ -264,7 +264,8 @@ def test_dsl():
     )
     assert (
         dsl.json(by_alias=True, exclude_none=True)
-        == '{"from": 0, "size": 100, "track_total_hits": true, "post_filter": {"term": {"databaseName.keyword": '
+        == '{"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
+        '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": '
         '{"__typeName.keyword": {"value": "Schema"}}}, "sort": [{"__guid": {"order": "asc"}}]}'
     )
@@ -279,7 +280,7 @@ def test_index_search_request():
     assert (
         request.json(by_alias=True, exclude_none=True)
         == '{"attributes": ["schemaName", "databaseName"],'
-        ' "dsl": {"from": 0, "size": 100, "track_total_hits": true, '
+        ' "dsl": {"from": 0, "size": 100, "aggregations": {}, "track_total_hits": true, '
         '"post_filter": {"term": {"databaseName.keyword": '
         '{"value": "ATLAN_SAMPLE_DATA"}}}, "query": {"term": {"__typeName.keyword": {"value": "Schema"}}}, '
         '"sort": [{"__guid": {"order": "asc"}}]}, "relationAttributes": []}'

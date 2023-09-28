@@ -77,7 +77,24 @@ class AssetSidebarTab(str, Enum):
 
 
 class AtlanComparisonOperator(str, Enum):
+    LT = "<"
+    GT = ">"
+    LTE = "<="
+    GTE = ">="
+    EQ = "="
+    NEQ = "!="
+    IN = "in"
+    LIKE = "like"
+    STARTS_WITH = "startsWith"
+    ENDS_WITH = "endsWith"
     CONTAINS = "contains"
+    NOT_CONTAINS = "not_contains"
+    CONTAINS_ANY = "containsAny"
+    CONTAINS_ALL = "containsAll"
+    IS_NULL = "isNull"
+    NOT_NULL = "notNull"
+    TIME_RANGE = "timerange"
+    NOT_EMPTY = "notEmpty"
 
 
 class AtlanConnectionCategory(str, Enum):

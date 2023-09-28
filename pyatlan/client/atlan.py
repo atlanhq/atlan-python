@@ -14,6 +14,7 @@ import uuid
 from abc import ABC
 from types import SimpleNamespace
 from typing import Any, ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
+from warnings import warn
 
 import requests
 from pydantic import (
@@ -70,6 +71,7 @@ from pyatlan.client.constants import (
 )
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
+from pyatlan.model.aggregation import Aggregations
 from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
@@ -149,6 +151,8 @@ from pyatlan.utils import (
     get_logger,
     unflatten_custom_metadata_for_entity,
 )
+
+SERVICE_ACCOUNT_ = "service-account-"
 
 LOGGER = get_logger()
 T = TypeVar("T", bound=Referenceable)
@@ -365,9 +369,15 @@ class AtlanClient(BaseSettings):
             size: int,
             count: int,
             assets: list[Asset],
+            aggregations: Optional[Aggregations],
         ):
             super().__init__(client, INDEX_SEARCH, criteria, start, size, assets)
             self._count = count
+            self._aggregations = aggregations
+
+        @property
+        def aggregations(self) -> Optional[Aggregations]:
+            return self._aggregations
 
         def _get_next_page(self):
             """
@@ -1128,6 +1138,11 @@ class AtlanClient(BaseSettings):
         overwrite_custom_metadata: bool = False,
     ) -> AssetMutationResponse:
         """Deprecated - use save() instead."""
+        warn(
+            "This method is deprecated, please use 'save' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.save(
             entity=entity,
             replace_atlan_tags=replace_atlan_tags,
@@ -1190,6 +1205,12 @@ class AtlanClient(BaseSettings):
         self, entity: Union[Asset, list[Asset]], replace_atlan_tags: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_merging_cm() instead."""
+        warn(
+            "This method is deprecated, please use 'save_merging_cm' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.save_merging_cm(
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
@@ -1240,6 +1261,12 @@ class AtlanClient(BaseSettings):
         self, entity: Union[Asset, list[Asset]], replace_atlan_tagss: bool = False
     ) -> AssetMutationResponse:
         """Deprecated - use save_replacing_cm() instead."""
+        warn(
+            "This method is deprecated, please use 'save_replacing_cm' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.save_replacing_cm(
             entity=entity, replace_atlan_tags=replace_atlan_tagss
         )
@@ -1426,6 +1453,7 @@ class AtlanClient(BaseSettings):
                 ) from err
         else:
             assets = []
+        aggregations = self.get_aggregations(raw_json)
         count = raw_json["approximateCount"] if "approximateCount" in raw_json else 0
         return AtlanClient.IndexSearchResults(
             client=self,
@@ -1434,7 +1462,20 @@ class AtlanClient(BaseSettings):
             size=criteria.dsl.size,
             count=count,
             assets=assets,
+            aggregations=aggregations,
         )
+
+    def get_aggregations(self, raw_json) -> Optional[Aggregations]:
+        if "aggregations" in raw_json:
+            try:
+                aggregations = Aggregations.parse_obj(raw_json["aggregations"])
+            except ValidationError as err:
+                raise ErrorCode.JSON_ERROR.exception_with_parameters(
+                    raw_json, 200, str(err)
+                ) from err
+        else:
+            aggregations = None
+        return aggregations
 
     def get_all_typedefs(self) -> TypeDefResponse:
         """
@@ -1961,13 +2002,18 @@ class AtlanClient(BaseSettings):
 
     def get_lineage(self, lineage_request: LineageRequest) -> LineageResponse:
         """
-        Fetch the requested lineage. This is an older, slower operation that may be deprecated in
-        the future. If possible, use the get_lineage_list operation instead.
+        Deprecated — this is an older, slower operation to retrieve lineage that will not receive further enhancements.
+        Use the get_lineage_list operation instead.
 
         :param lineage_request: detailing the lineage query, parameters, and so on to run
         :returns: the results of the lineage request
         :raises AtlanError: on any API communication issue
         """
+        warn(
+            "Lineage retrieval using this method is deprecated, please use 'get_lineage_list' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         raw_json = self._call_api(
             GET_LINEAGE, None, lineage_request, exclude_unset=False
         )
@@ -2157,6 +2203,8 @@ class AtlanClient(BaseSettings):
         :param client_id: unique client identifier by which to retrieve the API token
         :returns: the API token whose clientId matches the provided string, or None if there is none
         """
+        if client_id and client_id.startswith(SERVICE_ACCOUNT_):
+            client_id = client_id[len(SERVICE_ACCOUNT_) :]  # noqa: E203
         if response := self.get_api_tokens(
             offset=0,
             limit=5,
