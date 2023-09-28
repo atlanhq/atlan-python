@@ -11,6 +11,8 @@ from pyatlan.model.assets import Asset, AtlasGlossary, AtlasGlossaryTerm, Badge
 from pyatlan.model.custom_metadata import CustomMetadataDict
 from pyatlan.model.enums import (
     AtlanCustomAttributePrimitiveType,
+    AtlanIcon,
+    AtlanTagColor,
     AtlanTypeCategory,
     BadgeComparisonOperator,
     BadgeConditionColor,
@@ -69,15 +71,25 @@ def create_custom_metadata(
     client: AtlanClient,
     name: str,
     attribute_defs: List[AttributeDef],
-    logo: str,
     locked: bool,
+    logo: Optional[str] = None,
+    icon: Optional[AtlanIcon] = None,
+    color: Optional[AtlanTagColor] = None,
 ) -> CustomMetadataDef:
     cm_def = CustomMetadataDef.create(display_name=name)
     cm_def.attribute_defs = attribute_defs
-    if logo.startswith("http"):
+    if icon and color:
+        cm_def.options = CustomMetadataDef.Options.with_logo_from_icon(
+            icon, color, locked
+        )
+    elif logo and logo.startswith("http"):
         cm_def.options = CustomMetadataDef.Options.with_logo_from_url(logo, locked)
-    else:
+    elif logo:
         cm_def.options = CustomMetadataDef.Options.with_logo_as_emoji(logo, locked)
+    else:
+        raise ValueError(
+            "Invalid configuration for the visual to use for the custom metadata."
+        )
     r = client.create_typedef(cm_def)
     return r.custom_metadata_defs[0]
 
@@ -196,7 +208,12 @@ def cm_raci(
         ),
     ]
     cm = create_custom_metadata(
-        client, name=CM_RACI, attribute_defs=attribute_defs, logo="👪", locked=False
+        client,
+        name=CM_RACI,
+        attribute_defs=attribute_defs,
+        icon=AtlanIcon.USERS_THREE,
+        color=AtlanTagColor.GRAY,
+        locked=False,
     )
     yield cm
     client.purge_typedef(CM_RACI, CustomMetadataDef)

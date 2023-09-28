@@ -1731,6 +1731,7 @@ class SortOrder(str, Enum):
 class TagIconType(str, Enum):
     IMAGE = "image"
     ICON = "icon"
+    EMOJI = "emoji"
 
 
 class TypeName(str, Enum):
@@ -1961,6 +1962,7 @@ class GoogleDatastudioAssetType(str, Enum):
 class IconType(str, Enum):
     IMAGE = "image"
     EMOJI = "emoji"
+    ICON = "icon"
 
 
 class KafkaTopicCleanupPolicy(str, Enum):
