@@ -1962,7 +1962,6 @@ class GoogleDatastudioAssetType(str, Enum):
 class IconType(str, Enum):
     IMAGE = "image"
     EMOJI = "emoji"
-    ICON = "icon"
 
 
 class KafkaTopicCleanupPolicy(str, Enum):

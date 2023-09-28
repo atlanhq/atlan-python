@@ -335,6 +335,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -1125,6 +1126,12 @@ class Asset(Referenceable):
     """
     TBC
     """
+    IS_AI_GENERATED: ClassVar[BooleanField] = BooleanField(
+        "isAIGenerated", "isAIGenerated"
+    )
+    """
+    TBC
+    """
 
     SCHEMA_REGISTRY_SUBJECTS: ClassVar[RelationField] = RelationField(
         "schemaRegistrySubjects"
@@ -1283,6 +1290,7 @@ class Asset(Referenceable):
         "asset_soda_check_statuses",
         "asset_soda_source_url",
         "asset_icon",
+        "is_a_i_generated",
         "schema_registry_subjects",
         "mc_monitors",
         "files",
@@ -2894,6 +2902,16 @@ class Asset(Referenceable):
         self.attributes.asset_icon = asset_icon
 
     @property
+    def is_a_i_generated(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_a_i_generated
+
+    @is_a_i_generated.setter
+    def is_a_i_generated(self, is_a_i_generated: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_a_i_generated = is_a_i_generated
+
+    @property
     def schema_registry_subjects(self) -> Optional[list[SchemaRegistrySubject]]:
         return (
             None
@@ -3323,6 +3341,9 @@ class Asset(Referenceable):
             None, description="", alias="assetSodaSourceURL"
         )
         asset_icon: Optional[str] = Field(None, description="", alias="assetIcon")
+        is_a_i_generated: Optional[bool] = Field(
+            None, description="", alias="isAIGenerated"
+        )
         schema_registry_subjects: Optional[list[SchemaRegistrySubject]] = Field(
             None, description="", alias="schemaRegistrySubjects"
         )  # relationship

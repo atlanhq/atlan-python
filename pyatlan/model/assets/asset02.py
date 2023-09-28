@@ -208,6 +208,24 @@ class Connection(Asset, type_name="Connection"):
     """
     TBC
     """
+    USE_OBJECT_STORAGE: ClassVar[BooleanField] = BooleanField(
+        "useObjectStorage", "useObjectStorage"
+    )
+    """
+    A Boolean flag indicating whether to upload to S3, GCP, or another storage location
+    """
+    OBJECT_STORAGE_UPLOAD_THRESHOLD: ClassVar[NumericField] = NumericField(
+        "objectStorageUploadThreshold", "objectStorageUploadThreshold"
+    )
+    """
+    A long integer indicating after how many rows heka should start uploading result to storage
+    """
+    VECTOR_EMBEDDINGS_ENABLED: ClassVar[BooleanField] = BooleanField(
+        "vectorEmbeddingsEnabled", "vectorEmbeddingsEnabled"
+    )
+    """
+    TBC
+    """
 
     _convenience_properties: ClassVar[list[str]] = [
         "category",
@@ -233,6 +251,9 @@ class Connection(Asset, type_name="Connection"):
         "has_popularity_insights",
         "connection_dbt_environments",
         "connection_s_s_o_credential_guid",
+        "use_object_storage",
+        "object_storage_upload_threshold",
+        "vector_embeddings_enabled",
     ]
 
     @property
@@ -503,6 +524,48 @@ class Connection(Asset, type_name="Connection"):
             connection_s_s_o_credential_guid
         )
 
+    @property
+    def use_object_storage(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.use_object_storage
+
+    @use_object_storage.setter
+    def use_object_storage(self, use_object_storage: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.use_object_storage = use_object_storage
+
+    @property
+    def object_storage_upload_threshold(self) -> Optional[int]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.object_storage_upload_threshold
+        )
+
+    @object_storage_upload_threshold.setter
+    def object_storage_upload_threshold(
+        self, object_storage_upload_threshold: Optional[int]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.object_storage_upload_threshold = (
+            object_storage_upload_threshold
+        )
+
+    @property
+    def vector_embeddings_enabled(self) -> Optional[bool]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.vector_embeddings_enabled
+        )
+
+    @vector_embeddings_enabled.setter
+    def vector_embeddings_enabled(self, vector_embeddings_enabled: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.vector_embeddings_enabled = vector_embeddings_enabled
+
     class Attributes(Asset.Attributes):
         category: Optional[str] = Field(None, description="", alias="category")
         sub_category: Optional[str] = Field(None, description="", alias="subCategory")
@@ -554,6 +617,15 @@ class Connection(Asset, type_name="Connection"):
         )
         connection_s_s_o_credential_guid: Optional[str] = Field(
             None, description="", alias="connectionSSOCredentialGuid"
+        )
+        use_object_storage: Optional[bool] = Field(
+            None, description="", alias="useObjectStorage"
+        )
+        object_storage_upload_threshold: Optional[int] = Field(
+            None, description="", alias="objectStorageUploadThreshold"
+        )
+        vector_embeddings_enabled: Optional[bool] = Field(
+            None, description="", alias="vectorEmbeddingsEnabled"
         )
 
     attributes: "Connection.Attributes" = Field(
