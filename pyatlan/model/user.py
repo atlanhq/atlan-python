@@ -6,6 +6,7 @@ from typing import Any, List, Optional, Protocol
 
 from pydantic import Field
 
+from pyatlan.model.api_tokens import ApiToken
 from pyatlan.model.core import AtlanObject
 
 
@@ -224,4 +225,12 @@ class UserProvider(Protocol):
         Retrieve all users defined in Atlan.
 
         :returns: a list of all the users in Atlan
+        """
+
+    def get_api_token_by_id(self, client_id: str) -> Optional[ApiToken]:
+        """
+        Retrieves the API token with a name that exactly matches the provided string.
+
+        :param display_name: name (as it appears in the UI) by which to retrieve the API token
+        :returns: the API token whose name (in the UI) matches the provided string, or None if there is none
         """

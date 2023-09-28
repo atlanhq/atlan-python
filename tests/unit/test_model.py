@@ -814,7 +814,14 @@ def attribute_value(request):
     ],
     indirect=["attribute_value"],
 )
-def test_attributes(clazz, property_name, attribute_value):
+def test_attributes(
+    clazz,
+    property_name,
+    attribute_value,
+    mock_group_cache,
+    mock_role_cache,
+    mock_user_cache,
+):
     local_ns = {}
     sut = clazz(attributes=clazz.Attributes())
     exec(f"sut.{property_name} = attribute_value")
