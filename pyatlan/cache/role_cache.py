@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from typing import Optional
+from typing import Iterable, Optional
 
 from pyatlan.model.role import AtlanRole, RoleProvider
 
@@ -41,6 +41,15 @@ class RoleCache:
         :returns: human-readable name of the role
         """
         return cls.get_cache()._get_name_for_id(idstr=idstr)
+
+    @classmethod
+    def validate_idstrs(cls, idstrs: Iterable[str]):
+        """
+        Validate that the given role GUIDs are valid. A ValueError will be raised in any are not.
+
+        :param idstrs: a collection of unique identifiers (GUID) of the roles to be checked
+        """
+        return cls.get_cache()._validate_idstrs(idstrs=idstrs)
 
     def __init__(self, provider: RoleProvider):
         self.provider = provider
@@ -86,3 +95,13 @@ class RoleCache:
             return role_name
         self._refresh_cache()
         return self.map_id_to_name.get(idstr)
+
+    def _validate_idstrs(self, idstrs: Iterable[str]):
+        """
+        Validate that the given role GUIDs are valid. A ValueError will be raised in any are not.
+
+        :param idstrs: a collection of unique identifiers (GUID) of the roles to be checked
+        """
+        for role_id in idstrs:
+            if not self.get_name_for_id(role_id):
+                raise ValueError(f"Provided role ID {role_id} was not found in Atlan.")

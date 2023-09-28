@@ -466,6 +466,12 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
+    DENY_ASSET_FILTERS: ClassVar[KeywordField] = KeywordField(
+        "denyAssetFilters", "denyAssetFilters"
+    )
+    """
+    TBC
+    """
     CHANNEL_LINK: ClassVar[KeywordField] = KeywordField("channelLink", "channelLink")
     """
     TBC
@@ -480,6 +486,7 @@ class AccessControl(Asset, type_name="AccessControl"):
         "is_access_control_enabled",
         "deny_custom_metadata_guids",
         "deny_asset_tabs",
+        "deny_asset_filters",
         "channel_link",
         "policies",
     ]
@@ -525,6 +532,16 @@ class AccessControl(Asset, type_name="AccessControl"):
         self.attributes.deny_asset_tabs = deny_asset_tabs
 
     @property
+    def deny_asset_filters(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.deny_asset_filters
+
+    @deny_asset_filters.setter
+    def deny_asset_filters(self, deny_asset_filters: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_asset_filters = deny_asset_filters
+
+    @property
     def channel_link(self) -> Optional[str]:
         return None if self.attributes is None else self.attributes.channel_link
 
@@ -553,6 +570,9 @@ class AccessControl(Asset, type_name="AccessControl"):
         )
         deny_asset_tabs: Optional[set[str]] = Field(
             None, description="", alias="denyAssetTabs"
+        )
+        deny_asset_filters: Optional[set[str]] = Field(
+            None, description="", alias="denyAssetFilters"
         )
         channel_link: Optional[str] = Field(None, description="", alias="channelLink")
         policies: Optional[list[AuthPolicy]] = Field(
