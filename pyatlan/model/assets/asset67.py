@@ -1107,7 +1107,9 @@ class LookerExplore(Looker):
     """
     TBC
     """
-    VIEW_NAME: ClassVar[KeywordField] = KeywordField("viewName", "viewName")
+    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "viewName", "viewName.keyword", "viewName"
+    )
     """
     TBC
     """
