@@ -21,6 +21,7 @@ from pyatlan.model.enums import (
     ADLSProvisionState,
     ADLSReplicationType,
     ADLSStorageKind,
+    AtlanConnectorType,
 )
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
@@ -30,12 +31,24 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import validate_required_fields
 
 from .asset34 import ADLS
 
 
 class ADLSAccount(ADLS):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = ADLSAccount.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("ADLSAccount", allow_mutation=False)
 
@@ -311,6 +324,32 @@ class ADLSAccount(ADLS):
             None, description="", alias="adlsContainers"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> ADLSAccount.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return ADLSAccount.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+            )
+
     attributes: "ADLSAccount.Attributes" = Field(
         default_factory=lambda: ADLSAccount.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -320,6 +359,17 @@ class ADLSAccount(ADLS):
 
 class ADLSContainer(ADLS):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
+        validate_required_fields(
+            ["name", "adls_account_qualified_name"], [name, adls_account_qualified_name]
+        )
+        attributes = ADLSContainer.Attributes.create(
+            name=name, adls_account_qualified_name=adls_account_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("ADLSContainer", allow_mutation=False)
 
@@ -528,6 +578,37 @@ class ADLSContainer(ADLS):
             None, description="", alias="adlsAccount"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, adls_account_qualified_name: str
+        ) -> ADLSContainer.Attributes:
+            validate_required_fields(
+                ["name", "adls_account_qualified_name"],
+                [name, adls_account_qualified_name],
+            )
+
+            # Split the adls_account_qualified_name to extract necessary information
+            fields = adls_account_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid adls_account_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid adls_account_qualified_name") from e
+
+            return ADLSContainer.Attributes(
+                name=name,
+                adls_account_qualified_name=adls_account_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{adls_account_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                adls_account=ADLSAccount.ref_by_qualified_name(
+                    adls_account_qualified_name
+                ),
+            )
+
     attributes: "ADLSContainer.Attributes" = Field(
         default_factory=lambda: ADLSContainer.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -537,6 +618,24 @@ class ADLSContainer(ADLS):
 
 class ADLSObject(ADLS):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(
+        cls,
+        *,
+        name: str,
+        adls_container_qualified_name: str,
+    ) -> ADLSObject:
+        validate_required_fields(
+            ["name", "adls_container_qualified_name"],
+            [name, adls_container_qualified_name],
+        )
+        attributes = ADLSObject.Attributes.create(
+            name=name,
+            adls_container_qualified_name=adls_container_qualified_name,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("ADLSObject", allow_mutation=False)
 
@@ -990,6 +1089,37 @@ class ADLSObject(ADLS):
         adls_container: Optional[ADLSContainer] = Field(
             None, description="", alias="adlsContainer"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, adls_container_qualified_name: str
+        ) -> ADLSObject.Attributes:
+            validate_required_fields(
+                ["name", "adls_container_qualified_name"],
+                [name, adls_container_qualified_name],
+            )
+
+            # Split the qualified_name to extract necessary information
+            fields = adls_container_qualified_name.split("/")
+            if len(fields) != 5:
+                raise ValueError("Invalid qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid qualified_name") from e
+
+            return ADLSObject.Attributes(
+                name=name,
+                adls_container_qualified_name=adls_container_qualified_name,
+                qualified_name=f"{adls_container_qualified_name}/{name}",
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                connector_name=connector_type.value,
+                adls_container=ADLSContainer.ref_by_qualified_name(
+                    adls_container_qualified_name
+                ),
+            )
 
     attributes: "ADLSObject.Attributes" = Field(
         default_factory=lambda: ADLSObject.Attributes(),
