@@ -1,20 +1,18 @@
 #!/bin/bash
 # Setup the pre-commit symlink as `ln -s ../../.git-hooks/pre-commit .git/hooks/pre-commit`
 
-echo "running pre-commit hook"
-# Run the pre-commit hook
-pre-commit run -a
-
-# Check if there are any changes
-if git diff --quiet; then
-
-  echo "No changes after running pre-commit."
-
-else
-  # Stage the changes
-  git add .
-
-  # Re-run the pre-commit hook on the newly staged changes
+while :
+do
+  echo "Running pre-commit hook"
+  # Run the pre-commit hook
   pre-commit run -a
 
-fi
+  # Check if there are any changes
+  if git diff --quiet; then
+    echo "No changes after running pre-commit."
+    break  # Exit the loop if there are no changes
+  else
+    # Stage the changes
+    git add .
+  fi
+done
