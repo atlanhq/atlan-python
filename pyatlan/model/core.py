@@ -17,6 +17,8 @@ from pydantic.generics import GenericModel
 
 from pyatlan.model.enums import AnnouncementType, EntityStatus
 
+DELETED_SENTINEL = "DELETED_SENTINEL"
+
 CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
     "sourceUrl": "sourceURL",
@@ -60,12 +62,30 @@ def to_snake_case(value):
 
 
 class AtlanTagName:
+    _sentinel: Optional["AtlanTagName"] = None
+
+    def __new__(cls, *args, **kwargs):
+        if args[0] == DELETED_SENTINEL and cls._sentinel:
+            return cls._sentinel
+        obj = super().__new__(cls)
+        if args[0] == DELETED_SENTINEL:
+            obj._display_text = "(DELETED)"
+            cls._sentinel = obj
+        return obj
+
     def __init__(self, display_text: str):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
         if not AtlanTagCache.get_id_for_name(display_text):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
+
+    @classmethod
+    def get_deleted_sentinel(cls) -> "AtlanTagName":
+        """Will return an AtlanTagName that is a sentinel object to represent deleted tags."""
+        return cls._sentinel or cls.__new__(
+            cls, DELETED_SENTINEL
+        )  # Because __new__ is being invoked directly __init__ won't be
 
     @classmethod
     def __get_validators__(cls):
