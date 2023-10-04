@@ -10,8 +10,8 @@ ENTITY_AUDITS = "entityAudits"
 
 class AuditClient:
     """
-    This class can be used to perform audit searches. This class does not need to be instantiated
-    directly but can be obtained through the audit property of AtlanClient.
+    This class can be used to configure and run a search against Atlan's activity log. This class does not need to be
+    instantiated directly but can be obtained through the audit property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):

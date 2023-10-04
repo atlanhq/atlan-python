@@ -2,15 +2,30 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Generator, Iterable, Optional, Union
 
-from pydantic import Field, ValidationError, parse_obj_as
+from pydantic import Field, ValidationError, parse_obj_as, root_validator
 
+from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.client.workflow import ApiCaller
-from pyatlan.errors import ErrorCode
+from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, AtlanTag, AtlanTagName
 from pyatlan.model.enums import EntityStatus
-from pyatlan.model.search import DSL, Query, SearchRequest, SortItem, SortOrder, Term
+from pyatlan.model.search import (
+    DSL,
+    Bool,
+    Query,
+    SearchRequest,
+    SortItem,
+    SortOrder,
+    Term,
+)
+
+ATTRIBUTES = "attributes"
+
+TYPE_NAME = "type_name"
+
+LATEST_FIRST = [SortItem("created", order=SortOrder.DESCENDING)]
 
 
 class AuditActionType(str, Enum):
@@ -34,20 +49,65 @@ class AuditSearchRequest(SearchRequest):
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}
 
     @classmethod
-    def by_guid(cls, guid: str, size: int) -> "AuditSearchRequest":
+    def by_guid(
+        cls, guid: str, *, size: int = 10, _from: int = 0
+    ) -> "AuditSearchRequest":
+        """
+        Create an audit search request for the last changes to an asset, by its GUID.
+        :param guid: unique identifier of the asset for which to retrieve the audit history
+        :param size: number of changes to retrieve
+        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :returns: an AuditSearchRequest that can be used to perform the search
+        """
         dsl = DSL(
-            query=Term(field="entityId", value=guid),
-            sort=[SortItem("created", order=SortOrder.ASCENDING)],
+            query=Bool(filter=[Term(field="entityId", value=guid)]),
+            sort=LATEST_FIRST,
             size=size,
+            _from=_from,
         )
         return AuditSearchRequest(dsl=dsl)
 
     @classmethod
-    def by_user(cls, user: str, size: int) -> "AuditSearchRequest":
+    def by_user(
+        cls, user: str, *, size: int = 10, _from: int = 0
+    ) -> "AuditSearchRequest":
+        """
+        Create an audit search request for the last changes to an asset, by a given user.
+        :param user: the name of the user for which to look for any changes
+        :param size: number of changes to retrieve
+        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :returns: an AuditSearchRequest that can be used to perform the search
+        """
         dsl = DSL(
-            query=Term(field="user", value=user),
-            sort=[SortItem("created", order=SortOrder.DESCENDING)],
+            query=Bool(filter=[Term(field="user", value=user)]),
+            sort=LATEST_FIRST,
             size=size,
+            _from=_from,
+        )
+        return AuditSearchRequest(dsl=dsl)
+
+    @classmethod
+    def by_qualified_name(
+        cls, type_name: str, qualified_name: str, *, size: int = 10, _from: int = 0
+    ) -> "AuditSearchRequest":
+        """
+        Create an audit search request ffor the last changes to an asset, by its qualifiedName.
+        :param type_name: the type of asset for which to retrieve the audit history
+        :param qualified_name: unique name of the asset for which to retrieve the audit history
+        :param size: number of changes to retrieve
+        :param _from: starting point for paging. Defaults to 0 (very first result) if not overridden
+        :returns: an AuditSearchRequest that can be used to perform the search
+        """
+        dsl = DSL(
+            query=Bool(
+                must=[
+                    Term(field="entityQualifiedName", value=qualified_name),
+                    Term(field="typeName", value=type_name),
+                ]
+            ),
+            sort=LATEST_FIRST,
+            size=size,
+            _from=_from,
         )
         return AuditSearchRequest(dsl=dsl)
 
@@ -109,6 +169,33 @@ class CustomMetadataAttributesAuditDetail(AtlanObject):
 
     attributes: dict[str, Any]
 
+    archived_attributes: Optional[dict[str, Any]]
+
+    @property
+    def empty(self) -> bool:
+        return self.attributes is None or len(self.attributes) == 0
+
+    @root_validator()
+    def convert(cls, values):
+        cm_id = values[TYPE_NAME]
+        try:
+            values[TYPE_NAME] = CustomMetadataCache.get_name_for_id(values[TYPE_NAME])
+            attributes = {
+                CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id): properties
+                for attr_id, properties in values[ATTRIBUTES].items()
+            }
+            archived_attributes = {
+                key: value for key, value in attributes.items() if "-archived-" in key
+            }
+            for key in archived_attributes.keys():
+                del attributes[key]
+            values[ATTRIBUTES] = attributes
+            values["archived_attributes"] = archived_attributes
+        except NotFoundError:
+            values[TYPE_NAME] = "(DELETED)"
+            values[ATTRIBUTES] = {}
+        return values
+
 
 class EntityAudit(AtlanObject):
     """
@@ -151,6 +238,10 @@ class AuditSearchResults(Iterable):
         self._size = size
         self._entity_audits = entity_audits
         self._count = count
+
+    @property
+    def total_count(self) -> int:
+        return self._count
 
     def current_page(self) -> list[EntityAudit]:
         """
