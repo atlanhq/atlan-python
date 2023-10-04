@@ -242,17 +242,17 @@ class AttributeDef(AtlanObject):
         custom_applicable_entity_types: Optional[str] = Field(
             description="Set of entities on which this attribute should appear.",
         )
-        allow_search: bool = Field(
+        allow_search: Optional[bool] = Field(
             description="Whether the attribute should be searchable (true) or not (false).",
         )
-        max_str_length: str = Field(
+        max_str_length: Optional[str] = Field(
             description="Maximum length allowed for a string value.",
         )
-        allow_filtering: bool = Field(
+        allow_filtering: Optional[bool] = Field(
             description="Whether this attribute should appear in the filterable facets of discovery (true) or not "
             "(false).",
         )
-        multi_value_select: bool = Field(
+        multi_value_select: Optional[bool] = Field(
             description="Whether this attribute can have multiple values (true) or only a single value (false).",
         )
         show_in_overview: Optional[bool] = Field(
