@@ -4,11 +4,28 @@ from typing import Any, Optional
 from pydantic import PrivateAttr
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.errors import NotFoundError
 from pyatlan.model.core import AtlanObject
+
+DELETED_SENTINEL = "DELETED_SENTINEL"
 
 
 class CustomMetadataDict(UserDict):
     """This class allows the manipulation of a set of custom metadata attributes using the human readable names."""
+
+    _sentinel: Optional["CustomMetadataDict"] = None
+
+    def __new__(cls, *args, **kwargs):
+        if args and args[0] == DELETED_SENTINEL and cls._sentinel:
+            return cls._sentinel
+        obj = super().__new__(cls)
+        super().__init__(obj)
+        if args and args[0] == DELETED_SENTINEL:
+            obj._name = "(DELETED)"
+            obj._modified = False
+            obj._names = set()
+            cls._sentinel = obj
+        return obj
 
     @property
     def attribute_names(self) -> set[str]:
@@ -23,6 +40,13 @@ class CustomMetadataDict(UserDict):
         self._names = set(
             CustomMetadataCache.get_cache().map_attr_id_to_name[id].values()
         )
+
+    @classmethod
+    def get_deleted_sentinel(cls) -> "CustomMetadataDict":
+        """Will return an AtlanTagName that is a sentinel object to represent deleted tags."""
+        return cls._sentinel or cls.__new__(
+            cls, DELETED_SENTINEL
+        )  # Because __new__ is being invoked directly __init__ won't be
 
     @property
     def modified(self):
@@ -87,12 +111,16 @@ class CustomMetadataProxy:
             return
         self._metadata = {}
         for cm_id, cm_attributes in self._business_attributes.items():
-            cm_name = CustomMetadataCache.get_name_for_id(cm_id)
-            attribs = CustomMetadataDict(name=cm_name)
-            for attr_id, properties in cm_attributes.items():
-                attr_name = CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id)
-                attribs[attr_name] = properties
-            attribs._modified = False
+            try:
+                cm_name = CustomMetadataCache.get_name_for_id(cm_id)
+                attribs = CustomMetadataDict(name=cm_name)
+                for attr_id, properties in cm_attributes.items():
+                    attr_name = CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id)
+                    attribs[attr_name] = properties
+                attribs._modified = False
+            except NotFoundError:
+                cm_name = "(DELETED)"
+                attribs = CustomMetadataDict.get_deleted_sentinel()
             self._metadata[cm_name] = attribs
 
     def get_custom_metadata(self, name: str) -> CustomMetadataDict:
