@@ -157,6 +157,9 @@ class Announcement:
 
 
 class AtlanTag(AtlanObject):
+    class Config:
+        extra = "forbid"
+
     type_name: Optional[AtlanTagName] = Field(
         None,
         description="Name of the type definition that defines this instance.\n",
@@ -182,6 +185,16 @@ class AtlanTag(AtlanObject):
         None, description="", alias="restrictPropagationThroughLineage"
     )
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
+
+    @validator("type_name", pre=True)
+    def type_name_is_tag_name(cls, value):
+        if isinstance(value, AtlanTagName):
+            return value
+        try:
+            value = AtlanTagName._convert_to_display_text(value)
+        except ValueError:
+            value = AtlanTagName.get_deleted_sentinel()
+        return value
 
 
 class AtlanTags(AtlanObject):

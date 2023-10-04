@@ -9,8 +9,7 @@ from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.client.workflow import ApiCaller
 from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
-from pyatlan.model.core import AtlanObject, AtlanTag, AtlanTagName
-from pyatlan.model.enums import EntityStatus
+from pyatlan.model.core import AtlanObject, AtlanTag
 from pyatlan.model.search import (
     DSL,
     Bool,
@@ -37,6 +36,13 @@ class AuditActionType(str, Enum):
     PROPAGATED_ATLAN_TAG_ADD = "PROPAGATED_CLASSIFICATION_ADD"
     ATLAN_TAG_DELETE = "CLASSIFICATION_DELETE"
     PROPAGATED_ATLAN_TAG_DELETE = "PROPAGATED_CLASSIFICATION_DELETE"
+    ENTITY_IMPORT_CREATE = "ENTITY_IMPORT_CREATE"
+    ENTITY_IMPORT_UPDATE = "ENTITY_IMPORT_UPDATE"
+    ENTITY_IMPORT_DELETE = "ENTITY_IMPORT_DELETE"
+    ATLAN_TAG_UPDATE = "CLASSIFICATION_UPDATE"
+    PROPAGATED_ATLAN_TAG_UPDATE = "PROPAGATED_CLASSIFICATION_UPDATE"
+    TERM_ADD = "TERM_ADD"
+    TERM_DELETE = "TERM_DELETE"
 
 
 class AuditSearchRequest(SearchRequest):
@@ -112,53 +118,6 @@ class AuditSearchRequest(SearchRequest):
         return AuditSearchRequest(dsl=dsl)
 
 
-class TagDetail(AtlanObject):
-    """Capture the attributes and values for tags as tracked through the audit log."""
-
-    class Config:
-        extra = "forbid"
-
-    type_name: str
-    entity_guid: Optional[str] = Field(
-        None,
-        description="Unique identifier of the entity instance.\n",
-        example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
-        alias="entityGuid",
-    )
-    entity_status: Optional[EntityStatus] = Field(
-        None,
-        description="Status of the entity",
-        example=EntityStatus.ACTIVE,
-        alias="entityStatus",
-    )
-    propagate: Optional[bool] = Field(None, description="")
-    remove_propagations_on_entity_delete: Optional[bool] = Field(
-        None, description="", alias="removePropagationsOnEntityDelete"
-    )
-    restrict_propagation_through_lineage: Optional[bool] = Field(
-        None, description="", alias="restrictPropagationThroughLineage"
-    )
-    validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
-
-    @property
-    def tag(self) -> AtlanTag:
-        try:
-            tag_name = AtlanTagName._convert_to_display_text(self.type_name)
-        except ValueError:
-            tag_name = AtlanTagName.get_deleted_sentinel()
-        atlan_tag = AtlanTag(
-            type_name=tag_name,
-            entity_guid=self.entity_guid,
-            entity_status=self.entity_status,
-            propagate=self.propagate,
-            remove_propagations_on_entity_delete=self.remove_propagations_on_entity_delete,
-            restrict_propagation_through_lineage=self.restrict_propagation_through_lineage,
-            validity_periods=self.validity_periods,
-        )
-
-        return atlan_tag
-
-
 class CustomMetadataAttributesAuditDetail(AtlanObject):
     """Capture the attributes and values for custom metadata as tracked through the audit log."""
 
@@ -213,7 +172,7 @@ class EntityAudit(AtlanObject):
     event_key: str
     entity: Optional[Any]
     type: Optional[Any]
-    detail: Optional[Union[CustomMetadataAttributesAuditDetail, TagDetail, Asset]]
+    detail: Optional[Union[CustomMetadataAttributesAuditDetail, AtlanTag, Asset]]
     entity_detail: Optional[Asset]
     headers: Optional[dict[str, str]]
 
