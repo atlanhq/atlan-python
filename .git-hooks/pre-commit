@@ -8,11 +8,11 @@ do
   pre-commit run -a
 
   # Check if there are any changes
-  if git diff --quiet; then
+  if [[ -n $(git diff --cached --name-only) ]]; then
     echo "No changes after running pre-commit."
     break  # Exit the loop if there are no changes
   else
-    # Stage the changes
-    git add .
+    # Stage only the files modified by the pre-commit
+    git diff --name-only --cached | xargs git add
   fi
 done
