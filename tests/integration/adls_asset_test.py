@@ -157,7 +157,7 @@ def test_adls_object(
 
 def test_update_adls_object(
     client: AtlanClient,
-    connection: connection,
+    connection: Connection,
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):

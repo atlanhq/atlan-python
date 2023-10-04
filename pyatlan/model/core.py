@@ -65,10 +65,10 @@ class AtlanTagName:
     _sentinel: Optional["AtlanTagName"] = None
 
     def __new__(cls, *args, **kwargs):
-        if args[0] == DELETED_SENTINEL and cls._sentinel:
+        if args and args[0] == DELETED_SENTINEL and cls._sentinel:
             return cls._sentinel
         obj = super().__new__(cls)
-        if args[0] == DELETED_SENTINEL:
+        if args and args[0] == DELETED_SENTINEL:
             obj._display_text = "(DELETED)"
             cls._sentinel = obj
         return obj
