@@ -162,7 +162,7 @@ class EntityAudit(AtlanObject):
     """
 
     entity_qualified_name: str
-    type_Name: str
+    type_name: str
     entity_id: str
     timestamp: datetime
     created: datetime

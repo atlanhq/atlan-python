@@ -21,7 +21,7 @@ class AuditClient:
             )
         self._client = client
 
-    def audit_search(self, criteria: AuditSearchRequest) -> AuditSearchResults:
+    def search(self, criteria: AuditSearchRequest) -> AuditSearchResults:
         """
         Search for assets using the provided criteria.
 
