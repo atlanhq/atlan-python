@@ -93,7 +93,7 @@ class CustomMetadataDict(UserDict):
 
     @property
     def business_attributes(self) -> dict[str, Any]:
-        """Returns a dict containing the metadat set with the human-readable set name and property names resolved
+        """Returns a dict containing the metadata set with the human-readable set name and property names resolved
         to their internal values"""
         return {
             CustomMetadataCache.get_attr_id_for_name(self._name, key): value
