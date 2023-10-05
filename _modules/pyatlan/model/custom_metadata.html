@@ -433,27 +433,55 @@
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">PrivateAttr</span>
 
 <span class="kn">from</span> <span class="nn">pyatlan.cache.custom_metadata_cache</span> <span class="kn">import</span> <span class="n">CustomMetadataCache</span>
+<span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">NotFoundError</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.constants</span> <span class="kn">import</span> <span class="n">DELETED_</span><span class="p">,</span> <span class="n">DELETED_SENTINEL</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span>
 
 
 <div class="viewcode-block" id="CustomMetadataDict">
 <a class="viewcode-back" href="../../../other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict">[docs]</a>
 <span class="k">class</span> <span class="nc">CustomMetadataDict</span><span class="p">(</span><span class="n">UserDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class allows the manipulation of a set of custom metadata attributes using the human readable names.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class allows the manipulation of a set of custom metadata attributes using the human-readable names.&quot;&quot;&quot;</span>
+
+    <span class="n">_sentinel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;CustomMetadataDict&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">DELETED_SENTINEL</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_sentinel</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_sentinel</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">DELETED_SENTINEL</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">DELETED_</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_sentinel</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="k">return</span> <span class="n">obj</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">attribute_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inits CustomMetadataDict with a string containing the human readable name of a set of custom metadata&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inits CustomMetadataDict with a string containing the human-readable name of a set of custom metadata&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="nb">id</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">_id</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_cache</span><span class="p">()</span><span class="o">.</span><span class="n">map_attr_id_to_name</span><span class="p">[</span><span class="n">_id</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
         <span class="p">)</span>
+
+<div class="viewcode-block" id="CustomMetadataDict.get_deleted_sentinel">
+<a class="viewcode-back" href="../../../other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict.get_deleted_sentinel">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_deleted_sentinel</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CustomMetadataDict&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Will return an CustomMetadataDict that is a sentinel object to represent deleted custom meta data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_sentinel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_sentinel</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">DELETED_SENTINEL</span>
+        <span class="p">)</span>  <span class="c1"># Because __new__ is being invoked directly __init__ won&#39;t be invoked</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -461,7 +489,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modified</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of a property of the custom metadata set using the human readable name as the key.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of a property of the custom metadata set using the human-readable name as the key.</span>
 <span class="sd">        The name will be validated to ensure that it&#39;s valid for this custom metadata set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">:</span>
@@ -470,14 +498,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the value of a property of the custom metadata set using the human readable name as the key.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the value of a property of the custom metadata set using the human-readable name as the key.</span>
 <span class="sd">        The name will be validated to ensure that it&#39;s valid for this custom metadata set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is not a valid property name for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
 <div class="viewcode-block" id="CustomMetadataDict.clear_all">
 <a class="viewcode-back" href="../../../other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict.clear_all">[docs]</a>
@@ -510,7 +536,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">business_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict containing the metadat set with the human readable set name and property names resolved</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a dict containing the metadata set with the human-readable set name and property names resolved</span>
 <span class="sd">        to their internal values&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_attr_id_for_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span> <span class="n">value</span>
@@ -530,12 +556,16 @@
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">cm_id</span><span class="p">,</span> <span class="n">cm_attributes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_business_attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">cm_name</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_name_for_id</span><span class="p">(</span><span class="n">cm_id</span><span class="p">)</span>
-            <span class="n">attribs</span> <span class="o">=</span> <span class="n">CustomMetadataDict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cm_name</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">attr_id</span><span class="p">,</span> <span class="n">properties</span> <span class="ow">in</span> <span class="n">cm_attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">attr_name</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_attr_name_for_id</span><span class="p">(</span><span class="n">cm_id</span><span class="p">,</span> <span class="n">attr_id</span><span class="p">)</span>
-                <span class="n">attribs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
-            <span class="n">attribs</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cm_name</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_name_for_id</span><span class="p">(</span><span class="n">cm_id</span><span class="p">)</span>
+                <span class="n">attribs</span> <span class="o">=</span> <span class="n">CustomMetadataDict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cm_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">attr_id</span><span class="p">,</span> <span class="n">properties</span> <span class="ow">in</span> <span class="n">cm_attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">attr_name</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_attr_name_for_id</span><span class="p">(</span><span class="n">cm_id</span><span class="p">,</span> <span class="n">attr_id</span><span class="p">)</span>
+                    <span class="n">attribs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
+                <span class="n">attribs</span><span class="o">.</span><span class="n">_modified</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="n">NotFoundError</span><span class="p">:</span>
+                <span class="n">cm_name</span> <span class="o">=</span> <span class="n">DELETED_</span>
+                <span class="n">attribs</span> <span class="o">=</span> <span class="n">CustomMetadataDict</span><span class="o">.</span><span class="n">get_deleted_sentinel</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="n">cm_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribs</span>
 
     <span class="k">def</span> <span class="nf">get_custom_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomMetadataDict</span><span class="p">:</span>
@@ -558,10 +588,7 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">metadata_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">metadata_dict</span><span class="o">.</span><span class="n">modified</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">metadata_dict</span><span class="o">.</span><span class="n">modified</span> <span class="k">for</span> <span class="n">metadata_dict</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">business_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
