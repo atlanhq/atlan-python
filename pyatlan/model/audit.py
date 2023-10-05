@@ -102,7 +102,7 @@ class AuditSearchRequest(SearchRequest):
         cls, type_name: str, qualified_name: str, *, size: int = 10, _from: int = 0
     ) -> "AuditSearchRequest":
         """
-        Create an audit search request ffor the last changes to an asset, by its qualifiedName.
+        Create an audit search request for the last changes to an asset, by its qualifiedName.
         :param type_name: the type of asset for which to retrieve the audit history
         :param qualified_name: unique name of the asset for which to retrieve the audit history
         :param size: number of changes to retrieve
@@ -166,20 +166,34 @@ class EntityAudit(AtlanObject):
     Detailed entry in the audit log. These objects should be treated as immutable.
     """
 
-    entity_qualified_name: str
-    type_name: str
-    entity_id: str
-    timestamp: datetime
-    created: datetime
-    user: str
-    action: AuditActionType
-    details: Optional[Any]
-    event_key: str
-    entity: Optional[Any]
-    type: Optional[Any]
-    detail: Optional[Union[CustomMetadataAttributesAuditDetail, AtlanTag, Asset]]
-    entity_detail: Optional[Asset]
-    headers: Optional[dict[str, str]]
+    entity_qualified_name: str = Field(description="Unique name of the asset.")
+    type_name: str = Field(description="Type of the asset.")
+    entity_id: str = Field(description="Unique identifier (GUID) of the asset.")
+    timestamp: datetime = Field(
+        description="Time (epoch) at which the activity started, in milliseconds."
+    )
+    created: datetime = Field(
+        description="Time (epoch) at which the activity completed, in milliseconds."
+    )
+    user: str = Field(description="User who carried out the activity.")
+    action: AuditActionType = Field(description="The type of activity that was done.")
+    details: Optional[Any] = Field(description="Unused.")
+    event_key: str = Field(description="Unique identifier of the activity.")
+    entity: Optional[Any] = Field(description="Unused.")
+    type: Optional[Any] = Field(description="Unused.")
+    detail: Optional[
+        Union[CustomMetadataAttributesAuditDetail, AtlanTag, Asset]
+    ] = Field(
+        description="Details of the activity.In practice this will either be details about an Atlan tag "
+        "(for Atlan tag-related actions) or an asset (for other actions)."
+    )
+    entity_detail: Optional[Asset] = Field(
+        description="Minimal details about the asset that was acted upon. Note that this contains current details "
+        "about the asset, not the state of the asset immediately before or after the given activity."
+    )
+    headers: Optional[dict[str, str]] = Field(
+        description="Headers detailing how the action was taken, if not by a user."
+    )
 
 
 class AuditSearchResults(Iterable):

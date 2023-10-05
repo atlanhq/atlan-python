@@ -15,7 +15,7 @@ from typing import Any, Generic, Optional, TypeVar
 
 from pydantic.generics import GenericModel
 
-from pyatlan.model.constants import DELETED_SENTINEL
+from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus
 
 CAMEL_CASE_OVERRIDES = {
@@ -68,7 +68,7 @@ class AtlanTagName:
             return cls._sentinel
         obj = super().__new__(cls)
         if args and args[0] == DELETED_SENTINEL:
-            obj._display_text = "(DELETED)"
+            obj._display_text = DELETED_
             cls._sentinel = obj
         return obj
 
