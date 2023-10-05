@@ -1732,6 +1732,7 @@ class TagIconType(str, Enum):
     IMAGE = "image"
     ICON = "icon"
     EMOJI = "emoji"
+    NONE = ""
 
 
 class TypeName(str, Enum):
