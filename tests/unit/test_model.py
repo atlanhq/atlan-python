@@ -488,6 +488,7 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[list[MatillionJob]]": [MatillionJob()],
     "Optional[MatillionJob]": MatillionJob(),
     "Optional[list[LookerFolder]]": [LookerFolder()],
+    "Optional[list[AtlanTagName]]": [],
 }
 
 

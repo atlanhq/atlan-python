@@ -8,6 +8,7 @@ from typing import ClassVar, Optional, Set
 
 from pydantic import Field, validator
 
+from pyatlan.model.core import AtlanTagName
 from pyatlan.model.enums import (
     AuthPolicyCategory,
     AuthPolicyResourceCategory,
@@ -195,17 +196,17 @@ class Purpose(AccessControl):
     ]
 
     @property
-    def purpose_atlan_tags(self) -> Optional[set[str]]:
+    def purpose_atlan_tags(self) -> Optional[list[AtlanTagName]]:
         return None if self.attributes is None else self.attributes.purpose_atlan_tags
 
     @purpose_atlan_tags.setter
-    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[set[str]]):
+    def purpose_atlan_tags(self, purpose_atlan_tags: Optional[list[AtlanTagName]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
         self.attributes.purpose_atlan_tags = purpose_atlan_tags
 
     class Attributes(AccessControl.Attributes):
-        purpose_atlan_tags: Optional[set[str]] = Field(
+        purpose_atlan_tags: Optional[list[AtlanTagName]] = Field(
             None, description="", alias="purposeClassifications"
         )
 
