@@ -150,7 +150,7 @@ class CustomMetadataAttributesAuditDetail(AtlanObject):
             archived_attributes = {
                 key: value for key, value in attributes.items() if "-archived-" in key
             }
-            for key in archived_attributes.keys():
+            for key in archived_attributes:
                 del attributes[key]
             values[ATTRIBUTES] = attributes
             values["archived_attributes"] = archived_attributes
