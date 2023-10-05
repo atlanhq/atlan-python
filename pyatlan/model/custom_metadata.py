@@ -44,9 +44,11 @@ class CustomMetadataDict(UserDict):
     @classmethod
     def get_deleted_sentinel(cls) -> "CustomMetadataDict":
         """Will return an CustomMetadataDict that is a sentinel object to represent deleted custom meta data."""
-        return cls._sentinel or cls.__new__(
+        if cls._sentinel is not None:
+            return cls._sentinel
+        return cls.__new__(
             cls, DELETED_SENTINEL
-        )  # Because __new__ is being invoked directly __init__ won't be
+        )  # Because __new__ is being invoked directly __init__ won't be invoked
 
     @property
     def modified(self):

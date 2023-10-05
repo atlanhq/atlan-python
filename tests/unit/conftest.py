@@ -25,3 +25,9 @@ def mock_group_cache():
 def mock_custom_metadata_cache():
     with patch("pyatlan.cache.custom_metadata_cache.CustomMetadataCache") as cache:
         yield cache
+
+
+@pytest.fixture()
+def mock_tag_cache():
+    with patch("pyatlan.cache.atlan_tag_cache.AtlanTagCache") as cache:
+        yield cache
