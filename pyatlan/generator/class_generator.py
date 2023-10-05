@@ -324,6 +324,11 @@ class AssetInfo:
         entity_defs = sorted(entity_defs, key=lambda e: ",".join(e.super_types or []))
         for entity_def in entity_defs:
             name = entity_def.name
+            if name == "Purpose" and entity_def.attribute_defs:
+                for attribute in entity_def.attribute_defs:
+                    if attribute["name"] == "purposeClassifications":
+                        attribute["typeName"] = "array<AtlanTagName>"
+
             if (not entity_def.super_types and name != REFERENCEABLE) or any(
                 super_type in cls.super_type_names_to_ignore
                 for super_type in (entity_def.super_types or [])
