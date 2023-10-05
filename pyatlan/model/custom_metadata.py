@@ -11,7 +11,7 @@ DELETED_SENTINEL = "DELETED_SENTINEL"
 
 
 class CustomMetadataDict(UserDict):
-    """This class allows the manipulation of a set of custom metadata attributes using the human readable names."""
+    """This class allows the manipulation of a set of custom metadata attributes using the human-readable names."""
 
     _sentinel: Optional["CustomMetadataDict"] = None
 
@@ -32,18 +32,18 @@ class CustomMetadataDict(UserDict):
         return self._names
 
     def __init__(self, name: str):
-        """Inits CustomMetadataDict with a string containing the human readable name of a set of custom metadata"""
+        """Inits CustomMetadataDict with a string containing the human-readable name of a set of custom metadata"""
         super().__init__()
         self._name = name
         self._modified = False
-        id = CustomMetadataCache.get_id_for_name(name)
+        _id = CustomMetadataCache.get_id_for_name(name)
         self._names = set(
-            CustomMetadataCache.get_cache().map_attr_id_to_name[id].values()
+            CustomMetadataCache.get_cache().map_attr_id_to_name[_id].values()
         )
 
     @classmethod
     def get_deleted_sentinel(cls) -> "CustomMetadataDict":
-        """Will return an AtlanTagName that is a sentinel object to represent deleted tags."""
+        """Will return an CustomMetadataDict that is a sentinel object to represent deleted custom meta data."""
         return cls._sentinel or cls.__new__(
             cls, DELETED_SENTINEL
         )  # Because __new__ is being invoked directly __init__ won't be
@@ -54,7 +54,7 @@ class CustomMetadataDict(UserDict):
         return self._modified
 
     def __setitem__(self, key: str, value):
-        """Set the value of a property of the custom metadata set using the human readable name as the key.
+        """Set the value of a property of the custom metadata set using the human-readable name as the key.
         The name will be validated to ensure that it's valid for this custom metadata set
         """
         if key not in self._names:
@@ -63,14 +63,12 @@ class CustomMetadataDict(UserDict):
         self.data[key] = value
 
     def __getitem__(self, key: str):
-        """Retrieve the value of a property of the custom metadata set using the human readable name as the key.
+        """Retrieve the value of a property of the custom metadata set using the human-readable name as the key.
         The name will be validated to ensure that it's valid for this custom metadata set
         """
         if key not in self._names:
             raise KeyError(f"'{key}' is not a valid property name for {self._name}")
-        if key not in self.data:
-            return None
-        return self.data[key]
+        return None if key not in self.data else self.data[key]
 
     def clear_all(self):
         """This method will set all the properties available explicitly to None"""
@@ -94,7 +92,7 @@ class CustomMetadataDict(UserDict):
 
     @property
     def business_attributes(self) -> dict[str, Any]:
-        """Returns a dict containing the metadat set with the human readable set name and property names resolved
+        """Returns a dict containing the metadat set with the human-readable set name and property names resolved
         to their internal values"""
         return {
             CustomMetadataCache.get_attr_id_for_name(self._name, key): value
@@ -143,10 +141,7 @@ class CustomMetadataProxy:
             return True
         if self._metadata is None:
             return False
-        for metadata_dict in self._metadata.values():
-            if metadata_dict.modified:
-                return True
-        return False
+        return any(metadata_dict.modified for metadata_dict in self._metadata.values())
 
     @property
     def business_attributes(self) -> Optional[dict[str, Any]]:

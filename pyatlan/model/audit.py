@@ -20,6 +20,10 @@ from pyatlan.model.search import (
     Term,
 )
 
+TOTAL_COUNT = "totalCount"
+
+ENTITY_AUDITS = "entityAudits"
+
 ATTRIBUTES = "attributes"
 
 TYPE_NAME = "type_name"
@@ -230,11 +234,10 @@ class AuditSearchResults(Iterable):
         self._criteria.dsl.from_ = self._start
         self._criteria.dsl.size = self._size
         if raw_json := self._get_next_page_json():
-            self._count = raw_json["totalCount"] if "totalCount" in raw_json else 0
+            self._count = raw_json[TOTAL_COUNT] if TOTAL_COUNT in raw_json else 0
             return True
         return False
 
-    # TODO Rename this here and in `next_page`
     def _get_next_page_json(self):
         """
         Fetches the next page of results and returns the raw JSON of the retrieval.
@@ -245,11 +248,11 @@ class AuditSearchResults(Iterable):
             self._endpoint,
             request_obj=self._criteria,
         )
-        if "entityAudits" not in raw_json or not raw_json["entityAudits"]:
+        if ENTITY_AUDITS not in raw_json or not raw_json[ENTITY_AUDITS]:
             self._entity_audits = []
             return None
         try:
-            self._assets = parse_obj_as(list[EntityAudit], raw_json["entityAudits"])
+            self._assets = parse_obj_as(list[EntityAudit], raw_json[ENTITY_AUDITS])
             return raw_json
         except ValidationError as err:
             raise ErrorCode.JSON_ERROR.exception_with_parameters(
@@ -267,91 +270,3 @@ class AuditSearchResults(Iterable):
             yield from self.current_page()
             if not self.next_page():
                 break
-
-
-if __name__ == "__main__":
-    detail_asset = {
-        "entityQualifiedName": "fc836098-d091-43b9-9bac-73acdd1c421d/connection-entity-business-metadata",
-        "typeName": "AuthPolicy",
-        "entityId": "d5d44b08-e314-417b-b614-cd3d91af2a41",
-        "timestamp": 1696011438537,
-        "created": 1696011487655,
-        "user": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-        "action": "ENTITY_DELETE",
-        "details": None,
-        "eventKey": "d5d44b08-e314-417b-b614-cd3d91af2a41:1696011438537",
-        "entity": None,
-        "type": None,
-        "detail": {
-            "typeName": "AuthPolicy",
-            "attributes": {
-                "qualifiedName": "fc836098-d091-43b9-9bac-73acdd1c421d/connection-entity-business-metadata"
-            },
-            "guid": "d5d44b08-e314-417b-b614-cd3d91af2a41",
-            "isIncomplete": False,
-            "provenanceType": 0,
-            "status": "DELETED",
-            "createdBy": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-            "updatedBy": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-            "createTime": 1696011438537,
-            "updateTime": 1696011438537,
-            "version": 0,
-            "classifications": [],
-            "meanings": [],
-            "deleteHandler": "PURGE",
-            "proxy": False,
-        },
-        "entityDetail": None,
-        "headers": {"x-atlan-agent-id": "python", "x-atlan-agent": "sdk"},
-    }
-    detail_metadata = {
-        "entityQualifiedName": "KRrLNWZ9hWbDl8Hct0Ntb@J8aDKGBBnt73Rp4QbYR2m",
-        "typeName": "AtlasGlossaryTerm",
-        "entityId": "f8acb54f-d6eb-4892-bbe0-04892d786751",
-        "timestamp": 1695924914922,
-        "created": 1695924915072,
-        "user": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-        "action": "BUSINESS_ATTRIBUTE_UPDATE",
-        "details": None,
-        "eventKey": "f8acb54f-d6eb-4892-bbe0-04892d786751:1695924914922",
-        "entity": None,
-        "type": None,
-        "detail": {
-            "typeName": "cxln83UsRAMR3FVY1ycm7s",
-            "attributes": {
-                "m4ZeLphZSCw0AZ0VZNlAli": ["psdk_cm_djwqk1", "psdk_cm_djwqk2"],
-                "lSDYAg4b9ss2fUtj2NMP3C": ["ernest"],
-                "S0wq82gjzH9oXnTF4rBJqZ": ["psdk_cm_djwqk1"],
-                "tLKdDBnULWew8d8jv2pqWP": "something extra...",
-                "ID3s6qwmlBtbVyf8PvIrWX": "ernest",
-            },
-        },
-        "entityDetail": None,
-        "headers": {"x-atlan-agent-id": "python", "x-atlan-agent": "sdk"},
-    }
-    detail_tag = {
-        "entityQualifiedName": "default/api/1695649284/Swagger Petstore - OpenAPI 3.0/pet",
-        "typeName": "APIPath",
-        "entityId": "67c7450b-aa3a-4d27-8443-76ee6da21f28",
-        "timestamp": 1696254083143,
-        "created": 1696254083257,
-        "user": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-        "action": "CLASSIFICATION_DELETE",
-        "details": None,
-        "eventKey": "67c7450b-aa3a-4d27-8443-76ee6da21f28:1696254083143",
-        "entity": None,
-        "type": None,
-        "detail": {"typeName": "taPaKswvHMovoskyNPsMq9123"},
-        "entityDetail": {
-            "typeName": "APIPath",
-            "attributes": {},
-            "guid": "67c7450b-aa3a-4d27-8443-76ee6da21f28",
-            "status": "ACTIVE",
-            "isIncomplete": False,
-            "createdBy": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-            "updatedBy": "service-account-apikey-a1c7beae-a558-4994-adb4-16ee422b91d6",
-            "createTime": 1695649801084,
-            "updateTime": 1696254083143,
-        },
-        "headers": None,
-    }
