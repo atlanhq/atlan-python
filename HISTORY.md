@@ -1,5 +1,6 @@
 ## 1.3.0 (October 5, 2023)
 
+* Correct issue with incorrect type on purpose_atlan_tags of Purpose
 * Added support for searching audit logs
 * Fixed bug preventing creation of locked custom metadata
 * Fully-validate connection parameters on save
