@@ -37,7 +37,7 @@ def get_attr_name_for_id(*args, **kwargs):
     return ATTR_FIRST_NAME if args[1] == ATTR_FIRST_NAME_ID else ATTR_FIRST_NAME
 
 
-class Test_CustomMetadataDict:
+class TestCustomMetadataDict:
     @pytest.fixture()
     def sut(self, mock_cache):
         mock_cache.get_id_for_name.return_value = CM_ID
@@ -114,6 +114,19 @@ class Test_CustomMetadataDict:
         sut[name] = "bob"
         assert sut.is_set(name) is True
 
+    def test_get_deleted_sentinel(self):
+        sentinel = CustomMetadataDict.get_deleted_sentinel()
+
+        assert sentinel is not None
+        assert id(sentinel) == id(CustomMetadataDict.get_deleted_sentinel())
+        assert 0 == len(sentinel)
+        assert sentinel.modified is False
+        assert sentinel._name == "(DELETED)"
+        with pytest.raises(
+            KeyError, match=r"'abc' is not a valid property name for \(DELETED\)"
+        ):
+            sentinel["abc"] = 1
+
 
 class TestCustomMetadataProxy:
     @pytest.fixture()
@@ -174,6 +187,16 @@ class TestCustomMetadataProxy:
         ba = sut.business_attributes
 
         assert ba == {CM_ID: {ATTR_FIRST_NAME_ID: donna, ATTR_LAST_NAME_ID: joey}}
+
+    def test_when_invalid_metadata_set_then_delete_sentinel_is_used(self, mock_cache):
+        mock_cache.get_name_for_id.side_effect = (
+            ErrorCode.CM_NOT_FOUND_BY_ID.exception_with_parameters(CM_ID)
+        )
+        ba = {CM_ID: {ATTR_FIRST_NAME_ID: "Dave"}}
+
+        sut = CustomMetadataProxy(business_attributes=ba)
+
+        assert len(sut.get_custom_metadata("(DELETED)")) == 0
 
 
 class TestCustomMetadataRequest:

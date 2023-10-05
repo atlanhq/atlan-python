@@ -31,6 +31,7 @@ from requests.adapters import HTTPAdapter
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 from urllib3.util.retry import Retry
 
+from pyatlan.client.audit import AuditClient
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
     ADD_USER_TO_GROUPS,
@@ -264,6 +265,7 @@ class AtlanClient(BaseSettings):
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
+    _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -470,6 +472,12 @@ class AtlanClient(BaseSettings):
     @property
     def cache_key(self) -> int:
         return f"{self.base_url}/{self.api_key}".__hash__()
+
+    @property
+    def audit(self) -> AuditClient:
+        if self._audit_client is None:
+            self._audit_client = AuditClient(client=self)
+        return self._audit_client
 
     @property
     def workflow(self) -> WorkflowClient:

@@ -40,9 +40,9 @@ class Connection(Asset, type_name="Connection"):
             connector_name=connector_type.value,
             category=connector_type.category.value,
         )
-        attr.admin_users = admin_users or []
-        attr.admin_groups = admin_groups or []
-        attr.admin_roles = admin_roles or []
+        attr.admin_users = set() if admin_users is None else set(admin_users)
+        attr.admin_groups = set() if admin_groups is None else set(admin_groups)
+        attr.admin_roles = set() if admin_roles is None else set(admin_roles)
         return cls(attributes=attr)
 
     type_name: str = Field("Connection", allow_mutation=False)

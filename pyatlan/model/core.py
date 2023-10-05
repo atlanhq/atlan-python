@@ -15,6 +15,7 @@ from typing import Any, Generic, Optional, TypeVar
 
 from pydantic.generics import GenericModel
 
+from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus
 
 CAMEL_CASE_OVERRIDES = {
@@ -60,12 +61,30 @@ def to_snake_case(value):
 
 
 class AtlanTagName:
+    _sentinel: Optional["AtlanTagName"] = None
+
+    def __new__(cls, *args, **kwargs):
+        if args and args[0] == DELETED_SENTINEL and cls._sentinel:
+            return cls._sentinel
+        obj = super().__new__(cls)
+        if args and args[0] == DELETED_SENTINEL:
+            obj._display_text = DELETED_
+            cls._sentinel = obj
+        return obj
+
     def __init__(self, display_text: str):
         from pyatlan.cache.atlan_tag_cache import AtlanTagCache
 
         if not AtlanTagCache.get_id_for_name(display_text):
             raise ValueError(f"{display_text} is not a valid Classification")
         self._display_text = display_text
+
+    @classmethod
+    def get_deleted_sentinel(cls) -> "AtlanTagName":
+        """Will return an AtlanTagName that is a sentinel object to represent deleted tags."""
+        return cls._sentinel or cls.__new__(
+            cls, DELETED_SENTINEL
+        )  # Because __new__ is being invoked directly __init__ won't be
 
     @classmethod
     def __get_validators__(cls):
@@ -137,6 +156,9 @@ class Announcement:
 
 
 class AtlanTag(AtlanObject):
+    class Config:
+        extra = "forbid"
+
     type_name: Optional[AtlanTagName] = Field(
         None,
         description="Name of the type definition that defines this instance.\n",
@@ -162,6 +184,16 @@ class AtlanTag(AtlanObject):
         None, description="", alias="restrictPropagationThroughLineage"
     )
     validity_periods: Optional[list[str]] = Field(None, alias="validityPeriods")
+
+    @validator("type_name", pre=True)
+    def type_name_is_tag_name(cls, value):
+        if isinstance(value, AtlanTagName):
+            return value
+        try:
+            value = AtlanTagName._convert_to_display_text(value)
+        except ValueError:
+            value = AtlanTagName.get_deleted_sentinel()
+        return value
 
 
 class AtlanTags(AtlanObject):
