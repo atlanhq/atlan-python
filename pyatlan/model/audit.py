@@ -9,6 +9,7 @@ from pyatlan.client.constants import AUDIT_SEARCH
 from pyatlan.client.workflow import ApiCaller
 from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
+from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import AtlanObject, AtlanTag
 from pyatlan.model.search import (
     DSL,
@@ -155,7 +156,7 @@ class CustomMetadataAttributesAuditDetail(AtlanObject):
             values[ATTRIBUTES] = attributes
             values["archived_attributes"] = archived_attributes
         except NotFoundError:
-            values[TYPE_NAME] = "(DELETED)"
+            values[TYPE_NAME] = DELETED_
             values[ATTRIBUTES] = {}
         return values
 

@@ -5,9 +5,8 @@ from pydantic import PrivateAttr
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
 from pyatlan.errors import NotFoundError
+from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.core import AtlanObject
-
-DELETED_SENTINEL = "DELETED_SENTINEL"
 
 
 class CustomMetadataDict(UserDict):
@@ -21,7 +20,7 @@ class CustomMetadataDict(UserDict):
         obj = super().__new__(cls)
         super().__init__(obj)
         if args and args[0] == DELETED_SENTINEL:
-            obj._name = "(DELETED)"
+            obj._name = DELETED_
             obj._modified = False
             obj._names = set()
             cls._sentinel = obj
@@ -119,7 +118,7 @@ class CustomMetadataProxy:
                     attribs[attr_name] = properties
                 attribs._modified = False
             except NotFoundError:
-                cm_name = "(DELETED)"
+                cm_name = DELETED_
                 attribs = CustomMetadataDict.get_deleted_sentinel()
             self._metadata[cm_name] = attribs
 

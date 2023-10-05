@@ -1,11 +1,11 @@
 ## 1.3.0 (October 5, 2023)
 
 * Added support for searching audit logs
-* Changed is_locked of CustomMetadataDef.Options from Optional[str] to Optional[Literal['true','false']]
+* Fixed bug preventing creation of locked custom metadata
 * Fully-validate connection parameters on save
 * Adds emojis and icons for both tags and custom metadata
 * Fix bug on validating (internal) group names
-* AM - 247: Manage ADLS assests
+* Manage ADLS assests
 * Makes all options in AttributeDefs optional
 
 ## 1.2.0 (September 26, 2023)

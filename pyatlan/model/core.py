@@ -15,9 +15,8 @@ from typing import Any, Generic, Optional, TypeVar
 
 from pydantic.generics import GenericModel
 
+from pyatlan.model.constants import DELETED_SENTINEL
 from pyatlan.model.enums import AnnouncementType, EntityStatus
-
-DELETED_SENTINEL = "DELETED_SENTINEL"
 
 CAMEL_CASE_OVERRIDES = {
     "IndexTypeEsFields": "IndexTypeESFields",
