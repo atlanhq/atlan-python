@@ -54,19 +54,11 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(None, description="")
 
 
-class SourceTagAttachment(AtlanObject):
+class SourceTagAttachmentValue(AtlanObject):
     """Description"""
 
-    source_tag_name: Optional[str] = Field(None, description="")
-    source_tag_qualified_name: Optional[str] = Field(None, description="")
-    source_tag_guid: Optional[str] = Field(None, description="")
-    source_tag_connector_name: Optional[str] = Field(None, description="")
-    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
-        None, description=""
-    )
-    is_source_tag_synced: Optional[bool] = Field(None, description="")
-    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
-    source_tag_sync_error: Optional[str] = Field(None, description="")
+    tag_attachment_key: Optional[str] = Field(None, description="")
+    tag_attachment_value: Optional[str] = Field(None, description="")
 
 
 class BadgeCondition(AtlanObject):
@@ -102,11 +94,19 @@ class BadgeCondition(AtlanObject):
     badge_condition_colorhex: Optional[str] = Field(None, description="")
 
 
-class SourceTagAttachmentValue(AtlanObject):
+class SourceTagAttachment(AtlanObject):
     """Description"""
 
-    tag_attachment_key: Optional[str] = Field(None, description="")
-    tag_attachment_value: Optional[str] = Field(None, description="")
+    source_tag_name: Optional[str] = Field(None, description="")
+    source_tag_qualified_name: Optional[str] = Field(None, description="")
+    source_tag_guid: Optional[str] = Field(None, description="")
+    source_tag_connector_name: Optional[str] = Field(None, description="")
+    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
+        None, description=""
+    )
+    is_source_tag_synced: Optional[bool] = Field(None, description="")
+    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
+    source_tag_sync_error: Optional[str] = Field(None, description="")
 
 
 class AzureTag(AtlanObject):
@@ -137,6 +137,13 @@ class AwsTag(AtlanObject):
     aws_tag_value: str = Field(description="")
 
 
+class GoogleTag(AtlanObject):
+    """Description"""
+
+    google_tag_key: str = Field(description="")
+    google_tag_value: str = Field(description="")
+
+
 class DbtMetricFilter(AtlanObject):
     """Description"""
 
@@ -144,13 +151,6 @@ class DbtMetricFilter(AtlanObject):
     dbt_metric_filter_field: Optional[str] = Field(None, description="")
     dbt_metric_filter_operator: Optional[str] = Field(None, description="")
     dbt_metric_filter_value: Optional[str] = Field(None, description="")
-
-
-class GoogleTag(AtlanObject):
-    """Description"""
-
-    google_tag_key: str = Field(description="")
-    google_tag_value: str = Field(description="")
 
 
 class AuthPolicyValiditySchedule(AtlanObject):
@@ -214,11 +214,11 @@ Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachment.update_forward_refs()
+SourceTagAttachmentValue.update_forward_refs()
 
 BadgeCondition.update_forward_refs()
 
-SourceTagAttachmentValue.update_forward_refs()
+SourceTagAttachment.update_forward_refs()
 
 AzureTag.update_forward_refs()
 
@@ -228,9 +228,9 @@ AuthPolicyCondition.update_forward_refs()
 
 AwsTag.update_forward_refs()
 
-DbtMetricFilter.update_forward_refs()
-
 GoogleTag.update_forward_refs()
+
+DbtMetricFilter.update_forward_refs()
 
 AuthPolicyValiditySchedule.update_forward_refs()
 
