@@ -4,25 +4,50 @@ from typing import Any, Optional
 from pydantic import PrivateAttr
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.errors import NotFoundError
+from pyatlan.model.constants import DELETED_, DELETED_SENTINEL
 from pyatlan.model.core import AtlanObject
 
 
 class CustomMetadataDict(UserDict):
-    """This class allows the manipulation of a set of custom metadata attributes using the human readable names."""
+    """This class allows the manipulation of a set of custom metadata attributes using the human-readable names."""
+
+    _sentinel: Optional["CustomMetadataDict"] = None
+
+    def __new__(cls, *args, **kwargs):
+        if args and args[0] == DELETED_SENTINEL and cls._sentinel:
+            return cls._sentinel
+        obj = super().__new__(cls)
+        super().__init__(obj)
+        if args and args[0] == DELETED_SENTINEL:
+            obj._name = DELETED_
+            obj._modified = False
+            obj._names = set()
+            cls._sentinel = obj
+        return obj
 
     @property
     def attribute_names(self) -> set[str]:
         return self._names
 
     def __init__(self, name: str):
-        """Inits CustomMetadataDict with a string containing the human readable name of a set of custom metadata"""
+        """Inits CustomMetadataDict with a string containing the human-readable name of a set of custom metadata"""
         super().__init__()
         self._name = name
         self._modified = False
-        id = CustomMetadataCache.get_id_for_name(name)
+        _id = CustomMetadataCache.get_id_for_name(name)
         self._names = set(
-            CustomMetadataCache.get_cache().map_attr_id_to_name[id].values()
+            CustomMetadataCache.get_cache().map_attr_id_to_name[_id].values()
         )
+
+    @classmethod
+    def get_deleted_sentinel(cls) -> "CustomMetadataDict":
+        """Will return an CustomMetadataDict that is a sentinel object to represent deleted custom meta data."""
+        if cls._sentinel is not None:
+            return cls._sentinel
+        return cls.__new__(
+            cls, DELETED_SENTINEL
+        )  # Because __new__ is being invoked directly __init__ won't be invoked
 
     @property
     def modified(self):
@@ -30,7 +55,7 @@ class CustomMetadataDict(UserDict):
         return self._modified
 
     def __setitem__(self, key: str, value):
-        """Set the value of a property of the custom metadata set using the human readable name as the key.
+        """Set the value of a property of the custom metadata set using the human-readable name as the key.
         The name will be validated to ensure that it's valid for this custom metadata set
         """
         if key not in self._names:
@@ -39,14 +64,12 @@ class CustomMetadataDict(UserDict):
         self.data[key] = value
 
     def __getitem__(self, key: str):
-        """Retrieve the value of a property of the custom metadata set using the human readable name as the key.
+        """Retrieve the value of a property of the custom metadata set using the human-readable name as the key.
         The name will be validated to ensure that it's valid for this custom metadata set
         """
         if key not in self._names:
             raise KeyError(f"'{key}' is not a valid property name for {self._name}")
-        if key not in self.data:
-            return None
-        return self.data[key]
+        return None if key not in self.data else self.data[key]
 
     def clear_all(self):
         """This method will set all the properties available explicitly to None"""
@@ -70,7 +93,7 @@ class CustomMetadataDict(UserDict):
 
     @property
     def business_attributes(self) -> dict[str, Any]:
-        """Returns a dict containing the metadat set with the human readable set name and property names resolved
+        """Returns a dict containing the metadata set with the human-readable set name and property names resolved
         to their internal values"""
         return {
             CustomMetadataCache.get_attr_id_for_name(self._name, key): value
@@ -87,12 +110,16 @@ class CustomMetadataProxy:
             return
         self._metadata = {}
         for cm_id, cm_attributes in self._business_attributes.items():
-            cm_name = CustomMetadataCache.get_name_for_id(cm_id)
-            attribs = CustomMetadataDict(name=cm_name)
-            for attr_id, properties in cm_attributes.items():
-                attr_name = CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id)
-                attribs[attr_name] = properties
-            attribs._modified = False
+            try:
+                cm_name = CustomMetadataCache.get_name_for_id(cm_id)
+                attribs = CustomMetadataDict(name=cm_name)
+                for attr_id, properties in cm_attributes.items():
+                    attr_name = CustomMetadataCache.get_attr_name_for_id(cm_id, attr_id)
+                    attribs[attr_name] = properties
+                attribs._modified = False
+            except NotFoundError:
+                cm_name = DELETED_
+                attribs = CustomMetadataDict.get_deleted_sentinel()
             self._metadata[cm_name] = attribs
 
     def get_custom_metadata(self, name: str) -> CustomMetadataDict:
@@ -115,10 +142,7 @@ class CustomMetadataProxy:
             return True
         if self._metadata is None:
             return False
-        for metadata_dict in self._metadata.values():
-            if metadata_dict.modified:
-                return True
-        return False
+        return any(metadata_dict.modified for metadata_dict in self._metadata.values())
 
     @property
     def business_attributes(self) -> Optional[dict[str, Any]]:

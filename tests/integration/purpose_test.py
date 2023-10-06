@@ -7,6 +7,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import AuthPolicy, Purpose
+from pyatlan.model.core import AtlanTagName
 from pyatlan.model.enums import (
     AssetSidebarTab,
     AtlanTagColor,
@@ -22,7 +23,7 @@ MODULE_NAME = TestId.make_unique("Purpose")
 
 
 @pytest.fixture(scope="module")
-def atlan_tag(
+def atlan_tag_def(
     client: AtlanClient,
 ) -> Generator[AtlanTagDef, None, None]:
     atlan_tag_def = AtlanTagDef.create(name=MODULE_NAME, color=AtlanTagColor.GREEN)
@@ -32,27 +33,32 @@ def atlan_tag(
 
 
 @pytest.fixture(scope="module")
+def atlan_tag_name(atlan_tag_def):
+    return AtlanTagName(atlan_tag_def.display_name)
+
+
+@pytest.fixture(scope="module")
 def purpose(
     client: AtlanClient,
-    atlan_tag: AtlanTagDef,
+    atlan_tag_name,
 ) -> Generator[Purpose, None, None]:
-    to_create = Purpose.create(name=MODULE_NAME, atlan_tags=[atlan_tag.display_name])
+    to_create = Purpose.create(name=MODULE_NAME, atlan_tags=[atlan_tag_name])
     response = client.save(to_create)
     p = response.assets_created(asset_type=Purpose)[0]
     yield p
     delete_asset(client, guid=p.guid, asset_type=Purpose)
 
 
-def test_purpose(
-    client: AtlanClient,
-    purpose: Purpose,
-):
+def test_purpose(client: AtlanClient, purpose: Purpose, atlan_tag_name: AtlanTagName):
     assert purpose
     assert purpose.guid
     assert purpose.qualified_name
     assert purpose.name == MODULE_NAME
     assert purpose.display_name == MODULE_NAME
     assert purpose.qualified_name != MODULE_NAME
+    purpose = client.get_asset_by_guid(guid=purpose.guid, asset_type=Purpose)
+    assert purpose.purpose_atlan_tags
+    assert [atlan_tag_name] == purpose.purpose_atlan_tags
 
 
 @pytest.mark.order(after="test_purpose")
@@ -88,7 +94,9 @@ def test_find_purpose_by_name(
     client: AtlanClient,
     purpose: Purpose,
 ):
-    result = client.find_purposes_by_name(MODULE_NAME)
+    result = client.find_purposes_by_name(
+        MODULE_NAME, attributes=["purposeClassifications"]
+    )
     count = 0
     # TODO: replace with exponential back-off and jitter
     while not result and count < 10:

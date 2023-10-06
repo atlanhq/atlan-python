@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Generator
 
 import pytest
@@ -12,6 +13,7 @@ from pyatlan.model.assets import (
     Database,
     Table,
 )
+from pyatlan.model.audit import AuditSearchRequest
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
@@ -19,10 +21,23 @@ from pyatlan.model.enums import (
     CertificateStatus,
     WorkflowPackage,
 )
+from pyatlan.model.user import UserMinimalResponse
 from tests.integration.client import TestId
 from tests.integration.lineage_test import create_database, delete_asset
 
 CLASSIFICATION_NAME = "Issue"
+
+
+@dataclass()
+class AuditInfo:
+    qualified_name: str = ""
+    type_name: str = ""
+    guid: str = ""
+
+
+@pytest.fixture(scope="module")
+def audit_info():
+    return AuditInfo()
 
 
 @pytest.fixture()
@@ -43,6 +58,11 @@ def database(
     db = create_database(client, connection, database_name)
     yield db
     delete_asset(client, guid=db.guid, asset_type=Database)
+
+
+@pytest.fixture()
+def current_user(client: AtlanClient) -> UserMinimalResponse:
+    return client.get_current_user()
 
 
 def test_append_terms_with_guid(
@@ -346,3 +366,56 @@ def test_workflow_find_by_type(client: AtlanClient):
     )
     assert results
     assert len(results) == 1
+
+
+def test_audit_find_by_user(
+    client: AtlanClient, current_user: UserMinimalResponse, audit_info: AuditInfo
+):
+    size = 10
+    assert current_user.username
+
+    results = client.audit.search(
+        AuditSearchRequest.by_user(current_user.username, size=size)
+    )
+    assert results.total_count > 0
+    assert size == len(results.current_page())
+    audit_entity = results.current_page()[0]
+    audit_info.qualified_name = audit_entity.entity_qualified_name
+    audit_info.guid = audit_entity.entity_id
+    audit_info.type_name = audit_entity.type_name
+
+
+@pytest.mark.order(after="test_audit_find_by_user")
+def test_audit_find_by_qualified_name(client: AtlanClient, audit_info: AuditInfo):
+    assert audit_info.qualified_name
+    assert audit_info.type_name
+    size = 10
+
+    results = client.audit.search(
+        AuditSearchRequest.by_qualified_name(
+            qualified_name=audit_info.qualified_name,
+            type_name=audit_info.type_name,
+            size=size,
+        )
+    )
+
+    assert results.total_count > 0
+    count = len(results.current_page())
+    assert count > 0 and count <= size
+
+
+@pytest.mark.order(after="test_audit_find_by_user")
+def test_audit_find_by_guid(client: AtlanClient, audit_info: AuditInfo):
+    assert audit_info.guid
+    size = 10
+
+    results = client.audit.search(
+        AuditSearchRequest.by_guid(
+            guid=audit_info.guid,
+            size=size,
+        )
+    )
+
+    assert results.total_count > 0
+    count = len(results.current_page())
+    assert count > 0 and count <= size

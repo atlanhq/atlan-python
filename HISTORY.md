@@ -1,3 +1,14 @@
+## 1.3.0 (October 5, 2023)
+
+* Correct issue with incorrect type on purpose_atlan_tags of Purpose
+* Added support for searching audit logs
+* Fixed bug preventing creation of locked custom metadata
+* Fully-validate connection parameters on save
+* Adds emojis and icons for both tags and custom metadata
+* Fix bug on validating (internal) group names
+* Manage ADLS assests
+* Makes all options in AttributeDefs optional
+
 ## 1.2.0 (September 26, 2023)
 
 * Add capability to do bucket and metric aggregations
