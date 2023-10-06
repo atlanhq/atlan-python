@@ -631,7 +631,7 @@ class CustomMetadataDef(TypeDef):
                 [emoji],
             )
             return CustomMetadataDef.Options(
-                emoji=emoji, logo_type="emoji", is_locked="true" if locked else "false"
+                emoji=emoji, logo_type="emoji", is_locked=locked
             )
 
         @staticmethod
@@ -645,7 +645,7 @@ class CustomMetadataDef(TypeDef):
                 [url],
             )
             return CustomMetadataDef.Options(
-                logo_url=url, logo_type="image", is_locked="true" if locked else "false"
+                logo_url=url, logo_type="image", is_locked=locked
             )
 
         @staticmethod
@@ -662,7 +662,7 @@ class CustomMetadataDef(TypeDef):
                 logo_type="icon",
                 icon_color=color,
                 icon_name=icon,
-                is_locked="true" if locked else "false",
+                is_locked=locked,
             )
 
     attribute_defs: list[AttributeDef] = Field(
