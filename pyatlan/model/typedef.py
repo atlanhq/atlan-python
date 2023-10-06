@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, Literal, Optional, Protocol, Union, cast
+from typing import Any, Callable, Optional, Protocol, Union, cast
 
 from pydantic import Field
 
@@ -604,7 +604,7 @@ class CustomMetadataDef(TypeDef):
         image_id: Optional[str] = Field(
             description="The id of the image used for the logo."
         )
-        is_locked: Optional[Literal["true", "false"]] = Field(
+        is_locked: Optional[bool] = Field(
             description="Indicates whether the custom metadata can be managed in the UI (false) or not (true)."
         )
         logo_type: Optional[str] = Field(
@@ -631,7 +631,7 @@ class CustomMetadataDef(TypeDef):
                 [emoji],
             )
             return CustomMetadataDef.Options(
-                emoji=emoji, logo_type="emoji", is_locked="true" if locked else "false"
+                emoji=emoji, logo_type="emoji", is_locked=locked
             )
 
         @staticmethod
@@ -645,7 +645,7 @@ class CustomMetadataDef(TypeDef):
                 [url],
             )
             return CustomMetadataDef.Options(
-                logo_url=url, logo_type="image", is_locked="true" if locked else "false"
+                logo_url=url, logo_type="image", is_locked=locked
             )
 
         @staticmethod
@@ -662,7 +662,7 @@ class CustomMetadataDef(TypeDef):
                 logo_type="icon",
                 icon_color=color,
                 icon_name=icon,
-                is_locked="true" if locked else "false",
+                is_locked=locked,
             )
 
     attribute_defs: list[AttributeDef] = Field(
