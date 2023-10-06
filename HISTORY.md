@@ -1,3 +1,7 @@
+## 1.3.1 (October 6, 2023)
+
+* Fix bug preventing custom metadata from being read that were written with locked bug
+
 ## 1.3.0 (October 5, 2023)
 
 * Correct issue with incorrect type on purpose_atlan_tags of Purpose
