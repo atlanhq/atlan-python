@@ -21,7 +21,7 @@
                 apiPathRawURI=name,
                 apiSpecQualifiedName=apiSpecQualifiedName,
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{apiSpecQualifiedName}/{name}",
+                qualified_name=f"{apiSpecQualifiedName}{name}",
                 connector_name=connector_type.value,
                 apiSpec=APISpec.ref_by_qualified_name(apiSpecQualifiedName),
             )
