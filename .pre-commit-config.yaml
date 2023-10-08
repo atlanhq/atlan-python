@@ -7,13 +7,6 @@ repos:
       - id: trailing-whitespace
       - id: debug-statements
 
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.2.1
-    hooks:
-    -   id: autoflake
-        args: [--ignore-init-module-imports, --remove-all-unused-imports, --remove-unused-variables, --in-place]
-        language_version: python3
-
   - repo: https://github.com/pycqa/flake8
     rev: 5.0.4
     hooks:
