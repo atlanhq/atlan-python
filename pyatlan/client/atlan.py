@@ -711,9 +711,9 @@ class AtlanClient(BaseSettings):
         alias: str,
         limit: int = 20,
     ) -> Optional[list[AtlanGroup]]:
-        """Deprecated - use group.get_all() instead."""
+        """Deprecated - use group.get_by_name() instead."""
         warn(
-            "This method is deprecated, please use 'group.get_all' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'group.get_by_name' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -729,9 +729,9 @@ class AtlanClient(BaseSettings):
         return self.group.get_members(guid=guid)
 
     def remove_users_from_group(self, guid: str, user_ids=list[str]) -> None:
-        """Deprecated - use group.get_members() instead."""
+        """Deprecated - use group.remove_users() instead."""
         warn(
-            "This method is deprecated, please use 'group.get_members' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'group.remove_users' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
