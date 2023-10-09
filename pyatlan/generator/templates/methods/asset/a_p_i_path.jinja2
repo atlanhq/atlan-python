@@ -1,11 +1,11 @@
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, name: str, connection_qualified_name: str, apiPathRawURI: str, apiSpecQualifiedName: str) -> {{ entity_def.name }}:
+    def create(cls, *, apiPathRawURI: str, apiSpecQualifiedName: str) -> {{ entity_def.name }}:
         validate_required_fields(
-            ["name", "connection_qualified_name", "apiPathRawURI", "apiSpecQualifiedName"], [name, connection_qualified_name, apiPathRawURI, apiSpecQualifiedName]
+            ["apiPathRawURI", "apiSpecQualifiedName"], [apiPathRawURI, apiSpecQualifiedName]
         )
         attributes = {{ entity_def.name }}.Attributes.create(
-            name=name, connection_qualified_name=connection_qualified_name, apiPathRawURI=apiPathRawURI, apiSpecQualifiedName=apiSpecQualifiedName
+            apiPathRawURI=apiPathRawURI, apiSpecQualifiedName=apiSpecQualifiedName
         )
         return cls(attributes=attributes)

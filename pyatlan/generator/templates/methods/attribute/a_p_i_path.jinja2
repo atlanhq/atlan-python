@@ -1,9 +1,9 @@
 
         @classmethod
         # @validate_arguments()
-        def create(cls, *, name: str, connection_qualified_name: str, apiPathRawURI: str, apiSpecQualifiedName: str) -> {{ entity_def.name }}.Attributes:
+        def create(cls, *, apiPathRawURI: str, apiSpecQualifiedName: str) -> {{ entity_def.name }}.Attributes:
             validate_required_fields(
-                ["name", "connection_qualified_name", "apiPathRawURI", "apiSpecQualifiedName"], [name, connection_qualified_name, apiPathRawURI, apiSpecQualifiedName]
+                ["apiPathRawURI", "apiSpecQualifiedName"], [apiPathRawURI, apiSpecQualifiedName]
             )
 
             # Split the apiSpecQualifiedName to extract necessary information
@@ -17,11 +17,11 @@
                 raise ValueError("Invalid apiSpecQualifiedName") from e
 
             return {{ entity_def.name }}.Attributes(
-                name=name,
-                apiPathRawURI=name,
+                apiPathRawURI=apiPathRawURI,
+                name=apiPathRawURI,
                 apiSpecQualifiedName=apiSpecQualifiedName,
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{apiSpecQualifiedName}{name}",
+                qualified_name=f"{apiSpecQualifiedName}{apiPathRawURI}",
                 connector_name=connector_type.value,
                 apiSpec=APISpec.ref_by_qualified_name(apiSpecQualifiedName),
             )

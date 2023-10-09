@@ -96,8 +96,6 @@ def test_api_spec(client: AtlanClient, connection: Connection, api_spec: APISpec
 def api_path(client: AtlanClient, api_spec: APISpec) -> Generator[APIPath, None, None]:
     assert api_spec.qualified_name
     to_create = APIPath.create(
-        name=API_PATH_NAME,
-        connection_qualified_name=api_spec.connection_qualified_name,
         apiPathRawURI=API_PATH_RAW_URI,
         apiSpecQualifiedName=api_spec.qualified_name,
     )

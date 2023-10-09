@@ -12,49 +12,19 @@ from tests.unit.model.constants import (
 
 
 @pytest.mark.parametrize(
-    "name, connection_qualified_name, apiPathRawURI, apiSpecQualifiedName, message",
+    "apiPathRawURI, apiSpecQualifiedName, message",
     [
-        (
-            None,
-            "connection/name",
-            API_PATH_RAW_URI,
-            API_SPEC_QUALIFIED_NAME,
-            "name is required",
-        ),
-        (
-            API_PATH_NAME,
-            None,
-            API_PATH_RAW_URI,
-            API_SPEC_QUALIFIED_NAME,
-            "connection_qualified_name is required",
-        ),
-        (
-            API_PATH_NAME,
-            "connection/name",
-            None,
-            API_SPEC_QUALIFIED_NAME,
-            "apiPathRawURI is required",
-        ),
-        (
-            API_PATH_NAME,
-            "connection/name",
-            API_PATH_RAW_URI,
-            None,
-            "apiSpecQualifiedName is required",
-        ),
+        (None, "api/spec", "apiPathRawURI is required"),
+        (API_PATH_RAW_URI, None, "apiSpecQualifiedName is required"),
     ],
 )
 def test_create_with_missing_parameters_raise_value_error(
-    name: str,
-    connection_qualified_name: str,
     apiPathRawURI: str,
     apiSpecQualifiedName: str,
     message: str,
 ):
     with pytest.raises(ValueError, match=message):
         APIPath.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
             apiPathRawURI=apiPathRawURI,
             apiSpecQualifiedName=apiSpecQualifiedName,
         )
@@ -62,8 +32,6 @@ def test_create_with_missing_parameters_raise_value_error(
 
 def test_create():
     sut = APIPath.create(
-        name=API_PATH_NAME,
-        connection_qualified_name=API_CONNECTION_QUALIFIED_NAME,
         apiPathRawURI=API_PATH_RAW_URI,
         apiSpecQualifiedName=API_SPEC_QUALIFIED_NAME,
     )

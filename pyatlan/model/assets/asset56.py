@@ -291,28 +291,13 @@ class APIPath(API):
 
     @classmethod
     # @validate_arguments()
-    def create(
-        cls,
-        *,
-        name: str,
-        connection_qualified_name: str,
-        apiPathRawURI: str,
-        apiSpecQualifiedName: str,
-    ) -> APIPath:
+    def create(cls, *, apiPathRawURI: str, apiSpecQualifiedName: str) -> APIPath:
         validate_required_fields(
-            [
-                "name",
-                "connection_qualified_name",
-                "apiPathRawURI",
-                "apiSpecQualifiedName",
-            ],
-            [name, connection_qualified_name, apiPathRawURI, apiSpecQualifiedName],
+            ["apiPathRawURI", "apiSpecQualifiedName"],
+            [apiPathRawURI, apiSpecQualifiedName],
         )
         attributes = APIPath.Attributes.create(
-            name=name,
-            connection_qualified_name=connection_qualified_name,
-            apiPathRawURI=apiPathRawURI,
-            apiSpecQualifiedName=apiSpecQualifiedName,
+            apiPathRawURI=apiPathRawURI, apiSpecQualifiedName=apiSpecQualifiedName
         )
         return cls(attributes=attributes)
 
@@ -497,21 +482,11 @@ class APIPath(API):
         @classmethod
         # @validate_arguments()
         def create(
-            cls,
-            *,
-            name: str,
-            connection_qualified_name: str,
-            apiPathRawURI: str,
-            apiSpecQualifiedName: str,
+            cls, *, apiPathRawURI: str, apiSpecQualifiedName: str
         ) -> APIPath.Attributes:
             validate_required_fields(
-                [
-                    "name",
-                    "connection_qualified_name",
-                    "apiPathRawURI",
-                    "apiSpecQualifiedName",
-                ],
-                [name, connection_qualified_name, apiPathRawURI, apiSpecQualifiedName],
+                ["apiPathRawURI", "apiSpecQualifiedName"],
+                [apiPathRawURI, apiSpecQualifiedName],
             )
 
             # Split the apiSpecQualifiedName to extract necessary information
@@ -525,11 +500,11 @@ class APIPath(API):
                 raise ValueError("Invalid apiSpecQualifiedName") from e
 
             return APIPath.Attributes(
-                name=name,
-                apiPathRawURI=name,
+                apiPathRawURI=apiPathRawURI,
+                name=apiPathRawURI,
                 apiSpecQualifiedName=apiSpecQualifiedName,
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{apiSpecQualifiedName}{name}",
+                qualified_name=f"{apiSpecQualifiedName}{apiPathRawURI}",
                 connector_name=connector_type.value,
                 apiSpec=APISpec.ref_by_qualified_name(apiSpecQualifiedName),
             )
