@@ -19,7 +19,7 @@ class GroupCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = GroupCache(provider=client)
+            cls.caches[cache_key] = GroupCache(provider=client.group)
         return cls.caches[cache_key]
 
     @classmethod
@@ -68,7 +68,7 @@ class GroupCache:
         self.map_alias_to_id: dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
-        groups = self.provider.get_all_groups()
+        groups = self.provider.all_groups
         if groups is not None:
             self.map_id_to_name = {}
             self.map_name_to_id = {}

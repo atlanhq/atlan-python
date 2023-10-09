@@ -2,8 +2,9 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from logging import Logger
 from time import sleep
-from typing import Optional, Protocol, Union, overload, runtime_checkable
+from typing import Optional, Union, overload
 
+from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import (
     WORKFLOW_INDEX_RUN_SEARCH,
     WORKFLOW_INDEX_SEARCH,
@@ -23,14 +24,6 @@ from pyatlan.model.workflow import (
 )
 
 MONITOR_SLEEP_SECONDS = 5
-
-
-@runtime_checkable
-class ApiCaller(Protocol):
-    def _call_api(
-        self, api, query_params=None, request_obj=None, exclude_unset: bool = True
-    ):
-        pass
 
 
 class WorkflowClient:

@@ -5,8 +5,8 @@ from typing import Any, Generator, Iterable, Optional, Union
 from pydantic import Field, ValidationError, parse_obj_as, root_validator
 
 from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
+from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import AUDIT_SEARCH
-from pyatlan.client.workflow import ApiCaller
 from pyatlan.errors import ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
 from pyatlan.model.constants import DELETED_

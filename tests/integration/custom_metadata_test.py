@@ -395,11 +395,11 @@ def groups(
 def _get_groups(
     client: AtlanClient,
 ) -> Tuple[AtlanGroup, AtlanGroup]:
-    candidates = client.get_group_by_name(GROUP_NAME1)
+    candidates = client.group.get_by_name(GROUP_NAME1)
     assert candidates
     assert len(candidates) == 1
     group1 = candidates[0]
-    candidates = client.get_group_by_name(GROUP_NAME2)
+    candidates = client.group.get_by_name(GROUP_NAME2)
     assert candidates
     assert len(candidates) == 1
     group2 = candidates[0]

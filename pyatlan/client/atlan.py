@@ -38,21 +38,17 @@ from pyatlan.client.constants import (
     ADMIN_EVENTS,
     BULK_UPDATE,
     CHANGE_USER_ROLE,
-    CREATE_GROUP,
     CREATE_TYPE_DEFS,
     CREATE_USERS,
     DELETE_API_TOKEN,
     DELETE_ENTITIES_BY_GUIDS,
     DELETE_ENTITY_BY_ATTRIBUTE,
-    DELETE_GROUP,
     DELETE_TYPE_DEF_BY_NAME,
     GET_ALL_TYPE_DEFS,
     GET_API_TOKENS,
     GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
-    GET_GROUP_MEMBERS,
-    GET_GROUPS,
     GET_LINEAGE,
     GET_LINEAGE_LIST,
     GET_ROLES,
@@ -62,14 +58,13 @@ from pyatlan.client.constants import (
     KEYCLOAK_EVENTS,
     PARSE_QUERY,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
-    REMOVE_USERS_FROM_GROUP,
     UPDATE_ENTITY_BY_ATTRIBUTE,
-    UPDATE_GROUP,
     UPDATE_TYPE_DEFS,
     UPDATE_USER,
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
+from pyatlan.client.group import GroupClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aggregation import Aggregations
@@ -110,13 +105,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     LineageDirection,
 )
-from pyatlan.model.group import (
-    AtlanGroup,
-    CreateGroupRequest,
-    CreateGroupResponse,
-    GroupResponse,
-    RemoveFromGroupRequest,
-)
+from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
 from pyatlan.model.lineage import LineageListRequest, LineageRequest, LineageResponse
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
@@ -266,6 +255,7 @@ class AtlanClient(BaseSettings):
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
+    _group_client: Optional[GroupClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -485,6 +475,12 @@ class AtlanClient(BaseSettings):
             self._workflow_client = WorkflowClient(client=self)
         return self._workflow_client
 
+    @property
+    def group(self) -> GroupClient:
+        if self._group_client is None:
+            self._group_client = GroupClient(client=self)
+        return self._group_client
+
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
             response = self._session.request(
@@ -648,47 +644,37 @@ class AtlanClient(BaseSettings):
         group: AtlanGroup,
         user_ids: Optional[list[str]] = None,
     ) -> CreateGroupResponse:
-        """
-        Create a new group.
-
-        :param group: details of the new group
-        :param user_ids: list of unique identifiers (GUIDs) of users to associate with the group
-        :returns: details of the created group and user association
-        :raises AtlanError: on any API communication issue
-        """
-        payload = CreateGroupRequest(group=group)
-        if user_ids:
-            payload.users = user_ids
-        raw_json = self._call_api(CREATE_GROUP, request_obj=payload, exclude_unset=True)
-        return CreateGroupResponse(**raw_json)
+        """Deprecated - use group.create() instead."""
+        warn(
+            "This method is deprecated, please use 'group.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.create(group=group, user_ids=user_ids)
 
     def update_group(
         self,
         group: AtlanGroup,
     ) -> None:
-        """
-        Update a group. Note that the provided 'group' must have its id populated.
-
-        :param group: details to update on the group
-        :raises AtlanError: on any API communication issue
-        """
-        self._call_api(
-            UPDATE_GROUP.format_path_with_params(group.id),
-            request_obj=group,
-            exclude_unset=True,
+        """Deprecated - use group.update() instead."""
+        warn(
+            "This method is deprecated, please use 'group.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        return self.group.update(group=group)
 
     def purge_group(
         self,
         guid: str,
     ) -> None:
-        """
-        Delete a group.
-
-        :param guid: unique identifier (GUID) of the group to delete
-        :raises AtlanError: on any API communication issue
-        """
-        self._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
+        """Deprecated - use group.purge() instead."""
+        warn(
+            "This method is deprecated, please use 'group.purge' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.group.purge(guid=guid)
 
     def get_groups(
         self,
@@ -698,101 +684,58 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> GroupResponse:
-        """
-        Retrieves a list of the groups defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which groups to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of groups that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        raw_json = self._call_api(GET_GROUPS.format_path_with_params(), query_params)
-        return GroupResponse(**raw_json)
+        """Deprecated - use group.get() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_groups(
         self,
         limit: int = 20,
     ) -> list[AtlanGroup]:
-        """
-        Retrieve all groups defined in Atlan.
-
-        :returns: a list of all the groups in Atlan
-        """
-        groups: list[AtlanGroup] = []
-        offset = 0
-        response: Optional[GroupResponse] = self.get_groups(
-            offset=offset, limit=limit, sort="createdAt"
+        """Deprecated - use group.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_all' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        while response:
-            if page := response.records:
-                groups.extend(page)
-                offset += limit
-                response = self.get_groups(offset=offset, limit=limit, sort="createdAt")
-            else:
-                response = None
-        return groups
+        return self.group.get_all(limit=limit)
 
     def get_group_by_name(
         self,
         alias: str,
         limit: int = 20,
     ) -> Optional[list[AtlanGroup]]:
-        """
-        Retrieve all groups with a name that contains the provided string.
-        (This could include a complete group name, in which case there should be at most
-        a single item in the returned list, or could be a partial group name to retrieve
-        all groups with that naming convention.)
-
-        :param alias: name (as it appears in the UI) on which to filter the groups
-        :param limit: maximum number of groups to retrieve
-        :returns: all groups whose name (in the UI) contains the provided string
-        """
-        if response := self.get_groups(
-            offset=0,
-            limit=limit,
-            post_filter='{"$and":[{"alias":{"$ilike":"%' + alias + '%"}}]}',
-        ):
-            return response.records
-        return None
+        """Deprecated - use group.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_all' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.get_by_name(alias=alias, limit=limit)
 
     def get_group_members(self, guid: str) -> UserResponse:
-        """
-        Retrieves the members (users) of a group.
-
-        :param guid: unique identifier (GUID) of the group from which to retrieve members
-        :returns: list of users that are members of the group
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_GROUP_MEMBERS.format_path({"group_guid": guid}))
-        return UserResponse(**raw_json)
+        """Deprecated - use group.get_members() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_members' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.get_members(guid=guid)
 
     def remove_users_from_group(self, guid: str, user_ids=list[str]) -> None:
-        """
-        Remove one or more users from a group.
-
-        :param guid: unique identifier (GUID) of the group from which to remove users
-        :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
-        :raises AtlanError: on any API communication issue
-        """
-        rfgr = RemoveFromGroupRequest(users=user_ids)
-        self._call_api(
-            REMOVE_USERS_FROM_GROUP.format_path({"group_guid": guid}),
-            request_obj=rfgr,
-            exclude_unset=True,
+        """Deprecated - use group.get_members() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_members' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        self.group.remove_users(guid=guid, user_ids=user_ids)
 
     def create_users(
         self,

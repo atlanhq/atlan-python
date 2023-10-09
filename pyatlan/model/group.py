@@ -151,12 +151,6 @@ class CreateGroupResponse(AtlanObject):
 class GroupProvider(Protocol):
     """Protocol that's implemented by classes that can provide a list of all the groups in Atlan"""
 
-    def get_all_groups(
-        self,
-        limit: int = 20,
-    ) -> list[AtlanGroup]:
-        """
-        Retrieve all groups defined in Atlan.
-
-        :returns: a list of all the groups in Atlan
-        """
+    @property
+    def all_groups(self) -> list[AtlanGroup]:
+        pass

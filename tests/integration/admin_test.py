@@ -25,12 +25,12 @@ _default_group_count: int = 0
 
 def create_group(client: AtlanClient, name: str) -> CreateGroupResponse:
     g = AtlanGroup.create(alias=StrictStr(name))
-    r = client.create_group(g)
+    r = client.group.create(g)
     return r
 
 
 def delete_group(client: AtlanClient, guid: str) -> None:
-    client.purge_group(guid)
+    client.group.purge(guid)
 
 
 def test_retrieve_roles(client: AtlanClient):
@@ -43,14 +43,14 @@ def group(client: AtlanClient) -> Generator[CreateGroupResponse, None, None]:
     to_create = AtlanGroup.create(GROUP_NAME)
     fixed_user = client.get_user_by_username(FIXED_USER)
     assert fixed_user
-    g = client.create_group(group=to_create, user_ids=[str(fixed_user.id)])
+    g = client.group.create(group=to_create, user_ids=[str(fixed_user.id)])
     yield g
     delete_group(client, g.group)
 
 
 def test_create_group(client: AtlanClient, group: CreateGroupResponse):
     assert group
-    r = client.get_group_by_name(GROUP_NAME)
+    r = client.group.get_by_name(GROUP_NAME)
     assert r
     assert len(r) == 1
     group1_full = r[0]
@@ -72,7 +72,7 @@ def test_create_group(client: AtlanClient, group: CreateGroupResponse):
 
 def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
     global _default_group_count
-    groups = client.get_all_groups()
+    groups = client.group.get_all()
     assert groups
     assert len(groups) >= 1
     for group1 in groups:
@@ -104,12 +104,12 @@ def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse)
 
 @pytest.mark.order(after="test_create_group")
 def test_update_groups(client: AtlanClient, group: CreateGroupResponse):
-    groups = client.get_group_by_name(alias=GROUP_NAME)
+    groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
     assert len(groups) == 1
     group1 = groups[0]
     group1.attributes = AtlanGroup.Attributes(description=["Now with a description!"])
-    client.update_group(group1)
+    client.group.update(group1)
 
 
 @pytest.mark.order(after=["test_update_groups", "test_update_users"])
@@ -117,7 +117,7 @@ def test_updated_groups(
     client: AtlanClient,
     group: CreateGroupResponse,
 ):
-    groups = client.get_group_by_name(alias=GROUP_NAME)
+    groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
     assert len(groups) == 1
     group1 = groups[0]
@@ -133,7 +133,7 @@ def test_remove_user_from_group(
     client: AtlanClient,
     group: CreateGroupResponse,
 ):
-    groups = client.get_group_by_name(alias=GROUP_NAME)
+    groups = client.group.get_by_name(alias=GROUP_NAME)
     assert groups
     assert len(groups) == 1
     group1 = groups[0]
@@ -141,8 +141,8 @@ def test_remove_user_from_group(
     fixed_user = client.get_user_by_username(FIXED_USER)
     assert fixed_user
     assert fixed_user.id
-    client.remove_users_from_group(guid=group1.id, user_ids=[fixed_user.id])
-    response = client.get_group_members(guid=group1.id)
+    client.group.remove_users(guid=group1.id, user_ids=[fixed_user.id])
+    response = client.group.get_members(guid=group1.id)
     assert response
     assert not response.records
 
