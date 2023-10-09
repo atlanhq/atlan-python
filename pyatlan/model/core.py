@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 from abc import ABC
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Extra, Field, validator
 
@@ -136,7 +136,7 @@ class AtlanObject(BaseModel):
 
 
 class SearchRequest(AtlanObject, ABC):
-    attributes: Optional[List[str]] = Field(
+    attributes: Optional[list[str]] = Field(
         description="List of attributes to be returned for each result.",
         default_factory=list,
     )

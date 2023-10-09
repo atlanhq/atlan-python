@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from pydantic import Field
 
@@ -33,7 +33,7 @@ class ParsedQuery(AtlanObject):
     class ParserError(AtlanObject):
         error_message: Optional[str] = Field(description="Description of the error.")
         error_type: Optional[str] = Field(description="Type of the error.")
-        coordinates: Optional[List[Any]] = Field(description="TBC")
+        coordinates: Optional[list[Any]] = Field(description="TBC")
 
     class Relationship(AtlanObject):
         id: Optional[str] = Field(
@@ -44,7 +44,7 @@ class ParsedQuery(AtlanObject):
             description="Type of effect made by the query (for example, select vs insert)."
         )
         target: Optional[ParsedQuery.RelationshipEndpoint] = Field(description="TBC")
-        sources: Optional[List[ParsedQuery.RelationshipEndpoint]] = Field(
+        sources: Optional[list[ParsedQuery.RelationshipEndpoint]] = Field(
             description="TBC"
         )
         process_id: Optional[str] = Field(
@@ -67,7 +67,7 @@ class ParsedQuery(AtlanObject):
         db_schema: Optional[str] = Field(
             description="Name of the schema the object exists within.", alias="schema"
         )
-        columns: Optional[List[ParsedQuery.DatabaseColumn]] = Field(
+        columns: Optional[list[ParsedQuery.DatabaseColumn]] = Field(
             description="List of details about the columns queried within the object."
             " (Only present on non-process objects.)"
         )
@@ -78,13 +78,13 @@ class ParsedQuery(AtlanObject):
             description="Unique hash representing the query (only for process objects)."
         )
 
-    dbobjs: Optional[List[ParsedQuery.DatabaseObject]] = Field(
+    dbobjs: Optional[list[ParsedQuery.DatabaseObject]] = Field(
         description="All the database objects detected in the query."
     )
-    relationships: Optional[List[ParsedQuery.Relationship]] = Field(
+    relationships: Optional[list[ParsedQuery.Relationship]] = Field(
         description="All the relationship objects detected in the query."
     )
-    errors: Optional[List[ParsedQuery.ParserError]] = Field(
+    errors: Optional[list[ParsedQuery.ParserError]] = Field(
         description="Any errors during parsing."
     )
 

@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import List, Optional, Protocol
+from typing import Optional, Protocol
 
 from pydantic import Field
 
@@ -28,7 +28,7 @@ class RoleResponse(AtlanObject):
         None,
         description="Number of roles in the filtered response.\n",
     )
-    records: List["AtlanRole"] = Field(
+    records: list["AtlanRole"] = Field(
         description="Details of each role included in the response.\n"
     )
 

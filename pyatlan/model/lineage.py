@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from collections import deque
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -236,7 +236,7 @@ class FilterList(AtlanObject):
     condition: str = Field(
         description="Whether the criteria must all match (AND) or any matching is sufficient (OR)."
     )
-    criteria: List[EntityFilter] = Field(
+    criteria: list[EntityFilter] = Field(
         description="Basis on which to compare a result for inclusion.",
         alias="criterion",
     )
