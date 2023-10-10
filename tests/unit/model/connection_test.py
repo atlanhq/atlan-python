@@ -4,6 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.token import TokenClient
 from pyatlan.model.assets import Connection
 from pyatlan.model.enums import AtlanConnectorType
 from tests.unit.model.constants import CONNECTION_NAME, CONNECTION_QUALIFIED_NAME
@@ -82,7 +83,7 @@ def test_create_with_missing_parameters_raise_value_error(
     monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     AtlanClient()
-    with patch.object(AtlanClient, "get_by_id", return_value=None):
+    with patch.object(TokenClient, "get_by_id", return_value=None):
         with pytest.raises(ValueError, match=message):
             Connection.create(
                 name=name,
