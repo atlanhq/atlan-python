@@ -39,10 +39,8 @@ from pyatlan.client.constants import (
     BULK_UPDATE,
     CHANGE_USER_ROLE,
     CREATE_USERS,
-    DELETE_API_TOKEN,
     DELETE_ENTITIES_BY_GUIDS,
     DELETE_ENTITY_BY_ATTRIBUTE,
-    GET_API_TOKENS,
     GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
@@ -57,15 +55,15 @@ from pyatlan.client.constants import (
     UPDATE_ENTITY_BY_ATTRIBUTE,
     UPDATE_USER,
     UPLOAD_IMAGE,
-    UPSERT_API_TOKEN,
 )
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
+from pyatlan.client.token import TokenClient
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aggregation import Aggregations
-from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
+from pyatlan.model.api_tokens import ApiToken, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -196,6 +194,7 @@ class AtlanClient(BaseSettings):
     _group_client: Optional[GroupClient] = PrivateAttr(default=None)
     _role_client: Optional[RoleClient] = PrivateAttr(default=None)
     _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
+    _token_client: Optional[TokenClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -426,6 +425,12 @@ class AtlanClient(BaseSettings):
         if self._role_client is None:
             self._role_client = RoleClient(client=self)
         return self._role_client
+
+    @property
+    def token(self) -> TokenClient:
+        if self._token_client is None:
+            self._token_client = TokenClient(client=self)
+        return self._token_client
 
     @property
     def typedef(self) -> TypeDefClient:
@@ -1976,65 +1981,33 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> ApiTokenResponse:
-        """
-        Retrieves a list of API tokens defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which API tokens to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of API tokens that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        raw_json = self._call_api(
-            GET_API_TOKENS.format_path_with_params(), query_params
+        """Deprecated - use token.get() instead."""
+        warn(
+            "This method is deprecated, please use 'token.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return ApiTokenResponse(**raw_json)
+        return self.token.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_api_token_by_name(self, display_name: str) -> Optional[ApiToken]:
-        """
-        Retrieves the API token with a name that exactly matches the provided string.
-
-        :param display_name: name (as it appears in the UI) by which to retrieve the API token
-        :returns: the API token whose name (in the UI) matches the provided string, or None if there is none
-        """
-        if response := self.get_api_tokens(
-            offset=0,
-            limit=5,
-            post_filter='{"displayName":"' + display_name + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        """Deprecated - use token.get_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'token.get_by_name' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.get_by_name(display_name=display_name)
 
     def get_api_token_by_id(self, client_id: str) -> Optional[ApiToken]:
-        """
-        Retrieves the API token with a client ID that exactly matches the provided string.
-
-        :param client_id: unique client identifier by which to retrieve the API token
-        :returns: the API token whose clientId matches the provided string, or None if there is none
-        """
-        if client_id and client_id.startswith(SERVICE_ACCOUNT_):
-            client_id = client_id[len(SERVICE_ACCOUNT_) :]  # noqa: E203
-        if response := self.get_api_tokens(
-            offset=0,
-            limit=5,
-            post_filter='{"clientId":"' + client_id + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        """Deprecated - use token.get_by_id() instead."""
+        warn(
+            "This method is deprecated, please use 'token.get_by_id' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.get_by_id(client_id=client_id)
 
     def create_api_token(
         self,
@@ -2043,25 +2016,18 @@ class AtlanClient(BaseSettings):
         personas: Optional[set[str]] = None,
         validity_seconds: int = -1,
     ) -> ApiToken:
-        """
-        Create a new API token with the provided settings.
-
-        :param display_name: human-readable name for the API token
-        :param description: optional explanation of the API token
-        :param personas: qualified_names of personas that should  be linked to the token
-        :param validity_seconds: time in seconds after which the token should expire (negative numbers are treated as
-                                 infinite)
-        :returns: the created API token
-        :raises AtlanError: on any API communication issue
-        """
-        request = ApiTokenRequest(
+        """Deprecated - use token.create() instead."""
+        warn(
+            "This method is deprecated, please use 'token.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.create(
             display_name=display_name,
             description=description,
-            persona_qualified_names=personas or set(),
+            personas=personas,
             validity_seconds=validity_seconds,
         )
-        raw_json = self._call_api(UPSERT_API_TOKEN, request_obj=request)
-        return ApiToken(**raw_json)
 
     def update_api_token(
         self,
@@ -2070,36 +2036,27 @@ class AtlanClient(BaseSettings):
         description: str = "",
         personas: Optional[set[str]] = None,
     ) -> ApiToken:
-        """
-        Update an existing API token with the provided settings.
-
-        :param guid: unique identifier (GUID) of the API token
-        :param display_name: human-readable name for the API token
-        :param description: optional explanation of the API token
-        :param personas: qualified_names of personas that should  be linked to the token, note that you MUST
-                         provide the complete list on any update (any not included in the list will be removed,
-                         so if you do not specify any personas then ALL personas will be unlinked from the API token)
-        :returns: the created API token
-        :raises AtlanError: on any API communication issue
-        """
-        request = ApiTokenRequest(
+        """Deprecated - use token.update() instead."""
+        warn(
+            "This method is deprecated, please use 'token.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.update(
+            guid=guid,
             display_name=display_name,
             description=description,
-            persona_qualified_names=personas or set(),
+            personas=personas,
         )
-        raw_json = self._call_api(
-            UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request
-        )
-        return ApiToken(**raw_json)
 
     def purge_api_token(self, guid: str) -> None:
-        """
-        Delete (purge) the specified API token.
-
-        :param guid: unique identifier (GUID) of the API token to delete
-        :raises AtlanError: on any API communication issue
-        """
-        self._call_api(DELETE_API_TOKEN.format_path_with_params(guid))
+        """Deprecated - use token.purge() instead."""
+        warn(
+            "This method is deprecated, please use 'token.purge' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.token.purge(guid=guid)
 
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
@@ -2380,6 +2337,28 @@ class AtlanClient(BaseSettings):
             glossary_qualified_name=glossary.qualified_name,
             attributes=attributes,
         )
+
+
+@contextlib.contextmanager
+def client_connection(
+    base_url: Optional[HttpUrl] = None, api_key: Optional[str] = None
+):
+    """
+    Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will
+    be set to the new client. AtlanClient.default_client will be reset to the current default_client before
+    exiting the context.
+    :param base_url: the base_url to be used for the new connection. If not specified the current value will be used
+    :param api_key: the api_key to be used for the new connection. If not specified the current value will be used
+    """
+    current_client = AtlanClient.get_default_client()
+    tmp_client = AtlanClient(
+        base_url=base_url or current_client.base_url,
+        api_key=api_key or current_client.api_key,
+    )
+    try:
+        yield tmp_client
+    finally:
+        AtlanClient.set_default_client(current_client)
 
 
 from pyatlan.model.keycloak_events import (  # noqa: E402

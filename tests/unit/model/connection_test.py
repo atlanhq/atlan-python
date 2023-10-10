@@ -82,7 +82,7 @@ def test_create_with_missing_parameters_raise_value_error(
     monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
     monkeypatch.setenv("ATLAN_API_KEY", "abkj")
     AtlanClient()
-    with patch.object(AtlanClient, "get_api_token_by_id", return_value=None):
+    with patch.object(AtlanClient, "get_by_id", return_value=None):
         with pytest.raises(ValueError, match=message):
             Connection.create(
                 name=name,
