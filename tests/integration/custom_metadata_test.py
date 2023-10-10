@@ -90,13 +90,13 @@ def create_custom_metadata(
         raise ValueError(
             "Invalid configuration for the visual to use for the custom metadata."
         )
-    r = client.create_typedef(cm_def)
+    r = client.typedef.create(cm_def)
     return r.custom_metadata_defs[0]
 
 
 def create_enum(client: AtlanClient, name: str, values: list[str]) -> EnumDef:
     enum_def = EnumDef.create(name=name, values=values)
-    r = client.create_typedef(enum_def)
+    r = client.typedef.create(enum_def)
     return r.enum_defs[0]
 
 
@@ -130,7 +130,7 @@ def cm_ipr(
         client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True
     )
     yield cm
-    client.purge_typedef(CM_IPR, CustomMetadataDef)
+    client.typedef.purge(CM_IPR, CustomMetadataDef)
 
 
 def test_cm_ipr(
@@ -216,7 +216,7 @@ def cm_raci(
         locked=False,
     )
     yield cm
-    client.purge_typedef(CM_RACI, CustomMetadataDef)
+    client.typedef.purge(CM_RACI, CustomMetadataDef)
 
 
 def test_cm_raci(
@@ -271,7 +271,7 @@ def cm_enum(
 ) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
     yield enum_def
-    client.purge_typedef(DQ_ENUM, EnumDef)
+    client.typedef.purge(DQ_ENUM, EnumDef)
 
 
 def test_cm_enum(
@@ -313,7 +313,7 @@ def cm_dq(
         locked=True,
     )
     yield cm
-    client.purge_typedef(CM_QUALITY, CustomMetadataDef)
+    client.typedef.purge(CM_QUALITY, CustomMetadataDef)
 
 
 def test_cm_dq(
@@ -636,7 +636,7 @@ def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
             _removal_epoch = to_keep.options.archived_at
         updated_attrs.append(to_keep)
     existing.attribute_defs = updated_attrs
-    response = client.update_typedef(existing)
+    response = client.typedef.update(existing)
     assert response
     assert len(response.custom_metadata_defs) == 1
     updated = response.custom_metadata_defs[0]
@@ -698,7 +698,7 @@ def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     )
     updated_attrs.append(new_attr)
     existing.attribute_defs = updated_attrs
-    response = client.update_typedef(existing)
+    response = client.typedef.update(existing)
     assert response
     assert len(response.custom_metadata_defs) == 1
     updated = response.custom_metadata_defs[0]

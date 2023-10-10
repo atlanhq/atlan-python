@@ -27,9 +27,9 @@ def atlan_tag_def(
     client: AtlanClient,
 ) -> Generator[AtlanTagDef, None, None]:
     atlan_tag_def = AtlanTagDef.create(name=MODULE_NAME, color=AtlanTagColor.GREEN)
-    typedef = client.create_typedef(atlan_tag_def)
+    typedef = client.typedef.create(atlan_tag_def)
     yield typedef.atlan_tag_defs[0]
-    client.purge_typedef(MODULE_NAME, typedef_type=AtlanTagDef)
+    client.typedef.purge(MODULE_NAME, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")

@@ -38,13 +38,10 @@ from pyatlan.client.constants import (
     ADMIN_EVENTS,
     BULK_UPDATE,
     CHANGE_USER_ROLE,
-    CREATE_TYPE_DEFS,
     CREATE_USERS,
     DELETE_API_TOKEN,
     DELETE_ENTITIES_BY_GUIDS,
     DELETE_ENTITY_BY_ATTRIBUTE,
-    DELETE_TYPE_DEF_BY_NAME,
-    GET_ALL_TYPE_DEFS,
     GET_API_TOKENS,
     GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
@@ -58,13 +55,13 @@ from pyatlan.client.constants import (
     PARSE_QUERY,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
     UPDATE_ENTITY_BY_ATTRIBUTE,
-    UPDATE_TYPE_DEFS,
     UPDATE_USER,
     UPLOAD_IMAGE,
     UPSERT_API_TOKEN,
 )
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
+from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aggregation import Aggregations
@@ -119,13 +116,7 @@ from pyatlan.model.search import (
     with_active_glossary,
     with_active_term,
 )
-from pyatlan.model.typedef import (
-    AtlanTagDef,
-    CustomMetadataDef,
-    EnumDef,
-    TypeDef,
-    TypeDefResponse,
-)
+from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import (
     AddToGroupsRequest,
     AtlanUser,
@@ -194,59 +185,6 @@ def get_session():
     return session
 
 
-def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
-    if isinstance(typedef, AtlanTagDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[typedef],
-            enum_defs=[],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[],
-        )
-    elif isinstance(typedef, CustomMetadataDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[],
-            enum_defs=[],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[typedef],
-        )
-    elif isinstance(typedef, EnumDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[],
-            enum_defs=[typedef],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[],
-        )
-    else:
-        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
-            typedef.category.value
-        )
-    return payload
-
-
-def _refresh_caches(typedef: TypeDef) -> None:
-    if isinstance(typedef, AtlanTagDef):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-        AtlanTagCache.refresh_cache()
-    if isinstance(typedef, CustomMetadataDef):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        CustomMetadataCache.refresh_cache()
-    if isinstance(typedef, EnumDef):
-        from pyatlan.cache.enum_cache import EnumCache
-
-        EnumCache.refresh_cache()
-
-
 class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
     base_url: HttpUrl
@@ -257,6 +195,7 @@ class AtlanClient(BaseSettings):
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
     _group_client: Optional[GroupClient] = PrivateAttr(default=None)
     _role_client: Optional[RoleClient] = PrivateAttr(default=None)
+    _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -487,6 +426,12 @@ class AtlanClient(BaseSettings):
         if self._role_client is None:
             self._role_client = RoleClient(client=self)
         return self._role_client
+
+    @property
+    def typedef(self) -> TypeDefClient:
+        if self._typedef_client is None:
+            self._typedef_client = TypeDefClient(client=self)
+        return self._typedef_client
 
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
@@ -1423,119 +1368,51 @@ class AtlanClient(BaseSettings):
         return aggregations
 
     def get_all_typedefs(self) -> TypeDefResponse:
-        """
-        Retrieves a list of all the type definitions in Atlan.
-
-        :returns: a list of all the type definitions in Atlan
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_ALL_TYPE_DEFS)
-        return TypeDefResponse(**raw_json)
+        """Deprecated - use typedef.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.get_all' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.typedef.get_all()
 
     def get_typedefs(
         self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
     ) -> TypeDefResponse:
-        """
-        Retrieves a list of the type definitions in Atlan.
-
-        :param type_category: category of type definitions to retrieve
-        :returns: the requested list of type definitions
-        :raises AtlanError: on any API communication issue
-        """
-        categories: list[str] = []
-        if isinstance(type_category, list):
-            categories.extend(map(lambda x: x.value, type_category))
-        else:
-            categories.append(type_category.value)
-        query_params = {"type": categories}
-        raw_json = self._call_api(
-            GET_ALL_TYPE_DEFS.format_path_with_params(),
-            query_params,
+        """Deprecated - use typedef.get() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return TypeDefResponse(**raw_json)
+        return self.typedef.get(type_category=type_category)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        """
-        Create a new type definition in Atlan.
-        Note: only custom metadata, enumerations, and Atlan tag type definitions are currently
-        supported. Furthermore, if any of these are created their respective cache will be
-        force-refreshed.
-
-        :param typedef: type definition to create
-        :returns: the resulting type definition that was created
-        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
-        :raises AtlanError: on any API communication issue
-        """
-        payload = _build_typedef_request(typedef)
-        raw_json = self._call_api(
-            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        """Deprecated - use typedef.create() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        _refresh_caches(typedef)
-        return TypeDefResponse(**raw_json)
+        return self.typedef.create(typedef=typedef)
 
     def update_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        """
-        Update an existing type definition in Atlan.
-        Note: only custom metadata and Atlan tag type definitions are currently supported.
-        Furthermore, if any of these are updated their respective cache will be force-refreshed.
-
-        :param typedef: type definition to update
-        :returns: the resulting type definition that was updated
-        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
-        :raises AtlanError: on any API communication issue
-        """
-        payload = _build_typedef_request(typedef)
-        raw_json = self._call_api(
-            UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        """Deprecated - use typedef.update() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        _refresh_caches(typedef)
-        return TypeDefResponse(**raw_json)
+        return self.typedef.update(typedef=typedef)
 
     def purge_typedef(self, name: str, typedef_type: type) -> None:
-        """
-        Delete the type definition.
-        Furthermore, if an Atlan tag, enumeration or custom metadata is deleted their
-        respective cache will be force-refreshed.
-
-        :param name: internal hashed-string name of the type definition
-        :param typedef_type: type of the type definition that is being deleted
-        :raises InvalidRequestError: if the typedef you are trying to delete is not one of the allowed types
-        :raises NotFoundError: if the typedef you are trying to delete cannot be found
-        :raises AtlanError: on any API communication issue
-        """
-        if typedef_type == CustomMetadataDef:
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            internal_name = CustomMetadataCache.get_id_for_name(name)
-        elif typedef_type == EnumDef:
-            internal_name = name
-        elif typedef_type == AtlanTagDef:
-            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-            internal_name = str(AtlanTagCache.get_id_for_name(name))
-        else:
-            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
-                typedef_type
-            )
-        if internal_name:
-            self._call_api(
-                DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
-            )
-        else:
-            raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
-
-        if typedef_type == CustomMetadataDef:
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            CustomMetadataCache.refresh_cache()
-        elif typedef_type == EnumDef:
-            from pyatlan.cache.enum_cache import EnumCache
-
-            EnumCache.refresh_cache()
-        elif typedef_type == AtlanTagDef:
-            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-            AtlanTagCache.refresh_cache()
+        """Deprecated - use typedef.update() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.typedef.purge(name=name, typedef_type=typedef_type)
 
     @validate_arguments()
     def add_atlan_tags(

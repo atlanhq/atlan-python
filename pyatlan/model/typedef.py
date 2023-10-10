@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Callable, Optional, Protocol, Union, cast
+from typing import Any, Callable, Optional, cast
 
 from pydantic import Field
 
@@ -716,17 +716,3 @@ class TypeDefResponse(AtlanObject):
         description="list of custom metadata type_ definitions.",
         alias="businessMetadataDefs",
     )
-
-
-class TypeDefResponseProvider(Protocol):
-    """The protocol for retrieving a TypeDefResponse"""
-
-    def get_typedefs(
-        self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
-    ) -> TypeDefResponse:
-        """
-        Retrieves a list of the type definitions in Atlan.
-
-        :param type_category: category of type definitions to retrieve
-        :returns: the requested list of type definitions
-        """

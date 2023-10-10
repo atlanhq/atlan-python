@@ -2,9 +2,10 @@
 # Copyright 2023 Atlan Pte. Ltd.
 from typing import Optional
 
+from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.model.typedef import EnumDef, TypeDefResponseProvider
+from pyatlan.model.typedef import EnumDef
 
 
 class EnumCache:
@@ -21,7 +22,7 @@ class EnumCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = EnumCache(provider=client)
+            cls.caches[cache_key] = EnumCache(typedef_client=client.typedef)
         return cls.caches[cache_key]
 
     @classmethod
@@ -41,15 +42,15 @@ class EnumCache:
         """
         return cls.get_cache()._get_by_name(name=name)
 
-    def __init__(self, provider: TypeDefResponseProvider):
-        self.provider = provider
+    def __init__(self, typedef_client: TypeDefClient):
+        self.typedef_client: TypeDefClient = typedef_client
         self.cache_by_name: dict[str, EnumDef] = {}
 
     def _refresh_cache(self) -> None:
         """
         Refreshes the cache of enumerations by requesting the full set of enumerations from Atlan.
         """
-        response = self.provider.get_typedefs(type_category=AtlanTypeCategory.ENUM)
+        response = self.typedef_client.get(type_category=AtlanTypeCategory.ENUM)
         if not response or not response.enum_defs:
             raise ErrorCode.EXPIRED_API_TOKEN.exception_with_parameters()
         self.cache_by_name = {}
