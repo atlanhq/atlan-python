@@ -1,3 +1,7 @@
+## 1.3.2 (October 10, 2023)
+
+* Fix bug preventing classifications with unexpected attributes from being read
+
 ## 1.3.1 (October 6, 2023)
 
 * Fix bug preventing custom metadata from being read that were written with locked bug
