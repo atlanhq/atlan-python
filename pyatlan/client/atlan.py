@@ -558,25 +558,25 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> RoleResponse:
-        """Deprecated - use role.get_roles() instead."""
+        """Deprecated - use role.get() instead."""
         warn(
-            "This method is deprecated, please use 'role.get_roles' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'role.get' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.role.get_roles(
+        return self.role.get(
             limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
         )
 
     def get_all_roles(self) -> RoleResponse:
-        """Deprecated - use self.role.get_all_roles() instead."""
+        """Deprecated - use self.role.get_all() instead."""
         warn(
-            "This method is deprecated, please use 'self.role.get_all_roles' instead, which offers identical "
+            "This method is deprecated, please use 'self.role.get_all' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.role.get_all_roles()
+        return self.role.get_all()
 
     def create_group(
         self,

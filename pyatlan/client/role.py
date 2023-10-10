@@ -19,7 +19,7 @@ class RoleClient:
             )
         self._client = client
 
-    def get_roles(
+    def get(
         self,
         limit: int,
         post_filter: Optional[str] = None,
@@ -52,7 +52,7 @@ class RoleClient:
         )
         return RoleResponse(**raw_json)
 
-    def get_all_roles(self) -> RoleResponse:
+    def get_all(self) -> RoleResponse:
         """
         Retrieves a RoleResponse which contains a list of all the roles defined in Atlan.
 
