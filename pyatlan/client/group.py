@@ -54,10 +54,6 @@ class GroupClient:
         )
         return CreateGroupResponse(**raw_json)
 
-    @property
-    def all_groups(self) -> list[AtlanGroup]:
-        return self.get_all()
-
     def update(
         self,
         group: AtlanGroup,

@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, Optional, Protocol
+from typing import Any, Optional
 
 from pydantic import Field
 
@@ -146,11 +146,3 @@ class CreateGroupResponse(AtlanObject):
     users: Optional[dict[str, CreateGroupResponse.UserStatus]] = Field(
         description="Map of user association statuses, keyed by unique identifier (GUID) of the user."
     )
-
-
-class GroupProvider(Protocol):
-    """Protocol that's implemented by classes that can provide a list of all the groups in Atlan"""
-
-    @property
-    def all_groups(self) -> list[AtlanGroup]:
-        pass
