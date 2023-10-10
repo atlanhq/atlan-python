@@ -51,7 +51,6 @@ from pyatlan.client.constants import (
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_LINEAGE,
     GET_LINEAGE_LIST,
-    GET_ROLES,
     GET_USER_GROUPS,
     GET_USERS,
     INDEX_SEARCH,
@@ -65,6 +64,7 @@ from pyatlan.client.constants import (
     UPSERT_API_TOKEN,
 )
 from pyatlan.client.group import GroupClient
+from pyatlan.client.role import RoleClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aggregation import Aggregations
@@ -256,6 +256,7 @@ class AtlanClient(BaseSettings):
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
     _group_client: Optional[GroupClient] = PrivateAttr(default=None)
+    _role_client: Optional[RoleClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -481,6 +482,12 @@ class AtlanClient(BaseSettings):
             self._group_client = GroupClient(client=self)
         return self._group_client
 
+    @property
+    def role(self) -> RoleClient:
+        if self._role_client is None:
+            self._role_client = RoleClient(client=self)
+        return self._role_client
+
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
             response = self._session.request(
@@ -606,38 +613,25 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> RoleResponse:
-        """
-        Retrieves a list of the roles defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which roles to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of roles that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-            "limit": str(limit),
-        }
-        if post_filter:
-            query_params["filter"] = post_filter
-        if sort:
-            query_params["sort"] = sort
-        raw_json = self._call_api(GET_ROLES.format_path_with_params(), query_params)
-        return RoleResponse(**raw_json)
+        """Deprecated - use role.get_roles() instead."""
+        warn(
+            "This method is deprecated, please use 'role.get_roles' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.role.get_roles(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_roles(self) -> RoleResponse:
-        """
-        Retrieve all roles defined in Atlan.
-
-        :returns: a list of all the roles in Atlan
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_ROLES.format_path_with_params())
-        return RoleResponse(**raw_json)
+        """Deprecated - use self.role.get_all_roles() instead."""
+        warn(
+            "This method is deprecated, please use 'self.role.get_all_roles' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.role.get_all_roles()
 
     def create_group(
         self,

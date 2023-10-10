@@ -2,7 +2,8 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Iterable, Optional
 
-from pyatlan.model.role import AtlanRole, RoleProvider
+from pyatlan.client.role import RoleClient
+from pyatlan.model.role import AtlanRole
 
 
 class RoleCache:
@@ -19,7 +20,7 @@ class RoleCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = RoleCache(provider=client)
+            cls.caches[cache_key] = RoleCache(provider=client.role)
         return cls.caches[cache_key]
 
     @classmethod
@@ -51,7 +52,7 @@ class RoleCache:
         """
         return cls.get_cache()._validate_idstrs(idstrs=idstrs)
 
-    def __init__(self, provider: RoleProvider):
+    def __init__(self, provider: RoleClient):
         self.provider = provider
         self.cache_by_id: dict[str, AtlanRole] = {}
         self.map_id_to_name: dict[str, str] = {}
