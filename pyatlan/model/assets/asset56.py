@@ -291,13 +291,12 @@ class APIPath(API):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, path_raw_u_r_i: str, spec_qualified_name: str) -> APIPath:
+    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         validate_required_fields(
-            ["path_raw_u_r_i", "spec_qualified_name"],
-            [path_raw_u_r_i, spec_qualified_name],
+            ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
         )
         attributes = APIPath.Attributes.create(
-            path_raw_u_r_i=path_raw_u_r_i, spec_qualified_name=spec_qualified_name
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
         )
         return cls(attributes=attributes)
 
@@ -482,11 +481,11 @@ class APIPath(API):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, *, path_raw_u_r_i: str, spec_qualified_name: str
+            cls, *, path_raw_uri: str, spec_qualified_name: str
         ) -> APIPath.Attributes:
             validate_required_fields(
-                ["path_raw_u_r_i", "spec_qualified_name"],
-                [path_raw_u_r_i, spec_qualified_name],
+                ["path_raw_uri", "spec_qualified_name"],
+                [path_raw_uri, spec_qualified_name],
             )
 
             # Split the spec_qualified_name to extract necessary information
@@ -500,11 +499,11 @@ class APIPath(API):
                 raise ValueError("Invalid spec_qualified_name") from e
 
             return APIPath.Attributes(
-                api_path_raw_u_r_i=path_raw_u_r_i,
-                name=path_raw_u_r_i,
+                api_path_raw_u_r_i=path_raw_uri,
+                name=path_raw_uri,
                 api_spec_qualified_name=spec_qualified_name,
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{spec_qualified_name}{path_raw_u_r_i}",
+                qualified_name=f"{spec_qualified_name}{path_raw_uri}",
                 connector_name=connector_type.value,
                 apiSpec=APISpec.ref_by_qualified_name(spec_qualified_name),
             )
