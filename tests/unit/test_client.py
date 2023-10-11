@@ -4,7 +4,10 @@ from unittest.mock import DEFAULT, Mock, patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient, GroupClient
+from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.group import GroupClient
+from pyatlan.client.role import RoleClient
+from pyatlan.client.token import TokenClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
@@ -900,7 +903,7 @@ def test_find_term_by_name():
 
 
 @patch.object(GroupClient, "get")
-def test_get_groups(mock_get, client: AtlanClient):
+def test_get_groups(mock_group_client, client: AtlanClient):
     limit = 1
     post_filter = "post"
     sort = "sort"
@@ -910,40 +913,146 @@ def test_get_groups(mock_get, client: AtlanClient):
         limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
     )
 
-    mock_get.assert_called_once_with(
+    mock_group_client.assert_called_once_with(
         limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
     )
 
 
 @patch.object(GroupClient, "get_all")
-def test_get_all_groupss(mock_get, client: AtlanClient):
+def test_get_all_groupss(mock_group_client, client: AtlanClient):
     limit = 1
     client.get_all_groups(limit=limit)
 
-    mock_get.assert_called_once_with(limit=limit)
+    mock_group_client.assert_called_once_with(limit=limit)
 
 
 @patch.object(GroupClient, "get_by_name")
-def test_get_group_by_name(mock_get, client: AtlanClient):
+def test_get_group_by_name(mock_group_client, client: AtlanClient):
     alias = "bob"
     limit = 3
     client.get_group_by_name(alias=alias, limit=limit)
 
-    mock_get.assert_called_once_with(alias=alias, limit=limit)
+    mock_group_client.assert_called_once_with(alias=alias, limit=limit)
 
 
 @patch.object(GroupClient, "get_members")
-def test_get_get_group_members(mock_get, client: AtlanClient):
+def test_get_get_group_members(mock_group_client, client: AtlanClient):
     guid = "123"
     client.get_group_members(guid=guid)
 
-    mock_get.assert_called_once_with(guid=guid)
+    mock_group_client.assert_called_once_with(guid=guid)
 
 
 @patch.object(GroupClient, "remove_users")
-def test_remove_users_from_group(mock_get, client: AtlanClient):
+def test_remove_users_from_group(mock_group_client, client: AtlanClient):
     guid = "123"
     user_ids = ["456", "789"]
     client.remove_users_from_group(guid=guid, user_ids=user_ids)
 
-    mock_get.assert_called_once_with(guid=guid, user_ids=user_ids)
+    mock_group_client.assert_called_once_with(guid=guid, user_ids=user_ids)
+
+
+@patch.object(RoleClient, "get")
+def test_get_roles(mock_role_client, client: AtlanClient):
+    limit = 1
+    post_filter = "post"
+    sort = "sort"
+    count = False
+    offset = 3
+
+    client.get_roles(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
+
+    mock_role_client.assert_called_once_with(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
+
+
+@patch.object(RoleClient, "get_all")
+def test_get_all_roles(mock_role_client, client: AtlanClient):
+    client.get_all_roles()
+
+    mock_role_client.assert_called_once()
+
+
+@patch.object(TokenClient, "get")
+def test_get_api_tokens(mock_token_client, client: AtlanClient):
+    limit = 1
+    post_filter = "post"
+    sort = "sort"
+    count = False
+    offset = 3
+
+    client.get_api_tokens(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
+
+    mock_token_client.assert_called_once_with(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
+
+
+@patch.object(TokenClient, "get_by_name")
+def test_get_api_token_by_name(mock_token_client, client: AtlanClient):
+    display_name = "123"
+
+    client.get_api_token_by_name(display_name=display_name)
+
+    mock_token_client.assert_called_once_with(display_name=display_name)
+
+
+@patch.object(TokenClient, "get_by_id")
+def test_get_api_token_by_id(mock_token_client, client: AtlanClient):
+    client_id = "123"
+
+    client.get_api_token_by_id(client_id=client_id)
+
+    mock_token_client.assert_called_once_with(client_id=client_id)
+
+
+@patch.object(TokenClient, "create")
+def test_create_api_token(mock_token_client, client: AtlanClient):
+    display_name = "name"
+    description = "something"
+    personas = {"something"}
+    validity_seconds = 23
+
+    client.create_api_token(
+        display_name=display_name,
+        description=description,
+        personas=personas,
+        validity_seconds=validity_seconds,
+    )
+
+    mock_token_client.assert_called_once_with(
+        display_name=display_name,
+        description=description,
+        personas=personas,
+        validity_seconds=validity_seconds,
+    )
+
+
+@patch.object(TokenClient, "update")
+def test_update_api_token(mock_token_client, client: AtlanClient):
+    guid = "123"
+    display_name = "name"
+    description = "something"
+    personas = {"something"}
+
+    client.update_api_token(
+        guid=guid, display_name=display_name, description=description, personas=personas
+    )
+
+    mock_token_client.assert_called_once_with(
+        guid=guid, display_name=display_name, description=description, personas=personas
+    )
+
+
+@patch.object(TokenClient, "purge")
+def test_purgeapi_token(mock_token_client, client: AtlanClient):
+    guid = "123"
+
+    client.purge_api_token(guid=guid)
+
+    mock_token_client.assert_called_once_with(guid=guid)
