@@ -12,28 +12,28 @@ from tests.unit.model.constants import (
 
 
 @pytest.mark.parametrize(
-    "apiPathRawURI, apiSpecQualifiedName, message",
+    "path_raw_u_r_i, spec_qualified_name, message",
     [
-        (None, "api/spec", "apiPathRawURI is required"),
-        (API_PATH_RAW_URI, None, "apiSpecQualifiedName is required"),
+        (None, "api/spec", "path_raw_u_r_i is required"),
+        (API_PATH_RAW_URI, None, "spec_qualified_name is required"),
     ],
 )
 def test_create_with_missing_parameters_raise_value_error(
-    apiPathRawURI: str,
-    apiSpecQualifiedName: str,
+    path_raw_u_r_i: str,
+    spec_qualified_name: str,
     message: str,
 ):
     with pytest.raises(ValueError, match=message):
         APIPath.create(
-            apiPathRawURI=apiPathRawURI,
-            apiSpecQualifiedName=apiSpecQualifiedName,
+            path_raw_u_r_i=path_raw_u_r_i,
+            spec_qualified_name=spec_qualified_name,
         )
 
 
 def test_create():
     sut = APIPath.create(
-        apiPathRawURI=API_PATH_RAW_URI,
-        apiSpecQualifiedName=API_SPEC_QUALIFIED_NAME,
+        path_raw_u_r_i=API_PATH_RAW_URI,
+        spec_qualified_name=API_SPEC_QUALIFIED_NAME,
     )
 
     assert sut.name == API_PATH_NAME
@@ -42,7 +42,6 @@ def test_create():
     assert sut.connector_name == API_CONNECTOR_TYPE
     assert sut.api_spec_qualified_name == API_SPEC_QUALIFIED_NAME
     assert sut.api_path_raw_u_r_i == API_PATH_RAW_URI
-
 
 @pytest.mark.parametrize(
     "qualified_name, name, message",

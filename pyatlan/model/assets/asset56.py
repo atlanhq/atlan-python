@@ -291,13 +291,13 @@ class APIPath(API):
 
     @classmethod
     # @validate_arguments()
-    def create(cls, *, apiPathRawURI: str, apiSpecQualifiedName: str) -> APIPath:
+    def create(cls, *, path_raw_u_r_i: str, spec_qualified_name: str) -> APIPath:
         validate_required_fields(
-            ["apiPathRawURI", "apiSpecQualifiedName"],
-            [apiPathRawURI, apiSpecQualifiedName],
+            ["path_raw_u_r_i", "spec_qualified_name"],
+            [path_raw_u_r_i, spec_qualified_name],
         )
         attributes = APIPath.Attributes.create(
-            apiPathRawURI=apiPathRawURI, apiSpecQualifiedName=apiSpecQualifiedName
+            path_raw_u_r_i=path_raw_u_r_i, spec_qualified_name=spec_qualified_name
         )
         return cls(attributes=attributes)
 
@@ -482,31 +482,31 @@ class APIPath(API):
         @classmethod
         # @validate_arguments()
         def create(
-            cls, *, apiPathRawURI: str, apiSpecQualifiedName: str
+            cls, *, path_raw_u_r_i: str, spec_qualified_name: str
         ) -> APIPath.Attributes:
             validate_required_fields(
-                ["apiPathRawURI", "apiSpecQualifiedName"],
-                [apiPathRawURI, apiSpecQualifiedName],
+                ["path_raw_u_r_i", "spec_qualified_name"],
+                [path_raw_u_r_i, spec_qualified_name],
             )
 
-            # Split the apiSpecQualifiedName to extract necessary information
-            fields = apiSpecQualifiedName.split("/")
+            # Split the spec_qualified_name to extract necessary information
+            fields = spec_qualified_name.split("/")
             if len(fields) != 4:
-                raise ValueError("Invalid apiSpecQualifiedName")
+                raise ValueError("Invalid spec_qualified_name")
 
             try:
                 connector_type = AtlanConnectorType(fields[1])  # type:ignore
             except ValueError as e:
-                raise ValueError("Invalid apiSpecQualifiedName") from e
+                raise ValueError("Invalid spec_qualified_name") from e
 
             return APIPath.Attributes(
-                apiPathRawURI=apiPathRawURI,
-                name=apiPathRawURI,
-                apiSpecQualifiedName=apiSpecQualifiedName,
+                api_path_raw_u_r_i=path_raw_u_r_i,
+                name=path_raw_u_r_i,
+                api_spec_qualified_name=spec_qualified_name,
                 connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
-                qualified_name=f"{apiSpecQualifiedName}{apiPathRawURI}",
+                qualified_name=f"{spec_qualified_name}{path_raw_u_r_i}",
                 connector_name=connector_type.value,
-                apiSpec=APISpec.ref_by_qualified_name(apiSpecQualifiedName),
+                apiSpec=APISpec.ref_by_qualified_name(spec_qualified_name),
             )
 
     attributes: "APIPath.Attributes" = Field(
