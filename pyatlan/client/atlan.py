@@ -316,7 +316,6 @@ class AtlanClient(BaseSettings):
             Abstract method that must be implemented in subclasses, used to
             fetch the next page of results.
             """
-            pass
 
         # TODO Rename this here and in `next_page`
         def _get_next_page_json(self):

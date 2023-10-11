@@ -1,0 +1,18 @@
+#!/bin/bash
+# Setup the pre-commit symlink as `ln -s ../../.git-hooks/pre-commit .git/hooks/pre-commit`
+
+while :
+do
+  echo "Running pre-commit hook"
+  # Run the pre-commit hook
+  pre-commit run -a
+
+  # Check if there are any changes
+  if [[ -n $(git diff --cached --name-only) ]]; then
+    echo "No changes after running pre-commit."
+    break  # Exit the loop if there are no changes
+  else
+    # Stage only the files modified by the pre-commit
+    git diff --name-only --cached | xargs git add
+  fi
+done
