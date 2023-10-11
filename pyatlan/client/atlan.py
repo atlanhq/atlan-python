@@ -34,7 +34,6 @@ from urllib3.util.retry import Retry
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
-    ADD_USER_TO_GROUPS,
     ADMIN_EVENTS,
     BULK_UPDATE,
     DELETE_ENTITIES_BY_GUIDS,
@@ -43,7 +42,6 @@ from pyatlan.client.constants import (
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
     GET_LINEAGE,
     GET_LINEAGE_LIST,
-    GET_USER_GROUPS,
     INDEX_SEARCH,
     KEYCLOAK_EVENTS,
     PARSE_QUERY,
@@ -111,12 +109,7 @@ from pyatlan.model.search import (
     with_active_term,
 )
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
-from pyatlan.model.user import (
-    AddToGroupsRequest,
-    AtlanUser,
-    UserMinimalResponse,
-    UserResponse,
-)
+from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,
@@ -686,85 +679,79 @@ class AtlanClient(BaseSettings):
         self,
         users: list[AtlanUser],
     ) -> None:
-        """Deprecated - use user.create_users() instead."""
+        """Deprecated - use user.create() instead."""
         warn(
-            "This method is deprecated, please use 'user.create_users' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'user.create' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        self.user.create_users(users=users)
+        self.user.create(users=users)
 
     def update_user(
         self,
         guid: str,
         user: AtlanUser,
     ) -> UserMinimalResponse:
-        """Deprecated - use user.update_user() instead."""
+        """Deprecated - use user.update() instead."""
         warn(
-            "This method is deprecated, please use 'user.update_user' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'user.update' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.update_user(guid=guid, user=user)
+        return self.user.update(guid=guid, user=user)
 
     def get_groups_for_user(
         self,
         guid: str,
     ) -> GroupResponse:
-        """
-        Retrieve the groups this user belongs to.
-
-        :param guid: unique identifier (GUID) of the user
-        :returns: groups this user belongs to
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_USER_GROUPS.format_path({"user_guid": guid}))
-        return GroupResponse(**raw_json)
+        """Deprecated - use user.get_groups() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get_groups' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.get_groups(guid=guid)
 
     def add_user_to_groups(
         self,
         guid: str,
         group_ids: list[str],
     ) -> None:
-        """
-        Add a user to one or more groups.
-
-        :param guid: unique identifier (GUID) of the user to add into groups
-        :param group_ids: unique identifiers (GUIDs) of the groups to add the user into
-        :raises AtlanError: on any API communication issue
-        """
-        atgr = AddToGroupsRequest(groups=group_ids)
-        self._call_api(
-            ADD_USER_TO_GROUPS.format_path({"user_guid": guid}),
-            request_obj=atgr,
-            exclude_unset=True,
+        """Deprecated - use user.add_to_groups() instead."""
+        warn(
+            "This method is deprecated, please use 'user.add_to_groups' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        self.user.add_to_groups(guid=guid, group_ids=group_ids)
 
     def change_user_role(
         self,
         guid: str,
         role_id: str,
     ) -> None:
-        """Deprecated - use user.change_user_role() instead."""
+        """Deprecated - use user.change_role() instead."""
         warn(
-            "This method is deprecated, please use 'user.change_user_role' instead, which offers identical "
+            "This method is deprecated, please use 'user.change_role' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        self.user.change_user_role(guid=guid, role_id=role_id)
+        self.user.change_role(guid=guid, role_id=role_id)
 
     def get_current_user(
         self,
     ) -> UserMinimalResponse:
-        """Deprecated - use user.get_current_user() instead."""
+        """Deprecated - use user.get_current() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_current_user' instead, which offers identical "
+            "This method is deprecated, please use 'user.get_current' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get_current_user()
+        return self.user.get_current()
 
     def get_users(
         self,
@@ -774,13 +761,13 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> UserResponse:
-        """Deprecated - use user.get_users() instead."""
+        """Deprecated - use user.get() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_users' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'user.get' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get_users(
+        return self.user.get(
             limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
         )
 
@@ -788,37 +775,37 @@ class AtlanClient(BaseSettings):
         self,
         limit: int = 20,
     ) -> list[AtlanUser]:
-        """Deprecated - use user.get_all_users() instead."""
+        """Deprecated - use user.get_all() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_all_users' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'user.get_all' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get_all_users(limit=limit)
+        return self.user.get_all(limit=limit)
 
     def get_users_by_email(
         self,
         email: str,
         limit: int = 20,
     ) -> Optional[list[AtlanUser]]:
-        """Deprecated - use user.get_users_by_email() instead."""
+        """Deprecated - use user.get_by_email() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_users_by_email' instead, which offers identical "
+            "This method is deprecated, please use 'user.get_by_email' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get_users_by_email(email=email, limit=limit)
+        return self.user.get_by_email(email=email, limit=limit)
 
     def get_user_by_username(self, username: str) -> Optional[AtlanUser]:
-        """Deprecated - use user.get_user_by_username() instead."""
+        """Deprecated - use user.get_by_username() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_user_by_username' instead, which offers identical "
+            "This method is deprecated, please use 'user.get_by_username' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get_user_by_username(username=username)
+        return self.user.get_by_username(username=username)
 
     def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """
@@ -1799,93 +1786,28 @@ class AtlanClient(BaseSettings):
     def add_api_token_as_admin(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:
-        """
-        Add the API token configured for the default client as an admin to the asset with the provided GUID.
-        This is primarily useful for connections, to allow the API token to manage policies for the connection, and
-        for query collections, to allow the API token to manage the queries in a collection or the collection itself.
-
-        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
-        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
-                                    NOT an API token
-        :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
-        """
-        from pyatlan.model.assets.asset00 import Asset
-        from pyatlan.model.fluent_search import FluentSearch
-
-        token_user = str(self.get_current_user().username)
-        if existing_client := self.get_default_client():
-            tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
-            AtlanClient.set_default_client(tmp)
-            # Look for the asset as the impersonated user, ensuring we include the admin users
-            # in the results (so we avoid clobbering any existing admin users)
-            request = (
-                FluentSearch()
-                .where(Asset.GUID.eq(asset_guid))
-                .include_on_results(Asset.ADMIN_USERS)
-                .page_size(1)
-            ).to_request()
-            results = tmp.search(request)
-            if results.current_page():
-                asset = results.current_page()[0]
-                existing_admins = asset.admin_users or set()
-                existing_admins.add(token_user)
-                to_update = asset.trim_to_required()
-                to_update.admin_users = existing_admins
-                response = tmp.save(to_update)
-            else:
-                AtlanClient.set_default_client(existing_client)
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
-                    asset_guid
-                )
-            AtlanClient.set_default_client(existing_client)
-            return response
-
-        return None
+        """Deprecated - use user.add_as_admin() instead."""
+        warn(
+            "This method is deprecated, please use 'user.add_as_admin' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.add_as_admin(
+            asset_guid=asset_guid, impersonation_token=impersonation_token
+        )
 
     def add_api_token_as_viewer(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:
-        """
-        Add the API token configured for the default client as a viewer to the asset with the provided GUID.
-        This is primarily useful for query collections, to allow the API token to view or run queries within the
-        collection, but not make any changes to them.
-
-        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
-        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
-                                    NOT an API token
-        :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
-        """
-        from pyatlan.model.assets.asset00 import Asset
-        from pyatlan.model.fluent_search import FluentSearch
-
-        token_user = str(self.get_current_user().username)
-        if existing_client := self.get_default_client():
-            tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
-            AtlanClient.set_default_client(tmp)
-            # Look for the asset as the impersonated user, ensuring we include the admin users
-            # in the results (so we avoid clobbering any existing admin users)
-            request = (
-                FluentSearch()
-                .where(Asset.GUID.eq(asset_guid))
-                .include_on_results(Asset.VIEWER_USERS)
-                .page_size(1)
-            ).to_request()
-            results = tmp.search(request)
-            if results.current_page():
-                asset = results.current_page()[0]
-                existing_viewers = asset.viewer_users or set()
-                existing_viewers.add(token_user)
-                to_update = asset.trim_to_required()
-                to_update.viewer_users = existing_viewers
-                response = tmp.save(to_update)
-            else:
-                AtlanClient.set_default_client(existing_client)
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
-                    asset_guid
-                )
-            AtlanClient.set_default_client(existing_client)
-            return response
-        return None
+        """Deprecated - use user.add_as_viewer() instead."""
+        warn(
+            "This method is deprecated, please use 'user.add_as_viewer' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.add_as_viewer(
+            asset_guid=asset_guid, impersonation_token=impersonation_token
+        )
 
     def get_api_tokens(
         self,

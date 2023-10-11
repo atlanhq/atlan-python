@@ -41,7 +41,7 @@ def test_retrieve_roles(client: AtlanClient):
 @pytest.fixture(scope="module")
 def group(client: AtlanClient) -> Generator[CreateGroupResponse, None, None]:
     to_create = AtlanGroup.create(GROUP_NAME)
-    fixed_user = client.get_user_by_username(FIXED_USER)
+    fixed_user = client.user.get_by_username(FIXED_USER)
     assert fixed_user
     g = client.group.create(group=to_create, user_ids=[str(fixed_user.id)])
     yield g
@@ -62,7 +62,7 @@ def test_create_group(client: AtlanClient, group: CreateGroupResponse):
     assert not group1_full.attributes.description
     mapped_users = group.users
     assert mapped_users
-    fixed_user = client.get_user_by_username(FIXED_USER)
+    fixed_user = client.user.get_by_username(FIXED_USER)
     assert fixed_user
     assert fixed_user.id in mapped_users.keys()
     user_status = mapped_users.get(str(fixed_user.id))
@@ -83,20 +83,20 @@ def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
 @pytest.mark.order(after="test_retrieve_all_groups")
 def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse):
     global _default_group_count
-    all_users = client.get_all_users()
+    all_users = client.user.get_all()
     assert all_users
     assert len(all_users) >= 1
-    user1 = client.get_user_by_username(FIXED_USER)
+    user1 = client.user.get_by_username(FIXED_USER)
     assert user1
     assert user1.id
     assert user1.attributes
     assert user1.group_count == 1 + _default_group_count
-    users_list = client.get_users_by_email(EMAIL_DOMAIN)
+    users_list = client.user.get_by_email(EMAIL_DOMAIN)
     assert users_list
     assert len(users_list) >= 1
     email = user1.email
     assert email
-    users_list = client.get_users_by_email(email)
+    users_list = client.user.get_by_email(email)
     assert users_list
     assert len(users_list) == 1
     assert user1 == users_list[0]
@@ -138,7 +138,7 @@ def test_remove_user_from_group(
     assert len(groups) == 1
     group1 = groups[0]
     assert group1.id
-    fixed_user = client.get_user_by_username(FIXED_USER)
+    fixed_user = client.user.get_by_username(FIXED_USER)
     assert fixed_user
     assert fixed_user.id
     client.group.remove_users(guid=group1.id, user_ids=[fixed_user.id])
@@ -153,10 +153,10 @@ def test_final_user_state(
     group: CreateGroupResponse,
 ):
     global _default_group_count
-    fixed_user = client.get_user_by_username(FIXED_USER)
+    fixed_user = client.user.get_by_username(FIXED_USER)
     assert fixed_user
     assert fixed_user.id
-    response = client.get_groups_for_user(fixed_user.id)
+    response = client.user.get_groups(fixed_user.id)
     assert (
         response.records is None
         or len(response.records) == 0
