@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-import os
 from unittest.mock import DEFAULT, Mock, patch
 
 import pytest
 
-from pyatlan.client.atlan import AtlanClient
+from pyatlan.client.atlan import AtlanClient, GroupClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
@@ -26,6 +25,17 @@ GLOSSARY_CATEGORY = AtlasGlossaryCategory.create(
     name=GLOSSARY_CATEGORY_NAME, anchor=GLOSSARY
 )
 GLOSSARY_TERM = AtlasGlossaryTerm.create(name=GLOSSARY_TERM_NAME, anchor=GLOSSARY)
+
+
+@pytest.fixture(autouse=True)
+def set_env(monkeypatch):
+    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
+    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+
+
+@pytest.fixture()
+def client():
+    return AtlanClient()
 
 
 @pytest.mark.parametrize(
@@ -72,12 +82,8 @@ def test_append_terms_with_invalid_parameter_raises_error(
     assigned_terms,
     message,
     error,
-    monkeypatch,
+    client,
 ):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
-    client = AtlanClient()
-
     with pytest.raises(error, match=message):
         client.append_terms(
             guid=guid,
@@ -87,9 +93,7 @@ def test_append_terms_with_invalid_parameter_raises_error(
         )
 
 
-def test_append_with_valid_guid_and_no_terms_returns_asset(monkeypatch):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+def test_append_with_valid_guid_and_no_terms_returns_asset():
     asset_type = Table
     table = asset_type()
 
@@ -106,11 +110,7 @@ def test_append_with_valid_guid_and_no_terms_returns_asset(monkeypatch):
     mock_method.assert_called_once_with(guid=guid, asset_type=asset_type)
 
 
-def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_terms(
-    monkeypatch,
-):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_terms():
     asset_type = Table
     with patch.multiple(
         AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
@@ -128,11 +128,7 @@ def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_t
         assert asset.assigned_terms == terms
 
 
-def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_given_terms(
-    monkeypatch,
-):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_given_terms():
     asset_type = Table
     with patch.multiple(
         AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
@@ -153,11 +149,7 @@ def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_gi
         assert asset.assigned_terms == terms
 
 
-def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_terms(
-    monkeypatch,
-):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_terms():
     asset_type = Table
     with patch.multiple(
         AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
@@ -226,12 +218,8 @@ def test_replace_terms_with_invalid_parameter_raises_error(
     assigned_terms,
     message,
     error,
-    monkeypatch,
+    client,
 ):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
-    client = AtlanClient()
-
     with pytest.raises(error, match=message):
         client.replace_terms(
             guid=guid,
@@ -241,11 +229,7 @@ def test_replace_terms_with_invalid_parameter_raises_error(
         )
 
 
-def test_replace_terms(
-    monkeypatch,
-):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+def test_replace_terms():
     asset_type = Table
     with patch.multiple(
         AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
@@ -315,12 +299,8 @@ def test_remove_terms_with_invalid_parameter_raises_error(
     assigned_terms,
     message,
     error,
-    monkeypatch,
+    client,
 ):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
-    client = AtlanClient()
-
     with pytest.raises(error, match=message):
         client.remove_terms(
             guid=guid,
@@ -330,11 +310,7 @@ def test_remove_terms_with_invalid_parameter_raises_error(
         )
 
 
-def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_removed(
-    monkeypatch,
-):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
+def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_removed():
     asset_type = Table
     with patch.multiple(
         AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
@@ -360,10 +336,7 @@ def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_remo
         assert other_term in updated_terms
 
 
-def test_register_client_with_bad_parameter_raises_value_error(monkeypatch):
-    monkeypatch.setenv("ATLAN_BASE_URL", "https://name.atlan.com")
-    monkeypatch.setenv("ATLAN_API_KEY", "abkj")
-    client = AtlanClient()
+def test_register_client_with_bad_parameter_raises_value_error(client):
     with pytest.raises(
         InvalidRequestError, match="client must be an instance of AtlanClient"
     ):
@@ -371,8 +344,10 @@ def test_register_client_with_bad_parameter_raises_value_error(monkeypatch):
     assert AtlanClient.get_default_client() is client
 
 
-def test_register_client():
-    client = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
+def test_register_client(client):
+    other = AtlanClient(base_url="http://mark.atlan.com", api_key="123")
+    assert AtlanClient.get_default_client() == other
+
     AtlanClient.set_default_client(client)
     assert AtlanClient.get_default_client() == client
 
@@ -402,22 +377,13 @@ def test_register_client():
         ),
     ],
 )
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 def test_find_glossary_by_name_with_bad_values_raises_value_error(
-    name, attributes, message
+    name, attributes, message, client
 ):
-    client = AtlanClient()
     with pytest.raises(ValueError, match=message):
         client.find_glossary_by_name(name=name, attributes=attributes)
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 0
@@ -430,10 +396,6 @@ def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
         client.find_glossary_by_name(GLOSSARY_NAME)
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 1
@@ -448,10 +410,6 @@ def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_searc
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_glossary(mock_search, caplog):
     request = None
@@ -544,14 +502,9 @@ def test_find_glossary(mock_search, caplog):
         ),
     ],
 )
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 def test_find_category_fast_by_name_with_bad_values_raises_value_error(
-    name, glossary_qualified_name, attributes, message
+    name, glossary_qualified_name, attributes, message, client
 ):
-    client = AtlanClient()
     with pytest.raises(ValueError, match=message):
         client.find_category_fast_by_name(
             name=name,
@@ -560,10 +513,6 @@ def test_find_category_fast_by_name_with_bad_values_raises_value_error(
         )
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 0
@@ -578,10 +527,6 @@ def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_
         )
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_category_fast_by_name_when_non_category_found_raises_not_found_error(
     mock_search,
@@ -600,10 +545,6 @@ def test_find_category_fast_by_name_when_non_category_found_raises_not_found_err
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_category_fast_by_name(mock_search, caplog):
     request = None
@@ -651,10 +592,6 @@ def test_find_category_fast_by_name(mock_search, caplog):
     assert term4.value == GLOSSARY_QUALIFIED_NAME
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @pytest.mark.parametrize(
     "name, glossary_name, attributes, message",
     [
@@ -703,9 +640,9 @@ def test_find_category_fast_by_name(mock_search, caplog):
     ],
 )
 def test_find_category_by_name_when_bad_parameter_raises_value_error(
-    name, glossary_name, attributes, message
+    name, glossary_name, attributes, message, client
 ):
-    sut = AtlanClient()
+    sut = client
 
     with pytest.raises(ValueError, match=message):
         sut.find_category_by_name(
@@ -713,10 +650,6 @@ def test_find_category_by_name_when_bad_parameter_raises_value_error(
         )
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 def test_find_category_by_name():
     attributes = ["name"]
     with patch.multiple(
@@ -791,14 +724,9 @@ def test_find_category_by_name():
         ),
     ],
 )
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 def test_find_term_fast_by_name_with_bad_values_raises_value_error(
-    name, glossary_qualified_name, attributes, message
+    name, glossary_qualified_name, attributes, message, client
 ):
-    client = AtlanClient()
     with pytest.raises(ValueError, match=message):
         client.find_term_fast_by_name(
             name=name,
@@ -807,10 +735,6 @@ def test_find_term_fast_by_name_with_bad_values_raises_value_error(
         )
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 0
@@ -825,10 +749,6 @@ def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_sear
         )
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search,
@@ -847,10 +767,6 @@ def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @patch.object(AtlanClient, "search")
 def test_find_term_fast_by_name(mock_search, caplog):
     request = None
@@ -899,10 +815,6 @@ def test_find_term_fast_by_name(mock_search, caplog):
     assert term4.value == GLOSSARY_QUALIFIED_NAME
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 @pytest.mark.parametrize(
     "name, glossary_name, attributes, message",
     [
@@ -951,9 +863,9 @@ def test_find_term_fast_by_name(mock_search, caplog):
     ],
 )
 def test_find_term_by_name_when_bad_parameter_raises_value_error(
-    name, glossary_name, attributes, message
+    name, glossary_name, attributes, message, client
 ):
-    sut = AtlanClient()
+    sut = client
 
     with pytest.raises(ValueError, match=message):
         sut.find_term_by_name(
@@ -961,10 +873,6 @@ def test_find_term_by_name_when_bad_parameter_raises_value_error(
         )
 
 
-@patch.dict(
-    os.environ,
-    {"ATLAN_BASE_URL": "https://dummy.atlan.com", "ATLAN_API_KEY": "123"},
-)
 def test_find_term_by_name():
     attributes = ["name"]
     with patch.multiple(
@@ -989,3 +897,53 @@ def test_find_term_by_name():
             attributes=attributes,
         )
         assert mock_find_term_fast_by_name.return_value == term
+
+
+@patch.object(GroupClient, "get")
+def test_get_groups(mock_get, client: AtlanClient):
+    limit = 1
+    post_filter = "post"
+    sort = "sort"
+    count = False
+    offset = 3
+    client.get_groups(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
+
+    mock_get.assert_called_once_with(
+        limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+    )
+
+
+@patch.object(GroupClient, "get_all")
+def test_get_all_groupss(mock_get, client: AtlanClient):
+    limit = 1
+    client.get_all_groups(limit=limit)
+
+    mock_get.assert_called_once_with(limit=limit)
+
+
+@patch.object(GroupClient, "get_by_name")
+def test_get_group_by_name(mock_get, client: AtlanClient):
+    alias = "bob"
+    limit = 3
+    client.get_group_by_name(alias=alias, limit=limit)
+
+    mock_get.assert_called_once_with(alias=alias, limit=limit)
+
+
+@patch.object(GroupClient, "get_members")
+def test_get_get_group_members(mock_get, client: AtlanClient):
+    guid = "123"
+    client.get_group_members(guid=guid)
+
+    mock_get.assert_called_once_with(guid=guid)
+
+
+@patch.object(GroupClient, "remove_users")
+def test_remove_users_from_group(mock_get, client: AtlanClient):
+    guid = "123"
+    user_ids = ["456", "789"]
+    client.remove_users_from_group(guid=guid, user_ids=user_ids)
+
+    mock_get.assert_called_once_with(guid=guid, user_ids=user_ids)

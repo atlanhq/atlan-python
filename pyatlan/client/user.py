@@ -334,7 +334,7 @@ class UserClient:
                 f"keyword_field should be {Asset.VIEWER_USERS} or {Asset.ADMIN_USERS}"
             )
 
-        token_user = self.get_current().username
+        token_user = self.get_current().username or ""
         with client_connection(api_key=impersonation_token) as tmp:
             request = (
                 FluentSearch()

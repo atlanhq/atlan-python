@@ -2178,7 +2178,7 @@ class AtlanClient(BaseSettings):
 @contextlib.contextmanager
 def client_connection(
     base_url: Optional[HttpUrl] = None, api_key: Optional[str] = None
-):
+) -> Generator[AtlanClient, None, None]:
     """
     Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will
     be set to the new client. AtlanClient.default_client will be reset to the current default_client before
