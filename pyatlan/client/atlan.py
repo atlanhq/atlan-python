@@ -1312,9 +1312,9 @@ class AtlanClient(BaseSettings):
         return self.typedef.update(typedef=typedef)
 
     def purge_typedef(self, name: str, typedef_type: type) -> None:
-        """Deprecated - use typedef.update() instead."""
+        """Deprecated - use typedef.purge() instead."""
         warn(
-            "This method is deprecated, please use 'typedef.update' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'typedef.purge' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )

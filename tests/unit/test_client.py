@@ -8,6 +8,7 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.token import TokenClient
+from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
@@ -15,7 +16,9 @@ from pyatlan.model.assets import (
     AtlasGlossaryTerm,
     Table,
 )
+from pyatlan.model.enums import AtlanTypeCategory
 from pyatlan.model.search import Bool, Term
+from pyatlan.model.typedef import TypeDef
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
     GLOSSARY_NAME,
@@ -1056,3 +1059,44 @@ def test_purgeapi_token(mock_token_client, client: AtlanClient):
     client.purge_api_token(guid=guid)
 
     mock_token_client.assert_called_once_with(guid=guid)
+
+
+@patch.object(TypeDefClient, "get_all")
+def test_get_all_typedefs(mock_type_def_client, client: AtlanClient):
+    client.get_all_typedefs()
+
+    mock_type_def_client.assert_called_once()
+
+
+@patch.object(TypeDefClient, "get")
+def test_get_typedefs(mock_type_def_client, client: AtlanClient):
+    client.get_typedefs(type_category=AtlanTypeCategory.ENUM)
+
+    mock_type_def_client.assert_called_once_with(type_category=AtlanTypeCategory.ENUM)
+
+
+@patch.object(TypeDefClient, "create")
+def test_create_typedef(mock_type_def_client, client: AtlanClient):
+    type_def = TypeDef(category=AtlanTypeCategory.ENUM, name="dummy")
+
+    client.create_typedef(typedef=type_def)
+
+    mock_type_def_client.assert_called_once_with(typedef=type_def)
+
+
+@patch.object(TypeDefClient, "update")
+def test_update_typedef(mock_type_def_client, client: AtlanClient):
+    type_def = TypeDef(category=AtlanTypeCategory.ENUM, name="dummy")
+
+    client.update_typedef(typedef=type_def)
+
+    mock_type_def_client.assert_called_once_with(typedef=type_def)
+
+
+@patch.object(TypeDefClient, "purge")
+def test_purge_typedef(mock_type_def_client, client: AtlanClient):
+    name = "bob"
+
+    client.purge_typedef(name=name, typedef_type=TypeDef)
+
+    mock_type_def_client.assert_called_once_with(name=name, typedef_type=TypeDef)
