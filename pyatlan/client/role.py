@@ -8,8 +8,8 @@ from pyatlan.model.role import RoleResponse
 
 class RoleClient:
     """
-    This class can be used to retrieve information and rerun workflows. This class does not need to be instantiated
-    directly but can be obtained through the workflow property of AtlanClient.
+    This class can be used to retrieve information about roles. This class does not need to be instantiated
+    directly but can be obtained through the role property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
