@@ -1,0 +1,11 @@
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> {{ entity_def.name }}:
+        validate_required_fields(
+            ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
+        )
+        attributes = {{ entity_def.name }}.Attributes.create(
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+        )
+        return cls(attributes=attributes)
