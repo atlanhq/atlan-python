@@ -1,3 +1,16 @@
+## 1.3.3 (October 12, 2023)
+
+* Create new helper client classes:
+  *  GroupClient
+  *  RoleClient
+  *  TokenClient
+  *  TypeDefClient
+  *  UserClient
+* Add custom pre-commit hook
+* Adds optional parameters for index search by
+* Add capability to manage API Assets
+
+
 ## 1.3.2 (October 10, 2023)
 
 * Fix bug preventing classifications with unexpected attributes from being read
