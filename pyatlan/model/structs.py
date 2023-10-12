@@ -54,21 +54,6 @@ class ColumnValueFrequencyMap(AtlanObject):
     column_value_frequency: Optional[int] = Field(None, description="")
 
 
-class SourceTagAttachment(AtlanObject):
-    """Description"""
-
-    source_tag_name: Optional[str] = Field(None, description="")
-    source_tag_qualified_name: Optional[str] = Field(None, description="")
-    source_tag_guid: Optional[str] = Field(None, description="")
-    source_tag_connector_name: Optional[str] = Field(None, description="")
-    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
-        None, description=""
-    )
-    is_source_tag_synced: Optional[bool] = Field(None, description="")
-    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
-    source_tag_sync_error: Optional[str] = Field(None, description="")
-
-
 class BadgeCondition(AtlanObject):
     """Description"""
 
@@ -100,6 +85,21 @@ class BadgeCondition(AtlanObject):
     badge_condition_operator: Optional[str] = Field(None, description="")
     badge_condition_value: Optional[str] = Field(None, description="")
     badge_condition_colorhex: Optional[str] = Field(None, description="")
+
+
+class SourceTagAttachment(AtlanObject):
+    """Description"""
+
+    source_tag_name: Optional[str] = Field(None, description="")
+    source_tag_qualified_name: Optional[str] = Field(None, description="")
+    source_tag_guid: Optional[str] = Field(None, description="")
+    source_tag_connector_name: Optional[str] = Field(None, description="")
+    source_tag_value: Optional[list[SourceTagAttachmentValue]] = Field(
+        None, description=""
+    )
+    is_source_tag_synced: Optional[bool] = Field(None, description="")
+    source_tag_sync_timestamp: Optional[datetime] = Field(None, description="")
+    source_tag_sync_error: Optional[str] = Field(None, description="")
 
 
 class SourceTagAttachmentValue(AtlanObject):
@@ -214,9 +214,9 @@ Histogram.update_forward_refs()
 
 ColumnValueFrequencyMap.update_forward_refs()
 
-SourceTagAttachment.update_forward_refs()
-
 BadgeCondition.update_forward_refs()
+
+SourceTagAttachment.update_forward_refs()
 
 SourceTagAttachmentValue.update_forward_refs()
 

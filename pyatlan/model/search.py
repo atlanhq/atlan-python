@@ -1827,6 +1827,26 @@ class IndexSearchRequest(SearchRequest):
     relation_attributes: list[str] = Field(
         default_factory=list, alias="relationAttributes"
     )
+    suppress_logs: Optional[bool] = Field(alias="suppressLogs")
+    show_search_score: Optional[bool] = Field(
+        description="When true, include the score of each result. By default, this is false and scores are excluded.",
+        alias="showSearchScore",
+    )
+    exclude_meanings: Optional[bool] = Field(
+        description="Whether to include term relationships for assets (false) or not (true). By default, this is false "
+        "and term relationships are therefore included.",
+        alias="excludeMeanings",
+    )
+    exclude_atlan_tags: Optional[bool] = Field(
+        description="Whether to include Atlan tags for assets (false) or not (true). By default, this is false and "
+        "Atlan tags are therefore included.",
+        alias="excludeClassifications",
+    )
+    allow_deleted_relations: Optional[bool] = Field(
+        description="Whether to include deleted relationships to this asset (true) or not (false). By default, "
+        "this is false and therefore only active (not deleted) relationships will be included.",
+        alias="allowDeletedRelations",
+    )
 
     class Config:
         json_encoders = {Query: lambda v: v.to_dict(), SortItem: lambda v: v.to_dict()}

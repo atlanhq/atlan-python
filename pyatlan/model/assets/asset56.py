@@ -8,6 +8,7 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -15,12 +16,24 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import validate_required_fields
 
 from .asset26 import API
 
 
 class APISpec(API):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, name: str, connection_qualified_name: str) -> APISpec:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = APISpec.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("APISpec", allow_mutation=False)
 
@@ -240,6 +253,32 @@ class APISpec(API):
             None, description="", alias="apiPaths"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> APISpec.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return APISpec.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+            )
+
     attributes: "APISpec.Attributes" = Field(
         default_factory=lambda: APISpec.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -249,6 +288,17 @@ class APISpec(API):
 
 class APIPath(API):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
+        validate_required_fields(
+            ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
+        )
+        attributes = APIPath.Attributes.create(
+            path_raw_uri=path_raw_uri, spec_qualified_name=spec_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("APIPath", allow_mutation=False)
 
@@ -427,6 +477,36 @@ class APIPath(API):
         api_spec: Optional[APISpec] = Field(
             None, description="", alias="apiSpec"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        def create(
+            cls, *, path_raw_uri: str, spec_qualified_name: str
+        ) -> APIPath.Attributes:
+            validate_required_fields(
+                ["path_raw_uri", "spec_qualified_name"],
+                [path_raw_uri, spec_qualified_name],
+            )
+
+            # Split the spec_qualified_name to extract necessary information
+            fields = spec_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid spec_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid spec_qualified_name") from e
+
+            return APIPath.Attributes(
+                api_path_raw_u_r_i=path_raw_uri,
+                name=path_raw_uri,
+                api_spec_qualified_name=spec_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{spec_qualified_name}{path_raw_uri}",
+                connector_name=connector_type.value,
+                apiSpec=APISpec.ref_by_qualified_name(spec_qualified_name),
+            )
 
     attributes: "APIPath.Attributes" = Field(
         default_factory=lambda: APIPath.Attributes(),
