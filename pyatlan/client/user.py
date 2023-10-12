@@ -172,7 +172,7 @@ class UserClient:
         )
         return UserResponse(**raw_json)
 
-    def list(
+    def get_all(
         self,
         limit: int = 20,
     ) -> list[AtlanUser]:

@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Iterable, Optional
 
-from pyatlan.model.user import UserProvider
+from pyatlan.client.user import UserClient
 
 
 class UserCache:
@@ -19,7 +19,7 @@ class UserCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = UserCache(provider=client)
+            cls.caches[cache_key] = UserCache(user_client=client.user)
         return cls.caches[cache_key]
 
     @classmethod
@@ -61,14 +61,14 @@ class UserCache:
         """
         return cls.get_cache()._validate_names(names)
 
-    def __init__(self, provider: UserProvider):
-        self.provider = provider
+    def __init__(self, user_client: UserClient):
+        self.user_client: UserClient = user_client
         self.map_id_to_name: dict[str, str] = {}
         self.map_name_to_id: dict[str, str] = {}
         self.map_email_to_id: dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
-        users = self.provider.get_all_users()
+        users = self.user_client.get_all()
         if users is not None:
             self.map_id_to_name = {}
             self.map_name_to_id = {}
@@ -126,7 +126,7 @@ class UserCache:
         for username in names:
             if not self.get_id_for_name(
                 username
-            ) and not self.provider.get_api_token_by_id(username):
+            ) and not self.user_client.get_by_username(username):
                 raise ValueError(
                     f"Provided username {username} was not found in Atlan."
                 )

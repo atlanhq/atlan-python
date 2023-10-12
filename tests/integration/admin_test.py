@@ -83,7 +83,7 @@ def test_retrieve_all_groups(client: AtlanClient, group: CreateGroupResponse):
 @pytest.mark.order(after="test_retrieve_all_groups")
 def test_retrieve_existing_user(client: AtlanClient, group: CreateGroupResponse):
     global _default_group_count
-    all_users = client.user.list()
+    all_users = client.user.get_all()
     assert all_users
     assert len(all_users) >= 1
     user1 = client.user.get_by_username(FIXED_USER)
