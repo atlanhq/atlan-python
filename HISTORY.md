@@ -7,7 +7,7 @@
   *  TypeDefClient
   *  UserClient
 * Add custom pre-commit hook
-* Adds optional parameters for index search by
+* Additional optional parameters for index searc
 * Add capability to manage API Assets
 
 
