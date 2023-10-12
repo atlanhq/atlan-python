@@ -74,7 +74,7 @@ def _refresh_caches(typedef: TypeDef) -> None:
 class TypeDefClient:
     """
     This class can be used to retrieve information pertaining to TypeDefs. This class does not need to be instantiated
-    directly but can be obtained through the workflow property of AtlanClient.
+    directly but can be obtained through the typedef property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
