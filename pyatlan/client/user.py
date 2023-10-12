@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -128,14 +127,14 @@ class UserClient:
         offset: int = 0,
     ) -> UserResponse:
         """
-        Retrieves a UserResponse which aan be used to retrieve list of users defined in Atlan.
+        Retrieves a UserResponse which contains a list of users defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param post_filter: which users to retrieve
         :param sort: property by which to sort the results
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
-        :returns: a list of users that match the provided criteria
+        :returns: a UserResponse which contains a list of users that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, Any] = {
@@ -264,7 +263,7 @@ class UserClient:
         Retrieve the groups this user belongs to.
 
         :param guid: unique identifier (GUID) of the user
-        :returns: groups this user belongs to
+        :returns: a GroupResponse which contains the groups this user belongs to
         :raises AtlanError: on any API communication issue
         """
         raw_json = self._client._call_api(
@@ -283,6 +282,7 @@ class UserClient:
         :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
         :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
                                     NOT an API token
+        :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
         """
         from pyatlan.model.assets import Asset
@@ -304,6 +304,7 @@ class UserClient:
         :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
         :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
                                     NOT an API token
+        :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.model.assets import Asset
@@ -324,6 +325,7 @@ class UserClient:
         :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
                                     NOT an API token
         :param keyword_field: must be either Asset.ADMIN_USERS or Asset.VIEWER_USERS
+        :returns: a AssetMutationResponse which contains the results of the operation
         :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
         """
         from pyatlan.client.atlan import client_connection
