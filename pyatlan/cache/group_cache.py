@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Iterable, Optional
 
-from pyatlan.model.group import GroupProvider
+from pyatlan.client.group import GroupClient
 
 
 class GroupCache:
@@ -19,7 +19,7 @@ class GroupCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = GroupCache(provider=client)
+            cls.caches[cache_key] = GroupCache(group_client=client.group)
         return cls.caches[cache_key]
 
     @classmethod
@@ -61,14 +61,14 @@ class GroupCache:
         """
         return cls.get_cache()._validate_aliases(aliases)
 
-    def __init__(self, provider: GroupProvider):
-        self.provider = provider
+    def __init__(self, group_client: GroupClient):
+        self.group_client: GroupClient = group_client
         self.map_id_to_name: dict[str, str] = {}
         self.map_name_to_id: dict[str, str] = {}
         self.map_alias_to_id: dict[str, str] = {}
 
     def _refresh_cache(self) -> None:
-        groups = self.provider.get_all_groups()
+        groups = self.group_client.get_all()
         if groups is not None:
             self.map_id_to_name = {}
             self.map_name_to_id = {}

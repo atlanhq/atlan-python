@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import time
-from typing import Generator, List, Optional, Tuple
+from typing import Generator, Optional, Tuple
 
 import pytest
 
@@ -70,7 +70,7 @@ _removal_epoch: Optional[int]
 def create_custom_metadata(
     client: AtlanClient,
     name: str,
-    attribute_defs: List[AttributeDef],
+    attribute_defs: list[AttributeDef],
     locked: bool,
     logo: Optional[str] = None,
     icon: Optional[AtlanIcon] = None,
@@ -90,13 +90,13 @@ def create_custom_metadata(
         raise ValueError(
             "Invalid configuration for the visual to use for the custom metadata."
         )
-    r = client.create_typedef(cm_def)
+    r = client.typedef.create(cm_def)
     return r.custom_metadata_defs[0]
 
 
-def create_enum(client: AtlanClient, name: str, values: List[str]) -> EnumDef:
+def create_enum(client: AtlanClient, name: str, values: list[str]) -> EnumDef:
     enum_def = EnumDef.create(name=name, values=values)
-    r = client.create_typedef(enum_def)
+    r = client.typedef.create(enum_def)
     return r.enum_defs[0]
 
 
@@ -130,7 +130,7 @@ def cm_ipr(
         client, name=CM_IPR, attribute_defs=attribute_defs, logo="⚖️", locked=True
     )
     yield cm
-    client.purge_typedef(CM_IPR, CustomMetadataDef)
+    client.typedef.purge(CM_IPR, CustomMetadataDef)
 
 
 def test_cm_ipr(
@@ -216,7 +216,7 @@ def cm_raci(
         locked=False,
     )
     yield cm
-    client.purge_typedef(CM_RACI, CustomMetadataDef)
+    client.typedef.purge(CM_RACI, CustomMetadataDef)
 
 
 def test_cm_raci(
@@ -271,7 +271,7 @@ def cm_enum(
 ) -> Generator[EnumDef, None, None]:
     enum_def = create_enum(client, name=DQ_ENUM, values=DQ_TYPE_LIST)
     yield enum_def
-    client.purge_typedef(DQ_ENUM, EnumDef)
+    client.typedef.purge(DQ_ENUM, EnumDef)
 
 
 def test_cm_enum(
@@ -313,7 +313,7 @@ def cm_dq(
         locked=True,
     )
     yield cm
-    client.purge_typedef(CM_QUALITY, CustomMetadataDef)
+    client.typedef.purge(CM_QUALITY, CustomMetadataDef)
 
 
 def test_cm_dq(
@@ -384,7 +384,7 @@ def groups(
     cm_raci: CustomMetadataDef,
     cm_ipr: CustomMetadataDef,
     cm_dq: CustomMetadataDef,
-) -> Generator[List[CreateGroupResponse], None, None]:
+) -> Generator[list[CreateGroupResponse], None, None]:
     g1 = create_group(client, GROUP_NAME1)
     g2 = create_group(client, GROUP_NAME2)
     yield [g1, g2]
@@ -395,11 +395,11 @@ def groups(
 def _get_groups(
     client: AtlanClient,
 ) -> Tuple[AtlanGroup, AtlanGroup]:
-    candidates = client.get_group_by_name(GROUP_NAME1)
+    candidates = client.group.get_by_name(GROUP_NAME1)
     assert candidates
     assert len(candidates) == 1
     group1 = candidates[0]
-    candidates = client.get_group_by_name(GROUP_NAME2)
+    candidates = client.group.get_by_name(GROUP_NAME2)
     assert candidates
     assert len(candidates) == 1
     group2 = candidates[0]
@@ -410,7 +410,7 @@ def test_add_term_cm_raci(
     client: AtlanClient,
     cm_raci: CustomMetadataDef,
     term: AtlasGlossaryTerm,
-    groups: List[AtlanGroup],
+    groups: list[AtlanGroup],
 ):
     cm_name = CM_RACI
     raci_attrs = CustomMetadataDict(cm_name)
@@ -636,7 +636,7 @@ def test_remove_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
             _removal_epoch = to_keep.options.archived_at
         updated_attrs.append(to_keep)
     existing.attribute_defs = updated_attrs
-    response = client.update_typedef(existing)
+    response = client.typedef.update(existing)
     assert response
     assert len(response.custom_metadata_defs) == 1
     updated = response.custom_metadata_defs[0]
@@ -698,7 +698,7 @@ def test_recreate_attribute(client: AtlanClient, cm_raci: CustomMetadataDef):
     )
     updated_attrs.append(new_attr)
     existing.attribute_defs = updated_attrs
-    response = client.update_typedef(existing)
+    response = client.typedef.update(existing)
     assert response
     assert len(response.custom_metadata_defs) == 1
     updated = response.custom_metadata_defs[0]
@@ -910,7 +910,7 @@ def _validate_dq_empty(dq_attrs: CustomMetadataDict):
 
 
 def _validate_raci_structure(
-    attributes: Optional[List[AttributeDef]], total_expected: int
+    attributes: Optional[list[AttributeDef]], total_expected: int
 ):
     global _removal_epoch
     assert attributes

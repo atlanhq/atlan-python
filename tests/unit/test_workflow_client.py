@@ -4,8 +4,9 @@ from unittest.mock import Mock
 
 import pytest
 
+from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import WORKFLOW_INDEX_SEARCH
-from pyatlan.client.workflow import ApiCaller, WorkflowClient
+from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import InvalidRequestError
 from pyatlan.model.enums import WorkflowPackage
 from pyatlan.model.workflow import (

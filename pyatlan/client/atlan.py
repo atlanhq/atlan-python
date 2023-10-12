@@ -13,7 +13,7 @@ import time
 import uuid
 from abc import ABC
 from types import SimpleNamespace
-from typing import Any, ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
+from typing import ClassVar, Generator, Iterable, Optional, Type, TypeVar, Union
 from warnings import warn
 
 import requests
@@ -34,46 +34,30 @@ from urllib3.util.retry import Retry
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.constants import (
     ADD_BUSINESS_ATTRIBUTE_BY_ID,
-    ADD_USER_TO_GROUPS,
     ADMIN_EVENTS,
     BULK_UPDATE,
-    CHANGE_USER_ROLE,
-    CREATE_GROUP,
-    CREATE_TYPE_DEFS,
-    CREATE_USERS,
-    DELETE_API_TOKEN,
     DELETE_ENTITIES_BY_GUIDS,
     DELETE_ENTITY_BY_ATTRIBUTE,
-    DELETE_GROUP,
-    DELETE_TYPE_DEF_BY_NAME,
-    GET_ALL_TYPE_DEFS,
-    GET_API_TOKENS,
-    GET_CURRENT_USER,
     GET_ENTITY_BY_GUID,
     GET_ENTITY_BY_UNIQUE_ATTRIBUTE,
-    GET_GROUP_MEMBERS,
-    GET_GROUPS,
     GET_LINEAGE,
     GET_LINEAGE_LIST,
-    GET_ROLES,
-    GET_USER_GROUPS,
-    GET_USERS,
     INDEX_SEARCH,
     KEYCLOAK_EVENTS,
     PARSE_QUERY,
     PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE,
-    REMOVE_USERS_FROM_GROUP,
     UPDATE_ENTITY_BY_ATTRIBUTE,
-    UPDATE_GROUP,
-    UPDATE_TYPE_DEFS,
-    UPDATE_USER,
     UPLOAD_IMAGE,
-    UPSERT_API_TOKEN,
 )
+from pyatlan.client.group import GroupClient
+from pyatlan.client.role import RoleClient
+from pyatlan.client.token import TokenClient
+from pyatlan.client.typedef import TypeDefClient
+from pyatlan.client.user import UserClient
 from pyatlan.client.workflow import WorkflowClient
 from pyatlan.errors import ERROR_CODE_FOR_HTTP_STATUS, AtlanError, ErrorCode
 from pyatlan.model.aggregation import Aggregations
-from pyatlan.model.api_tokens import ApiToken, ApiTokenRequest, ApiTokenResponse
+from pyatlan.model.api_tokens import ApiToken, ApiTokenResponse
 from pyatlan.model.assets import (
     Asset,
     AtlasGlossary,
@@ -110,13 +94,7 @@ from pyatlan.model.enums import (
     EntityStatus,
     LineageDirection,
 )
-from pyatlan.model.group import (
-    AtlanGroup,
-    CreateGroupRequest,
-    CreateGroupResponse,
-    GroupResponse,
-    RemoveFromGroupRequest,
-)
+from pyatlan.model.group import AtlanGroup, CreateGroupResponse, GroupResponse
 from pyatlan.model.lineage import LineageListRequest, LineageRequest, LineageResponse
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
@@ -130,21 +108,8 @@ from pyatlan.model.search import (
     with_active_glossary,
     with_active_term,
 )
-from pyatlan.model.typedef import (
-    AtlanTagDef,
-    CustomMetadataDef,
-    EnumDef,
-    TypeDef,
-    TypeDefResponse,
-)
-from pyatlan.model.user import (
-    AddToGroupsRequest,
-    AtlanUser,
-    ChangeRoleRequest,
-    CreateUserRequest,
-    UserMinimalResponse,
-    UserResponse,
-)
+from pyatlan.model.typedef import TypeDef, TypeDefResponse
+from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import (
     API,
@@ -205,59 +170,6 @@ def get_session():
     return session
 
 
-def _build_typedef_request(typedef: TypeDef) -> TypeDefResponse:
-    if isinstance(typedef, AtlanTagDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[typedef],
-            enum_defs=[],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[],
-        )
-    elif isinstance(typedef, CustomMetadataDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[],
-            enum_defs=[],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[typedef],
-        )
-    elif isinstance(typedef, EnumDef):
-        # Set up the request payload...
-        payload = TypeDefResponse(
-            atlan_tag_defs=[],
-            enum_defs=[typedef],
-            struct_defs=[],
-            entity_defs=[],
-            relationship_defs=[],
-            custom_metadata_defs=[],
-        )
-    else:
-        raise ErrorCode.UNABLE_TO_UPDATE_TYPEDEF_CATEGORY.exception_with_parameters(
-            typedef.category.value
-        )
-    return payload
-
-
-def _refresh_caches(typedef: TypeDef) -> None:
-    if isinstance(typedef, AtlanTagDef):
-        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-        AtlanTagCache.refresh_cache()
-    if isinstance(typedef, CustomMetadataDef):
-        from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-        CustomMetadataCache.refresh_cache()
-    if isinstance(typedef, EnumDef):
-        from pyatlan.cache.enum_cache import EnumCache
-
-        EnumCache.refresh_cache()
-
-
 class AtlanClient(BaseSettings):
     _default_client: "ClassVar[Optional[AtlanClient]]" = None
     base_url: HttpUrl
@@ -266,6 +178,11 @@ class AtlanClient(BaseSettings):
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
+    _group_client: Optional[GroupClient] = PrivateAttr(default=None)
+    _role_client: Optional[RoleClient] = PrivateAttr(default=None)
+    _typedef_client: Optional[TypeDefClient] = PrivateAttr(default=None)
+    _token_client: Optional[TokenClient] = PrivateAttr(default=None)
+    _user_client: Optional[UserClient] = PrivateAttr(default=None)
 
     class Config:
         env_prefix = "atlan_"
@@ -484,6 +401,36 @@ class AtlanClient(BaseSettings):
             self._workflow_client = WorkflowClient(client=self)
         return self._workflow_client
 
+    @property
+    def group(self) -> GroupClient:
+        if self._group_client is None:
+            self._group_client = GroupClient(client=self)
+        return self._group_client
+
+    @property
+    def role(self) -> RoleClient:
+        if self._role_client is None:
+            self._role_client = RoleClient(client=self)
+        return self._role_client
+
+    @property
+    def token(self) -> TokenClient:
+        if self._token_client is None:
+            self._token_client = TokenClient(client=self)
+        return self._token_client
+
+    @property
+    def typedef(self) -> TypeDefClient:
+        if self._typedef_client is None:
+            self._typedef_client = TypeDefClient(client=self)
+        return self._typedef_client
+
+    @property
+    def user(self) -> UserClient:
+        if self._user_client is None:
+            self._user_client = UserClient(client=self)
+        return self._user_client
+
     def _call_api_internal(self, api, path, params, binary_data=None):
         if binary_data:
             response = self._session.request(
@@ -609,85 +556,62 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> RoleResponse:
-        """
-        Retrieves a list of the roles defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which roles to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of roles that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-            "limit": str(limit),
-        }
-        if post_filter:
-            query_params["filter"] = post_filter
-        if sort:
-            query_params["sort"] = sort
-        raw_json = self._call_api(GET_ROLES.format_path_with_params(), query_params)
-        return RoleResponse(**raw_json)
+        """Deprecated - use role.get() instead."""
+        warn(
+            "This method is deprecated, please use 'role.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.role.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_roles(self) -> RoleResponse:
-        """
-        Retrieve all roles defined in Atlan.
-
-        :returns: a list of all the roles in Atlan
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_ROLES.format_path_with_params())
-        return RoleResponse(**raw_json)
+        """Deprecated - use self.role.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'self.role.get_all' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.role.get_all()
 
     def create_group(
         self,
         group: AtlanGroup,
         user_ids: Optional[list[str]] = None,
     ) -> CreateGroupResponse:
-        """
-        Create a new group.
-
-        :param group: details of the new group
-        :param user_ids: list of unique identifiers (GUIDs) of users to associate with the group
-        :returns: details of the created group and user association
-        :raises AtlanError: on any API communication issue
-        """
-        payload = CreateGroupRequest(group=group)
-        if user_ids:
-            payload.users = user_ids
-        raw_json = self._call_api(CREATE_GROUP, request_obj=payload, exclude_unset=True)
-        return CreateGroupResponse(**raw_json)
+        """Deprecated - use group.create() instead."""
+        warn(
+            "This method is deprecated, please use 'group.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.create(group=group, user_ids=user_ids)
 
     def update_group(
         self,
         group: AtlanGroup,
     ) -> None:
-        """
-        Update a group. Note that the provided 'group' must have its id populated.
-
-        :param group: details to update on the group
-        :raises AtlanError: on any API communication issue
-        """
-        self._call_api(
-            UPDATE_GROUP.format_path_with_params(group.id),
-            request_obj=group,
-            exclude_unset=True,
+        """Deprecated - use group.update() instead."""
+        warn(
+            "This method is deprecated, please use 'group.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        return self.group.update(group=group)
 
     def purge_group(
         self,
         guid: str,
     ) -> None:
-        """
-        Delete a group.
-
-        :param guid: unique identifier (GUID) of the group to delete
-        :raises AtlanError: on any API communication issue
-        """
-        self._call_api(DELETE_GROUP.format_path({"group_guid": guid}))
+        """Deprecated - use group.purge() instead."""
+        warn(
+            "This method is deprecated, please use 'group.purge' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.group.purge(guid=guid)
 
     def get_groups(
         self,
@@ -697,211 +621,136 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> GroupResponse:
-        """
-        Retrieves a list of the groups defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which groups to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of groups that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        raw_json = self._call_api(GET_GROUPS.format_path_with_params(), query_params)
-        return GroupResponse(**raw_json)
+        """Deprecated - use group.get() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_groups(
         self,
         limit: int = 20,
     ) -> list[AtlanGroup]:
-        """
-        Retrieve all groups defined in Atlan.
-
-        :returns: a list of all the groups in Atlan
-        """
-        groups: list[AtlanGroup] = []
-        offset = 0
-        response: Optional[GroupResponse] = self.get_groups(
-            offset=offset, limit=limit, sort="createdAt"
+        """Deprecated - use group.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_all' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        while response:
-            if page := response.records:
-                groups.extend(page)
-                offset += limit
-                response = self.get_groups(offset=offset, limit=limit, sort="createdAt")
-            else:
-                response = None
-        return groups
+        return self.group.get_all(limit=limit)
 
     def get_group_by_name(
         self,
         alias: str,
         limit: int = 20,
     ) -> Optional[list[AtlanGroup]]:
-        """
-        Retrieve all groups with a name that contains the provided string.
-        (This could include a complete group name, in which case there should be at most
-        a single item in the returned list, or could be a partial group name to retrieve
-        all groups with that naming convention.)
-
-        :param alias: name (as it appears in the UI) on which to filter the groups
-        :param limit: maximum number of groups to retrieve
-        :returns: all groups whose name (in the UI) contains the provided string
-        """
-        if response := self.get_groups(
-            offset=0,
-            limit=limit,
-            post_filter='{"$and":[{"alias":{"$ilike":"%' + alias + '%"}}]}',
-        ):
-            return response.records
-        return None
+        """Deprecated - use group.get_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_by_name' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.get_by_name(alias=alias, limit=limit)
 
     def get_group_members(self, guid: str) -> UserResponse:
-        """
-        Retrieves the members (users) of a group.
-
-        :param guid: unique identifier (GUID) of the group from which to retrieve members
-        :returns: list of users that are members of the group
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_GROUP_MEMBERS.format_path({"group_guid": guid}))
-        return UserResponse(**raw_json)
+        """Deprecated - use group.get_members() instead."""
+        warn(
+            "This method is deprecated, please use 'group.get_members' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.group.get_members(guid=guid)
 
     def remove_users_from_group(self, guid: str, user_ids=list[str]) -> None:
-        """
-        Remove one or more users from a group.
-
-        :param guid: unique identifier (GUID) of the group from which to remove users
-        :param user_ids: unique identifiers (GUIDs) of the users to remove from the group
-        :raises AtlanError: on any API communication issue
-        """
-        rfgr = RemoveFromGroupRequest(users=user_ids)
-        self._call_api(
-            REMOVE_USERS_FROM_GROUP.format_path({"group_guid": guid}),
-            request_obj=rfgr,
-            exclude_unset=True,
+        """Deprecated - use group.remove_users() instead."""
+        warn(
+            "This method is deprecated, please use 'group.remove_users' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        self.group.remove_users(guid=guid, user_ids=user_ids)
 
     def create_users(
         self,
         users: list[AtlanUser],
     ) -> None:
-        """
-        Create one or more new users.
-
-        :param users: the details of the new users
-        :raises AtlanError: on any API communication issue
-        """
-        from pyatlan.cache.role_cache import RoleCache
-
-        cur = CreateUserRequest(users=[])
-        for user in users:
-            role_name = str(user.workspace_role)
-            if role_id := RoleCache.get_id_for_name(role_name):
-                to_create = CreateUserRequest.CreateUser(
-                    email=user.email,
-                    role_name=role_name,
-                    role_id=role_id,
-                )
-                cur.users.append(to_create)
-        self._call_api(CREATE_USERS, request_obj=cur, exclude_unset=True)
+        """Deprecated - use user.create() instead."""
+        warn(
+            "This method is deprecated, please use 'user.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.user.create(users=users)
 
     def update_user(
         self,
         guid: str,
         user: AtlanUser,
     ) -> UserMinimalResponse:
-        """
-        Update a user.
-        Note: you can only update users that have already signed up to Atlan. Users that are
-        only invited (but have not yet logged in) cannot be updated.
-
-        :param guid: unique identifier (GUID) of the user to update
-        :param user: details to update on the user
-        :returns: basic details about the updated user
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(
-            UPDATE_USER.format_path_with_params(guid),
-            request_obj=user,
-            exclude_unset=True,
+        """Deprecated - use user.update() instead."""
+        warn(
+            "This method is deprecated, please use 'user.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return UserMinimalResponse(**raw_json)
+        return self.user.update(guid=guid, user=user)
 
     def get_groups_for_user(
         self,
         guid: str,
     ) -> GroupResponse:
-        """
-        Retrieve the groups this user belongs to.
-
-        :param guid: unique identifier (GUID) of the user
-        :returns: groups this user belongs to
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_USER_GROUPS.format_path({"user_guid": guid}))
-        return GroupResponse(**raw_json)
+        """Deprecated - use user.get_groups() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get_groups' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.get_groups(guid=guid)
 
     def add_user_to_groups(
         self,
         guid: str,
         group_ids: list[str],
     ) -> None:
-        """
-        Add a user to one or more groups.
-
-        :param guid: unique identifier (GUID) of the user to add into groups
-        :param group_ids: unique identifiers (GUIDs) of the groups to add the user into
-        :raises AtlanError: on any API communication issue
-        """
-        atgr = AddToGroupsRequest(groups=group_ids)
-        self._call_api(
-            ADD_USER_TO_GROUPS.format_path({"user_guid": guid}),
-            request_obj=atgr,
-            exclude_unset=True,
+        """Deprecated - use user.add_to_groups() instead."""
+        warn(
+            "This method is deprecated, please use 'user.add_to_groups' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        self.user.add_to_groups(guid=guid, group_ids=group_ids)
 
     def change_user_role(
         self,
         guid: str,
         role_id: str,
     ) -> None:
-        """
-        Change the role of a user.
-
-        :param guid: unique identifier (GUID) of the user whose role should be changed
-        :param role_id: unique identifier (GUID) of the role to move the user into
-        :raises AtlanError: on any API communication issue
-        """
-        crr = ChangeRoleRequest(role_id=role_id)
-        self._call_api(
-            CHANGE_USER_ROLE.format_path({"user_guid": guid}),
-            request_obj=crr,
-            exclude_unset=True,
+        """Deprecated - use user.change_role() instead."""
+        warn(
+            "This method is deprecated, please use 'user.change_role' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        self.user.change_role(guid=guid, role_id=role_id)
 
     def get_current_user(
         self,
     ) -> UserMinimalResponse:
-        """
-        Retrieve the current user (representing the API token).
-
-        :returns: basic details about the current user (API token)
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_CURRENT_USER)
-        return UserMinimalResponse(**raw_json)
+        """Deprecated - use user.get_current() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get_current' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.get_current()
 
     def get_users(
         self,
@@ -911,112 +760,51 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> UserResponse:
-        """
-        Retrieves a list of users defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which users to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of users that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, Any] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        query_params["maxLoginEvents"] = 1
-        query_params["columns"] = [
-            "firstName",
-            "lastName",
-            "username",
-            "id",
-            "email",
-            "emailVerified",
-            "enabled",
-            "roles",
-            "defaultRoles",
-            "groupCount",
-            "attributes",
-            "personas",
-            "createdTimestamp",
-            "lastLoginTime",
-            "loginEvents",
-            "isLocked",
-        ]
-        raw_json = self._call_api(GET_USERS.format_path_with_params(), query_params)
-        return UserResponse(**raw_json)
+        """Deprecated - use user.get() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_all_users(
         self,
         limit: int = 20,
     ) -> list[AtlanUser]:
-        """
-        Retrieve all users defined in Atlan.
-
-        :returns: a list of all the users in Atlan
-        """
-        users: list[AtlanUser] = []
-        offset = 0
-        response: Optional[UserResponse] = self.get_users(
-            offset=offset, limit=limit, sort="username"
+        """Deprecated - use user.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get_all' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        while response:
-            if page := response.records:
-                users.extend(page)
-                offset += limit
-                response = self.get_users(offset=offset, limit=limit, sort="username")
-            else:
-                response = None
-        return users
+        return self.user.get_all(limit=limit)
 
     def get_users_by_email(
         self,
         email: str,
         limit: int = 20,
     ) -> Optional[list[AtlanUser]]:
-        """
-        Retrieves all users with email addresses that contain the provided email.
-        (This could include a complete email address, in which case there should be at
-        most a single item in the returned list, or could be a partial email address
-        such as "@example.com" to retrieve all users with that domain in their email
-        address.)
-
-        :param email: on which to filter the users
-        :param limit: maximum number of users to retrieve
-        :returns: all users whose email addresses contain the provided string
-        """
-        if response := self.get_users(
-            offset=0,
-            limit=limit,
-            post_filter='{"email":{"$ilike":"%' + email + '%"}}',
-        ):
-            return response.records
-        return None
+        """Deprecated - use user.get_by_email() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get_by_email' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.get_by_email(email=email, limit=limit)
 
     def get_user_by_username(self, username: str) -> Optional[AtlanUser]:
-        """
-        Retrieves a user based on the username. (This attempts an exact match on username
-        rather than a contains search.)
-
-        :param username: the username by which to find the user
-        :returns: the user with that username
-        """
-        if response := self.get_users(
-            offset=0,
-            limit=5,
-            post_filter='{"username":"' + username + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        """Deprecated - use user.get_by_username() instead."""
+        warn(
+            "This method is deprecated, please use 'user.get_by_username' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.get_by_username(username=username)
 
     def parse_query(self, query: QueryParserRequest) -> Optional[ParsedQuery]:
         """
@@ -1485,119 +1273,51 @@ class AtlanClient(BaseSettings):
         return aggregations
 
     def get_all_typedefs(self) -> TypeDefResponse:
-        """
-        Retrieves a list of all the type definitions in Atlan.
-
-        :returns: a list of all the type definitions in Atlan
-        :raises AtlanError: on any API communication issue
-        """
-        raw_json = self._call_api(GET_ALL_TYPE_DEFS)
-        return TypeDefResponse(**raw_json)
+        """Deprecated - use typedef.get_all() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.get_all' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.typedef.get_all()
 
     def get_typedefs(
         self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
     ) -> TypeDefResponse:
-        """
-        Retrieves a list of the type definitions in Atlan.
-
-        :param type_category: category of type definitions to retrieve
-        :returns: the requested list of type definitions
-        :raises AtlanError: on any API communication issue
-        """
-        categories: list[str] = []
-        if isinstance(type_category, list):
-            categories.extend(map(lambda x: x.value, type_category))
-        else:
-            categories.append(type_category.value)
-        query_params = {"type": categories}
-        raw_json = self._call_api(
-            GET_ALL_TYPE_DEFS.format_path_with_params(),
-            query_params,
+        """Deprecated - use typedef.get() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return TypeDefResponse(**raw_json)
+        return self.typedef.get(type_category=type_category)
 
     def create_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        """
-        Create a new type definition in Atlan.
-        Note: only custom metadata, enumerations, and Atlan tag type definitions are currently
-        supported. Furthermore, if any of these are created their respective cache will be
-        force-refreshed.
-
-        :param typedef: type definition to create
-        :returns: the resulting type definition that was created
-        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
-        :raises AtlanError: on any API communication issue
-        """
-        payload = _build_typedef_request(typedef)
-        raw_json = self._call_api(
-            CREATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        """Deprecated - use typedef.create() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        _refresh_caches(typedef)
-        return TypeDefResponse(**raw_json)
+        return self.typedef.create(typedef=typedef)
 
     def update_typedef(self, typedef: TypeDef) -> TypeDefResponse:
-        """
-        Update an existing type definition in Atlan.
-        Note: only custom metadata and Atlan tag type definitions are currently supported.
-        Furthermore, if any of these are updated their respective cache will be force-refreshed.
-
-        :param typedef: type definition to update
-        :returns: the resulting type definition that was updated
-        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types
-        :raises AtlanError: on any API communication issue
-        """
-        payload = _build_typedef_request(typedef)
-        raw_json = self._call_api(
-            UPDATE_TYPE_DEFS, request_obj=payload, exclude_unset=True
+        """Deprecated - use typedef.update() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        _refresh_caches(typedef)
-        return TypeDefResponse(**raw_json)
+        return self.typedef.update(typedef=typedef)
 
     def purge_typedef(self, name: str, typedef_type: type) -> None:
-        """
-        Delete the type definition.
-        Furthermore, if an Atlan tag, enumeration or custom metadata is deleted their
-        respective cache will be force-refreshed.
-
-        :param name: internal hashed-string name of the type definition
-        :param typedef_type: type of the type definition that is being deleted
-        :raises InvalidRequestError: if the typedef you are trying to delete is not one of the allowed types
-        :raises NotFoundError: if the typedef you are trying to delete cannot be found
-        :raises AtlanError: on any API communication issue
-        """
-        if typedef_type == CustomMetadataDef:
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            internal_name = CustomMetadataCache.get_id_for_name(name)
-        elif typedef_type == EnumDef:
-            internal_name = name
-        elif typedef_type == AtlanTagDef:
-            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-            internal_name = str(AtlanTagCache.get_id_for_name(name))
-        else:
-            raise ErrorCode.UNABLE_TO_PURGE_TYPEDEF_OF_TYPE.exception_with_parameters(
-                typedef_type
-            )
-        if internal_name:
-            self._call_api(
-                DELETE_TYPE_DEF_BY_NAME.format_path_with_params(internal_name)
-            )
-        else:
-            raise ErrorCode.TYPEDEF_NOT_FOUND_BY_NAME.exception_with_parameters(name)
-
-        if typedef_type == CustomMetadataDef:
-            from pyatlan.cache.custom_metadata_cache import CustomMetadataCache
-
-            CustomMetadataCache.refresh_cache()
-        elif typedef_type == EnumDef:
-            from pyatlan.cache.enum_cache import EnumCache
-
-            EnumCache.refresh_cache()
-        elif typedef_type == AtlanTagDef:
-            from pyatlan.cache.atlan_tag_cache import AtlanTagCache
-
-            AtlanTagCache.refresh_cache()
+        """Deprecated - use typedef.purge() instead."""
+        warn(
+            "This method is deprecated, please use 'typedef.purge' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.typedef.purge(name=name, typedef_type=typedef_type)
 
     @validate_arguments()
     def add_atlan_tags(
@@ -2065,93 +1785,28 @@ class AtlanClient(BaseSettings):
     def add_api_token_as_admin(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:
-        """
-        Add the API token configured for the default client as an admin to the asset with the provided GUID.
-        This is primarily useful for connections, to allow the API token to manage policies for the connection, and
-        for query collections, to allow the API token to manage the queries in a collection or the collection itself.
-
-        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
-        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
-                                    NOT an API token
-        :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found
-        """
-        from pyatlan.model.assets.asset00 import Asset
-        from pyatlan.model.fluent_search import FluentSearch
-
-        token_user = str(self.get_current_user().username)
-        if existing_client := self.get_default_client():
-            tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
-            AtlanClient.set_default_client(tmp)
-            # Look for the asset as the impersonated user, ensuring we include the admin users
-            # in the results (so we avoid clobbering any existing admin users)
-            request = (
-                FluentSearch()
-                .where(Asset.GUID.eq(asset_guid))
-                .include_on_results(Asset.ADMIN_USERS)
-                .page_size(1)
-            ).to_request()
-            results = tmp.search(request)
-            if results.current_page():
-                asset = results.current_page()[0]
-                existing_admins = asset.admin_users or set()
-                existing_admins.add(token_user)
-                to_update = asset.trim_to_required()
-                to_update.admin_users = existing_admins
-                response = tmp.save(to_update)
-            else:
-                AtlanClient.set_default_client(existing_client)
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
-                    asset_guid
-                )
-            AtlanClient.set_default_client(existing_client)
-            return response
-
-        return None
+        """Deprecated - use user.add_as_admin() instead."""
+        warn(
+            "This method is deprecated, please use 'user.add_as_admin' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.add_as_admin(
+            asset_guid=asset_guid, impersonation_token=impersonation_token
+        )
 
     def add_api_token_as_viewer(
         self, asset_guid: str, impersonation_token: str
     ) -> Optional[AssetMutationResponse]:
-        """
-        Add the API token configured for the default client as a viewer to the asset with the provided GUID.
-        This is primarily useful for query collections, to allow the API token to view or run queries within the
-        collection, but not make any changes to them.
-
-        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin
-        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,
-                                    NOT an API token
-        :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found
-        """
-        from pyatlan.model.assets.asset00 import Asset
-        from pyatlan.model.fluent_search import FluentSearch
-
-        token_user = str(self.get_current_user().username)
-        if existing_client := self.get_default_client():
-            tmp = AtlanClient(base_url=self.base_url, api_key=impersonation_token)
-            AtlanClient.set_default_client(tmp)
-            # Look for the asset as the impersonated user, ensuring we include the admin users
-            # in the results (so we avoid clobbering any existing admin users)
-            request = (
-                FluentSearch()
-                .where(Asset.GUID.eq(asset_guid))
-                .include_on_results(Asset.VIEWER_USERS)
-                .page_size(1)
-            ).to_request()
-            results = tmp.search(request)
-            if results.current_page():
-                asset = results.current_page()[0]
-                existing_viewers = asset.viewer_users or set()
-                existing_viewers.add(token_user)
-                to_update = asset.trim_to_required()
-                to_update.viewer_users = existing_viewers
-                response = tmp.save(to_update)
-            else:
-                AtlanClient.set_default_client(existing_client)
-                raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
-                    asset_guid
-                )
-            AtlanClient.set_default_client(existing_client)
-            return response
-        return None
+        """Deprecated - use user.add_as_viewer() instead."""
+        warn(
+            "This method is deprecated, please use 'user.add_as_viewer' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.user.add_as_viewer(
+            asset_guid=asset_guid, impersonation_token=impersonation_token
+        )
 
     def get_api_tokens(
         self,
@@ -2161,65 +1816,33 @@ class AtlanClient(BaseSettings):
         count: bool = True,
         offset: int = 0,
     ) -> ApiTokenResponse:
-        """
-        Retrieves a list of API tokens defined in Atlan.
-
-        :param limit: maximum number of results to be returned
-        :param post_filter: which API tokens to retrieve
-        :param sort: property by which to sort the results
-        :param count: whether to return the total number of records (True) or not (False)
-        :param offset: starting point for results to return, for paging
-        :returns: a list of API tokens that match the provided criteria
-        :raises AtlanError: on any API communication issue
-        """
-        query_params: dict[str, str] = {
-            "count": str(count),
-            "offset": str(offset),
-        }
-        if limit is not None:
-            query_params["limit"] = str(limit)
-        if post_filter is not None:
-            query_params["filter"] = post_filter
-        if sort is not None:
-            query_params["sort"] = sort
-        raw_json = self._call_api(
-            GET_API_TOKENS.format_path_with_params(), query_params
+        """Deprecated - use token.get() instead."""
+        warn(
+            "This method is deprecated, please use 'token.get' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return ApiTokenResponse(**raw_json)
+        return self.token.get(
+            limit=limit, post_filter=post_filter, sort=sort, count=count, offset=offset
+        )
 
     def get_api_token_by_name(self, display_name: str) -> Optional[ApiToken]:
-        """
-        Retrieves the API token with a name that exactly matches the provided string.
-
-        :param display_name: name (as it appears in the UI) by which to retrieve the API token
-        :returns: the API token whose name (in the UI) matches the provided string, or None if there is none
-        """
-        if response := self.get_api_tokens(
-            offset=0,
-            limit=5,
-            post_filter='{"displayName":"' + display_name + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        """Deprecated - use token.get_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'token.get_by_name' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.get_by_name(display_name=display_name)
 
     def get_api_token_by_id(self, client_id: str) -> Optional[ApiToken]:
-        """
-        Retrieves the API token with a client ID that exactly matches the provided string.
-
-        :param client_id: unique client identifier by which to retrieve the API token
-        :returns: the API token whose clientId matches the provided string, or None if there is none
-        """
-        if client_id and client_id.startswith(SERVICE_ACCOUNT_):
-            client_id = client_id[len(SERVICE_ACCOUNT_) :]  # noqa: E203
-        if response := self.get_api_tokens(
-            offset=0,
-            limit=5,
-            post_filter='{"clientId":"' + client_id + '"}',
-        ):
-            if response.records and len(response.records) >= 1:
-                return response.records[0]
-        return None
+        """Deprecated - use token.get_by_id() instead."""
+        warn(
+            "This method is deprecated, please use 'token.get_by_id' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.get_by_id(client_id=client_id)
 
     def create_api_token(
         self,
@@ -2228,25 +1851,18 @@ class AtlanClient(BaseSettings):
         personas: Optional[set[str]] = None,
         validity_seconds: int = -1,
     ) -> ApiToken:
-        """
-        Create a new API token with the provided settings.
-
-        :param display_name: human-readable name for the API token
-        :param description: optional explanation of the API token
-        :param personas: qualified_names of personas that should  be linked to the token
-        :param validity_seconds: time in seconds after which the token should expire (negative numbers are treated as
-                                 infinite)
-        :returns: the created API token
-        :raises AtlanError: on any API communication issue
-        """
-        request = ApiTokenRequest(
+        """Deprecated - use token.create() instead."""
+        warn(
+            "This method is deprecated, please use 'token.create' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.create(
             display_name=display_name,
             description=description,
-            persona_qualified_names=personas or set(),
+            personas=personas,
             validity_seconds=validity_seconds,
         )
-        raw_json = self._call_api(UPSERT_API_TOKEN, request_obj=request)
-        return ApiToken(**raw_json)
 
     def update_api_token(
         self,
@@ -2255,36 +1871,27 @@ class AtlanClient(BaseSettings):
         description: str = "",
         personas: Optional[set[str]] = None,
     ) -> ApiToken:
-        """
-        Update an existing API token with the provided settings.
-
-        :param guid: unique identifier (GUID) of the API token
-        :param display_name: human-readable name for the API token
-        :param description: optional explanation of the API token
-        :param personas: qualified_names of personas that should  be linked to the token, note that you MUST
-                         provide the complete list on any update (any not included in the list will be removed,
-                         so if you do not specify any personas then ALL personas will be unlinked from the API token)
-        :returns: the created API token
-        :raises AtlanError: on any API communication issue
-        """
-        request = ApiTokenRequest(
+        """Deprecated - use token.update() instead."""
+        warn(
+            "This method is deprecated, please use 'token.update' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.token.update(
+            guid=guid,
             display_name=display_name,
             description=description,
-            persona_qualified_names=personas or set(),
+            personas=personas,
         )
-        raw_json = self._call_api(
-            UPSERT_API_TOKEN.format_path_with_params(guid), request_obj=request
-        )
-        return ApiToken(**raw_json)
 
     def purge_api_token(self, guid: str) -> None:
-        """
-        Delete (purge) the specified API token.
-
-        :param guid: unique identifier (GUID) of the API token to delete
-        :raises AtlanError: on any API communication issue
-        """
-        self._call_api(DELETE_API_TOKEN.format_path_with_params(guid))
+        """Deprecated - use token.purge() instead."""
+        warn(
+            "This method is deprecated, please use 'token.purge' instead, which offers identical functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.token.purge(guid=guid)
 
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
@@ -2565,6 +2172,28 @@ class AtlanClient(BaseSettings):
             glossary_qualified_name=glossary.qualified_name,
             attributes=attributes,
         )
+
+
+@contextlib.contextmanager
+def client_connection(
+    base_url: Optional[HttpUrl] = None, api_key: Optional[str] = None
+) -> Generator[AtlanClient, None, None]:
+    """
+    Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will
+    be set to the new client. AtlanClient.default_client will be reset to the current default_client before
+    exiting the context.
+    :param base_url: the base_url to be used for the new connection. If not specified the current value will be used
+    :param api_key: the api_key to be used for the new connection. If not specified the current value will be used
+    """
+    current_client = AtlanClient.get_default_client()
+    tmp_client = AtlanClient(
+        base_url=base_url or current_client.base_url,
+        api_key=api_key or current_client.api_key,
+    )
+    try:
+        yield tmp_client
+    finally:
+        AtlanClient.set_default_client(current_client)
 
 
 from pyatlan.model.keycloak_events import (  # noqa: E402

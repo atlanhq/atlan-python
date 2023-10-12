@@ -2,13 +2,10 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
+from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.model.typedef import (
-    AttributeDef,
-    CustomMetadataDef,
-    TypeDefResponseProvider,
-)
+from pyatlan.model.typedef import AttributeDef, CustomMetadataDef
 
 
 class CustomMetadataCache:
@@ -26,7 +23,7 @@ class CustomMetadataCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = CustomMetadataCache(provider=client)
+            cls.caches[cache_key] = CustomMetadataCache(typedef_client=client.typedef)
         return cls.caches[cache_key]
 
     @classmethod
@@ -160,8 +157,8 @@ class CustomMetadataCache:
         """
         return cls.get_cache()._get_attribute_def(attr_id=attr_id)
 
-    def __init__(self, provider: TypeDefResponseProvider):
-        self.provider = provider
+    def __init__(self, typedef_client: TypeDefClient):
+        self.typedef_client: TypeDefClient = typedef_client
         self.cache_by_id: dict[str, CustomMetadataDef] = {}
         self.attr_cache_by_id: dict[str, AttributeDef] = {}
         self.map_id_to_name: dict[str, str] = {}
@@ -177,7 +174,7 @@ class CustomMetadataCache:
         structures from Atlan.
         :raises LogicError: if duplicate custom attributes are detected
         """
-        response = self.provider.get_typedefs(
+        response = self.typedef_client.get(
             type_category=[AtlanTypeCategory.CUSTOM_METADATA, AtlanTypeCategory.STRUCT]
         )
         if not response or not response.struct_defs:

@@ -2,9 +2,10 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from typing import Optional
 
+from pyatlan.client.typedef import TypeDefClient
 from pyatlan.errors import ErrorCode
 from pyatlan.model.enums import AtlanTypeCategory
-from pyatlan.model.typedef import AtlanTagDef, TypeDefResponseProvider
+from pyatlan.model.typedef import AtlanTagDef
 
 
 class AtlanTagCache:
@@ -22,7 +23,7 @@ class AtlanTagCache:
         client = AtlanClient.get_default_client()
         cache_key = client.cache_key
         if cache_key not in cls.caches:
-            cls.caches[cache_key] = AtlanTagCache(provider=client)
+            cls.caches[cache_key] = AtlanTagCache(typedef_client=client.typedef)
         return cls.caches[cache_key]
 
     @classmethod
@@ -52,8 +53,8 @@ class AtlanTagCache:
         """
         return cls.get_cache()._get_name_for_id(idstr=idstr)
 
-    def __init__(self, provider: TypeDefResponseProvider):
-        self.provider = provider
+    def __init__(self, typedef_client: TypeDefClient):
+        self.typdef_client: TypeDefClient = typedef_client
         self.cache_by_id: dict[str, AtlanTagDef] = {}
         self.map_id_to_name: dict[str, str] = {}
         self.map_name_to_id: dict[str, str] = {}
@@ -64,7 +65,7 @@ class AtlanTagCache:
         """
         Refreshes the cache of Atlan tags by requesting the full set of Atlan tags from Atlan.
         """
-        response = self.provider.get_typedefs(
+        response = self.typdef_client.get(
             type_category=[AtlanTypeCategory.CLASSIFICATION, AtlanTypeCategory.STRUCT]
         )
         if not response or not response.struct_defs:

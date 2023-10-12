@@ -16,7 +16,7 @@ class ServerError(Exception):
 
 def create_typedef_file():
     client = AtlanClient()
-    type_defs = client.get_all_typedefs()
+    type_defs = client.typedef.get_all()
     if len(type_defs.entity_defs) == 0:
         raise ServerError("No entity definitions were returned from the server.")
     with TYPE_DEF_FILE.open("w") as output_file:

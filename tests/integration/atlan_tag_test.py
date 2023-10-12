@@ -42,11 +42,11 @@ def make_atlan_tag(
         stop=stop_after_attempt(3),
     )
     def _wait_for_successful_purge(name: str):
-        client.purge_typedef(name, typedef_type=AtlanTagDef)
+        client.typedef.purge(name, typedef_type=AtlanTagDef)
 
     def _make_atlan_tag(name: str) -> AtlanTagDef:
         atlan_tag_def = AtlanTagDef.create(name=name, color=AtlanTagColor.GREEN)
-        r = client.create_typedef(atlan_tag_def)
+        r = client.typedef.create(atlan_tag_def)
         c = r.atlan_tag_defs[0]
         created_names.append(c.display_name)
         return c
@@ -78,8 +78,8 @@ def atlan_tag_with_image(
     image: AtlanImage,
 ) -> Generator[AtlanTagDef, None, None]:
     cls = AtlanTagDef.create(name=CLS_IMAGE, color=AtlanTagColor.YELLOW, image=image)
-    yield client.create_typedef(cls).atlan_tag_defs[0]
-    client.purge_typedef(CLS_IMAGE, typedef_type=AtlanTagDef)
+    yield client.typedef.create(cls).atlan_tag_defs[0]
+    client.typedef.purge(CLS_IMAGE, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")
@@ -91,8 +91,8 @@ def atlan_tag_with_icon(
         color=AtlanTagColor.YELLOW,
         icon=AtlanIcon.BOOK_BOOKMARK,
     )
-    yield client.create_typedef(cls).atlan_tag_defs[0]
-    client.purge_typedef(CLS_ICON, typedef_type=AtlanTagDef)
+    yield client.typedef.create(cls).atlan_tag_defs[0]
+    client.typedef.purge(CLS_ICON, typedef_type=AtlanTagDef)
 
 
 @pytest.fixture(scope="module")
@@ -103,8 +103,8 @@ def atlan_tag_with_emoji(
         name=CLS_EMOJI,
         emoji="👍",
     )
-    yield client.create_typedef(cls).atlan_tag_defs[0]
-    client.purge_typedef(CLS_EMOJI, typedef_type=AtlanTagDef)
+    yield client.typedef.create(cls).atlan_tag_defs[0]
+    client.typedef.purge(CLS_EMOJI, typedef_type=AtlanTagDef)
 
 
 def test_atlan_tag_with_image(atlan_tag_with_image):

@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 from __future__ import annotations
 
-from typing import Any, List, Optional, Protocol
+from typing import Any, Optional, Protocol
 
 from pydantic import Field
 
@@ -12,21 +12,21 @@ from pyatlan.model.core import AtlanObject
 
 class AtlanUser(AtlanObject):
     class Attributes(AtlanObject):
-        designation: Optional[List[str]] = Field(
+        designation: Optional[list[str]] = Field(
             description="Designation for the user, such as an honorific or title."
         )
-        skills: Optional[List[str]] = Field(description="Skills the user possesses.")
-        slack: Optional[List[str]] = Field(
+        skills: Optional[list[str]] = Field(description="Skills the user possesses.")
+        slack: Optional[list[str]] = Field(
             description="Unique Slack member identifier."
         )
-        jira: Optional[List[str]] = Field(description="Unique JIRA user identifier.")
-        invited_at: Optional[List[str]] = Field(
+        jira: Optional[list[str]] = Field(description="Unique JIRA user identifier.")
+        invited_at: Optional[list[str]] = Field(
             description="Time at which the user was invited (as a formatted string)."
         )
-        invited_by: Optional[List[str]] = Field(
+        invited_by: Optional[list[str]] = Field(
             description="User who invited this user."
         )
-        invited_by_name: Optional[List[str]] = Field(description="TBC")
+        invited_by_name: Optional[list[str]] = Field(description="TBC")
 
     class Persona(AtlanObject):
         id: Optional[str] = Field(
@@ -108,19 +108,19 @@ class AtlanUser(AtlanObject):
     group_count: Optional[int] = Field(
         description="Number of groups to which the user belongs."
     )
-    default_roles: Optional[List[str]] = Field(description="TBC")
-    roles: Optional[List[str]] = Field(description="TBC")
+    default_roles: Optional[list[str]] = Field(description="TBC")
+    roles: Optional[list[str]] = Field(description="TBC")
     decentralized_roles: Optional[Any] = Field(description="TBC")
-    personas: Optional[List[AtlanUser.Persona]] = Field(
+    personas: Optional[list[AtlanUser.Persona]] = Field(
         description="Personas the user is associated with."
     )
-    purposes: Optional[List[Any]] = Field(
+    purposes: Optional[list[Any]] = Field(
         description="Purposes the user is associated with."
     )
-    admin_events: Optional[List[AtlanUser.AdminEvent]] = Field(
+    admin_events: Optional[list[AtlanUser.AdminEvent]] = Field(
         description="List of administration-related events for this user."
     )
-    login_events: Optional[List[AtlanUser.LoginEvent]] = Field(
+    login_events: Optional[list[AtlanUser.LoginEvent]] = Field(
         description="List of login-related events for this user."
     )
 
@@ -184,7 +184,7 @@ class UserResponse(AtlanObject):
     filter_record: Optional[int] = Field(
         description="Number of users in the filtered response.",
     )
-    records: Optional[List[AtlanUser]] = Field(
+    records: Optional[list[AtlanUser]] = Field(
         description="Details of each user included in the response."
     )
 
@@ -197,13 +197,13 @@ class CreateUserRequest(AtlanObject):
             description="Unique identifier (GUID) of the workspace role for the user."
         )
 
-    users: List[CreateUserRequest.CreateUser] = Field(
+    users: list[CreateUserRequest.CreateUser] = Field(
         description="List of users to create."
     )
 
 
 class AddToGroupsRequest(AtlanObject):
-    groups: Optional[List[str]] = Field(
+    groups: Optional[list[str]] = Field(
         description="List of groups (their GUIDs) to add the user to."
     )
 
