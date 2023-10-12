@@ -524,41 +524,13 @@ iteratively page through results, without needing to track or re-run the origina
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.add_api_token_as_admin">
 <span class="sig-name descname"><span class="pre">add_api_token_as_admin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">impersonation_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.add_api_token_as_admin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.add_api_token_as_admin" title="Link to this definition">#</a></dt>
-<dd><p>Add the API token configured for the default client as an admin to the asset with the provided GUID.
-This is primarily useful for connections, to allow the API token to manage policies for the connection, and
-for query collections, to allow the API token to manage the queries in a collection or the collection itself.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_guid</strong> – unique identifier (GUID) of the asset to which we should add this API token as an admin</p></li>
-<li><p><strong>impersonation_token</strong> – a bearer token for an actual user who is already an admin for the asset,
-NOT an API token</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset to which to add the API token as an admin cannot be found</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.add_as_admin() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.add_api_token_as_viewer">
 <span class="sig-name descname"><span class="pre">add_api_token_as_viewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">impersonation_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.add_api_token_as_viewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.add_api_token_as_viewer" title="Link to this definition">#</a></dt>
-<dd><p>Add the API token configured for the default client as a viewer to the asset with the provided GUID.
-This is primarily useful for query collections, to allow the API token to view or run queries within the
-collection, but not make any changes to them.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_guid</strong> – unique identifier (GUID) of the asset to which we should add this API token as an admin</p></li>
-<li><p><strong>impersonation_token</strong> – a bearer token for an actual user who is already an admin for the asset,
-NOT an API token</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset to which to add the API token as a viewer cannot be found</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.add_as_viewer() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -589,18 +561,7 @@ through lineage (False)</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.add_user_to_groups">
 <span class="sig-name descname"><span class="pre">add_user_to_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.add_user_to_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.add_user_to_groups" title="Link to this definition">#</a></dt>
-<dd><p>Add a user to one or more groups.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the user to add into groups</p></li>
-<li><p><strong>group_ids</strong> – unique identifiers (GUIDs) of the groups to add the user into</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.add_to_groups() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -628,18 +589,7 @@ supplied, but both are not necessary.)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.change_user_role">
 <span class="sig-name descname"><span class="pre">change_user_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">role_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.change_user_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.change_user_role" title="Link to this definition">#</a></dt>
-<dd><p>Change the role of a user.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the user whose role should be changed</p></li>
-<li><p><strong>role_id</strong> – unique identifier (GUID) of the role to move the user into</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.change_role() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -673,81 +623,25 @@ the new model: you should trust this data</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.create_api_token">
 <span class="sig-name descname"><span class="pre">create_api_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">personas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validity_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ApiToken</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.create_api_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.create_api_token" title="Link to this definition">#</a></dt>
-<dd><p>Create a new API token with the provided settings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>display_name</strong> – human-readable name for the API token</p></li>
-<li><p><strong>description</strong> – optional explanation of the API token</p></li>
-<li><p><strong>personas</strong> – qualified_names of personas that should  be linked to the token</p></li>
-<li><p><strong>validity_seconds</strong> – time in seconds after which the token should expire (negative numbers are treated as
-infinite)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the created API token</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use token.create() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.create_group">
 <span class="sig-name descname"><span class="pre">create_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/group.html#pyatlan.model.group.AtlanGroup" title="pyatlan.model.group.AtlanGroup"><span class="pre">AtlanGroup</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CreateGroupResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.create_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.create_group" title="Link to this definition">#</a></dt>
-<dd><p>Create a new group.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>group</strong> – details of the new group</p></li>
-<li><p><strong>user_ids</strong> – list of unique identifiers (GUIDs) of users to associate with the group</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the created group and user association</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.create() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.create_typedef">
 <span class="sig-name descname"><span class="pre">create_typedef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typedef</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/typedef.html#pyatlan.model.typedef.TypeDef" title="pyatlan.model.typedef.TypeDef"><span class="pre">TypeDef</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse" title="pyatlan.model.typedef.TypeDefResponse"><span class="pre">TypeDefResponse</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.create_typedef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.create_typedef" title="Link to this definition">#</a></dt>
-<dd><p>Create a new type definition in Atlan.
-Note: only custom metadata, enumerations, and Atlan tag type definitions are currently
-supported. Furthermore, if any of these are created their respective cache will be
-force-refreshed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>typedef</strong> – type definition to create</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the resulting type definition that was created</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if the typedef you are trying to create is not one of the allowed types</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use typedef.create() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.create_users">
 <span class="sig-name descname"><span class="pre">create_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">users</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="other_model/user.html#pyatlan.model.user.AtlanUser" title="pyatlan.model.user.AtlanUser"><span class="pre">AtlanUser</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.create_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.create_users" title="Link to this definition">#</a></dt>
-<dd><p>Create one or more new users.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>users</strong> – the details of the new users</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.create() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -974,102 +868,43 @@ term exists.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_all_groups">
 <span class="sig-name descname"><span class="pre">get_all_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="other_model/group.html#pyatlan.model.group.AtlanGroup" title="pyatlan.model.group.AtlanGroup"><span class="pre">AtlanGroup</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_all_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_all_groups" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve all groups defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a list of all the groups in Atlan</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.get_all() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_all_roles">
 <span class="sig-name descname"><span class="pre">get_all_roles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RoleResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_all_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_all_roles" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve all roles defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a list of all the roles in Atlan</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use self.role.get_all() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_all_typedefs">
 <span class="sig-name descname"><span class="pre">get_all_typedefs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse" title="pyatlan.model.typedef.TypeDefResponse"><span class="pre">TypeDefResponse</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_all_typedefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_all_typedefs" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a list of all the type definitions in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a list of all the type definitions in Atlan</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use typedef.get_all() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_all_users">
 <span class="sig-name descname"><span class="pre">get_all_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="other_model/user.html#pyatlan.model.user.AtlanUser" title="pyatlan.model.user.AtlanUser"><span class="pre">AtlanUser</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_all_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_all_users" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve all users defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a list of all the users in Atlan</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.get_all() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_api_token_by_id">
 <span class="sig-name descname"><span class="pre">get_api_token_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ApiToken</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_api_token_by_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_api_token_by_id" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves the API token with a client ID that exactly matches the provided string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>client_id</strong> – unique client identifier by which to retrieve the API token</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the API token whose clientId matches the provided string, or None if there is none</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use token.get_by_id() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_api_token_by_name">
 <span class="sig-name descname"><span class="pre">get_api_token_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ApiToken</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_api_token_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_api_token_by_name" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves the API token with a name that exactly matches the provided string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>display_name</strong> – name (as it appears in the UI) by which to retrieve the API token</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the API token whose name (in the UI) matches the provided string, or None if there is none</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use token.get_by_name() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_api_tokens">
 <span class="sig-name descname"><span class="pre">get_api_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ApiTokenResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_api_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_api_tokens" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a list of API tokens defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>limit</strong> – maximum number of results to be returned</p></li>
-<li><p><strong>post_filter</strong> – which API tokens to retrieve</p></li>
-<li><p><strong>sort</strong> – property by which to sort the results</p></li>
-<li><p><strong>count</strong> – whether to return the total number of records (True) or not (False)</p></li>
-<li><p><strong>offset</strong> – starting point for results to return, for paging</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of API tokens that match the provided criteria</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use token.get() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1125,15 +960,7 @@ term exists.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_current_user">
 <span class="sig-name descname"><span class="pre">get_current_user</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">UserMinimalResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_current_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_current_user" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the current user (representing the API token).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>basic details about the current user (API token)</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.get_current() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1150,78 +977,25 @@ term exists.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_group_by_name">
 <span class="sig-name descname"><span class="pre">get_group_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="other_model/group.html#pyatlan.model.group.AtlanGroup" title="pyatlan.model.group.AtlanGroup"><span class="pre">AtlanGroup</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_group_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_group_by_name" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve all groups with a name that contains the provided string.
-(This could include a complete group name, in which case there should be at most
-a single item in the returned list, or could be a partial group name to retrieve
-all groups with that naming convention.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>alias</strong> – name (as it appears in the UI) on which to filter the groups</p></li>
-<li><p><strong>limit</strong> – maximum number of groups to retrieve</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>all groups whose name (in the UI) contains the provided string</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.get_by_name() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_group_members">
 <span class="sig-name descname"><span class="pre">get_group_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">UserResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_group_members"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_group_members" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves the members (users) of a group.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guid</strong> – unique identifier (GUID) of the group from which to retrieve members</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of users that are members of the group</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.get_members() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_groups">
 <span class="sig-name descname"><span class="pre">get_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GroupResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_groups" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a list of the groups defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>limit</strong> – maximum number of results to be returned</p></li>
-<li><p><strong>post_filter</strong> – which groups to retrieve</p></li>
-<li><p><strong>sort</strong> – property by which to sort the results</p></li>
-<li><p><strong>count</strong> – whether to return the total number of records (True) or not (False)</p></li>
-<li><p><strong>offset</strong> – starting point for results to return, for paging</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of groups that match the provided criteria</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.get() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_groups_for_user">
 <span class="sig-name descname"><span class="pre">get_groups_for_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GroupResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_groups_for_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_groups_for_user" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the groups this user belongs to.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guid</strong> – unique identifier (GUID) of the user</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>groups this user belongs to</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.get_groups() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1282,100 +1056,31 @@ Use the get_lineage_list operation instead.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_roles">
 <span class="sig-name descname"><span class="pre">get_roles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RoleResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_roles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_roles" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a list of the roles defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>limit</strong> – maximum number of results to be returned</p></li>
-<li><p><strong>post_filter</strong> – which roles to retrieve</p></li>
-<li><p><strong>sort</strong> – property by which to sort the results</p></li>
-<li><p><strong>count</strong> – whether to return the total number of records (True) or not (False)</p></li>
-<li><p><strong>offset</strong> – starting point for results to return, for paging</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of roles that match the provided criteria</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use role.get() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_typedefs">
 <span class="sig-name descname"><span class="pre">get_typedefs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtlanTypeCategory</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">AtlanTypeCategory</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse" title="pyatlan.model.typedef.TypeDefResponse"><span class="pre">TypeDefResponse</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_typedefs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_typedefs" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a list of the type definitions in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>type_category</strong> – category of type definitions to retrieve</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the requested list of type definitions</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use typedef.get() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_user_by_username">
 <span class="sig-name descname"><span class="pre">get_user_by_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="other_model/user.html#pyatlan.model.user.AtlanUser" title="pyatlan.model.user.AtlanUser"><span class="pre">AtlanUser</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_user_by_username"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_user_by_username" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a user based on the username. (This attempts an exact match on username
-rather than a contains search.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>username</strong> – the username by which to find the user</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the user with that username</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.get_by_username() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_users">
 <span class="sig-name descname"><span class="pre">get_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">UserResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_users" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves a list of users defined in Atlan.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>limit</strong> – maximum number of results to be returned</p></li>
-<li><p><strong>post_filter</strong> – which users to retrieve</p></li>
-<li><p><strong>sort</strong> – property by which to sort the results</p></li>
-<li><p><strong>count</strong> – whether to return the total number of records (True) or not (False)</p></li>
-<li><p><strong>offset</strong> – starting point for results to return, for paging</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a list of users that match the provided criteria</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.get() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_users_by_email">
 <span class="sig-name descname"><span class="pre">get_users_by_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="other_model/user.html#pyatlan.model.user.AtlanUser" title="pyatlan.model.user.AtlanUser"><span class="pre">AtlanUser</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_users_by_email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_users_by_email" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves all users with email addresses that contain the provided email.
-(This could include a complete email address, in which case there should be at
-most a single item in the returned list, or could be a partial email address
-such as “&#64;example.com” to retrieve all users with that domain in their email
-address.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>email</strong> – on which to filter the users</p></li>
-<li><p><strong>limit</strong> – maximum number of users to retrieve</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>all users whose email addresses contain the provided string</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.get_by_email() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1405,15 +1110,7 @@ address.)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.purge_api_token">
 <span class="sig-name descname"><span class="pre">purge_api_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.purge_api_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.purge_api_token" title="Link to this definition">#</a></dt>
-<dd><p>Delete (purge) the specified API token.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guid</strong> – unique identifier (GUID) of the API token to delete</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use token.purge() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1437,38 +1134,13 @@ This operation is irreversible.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.purge_group">
 <span class="sig-name descname"><span class="pre">purge_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.purge_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.purge_group" title="Link to this definition">#</a></dt>
-<dd><p>Delete a group.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guid</strong> – unique identifier (GUID) of the group to delete</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.purge() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.purge_typedef">
 <span class="sig-name descname"><span class="pre">purge_typedef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">typedef_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.12)"><span class="pre">type</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.purge_typedef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.purge_typedef" title="Link to this definition">#</a></dt>
-<dd><p>Delete the type definition.
-Furthermore, if an Atlan tag, enumeration or custom metadata is deleted their
-respective cache will be force-refreshed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – internal hashed-string name of the type definition</p></li>
-<li><p><strong>typedef_type</strong> – type of the type definition that is being deleted</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if the typedef you are trying to delete is not one of the allowed types</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the typedef you are trying to delete cannot be found</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use typedef.purge() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1569,18 +1241,7 @@ remove any existing terms)</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.remove_users_from_group">
 <span class="sig-name descname"><span class="pre">remove_users_from_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">list[str]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.remove_users_from_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.remove_users_from_group" title="Link to this definition">#</a></dt>
-<dd><p>Remove one or more users from a group.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the group from which to remove users</p></li>
-<li><p><strong>user_ids</strong> – unique identifiers (GUIDs) of the users to remove from the group</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.remove_users() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1776,25 +1437,7 @@ Will overwrite all custom metadata on any existing asset with only the custom me
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_api_token">
 <span class="sig-name descname"><span class="pre">update_api_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">personas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ApiToken</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_api_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_api_token" title="Link to this definition">#</a></dt>
-<dd><p>Update an existing API token with the provided settings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the API token</p></li>
-<li><p><strong>display_name</strong> – human-readable name for the API token</p></li>
-<li><p><strong>description</strong> – optional explanation of the API token</p></li>
-<li><p><strong>personas</strong> – qualified_names of personas that should  be linked to the token, note that you MUST
-provide the complete list on any update (any not included in the list will be removed,
-so if you do not specify any personas then ALL personas will be unlinked from the API token)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the created API token</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use token.update() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1847,15 +1490,7 @@ other custom metadata attributes, even within the same named custom metadata, un
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_group">
 <span class="sig-name descname"><span class="pre">update_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/group.html#pyatlan.model.group.AtlanGroup" title="pyatlan.model.group.AtlanGroup"><span class="pre">AtlanGroup</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_group" title="Link to this definition">#</a></dt>
-<dd><p>Update a group. Note that the provided ‘group’ must have its id populated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>group</strong> – details to update on the group</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use group.update() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1906,45 +1541,13 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_typedef">
 <span class="sig-name descname"><span class="pre">update_typedef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typedef</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/typedef.html#pyatlan.model.typedef.TypeDef" title="pyatlan.model.typedef.TypeDef"><span class="pre">TypeDef</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="other_model/typedef.html#pyatlan.model.typedef.TypeDefResponse" title="pyatlan.model.typedef.TypeDefResponse"><span class="pre">TypeDefResponse</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_typedef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_typedef" title="Link to this definition">#</a></dt>
-<dd><p>Update an existing type definition in Atlan.
-Note: only custom metadata and Atlan tag type definitions are currently supported.
-Furthermore, if any of these are updated their respective cache will be force-refreshed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>typedef</strong> – type definition to update</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the resulting type definition that was updated</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if the typedef you are trying to create is not one of the allowed types</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use typedef.update() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_user">
 <span class="sig-name descname"><span class="pre">update_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/user.html#pyatlan.model.user.AtlanUser" title="pyatlan.model.user.AtlanUser"><span class="pre">AtlanUser</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">UserMinimalResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_user" title="Link to this definition">#</a></dt>
-<dd><p>Update a user.
-Note: you can only update users that have already signed up to Atlan. Users that are
-only invited (but have not yet logged in) cannot be updated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the user to update</p></li>
-<li><p><strong>user</strong> – details to update on the user</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>basic details about the updated user</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use user.update() instead.</p>
 </dd></dl>
 
 <dl class="py method">

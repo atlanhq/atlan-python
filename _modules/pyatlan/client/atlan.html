@@ -442,7 +442,7 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -463,46 +463,30 @@
 <span class="kn">from</span> <span class="nn">pyatlan.client.audit</span> <span class="kn">import</span> <span class="n">AuditClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.constants</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ADD_BUSINESS_ATTRIBUTE_BY_ID</span><span class="p">,</span>
-    <span class="n">ADD_USER_TO_GROUPS</span><span class="p">,</span>
     <span class="n">ADMIN_EVENTS</span><span class="p">,</span>
     <span class="n">BULK_UPDATE</span><span class="p">,</span>
-    <span class="n">CHANGE_USER_ROLE</span><span class="p">,</span>
-    <span class="n">CREATE_GROUP</span><span class="p">,</span>
-    <span class="n">CREATE_TYPE_DEFS</span><span class="p">,</span>
-    <span class="n">CREATE_USERS</span><span class="p">,</span>
-    <span class="n">DELETE_API_TOKEN</span><span class="p">,</span>
     <span class="n">DELETE_ENTITIES_BY_GUIDS</span><span class="p">,</span>
     <span class="n">DELETE_ENTITY_BY_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">DELETE_GROUP</span><span class="p">,</span>
-    <span class="n">DELETE_TYPE_DEF_BY_NAME</span><span class="p">,</span>
-    <span class="n">GET_ALL_TYPE_DEFS</span><span class="p">,</span>
-    <span class="n">GET_API_TOKENS</span><span class="p">,</span>
-    <span class="n">GET_CURRENT_USER</span><span class="p">,</span>
     <span class="n">GET_ENTITY_BY_GUID</span><span class="p">,</span>
     <span class="n">GET_ENTITY_BY_UNIQUE_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">GET_GROUP_MEMBERS</span><span class="p">,</span>
-    <span class="n">GET_GROUPS</span><span class="p">,</span>
     <span class="n">GET_LINEAGE</span><span class="p">,</span>
     <span class="n">GET_LINEAGE_LIST</span><span class="p">,</span>
-    <span class="n">GET_ROLES</span><span class="p">,</span>
-    <span class="n">GET_USER_GROUPS</span><span class="p">,</span>
-    <span class="n">GET_USERS</span><span class="p">,</span>
     <span class="n">INDEX_SEARCH</span><span class="p">,</span>
     <span class="n">KEYCLOAK_EVENTS</span><span class="p">,</span>
     <span class="n">PARSE_QUERY</span><span class="p">,</span>
     <span class="n">PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">REMOVE_USERS_FROM_GROUP</span><span class="p">,</span>
     <span class="n">UPDATE_ENTITY_BY_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">UPDATE_GROUP</span><span class="p">,</span>
-    <span class="n">UPDATE_TYPE_DEFS</span><span class="p">,</span>
-    <span class="n">UPDATE_USER</span><span class="p">,</span>
     <span class="n">UPLOAD_IMAGE</span><span class="p">,</span>
-    <span class="n">UPSERT_API_TOKEN</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.group</span> <span class="kn">import</span> <span class="n">GroupClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.role</span> <span class="kn">import</span> <span class="n">RoleClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.token</span> <span class="kn">import</span> <span class="n">TokenClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.typedef</span> <span class="kn">import</span> <span class="n">TypeDefClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.user</span> <span class="kn">import</span> <span class="n">UserClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.workflow</span> <span class="kn">import</span> <span class="n">WorkflowClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">,</span> <span class="n">AtlanError</span><span class="p">,</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.aggregation</span> <span class="kn">import</span> <span class="n">Aggregations</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.api_tokens</span> <span class="kn">import</span> <span class="n">ApiToken</span><span class="p">,</span> <span class="n">ApiTokenRequest</span><span class="p">,</span> <span class="n">ApiTokenResponse</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.api_tokens</span> <span class="kn">import</span> <span class="n">ApiToken</span><span class="p">,</span> <span class="n">ApiTokenResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Asset</span><span class="p">,</span>
     <span class="n">AtlasGlossary</span><span class="p">,</span>
@@ -539,13 +523,7 @@
     <span class="n">EntityStatus</span><span class="p">,</span>
     <span class="n">LineageDirection</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.group</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AtlanGroup</span><span class="p">,</span>
-    <span class="n">CreateGroupRequest</span><span class="p">,</span>
-    <span class="n">CreateGroupResponse</span><span class="p">,</span>
-    <span class="n">GroupResponse</span><span class="p">,</span>
-    <span class="n">RemoveFromGroupRequest</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.group</span> <span class="kn">import</span> <span class="n">AtlanGroup</span><span class="p">,</span> <span class="n">CreateGroupResponse</span><span class="p">,</span> <span class="n">GroupResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.lineage</span> <span class="kn">import</span> <span class="n">LineageListRequest</span><span class="p">,</span> <span class="n">LineageRequest</span><span class="p">,</span> <span class="n">LineageResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.query</span> <span class="kn">import</span> <span class="n">ParsedQuery</span><span class="p">,</span> <span class="n">QueryParserRequest</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.response</span> <span class="kn">import</span> <span class="n">AssetMutationResponse</span>
@@ -559,21 +537,8 @@
     <span class="n">with_active_glossary</span><span class="p">,</span>
     <span class="n">with_active_term</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AtlanTagDef</span><span class="p">,</span>
-    <span class="n">CustomMetadataDef</span><span class="p">,</span>
-    <span class="n">EnumDef</span><span class="p">,</span>
-    <span class="n">TypeDef</span><span class="p">,</span>
-    <span class="n">TypeDefResponse</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.user</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AddToGroupsRequest</span><span class="p">,</span>
-    <span class="n">AtlanUser</span><span class="p">,</span>
-    <span class="n">ChangeRoleRequest</span><span class="p">,</span>
-    <span class="n">CreateUserRequest</span><span class="p">,</span>
-    <span class="n">UserMinimalResponse</span><span class="p">,</span>
-    <span class="n">UserResponse</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">TypeDef</span><span class="p">,</span> <span class="n">TypeDefResponse</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.user</span> <span class="kn">import</span> <span class="n">AtlanUser</span><span class="p">,</span> <span class="n">UserMinimalResponse</span><span class="p">,</span> <span class="n">UserResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.multipart_data_generator</span> <span class="kn">import</span> <span class="n">MultipartDataGenerator</span>
 <span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">API</span><span class="p">,</span>
@@ -634,59 +599,6 @@
     <span class="k">return</span> <span class="n">session</span>
 
 
-<span class="k">def</span> <span class="nf">_build_typedef_request</span><span class="p">(</span><span class="n">typedef</span><span class="p">:</span> <span class="n">TypeDef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typedef</span><span class="p">,</span> <span class="n">AtlanTagDef</span><span class="p">):</span>
-        <span class="c1"># Set up the request payload...</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">TypeDefResponse</span><span class="p">(</span>
-            <span class="n">atlan_tag_defs</span><span class="o">=</span><span class="p">[</span><span class="n">typedef</span><span class="p">],</span>
-            <span class="n">enum_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">struct_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">entity_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">relationship_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">custom_metadata_defs</span><span class="o">=</span><span class="p">[],</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typedef</span><span class="p">,</span> <span class="n">CustomMetadataDef</span><span class="p">):</span>
-        <span class="c1"># Set up the request payload...</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">TypeDefResponse</span><span class="p">(</span>
-            <span class="n">atlan_tag_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">enum_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">struct_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">entity_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">relationship_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">custom_metadata_defs</span><span class="o">=</span><span class="p">[</span><span class="n">typedef</span><span class="p">],</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typedef</span><span class="p">,</span> <span class="n">EnumDef</span><span class="p">):</span>
-        <span class="c1"># Set up the request payload...</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">TypeDefResponse</span><span class="p">(</span>
-            <span class="n">atlan_tag_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">enum_defs</span><span class="o">=</span><span class="p">[</span><span class="n">typedef</span><span class="p">],</span>
-            <span class="n">struct_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">entity_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">relationship_defs</span><span class="o">=</span><span class="p">[],</span>
-            <span class="n">custom_metadata_defs</span><span class="o">=</span><span class="p">[],</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_UPDATE_TYPEDEF_CATEGORY</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-            <span class="n">typedef</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">value</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="n">payload</span>
-
-
-<span class="k">def</span> <span class="nf">_refresh_caches</span><span class="p">(</span><span class="n">typedef</span><span class="p">:</span> <span class="n">TypeDef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typedef</span><span class="p">,</span> <span class="n">AtlanTagDef</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.cache.atlan_tag_cache</span> <span class="kn">import</span> <span class="n">AtlanTagCache</span>
-
-        <span class="n">AtlanTagCache</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typedef</span><span class="p">,</span> <span class="n">CustomMetadataDef</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.cache.custom_metadata_cache</span> <span class="kn">import</span> <span class="n">CustomMetadataCache</span>
-
-        <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typedef</span><span class="p">,</span> <span class="n">EnumDef</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.cache.enum_cache</span> <span class="kn">import</span> <span class="n">EnumCache</span>
-
-        <span class="n">EnumCache</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span>
-
-
 <div class="viewcode-block" id="AtlanClient">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient">[docs]</a>
 <span class="k">class</span> <span class="nc">AtlanClient</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
@@ -697,6 +609,11 @@
     <span class="n">_request_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
     <span class="n">_workflow_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WorkflowClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_audit_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AuditClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_group_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GroupClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_role_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RoleClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_typedef_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TypeDefClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_token_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TokenClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_user_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UserClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;atlan_&quot;</span>
@@ -936,6 +853,36 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_client</span> <span class="o">=</span> <span class="n">WorkflowClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workflow_client</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">group</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GroupClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_group_client</span> <span class="o">=</span> <span class="n">GroupClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_client</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">role</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoleClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_role_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_role_client</span> <span class="o">=</span> <span class="n">RoleClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_role_client</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TokenClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_token_client</span> <span class="o">=</span> <span class="n">TokenClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token_client</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">typedef</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typedef_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_typedef_client</span> <span class="o">=</span> <span class="n">TypeDefClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typedef_client</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">user</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_user_client</span> <span class="o">=</span> <span class="n">UserClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_client</span>
+
     <span class="k">def</span> <span class="nf">_call_api_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">binary_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">binary_data</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
@@ -1066,41 +1013,28 @@
         <span class="n">count</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoleResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a list of the roles defined in Atlan.</span>
-
-<span class="sd">        :param limit: maximum number of results to be returned</span>
-<span class="sd">        :param post_filter: which roles to retrieve</span>
-<span class="sd">        :param sort: property by which to sort the results</span>
-<span class="sd">        :param count: whether to return the total number of records (True) or not (False)</span>
-<span class="sd">        :param offset: starting point for results to return, for paging</span>
-<span class="sd">        :returns: a list of roles that match the provided criteria</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">),</span>
-            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span>
-            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit</span><span class="p">),</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="n">post_filter</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_filter</span>
-        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_ROLES</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(),</span> <span class="n">query_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">RoleResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use role.get() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;role.get&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">post_filter</span><span class="o">=</span><span class="n">post_filter</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_all_roles">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_all_roles">[docs]</a>
     <span class="k">def</span> <span class="nf">get_all_roles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoleResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve all roles defined in Atlan.</span>
-
-<span class="sd">        :returns: a list of all the roles in Atlan</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_ROLES</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">RoleResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use self.role.get_all() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;self.role.get_all&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">role</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.create_group">
@@ -1110,19 +1044,13 @@
         <span class="n">group</span><span class="p">:</span> <span class="n">AtlanGroup</span><span class="p">,</span>
         <span class="n">user_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CreateGroupResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a new group.</span>
-
-<span class="sd">        :param group: details of the new group</span>
-<span class="sd">        :param user_ids: list of unique identifiers (GUIDs) of users to associate with the group</span>
-<span class="sd">        :returns: details of the created group and user association</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">CreateGroupRequest</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">user_ids</span><span class="p">:</span>
-            <span class="n">payload</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="n">user_ids</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">CREATE_GROUP</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">CreateGroupResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.create() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.create&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">user_ids</span><span class="o">=</span><span class="n">user_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_group">
@@ -1131,17 +1059,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">group</span><span class="p">:</span> <span class="n">AtlanGroup</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update a group. Note that the provided &#39;group&#39; must have its id populated.</span>
-
-<span class="sd">        :param group: details to update on the group</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">UPDATE_GROUP</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-            <span class="n">request_obj</span><span class="o">=</span><span class="n">group</span><span class="p">,</span>
-            <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.update() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.update&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.purge_group">
@@ -1150,13 +1074,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete a group.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the group to delete</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">DELETE_GROUP</span><span class="o">.</span><span class="n">format_path</span><span class="p">({</span><span class="s2">&quot;group_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">}))</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.purge() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.purge&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">purge</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_groups">
@@ -1169,29 +1093,15 @@
         <span class="n">count</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GroupResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a list of the groups defined in Atlan.</span>
-
-<span class="sd">        :param limit: maximum number of results to be returned</span>
-<span class="sd">        :param post_filter: which groups to retrieve</span>
-<span class="sd">        :param sort: property by which to sort the results</span>
-<span class="sd">        :param count: whether to return the total number of records (True) or not (False)</span>
-<span class="sd">        :param offset: starting point for results to return, for paging</span>
-<span class="sd">        :returns: a list of groups that match the provided criteria</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">),</span>
-            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">post_filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_filter</span>
-        <span class="k">if</span> <span class="n">sort</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_GROUPS</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(),</span> <span class="n">query_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">GroupResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.get() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.get&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">post_filter</span><span class="o">=</span><span class="n">post_filter</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_all_groups">
@@ -1200,24 +1110,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve all groups defined in Atlan.</span>
-
-<span class="sd">        :returns: a list of all the groups in Atlan</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GroupResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_groups</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s2">&quot;createdAt&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.get_all() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.get_all&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">while</span> <span class="n">response</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">page</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
-                <span class="n">groups</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
-                <span class="n">offset</span> <span class="o">+=</span> <span class="n">limit</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_groups</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s2">&quot;createdAt&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">groups</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_group_by_name">
@@ -1227,55 +1126,37 @@
         <span class="n">alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanGroup</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve all groups with a name that contains the provided string.</span>
-<span class="sd">        (This could include a complete group name, in which case there should be at most</span>
-<span class="sd">        a single item in the returned list, or could be a partial group name to retrieve</span>
-<span class="sd">        all groups with that naming convention.)</span>
-
-<span class="sd">        :param alias: name (as it appears in the UI) on which to filter the groups</span>
-<span class="sd">        :param limit: maximum number of groups to retrieve</span>
-<span class="sd">        :returns: all groups whose name (in the UI) contains the provided string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_groups</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
-            <span class="n">post_filter</span><span class="o">=</span><span class="s1">&#39;{&quot;$and&quot;:[{&quot;alias&quot;:{&quot;$ilike&quot;:&quot;%&#39;</span> <span class="o">+</span> <span class="n">alias</span> <span class="o">+</span> <span class="s1">&#39;%&quot;}}]}&#39;</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.get_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.get_by_name&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="n">alias</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_group_members">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_group_members">[docs]</a>
     <span class="k">def</span> <span class="nf">get_group_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the members (users) of a group.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the group from which to retrieve members</span>
-<span class="sd">        :returns: list of users that are members of the group</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_GROUP_MEMBERS</span><span class="o">.</span><span class="n">format_path</span><span class="p">({</span><span class="s2">&quot;group_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">}))</span>
-        <span class="k">return</span> <span class="n">UserResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.get_members() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.get_members&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">get_members</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.remove_users_from_group">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_users_from_group">[docs]</a>
     <span class="k">def</span> <span class="nf">remove_users_from_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_ids</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove one or more users from a group.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the group from which to remove users</span>
-<span class="sd">        :param user_ids: unique identifiers (GUIDs) of the users to remove from the group</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rfgr</span> <span class="o">=</span> <span class="n">RemoveFromGroupRequest</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="n">user_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">REMOVE_USERS_FROM_GROUP</span><span class="o">.</span><span class="n">format_path</span><span class="p">({</span><span class="s2">&quot;group_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">}),</span>
-            <span class="n">request_obj</span><span class="o">=</span><span class="n">rfgr</span><span class="p">,</span>
-            <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use group.remove_users() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;group.remove_users&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">remove_users</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">user_ids</span><span class="o">=</span><span class="n">user_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.create_users">
@@ -1284,25 +1165,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create one or more new users.</span>
-
-<span class="sd">        :param users: the details of the new users</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.cache.role_cache</span> <span class="kn">import</span> <span class="n">RoleCache</span>
-
-        <span class="n">cur</span> <span class="o">=</span> <span class="n">CreateUserRequest</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="p">[])</span>
-        <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
-            <span class="n">role_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">workspace_role</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">role_id</span> <span class="o">:=</span> <span class="n">RoleCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">role_name</span><span class="p">):</span>
-                <span class="n">to_create</span> <span class="o">=</span> <span class="n">CreateUserRequest</span><span class="o">.</span><span class="n">CreateUser</span><span class="p">(</span>
-                    <span class="n">email</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
-                    <span class="n">role_name</span><span class="o">=</span><span class="n">role_name</span><span class="p">,</span>
-                    <span class="n">role_id</span><span class="o">=</span><span class="n">role_id</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">cur</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_create</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">CREATE_USERS</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">cur</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.create() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.create&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="n">users</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_user">
@@ -1312,22 +1181,13 @@
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">AtlanUser</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserMinimalResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update a user.</span>
-<span class="sd">        Note: you can only update users that have already signed up to Atlan. Users that are</span>
-<span class="sd">        only invited (but have not yet logged in) cannot be updated.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the user to update</span>
-<span class="sd">        :param user: details to update on the user</span>
-<span class="sd">        :returns: basic details about the updated user</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">UPDATE_USER</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
-            <span class="n">request_obj</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
-            <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.update() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.update&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">UserMinimalResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_groups_for_user">
@@ -1336,15 +1196,14 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GroupResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve the groups this user belongs to.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the user</span>
-<span class="sd">        :returns: groups this user belongs to</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_USER_GROUPS</span><span class="o">.</span><span class="n">format_path</span><span class="p">({</span><span class="s2">&quot;user_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">}))</span>
-        <span class="k">return</span> <span class="n">GroupResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_groups() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.get_groups&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_groups</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.add_user_to_groups">
@@ -1354,19 +1213,14 @@
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">group_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a user to one or more groups.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the user to add into groups</span>
-<span class="sd">        :param group_ids: unique identifiers (GUIDs) of the groups to add the user into</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atgr</span> <span class="o">=</span> <span class="n">AddToGroupsRequest</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="n">group_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">ADD_USER_TO_GROUPS</span><span class="o">.</span><span class="n">format_path</span><span class="p">({</span><span class="s2">&quot;user_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">}),</span>
-            <span class="n">request_obj</span><span class="o">=</span><span class="n">atgr</span><span class="p">,</span>
-            <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.add_to_groups() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.add_to_groups&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">add_to_groups</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">group_ids</span><span class="o">=</span><span class="n">group_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.change_user_role">
@@ -1376,19 +1230,14 @@
         <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">role_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Change the role of a user.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the user whose role should be changed</span>
-<span class="sd">        :param role_id: unique identifier (GUID) of the role to move the user into</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">crr</span> <span class="o">=</span> <span class="n">ChangeRoleRequest</span><span class="p">(</span><span class="n">role_id</span><span class="o">=</span><span class="n">role_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">CHANGE_USER_ROLE</span><span class="o">.</span><span class="n">format_path</span><span class="p">({</span><span class="s2">&quot;user_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">}),</span>
-            <span class="n">request_obj</span><span class="o">=</span><span class="n">crr</span><span class="p">,</span>
-            <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.change_role() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.change_role&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">change_role</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="n">role_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_current_user">
@@ -1396,14 +1245,14 @@
     <span class="k">def</span> <span class="nf">get_current_user</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserMinimalResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve the current user (representing the API token).</span>
-
-<span class="sd">        :returns: basic details about the current user (API token)</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_CURRENT_USER</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">UserMinimalResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_current() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.get_current&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_current</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_users">
@@ -1416,48 +1265,15 @@
         <span class="n">count</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a list of users defined in Atlan.</span>
-
-<span class="sd">        :param limit: maximum number of results to be returned</span>
-<span class="sd">        :param post_filter: which users to retrieve</span>
-<span class="sd">        :param sort: property by which to sort the results</span>
-<span class="sd">        :param count: whether to return the total number of records (True) or not (False)</span>
-<span class="sd">        :param offset: starting point for results to return, for paging</span>
-<span class="sd">        :returns: a list of users that match the provided criteria</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">),</span>
-            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">post_filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_filter</span>
-        <span class="k">if</span> <span class="n">sort</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
-        <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;maxLoginEvents&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;firstName&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;lastName&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;username&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;email&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;emailVerified&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;enabled&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;roles&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;defaultRoles&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;groupCount&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;attributes&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;personas&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;createdTimestamp&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;lastLoginTime&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;loginEvents&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;isLocked&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_USERS</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(),</span> <span class="n">query_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">UserResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.get&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">post_filter</span><span class="o">=</span><span class="n">post_filter</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_all_users">
@@ -1466,24 +1282,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve all users defined in Atlan.</span>
-
-<span class="sd">        :returns: a list of all the users in Atlan</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">response</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UserResponse</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s2">&quot;username&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_all() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.get_all&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">while</span> <span class="n">response</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">page</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
-                <span class="n">users</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
-                <span class="n">offset</span> <span class="o">+=</span> <span class="n">limit</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s2">&quot;username&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">users</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_users_by_email">
@@ -1493,44 +1298,27 @@
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves all users with email addresses that contain the provided email.</span>
-<span class="sd">        (This could include a complete email address, in which case there should be at</span>
-<span class="sd">        most a single item in the returned list, or could be a partial email address</span>
-<span class="sd">        such as &quot;@example.com&quot; to retrieve all users with that domain in their email</span>
-<span class="sd">        address.)</span>
-
-<span class="sd">        :param email: on which to filter the users</span>
-<span class="sd">        :param limit: maximum number of users to retrieve</span>
-<span class="sd">        :returns: all users whose email addresses contain the provided string</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
-            <span class="n">post_filter</span><span class="o">=</span><span class="s1">&#39;{&quot;email&quot;:{&quot;$ilike&quot;:&quot;%&#39;</span> <span class="o">+</span> <span class="n">email</span> <span class="o">+</span> <span class="s1">&#39;%&quot;}}&#39;</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_by_email() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.get_by_email&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_by_email</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_user_by_username">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_user_by_username">[docs]</a>
     <span class="k">def</span> <span class="nf">get_user_by_username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtlanUser</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a user based on the username. (This attempts an exact match on username</span>
-<span class="sd">        rather than a contains search.)</span>
-
-<span class="sd">        :param username: the username by which to find the user</span>
-<span class="sd">        :returns: the user with that username</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-            <span class="n">post_filter</span><span class="o">=</span><span class="s1">&#39;{&quot;username&quot;:&quot;&#39;</span> <span class="o">+</span> <span class="n">username</span> <span class="o">+</span> <span class="s1">&#39;&quot;}&#39;</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.get_by_username() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.get_by_username&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">get_by_username</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.parse_query">
@@ -2050,14 +1838,13 @@
 <div class="viewcode-block" id="AtlanClient.get_all_typedefs">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_all_typedefs">[docs]</a>
     <span class="k">def</span> <span class="nf">get_all_typedefs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a list of all the type definitions in Atlan.</span>
-
-<span class="sd">        :returns: a list of all the type definitions in Atlan</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">GET_ALL_TYPE_DEFS</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TypeDefResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use typedef.get_all() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;typedef.get_all&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">typedef</span><span class="o">.</span><span class="n">get_all</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_typedefs">
@@ -2065,116 +1852,49 @@
     <span class="k">def</span> <span class="nf">get_typedefs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_category</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanTypeCategory</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a list of the type definitions in Atlan.</span>
-
-<span class="sd">        :param type_category: category of type definitions to retrieve</span>
-<span class="sd">        :returns: the requested list of type definitions</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">categories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">type_category</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">categories</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">type_category</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">categories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_category</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">categories</span><span class="p">}</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">GET_ALL_TYPE_DEFS</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(),</span>
-            <span class="n">query_params</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use typedef.get() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;typedef.get&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">TypeDefResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">typedef</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">type_category</span><span class="o">=</span><span class="n">type_category</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.create_typedef">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.create_typedef">[docs]</a>
     <span class="k">def</span> <span class="nf">create_typedef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typedef</span><span class="p">:</span> <span class="n">TypeDef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a new type definition in Atlan.</span>
-<span class="sd">        Note: only custom metadata, enumerations, and Atlan tag type definitions are currently</span>
-<span class="sd">        supported. Furthermore, if any of these are created their respective cache will be</span>
-<span class="sd">        force-refreshed.</span>
-
-<span class="sd">        :param typedef: type definition to create</span>
-<span class="sd">        :returns: the resulting type definition that was created</span>
-<span class="sd">        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">_build_typedef_request</span><span class="p">(</span><span class="n">typedef</span><span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">CREATE_TYPE_DEFS</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use typedef.create() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;typedef.create&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">_refresh_caches</span><span class="p">(</span><span class="n">typedef</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TypeDefResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">typedef</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">typedef</span><span class="o">=</span><span class="n">typedef</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_typedef">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.update_typedef">[docs]</a>
     <span class="k">def</span> <span class="nf">update_typedef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typedef</span><span class="p">:</span> <span class="n">TypeDef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeDefResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update an existing type definition in Atlan.</span>
-<span class="sd">        Note: only custom metadata and Atlan tag type definitions are currently supported.</span>
-<span class="sd">        Furthermore, if any of these are updated their respective cache will be force-refreshed.</span>
-
-<span class="sd">        :param typedef: type definition to update</span>
-<span class="sd">        :returns: the resulting type definition that was updated</span>
-<span class="sd">        :raises InvalidRequestError: if the typedef you are trying to create is not one of the allowed types</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">payload</span> <span class="o">=</span> <span class="n">_build_typedef_request</span><span class="p">(</span><span class="n">typedef</span><span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">UPDATE_TYPE_DEFS</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use typedef.update() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;typedef.update&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">_refresh_caches</span><span class="p">(</span><span class="n">typedef</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TypeDefResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">typedef</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">typedef</span><span class="o">=</span><span class="n">typedef</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.purge_typedef">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.purge_typedef">[docs]</a>
     <span class="k">def</span> <span class="nf">purge_typedef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">typedef_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete the type definition.</span>
-<span class="sd">        Furthermore, if an Atlan tag, enumeration or custom metadata is deleted their</span>
-<span class="sd">        respective cache will be force-refreshed.</span>
-
-<span class="sd">        :param name: internal hashed-string name of the type definition</span>
-<span class="sd">        :param typedef_type: type of the type definition that is being deleted</span>
-<span class="sd">        :raises InvalidRequestError: if the typedef you are trying to delete is not one of the allowed types</span>
-<span class="sd">        :raises NotFoundError: if the typedef you are trying to delete cannot be found</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">typedef_type</span> <span class="o">==</span> <span class="n">CustomMetadataDef</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.custom_metadata_cache</span> <span class="kn">import</span> <span class="n">CustomMetadataCache</span>
-
-            <span class="n">internal_name</span> <span class="o">=</span> <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">typedef_type</span> <span class="o">==</span> <span class="n">EnumDef</span><span class="p">:</span>
-            <span class="n">internal_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="k">elif</span> <span class="n">typedef_type</span> <span class="o">==</span> <span class="n">AtlanTagDef</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.atlan_tag_cache</span> <span class="kn">import</span> <span class="n">AtlanTagCache</span>
-
-            <span class="n">internal_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">AtlanTagCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">UNABLE_TO_PURGE_TYPEDEF_OF_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="n">typedef_type</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">internal_name</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-                <span class="n">DELETE_TYPE_DEF_BY_NAME</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">internal_name</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">TYPEDEF_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">typedef_type</span> <span class="o">==</span> <span class="n">CustomMetadataDef</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.custom_metadata_cache</span> <span class="kn">import</span> <span class="n">CustomMetadataCache</span>
-
-            <span class="n">CustomMetadataCache</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">typedef_type</span> <span class="o">==</span> <span class="n">EnumDef</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.enum_cache</span> <span class="kn">import</span> <span class="n">EnumCache</span>
-
-            <span class="n">EnumCache</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">typedef_type</span> <span class="o">==</span> <span class="n">AtlanTagDef</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">pyatlan.cache.atlan_tag_cache</span> <span class="kn">import</span> <span class="n">AtlanTagCache</span>
-
-            <span class="n">AtlanTagCache</span><span class="o">.</span><span class="n">refresh_cache</span><span class="p">()</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use typedef.purge() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;typedef.purge&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typedef</span><span class="o">.</span><span class="n">purge</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">typedef_type</span><span class="o">=</span><span class="n">typedef_type</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.add_atlan_tags">
@@ -2690,48 +2410,15 @@
     <span class="k">def</span> <span class="nf">add_api_token_as_admin</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">impersonation_token</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add the API token configured for the default client as an admin to the asset with the provided GUID.</span>
-<span class="sd">        This is primarily useful for connections, to allow the API token to manage policies for the connection, and</span>
-<span class="sd">        for query collections, to allow the API token to manage the queries in a collection or the collection itself.</span>
-
-<span class="sd">        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin</span>
-<span class="sd">        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,</span>
-<span class="sd">                                    NOT an API token</span>
-<span class="sd">        :raises NotFoundError: if the asset to which to add the API token as an admin cannot be found</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.model.assets.asset00</span> <span class="kn">import</span> <span class="n">Asset</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.model.fluent_search</span> <span class="kn">import</span> <span class="n">FluentSearch</span>
-
-        <span class="n">token_user</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_current_user</span><span class="p">()</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">existing_client</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_client</span><span class="p">():</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">impersonation_token</span><span class="p">)</span>
-            <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-            <span class="c1"># Look for the asset as the impersonated user, ensuring we include the admin users</span>
-            <span class="c1"># in the results (so we avoid clobbering any existing admin users)</span>
-            <span class="n">request</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">FluentSearch</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">GUID</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">asset_guid</span><span class="p">))</span>
-                <span class="o">.</span><span class="n">include_on_results</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">ADMIN_USERS</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_request</span><span class="p">()</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">current_page</span><span class="p">():</span>
-                <span class="n">asset</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">current_page</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">existing_admins</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">admin_users</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
-                <span class="n">existing_admins</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token_user</span><span class="p">)</span>
-                <span class="n">to_update</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">trim_to_required</span><span class="p">()</span>
-                <span class="n">to_update</span><span class="o">.</span><span class="n">admin_users</span> <span class="o">=</span> <span class="n">existing_admins</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">to_update</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">existing_client</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ASSET_NOT_FOUND_BY_GUID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">asset_guid</span>
-                <span class="p">)</span>
-            <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">existing_client</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">response</span>
-
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.add_as_admin() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.add_as_admin&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">add_as_admin</span><span class="p">(</span>
+            <span class="n">asset_guid</span><span class="o">=</span><span class="n">asset_guid</span><span class="p">,</span> <span class="n">impersonation_token</span><span class="o">=</span><span class="n">impersonation_token</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.add_api_token_as_viewer">
@@ -2739,47 +2426,15 @@
     <span class="k">def</span> <span class="nf">add_api_token_as_viewer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">impersonation_token</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetMutationResponse</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add the API token configured for the default client as a viewer to the asset with the provided GUID.</span>
-<span class="sd">        This is primarily useful for query collections, to allow the API token to view or run queries within the</span>
-<span class="sd">        collection, but not make any changes to them.</span>
-
-<span class="sd">        :param asset_guid: unique identifier (GUID) of the asset to which we should add this API token as an admin</span>
-<span class="sd">        :param impersonation_token: a bearer token for an actual user who is already an admin for the asset,</span>
-<span class="sd">                                    NOT an API token</span>
-<span class="sd">        :raises NotFoundError: if the asset to which to add the API token as a viewer cannot be found</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.model.assets.asset00</span> <span class="kn">import</span> <span class="n">Asset</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.model.fluent_search</span> <span class="kn">import</span> <span class="n">FluentSearch</span>
-
-        <span class="n">token_user</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_current_user</span><span class="p">()</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">existing_client</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default_client</span><span class="p">():</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">impersonation_token</span><span class="p">)</span>
-            <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-            <span class="c1"># Look for the asset as the impersonated user, ensuring we include the admin users</span>
-            <span class="c1"># in the results (so we avoid clobbering any existing admin users)</span>
-            <span class="n">request</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">FluentSearch</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">GUID</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">asset_guid</span><span class="p">))</span>
-                <span class="o">.</span><span class="n">include_on_results</span><span class="p">(</span><span class="n">Asset</span><span class="o">.</span><span class="n">VIEWER_USERS</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">page_size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_request</span><span class="p">()</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">current_page</span><span class="p">():</span>
-                <span class="n">asset</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">current_page</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">existing_viewers</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">viewer_users</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">()</span>
-                <span class="n">existing_viewers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token_user</span><span class="p">)</span>
-                <span class="n">to_update</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">trim_to_required</span><span class="p">()</span>
-                <span class="n">to_update</span><span class="o">.</span><span class="n">viewer_users</span> <span class="o">=</span> <span class="n">existing_viewers</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">to_update</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">existing_client</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ASSET_NOT_FOUND_BY_GUID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">asset_guid</span>
-                <span class="p">)</span>
-            <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">existing_client</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">response</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use user.add_as_viewer() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;user.add_as_viewer&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">add_as_viewer</span><span class="p">(</span>
+            <span class="n">asset_guid</span><span class="o">=</span><span class="n">asset_guid</span><span class="p">,</span> <span class="n">impersonation_token</span><span class="o">=</span><span class="n">impersonation_token</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_api_tokens">
@@ -2792,71 +2447,39 @@
         <span class="n">count</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ApiTokenResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves a list of API tokens defined in Atlan.</span>
-
-<span class="sd">        :param limit: maximum number of results to be returned</span>
-<span class="sd">        :param post_filter: which API tokens to retrieve</span>
-<span class="sd">        :param sort: property by which to sort the results</span>
-<span class="sd">        :param count: whether to return the total number of records (True) or not (False)</span>
-<span class="sd">        :param offset: starting point for results to return, for paging</span>
-<span class="sd">        :returns: a list of API tokens that match the provided criteria</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">),</span>
-            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">post_filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">post_filter</span>
-        <span class="k">if</span> <span class="n">sort</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">GET_API_TOKENS</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(),</span> <span class="n">query_params</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.get() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;token.get&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ApiTokenResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">post_filter</span><span class="o">=</span><span class="n">post_filter</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_api_token_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_api_token_by_name">[docs]</a>
     <span class="k">def</span> <span class="nf">get_api_token_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ApiToken</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the API token with a name that exactly matches the provided string.</span>
-
-<span class="sd">        :param display_name: name (as it appears in the UI) by which to retrieve the API token</span>
-<span class="sd">        :returns: the API token whose name (in the UI) matches the provided string, or None if there is none</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_api_tokens</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-            <span class="n">post_filter</span><span class="o">=</span><span class="s1">&#39;{&quot;displayName&quot;:&quot;&#39;</span> <span class="o">+</span> <span class="n">display_name</span> <span class="o">+</span> <span class="s1">&#39;&quot;}&#39;</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.get_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;token.get_by_name&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_api_token_by_id">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_api_token_by_id">[docs]</a>
     <span class="k">def</span> <span class="nf">get_api_token_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ApiToken</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the API token with a client ID that exactly matches the provided string.</span>
-
-<span class="sd">        :param client_id: unique client identifier by which to retrieve the API token</span>
-<span class="sd">        :returns: the API token whose clientId matches the provided string, or None if there is none</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">client_id</span> <span class="ow">and</span> <span class="n">client_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">SERVICE_ACCOUNT_</span><span class="p">):</span>
-            <span class="n">client_id</span> <span class="o">=</span> <span class="n">client_id</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">SERVICE_ACCOUNT_</span><span class="p">)</span> <span class="p">:]</span>  <span class="c1"># noqa: E203</span>
-        <span class="k">if</span> <span class="n">response</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_api_tokens</span><span class="p">(</span>
-            <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-            <span class="n">post_filter</span><span class="o">=</span><span class="s1">&#39;{&quot;clientId&quot;:&quot;&#39;</span> <span class="o">+</span> <span class="n">client_id</span> <span class="o">+</span> <span class="s1">&#39;&quot;}&#39;</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">records</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.get_by_id() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;token.get_by_id&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.create_api_token">
@@ -2868,25 +2491,18 @@
         <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">validity_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ApiToken</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a new API token with the provided settings.</span>
-
-<span class="sd">        :param display_name: human-readable name for the API token</span>
-<span class="sd">        :param description: optional explanation of the API token</span>
-<span class="sd">        :param personas: qualified_names of personas that should  be linked to the token</span>
-<span class="sd">        :param validity_seconds: time in seconds after which the token should expire (negative numbers are treated as</span>
-<span class="sd">                                 infinite)</span>
-<span class="sd">        :returns: the created API token</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">ApiTokenRequest</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.create() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;token.create&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">persona_qualified_names</span><span class="o">=</span><span class="n">personas</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(),</span>
+            <span class="n">personas</span><span class="o">=</span><span class="n">personas</span><span class="p">,</span>
             <span class="n">validity_seconds</span><span class="o">=</span><span class="n">validity_seconds</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">UPSERT_API_TOKEN</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ApiToken</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_api_token">
@@ -2898,39 +2514,30 @@
         <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">personas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ApiToken</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update an existing API token with the provided settings.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the API token</span>
-<span class="sd">        :param display_name: human-readable name for the API token</span>
-<span class="sd">        :param description: optional explanation of the API token</span>
-<span class="sd">        :param personas: qualified_names of personas that should  be linked to the token, note that you MUST</span>
-<span class="sd">                         provide the complete list on any update (any not included in the list will be removed,</span>
-<span class="sd">                         so if you do not specify any personas then ALL personas will be unlinked from the API token)</span>
-<span class="sd">        :returns: the created API token</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">ApiTokenRequest</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.update() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;token.update&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span>
             <span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">persona_qualified_names</span><span class="o">=</span><span class="n">personas</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(),</span>
-        <span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">UPSERT_API_TOKEN</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">request</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ApiToken</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+            <span class="n">personas</span><span class="o">=</span><span class="n">personas</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.purge_api_token">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.purge_api_token">[docs]</a>
     <span class="k">def</span> <span class="nf">purge_api_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete (purge) the specified API token.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the API token to delete</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">DELETE_API_TOKEN</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">guid</span><span class="p">))</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use token.purge() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;token.purge&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">purge</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_keycloak_events">
@@ -3240,6 +2847,28 @@
         <span class="p">)</span></div>
 </div>
 
+
+
+<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+<span class="k">def</span> <span class="nf">client_connection</span><span class="p">(</span>
+    <span class="n">base_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">HttpUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">AtlanClient</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new client created with the given base_url and/api_key. The AtlanClient.default_client will</span>
+<span class="sd">    be set to the new client. AtlanClient.default_client will be reset to the current default_client before</span>
+<span class="sd">    exiting the context.</span>
+<span class="sd">    :param base_url: the base_url to be used for the new connection. If not specified the current value will be used</span>
+<span class="sd">    :param api_key: the api_key to be used for the new connection. If not specified the current value will be used</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">current_client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">get_default_client</span><span class="p">()</span>
+    <span class="n">tmp_client</span> <span class="o">=</span> <span class="n">AtlanClient</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span> <span class="ow">or</span> <span class="n">current_client</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span> <span class="ow">or</span> <span class="n">current_client</span><span class="o">.</span><span class="n">api_key</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">tmp_client</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">AtlanClient</span><span class="o">.</span><span class="n">set_default_client</span><span class="p">(</span><span class="n">current_client</span><span class="p">)</span>
 
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.keycloak_events</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: E402</span>
