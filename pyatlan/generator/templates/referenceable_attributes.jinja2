@@ -67,7 +67,7 @@
         description='Map of attributes in the instance and their values. The specific keys of this map will vary '
                     'by type, so are described in the sub-types of this schema.\n',
     )
-    business_attributes: Optional[Dict[str, Any]] = Field(
+    business_attributes: Optional[dict[str, Any]] = Field(
         None,
         description='Map of custom metadata attributes and values defined on the entity.\n',
         alias='businessAttributes'
@@ -94,7 +94,7 @@
     )
     is_incomplete: Optional[bool] = Field(True, description='', example=True)
     labels: Optional[list[str]] = Field(None, description='Internal use only.')
-    relationship_attributes: Optional[Dict[str, Any]] = Field(
+    relationship_attributes: Optional[dict[str, Any]] = Field(
         None,
         description='Map of relationships for the entity. The specific keys of this map will vary by type, '
                     'so are described in the sub-types of this schema.\n',

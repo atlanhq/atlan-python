@@ -9,7 +9,7 @@ import sys
 import uuid
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Dict, List, Optional, Type, TypeVar
+from typing import Any, ClassVar, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -196,7 +196,7 @@ class Referenceable(AtlanObject):
         description="Map of attributes in the instance and their values. The specific keys of this map will vary "
         "by type, so are described in the sub-types of this schema.\n",
     )
-    business_attributes: Optional[Dict[str, Any]] = Field(
+    business_attributes: Optional[dict[str, Any]] = Field(
         None,
         description="Map of custom metadata attributes and values defined on the entity.\n",
         alias="businessAttributes",
@@ -222,8 +222,8 @@ class Referenceable(AtlanObject):
         example="917ffec9-fa84-4c59-8e6c-c7b114d04be3",
     )
     is_incomplete: Optional[bool] = Field(True, description="", example=True)
-    labels: Optional[List[str]] = Field(None, description="Internal use only.")
-    relationship_attributes: Optional[Dict[str, Any]] = Field(
+    labels: Optional[list[str]] = Field(None, description="Internal use only.")
+    relationship_attributes: Optional[dict[str, Any]] = Field(
         None,
         description="Map of relationships for the entity. The specific keys of this map will vary by type, "
         "so are described in the sub-types of this schema.\n",
