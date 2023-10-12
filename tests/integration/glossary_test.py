@@ -184,7 +184,7 @@ def test_compound_queries(
         .where(AtlasGlossaryTerm.ANCHOR.eq(glossary.qualified_name))
     ).to_query()
     request = IndexSearchRequest(dsl=DSL(query=cq))
-    response = client.search(request)
+    response = client.asset.search(request)
     assert response
     assert response.count == 2
     assert glossary.qualified_name
@@ -199,7 +199,7 @@ def test_compound_queries(
         .where_not(AtlasGlossaryTerm.NAME.eq(term2.name))
     ).to_query()
     request = IndexSearchRequest(dsl=DSL(query=cq))
-    response = client.search(request)
+    response = client.asset.search(request)
     assert response
     assert response.count == 1
 

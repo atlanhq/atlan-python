@@ -536,13 +536,13 @@ def test_search_by_any_accountable(
         .where(CustomMetadataField(CM_RACI, CM_ATTR_RACI_ACCOUNTABLE).has_any_value())
         .include_on_relations(Asset.NAME)
     ).to_request()
-    response = client.search(criteria=request)
+    response = client.asset.search(criteria=request)
     assert response
     count = 0
     # TODO: replace with exponential back-off and jitter
     while response.count == 0 and count < 10:
         time.sleep(2)
-        response = client.search(criteria=request)
+        response = client.asset.search(criteria=request)
         count += 1
     assert response.count == 1
     for t in response:
@@ -573,13 +573,13 @@ def test_search_by_specific_accountable(
         .include_on_results(AtlasGlossaryTerm.ANCHOR)
         .include_on_relations(Asset.NAME)
     ).to_request()
-    response = client.search(criteria=request)
+    response = client.asset.search(criteria=request)
     assert response
     count = 0
     # TODO: replace with exponential back-off and jitter
     while response.count == 0 and count < 10:
         time.sleep(2)
-        response = client.search(criteria=request)
+        response = client.asset.search(criteria=request)
         count += 1
     assert response.count == 1
     for t in response:

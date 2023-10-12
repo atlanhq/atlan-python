@@ -67,7 +67,7 @@ def get_current_view_of_asset(
         exclude_meanings=~include_meanings,
         exclude_atlan_tags=~include_atlan_tags,
     )
-    response = client.search(criteria=request)
+    response = client.asset.search(criteria=request)
     return (
         result
         if (

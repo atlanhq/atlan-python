@@ -4,6 +4,7 @@ import copy
 import dataclasses
 from typing import Optional, TypeVar, Union
 
+from pyatlan.client.asset import IndexSearchResults
 from pyatlan.model.aggregation import Aggregation
 from pyatlan.model.assets import Referenceable
 from pyatlan.model.enums import EntityStatus
@@ -394,16 +395,16 @@ class FluentSearch(CompoundQuery):
         dsl = self._dsl()
         dsl.size = 1
         request = IndexSearchRequest(dsl=dsl)
-        return client.search(request).count
+        return client.asset.search(request).count
 
-    def execute(self, client: AtlanClient) -> AtlanClient.IndexSearchResults:
+    def execute(self, client: AtlanClient) -> IndexSearchResults:
         """
         Run the fluent search to retrieve assets that match the supplied criteria.
 
         :param client: client through which to retrieve the assets
         :returns: an iterable list of assets that match the supplied criteria, lazily-fetched
         """
-        return client.search(self.to_request())
+        return client.asset.search(self.to_request())
 
 
 from pyatlan.client.atlan import AtlanClient  # noqa: E402

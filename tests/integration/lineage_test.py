@@ -625,13 +625,13 @@ def test_search_by_lineage(
         dsl=dsl,
         attributes=["name", "__hasLineage"],
     )
-    response = client.search(index)
+    response = client.asset.search(index)
     assert response
     count = 0
     # TODO: replace with exponential back-off and jitter
     while response.count < 3 and count < 10:
         time.sleep(2)
-        response = client.search(index)
+        response = client.asset.search(index)
         count += 1
     assert response
     assert response.count == 3

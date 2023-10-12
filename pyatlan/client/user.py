@@ -345,7 +345,7 @@ class UserClient:
                 .include_on_results(keyword_field)
                 .page_size(1)
             ).to_request()
-            results = tmp.search(request)
+            results = tmp.asset.search(request)
             if not results.current_page():
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
                     asset_guid

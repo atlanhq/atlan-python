@@ -4,6 +4,7 @@ from unittest.mock import DEFAULT, Mock, patch
 
 import pytest
 
+from pyatlan.client.asset import AssetClient
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
@@ -384,7 +385,7 @@ def test_find_glossary_by_name_with_bad_values_raises_value_error(
         client.find_glossary_by_name(name=name, attributes=attributes)
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 0
 
@@ -396,7 +397,7 @@ def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
         client.find_glossary_by_name(GLOSSARY_NAME)
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 1
     mock_search.return_value.current_page.return_value = [Table()]
@@ -410,7 +411,7 @@ def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_searc
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_glossary(mock_search, caplog):
     request = None
     attributes = ["name"]
@@ -513,7 +514,7 @@ def test_find_category_fast_by_name_with_bad_values_raises_value_error(
         )
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 0
 
@@ -527,7 +528,7 @@ def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_
         )
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_category_fast_by_name_when_non_category_found_raises_not_found_error(
     mock_search,
 ):
@@ -545,7 +546,7 @@ def test_find_category_fast_by_name_when_non_category_found_raises_not_found_err
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_category_fast_by_name(mock_search, caplog):
     request = None
     attributes = ["name"]
@@ -735,7 +736,7 @@ def test_find_term_fast_by_name_with_bad_values_raises_value_error(
         )
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_search):
     mock_search.return_value.count = 0
 
@@ -749,7 +750,7 @@ def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_sear
         )
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search,
 ):
@@ -767,7 +768,7 @@ def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
     mock_search.return_value.current_page.assert_called_once()
 
 
-@patch.object(AtlanClient, "search")
+@patch.object(AssetClient, "search")
 def test_find_term_fast_by_name(mock_search, caplog):
     request = None
     attributes = ["name"]
