@@ -16,7 +16,7 @@ SERVICE_ACCOUNT_ = "service-account-"
 class TokenClient:
     """
     This class can be used to retrieve information pertaining to API tokens. This class does not need to be instantiated
-    directly but can be obtained through the workflow property of AtlanClient.
+    directly but can be obtained through the token property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
@@ -35,14 +35,14 @@ class TokenClient:
         offset: int = 0,
     ) -> ApiTokenResponse:
         """
-        Retrieves a list of API tokens defined in Atlan.
+        Retrieves an ApiTokenResponse which contains a list of API tokens defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param post_filter: which API tokens to retrieve
         :param sort: property by which to sort the results
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
-        :returns: a list of API tokens that match the provided criteria
+        :returns: an ApiTokenResponse which contains a list of API tokens that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, str] = {
