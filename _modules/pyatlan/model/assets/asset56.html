@@ -437,6 +437,7 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">BooleanField</span><span class="p">,</span>
     <span class="n">KeywordField</span><span class="p">,</span>
@@ -444,6 +445,7 @@
     <span class="n">RelationField</span><span class="p">,</span>
     <span class="n">TextField</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span> <span class="nn">.asset26</span> <span class="kn">import</span> <span class="n">API</span>
 
@@ -452,6 +454,17 @@
 <a class="viewcode-back" href="../../../../asset/apispec.html#pyatlan.model.assets.APISpec">[docs]</a>
 <span class="k">class</span> <span class="nc">APISpec</span><span class="p">(</span><span class="n">API</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="c1"># @validate_arguments()</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APISpec</span><span class="p">:</span>
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;APISpec&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -671,6 +684,32 @@
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiPaths&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
 
+        <span class="nd">@classmethod</span>
+        <span class="c1"># @validate_arguments()</span>
+        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Split the connection_qualified_name to extract necessary information</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">connection_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid connection_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+            <span class="k">return</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">connection_qualified_name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="n">connection_qualified_name</span><span class="p">,</span>
+                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="p">)</span>
+
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;APISpec.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Map of attributes in the instance and their values. The specific keys of this map will vary by &quot;</span>
@@ -683,6 +722,17 @@
 <a class="viewcode-back" href="../../../../asset/apipath.html#pyatlan.model.assets.APIPath">[docs]</a>
 <span class="k">class</span> <span class="nc">APIPath</span><span class="p">(</span><span class="n">API</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Description&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="c1"># @validate_arguments()</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path_raw_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIPath</span><span class="p">:</span>
+        <span class="n">validate_required_fields</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;path_raw_uri&quot;</span><span class="p">,</span> <span class="s2">&quot;spec_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">path_raw_uri</span><span class="o">=</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="o">=</span><span class="n">spec_qualified_name</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
 
     <span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s2">&quot;APIPath&quot;</span><span class="p">,</span> <span class="n">allow_mutation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -861,6 +911,36 @@
         <span class="n">api_spec</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">APISpec</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
             <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;apiSpec&quot;</span>
         <span class="p">)</span>  <span class="c1"># relationship</span>
+
+        <span class="nd">@classmethod</span>
+        <span class="c1"># @validate_arguments()</span>
+        <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path_raw_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
+            <span class="n">validate_required_fields</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;path_raw_uri&quot;</span><span class="p">,</span> <span class="s2">&quot;spec_qualified_name&quot;</span><span class="p">],</span>
+                <span class="p">[</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Split the spec_qualified_name to extract necessary information</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">spec_qualified_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spec_qualified_name&quot;</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">connector_type</span> <span class="o">=</span> <span class="n">AtlanConnectorType</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type:ignore</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid spec_qualified_name&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+            <span class="k">return</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(</span>
+                <span class="n">api_path_raw_u_r_i</span><span class="o">=</span><span class="n">path_raw_uri</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">path_raw_uri</span><span class="p">,</span>
+                <span class="n">api_spec_qualified_name</span><span class="o">=</span><span class="n">spec_qualified_name</span><span class="p">,</span>
+                <span class="n">connection_qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">qualified_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spec_qualified_name</span><span class="si">}{</span><span class="n">path_raw_uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">connector_name</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">apiSpec</span><span class="o">=</span><span class="n">APISpec</span><span class="o">.</span><span class="n">ref_by_qualified_name</span><span class="p">(</span><span class="n">spec_qualified_name</span><span class="p">),</span>
+            <span class="p">)</span>
 
     <span class="n">attributes</span><span class="p">:</span> <span class="s2">&quot;APIPath.Attributes&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">(),</span>
