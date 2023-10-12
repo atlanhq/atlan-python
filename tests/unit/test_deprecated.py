@@ -307,7 +307,7 @@ def test_get_users(mock_type_def_client, client: AtlanClient):
     )
 
 
-@patch.object(UserClient, "get_all")
+@patch.object(UserClient, "list")
 def test_get_all_users(mock_type_def_client, client: AtlanClient):
     limit = 1
 

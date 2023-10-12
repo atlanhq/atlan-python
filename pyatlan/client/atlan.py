@@ -775,13 +775,13 @@ class AtlanClient(BaseSettings):
         self,
         limit: int = 20,
     ) -> list[AtlanUser]:
-        """Deprecated - use user.get_all() instead."""
+        """Deprecated - use user.list() instead."""
         warn(
-            "This method is deprecated, please use 'user.get_all' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'user.list' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.user.get_all(limit=limit)
+        return self.user.list(limit=limit)
 
     def get_users_by_email(
         self,

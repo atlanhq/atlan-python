@@ -128,7 +128,7 @@ class UserClient:
         offset: int = 0,
     ) -> UserResponse:
         """
-        Retrieves a list of users defined in Atlan.
+        Retrieves a UserResponse which aan be used to retrieve list of users defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param post_filter: which users to retrieve
@@ -172,13 +172,14 @@ class UserClient:
         )
         return UserResponse(**raw_json)
 
-    def get_all(
+    def list(
         self,
         limit: int = 20,
     ) -> list[AtlanUser]:
         """
         Retrieve all users defined in Atlan.
 
+        :param limit: maximum number of users to retrieve
         :returns: a list of all the users in Atlan
         """
         users: list[AtlanUser] = []
