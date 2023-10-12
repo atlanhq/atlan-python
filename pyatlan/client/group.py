@@ -22,8 +22,8 @@ from pyatlan.model.user import UserResponse
 
 class GroupClient:
     """
-    This class can be used to retrieve information and rerun workflows. This class does not need to be instantiated
-    directly but can be obtained through the workflow property of AtlanClient.
+    This class can be used to retrieve information about groups. This class does not need to be instantiated
+    directly but can be obtained through the group property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
@@ -91,14 +91,14 @@ class GroupClient:
         offset: int = 0,
     ) -> GroupResponse:
         """
-        Retrieves a list of the groups defined in Atlan.
+        Retrieves a GroupResponse object which contains a list of the groups defined in Atlan.
 
         :param limit: maximum number of results to be returned
         :param post_filter: which groups to retrieve
         :param sort: property by which to sort the results
         :param count: whether to return the total number of records (True) or not (False)
         :param offset: starting point for results to return, for paging
-        :returns: a list of groups that match the provided criteria
+        :returns: a GroupResponse object which contains a list of groups that match the provided criteria
         :raises AtlanError: on any API communication issue
         """
         query_params: dict[str, str] = {
@@ -123,6 +123,7 @@ class GroupClient:
         """
         Retrieve all groups defined in Atlan.
 
+        :param limit: maximum number of results to be returned
         :returns: a list of all the groups in Atlan
         """
         groups: list[AtlanGroup] = []
@@ -164,10 +165,10 @@ class GroupClient:
 
     def get_members(self, guid: str) -> UserResponse:
         """
-        Retrieves the members (users) of a group.
+        Retrieves a UserResponse object which contains a list of the members (users) of a group.
 
         :param guid: unique identifier (GUID) of the group from which to retrieve members
-        :returns: list of users that are members of the group
+        :returns: a UserResponse object which contains a list of users that are members of the group
         :raises AtlanError: on any API communication issue
         """
         raw_json = self._client._call_api(
