@@ -86,9 +86,9 @@ class TypeDefClient:
 
     def get_all(self) -> TypeDefResponse:
         """
-        Retrieves a list of all the type definitions in Atlan.
+        Retrieves a TypeDefResponse object that contains a list of all the type definitions in Atlan.
 
-        :returns: a list of all the type definitions in Atlan
+        :returns: TypeDefResponse object that contains  a list of all the type definitions in Atlan
         :raises AtlanError: on any API communication issue
         """
         raw_json = self._client._call_api(GET_ALL_TYPE_DEFS)
@@ -98,10 +98,10 @@ class TypeDefClient:
         self, type_category: Union[AtlanTypeCategory, list[AtlanTypeCategory]]
     ) -> TypeDefResponse:
         """
-        Retrieves a list of the type definitions in Atlan.
+        Retrieves  a TypeDefResponse object that contain a list of the specified category type definitions in Atlan.
 
         :param type_category: category of type definitions to retrieve
-        :returns: the requested list of type definitions
+        :returns: TypeDefResponse object that contain a list that contains the requested list of type definitions
         :raises AtlanError: on any API communication issue
         """
         categories: list[str] = []
