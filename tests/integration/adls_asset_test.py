@@ -49,7 +49,7 @@ def _retrieve_and_check(client: AtlanClient, to_check: list[Asset], retry_count:
     leftovers = []
     for one in to_check:
         try:
-            candidate = client.get_asset_by_guid(one.guid, asset_type=type(one))
+            candidate = client.asset.get_by_guid(one.guid, asset_type=type(one))
             if candidate and candidate.status == EntityStatus.ACTIVE:
                 leftovers.append(candidate)
         except NotFoundError:
@@ -82,7 +82,7 @@ def adls_account(
     to_create = ADLSAccount.create(
         name=ADLS_ACCOUNT_NAME, connection_qualified_name=connection.qualified_name
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSAccount)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=ADLSAccount)
@@ -109,7 +109,7 @@ def adls_container(
     to_create = ADLSContainer.create(
         name=CONTAINER_NAME, adls_account_qualified_name=adls_account.qualified_name
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSContainer)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=ADLSContainer)
@@ -136,7 +136,7 @@ def adls_object(
     to_create = ADLSObject.create(
         name=OBJECT_NAME, adls_container_qualified_name=adls_container.qualified_name
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=ADLSObject)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=ADLSObject)
@@ -163,7 +163,7 @@ def test_update_adls_object(
 ):
     assert adls_object.qualified_name
     assert adls_object.name
-    updated = client.update_certificate(
+    updated = client.asset.update_certificate(
         asset_type=ADLSObject,
         qualified_name=adls_object.qualified_name,
         name=OBJECT_NAME,
@@ -174,7 +174,7 @@ def test_update_adls_object(
     assert updated.certificate_status_message == CERTIFICATE_MESSAGE
     assert adls_object.qualified_name
     assert adls_object.name
-    updated = client.update_announcement(
+    updated = client.asset.update_announcement(
         asset_type=ADLSObject,
         qualified_name=adls_object.qualified_name,
         name=OBJECT_NAME,
@@ -197,7 +197,7 @@ def test_retrieve_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    b = client.get_asset_by_guid(adls_object.guid, asset_type=ADLSObject)
+    b = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject)
     assert b
     assert not b.is_incomplete
     assert b.guid == adls_object.guid
@@ -217,7 +217,7 @@ def test_update_adls_object_again(
 ):
     assert adls_object.qualified_name
     assert adls_object.name
-    updated = client.remove_certificate(
+    updated = client.asset.remove_certificate(
         asset_type=ADLSObject,
         qualified_name=adls_object.qualified_name,
         name=adls_object.name,
@@ -229,7 +229,7 @@ def test_update_adls_object_again(
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert adls_object.qualified_name
-    updated = client.remove_announcement(
+    updated = client.asset.remove_announcement(
         qualified_name=adls_object.qualified_name,
         asset_type=ADLSObject,
         name=adls_object.name,
@@ -247,7 +247,7 @@ def test_delete_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    response = client.delete_entity_by_guid(adls_object.guid)
+    response = client.asset.delete_by_guid(adls_object.guid)
     assert response
     assert not response.assets_created(asset_type=ADLSObject)
     assert not response.assets_updated(asset_type=ADLSObject)
@@ -267,7 +267,7 @@ def test_read_deleted_adls_object(
     adls_container: ADLSContainer,
     adls_object: ADLSObject,
 ):
-    deleted = client.get_asset_by_guid(adls_object.guid, asset_type=ADLSObject)
+    deleted = client.asset.get_by_guid(adls_object.guid, asset_type=ADLSObject)
     assert deleted
     assert deleted.guid == adls_object.guid
     assert deleted.qualified_name == adls_object.qualified_name
@@ -282,11 +282,11 @@ def test_restore_object(
     adls_object: ADLSObject,
 ):
     assert adls_object.qualified_name
-    assert client.restore(
+    assert client.asset.restore(
         asset_type=ADLSObject, qualified_name=adls_object.qualified_name
     )
     assert adls_object.qualified_name
-    restored = client.get_asset_by_qualified_name(
+    restored = client.asset.get_by_qualified_name(
         asset_type=ADLSObject, qualified_name=adls_object.qualified_name
     )
     assert restored

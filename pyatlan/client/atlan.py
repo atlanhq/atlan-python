@@ -597,14 +597,14 @@ class AtlanClient(BaseSettings):
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
     ) -> A:
-        """Deprecated - use asset.get_asset_by_qualified_name() instead."""
+        """Deprecated - use asset.get_by_qualified_name() instead."""
         warn(
-            "This method is deprecated, please use 'asset.get_asset_by_qualified_name' instead, which offers identical "
+            "This method is deprecated, please use 'asset.get_by_qualified_name' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.get_asset_by_qualified_name(
+        return self.asset.get_by_qualified_name(
             qualified_name=qualified_name,
             asset_type=asset_type,
             min_ext_info=min_ext_info,
@@ -619,14 +619,14 @@ class AtlanClient(BaseSettings):
         min_ext_info: bool = False,
         ignore_relationships: bool = False,
     ) -> A:
-        """Deprecated - use asset.get_asset_by_guid() instead."""
+        """Deprecated - use asset.get_by_guid() instead."""
         warn(
-            "This method is deprecated, please use 'asset.get_asset_by_guid' instead, which offers identical "
+            "This method is deprecated, please use 'asset.get_by_guid' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.get_asset_by_guid(
+        return self.asset.get_by_guid(
             guid=guid,
             asset_type=asset_type,
             min_ext_info=min_ext_info,
@@ -771,26 +771,26 @@ class AtlanClient(BaseSettings):
     def purge_entity_by_guid(
         self, guid: Union[str, list[str]]
     ) -> AssetMutationResponse:
-        """Deprecated - use asset.purge_entity_by_guid() instead."""
+        """Deprecated - use asset.purge_by_guid() instead."""
         warn(
-            "This method is deprecated, please use 'asset.purge_entity_by_guid' instead, which offers identical "
+            "This method is deprecated, please use 'asset.purge_by_guid' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.purge_entity_by_guid(guid=guid)
+        return self.asset.purge_by_guid(guid=guid)
 
     def delete_entity_by_guid(
         self, guid: Union[str, list[str]]
     ) -> AssetMutationResponse:
-        """Deprecated - use asset.delete_entity_by_guid() instead."""
+        """Deprecated - use asset.delete_by_guid() instead."""
         warn(
-            "This method is deprecated, please use 'asset.delete_entity_by_guid' instead, which offers identical "
+            "This method is deprecated, please use 'asset.delete_by_guid' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.asset.delete_entity_by_guid(guid=guid)
+        return self.asset.delete_by_guid(guid=guid)
 
     def restore(self, asset_type: Type[A], qualified_name: str) -> bool:
         """Deprecated - use asset.restore() instead."""
@@ -803,9 +803,9 @@ class AtlanClient(BaseSettings):
         return self.asset.restore(asset_type=asset_type, qualified_name=qualified_name)
 
     def search(self, criteria: IndexSearchRequest) -> IndexSearchResults:
-        """Deprecated - use role.get() instead."""
+        """Deprecated - use asset.search() instead."""
         warn(
-            "This method is deprecated, please use 'role.get' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'asset.search' instead, which offers identical functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -1037,9 +1037,10 @@ class AtlanClient(BaseSettings):
         guid: Optional[str] = None,
         qualified_name: Optional[str] = None,
     ) -> A:
-        """Deprecated - use asset.append_terms() instead."""
+        """Deprecated - use asset.replace_terms() instead."""
         warn(
-            "This method is deprecated, please use 'asset.append_terms' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'asset.replace_terms' instead, which offers identical "
+            "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -1102,9 +1103,10 @@ class AtlanClient(BaseSettings):
     def get_lineage_list(
         self, lineage_request: LineageListRequest
     ) -> LineageListResults:
-        """Deprecated - use user.add_as_admin() instead."""
+        """Deprecated - use asset.get_lineage_list() instead."""
         warn(
-            "This method is deprecated, please use 'user.add_as_admin' instead, which offers identical functionality.",
+            "This method is deprecated, please use 'asset.get_lineage_list' instead, which offers identical "
+            "functionality.",
             DeprecationWarning,
             stacklevel=2,
         )

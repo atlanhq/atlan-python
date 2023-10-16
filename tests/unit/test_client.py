@@ -98,67 +98,64 @@ def test_append_with_valid_guid_and_no_terms_returns_asset():
     asset_type = Table
     table = asset_type()
 
-    with patch.object(
-        AtlanClient, "get_asset_by_guid", return_value=table
-    ) as mock_method:
+    with patch.object(AssetClient, "get_by_guid", return_value=table) as mock_method:
         client = AtlanClient()
         guid = "123"
         terms = []
 
         assert (
-            client.append_terms(guid=guid, asset_type=asset_type, terms=terms) == table
+            client.asset.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            == table
         )
     mock_method.assert_called_once_with(guid=guid, asset_type=asset_type)
 
 
 def test_append_with_valid_guid_when_no_terms_present_returns_asset_with_given_terms():
     asset_type = Table
-    with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
-    ) as mock_methods:
+    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
         table = Table()
-        mock_methods["get_asset_by_guid"].return_value = table
+        mock_methods["get_by_guid"].return_value = table
         mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
         terms = [AtlasGlossaryTerm()]
 
         assert (
-            asset := client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset := client.asset.append_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
         )
         assert asset.assigned_terms == terms
 
 
 def test_append_with_valid_guid_when_deleted_terms_present_returns_asset_with_given_terms():
     asset_type = Table
-    with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
-    ) as mock_methods:
+    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
         table = Table(attributes=Table.Attributes())
         term = AtlasGlossaryTerm()
         term.relationship_status = "DELETED"
         table.attributes.meanings = [term]
-        mock_methods["get_asset_by_guid"].return_value = table
+        mock_methods["get_by_guid"].return_value = table
         mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
         terms = [AtlasGlossaryTerm()]
 
         assert (
-            asset := client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset := client.asset.append_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
         )
         assert asset.assigned_terms == terms
 
 
 def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_terms():
     asset_type = Table
-    with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
-    ) as mock_methods:
+    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
         table = Table(attributes=Table.Attributes())
         exisiting_term = AtlasGlossaryTerm()
         table.attributes.meanings = [exisiting_term]
-        mock_methods["get_asset_by_guid"].return_value = table
+        mock_methods["get_by_guid"].return_value = table
         mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
@@ -167,7 +164,9 @@ def test_append_with_valid_guid_when_terms_present_returns_asset_with_combined_t
         terms = [new_term]
 
         assert (
-            asset := client.append_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset := client.asset.append_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
         )
         assert (updated_terms := asset.assigned_terms)
         assert len(updated_terms) == 2
@@ -232,18 +231,18 @@ def test_replace_terms_with_invalid_parameter_raises_error(
 
 def test_replace_terms():
     asset_type = Table
-    with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
-    ) as mock_methods:
+    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
         table = Table()
-        mock_methods["get_asset_by_guid"].return_value = table
+        mock_methods["get_by_guid"].return_value = table
         mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
         terms = [AtlasGlossaryTerm()]
 
         assert (
-            asset := client.replace_terms(guid=guid, asset_type=asset_type, terms=terms)
+            asset := client.asset.replace_terms(
+                guid=guid, asset_type=asset_type, terms=terms
+            )
         )
         assert asset.assigned_terms == terms
 
@@ -313,22 +312,20 @@ def test_remove_terms_with_invalid_parameter_raises_error(
 
 def test_remove_with_valid_guid_when_terms_present_returns_asset_with_terms_removed():
     asset_type = Table
-    with patch.multiple(
-        AtlanClient, get_asset_by_guid=DEFAULT, save=DEFAULT
-    ) as mock_methods:
+    with patch.multiple(AssetClient, get_by_guid=DEFAULT, save=DEFAULT) as mock_methods:
         table = Table(attributes=Table.Attributes())
         exisiting_term = AtlasGlossaryTerm()
         exisiting_term.guid = "b4113341-251b-4adc-81fb-2420501c30e6"
         other_term = AtlasGlossaryTerm()
         other_term.guid = "b267858d-8316-4c41-a56a-6e9b840cef4a"
         table.attributes.meanings = [exisiting_term, other_term]
-        mock_methods["get_asset_by_guid"].return_value = table
+        mock_methods["get_by_guid"].return_value = table
         mock_methods["save"].return_value.assets_updated.return_value = [table]
         client = AtlanClient()
         guid = "123"
 
         assert (
-            asset := client.remove_terms(
+            asset := client.asset.remove_terms(
                 guid=guid, asset_type=asset_type, terms=[exisiting_term]
             )
         )

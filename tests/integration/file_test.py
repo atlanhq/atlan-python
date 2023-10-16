@@ -46,7 +46,7 @@ def file(client: AtlanClient, connection: Connection) -> Generator[File, None, N
         file_type=FileType.PDF,
     )
     to_create.file_path = "https://www.example.com"
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=File)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=File)
@@ -75,7 +75,7 @@ def test_update_file(
 ):
     assert file.qualified_name
     assert file.name
-    updated = client.update_certificate(
+    updated = client.asset.update_certificate(
         qualified_name=file.qualified_name,
         name=file.name,
         asset_type=File,
@@ -87,7 +87,7 @@ def test_update_file(
     assert updated.certificate_status_message == CERTIFICATE_MESSAGE
     assert file.qualified_name
     assert file.name
-    updated = client.update_announcement(
+    updated = client.asset.update_announcement(
         qualified_name=file.qualified_name,
         name=file.name,
         asset_type=File,
@@ -109,7 +109,7 @@ def test_read_file(
     connection: Connection,
     file: File,
 ):
-    r = client.get_asset_by_guid(file.guid, asset_type=File)
+    r = client.asset.get_by_guid(file.guid, asset_type=File)
     assert r
     assert r.guid == file.guid
     assert r.qualified_name == file.qualified_name

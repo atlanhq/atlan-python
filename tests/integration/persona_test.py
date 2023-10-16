@@ -50,7 +50,7 @@ def persona(
     glossary: AtlasGlossary,
 ) -> Generator[Persona, None, None]:
     to_create = Persona.create(name=MODULE_NAME)
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     p = response.assets_created(asset_type=Persona)[0]
     yield p
     delete_asset(client, guid=p.guid, asset_type=Persona)
@@ -88,7 +88,7 @@ def test_update_persona(
         AssetSidebarTab.RELATIONS.value,
         AssetSidebarTab.QUERIES.value,
     }
-    response = client.save(to_update)
+    response = client.asset.save(to_update)
     assert response
     updated = response.assets_updated(asset_type=Persona)
     assert updated
@@ -150,7 +150,7 @@ def test_add_policies_to_persona(
         actions={PersonaGlossaryAction.CREATE, PersonaGlossaryAction.UPDATE},
         resources={f"entity:{glossary.qualified_name}"},
     )
-    response = client.save([metadata, data, glossary_policy])
+    response = client.asset.save([metadata, data, glossary_policy])
     assert response
     personas = response.assets_updated(asset_type=Persona)
     assert personas
@@ -169,7 +169,7 @@ def test_retrieve_persona(
     glossary: AtlasGlossary,
 ):
     assert persona.qualified_name
-    one = client.get_asset_by_qualified_name(
+    one = client.asset.get_by_qualified_name(
         qualified_name=persona.qualified_name, asset_type=Persona
     )
     assert one
@@ -187,7 +187,7 @@ def test_retrieve_persona(
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
-        full = client.get_asset_by_guid(guid=policy.guid, asset_type=AuthPolicy)
+        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy)
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat

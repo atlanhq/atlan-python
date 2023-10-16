@@ -212,7 +212,7 @@ class AssetClient:
         )
 
     @validate_arguments()
-    def get_asset_by_qualified_name(
+    def get_by_qualified_name(
         self,
         qualified_name: str,
         asset_type: Type[A],
@@ -251,7 +251,7 @@ class AssetClient:
         return asset
 
     @validate_arguments()
-    def get_asset_by_guid(
+    def get_by_guid(
         self,
         guid: str,
         asset_type: Type[A],
@@ -308,7 +308,7 @@ class AssetClient:
         :returns: the asset, without any of its relationships
         :raises NotFoundError: if the asset does not exist
         """
-        return self.get_asset_by_guid(
+        return self.get_by_guid(
             guid=guid,
             asset_type=asset_type,
             min_ext_info=True,
@@ -426,7 +426,7 @@ class AssetClient:
         :returns: details of the updated asset
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
-        self.get_asset_by_qualified_name(
+        self.get_by_qualified_name(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
             min_ext_info=True,
@@ -497,7 +497,7 @@ class AssetClient:
         :raises NotFoundError: if the asset does not exist (will not create it)
         """
 
-        self.get_asset_by_qualified_name(
+        self.get_by_qualified_name(
             qualified_name=entity.qualified_name or "",
             asset_type=type(entity),
             min_ext_info=True,
@@ -507,9 +507,7 @@ class AssetClient:
             entity=entity, replace_atlan_tags=replace_atlan_tags
         )
 
-    def purge_entity_by_guid(
-        self, guid: Union[str, list[str]]
-    ) -> AssetMutationResponse:
+    def purge_by_guid(self, guid: Union[str, list[str]]) -> AssetMutationResponse:
         """
         Hard-deletes (purges) one or more assets by their unique identifier (GUID).
         This operation is irreversible.
@@ -529,9 +527,7 @@ class AssetClient:
         )
         return AssetMutationResponse(**raw_json)
 
-    def delete_entity_by_guid(
-        self, guid: Union[str, list[str]]
-    ) -> AssetMutationResponse:
+    def delete_by_guid(self, guid: Union[str, list[str]]) -> AssetMutationResponse:
         """
         Soft-deletes (archives) one or more assets by their unique identifier (GUID).
         This operation can be reversed by updating the asset and its status to ACTIVE.
@@ -581,7 +577,7 @@ class AssetClient:
         return self._restore(asset_type, qualified_name, 0)
 
     def _restore(self, asset_type: Type[A], qualified_name: str, retries: int) -> bool:
-        existing = self.get_asset_by_qualified_name(
+        existing = self.get_by_qualified_name(
             asset_type=asset_type, qualified_name=qualified_name
         )
         if not existing:
@@ -885,9 +881,9 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
-            asset = self.get_asset_by_qualified_name(
+            asset = self.get_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
@@ -927,9 +923,9 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
-            asset = self.get_asset_by_qualified_name(
+            asset = self.get_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:
@@ -965,9 +961,9 @@ class AssetClient:
         if guid:
             if qualified_name:
                 raise ErrorCode.QN_OR_GUID_NOT_BOTH.exception_with_parameters()
-            asset = self.get_asset_by_guid(guid=guid, asset_type=asset_type)
+            asset = self.get_by_guid(guid=guid, asset_type=asset_type)
         elif qualified_name:
-            asset = self.get_asset_by_qualified_name(
+            asset = self.get_by_qualified_name(
                 qualified_name=qualified_name, asset_type=asset_type
             )
         else:

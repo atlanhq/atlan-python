@@ -27,7 +27,7 @@ def upsert(client: AtlanClient):
     guids: list[str] = []
 
     def _upsert(asset: Asset) -> AssetMutationResponse:
-        _response = client.save(asset)
+        _response = client.asset.save(asset)
         if (
             _response
             and _response.mutated_entities
@@ -39,7 +39,7 @@ def upsert(client: AtlanClient):
     yield _upsert
 
     for guid in reversed(guids):
-        response = client.purge_entity_by_guid(guid)
+        response = client.asset.purge_by_guid(guid)
         if (
             not response
             or not response.mutated_entities
@@ -84,7 +84,7 @@ class TestConnection:
         assert isinstance(response.mutated_entities.CREATE[0], Connection)
         assert response.guid_assignments
         c = response.mutated_entities.CREATE[0]
-        c = client.get_asset_by_guid(c.guid, Connection)
+        c = client.asset.get_by_guid(c.guid, Connection)
         assert isinstance(c, Connection)
         TestConnection.connection = c
 
@@ -139,7 +139,7 @@ class TestDatabase:
         assert isinstance(response.mutated_entities.CREATE[0], Database)
         assert response.guid_assignments
         database = response.mutated_entities.CREATE[0]
-        client.get_asset_by_guid(database.guid, Database)
+        client.asset.get_by_guid(database.guid, Database)
         TestDatabase.database = database
 
     @pytest.mark.order(after="test_create")
@@ -187,10 +187,10 @@ class TestSchema:
         response = upsert(schema)
         assert (schemas := response.assets_created(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.get_asset_by_guid(schemas[0].guid, Schema)
+        schema = client.asset.get_by_guid(schemas[0].guid, Schema)
         assert (databases := response.assets_updated(asset_type=Database))
         assert len(databases) == 1
-        database = client.get_asset_by_guid(databases[0].guid, Database)
+        database = client.asset.get_by_guid(databases[0].guid, Database)
         assert database.attributes.schemas
         schemas = database.attributes.schemas
         assert len(schemas) == 1
@@ -242,10 +242,10 @@ class TestTable:
         response = upsert(table)
         assert (tables := response.assets_created(asset_type=Table))
         assert len(tables) == 1
-        table = client.get_asset_by_guid(guid=tables[0].guid, asset_type=Table)
+        table = client.asset.get_by_guid(guid=tables[0].guid, asset_type=Table)
         assert (schemas := response.assets_updated(asset_type=Schema))
         assert len(schemas) == 1
-        schema = client.get_asset_by_guid(guid=schemas[0].guid, asset_type=Schema)
+        schema = client.asset.get_by_guid(guid=schemas[0].guid, asset_type=Schema)
         assert schema.attributes.tables
         tables = schema.attributes.tables
         assert len(tables) == 1
@@ -347,11 +347,11 @@ class TestColumn:
             parent_type=Table,
             order=1,
         )
-        response = client.save(column)
+        response = client.asset.save(column)
         assert (columns := response.assets_created(asset_type=Column))
         assert len(columns) == 1
-        column = client.get_asset_by_guid(asset_type=Column, guid=columns[0].guid)
-        table = client.get_asset_by_guid(asset_type=Table, guid=TestTable.table.guid)
+        column = client.asset.get_by_guid(asset_type=Column, guid=columns[0].guid)
+        table = client.asset.get_by_guid(asset_type=Table, guid=TestTable.table.guid)
         assert table.attributes.columns
         columns = table.attributes.columns
         assert len(columns) == 1
@@ -400,7 +400,7 @@ class TestReadme:
         assert len(reaadmes) == 1
         assert (columns := response.assets_updated(asset_type=Column))
         assert len(columns) == 1
-        readme = client.get_asset_by_guid(guid=reaadmes[0].guid, asset_type=Readme)
+        readme = client.asset.get_by_guid(guid=reaadmes[0].guid, asset_type=Readme)
         TestReadme.readme = readme
 
     @pytest.mark.order(after="test_create")

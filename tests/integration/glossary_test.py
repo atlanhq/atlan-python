@@ -25,7 +25,7 @@ TERM_NAME2 = f"{MODULE_NAME}2"
 
 def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
     g = AtlasGlossary.create(name=StrictStr(name))
-    r = client.save(g)
+    r = client.asset.save(g)
     return r.assets_created(AtlasGlossary)[0]
 
 
@@ -33,7 +33,7 @@ def create_category(
     client: AtlanClient, name: str, glossary: AtlasGlossary
 ) -> AtlasGlossaryCategory:
     c = AtlasGlossaryCategory.create(name=name, anchor=glossary)
-    return client.save(c).assets_created(AtlasGlossaryCategory)[0]
+    return client.asset.save(c).assets_created(AtlasGlossaryCategory)[0]
 
 
 def create_term(
@@ -42,7 +42,7 @@ def create_term(
     t = AtlasGlossaryTerm.create(
         name=StrictStr(name), glossary_guid=StrictStr(glossary_guid)
     )
-    r = client.save(t)
+    r = client.asset.save(t)
     return r.assets_created(AtlasGlossaryTerm)[0]
 
 
@@ -79,7 +79,7 @@ def test_category(
     assert category.guid
     assert category.name == MODULE_NAME
     assert category.qualified_name
-    c = client.get_asset_by_guid(category.guid, AtlasGlossaryCategory)
+    c = client.asset.get_by_guid(category.guid, AtlasGlossaryCategory)
     assert c
     assert c.guid == category.guid
     assert c.anchor
@@ -104,7 +104,7 @@ def test_term_failure(
         match="ATLAN-PYTHON-404-000 Server responded with ATLAS-404-00-009: Instance AtlasGlossaryTerm with "
         "unique attribute *",
     ):
-        client.update_merging_cm(
+        client.asset.update_merging_cm(
             AtlasGlossaryTerm.create(
                 name=f"{TERM_NAME1} X", glossary_guid=glossary.guid
             )
@@ -120,7 +120,7 @@ def test_term1(
     assert term1.name == TERM_NAME1
     assert term1.qualified_name
     assert term1.qualified_name != TERM_NAME1
-    t = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    t = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert t
     assert t.guid == term1.guid
     assert t.attributes.anchor
@@ -145,7 +145,7 @@ def test_term2(
     assert term2.name == TERM_NAME2
     assert term2.qualified_name
     assert term2.qualified_name != TERM_NAME2
-    t = client.get_asset_by_guid(term2.guid, asset_type=AtlasGlossaryTerm)
+    t = client.asset.get_by_guid(term2.guid, asset_type=AtlasGlossaryTerm)
     assert t
     assert t.guid == term2.guid
     assert t.attributes.anchor
@@ -158,7 +158,7 @@ def test_read_glossary(
     term1: AtlasGlossaryTerm,
     term2: AtlasGlossaryTerm,
 ):
-    g = client.get_asset_by_guid(glossary.guid, asset_type=AtlasGlossary)
+    g = client.asset.get_by_guid(glossary.guid, asset_type=AtlasGlossary)
     assert g
     assert isinstance(g, AtlasGlossary)
     assert g.guid == glossary.guid
@@ -284,7 +284,7 @@ def test_trim_to_required_glossary(
     glossary: AtlasGlossary,
 ):
     glossary = glossary.trim_to_required()
-    response = client.save(glossary)
+    response = client.asset.save(glossary)
     assert response.mutated_entities is None
 
 
@@ -293,9 +293,9 @@ def test_term_trim_to_required(
     client: AtlanClient,
     term1: AtlasGlossaryTerm,
 ):
-    term1 = client.get_asset_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
+    term1 = client.asset.get_by_guid(guid=term1.guid, asset_type=AtlasGlossaryTerm)
     term1 = term1.trim_to_required()
-    response = client.save(term1)
+    response = client.asset.save(term1)
     assert response.mutated_entities is None
 
 

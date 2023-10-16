@@ -420,8 +420,8 @@ def test_add_term_cm_raci(
     raci_attrs[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
     raci_attrs[CM_ATTR_RACI_CONSULTED] = [group1.name]
     raci_attrs[CM_ATTR_RACI_INFORMED] = [group1.name, group2.name]
-    client.update_custom_metadata_attributes(term.guid, raci_attrs)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.update_custom_metadata_attributes(term.guid, raci_attrs)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_raci_attributes(client, t.get_custom_metadata(name=cm_name))
 
@@ -440,8 +440,8 @@ def test_add_term_cm_ipr(
     ipr_attrs[CM_ATTR_IPR_DATE] = 1659308400000
     ipr_attrs[CM_ATTR_IPR_URL] = "https://creativecommons.org/licenses/by/2.0/"
 
-    client.update_custom_metadata_attributes(term.guid, ipr_attrs)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.update_custom_metadata_attributes(term.guid, ipr_attrs)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_ipr_attributes(t.get_custom_metadata(name=cm_name))
 
@@ -457,8 +457,8 @@ def test_add_term_cm_dq(
     dq_attrs[CM_ATTR_QUALITY_COUNT] = 42
     dq_attrs[CM_ATTR_QUALITY_SQL] = "SELECT * from SOMEWHERE;"
     dq_attrs[CM_ATTR_QUALITY_TYPE] = "Completeness"
-    client.update_custom_metadata_attributes(term.guid, dq_attrs)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.update_custom_metadata_attributes(term.guid, dq_attrs)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_dq_attributes(t.get_custom_metadata(name=cm_name))
 
@@ -473,8 +473,8 @@ def test_update_term_cm_ipr(
     ipr = CustomMetadataDict(cm_name)
     # Note: MUST access the getter / setter, not the underlying store
     ipr[CM_ATTR_IPR_MANDATORY] = False
-    client.update_custom_metadata_attributes(term.guid, ipr)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.update_custom_metadata_attributes(term.guid, ipr)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_ipr_attributes(t.get_custom_metadata(name=cm_name), mandatory=False)
     _validate_raci_attributes(client, t.get_custom_metadata(name=CM_RACI))
@@ -493,8 +493,8 @@ def test_replace_term_cm_raci(
     raci[CM_ATTR_RACI_ACCOUNTABLE] = FIXED_USER
     raci[CM_ATTR_RACI_CONSULTED] = None
     raci[CM_ATTR_RACI_INFORMED] = [group1.name, group2.name]
-    client.replace_custom_metadata(term.guid, raci)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.replace_custom_metadata(term.guid, raci)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
     _validate_ipr_attributes(t.get_custom_metadata(name=CM_IPR), mandatory=False)
@@ -508,8 +508,8 @@ def test_replace_term_cm_ipr(
     term: AtlasGlossaryTerm,
 ):
     term_cm_ipr = CustomMetadataDict(CM_IPR)
-    client.replace_custom_metadata(term.guid, term_cm_ipr)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.replace_custom_metadata(term.guid, term_cm_ipr)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_raci_attributes_replacement(client, t.get_custom_metadata(name=CM_RACI))
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
@@ -599,8 +599,8 @@ def test_remove_term_cm_raci(
     cm_raci: CustomMetadataDef,
     term: AtlasGlossaryTerm,
 ):
-    client.remove_custom_metadata(term.guid, cm_name=CM_RACI)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.remove_custom_metadata(term.guid, cm_name=CM_RACI)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
     _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
@@ -613,8 +613,8 @@ def test_remove_term_cm_ipr(
     cm_ipr: CustomMetadataDef,
     term: AtlasGlossaryTerm,
 ):
-    client.remove_custom_metadata(term.guid, cm_name=CM_IPR)
-    t = client.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
+    client.asset.remove_custom_metadata(term.guid, cm_name=CM_IPR)
+    t = client.asset.retrieve_minimal(guid=term.guid, asset_type=AtlasGlossaryTerm)
     assert t
     _validate_dq_attributes(t.get_custom_metadata(name=CM_QUALITY))
     _validate_ipr_empty(t.get_custom_metadata(name=CM_IPR))
@@ -778,7 +778,7 @@ def test_update_replacing_cm(
         qualified_name=term.qualified_name, name=term.name, glossary_guid=glossary.guid
     )
     to_update.set_custom_metadata(custom_metadata=raci)
-    response = client.update_replacing_cm(to_update, replace_atlan_tags=False)
+    response = client.asset.update_replacing_cm(to_update, replace_atlan_tags=False)
     assert response
     assert len(response.assets_deleted(asset_type=AtlasGlossaryTerm)) == 0
     assert len(response.assets_created(asset_type=AtlasGlossaryTerm)) == 0
@@ -788,7 +788,7 @@ def test_update_replacing_cm(
     assert t.guid == term.guid
     assert t.qualified_name == term.qualified_name
     assert term.qualified_name
-    x = client.get_asset_by_qualified_name(
+    x = client.asset.get_by_qualified_name(
         qualified_name=term.qualified_name, asset_type=AtlasGlossaryTerm
     )
     assert x
@@ -996,7 +996,7 @@ def test_add_badge_cm_dq(
     )
     badge.user_description = "How many data quality checks ran against this asset."
     assert badge.status == EntityStatus.ACTIVE
-    response = client.save(badge)
+    response = client.asset.save(badge)
     assert (badges := response.assets_created(asset_type=Badge))
     assert len(badges) == 1
-    client.purge_entity_by_guid(badges[0].guid)
+    client.asset.purge_by_guid(badges[0].guid)
