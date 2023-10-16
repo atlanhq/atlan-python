@@ -359,4 +359,4 @@ class UserClient:
                 existing_admins.add(token_user)
             to_update = asset.trim_to_required()
             to_update.viewer_users = existing_viewers
-            return tmp.save(to_update)
+            return tmp.asset.save(to_update)

@@ -207,4 +207,4 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         # TODO: Migrate to an AssetBatch once implemented
         for one in changed_assets:
-            self.client.save_merging_cm(one)
+            self.client.asset.save_merging_cm(one)
