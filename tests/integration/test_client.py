@@ -217,7 +217,7 @@ def test_remove_term(
 
 
 def test_find_connections_by_name(client: AtlanClient):
-    connections = client.find_connections_by_name(
+    connections = client.asset.find_connections_by_name(
         name="development",
         connector_type=AtlanConnectorType.SNOWFLAKE,
         attributes=["connectorName"],
