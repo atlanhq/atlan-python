@@ -432,17 +432,14 @@
 <span class="c1"># Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -457,25 +454,15 @@
     <span class="n">validate_arguments</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">requests.adapters</span> <span class="kn">import</span> <span class="n">HTTPAdapter</span>
-<span class="kn">from</span> <span class="nn">tenacity</span> <span class="kn">import</span> <span class="n">retry</span><span class="p">,</span> <span class="n">retry_if_exception_type</span><span class="p">,</span> <span class="n">stop_after_attempt</span><span class="p">,</span> <span class="n">wait_fixed</span>
 <span class="kn">from</span> <span class="nn">urllib3.util.retry</span> <span class="kn">import</span> <span class="n">Retry</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.client.asset</span> <span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">AssetClient</span><span class="p">,</span> <span class="n">IndexSearchResults</span><span class="p">,</span> <span class="n">LineageListResults</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.audit</span> <span class="kn">import</span> <span class="n">AuditClient</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.common</span> <span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">HTTPS_PREFIX</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.constants</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ADD_BUSINESS_ATTRIBUTE_BY_ID</span><span class="p">,</span>
     <span class="n">ADMIN_EVENTS</span><span class="p">,</span>
-    <span class="n">BULK_UPDATE</span><span class="p">,</span>
-    <span class="n">DELETE_ENTITIES_BY_GUIDS</span><span class="p">,</span>
-    <span class="n">DELETE_ENTITY_BY_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">GET_ENTITY_BY_GUID</span><span class="p">,</span>
-    <span class="n">GET_ENTITY_BY_UNIQUE_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">GET_LINEAGE</span><span class="p">,</span>
-    <span class="n">GET_LINEAGE_LIST</span><span class="p">,</span>
-    <span class="n">INDEX_SEARCH</span><span class="p">,</span>
     <span class="n">KEYCLOAK_EVENTS</span><span class="p">,</span>
     <span class="n">PARSE_QUERY</span><span class="p">,</span>
-    <span class="n">PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE</span><span class="p">,</span>
-    <span class="n">UPDATE_ENTITY_BY_ATTRIBUTE</span><span class="p">,</span>
     <span class="n">UPLOAD_IMAGE</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.group</span> <span class="kn">import</span> <span class="n">GroupClient</span>
@@ -485,7 +472,6 @@
 <span class="kn">from</span> <span class="nn">pyatlan.client.user</span> <span class="kn">import</span> <span class="n">UserClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.workflow</span> <span class="kn">import</span> <span class="n">WorkflowClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ERROR_CODE_FOR_HTTP_STATUS</span><span class="p">,</span> <span class="n">AtlanError</span><span class="p">,</span> <span class="n">ErrorCode</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.aggregation</span> <span class="kn">import</span> <span class="n">Aggregations</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.api_tokens</span> <span class="kn">import</span> <span class="n">ApiToken</span><span class="p">,</span> <span class="n">ApiTokenResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Asset</span><span class="p">,</span>
@@ -493,36 +479,13 @@
     <span class="n">AtlasGlossaryCategory</span><span class="p">,</span>
     <span class="n">AtlasGlossaryTerm</span><span class="p">,</span>
     <span class="n">Connection</span><span class="p">,</span>
-    <span class="n">Database</span><span class="p">,</span>
-    <span class="n">MaterialisedView</span><span class="p">,</span>
     <span class="n">Persona</span><span class="p">,</span>
     <span class="n">Purpose</span><span class="p">,</span>
-    <span class="n">Referenceable</span><span class="p">,</span>
-    <span class="n">Schema</span><span class="p">,</span>
-    <span class="n">Table</span><span class="p">,</span>
-    <span class="n">View</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.atlan_image</span> <span class="kn">import</span> <span class="n">AtlanImage</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Announcement</span><span class="p">,</span>
-    <span class="n">AssetRequest</span><span class="p">,</span>
-    <span class="n">AssetResponse</span><span class="p">,</span>
-    <span class="n">AtlanObject</span><span class="p">,</span>
-    <span class="n">AtlanTag</span><span class="p">,</span>
-    <span class="n">AtlanTagName</span><span class="p">,</span>
-    <span class="n">AtlanTags</span><span class="p">,</span>
-    <span class="n">BulkRequest</span><span class="p">,</span>
-    <span class="n">SearchRequest</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.custom_metadata</span> <span class="kn">import</span> <span class="n">CustomMetadataDict</span><span class="p">,</span> <span class="n">CustomMetadataRequest</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AtlanConnectorType</span><span class="p">,</span>
-    <span class="n">AtlanDeleteType</span><span class="p">,</span>
-    <span class="n">AtlanTypeCategory</span><span class="p">,</span>
-    <span class="n">CertificateStatus</span><span class="p">,</span>
-    <span class="n">EntityStatus</span><span class="p">,</span>
-    <span class="n">LineageDirection</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">Announcement</span><span class="p">,</span> <span class="n">AtlanObject</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.custom_metadata</span> <span class="kn">import</span> <span class="n">CustomMetadataDict</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanConnectorType</span><span class="p">,</span> <span class="n">AtlanTypeCategory</span><span class="p">,</span> <span class="n">CertificateStatus</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.group</span> <span class="kn">import</span> <span class="n">AtlanGroup</span><span class="p">,</span> <span class="n">CreateGroupResponse</span><span class="p">,</span> <span class="n">GroupResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.lineage</span> <span class="kn">import</span> <span class="n">LineageListRequest</span><span class="p">,</span> <span class="n">LineageRequest</span><span class="p">,</span> <span class="n">LineageResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.query</span> <span class="kn">import</span> <span class="n">ParsedQuery</span><span class="p">,</span> <span class="n">QueryParserRequest</span>
@@ -540,53 +503,17 @@
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">TypeDef</span><span class="p">,</span> <span class="n">TypeDefResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.user</span> <span class="kn">import</span> <span class="n">AtlanUser</span><span class="p">,</span> <span class="n">UserMinimalResponse</span><span class="p">,</span> <span class="n">UserResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.multipart_data_generator</span> <span class="kn">import</span> <span class="n">MultipartDataGenerator</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">API</span><span class="p">,</span>
-    <span class="n">HTTPStatus</span><span class="p">,</span>
-    <span class="n">get_logger</span><span class="p">,</span>
-    <span class="n">unflatten_custom_metadata_for_entity</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">HTTPStatus</span><span class="p">,</span> <span class="n">get_logger</span>
 
 <span class="n">SERVICE_ACCOUNT_</span> <span class="o">=</span> <span class="s2">&quot;service-account-&quot;</span>
 
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Referenceable</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Asset</span><span class="p">)</span>
-<span class="n">Assets</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
-    <span class="n">AtlasGlossary</span><span class="p">,</span>
-    <span class="n">AtlasGlossaryCategory</span><span class="p">,</span>
-    <span class="n">AtlasGlossaryTerm</span><span class="p">,</span>
-    <span class="n">Connection</span><span class="p">,</span>
-    <span class="n">Database</span><span class="p">,</span>
-    <span class="n">Schema</span><span class="p">,</span>
-    <span class="n">Table</span><span class="p">,</span>
-    <span class="n">View</span><span class="p">,</span>
-    <span class="n">MaterialisedView</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">Asset_Types</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">AtlasGlossary</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">Connection</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">Database</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">Schema</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">View</span><span class="p">],</span>
-    <span class="n">Type</span><span class="p">[</span><span class="n">MaterialisedView</span><span class="p">],</span>
-<span class="p">]</span>
-<span class="n">HTTPS_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span>
 
 <span class="n">DEFAULT_RETRY</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
     <span class="n">total</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">backoff_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">status_forcelist</span><span class="o">=</span><span class="p">[</span><span class="mi">403</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span><span class="p">],</span>
     <span class="n">allowed_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;OPTIONS&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">],</span>
-<span class="p">)</span>
-<span class="n">CONNECTION_RETRY</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
-    <span class="n">total</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">backoff_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">status_forcelist</span><span class="o">=</span><span class="p">[</span><span class="mi">403</span><span class="p">],</span>
-    <span class="n">allowed_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 
 
@@ -611,193 +538,13 @@
     <span class="n">_audit_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AuditClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_group_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GroupClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_role_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RoleClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_asset_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AssetClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_typedef_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TypeDefClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_token_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TokenClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_user_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UserClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
         <span class="n">env_prefix</span> <span class="o">=</span> <span class="s2">&quot;atlan_&quot;</span>
-
-<div class="viewcode-block" id="AtlanClient.SearchResults">
-<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.SearchResults">[docs]</a>
-    <span class="k">class</span> <span class="nc">SearchResults</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Abstract class that encapsulates results returned by various searches.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;AtlanClient&quot;</span><span class="p">,</span>
-            <span class="n">endpoint</span><span class="p">:</span> <span class="n">API</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="p">:</span> <span class="n">SearchRequest</span><span class="p">,</span>
-            <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">assets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span>
-        <span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">client</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span> <span class="o">=</span> <span class="n">criteria</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">start</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_assets</span> <span class="o">=</span> <span class="n">assets</span>
-
-<div class="viewcode-block" id="AtlanClient.SearchResults.current_page">
-<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.SearchResults.current_page">[docs]</a>
-        <span class="k">def</span> <span class="nf">current_page</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Retrieve the current page of results.</span>
-
-<span class="sd">            :returns: list of assets on the current page of results</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assets</span></div>
-
-
-<div class="viewcode-block" id="AtlanClient.SearchResults.next_page">
-<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.SearchResults.next_page">[docs]</a>
-        <span class="k">def</span> <span class="nf">next_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Indicates whether there is a next page of results.</span>
-
-<span class="sd">            :returns: True if there is a next page of results, otherwise False</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="n">start</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
-            <span class="k">if</span> <span class="n">size</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_next_page</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assets</span> <span class="k">else</span> <span class="kc">False</span></div>
-
-
-        <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-        <span class="k">def</span> <span class="nf">_get_next_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Abstract method that must be implemented in subclasses, used to</span>
-<span class="sd">            fetch the next page of results.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-
-        <span class="c1"># TODO Rename this here and in `next_page`</span>
-        <span class="k">def</span> <span class="nf">_get_next_page_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Fetches the next page of results and returns the raw JSON of the retrieval.</span>
-
-<span class="sd">            :returns: JSON for the next page of results, as-is</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_endpoint</span><span class="p">,</span>
-                <span class="n">request_obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;entities&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_assets</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">return</span> <span class="kc">None</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]:</span>
-                    <span class="n">unflatten_custom_metadata_for_entity</span><span class="p">(</span>
-                        <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span><span class="o">.</span><span class="n">attributes</span>
-                    <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_assets</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">])</span>
-                <span class="k">return</span> <span class="n">raw_json</span>
-            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-
-        <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Iterates through the results, lazily-fetching each next page until there</span>
-<span class="sd">            are no more results.</span>
-
-<span class="sd">            :returns: an iterable form of each result, across all pages</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_page</span><span class="p">():</span>
-                    <span class="k">break</span></div>
-
-
-<div class="viewcode-block" id="AtlanClient.IndexSearchResults">
-<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.IndexSearchResults">[docs]</a>
-    <span class="k">class</span> <span class="nc">IndexSearchResults</span><span class="p">(</span><span class="n">SearchResults</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Captures the response from a search against Atlan. Also provides the ability to</span>
-<span class="sd">        iteratively page through results, without needing to track or re-run the original</span>
-<span class="sd">        query.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;AtlanClient&quot;</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">,</span>
-            <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">assets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span>
-            <span class="n">aggregations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Aggregations</span><span class="p">],</span>
-        <span class="p">):</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">INDEX_SEARCH</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">assets</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">count</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_aggregations</span> <span class="o">=</span> <span class="n">aggregations</span>
-
-        <span class="nd">@property</span>
-        <span class="k">def</span> <span class="nf">aggregations</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Aggregations</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aggregations</span>
-
-        <span class="k">def</span> <span class="nf">_get_next_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Fetches the next page of results.</span>
-
-<span class="sd">            :returns: True if the next page of results was fetched, False if there was no next page</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span><span class="o">.</span><span class="n">dsl</span><span class="o">.</span><span class="n">from_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span><span class="o">.</span><span class="n">dsl</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
-            <span class="k">if</span> <span class="n">raw_json</span> <span class="o">:=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_next_page_json</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;approximateCount&quot;</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="s2">&quot;approximateCount&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span>
-                    <span class="k">else</span> <span class="mi">0</span>
-                <span class="p">)</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="nd">@property</span>
-        <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span></div>
-
-
-<div class="viewcode-block" id="AtlanClient.LineageListResults">
-<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.LineageListResults">[docs]</a>
-    <span class="k">class</span> <span class="nc">LineageListResults</span><span class="p">(</span><span class="n">SearchResults</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Captures the response from a lineage retrieval against Atlan. Also provides the ability to</span>
-<span class="sd">        iteratively page through results, without needing to track or re-run the original query.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;AtlanClient&quot;</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="p">:</span> <span class="n">LineageListRequest</span><span class="p">,</span>
-            <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">has_more</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-            <span class="n">assets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span>
-        <span class="p">):</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">GET_LINEAGE_LIST</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">assets</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span> <span class="o">=</span> <span class="n">has_more</span>
-
-        <span class="k">def</span> <span class="nf">_get_next_page</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Fetches the next page of results.</span>
-
-<span class="sd">            :returns: True if the next page of results was fetched, False if there was no next page</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_criteria</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
-            <span class="k">if</span> <span class="n">raw_json</span> <span class="o">:=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_next_page_json</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;hasMore&quot;</span><span class="p">])</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="kc">False</span>
-
-        <span class="nd">@property</span>
-        <span class="k">def</span> <span class="nf">has_more</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_more</span></div>
-
 
 <div class="viewcode-block" id="AtlanClient.set_default_client">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.set_default_client">[docs]</a>
@@ -864,6 +611,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_role_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_role_client</span> <span class="o">=</span> <span class="n">RoleClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_role_client</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">asset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asset_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_asset_client</span> <span class="o">=</span> <span class="n">AssetClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asset_client</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TokenClient</span><span class="p">:</span>
@@ -1349,36 +1102,19 @@
         <span class="n">min_ext_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_relationships</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves an asset by its qualified_name.</span>
-
-<span class="sd">        :param qualified_name: qualified_name of the asset to be retrieved</span>
-<span class="sd">        :param asset_type: type of asset to be retrieved ( must be the actual asset type not a super type)</span>
-<span class="sd">        :param min_ext_info: whether to minimize extra info (True) or not (False)</span>
-<span class="sd">        :param ignore_relationships: whether to include relationships (False) or exclude them (True)</span>
-<span class="sd">        :returns: the requested asset</span>
-<span class="sd">        :raises NotFoundError: if the asset does not exist</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;attr:qualifiedName&quot;</span><span class="p">:</span> <span class="n">qualified_name</span><span class="p">,</span>
-            <span class="s2">&quot;minExtInfo&quot;</span><span class="p">:</span> <span class="n">min_ext_info</span><span class="p">,</span>
-            <span class="s2">&quot;ignoreRelationships&quot;</span><span class="p">:</span> <span class="n">ignore_relationships</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">GET_ENTITY_BY_UNIQUE_ATTRIBUTE</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
-            <span class="n">query_params</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.get_by_qualified_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.get_by_qualified_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">][</span><span class="s2">&quot;typeName&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ASSET_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">qualified_name</span>
-            <span class="p">)</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_relationships</span><span class="p">(</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ASSET_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">qualified_name</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">asset</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">get_by_qualified_name</span><span class="p">(</span>
+            <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
+            <span class="n">min_ext_info</span><span class="o">=</span><span class="n">min_ext_info</span><span class="p">,</span>
+            <span class="n">ignore_relationships</span><span class="o">=</span><span class="n">ignore_relationships</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_asset_by_guid">
@@ -1391,65 +1127,33 @@
         <span class="n">min_ext_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_relationships</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves an asset by its GUID.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the asset to retrieve</span>
-<span class="sd">        :param asset_type: type of asset to be retrieved</span>
-<span class="sd">        :param min_ext_info: whether to minimize extra info (True) or not (False)</span>
-<span class="sd">        :param ignore_relationships: whether to include relationships (False) or exclude them (True)</span>
-<span class="sd">        :returns: the requested asset</span>
-<span class="sd">        :raises NotFoundError: if the asset does not exist, or is not of the type requested</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;minExtInfo&quot;</span><span class="p">:</span> <span class="n">min_ext_info</span><span class="p">,</span>
-            <span class="s2">&quot;ignoreRelationships&quot;</span><span class="p">:</span> <span class="n">ignore_relationships</span><span class="p">,</span>
-        <span class="p">}</span>
-
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">GET_ENTITY_BY_GUID</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
-            <span class="n">query_params</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.get_by_guid() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.get_by_guid&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_relationships</span><span class="p">(</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ASSET_NOT_TYPE_REQUESTED</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">asset</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">get_by_guid</span><span class="p">(</span>
+            <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
+            <span class="n">min_ext_info</span><span class="o">=</span><span class="n">min_ext_info</span><span class="p">,</span>
+            <span class="n">ignore_relationships</span><span class="o">=</span><span class="n">ignore_relationships</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
-
-    <span class="k">def</span> <span class="nf">_handle_relationships</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_json</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="s2">&quot;relationshipAttributes&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">]</span>
-            <span class="ow">and</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">][</span><span class="s2">&quot;relationshipAttributes&quot;</span><span class="p">]</span>
-        <span class="p">):</span>
-            <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">][</span><span class="s2">&quot;attributes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">][</span><span class="s2">&quot;relationshipAttributes&quot;</span><span class="p">]</span>
-            <span class="p">)</span>
-        <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">][</span><span class="s2">&quot;relationshipAttributes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="n">AssetResponse</span><span class="p">[</span><span class="n">A</span><span class="p">](</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span><span class="o">.</span><span class="n">entity</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">is_incomplete</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">asset</span>
 
 <div class="viewcode-block" id="AtlanClient.retrieve_minimal">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.retrieve_minimal">[docs]</a>
     <span class="nd">@validate_arguments</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">retrieve_minimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves an asset by its GUID, without any of its relationships.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the asset to retrieve</span>
-<span class="sd">        :param asset_type: type of asset to be retrieved</span>
-<span class="sd">        :returns: the asset, without any of its relationships</span>
-<span class="sd">        :raises NotFoundError: if the asset does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_guid</span><span class="p">(</span>
-            <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span>
-            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
-            <span class="n">min_ext_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">ignore_relationships</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.retrieve_minimal() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.retrieve_minimal&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">retrieve_minimal</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.upsert">
@@ -1461,13 +1165,13 @@
         <span class="n">replace_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">overwrite_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use save() instead.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;This method is deprecated, please use &#39;save&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.save&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
             <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span>
             <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span><span class="p">,</span>
             <span class="n">replace_custom_metadata</span><span class="o">=</span><span class="n">replace_custom_metadata</span><span class="p">,</span>
@@ -1484,64 +1188,33 @@
         <span class="n">replace_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">overwrite_custom_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.</span>
-<span class="sd">        If an asset does exist, opertionally overwrites any Atlan tags. Custom metadata will either be</span>
-<span class="sd">        overwritten or merged depending on the options provided.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.save&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span>
+            <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span><span class="p">,</span>
+            <span class="n">replace_custom_metadata</span><span class="o">=</span><span class="n">replace_custom_metadata</span><span class="p">,</span>
+            <span class="n">overwrite_custom_metadata</span><span class="o">=</span><span class="n">overwrite_custom_metadata</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
-<span class="sd">        :param entity: one or more assets to save</span>
-<span class="sd">        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)</span>
-<span class="sd">        :param replace_custom_metadata: replaces any custom metadata with non-empty values provided</span>
-<span class="sd">        :param overwrite_custom_metadata: overwrites any custom metadata, even with empty values</span>
-<span class="sd">        :returns: the result of the save</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        :raises ApiError: if a connection was created and blocking until policies are synced overruns the retry limit</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;replaceClassifications&quot;</span><span class="p">:</span> <span class="n">replace_atlan_tags</span><span class="p">,</span>
-            <span class="s2">&quot;replaceBusinessAttributes&quot;</span><span class="p">:</span> <span class="n">replace_custom_metadata</span><span class="p">,</span>
-            <span class="s2">&quot;overwriteBusinessAttributes&quot;</span><span class="p">:</span> <span class="n">overwrite_custom_metadata</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">entities</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-            <span class="n">asset</span><span class="o">.</span><span class="n">validate_required</span><span class="p">()</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">BulkRequest</span><span class="p">[</span><span class="n">Asset</span><span class="p">](</span><span class="n">entities</span><span class="o">=</span><span class="n">entities</span><span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">BULK_UPDATE</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">AssetMutationResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">connections_created</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_created</span><span class="p">(</span><span class="n">Connection</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_connections_to_be_created</span><span class="p">(</span><span class="n">connections_created</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_wait_for_connections_to_be_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connections_created</span><span class="p">):</span>
-        <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTPS_PREFIX</span><span class="p">]</span>
-        <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">CONNECTION_RETRY</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="n">connections_created</span><span class="p">:</span>
-                <span class="n">guid</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">guid</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_minimal</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">Connection</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RetryError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">RETRY_OVERRUN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">DEFAULT_RETRY</span>
 
 <div class="viewcode-block" id="AtlanClient.upsert_merging_cm">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.upsert_merging_cm">[docs]</a>
     <span class="k">def</span> <span class="nf">upsert_merging_cm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use save_merging_cm() instead.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_merging_cm() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;This method is deprecated, please use &#39;save_merging_cm&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.save_merging_cm&#39; instead, which offers identical &quot;</span>
             <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_merging_cm</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_merging_cm</span><span class="p">(</span>
             <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span>
         <span class="p">)</span></div>
 
@@ -1551,20 +1224,15 @@
     <span class="k">def</span> <span class="nf">save_merging_cm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If no asset exists, has the same behavior as the upsert() method, while also setting</span>
-<span class="sd">        any custom metadata provided. If an asset does exist, optionally overwrites any Atlan tags.</span>
-<span class="sd">        Will merge any provided custom metadata with any custom metadata that already exists on the asset.</span>
-
-<span class="sd">        :param entity: one or more assets to save</span>
-<span class="sd">        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)</span>
-<span class="sd">        :returns: details of the created or updated assets</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
-            <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span>
-            <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span><span class="p">,</span>
-            <span class="n">replace_custom_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">overwrite_custom_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_merging_cm() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.save_merging_cm&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_merging_cm</span><span class="p">(</span>
+            <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span>
         <span class="p">)</span></div>
 
 
@@ -1573,23 +1241,14 @@
     <span class="k">def</span> <span class="nf">update_merging_cm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Asset</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If no asset exists, fails with a NotFoundError. Will merge any provided</span>
-<span class="sd">        custom metadata with any custom metadata that already exists on the asset.</span>
-<span class="sd">        If an asset does exist, optionally overwrites any Atlan tags.</span>
-
-<span class="sd">        :param entity: the asset to update</span>
-<span class="sd">        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)</span>
-<span class="sd">        :returns: details of the updated asset</span>
-<span class="sd">        :raises NotFoundError: if the asset does not exist (will not create it)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_qualified_name</span><span class="p">(</span>
-            <span class="n">qualified_name</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">asset_type</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">entity</span><span class="p">),</span>
-            <span class="n">min_ext_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">ignore_relationships</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>  <span class="c1"># Allow this to throw the NotFoundError if the entity does not exist</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_merging_cm</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.update_merging_cm() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.update_merging_cm&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">update_merging_cm</span><span class="p">(</span>
             <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span>
         <span class="p">)</span></div>
 
@@ -1599,14 +1258,14 @@
     <span class="k">def</span> <span class="nf">upsert_replacing_cm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tagss</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use save_replacing_cm() instead.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_replacing_cm() instead.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;This method is deprecated, please use &#39;save_replacing_cm&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.save_replacing_cm&#39; instead, which offers identical &quot;</span>
             <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_replacing_cm</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_replacing_cm</span><span class="p">(</span>
             <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tagss</span>
         <span class="p">)</span></div>
 
@@ -1616,34 +1275,16 @@
     <span class="k">def</span> <span class="nf">save_replacing_cm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Asset</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]],</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If no asset exists, has the same behavior as the upsert() method, while also setting</span>
-<span class="sd">        any custom metadata provided.</span>
-<span class="sd">        If an asset does exist, optionally overwrites any Atlan tags.</span>
-<span class="sd">        Will overwrite all custom metadata on any existing asset with only the custom metadata provided</span>
-<span class="sd">        (wiping out any other custom metadata on an existing asset that is not provided in the request).</span>
-
-<span class="sd">        :param entity: one or more assets to save</span>
-<span class="sd">        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)</span>
-<span class="sd">        :returns: details of the created or updated assets</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;replaceClassifications&quot;</span><span class="p">:</span> <span class="n">replace_atlan_tags</span><span class="p">,</span>
-            <span class="s2">&quot;replaceBusinessAttributes&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;overwriteBusinessAttributes&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">entities</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
-            <span class="n">asset</span><span class="o">.</span><span class="n">validate_required</span><span class="p">()</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">BulkRequest</span><span class="p">[</span><span class="n">Asset</span><span class="p">](</span><span class="n">entities</span><span class="o">=</span><span class="n">entities</span><span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">BULK_UPDATE</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">AssetMutationResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.save_replacing_cm() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.save_replacing_cm&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">save_replacing_cm</span><span class="p">(</span>
+            <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_replacing_cm">
@@ -1651,25 +1292,14 @@
     <span class="k">def</span> <span class="nf">update_replacing_cm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">Asset</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If no asset exists, fails with a NotFoundError.</span>
-<span class="sd">        Will overwrite all custom metadata on any existing asset with only the custom metadata provided</span>
-<span class="sd">        (wiping out any other custom metadata on an existing asset that is not provided in the request).</span>
-<span class="sd">        If an asset does exist, optionally overwrites any Atlan tags.</span>
-
-<span class="sd">        :param entity: the asset to update</span>
-<span class="sd">        :param replace_atlan_tags: whether to replace AtlanTags during an update (True) or not (False)</span>
-<span class="sd">        :returns: details of the updated asset</span>
-<span class="sd">        :raises NotFoundError: if the asset does not exist (will not create it)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_qualified_name</span><span class="p">(</span>
-            <span class="n">qualified_name</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">qualified_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">asset_type</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">entity</span><span class="p">),</span>
-            <span class="n">min_ext_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">ignore_relationships</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span>  <span class="c1"># Allow this to throw the NotFoundError if the entity does not exist</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_replacing_cm</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.update_replacing_cm() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.update_replacing_cm&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">update_replacing_cm</span><span class="p">(</span>
             <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">replace_atlan_tags</span><span class="o">=</span><span class="n">replace_atlan_tags</span>
         <span class="p">)</span></div>
 
@@ -1679,22 +1309,14 @@
     <span class="k">def</span> <span class="nf">purge_entity_by_guid</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Hard-deletes (purges) one or more assets by their unique identifier (GUID).</span>
-<span class="sd">        This operation is irreversible.</span>
-
-<span class="sd">        :param guid: unique identifier(s) (GUIDs) of one or more assets to hard-delete</span>
-<span class="sd">        :returns: details of the hard-deleted asset(s)</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">guids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">guids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">guids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;deleteType&quot;</span><span class="p">:</span> <span class="n">AtlanDeleteType</span><span class="o">.</span><span class="n">PURGE</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;guid&quot;</span><span class="p">:</span> <span class="n">guids</span><span class="p">}</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">DELETE_ENTITIES_BY_GUIDS</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="n">query_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">AssetMutationResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.purge_by_guid() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.purge_by_guid&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">purge_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.delete_entity_by_guid">
@@ -1702,138 +1324,40 @@
     <span class="k">def</span> <span class="nf">delete_entity_by_guid</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Soft-deletes (archives) one or more assets by their unique identifier (GUID).</span>
-<span class="sd">        This operation can be reversed by updating the asset and its status to ACTIVE.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.delete_by_guid() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.delete_by_guid&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">delete_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
 
-<span class="sd">        :param guid: unique identifier(s) (GUIDs) of one or more assets to soft-delete</span>
-<span class="sd">        :returns: details of the soft-deleted asset(s)</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        :raises ApiError: if the retry limit is overrun waiting for confirmation the asset is deleted</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">guids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">guid</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">guids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">guids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guid</span><span class="p">)</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;deleteType&quot;</span><span class="p">:</span> <span class="n">AtlanDeleteType</span><span class="o">.</span><span class="n">SOFT</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;guid&quot;</span><span class="p">:</span> <span class="n">guids</span><span class="p">}</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">DELETE_ENTITIES_BY_GUIDS</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="n">query_params</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">AssetMutationResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_deleted</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">Asset</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_till_deleted</span><span class="p">(</span><span class="n">asset</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">response</span></div>
-
-
-    <span class="nd">@retry</span><span class="p">(</span>
-        <span class="n">reraise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">retry</span><span class="o">=</span><span class="p">(</span><span class="n">retry_if_exception_type</span><span class="p">(</span><span class="n">AtlanError</span><span class="p">)),</span>
-        <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
-        <span class="n">wait</span><span class="o">=</span><span class="n">wait_fixed</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_wait_till_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">:</span> <span class="n">Asset</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_minimal</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">asset</span><span class="o">.</span><span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">Asset</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">asset</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">EntityStatus</span><span class="o">.</span><span class="n">DELETED</span><span class="p">:</span>
-                <span class="k">return</span>
-        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RetryError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">RETRY_OVERRUN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">err</span>
 
 <div class="viewcode-block" id="AtlanClient.restore">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.restore">[docs]</a>
     <span class="k">def</span> <span class="nf">restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Restore an archived (soft-deleted) asset to active.</span>
-
-<span class="sd">        :param asset_type: type of the asset to restore</span>
-<span class="sd">        :param qualified_name: of the asset to restore</span>
-<span class="sd">        :returns: True if the asset is now restored, or False if not</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restore</span><span class="p">(</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">retries</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="n">existing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_qualified_name</span><span class="p">(</span>
-            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.restore() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.restore&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">existing</span><span class="p">:</span>
-            <span class="c1"># Nothing to restore, so cannot be restored</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="n">existing</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">EntityStatus</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
-            <span class="c1"># Already active, but could be due to the async nature of delete handlers</span>
-            <span class="k">if</span> <span class="n">retries</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restore</span><span class="p">(</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">,</span> <span class="n">retries</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># If we have exhausted the retries, though, we will short-circuit</span>
-                <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_restore_asset</span><span class="p">(</span><span class="n">existing</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">response</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">guid_assignments</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_restore_asset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">:</span> <span class="n">Asset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AssetMutationResponse</span><span class="p">:</span>
-        <span class="n">to_restore</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">trim_to_required</span><span class="p">()</span>
-        <span class="n">to_restore</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">EntityStatus</span><span class="o">.</span><span class="n">ACTIVE</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;replaceClassifications&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s2">&quot;replaceBusinessAttributes&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="s2">&quot;overwriteBusinessAttributes&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">BulkRequest</span><span class="p">[</span><span class="n">Asset</span><span class="p">](</span><span class="n">entities</span><span class="o">=</span><span class="p">[</span><span class="n">to_restore</span><span class="p">])</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span><span class="n">BULK_UPDATE</span><span class="p">,</span> <span class="n">query_params</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">AssetMutationResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AtlanClient.search">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.search">[docs]</a>
     <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">:</span> <span class="n">IndexSearchRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IndexSearchResults</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Search for assets using the provided criteria.</span>
-
-<span class="sd">        :param criteria: detailing the search query, parameters, and so on to run</span>
-<span class="sd">        :returns: the results of the search</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">INDEX_SEARCH</span><span class="p">,</span>
-            <span class="n">request_obj</span><span class="o">=</span><span class="n">criteria</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.search() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.search&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;entities&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">]:</span>
-                    <span class="n">unflatten_custom_metadata_for_entity</span><span class="p">(</span>
-                        <span class="n">entity</span><span class="o">=</span><span class="n">entity</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">criteria</span><span class="o">.</span><span class="n">attributes</span>
-                    <span class="p">)</span>
-                <span class="n">assets</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">])</span>
-            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">assets</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">aggregations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_aggregations</span><span class="p">(</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;approximateCount&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;approximateCount&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span> <span class="k">else</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">IndexSearchResults</span><span class="p">(</span>
-            <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">criteria</span><span class="o">.</span><span class="n">dsl</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span>
-            <span class="n">size</span><span class="o">=</span><span class="n">criteria</span><span class="o">.</span><span class="n">dsl</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
-            <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span>
-            <span class="n">assets</span><span class="o">=</span><span class="n">assets</span><span class="p">,</span>
-            <span class="n">aggregations</span><span class="o">=</span><span class="n">aggregations</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">)</span></div>
 
-
-    <span class="k">def</span> <span class="nf">get_aggregations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_json</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Aggregations</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="s2">&quot;aggregations&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">aggregations</span> <span class="o">=</span> <span class="n">Aggregations</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;aggregations&quot;</span><span class="p">])</span>
-            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">aggregations</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">aggregations</span>
 
 <div class="viewcode-block" id="AtlanClient.get_all_typedefs">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_all_typedefs">[docs]</a>
@@ -1909,39 +1433,20 @@
         <span class="n">remove_propagation_on_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">restrict_lineage_propagation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add one or more Atlan tags to the provided asset.</span>
-<span class="sd">        Note: if one or more of the provided Atlan tags already exist on the asset, an error</span>
-<span class="sd">        will be raised. (In other words, this operation is NOT idempotent.)</span>
-
-<span class="sd">        :param asset_type: type of asset to which to add the Atlan tags</span>
-<span class="sd">        :param qualified_name: qualified_name of the asset to which to add the Atlan tags</span>
-<span class="sd">        :param atlan_tag_names: human-readable names of the Atlan tags to add to the asset</span>
-<span class="sd">        :param propagate: whether to propagate the Atlan tag (True) or not (False)</span>
-<span class="sd">        :param remove_propagation_on_delete: whether to remove the propagated Atlan tags when the Atlan tag is removed</span>
-<span class="sd">                                             from this asset (True) or not (False)</span>
-<span class="sd">        :param restrict_lineage_propagation: whether to avoid propagating through lineage (True) or do propagate</span>
-<span class="sd">                                             through lineage (False)</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atlan_tags</span> <span class="o">=</span> <span class="n">AtlanTags</span><span class="p">(</span>
-            <span class="n">__root__</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">AtlanTag</span><span class="p">(</span>
-                    <span class="n">type_name</span><span class="o">=</span><span class="n">AtlanTagName</span><span class="p">(</span><span class="n">display_text</span><span class="o">=</span><span class="n">name</span><span class="p">),</span>
-                    <span class="n">propagate</span><span class="o">=</span><span class="n">propagate</span><span class="p">,</span>
-                    <span class="n">remove_propagations_on_entity_delete</span><span class="o">=</span><span class="n">remove_propagation_on_delete</span><span class="p">,</span>
-                    <span class="n">restrict_propagation_through_lineage</span><span class="o">=</span><span class="n">restrict_lineage_propagation</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">atlan_tag_names</span>
-            <span class="p">]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.add_atlan_tags() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.add_atlan_tags&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attr:qualifiedName&quot;</span><span class="p">:</span> <span class="n">qualified_name</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">UPDATE_ENTITY_BY_ATTRIBUTE</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span>
-                <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;classifications&quot;</span>
-            <span class="p">),</span>
-            <span class="n">query_params</span><span class="p">,</span>
-            <span class="n">atlan_tags</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">add_atlan_tags</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
+            <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
+            <span class="n">atlan_tag_names</span><span class="o">=</span><span class="n">atlan_tag_names</span><span class="p">,</span>
+            <span class="n">propagate</span><span class="o">=</span><span class="n">propagate</span><span class="p">,</span>
+            <span class="n">remove_propagation_on_delete</span><span class="o">=</span><span class="n">remove_propagation_on_delete</span><span class="p">,</span>
+            <span class="n">restrict_lineage_propagation</span><span class="o">=</span><span class="n">restrict_lineage_propagation</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1951,29 +1456,17 @@
     <span class="k">def</span> <span class="nf">remove_atlan_tag</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">atlan_tag_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Removes a single Atlan tag from the provided asset.</span>
-<span class="sd">        Note: if the provided Atlan tag does not exist on the asset, an error will be raised.</span>
-<span class="sd">        (In other words, this operation is NOT idempotent.)</span>
-
-<span class="sd">        :param asset_type: type of asset to which to add the Atlan tags</span>
-<span class="sd">        :param qualified_name: qualified_name of the asset to which to add the Atlan tags</span>
-<span class="sd">        :param atlan_tag_name: human-readable name of the Atlan tag to remove from the asset</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">pyatlan.cache.atlan_tag_cache</span> <span class="kn">import</span> <span class="n">AtlanTagCache</span>
-
-        <span class="n">classification_id</span> <span class="o">=</span> <span class="n">AtlanTagCache</span><span class="o">.</span><span class="n">get_id_for_name</span><span class="p">(</span><span class="n">atlan_tag_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">classification_id</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ATLAN_TAG_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                <span class="n">atlan_tag_name</span>
-            <span class="p">)</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attr:qualifiedName&quot;</span><span class="p">:</span> <span class="n">qualified_name</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">DELETE_ENTITY_BY_ATTRIBUTE</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span>
-                <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">classification_id</span>
-            <span class="p">),</span>
-            <span class="n">query_params</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.remove_atlan_tag() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.remove_atlan_tag&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">remove_atlan_tag</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
+            <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
+            <span class="n">atlan_tag_name</span><span class="o">=</span><span class="n">atlan_tag_name</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1988,40 +1481,21 @@
         <span class="n">certificate_status</span><span class="p">:</span> <span class="n">CertificateStatus</span><span class="p">,</span>
         <span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update the certificate on an asset.</span>
-
-<span class="sd">        :param asset_type: type of asset on which to update the certificate</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset on which to update the certificate</span>
-<span class="sd">        :param name: the name of the asset on which to update the certificate</span>
-<span class="sd">        :param certificate_status: specific certificate to set on the asset</span>
-<span class="sd">        :param message: (optional) message to set (or None for no message)</span>
-<span class="sd">        :returns: the result of the update, or None if the update failed</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="n">asset_type</span><span class="p">()</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">certificate_status</span> <span class="o">=</span> <span class="n">certificate_status</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">certificate_status_message</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_asset_by_attribute</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_update_asset_by_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">query_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attr:qualifiedName&quot;</span><span class="p">:</span> <span class="n">qualified_name</span><span class="p">}</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">PARTIAL_UPDATE_ENTITY_BY_ATTRIBUTE</span><span class="o">.</span><span class="n">format_path_with_params</span><span class="p">(</span>
-                <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="p">),</span>
-            <span class="n">query_params</span><span class="p">,</span>
-            <span class="n">AssetRequest</span><span class="p">[</span><span class="n">Asset</span><span class="p">](</span><span class="n">entity</span><span class="o">=</span><span class="n">asset</span><span class="p">),</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.update_certificate() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.update_certificate&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">AssetMutationResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">assets</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_partially_updated</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">assets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">assets</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_updated</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">assets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">update_certificate</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
+            <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">certificate_status</span><span class="o">=</span><span class="n">certificate_status</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="AtlanClient.remove_certificate">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_certificate">[docs]</a>
@@ -2029,19 +1503,16 @@
     <span class="k">def</span> <span class="nf">remove_certificate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove the certificate from an asset.</span>
-
-<span class="sd">        :param asset_type: type of asset from which to remove the certificate</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset from which to remove the certificate</span>
-<span class="sd">        :param name: the name of the asset from which to remove the certificate</span>
-<span class="sd">        :returns: the result of the removal, or None if the removal failed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="n">asset_type</span><span class="p">()</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">remove_certificate</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_asset_by_attribute</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.remove_certificate() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.remove_certificate&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">remove_certificate</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_announcement">
@@ -2054,20 +1525,19 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">announcement</span><span class="p">:</span> <span class="n">Announcement</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update the announcement on an asset.</span>
-
-<span class="sd">        :param asset_type: type of asset on which to update the announcement</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset on which to update the announcement</span>
-<span class="sd">        :param name: the name of the asset on which to update the announcement</span>
-<span class="sd">        :param announcement: to apply to the asset</span>
-<span class="sd">        :returns: the result of the update, or None if the update failed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="n">asset_type</span><span class="p">()</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">set_announcement</span><span class="p">(</span><span class="n">announcement</span><span class="p">)</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_asset_by_attribute</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.update_announcement() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.update_announcement&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">update_announcement</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span>
+            <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">announcement</span><span class="o">=</span><span class="n">announcement</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.remove_announcement">
@@ -2076,19 +1546,16 @@
     <span class="k">def</span> <span class="nf">remove_announcement</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span> <span class="n">qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove the announcement from an asset.</span>
-
-<span class="sd">        :param asset_type: type of asset from which to remove the announcement</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset from which to remove the announcement</span>
-<span class="sd">        :param name: the name of the asset from which to remove the announcement</span>
-<span class="sd">        :returns: the result of the removal, or None if the removal failed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">asset</span> <span class="o">=</span> <span class="n">asset_type</span><span class="p">()</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">qualified_name</span> <span class="o">=</span> <span class="n">qualified_name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">remove_announcement</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_asset_by_attribute</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.remove_announcement() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.remove_announcement&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">remove_announcement</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.update_custom_metadata_attributes">
@@ -2096,83 +1563,42 @@
     <span class="k">def</span> <span class="nf">update_custom_metadata_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">custom_metadata</span><span class="p">:</span> <span class="n">CustomMetadataDict</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update only the provided custom metadata attributes on the asset. This will leave all</span>
-<span class="sd">        other custom metadata attributes, even within the same named custom metadata, unchanged.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the asset</span>
-<span class="sd">        :param custom_metadata: custom metadata to update, as human-readable names mapped to values</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">custom_metadata_request</span> <span class="o">=</span> <span class="n">CustomMetadataRequest</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">custom_metadata_dict</span><span class="o">=</span><span class="n">custom_metadata</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.update_custom_metadata_attributes() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.update_custom_metadata_attributes&#39; instead, which offers &quot;</span>
+            <span class="s2">&quot;identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">ADD_BUSINESS_ATTRIBUTE_BY_ID</span><span class="o">.</span><span class="n">format_path</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;entity_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">,</span>
-                    <span class="s2">&quot;bm_id&quot;</span><span class="p">:</span> <span class="n">custom_metadata_request</span><span class="o">.</span><span class="n">custom_metadata_set_id</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">),</span>
-            <span class="kc">None</span><span class="p">,</span>
-            <span class="n">custom_metadata_request</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">update_custom_metadata_attributes</span><span class="p">(</span>
+            <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">custom_metadata</span><span class="o">=</span><span class="n">custom_metadata</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.replace_custom_metadata">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.replace_custom_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">replace_custom_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">custom_metadata</span><span class="p">:</span> <span class="n">CustomMetadataDict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Replace specific custom metadata on the asset. This will replace everything within the named</span>
-<span class="sd">        custom metadata, but will not change any of hte other named custom metadata on the asset.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the asset</span>
-<span class="sd">        :param custom_metadata: custom metadata to replace, as human-readable names mapped to values</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># clear unset attributes so that they are removed</span>
-        <span class="n">custom_metadata</span><span class="o">.</span><span class="n">clear_unset</span><span class="p">()</span>
-        <span class="n">custom_metadata_request</span> <span class="o">=</span> <span class="n">CustomMetadataRequest</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">custom_metadata_dict</span><span class="o">=</span><span class="n">custom_metadata</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.replace_custom_metadata() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.replace_custom_metadata&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">ADD_BUSINESS_ATTRIBUTE_BY_ID</span><span class="o">.</span><span class="n">format_path</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;entity_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">,</span>
-                    <span class="s2">&quot;bm_id&quot;</span><span class="p">:</span> <span class="n">custom_metadata_request</span><span class="o">.</span><span class="n">custom_metadata_set_id</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">),</span>
-            <span class="kc">None</span><span class="p">,</span>
-            <span class="n">custom_metadata_request</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">replace_custom_metadata</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">custom_metadata</span><span class="o">=</span><span class="n">custom_metadata</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.remove_custom_metadata">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.remove_custom_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">remove_custom_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cm_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove specific custom metadata from an asset.</span>
-
-<span class="sd">        :param guid: unique identifier (GUID) of the asset</span>
-<span class="sd">        :param cm_name: human-readable name of the custom metadata to remove</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">custom_metadata</span> <span class="o">=</span> <span class="n">CustomMetadataDict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cm_name</span><span class="p">)</span>
-        <span class="c1"># invoke clear_all so all attributes are set to None and consequently removed</span>
-        <span class="n">custom_metadata</span><span class="o">.</span><span class="n">clear_all</span><span class="p">()</span>
-        <span class="n">custom_metadata_request</span> <span class="o">=</span> <span class="n">CustomMetadataRequest</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="n">custom_metadata_dict</span><span class="o">=</span><span class="n">custom_metadata</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.remove_custom_metadata() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.remove_custom_metadata&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">ADD_BUSINESS_ATTRIBUTE_BY_ID</span><span class="o">.</span><span class="n">format_path</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;entity_guid&quot;</span><span class="p">:</span> <span class="n">guid</span><span class="p">,</span>
-                    <span class="s2">&quot;bm_id&quot;</span><span class="p">:</span> <span class="n">custom_metadata_request</span><span class="o">.</span><span class="n">custom_metadata_set_id</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">),</span>
-            <span class="kc">None</span><span class="p">,</span>
-            <span class="n">custom_metadata_request</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">remove_custom_metadata</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">cm_name</span><span class="o">=</span><span class="n">cm_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.append_terms">
@@ -2185,41 +1611,15 @@
         <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Link additional terms to an asset, without replacing existing terms linked to the asset.</span>
-<span class="sd">        Note: this operation must make two API calls — one to retrieve the asset&#39;s existing terms,</span>
-<span class="sd">        and a second to append the new terms. (At least one of the GUID or qualified_name must be</span>
-<span class="sd">        supplied, but both are not necessary.)</span>
-
-<span class="sd">        :param asset_type: type of the asset</span>
-<span class="sd">        :param terms: the list of terms to append to the asset</span>
-<span class="sd">        :param guid: unique identifier (GUID) of the asset to which to link the terms</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset to which to link the terms</span>
-<span class="sd">        :returns: the asset that was updated (note that it will NOT contain details of the appended terms)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">guid</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">qualified_name</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">QN_OR_GUID_NOT_BOTH</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">qualified_name</span><span class="p">:</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_qualified_name</span><span class="p">(</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">QN_OR_GUID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">terms</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">asset</span>
-        <span class="n">replacement_terms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">existing_terms</span> <span class="o">:=</span> <span class="n">asset</span><span class="o">.</span><span class="n">assigned_terms</span><span class="p">:</span>
-            <span class="n">replacement_terms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                <span class="n">term</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">existing_terms</span> <span class="k">if</span> <span class="n">term</span><span class="o">.</span><span class="n">relationship_status</span> <span class="o">!=</span> <span class="s2">&quot;DELETED&quot;</span>
-            <span class="p">)</span>
-        <span class="n">replacement_terms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">terms</span><span class="p">)</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">assigned_terms</span> <span class="o">=</span> <span class="n">replacement_terms</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">entity</span><span class="o">=</span><span class="n">asset</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">assets</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_updated</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">assets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">asset</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.append_terms() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.append_terms&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">append_terms</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="n">terms</span><span class="p">,</span> <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.replace_terms">
@@ -2232,31 +1632,16 @@
         <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Replace the terms linked to an asset.</span>
-<span class="sd">        (At least one of the GUID or qualified_name must be supplied, but both are not necessary.)</span>
-
-<span class="sd">        :param asset_type: type of the asset</span>
-<span class="sd">        :param terms: the list of terms to replace on the asset, or an empty list to remove all terms from an asset</span>
-<span class="sd">        :param guid: unique identifier (GUID) of the asset to which to replace the terms</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset to which to replace the terms</span>
-<span class="sd">        :returns: the asset that was updated (note that it will NOT contain details of the replaced terms)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">guid</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">qualified_name</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">QN_OR_GUID_NOT_BOTH</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">qualified_name</span><span class="p">:</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_qualified_name</span><span class="p">(</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">QN_OR_GUID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">assigned_terms</span> <span class="o">=</span> <span class="n">terms</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">entity</span><span class="o">=</span><span class="n">asset</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">assets</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_updated</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">assets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">asset</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.replace_terms() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.replace_terms&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">replace_terms</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="n">terms</span><span class="p">,</span> <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.remove_terms">
@@ -2269,44 +1654,15 @@
         <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">qualified_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">A</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove terms from an asset, without replacing all existing terms linked to the asset.</span>
-<span class="sd">        Note: this operation must make two API calls — one to retrieve the asset&#39;s existing terms,</span>
-<span class="sd">        and a second to remove the provided terms.</span>
-
-<span class="sd">        :param asset_type: type of the asset</span>
-<span class="sd">        :param terms: the list of terms to remove from the asset (note: these must be references by GUID to efficiently</span>
-<span class="sd">                      remove any existing terms)</span>
-<span class="sd">        :param guid: unique identifier (GUID) of the asset from which to remove the terms</span>
-<span class="sd">        :param qualified_name: the qualified_name of the asset from which to remove the terms</span>
-<span class="sd">        :returns: the asset that was updated (note that it will NOT contain details of the resulting terms)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">terms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">MISSING_TERMS</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">guid</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">qualified_name</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">QN_OR_GUID_NOT_BOTH</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_guid</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">qualified_name</span><span class="p">:</span>
-            <span class="n">asset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_asset_by_qualified_name</span><span class="p">(</span>
-                <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">QN_OR_GUID</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-        <span class="n">replacement_terms</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryTerm</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">guids_to_be_removed</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="o">.</span><span class="n">guid</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">existing_terms</span> <span class="o">:=</span> <span class="n">asset</span><span class="o">.</span><span class="n">assigned_terms</span><span class="p">:</span>
-            <span class="n">replacement_terms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                <span class="n">term</span>
-                <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">existing_terms</span>
-                <span class="k">if</span> <span class="n">term</span><span class="o">.</span><span class="n">relationship_status</span> <span class="o">!=</span> <span class="s2">&quot;DELETED&quot;</span>
-                <span class="ow">and</span> <span class="n">term</span><span class="o">.</span><span class="n">guid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">guids_to_be_removed</span>
-            <span class="p">)</span>
-        <span class="n">asset</span><span class="o">.</span><span class="n">assigned_terms</span> <span class="o">=</span> <span class="n">replacement_terms</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">entity</span><span class="o">=</span><span class="n">asset</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">assets</span> <span class="o">:=</span> <span class="n">response</span><span class="o">.</span><span class="n">assets_updated</span><span class="p">(</span><span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">assets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">asset</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.remove_terms() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.remove_terms&#39; instead, which offers identical functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">remove_terms</span><span class="p">(</span>
+            <span class="n">asset_type</span><span class="o">=</span><span class="n">asset_type</span><span class="p">,</span> <span class="n">terms</span><span class="o">=</span><span class="n">terms</span><span class="p">,</span> <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span> <span class="n">qualified_name</span><span class="o">=</span><span class="n">qualified_name</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.find_connections_by_name">
@@ -2318,30 +1674,16 @@
         <span class="n">connector_type</span><span class="p">:</span> <span class="n">AtlanConnectorType</span><span class="p">,</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Connection</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a connection by its human-readable name and type.</span>
-
-<span class="sd">        :param name: of the connection</span>
-<span class="sd">        :param connector_type: of the connection</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the connection</span>
-<span class="sd">        :returns: all connections with that name and type, if found</span>
-<span class="sd">        :raises NotFoundError: if the connection does not exist</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Term</span><span class="o">.</span><span class="n">with_state</span><span class="p">(</span><span class="s2">&quot;ACTIVE&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="o">.</span><span class="n">with_type_name</span><span class="p">(</span><span class="s2">&quot;CONNECTION&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="s2">&quot;connectorName&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">connector_type</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_connections_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_connections_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">dsl</span> <span class="o">=</span> <span class="n">DSL</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
-        <span class="n">search_request</span> <span class="o">=</span> <span class="n">IndexSearchRequest</span><span class="p">(</span>
-            <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
-            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">asset</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Connection</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_connections_by_name</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">connector_type</span><span class="o">=</span><span class="n">connector_type</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_lineage">
@@ -2360,10 +1702,7 @@
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">GET_LINEAGE</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">lineage_request</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">False</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">LineageResponse</span><span class="p">(</span><span class="o">**</span><span class="n">raw_json</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">get_lineage</span><span class="p">(</span><span class="n">lineage_request</span><span class="o">=</span><span class="n">lineage_request</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_lineage_list">
@@ -2371,38 +1710,14 @@
     <span class="k">def</span> <span class="nf">get_lineage_list</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">lineage_request</span><span class="p">:</span> <span class="n">LineageListRequest</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageListResults</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve lineage using the higher-performance &quot;list&quot; API.</span>
-
-<span class="sd">        :param lineage_request: detailing the lineage query, parameters, and so on to run</span>
-<span class="sd">        :returns: the results of the lineage request</span>
-<span class="sd">        :raises InvalidRequestError: if the requested lineage direction is &#39;BOTH&#39; (unsupported for this operation)</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">lineage_request</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="n">LineageDirection</span><span class="o">.</span><span class="n">BOTH</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_LINEAGE_DIRECTION</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span>
-        <span class="n">raw_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">GET_LINEAGE_LIST</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">request_obj</span><span class="o">=</span><span class="n">lineage_request</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.get_lineage_list() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.get_lineage_list&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;entities&quot;</span> <span class="ow">in</span> <span class="n">raw_json</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">assets</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">],</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;entities&quot;</span><span class="p">])</span>
-                <span class="n">has_more</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">raw_json</span><span class="p">[</span><span class="s2">&quot;hasMore&quot;</span><span class="p">])</span>
-            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">assets</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">has_more</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">AtlanClient</span><span class="o">.</span><span class="n">LineageListResults</span><span class="p">(</span>
-            <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="o">=</span><span class="n">lineage_request</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">lineage_request</span><span class="o">.</span><span class="n">offset</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">size</span><span class="o">=</span><span class="n">lineage_request</span><span class="o">.</span><span class="n">size</span> <span class="ow">or</span> <span class="mi">10</span><span class="p">,</span>
-            <span class="n">has_more</span><span class="o">=</span><span class="n">has_more</span><span class="p">,</span>
-            <span class="n">assets</span><span class="o">=</span><span class="n">assets</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">get_lineage_list</span><span class="p">(</span><span class="n">lineage_request</span><span class="o">=</span><span class="n">lineage_request</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.add_api_token_as_admin">
@@ -2632,7 +1947,7 @@
             <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
             <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">asset</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Persona</span><span class="p">)]</span></div>
 
 
@@ -2663,7 +1978,7 @@
             <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
             <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">asset</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Purpose</span><span class="p">)]</span></div>
 
 
@@ -2769,7 +2084,7 @@
             <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
             <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="n">assets</span> <span class="o">:=</span> <span class="p">[</span>
                 <span class="n">asset</span>
@@ -2845,6 +2160,25 @@
             <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary</span><span class="o">.</span><span class="n">qualified_name</span><span class="p">,</span>
             <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AtlanClient.max_retries">
+<a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.max_retries">[docs]</a>
+    <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
+    <span class="k">def</span> <span class="nf">max_retries</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">CONNECTION_RETRY</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a context manger that can used to temporarily change parameters used for retrying connnections.</span>
+<span class="sd">        The original Retry information will be restored when the context is exited.&quot;&quot;&quot;</span>
+        <span class="n">adapter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">adapters</span><span class="p">[</span><span class="n">HTTPS_PREFIX</span><span class="p">]</span>
+        <span class="n">current_max</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span>
+        <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RetryError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">RETRY_OVERRUN</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">()</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">adapter</span><span class="o">.</span><span class="n">max_retries</span> <span class="o">=</span> <span class="n">current_max</span></div>
 </div>
 
 

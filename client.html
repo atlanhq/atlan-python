@@ -434,94 +434,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyatlan.client.atlan.</span></span><span class="sig-name descname"><span class="pre">AtlanClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpUrl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient" title="Link to this definition">#</a></dt>
-<dd><dl class="py class">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.IndexSearchResults">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IndexSearchResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IndexSearchRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">assets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Aggregations</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.IndexSearchResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults" title="Link to this definition">#</a></dt>
-<dd><p>Captures the response from a search against Atlan. Also provides the ability to
-iteratively page through results, without needing to track or re-run the original
-query.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.IndexSearchResults.current_page">
-<span class="sig-name descname"><span class="pre">current_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults.current_page" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the current page of results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of assets on the current page of results</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.IndexSearchResults.next_page">
-<span class="sig-name descname"><span class="pre">next_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults.next_page" title="Link to this definition">#</a></dt>
-<dd><p>Indicates whether there is a next page of results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if there is a next page of results, otherwise False</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.LineageListResults">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LineageListResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/lineage.html#pyatlan.model.lineage.LineageListRequest" title="pyatlan.model.lineage.LineageListRequest"><span class="pre">LineageListRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_more</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">assets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.LineageListResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.LineageListResults" title="Link to this definition">#</a></dt>
-<dd><p>Captures the response from a lineage retrieval against Atlan. Also provides the ability to
-iteratively page through results, without needing to track or re-run the original query.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.LineageListResults.current_page">
-<span class="sig-name descname"><span class="pre">current_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.LineageListResults.current_page" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the current page of results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of assets on the current page of results</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.LineageListResults.next_page">
-<span class="sig-name descname"><span class="pre">next_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.LineageListResults.next_page" title="Link to this definition">#</a></dt>
-<dd><p>Indicates whether there is a next page of results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if there is a next page of results, otherwise False</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.SearchResults">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SearchResults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient" title="pyatlan.client.atlan.AtlanClient"><span class="pre">AtlanClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">API</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/core.html#pyatlan.model.core.SearchRequest" title="pyatlan.model.core.SearchRequest"><span class="pre">SearchRequest</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">assets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.SearchResults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.SearchResults" title="Link to this definition">#</a></dt>
-<dd><p>Abstract class that encapsulates results returned by various searches.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.SearchResults.current_page">
-<span class="sig-name descname"><span class="pre">current_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.SearchResults.current_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.SearchResults.current_page" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve the current page of results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of assets on the current page of results</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.SearchResults.next_page">
-<span class="sig-name descname"><span class="pre">next_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.SearchResults.next_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.SearchResults.next_page" title="Link to this definition">#</a></dt>
-<dd><p>Indicates whether there is a next page of results.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if there is a next page of results, otherwise False</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py method">
+<dd><dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.add_api_token_as_admin">
 <span class="sig-name descname"><span class="pre">add_api_token_as_admin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">impersonation_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.add_api_token_as_admin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.add_api_token_as_admin" title="Link to this definition">#</a></dt>
 <dd><p>Deprecated - use user.add_as_admin() instead.</p>
@@ -536,26 +449,7 @@ iteratively page through results, without needing to track or re-run the origina
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.add_atlan_tags">
 <span class="sig-name descname"><span class="pre">add_atlan_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">atlan_tag_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_propagation_on_delete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrict_lineage_propagation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.add_atlan_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.add_atlan_tags" title="Link to this definition">#</a></dt>
-<dd><p>Add one or more Atlan tags to the provided asset.
-Note: if one or more of the provided Atlan tags already exist on the asset, an error
-will be raised. (In other words, this operation is NOT idempotent.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of asset to which to add the Atlan tags</p></li>
-<li><p><strong>qualified_name</strong> – qualified_name of the asset to which to add the Atlan tags</p></li>
-<li><p><strong>atlan_tag_names</strong> – human-readable names of the Atlan tags to add to the asset</p></li>
-<li><p><strong>propagate</strong> – whether to propagate the Atlan tag (True) or not (False)</p></li>
-<li><p><strong>remove_propagation_on_delete</strong> – whether to remove the propagated Atlan tags when the Atlan tag is removed
-from this asset (True) or not (False)</p></li>
-<li><p><strong>restrict_lineage_propagation</strong> – whether to avoid propagating through lineage (True) or do propagate
-through lineage (False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.add_atlan_tags() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -567,23 +461,7 @@ through lineage (False)</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.append_terms">
 <span class="sig-name descname"><span class="pre">append_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm" title="pyatlan.model.assets.asset00.AtlasGlossaryTerm"><span class="pre">AtlasGlossaryTerm</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.append_terms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.append_terms" title="Link to this definition">#</a></dt>
-<dd><p>Link additional terms to an asset, without replacing existing terms linked to the asset.
-Note: this operation must make two API calls — one to retrieve the asset’s existing terms,
-and a second to append the new terms. (At least one of the GUID or qualified_name must be
-supplied, but both are not necessary.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of the asset</p></li>
-<li><p><strong>terms</strong> – the list of terms to append to the asset</p></li>
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset to which to link the terms</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset to which to link the terms</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the asset that was updated (note that it will NOT contain details of the appended terms)</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.append_terms() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -647,22 +525,7 @@ the new model: you should trust this data</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.delete_entity_by_guid">
 <span class="sig-name descname"><span class="pre">delete_entity_by_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.delete_entity_by_guid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.delete_entity_by_guid" title="Link to this definition">#</a></dt>
-<dd><p>Soft-deletes (archives) one or more assets by their unique identifier (GUID).
-This operation can be reversed by updating the asset and its status to ACTIVE.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guid</strong> – unique identifier(s) (GUIDs) of one or more assets to soft-delete</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the soft-deleted asset(s)</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.ApiError" title="pyatlan.errors.ApiError"><strong>ApiError</strong></a> – if the retry limit is overrun waiting for confirmation the asset is deleted</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.delete_by_guid() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -723,22 +586,7 @@ multiple results.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.find_connections_by_name">
 <span class="sig-name descname"><span class="pre">find_connections_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">connector_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AtlanConnectorType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/connection.html#pyatlan.model.assets.Connection" title="pyatlan.model.assets.asset02.Connection"><span class="pre">Connection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.find_connections_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.find_connections_by_name" title="Link to this definition">#</a></dt>
-<dd><p>Find a connection by its human-readable name and type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – of the connection</p></li>
-<li><p><strong>connector_type</strong> – of the connection</p></li>
-<li><p><strong>attributes</strong> – (optional) collection of attributes to retrieve for the connection</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>all connections with that name and type, if found</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the connection does not exist</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.find_connections_by_name() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -910,51 +758,13 @@ term exists.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_asset_by_guid">
 <span class="sig-name descname"><span class="pre">get_asset_by_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ext_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_relationships</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_asset_by_guid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_asset_by_guid" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves an asset by its GUID.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset to retrieve</p></li>
-<li><p><strong>asset_type</strong> – type of asset to be retrieved</p></li>
-<li><p><strong>min_ext_info</strong> – whether to minimize extra info (True) or not (False)</p></li>
-<li><p><strong>ignore_relationships</strong> – whether to include relationships (False) or exclude them (True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the requested asset</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset does not exist, or is not of the type requested</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.get_by_guid() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_asset_by_qualified_name">
 <span class="sig-name descname"><span class="pre">get_asset_by_qualified_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ext_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_relationships</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_asset_by_qualified_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_asset_by_qualified_name" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves an asset by its qualified_name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>qualified_name</strong> – qualified_name of the asset to be retrieved</p></li>
-<li><p><strong>asset_type</strong> – type of asset to be retrieved ( must be the actual asset type not a super type)</p></li>
-<li><p><strong>min_ext_info</strong> – whether to minimize extra info (True) or not (False)</p></li>
-<li><p><strong>ignore_relationships</strong> – whether to include relationships (False) or exclude them (True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the requested asset</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset does not exist</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.get_by_qualified_name() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1035,22 +845,8 @@ Use the get_lineage_list operation instead.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_lineage_list">
-<span class="sig-name descname"><span class="pre">get_lineage_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lineage_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/lineage.html#pyatlan.model.lineage.LineageListRequest" title="pyatlan.model.lineage.LineageListRequest"><span class="pre">LineageListRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.LineageListResults" title="pyatlan.client.atlan.AtlanClient.LineageListResults"><span class="pre">LineageListResults</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_lineage_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_lineage_list" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve lineage using the higher-performance “list” API.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lineage_request</strong> – detailing the lineage query, parameters, and so on to run</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the results of the lineage request</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.InvalidRequestError" title="pyatlan.errors.InvalidRequestError"><strong>InvalidRequestError</strong></a> – if the requested lineage direction is ‘BOTH’ (unsupported for this operation)</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-</ul>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">get_lineage_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lineage_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/lineage.html#pyatlan.model.lineage.LineageListRequest" title="pyatlan.model.lineage.LineageListRequest"><span class="pre">LineageListRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LineageListResults</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_lineage_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_lineage_list" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated - use asset.get_lineage_list() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1091,6 +887,13 @@ Use the get_lineage_list operation instead.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.max_retries">
+<span class="sig-name descname"><span class="pre">max_retries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_retries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Retry</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Retry(total=10,</span> <span class="pre">connect=None,</span> <span class="pre">read=None,</span> <span class="pre">redirect=None,</span> <span class="pre">status=None)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.12)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.max_retries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.max_retries" title="Link to this definition">#</a></dt>
+<dd><p>Creates a context manger that can used to temporarily change parameters used for retrying connnections.
+The original Retry information will be restored when the context is exited.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.parse_query">
 <span class="sig-name descname"><span class="pre">parse_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QueryParserRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ParsedQuery</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.parse_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.parse_query" title="Link to this definition">#</a></dt>
 <dd><p>Parses the provided query to describe its component parts.</p>
@@ -1116,19 +919,7 @@ Use the get_lineage_list operation instead.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.purge_entity_by_guid">
 <span class="sig-name descname"><span class="pre">purge_entity_by_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.purge_entity_by_guid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.purge_entity_by_guid" title="Link to this definition">#</a></dt>
-<dd><p>Hard-deletes (purges) one or more assets by their unique identifier (GUID).
-This operation is irreversible.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guid</strong> – unique identifier(s) (GUIDs) of one or more assets to hard-delete</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the hard-deleted asset(s)</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.purge_by_guid() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1146,96 +937,31 @@ This operation is irreversible.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.remove_announcement">
 <span class="sig-name descname"><span class="pre">remove_announcement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.remove_announcement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.remove_announcement" title="Link to this definition">#</a></dt>
-<dd><p>Remove the announcement from an asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of asset from which to remove the announcement</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset from which to remove the announcement</p></li>
-<li><p><strong>name</strong> – the name of the asset from which to remove the announcement</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the result of the removal, or None if the removal failed</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.remove_announcement() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.remove_atlan_tag">
 <span class="sig-name descname"><span class="pre">remove_atlan_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">atlan_tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.remove_atlan_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.remove_atlan_tag" title="Link to this definition">#</a></dt>
-<dd><p>Removes a single Atlan tag from the provided asset.
-Note: if the provided Atlan tag does not exist on the asset, an error will be raised.
-(In other words, this operation is NOT idempotent.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of asset to which to add the Atlan tags</p></li>
-<li><p><strong>qualified_name</strong> – qualified_name of the asset to which to add the Atlan tags</p></li>
-<li><p><strong>atlan_tag_name</strong> – human-readable name of the Atlan tag to remove from the asset</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.remove_atlan_tag() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.remove_certificate">
 <span class="sig-name descname"><span class="pre">remove_certificate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.remove_certificate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.remove_certificate" title="Link to this definition">#</a></dt>
-<dd><p>Remove the certificate from an asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of asset from which to remove the certificate</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset from which to remove the certificate</p></li>
-<li><p><strong>name</strong> – the name of the asset from which to remove the certificate</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the result of the removal, or None if the removal failed</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.remove_certificate() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.remove_custom_metadata">
 <span class="sig-name descname"><span class="pre">remove_custom_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cm_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.remove_custom_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.remove_custom_metadata" title="Link to this definition">#</a></dt>
-<dd><p>Remove specific custom metadata from an asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset</p></li>
-<li><p><strong>cm_name</strong> – human-readable name of the custom metadata to remove</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.remove_custom_metadata() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.remove_terms">
 <span class="sig-name descname"><span class="pre">remove_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm" title="pyatlan.model.assets.asset00.AtlasGlossaryTerm"><span class="pre">AtlasGlossaryTerm</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.remove_terms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.remove_terms" title="Link to this definition">#</a></dt>
-<dd><p>Remove terms from an asset, without replacing all existing terms linked to the asset.
-Note: this operation must make two API calls — one to retrieve the asset’s existing terms,
-and a second to remove the provided terms.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of the asset</p></li>
-<li><p><strong>terms</strong> – the list of terms to remove from the asset (note: these must be references by GUID to efficiently
-remove any existing terms)</p></li>
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset from which to remove the terms</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset from which to remove the terms</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the asset that was updated (note that it will NOT contain details of the resulting terms)</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.remove_terms() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1247,166 +973,49 @@ remove any existing terms)</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.replace_custom_metadata">
 <span class="sig-name descname"><span class="pre">replace_custom_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict" title="pyatlan.model.custom_metadata.CustomMetadataDict"><span class="pre">CustomMetadataDict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.replace_custom_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.replace_custom_metadata" title="Link to this definition">#</a></dt>
-<dd><p>Replace specific custom metadata on the asset. This will replace everything within the named
-custom metadata, but will not change any of hte other named custom metadata on the asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset</p></li>
-<li><p><strong>custom_metadata</strong> – custom metadata to replace, as human-readable names mapped to values</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.replace_custom_metadata() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.replace_terms">
 <span class="sig-name descname"><span class="pre">replace_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">terms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/atlasglossaryterm.html#pyatlan.model.assets.AtlasGlossaryTerm" title="pyatlan.model.assets.asset00.AtlasGlossaryTerm"><span class="pre">AtlasGlossaryTerm</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.replace_terms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.replace_terms" title="Link to this definition">#</a></dt>
-<dd><p>Replace the terms linked to an asset.
-(At least one of the GUID or qualified_name must be supplied, but both are not necessary.)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of the asset</p></li>
-<li><p><strong>terms</strong> – the list of terms to replace on the asset, or an empty list to remove all terms from an asset</p></li>
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset to which to replace the terms</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset to which to replace the terms</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the asset that was updated (note that it will NOT contain details of the replaced terms)</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.replace_terms() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.restore">
 <span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.restore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.restore" title="Link to this definition">#</a></dt>
-<dd><p>Restore an archived (soft-deleted) asset to active.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of the asset to restore</p></li>
-<li><p><strong>qualified_name</strong> – of the asset to restore</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the asset is now restored, or False if not</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.restore() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.retrieve_minimal">
 <span class="sig-name descname"><span class="pre">retrieve_minimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.retrieve_minimal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.retrieve_minimal" title="Link to this definition">#</a></dt>
-<dd><p>Retrieves an asset by its GUID, without any of its relationships.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset to retrieve</p></li>
-<li><p><strong>asset_type</strong> – type of asset to be retrieved</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the asset, without any of its relationships</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset does not exist</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.retrieve_minimal() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_custom_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_custom_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.save" title="Link to this definition">#</a></dt>
-<dd><p>If an asset with the same qualified_name exists, updates the existing asset. Otherwise, creates the asset.
-If an asset does exist, opertionally overwrites any Atlan tags. Custom metadata will either be
-overwritten or merged depending on the options provided.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>entity</strong> – one or more assets to save</p></li>
-<li><p><strong>replace_atlan_tags</strong> – whether to replace AtlanTags during an update (True) or not (False)</p></li>
-<li><p><strong>replace_custom_metadata</strong> – replaces any custom metadata with non-empty values provided</p></li>
-<li><p><strong>overwrite_custom_metadata</strong> – overwrites any custom metadata, even with empty values</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the result of the save</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p></li>
-<li><p><a class="reference internal" href="exceptions.html#pyatlan.errors.ApiError" title="pyatlan.errors.ApiError"><strong>ApiError</strong></a> – if a connection was created and blocking until policies are synced overruns the retry limit</p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.save() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.save_merging_cm">
 <span class="sig-name descname"><span class="pre">save_merging_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.save_merging_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.save_merging_cm" title="Link to this definition">#</a></dt>
-<dd><p>If no asset exists, has the same behavior as the upsert() method, while also setting
-any custom metadata provided. If an asset does exist, optionally overwrites any Atlan tags.
-Will merge any provided custom metadata with any custom metadata that already exists on the asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>entity</strong> – one or more assets to save</p></li>
-<li><p><strong>replace_atlan_tags</strong> – whether to replace AtlanTags during an update (True) or not (False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the created or updated assets</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.save_merging_cm() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.save_replacing_cm">
 <span class="sig-name descname"><span class="pre">save_replacing_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.save_replacing_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.save_replacing_cm" title="Link to this definition">#</a></dt>
-<dd><p>If no asset exists, has the same behavior as the upsert() method, while also setting
-any custom metadata provided.
-If an asset does exist, optionally overwrites any Atlan tags.
-Will overwrite all custom metadata on any existing asset with only the custom metadata provided
-(wiping out any other custom metadata on an existing asset that is not provided in the request).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>entity</strong> – one or more assets to save</p></li>
-<li><p><strong>replace_atlan_tags</strong> – whether to replace AtlanTags during an update (True) or not (False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the created or updated assets</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.save_replacing_cm() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.search">
-<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IndexSearchRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults" title="pyatlan.client.atlan.AtlanClient.IndexSearchResults"><span class="pre">IndexSearchResults</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.search" title="Link to this definition">#</a></dt>
-<dd><p>Search for assets using the provided criteria.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>criteria</strong> – detailing the search query, parameters, and so on to run</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the results of the search</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IndexSearchRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">IndexSearchResults</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.search" title="Link to this definition">#</a></dt>
+<dd><p>Deprecated - use asset.search() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1418,20 +1027,7 @@ Will overwrite all custom metadata on any existing asset with only the custom me
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_announcement">
 <span class="sig-name descname"><span class="pre">update_announcement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">announcement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/core.html#pyatlan.model.core.Announcement" title="pyatlan.model.core.Announcement"><span class="pre">Announcement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_announcement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_announcement" title="Link to this definition">#</a></dt>
-<dd><p>Update the announcement on an asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of asset on which to update the announcement</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset on which to update the announcement</p></li>
-<li><p><strong>name</strong> – the name of the asset on which to update the announcement</p></li>
-<li><p><strong>announcement</strong> – to apply to the asset</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the result of the update, or None if the update failed</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.update_announcement() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1443,42 +1039,13 @@ Will overwrite all custom metadata on any existing asset with only the custom me
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_certificate">
 <span class="sig-name descname"><span class="pre">update_certificate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.12)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">A</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualified_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">certificate_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CertificateStatus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_certificate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_certificate" title="Link to this definition">#</a></dt>
-<dd><p>Update the certificate on an asset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asset_type</strong> – type of asset on which to update the certificate</p></li>
-<li><p><strong>qualified_name</strong> – the qualified_name of the asset on which to update the certificate</p></li>
-<li><p><strong>name</strong> – the name of the asset on which to update the certificate</p></li>
-<li><p><strong>certificate_status</strong> – specific certificate to set on the asset</p></li>
-<li><p><strong>message</strong> – (optional) message to set (or None for no message)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the result of the update, or None if the update failed</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.update_certificate() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_custom_metadata_attributes">
 <span class="sig-name descname"><span class="pre">update_custom_metadata_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="other_model/custom_metadata.html#pyatlan.model.custom_metadata.CustomMetadataDict" title="pyatlan.model.custom_metadata.CustomMetadataDict"><span class="pre">CustomMetadataDict</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_custom_metadata_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_custom_metadata_attributes" title="Link to this definition">#</a></dt>
-<dd><p>Update only the provided custom metadata attributes on the asset. This will leave all
-other custom metadata attributes, even within the same named custom metadata, unchanged.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>guid</strong> – unique identifier (GUID) of the asset</p></li>
-<li><p><strong>custom_metadata</strong> – custom metadata to update, as human-readable names mapped to values</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.update_custom_metadata_attributes() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1496,46 +1063,13 @@ other custom metadata attributes, even within the same named custom metadata, un
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_merging_cm">
 <span class="sig-name descname"><span class="pre">update_merging_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_merging_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_merging_cm" title="Link to this definition">#</a></dt>
-<dd><p>If no asset exists, fails with a NotFoundError. Will merge any provided
-custom metadata with any custom metadata that already exists on the asset.
-If an asset does exist, optionally overwrites any Atlan tags.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>entity</strong> – the asset to update</p></li>
-<li><p><strong>replace_atlan_tags</strong> – whether to replace AtlanTags during an update (True) or not (False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the updated asset</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset does not exist (will not create it)</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.update_merging_cm() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.update_replacing_cm">
 <span class="sig-name descname"><span class="pre">update_replacing_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.update_replacing_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.update_replacing_cm" title="Link to this definition">#</a></dt>
-<dd><p>If no asset exists, fails with a NotFoundError.
-Will overwrite all custom metadata on any existing asset with only the custom metadata provided
-(wiping out any other custom metadata on an existing asset that is not provided in the request).
-If an asset does exist, optionally overwrites any Atlan tags.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>entity</strong> – the asset to update</p></li>
-<li><p><strong>replace_atlan_tags</strong> – whether to replace AtlanTags during an update (True) or not (False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>details of the updated asset</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if the asset does not exist (will not create it)</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.update_replacing_cm() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1573,19 +1107,19 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.upsert">
 <span class="sig-name descname"><span class="pre">upsert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_custom_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_custom_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.upsert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.upsert" title="Link to this definition">#</a></dt>
-<dd><p>Deprecated - use save() instead.</p>
+<dd><p>Deprecated - use asset.save() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.upsert_merging_cm">
 <span class="sig-name descname"><span class="pre">upsert_merging_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.upsert_merging_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.upsert_merging_cm" title="Link to this definition">#</a></dt>
-<dd><p>Deprecated - use save_merging_cm() instead.</p>
+<dd><p>Deprecated - use asset.save_merging_cm() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.upsert_replacing_cm">
 <span class="sig-name descname"><span class="pre">upsert_replacing_cm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/asset.html#pyatlan.model.assets.Asset" title="pyatlan.model.assets.asset00.Asset"><span class="pre">Asset</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_atlan_tagss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AssetMutationResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.upsert_replacing_cm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.upsert_replacing_cm" title="Link to this definition">#</a></dt>
-<dd><p>Deprecated - use save_replacing_cm() instead.</p>
+<dd><p>Deprecated - use asset.save_replacing_cm() instead.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1649,21 +1183,6 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
             <ul>
 <li><a class="reference internal" href="#">Atlan Client Interface</a><ul>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient"><code class="docutils literal notranslate"><span class="pre">AtlanClient</span></code></a><ul>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults"><code class="docutils literal notranslate"><span class="pre">AtlanClient.IndexSearchResults</span></code></a><ul>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults.current_page"><code class="docutils literal notranslate"><span class="pre">AtlanClient.IndexSearchResults.current_page()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.IndexSearchResults.next_page"><code class="docutils literal notranslate"><span class="pre">AtlanClient.IndexSearchResults.next_page()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.LineageListResults"><code class="docutils literal notranslate"><span class="pre">AtlanClient.LineageListResults</span></code></a><ul>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.LineageListResults.current_page"><code class="docutils literal notranslate"><span class="pre">AtlanClient.LineageListResults.current_page()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.LineageListResults.next_page"><code class="docutils literal notranslate"><span class="pre">AtlanClient.LineageListResults.next_page()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.SearchResults"><code class="docutils literal notranslate"><span class="pre">AtlanClient.SearchResults</span></code></a><ul>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.SearchResults.current_page"><code class="docutils literal notranslate"><span class="pre">AtlanClient.SearchResults.current_page()</span></code></a></li>
-<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.SearchResults.next_page"><code class="docutils literal notranslate"><span class="pre">AtlanClient.SearchResults.next_page()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.add_api_token_as_admin"><code class="docutils literal notranslate"><span class="pre">AtlanClient.add_api_token_as_admin()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.add_api_token_as_viewer"><code class="docutils literal notranslate"><span class="pre">AtlanClient.add_api_token_as_viewer()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.add_atlan_tags"><code class="docutils literal notranslate"><span class="pre">AtlanClient.add_atlan_tags()</span></code></a></li>
@@ -1711,6 +1230,7 @@ If an asset does exist, optionally overwrites any Atlan tags.</p>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.get_users"><code class="docutils literal notranslate"><span class="pre">AtlanClient.get_users()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.get_users_by_email"><code class="docutils literal notranslate"><span class="pre">AtlanClient.get_users_by_email()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.json"><code class="docutils literal notranslate"><span class="pre">AtlanClient.json()</span></code></a></li>
+<li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.max_retries"><code class="docutils literal notranslate"><span class="pre">AtlanClient.max_retries()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.parse_query"><code class="docutils literal notranslate"><span class="pre">AtlanClient.parse_query()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.purge_api_token"><code class="docutils literal notranslate"><span class="pre">AtlanClient.purge_api_token()</span></code></a></li>
 <li><a class="reference internal" href="#pyatlan.client.atlan.AtlanClient.purge_entity_by_guid"><code class="docutils literal notranslate"><span class="pre">AtlanClient.purge_entity_by_guid()</span></code></a></li>
