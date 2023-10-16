@@ -115,7 +115,7 @@ def test_search(client: AtlanClient, asset_tracker, cls):
     post_filter = Term.with_type_name(name)
     dsl = DSL(query=query, post_filter=post_filter)
     request = IndexSearchRequest(dsl=dsl, attributes=["name"])
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     if results.count > 0:
         asset_tracker.found_types.add(name)
         counter = 0
@@ -136,7 +136,7 @@ def test_search_next_page(client: AtlanClient):
         size=size,
     )
     request = IndexSearchRequest(dsl=dsl)
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.count > size
     assert len(results.current_page()) == size
     counter = 0
@@ -156,7 +156,7 @@ def test_search_iter(client: AtlanClient):
         size=size,
     )
     request = IndexSearchRequest(dsl=dsl)
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.count > size
     assert len([a for a in results]) == results.count
 
@@ -172,7 +172,7 @@ def test_search_next_when_start_changed_returns_remaining(client: AtlanClient):
         dsl=dsl,
         attributes=["databaseName"],
     )
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.next_page(start=results.count - size) is True
     assert len(list(results)) == size
 
@@ -206,7 +206,7 @@ def test_term_queries_factory(client: AtlanClient, term_query_value, method, cla
         dsl=dsl,
         attributes=["name"],
     )
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.count >= 0
 
 
@@ -228,7 +228,7 @@ def test_exists_query_factory(client: AtlanClient, with_name):
         dsl=dsl,
         attributes=["name"],
     )
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.count >= 0
 
 
@@ -252,7 +252,7 @@ def test_text_queries_factory(client: AtlanClient, text_query_value, method, cla
         attributes=["name"],
     )
     # print(request.json(by_alias=True, exclude_none=True))
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.count >= 0
 
 
@@ -275,7 +275,7 @@ def test_range_factory(client: AtlanClient, value, method, format):
         dsl=dsl,
         attributes=["name"],
     )
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.count >= 0
 
 
@@ -285,7 +285,7 @@ def test_bucket_aggregation(client: AtlanClient):
         .aggregate("type", Asset.TYPE_NAME.bucket_by())
         .sort(Asset.CREATE_TIME.order())
     ).to_request()
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results.aggregations
     result = results.aggregations["type"]
     assert result
@@ -306,7 +306,7 @@ def test_metric_aggregation(client: AtlanClient):
         .aggregate("sum_columns", Table.COLUMN_COUNT.sum())
         .sort(Asset.CREATE_TIME.order())
     ).to_request()
-    results = client.search(criteria=request)
+    results = client.asset.search(criteria=request)
     assert results
     assert results.aggregations
     assert results.aggregations["avg_columns"]

@@ -67,7 +67,7 @@ def get_current_view_of_asset(
         exclude_meanings=~include_meanings,
         exclude_atlan_tags=~include_atlan_tags,
     )
-    response = client.search(criteria=request)
+    response = client.asset.search(criteria=request)
     return (
         result
         if (
@@ -207,4 +207,4 @@ class AtlanEventHandler(ABC):  # noqa: B024
         """
         # TODO: Migrate to an AssetBatch once implemented
         for one in changed_assets:
-            self.client.save_merging_cm(one)
+            self.client.asset.save_merging_cm(one)

@@ -62,18 +62,18 @@ def database(
 
 @pytest.fixture()
 def current_user(client: AtlanClient) -> UserMinimalResponse:
-    return client.get_current_user()
+    return client.user.get_current()
 
 
 def test_append_terms_with_guid(
     client: AtlanClient, term1: AtlasGlossaryTerm, database: Database
 ):
     assert (
-        database := client.append_terms(
+        database := client.asset.append_terms(
             guid=database.guid, asset_type=Database, terms=[term1]
         )
     )
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -85,11 +85,11 @@ def test_append_terms_with_qualified_name(
     database: Database,
 ):
     assert (
-        database := client.append_terms(
+        database := client.asset.append_terms(
             qualified_name=database.qualified_name, asset_type=Database, terms=[term1]
         )
     )
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -101,13 +101,13 @@ def test_append_terms_using_ref_by_guid_for_term(
     database: Database,
 ):
     assert (
-        database := client.append_terms(
+        database := client.asset.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
         )
     )
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     assert database.assigned_terms[0].guid == term1.guid
@@ -120,7 +120,7 @@ def test_replace_a_term(
     database: Database,
 ):
     assert (
-        database := client.append_terms(
+        database := client.asset.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
@@ -128,12 +128,12 @@ def test_replace_a_term(
     )
 
     assert (
-        database := client.replace_terms(
+        database := client.asset.replace_terms(
             guid=database.guid, asset_type=Database, terms=[term2]
         )
     )
 
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 2
     deleted_terms = [
@@ -154,7 +154,7 @@ def test_replace_all_term(
     database: Database,
 ):
     assert (
-        database := client.append_terms(
+        database := client.asset.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(guid=term1.guid)],
@@ -162,12 +162,12 @@ def test_replace_all_term(
     )
 
     assert (
-        database := client.replace_terms(
+        database := client.asset.replace_terms(
             guid=database.guid, asset_type=Database, terms=[]
         )
     )
 
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 1
     deleted_terms = [
@@ -184,7 +184,7 @@ def test_remove_term(
     database: Database,
 ):
     assert (
-        database := client.append_terms(
+        database := client.asset.append_terms(
             qualified_name=database.qualified_name,
             asset_type=Database,
             terms=[
@@ -195,14 +195,14 @@ def test_remove_term(
     )
 
     assert (
-        database := client.remove_terms(
+        database := client.asset.remove_terms(
             guid=database.guid,
             asset_type=Database,
             terms=[AtlasGlossaryTerm.ref_by_guid(term1.guid)],
         )
     )
 
-    database = client.get_asset_by_guid(guid=database.guid, asset_type=Database)
+    database = client.asset.get_by_guid(guid=database.guid, asset_type=Database)
     assert database.assigned_terms
     assert len(database.assigned_terms) == 2
     deleted_terms = [
@@ -217,7 +217,7 @@ def test_remove_term(
 
 
 def test_find_connections_by_name(client: AtlanClient):
-    connections = client.find_connections_by_name(
+    connections = client.asset.find_connections_by_name(
         name="development",
         connector_type=AtlanConnectorType.SNOWFLAKE,
         attributes=["connectorName"],
@@ -227,7 +227,7 @@ def test_find_connections_by_name(client: AtlanClient):
 
 
 def test_get_asset_by_guid_good_guid(client: AtlanClient, glossary: AtlasGlossary):
-    glossary = client.get_asset_by_guid(glossary.guid, AtlasGlossary)
+    glossary = client.asset.get_by_guid(glossary.guid, AtlasGlossary)
     assert isinstance(glossary, AtlasGlossary)
 
 
@@ -239,7 +239,7 @@ def test_get_asset_by_guid_when_table_specified_and_glossary_returned_raises_not
         NotFoundError,
         match=f"ATLAN-PYTHON-404-002 Asset with GUID {guid} is not of the type requested: Table.",
     ):
-        client.get_asset_by_guid(guid, Table)
+        client.asset.get_by_guid(guid, Table)
 
 
 def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
@@ -250,18 +250,18 @@ def test_get_asset_by_guid_bad_with_non_existent_guid_raises_not_found_error(
         match="ATLAN-PYTHON-404-000 Server responded with ATLAS-404-00-005: Given instance guid 76d54dd6 "
         "is invalid/not found",
     ):
-        client.get_asset_by_guid("76d54dd6", AtlasGlossary)
+        client.asset.get_by_guid("76d54dd6", AtlasGlossary)
 
 
 def test_upsert_when_no_changes(client: AtlanClient, glossary: AtlasGlossary):
-    response = client.save(glossary)
+    response = client.asset.save(glossary)
     assert not response.guid_assignments
     assert not response.mutated_entities
 
 
 def test_get_by_qualified_name(client: AtlanClient, glossary: AtlasGlossary):
     qualified_name = glossary.qualified_name or ""
-    glossary = client.get_asset_by_qualified_name(
+    glossary = client.asset.get_by_qualified_name(
         qualified_name=qualified_name, asset_type=AtlasGlossary
     )
     assert glossary.attributes.qualified_name == qualified_name
@@ -275,17 +275,17 @@ def test_get_by_qualified_name_when_superclass_specified_raises_not_found_error(
         NotFoundError,
         match="ATLAN-PYTHON-404-014 The Asset asset could not be found by name: ",
     ):
-        client.get_asset_by_qualified_name(
+        client.asset.get_by_qualified_name(
             qualified_name=qualified_name, asset_type=Asset
         )
 
 
 def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
-    client.add_atlan_tags(
+    client.asset.add_atlan_tags(
         AtlasGlossaryTerm, term1.qualified_name, [CLASSIFICATION_NAME]
     )
-    glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert glossary_term.atlan_tags
     assert len(glossary_term.atlan_tags) == 1
     classification = glossary_term.atlan_tags[0]
@@ -295,10 +295,10 @@ def test_add_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
 @pytest.mark.order(after="test_add_classification")
 def test_remove_classification(client: AtlanClient, term1: AtlasGlossaryTerm):
     assert term1.qualified_name
-    client.remove_atlan_tag(
+    client.asset.remove_atlan_tag(
         AtlasGlossaryTerm, term1.qualified_name, CLASSIFICATION_NAME
     )
-    glossary_term = client.get_asset_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
+    glossary_term = client.asset.get_by_guid(term1.guid, asset_type=AtlasGlossaryTerm)
     assert not glossary_term.atlan_tags
 
 
@@ -306,14 +306,14 @@ def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
     assert glossary.qualified_name
     assert glossary.name
     message = "An important message"
-    client.update_certificate(
+    client.asset.update_certificate(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,
         name=glossary.name,
         certificate_status=CertificateStatus.DRAFT,
         message=message,
     )
-    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
     assert glossary.certificate_status == CertificateStatus.DRAFT
     assert glossary.certificate_status_message == message
 
@@ -322,12 +322,12 @@ def test_update_certificate(client: AtlanClient, glossary: AtlasGlossary):
 def test_remove_certificate(client: AtlanClient, glossary: AtlasGlossary):
     assert glossary.qualified_name
     assert glossary.name
-    client.remove_certificate(
+    client.asset.remove_certificate(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,
         name=glossary.name,
     )
-    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
     assert glossary.certificate_status is None
     assert glossary.certificate_status_message is None
 
@@ -337,13 +337,13 @@ def test_update_announcement(
 ):
     assert glossary.qualified_name
     assert glossary.name
-    client.update_announcement(
+    client.asset.update_announcement(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,
         name=glossary.name,
         announcement=announcement,
     )
-    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
     assert glossary.get_announcment() == announcement
 
 
@@ -351,12 +351,12 @@ def test_update_announcement(
 def test_remove_announcement(client: AtlanClient, glossary: AtlasGlossary):
     assert glossary.qualified_name
     assert glossary.name
-    client.remove_announcement(
+    client.asset.remove_announcement(
         asset_type=AtlasGlossary,
         qualified_name=glossary.qualified_name,
         name=glossary.name,
     )
-    glossary = client.get_asset_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
+    glossary = client.asset.get_by_guid(guid=glossary.guid, asset_type=AtlasGlossary)
     assert glossary.get_announcment() is None
 
 

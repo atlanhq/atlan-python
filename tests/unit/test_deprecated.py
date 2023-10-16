@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 
+from pyatlan.client.asset import AssetClient
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
@@ -11,7 +12,14 @@ from pyatlan.client.token import TokenClient
 from pyatlan.client.typedef import TypeDefClient
 from pyatlan.client.user import UserClient
 from pyatlan.model.assets import AtlasGlossary, AtlasGlossaryCategory, AtlasGlossaryTerm
-from pyatlan.model.enums import AtlanTypeCategory
+from pyatlan.model.core import Announcement
+from pyatlan.model.custom_metadata import CustomMetadataDict
+from pyatlan.model.enums import (
+    AnnouncementType,
+    AtlanConnectorType,
+    AtlanTypeCategory,
+    CertificateStatus,
+)
 from pyatlan.model.typedef import TypeDef
 from pyatlan.model.user import AtlanUser
 from tests.unit.model.constants import (
@@ -333,3 +341,258 @@ def test_get_user_by_username(mock_type_def_client, client: AtlanClient):
     client.get_user_by_username(username=username)
 
     mock_type_def_client.assert_called_once_with(username=username)
+
+
+@pytest.mark.parametrize(
+    "deprecated_name, current_name, values",
+    [
+        (
+            "get_asset_by_qualified_name",
+            "get_by_qualified_name",
+            {
+                "qualified_name": "qname",
+                "asset_type": AtlasGlossary,
+                "min_ext_info": False,
+                "ignore_relationships": True,
+            },
+        ),
+        (
+            "get_asset_by_guid",
+            "get_by_guid",
+            {
+                "guid": "123",
+                "asset_type": AtlasGlossary,
+                "min_ext_info": False,
+                "ignore_relationships": True,
+            },
+        ),
+        (
+            "retrieve_minimal",
+            "retrieve_minimal",
+            {
+                "guid": "123",
+                "asset_type": AtlasGlossary,
+            },
+        ),
+        (
+            "upsert",
+            "save",
+            {
+                "entity": [],
+                "replace_atlan_tags": True,
+                "replace_custom_metadata": True,
+                "overwrite_custom_metadata": True,
+            },
+        ),
+        (
+            "save",
+            "save",
+            {
+                "entity": [],
+                "replace_atlan_tags": True,
+                "replace_custom_metadata": True,
+                "overwrite_custom_metadata": True,
+            },
+        ),
+        (
+            "upsert_merging_cm",
+            "save_merging_cm",
+            {
+                "entity": [],
+                "replace_atlan_tags": True,
+            },
+        ),
+        (
+            "save_merging_cm",
+            "save_merging_cm",
+            {
+                "entity": [],
+                "replace_atlan_tags": True,
+            },
+        ),
+        (
+            "upsert_replacing_cm",
+            "save_replacing_cm",
+            {
+                "entity": [],
+                "replace_atlan_tagss": True,
+            },
+        ),
+        (
+            "save_replacing_cm",
+            "save_replacing_cm",
+            {
+                "entity": [],
+                "replace_atlan_tags": True,
+            },
+        ),
+        (
+            "update_replacing_cm",
+            "update_replacing_cm",
+            {
+                "entity": [],
+                "replace_atlan_tags": True,
+            },
+        ),
+        (
+            "purge_entity_by_guid",
+            "purge_by_guid",
+            {
+                "guid": "123",
+            },
+        ),
+        (
+            "delete_entity_by_guid",
+            "delete_by_guid",
+            {
+                "guid": "123",
+            },
+        ),
+        (
+            "restore",
+            "restore",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+            },
+        ),
+        (
+            "search",
+            "search",
+            {
+                "criteria": None,
+            },
+        ),
+        (
+            "add_atlan_tags",
+            "add_atlan_tags",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+                "atlan_tag_names": ["Something"],
+                "propagate": False,
+                "remove_propagation_on_delete": False,
+                "restrict_lineage_propagation": False,
+            },
+        ),
+        (
+            "remove_atlan_tag",
+            "remove_atlan_tag",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+                "atlan_tag_name": "Something",
+            },
+        ),
+        (
+            "update_certificate",
+            "update_certificate",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+                "name": "Something",
+                "certificate_status": CertificateStatus.DRAFT,
+                "message": "dah",
+            },
+        ),
+        (
+            "remove_certificate",
+            "remove_certificate",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+                "name": "Something",
+            },
+        ),
+        (
+            "update_announcement",
+            "update_announcement",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+                "name": "Something",
+                "announcement": Announcement(
+                    announcement_title="blah",
+                    announcement_message="bah",
+                    announcement_type=AnnouncementType.ISSUE,
+                ),
+            },
+        ),
+        (
+            "remove_announcement",
+            "remove_announcement",
+            {
+                "asset_type": AtlasGlossary,
+                "qualified_name": "qname",
+                "name": "Something",
+            },
+        ),
+        (
+            "replace_custom_metadata",
+            "replace_custom_metadata",
+            {
+                "guid": "123",
+                "custom_metadata": Mock(CustomMetadataDict),
+            },
+        ),
+        (
+            "remove_custom_metadata",
+            "remove_custom_metadata",
+            {
+                "guid": "123",
+                "cm_name": "something",
+            },
+        ),
+        (
+            "append_terms",
+            "append_terms",
+            {
+                "asset_type": AtlasGlossary,
+                "terms": [],
+                "guid": "123",
+                "qualified_name": "qname",
+            },
+        ),
+        (
+            "replace_terms",
+            "replace_terms",
+            {
+                "asset_type": AtlasGlossary,
+                "terms": [],
+                "guid": "123",
+                "qualified_name": "qname",
+            },
+        ),
+        (
+            "remove_terms",
+            "remove_terms",
+            {
+                "asset_type": AtlasGlossary,
+                "terms": [],
+                "guid": "123",
+                "qualified_name": "qname",
+            },
+        ),
+        (
+            "find_connections_by_name",
+            "find_connections_by_name",
+            {
+                "name": "Bob",
+                "connector_type": AtlanConnectorType.SNOWFLAKE,
+                "attributes": ["something"],
+            },
+        ),
+    ],
+)
+def test_asset_deprecated_methods(
+    deprecated_name: str, current_name: str, values, client: AtlanClient
+):
+    with patch.object(AssetClient, current_name) as mock:
+        func = getattr(client, deprecated_name)
+        func(**values)
+
+    if deprecated_name == "upsert_replacing_cm":
+        values["replace_atlan_tags"] = values["replace_atlan_tagss"]
+        del values["replace_atlan_tagss"]
+
+    mock.assert_called_once_with(**values)

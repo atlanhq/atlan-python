@@ -345,7 +345,7 @@ class UserClient:
                 .include_on_results(keyword_field)
                 .page_size(1)
             ).to_request()
-            results = tmp.search(request)
+            results = tmp.asset.search(request)
             if not results.current_page():
                 raise ErrorCode.ASSET_NOT_FOUND_BY_GUID.exception_with_parameters(
                     asset_guid
@@ -359,4 +359,4 @@ class UserClient:
                 existing_admins.add(token_user)
             to_update = asset.trim_to_required()
             to_update.viewer_users = existing_viewers
-            return tmp.save(to_update)
+            return tmp.asset.save(to_update)

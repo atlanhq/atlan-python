@@ -44,7 +44,7 @@ def _retrieve_and_check(client: AtlanClient, to_check: list[Asset], retry_count:
     leftovers = []
     for one in to_check:
         try:
-            candidate = client.get_asset_by_guid(one.guid, asset_type=type(one))
+            candidate = client.asset.get_by_guid(one.guid, asset_type=type(one))
             if candidate and candidate.status == EntityStatus.ACTIVE:
                 leftovers.append(candidate)
         except NotFoundError:
@@ -77,7 +77,7 @@ def api_spec(
     to_create = APISpec.create(
         name=API_SPEC_NAME, connection_qualified_name=connection.qualified_name
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APISpec)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APISpec)
@@ -99,7 +99,7 @@ def api_path(client: AtlanClient, api_spec: APISpec) -> Generator[APIPath, None,
         path_raw_uri=API_PATH_RAW_URI,
         spec_qualified_name=api_spec.qualified_name,
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=APIPath)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=APIPath)
@@ -121,7 +121,7 @@ def test_update_api_path(
 ):
     assert api_path.qualified_name
     assert api_path.name
-    updated = client.update_certificate(
+    updated = client.asset.update_certificate(
         asset_type=APIPath,
         qualified_name=api_path.qualified_name,
         name=api_path.name,
@@ -132,7 +132,7 @@ def test_update_api_path(
     assert updated.certificate_status_message == CERTIFICATE_MESSAGE
     assert api_path.qualified_name
     assert api_path.name
-    updated = client.update_announcement(
+    updated = client.asset.update_announcement(
         asset_type=APIPath,
         qualified_name=api_path.qualified_name,
         name=api_path.name,
@@ -152,7 +152,7 @@ def test_update_api_path(
 def test_retrieve_api_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
-    b = client.get_asset_by_guid(api_path.guid, asset_type=APIPath)
+    b = client.asset.get_by_guid(api_path.guid, asset_type=APIPath)
     assert b
     assert not b.is_incomplete
     assert b.guid == api_path.guid
@@ -171,7 +171,7 @@ def test_update_api_path_again(
 ):
     assert api_path.qualified_name
     assert api_path.name
-    updated = client.remove_certificate(
+    updated = client.asset.remove_certificate(
         asset_type=APIPath,
         qualified_name=api_path.qualified_name,
         name=api_path.name,
@@ -183,7 +183,7 @@ def test_update_api_path_again(
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert api_path.qualified_name
-    updated = client.remove_announcement(
+    updated = client.asset.remove_announcement(
         asset_type=APIPath,
         qualified_name=api_path.qualified_name,
         name=api_path.name,
@@ -198,7 +198,7 @@ def test_update_api_path_again(
 def test_delete_api_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
-    response = client.delete_entity_by_guid(api_path.guid)
+    response = client.asset.delete_by_guid(api_path.guid)
     assert response
     assert not response.assets_created(asset_type=APIPath)
     assert not response.assets_updated(asset_type=APIPath)
@@ -215,7 +215,7 @@ def test_delete_api_path(
 def test_read_deleted_api_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
-    deleted = client.get_asset_by_guid(api_path.guid, asset_type=APIPath)
+    deleted = client.asset.get_by_guid(api_path.guid, asset_type=APIPath)
     assert deleted
     assert deleted.guid == api_path.guid
     assert deleted.qualified_name == api_path.qualified_name
@@ -227,9 +227,11 @@ def test_restore_path(
     client: AtlanClient, connection: Connection, api_spec: APISpec, api_path: APIPath
 ):
     assert api_path.qualified_name
-    assert client.restore(asset_type=APIPath, qualified_name=api_path.qualified_name)
+    assert client.asset.restore(
+        asset_type=APIPath, qualified_name=api_path.qualified_name
+    )
     assert api_path.qualified_name
-    restored = client.get_asset_by_qualified_name(
+    restored = client.asset.get_by_qualified_name(
         asset_type=APIPath, qualified_name=api_path.qualified_name
     )
     assert restored

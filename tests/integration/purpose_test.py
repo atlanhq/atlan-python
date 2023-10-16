@@ -43,7 +43,7 @@ def purpose(
     atlan_tag_name,
 ) -> Generator[Purpose, None, None]:
     to_create = Purpose.create(name=MODULE_NAME, atlan_tags=[atlan_tag_name])
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     p = response.assets_created(asset_type=Purpose)[0]
     yield p
     delete_asset(client, guid=p.guid, asset_type=Purpose)
@@ -56,7 +56,7 @@ def test_purpose(client: AtlanClient, purpose: Purpose, atlan_tag_name: AtlanTag
     assert purpose.name == MODULE_NAME
     assert purpose.display_name == MODULE_NAME
     assert purpose.qualified_name != MODULE_NAME
-    purpose = client.get_asset_by_guid(guid=purpose.guid, asset_type=Purpose)
+    purpose = client.asset.get_by_guid(guid=purpose.guid, asset_type=Purpose)
     assert purpose.purpose_atlan_tags
     assert [atlan_tag_name] == purpose.purpose_atlan_tags
 
@@ -77,7 +77,7 @@ def test_update_purpose(
         AssetSidebarTab.RELATIONS.value,
         AssetSidebarTab.QUERIES.value,
     }
-    response = client.save(to_update)
+    response = client.asset.save(to_update)
     assert response
     updated = response.assets_updated(asset_type=Purpose)
     assert updated
@@ -127,7 +127,7 @@ def test_add_policies_to_purpose(
         all_users=True,
     )
     data.policy_mask_type = DataMaskingType.HASH
-    response = client.save([metadata, data])
+    response = client.asset.save([metadata, data])
     assert response
     purposes = response.assets_updated(asset_type=Purpose)
     assert purposes
@@ -144,7 +144,7 @@ def test_retrieve_purpose(
     purpose: Purpose,
 ):
     assert purpose.qualified_name
-    one = client.get_asset_by_qualified_name(
+    one = client.asset.get_by_qualified_name(
         qualified_name=purpose.qualified_name, asset_type=Purpose
     )
     assert one
@@ -162,7 +162,7 @@ def test_retrieve_purpose(
     for policy in policies:
         # Need to retrieve the full policy if we want to see any info about it
         # (what comes back on the Persona itself are just policy references)
-        full = client.get_asset_by_guid(guid=policy.guid, asset_type=AuthPolicy)
+        full = client.asset.get_by_guid(guid=policy.guid, asset_type=AuthPolicy)
         assert full
         sub_cat = full.policy_sub_category
         assert sub_cat

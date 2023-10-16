@@ -33,7 +33,7 @@ def client() -> Generator[AtlanClient, None, None]:
 
 def delete_asset(client: AtlanClient, asset_type: Type[A], guid: str) -> None:
     # These assertions check the cleanup actually worked
-    r = client.purge_entity_by_guid(guid)
+    r = client.asset.purge_by_guid(guid)
     s = r is not None
     s = s and len(r.assets_deleted(asset_type)) == 1
     s = s and r.assets_deleted(asset_type)[0].guid == guid

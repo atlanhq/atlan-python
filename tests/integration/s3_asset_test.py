@@ -46,7 +46,7 @@ def _retrieve_and_check(client: AtlanClient, to_check: list[Asset], retry_count:
     leftovers = []
     for one in to_check:
         try:
-            candidate = client.get_asset_by_guid(one.guid, asset_type=type(one))
+            candidate = client.asset.get_by_guid(one.guid, asset_type=type(one))
             if candidate and candidate.status == EntityStatus.ACTIVE:
                 leftovers.append(candidate)
         except NotFoundError:
@@ -82,7 +82,7 @@ def bucket(
         connection_qualified_name=connection.qualified_name,
         aws_arn=BUCKET_ARN,
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=S3Bucket)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=S3Bucket)
@@ -115,7 +115,7 @@ def s3object(
         aws_arn=OBJECT_ARN,
         s3_bucket_qualified_name=bucket.qualified_name,
     )
-    response = client.save(to_create)
+    response = client.asset.save(to_create)
     result = response.assets_created(asset_type=S3Object)[0]
     yield result
     delete_asset(client, guid=result.guid, asset_type=S3Object)
@@ -143,7 +143,7 @@ def test_update_bucket(
 ):
     assert bucket.qualified_name
     assert bucket.name
-    updated = client.update_certificate(
+    updated = client.asset.update_certificate(
         asset_type=S3Bucket,
         qualified_name=bucket.qualified_name,
         name=bucket.name,
@@ -155,7 +155,7 @@ def test_update_bucket(
     assert updated.certificate_status_message == CERTIFICATE_MESSAGE
     assert bucket.qualified_name
     assert bucket.name
-    updated = client.update_announcement(
+    updated = client.asset.update_announcement(
         asset_type=S3Bucket,
         qualified_name=bucket.qualified_name,
         name=bucket.name,
@@ -178,7 +178,7 @@ def test_retrieve_bucket(
     bucket: S3Bucket,
     s3object: S3Object,
 ):
-    b = client.get_asset_by_guid(bucket.guid, asset_type=S3Bucket)
+    b = client.asset.get_by_guid(bucket.guid, asset_type=S3Bucket)
     assert b
     assert not b.is_incomplete
     assert b.guid == bucket.guid
@@ -201,7 +201,7 @@ def test_update_bucket_again(
 ):
     assert bucket.qualified_name
     assert bucket.name
-    updated = client.remove_certificate(
+    updated = client.asset.remove_certificate(
         qualified_name=bucket.qualified_name,
         asset_type=S3Bucket,
         name=bucket.name,
@@ -213,7 +213,7 @@ def test_update_bucket_again(
     assert updated.announcement_title == ANNOUNCEMENT_TITLE
     assert updated.announcement_message == ANNOUNCEMENT_MESSAGE
     assert bucket.qualified_name
-    updated = client.remove_announcement(
+    updated = client.asset.remove_announcement(
         qualified_name=bucket.qualified_name,
         asset_type=S3Bucket,
         name=bucket.name,
@@ -231,7 +231,7 @@ def test_delete_object(
     bucket: S3Bucket,
     s3object: S3Object,
 ):
-    response = client.delete_entity_by_guid(s3object.guid)
+    response = client.asset.delete_by_guid(s3object.guid)
     assert response
     assert not response.assets_created(asset_type=S3Object)
     assert not response.assets_updated(asset_type=S3Object)
@@ -251,7 +251,7 @@ def test_read_deleted_object(
     bucket: S3Bucket,
     s3object: S3Object,
 ):
-    deleted = client.get_asset_by_guid(s3object.guid, asset_type=S3Object)
+    deleted = client.asset.get_by_guid(s3object.guid, asset_type=S3Object)
     assert deleted
     assert deleted.guid == s3object.guid
     assert deleted.qualified_name == s3object.qualified_name
@@ -266,9 +266,11 @@ def test_restore_object(
     s3object: S3Object,
 ):
     assert s3object.qualified_name
-    assert client.restore(asset_type=S3Object, qualified_name=s3object.qualified_name)
+    assert client.asset.restore(
+        asset_type=S3Object, qualified_name=s3object.qualified_name
+    )
     assert s3object.qualified_name
-    restored = client.get_asset_by_qualified_name(
+    restored = client.asset.get_by_qualified_name(
         asset_type=S3Object, qualified_name=s3object.qualified_name
     )
     assert restored
