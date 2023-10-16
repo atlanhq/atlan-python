@@ -612,41 +612,13 @@ multiple results.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.find_personas_by_name">
 <span class="sig-name descname"><span class="pre">find_personas_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/persona.html#pyatlan.model.assets.Persona" title="pyatlan.model.assets.asset12.Persona"><span class="pre">Persona</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.find_personas_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.find_personas_by_name" title="Link to this definition">#</a></dt>
-<dd><p>Find a persona by its human-readable name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – of the persona</p></li>
-<li><p><strong>attributes</strong> – (optional) collection of attributes to retrieve for the persona</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>all personas with that name, if found</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if no persona with the provided name exists</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.find_personas_by_name() instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.find_purposes_by_name">
 <span class="sig-name descname"><span class="pre">find_purposes_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="asset/purpose.html#pyatlan.model.assets.Purpose" title="pyatlan.model.assets.asset13.Purpose"><span class="pre">Purpose</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.find_purposes_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.find_purposes_by_name" title="Link to this definition">#</a></dt>
-<dd><p>Find a purpose by its human-readable name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – of the purpose</p></li>
-<li><p><strong>attributes</strong> – (optional) collection of attributes to retrieve for the purpose</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>all purposes with that name, if found</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.NotFoundError" title="pyatlan.errors.NotFoundError"><strong>NotFoundError</strong></a> – if no purpose with the provided name exists</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use asset.find_personas_by_name() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -699,18 +671,7 @@ term exists.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_admin_events">
 <span class="sig-name descname"><span class="pre">get_admin_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">admin_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AdminEventRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AdminEventResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_admin_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_admin_events" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve admin events based on the supplied filters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>admin_request</strong> – details of the filters to apply when retrieving admin events</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the admin events that match the supplied filters</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use admin.get_keycloak_events() instead.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -811,18 +772,7 @@ term exists.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyatlan.client.atlan.AtlanClient.get_keycloak_events">
 <span class="sig-name descname"><span class="pre">get_keycloak_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keycloak_request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">KeycloakEventRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeycloakEventResponse</span></span></span><a class="reference internal" href="_modules/pyatlan/client/atlan.html#AtlanClient.get_keycloak_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyatlan.client.atlan.AtlanClient.get_keycloak_events" title="Link to this definition">#</a></dt>
-<dd><p>Retrieve all events, based on the supplied filters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>keycloak_request</strong> – details of the filters to apply when retrieving events</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the events that match the supplied filters</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="exceptions.html#pyatlan.errors.AtlanError" title="pyatlan.errors.AtlanError"><strong>AtlanError</strong></a> – on any API communication issue</p>
-</dd>
-</dl>
+<dd><p>Deprecated - use admin.get_keycloak_events() instead.</p>
 </dd></dl>
 
 <dl class="py method">
