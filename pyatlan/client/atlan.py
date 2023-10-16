@@ -1507,6 +1507,8 @@ class AtlanClient(BaseSettings):
     def max_retries(
         self, max_retries: Retry = CONNECTION_RETRY
     ) -> Generator[None, None, None]:
+        """Creates a context manger that can used to temporarily change parameters used for retrying connnections.
+        The original Retry information will be restored when the context is exited."""
         adapter = self._session.adapters[HTTPS_PREFIX]
         current_max = adapter.max_retries
         adapter.max_retries = max_retries
