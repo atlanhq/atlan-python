@@ -376,10 +376,10 @@ def test_register_client(client):
     ],
 )
 def test_find_glossary_by_name_with_bad_values_raises_value_error(
-    name, attributes, message, client
+    name, attributes, message, client: AtlanClient
 ):
     with pytest.raises(ValueError, match=message):
-        client.find_glossary_by_name(name=name, attributes=attributes)
+        client.asset.find_glossary_by_name(name=name, attributes=attributes)
 
 
 @patch.object(AssetClient, "search")
@@ -501,10 +501,10 @@ def test_find_glossary(mock_search, caplog):
     ],
 )
 def test_find_category_fast_by_name_with_bad_values_raises_value_error(
-    name, glossary_qualified_name, attributes, message, client
+    name, glossary_qualified_name, attributes, message, client: AtlanClient
 ):
     with pytest.raises(ValueError, match=message):
-        client.find_category_fast_by_name(
+        client.asset.find_category_fast_by_name(
             name=name,
             glossary_qualified_name=glossary_qualified_name,
             attributes=attributes,
@@ -638,12 +638,12 @@ def test_find_category_fast_by_name(mock_search, caplog):
     ],
 )
 def test_find_category_by_name_when_bad_parameter_raises_value_error(
-    name, glossary_name, attributes, message, client
+    name, glossary_name, attributes, message, client: AtlanClient
 ):
     sut = client
 
     with pytest.raises(ValueError, match=message):
-        sut.find_category_by_name(
+        sut.asset.find_category_by_name(
             name=name, glossary_name=glossary_name, attributes=attributes
         )
 
@@ -723,10 +723,10 @@ def test_find_category_by_name():
     ],
 )
 def test_find_term_fast_by_name_with_bad_values_raises_value_error(
-    name, glossary_qualified_name, attributes, message, client
+    name, glossary_qualified_name, attributes, message, client: AtlanClient
 ):
     with pytest.raises(ValueError, match=message):
-        client.find_term_fast_by_name(
+        client.asset.find_term_fast_by_name(
             name=name,
             glossary_qualified_name=glossary_qualified_name,
             attributes=attributes,
@@ -861,12 +861,12 @@ def test_find_term_fast_by_name(mock_search, caplog):
     ],
 )
 def test_find_term_by_name_when_bad_parameter_raises_value_error(
-    name, glossary_name, attributes, message, client
+    name, glossary_name, attributes, message, client: AtlanClient
 ):
     sut = client
 
     with pytest.raises(ValueError, match=message):
-        sut.find_term_by_name(
+        sut.asset.find_term_by_name(
             name=name, glossary_name=glossary_name, attributes=attributes
         )
 
