@@ -107,12 +107,12 @@ def test_find_persona_by_name(
     connection: Connection,
     glossary: AtlasGlossary,
 ):
-    result = client.user.find_personas_by_name(MODULE_NAME)
+    result = client.asset.find_personas_by_name(MODULE_NAME)
     count = 0
     # TODO: replace with exponential back-off and jitter
     while not result and count < 10:
         time.sleep(2)
-        result = client.user.find_personas_by_name(MODULE_NAME)
+        result = client.asset.find_personas_by_name(MODULE_NAME)
         count += 1
     assert result
     assert len(result) == 1
