@@ -18,8 +18,8 @@ from pyatlan.model.keycloak_events import (
 
 class AdminClient:
     """
-    This class can be used to retrieve information about roles. This class does not need to be instantiated
-    directly but can be obtained through the role property of AtlanClient.
+    This class can be used to retrieve keycloak and admin events. This class does not need to be instantiated
+    directly but can be obtained through the admin property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):

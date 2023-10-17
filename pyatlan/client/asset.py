@@ -98,8 +98,8 @@ Asset_Types = Union[
 
 class AssetClient:
     """
-    This class can be used to retrieve information about roles. This class does not need to be instantiated
-    directly but can be obtained through the role property of AtlanClient.
+    This class can be used to retrieve information about assets. This class does not need to be instantiated
+    directly but can be obtained through the asset property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
