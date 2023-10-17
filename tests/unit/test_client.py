@@ -391,7 +391,7 @@ def test_find_glossary_when_none_found_raises_not_found_error(mock_search):
         NotFoundError,
         match=f"The AtlasGlossary asset could not be found by name: {GLOSSARY_NAME}.",
     ):
-        client.find_glossary_by_name(GLOSSARY_NAME)
+        client.asset.find_glossary_by_name(GLOSSARY_NAME)
 
 
 @patch.object(AssetClient, "search")
@@ -404,7 +404,7 @@ def test_find_glossary_when_non_glossary_found_raises_not_found_error(mock_searc
         NotFoundError,
         match=f"The AtlasGlossary asset could not be found by name: {GLOSSARY_NAME}.",
     ):
-        client.find_glossary_by_name(GLOSSARY_NAME)
+        client.asset.find_glossary_by_name(GLOSSARY_NAME)
     mock_search.return_value.current_page.assert_called_once()
 
 
@@ -425,7 +425,7 @@ def test_find_glossary(mock_search, caplog):
 
     client = AtlanClient()
 
-    assert GLOSSARY == client.find_glossary_by_name(
+    assert GLOSSARY == client.asset.find_glossary_by_name(
         name=GLOSSARY_NAME, attributes=attributes
     )
     assert (
@@ -520,7 +520,7 @@ def test_find_category_fast_by_name_when_none_found_raises_not_found_error(mock_
         NotFoundError,
         match=f"The AtlasGlossaryCategory asset could not be found by name: {GLOSSARY_CATEGORY_NAME}.",
     ):
-        client.find_category_fast_by_name(
+        client.asset.find_category_fast_by_name(
             name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
         )
 
@@ -537,7 +537,7 @@ def test_find_category_fast_by_name_when_non_category_found_raises_not_found_err
         NotFoundError,
         match=f"The AtlasGlossaryCategory asset could not be found by name: {GLOSSARY_CATEGORY_NAME}.",
     ):
-        client.find_category_fast_by_name(
+        client.asset.find_category_fast_by_name(
             name=GLOSSARY_CATEGORY_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
         )
     mock_search.return_value.current_page.assert_called_once()
@@ -562,7 +562,7 @@ def test_find_category_fast_by_name(mock_search, caplog):
 
     assert (
         GLOSSARY_CATEGORY
-        == client.find_category_fast_by_name(
+        == client.asset.find_category_fast_by_name(
             name=GLOSSARY_CATEGORY_NAME,
             glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
             attributes=attributes,
@@ -651,7 +651,7 @@ def test_find_category_by_name_when_bad_parameter_raises_value_error(
 def test_find_category_by_name():
     attributes = ["name"]
     with patch.multiple(
-        AtlanClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT
+        AssetClient, find_glossary_by_name=DEFAULT, find_category_fast_by_name=DEFAULT
     ) as values:
         mock_find_glossary_by_name = values["find_glossary_by_name"]
         mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
@@ -659,7 +659,7 @@ def test_find_category_by_name():
 
         sut = AtlanClient()
 
-        category = sut.find_category_by_name(
+        category = sut.asset.find_category_by_name(
             name=GLOSSARY_CATEGORY_NAME,
             glossary_name=GLOSSARY_NAME,
             attributes=attributes,
@@ -742,7 +742,7 @@ def test_find_term_fast_by_name_when_none_found_raises_not_found_error(mock_sear
         NotFoundError,
         match=f"The AtlasGlossaryTerm asset could not be found by name: {GLOSSARY_TERM_NAME}.",
     ):
-        client.find_term_fast_by_name(
+        client.asset.find_term_fast_by_name(
             name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
         )
 
@@ -759,7 +759,7 @@ def test_find_term_fast_by_name_when_non_term_found_raises_not_found_error(
         NotFoundError,
         match=f"The AtlasGlossaryTerm asset could not be found by name: {GLOSSARY_TERM_NAME}.",
     ):
-        client.find_term_fast_by_name(
+        client.asset.find_term_fast_by_name(
             name=GLOSSARY_TERM_NAME, glossary_qualified_name=GLOSSARY_QUALIFIED_NAME
         )
     mock_search.return_value.current_page.assert_called_once()
@@ -782,7 +782,7 @@ def test_find_term_fast_by_name(mock_search, caplog):
 
     client = AtlanClient()
 
-    assert GLOSSARY_TERM == client.find_term_fast_by_name(
+    assert GLOSSARY_TERM == client.asset.find_term_fast_by_name(
         name=GLOSSARY_TERM_NAME,
         glossary_qualified_name=GLOSSARY_QUALIFIED_NAME,
         attributes=attributes,
@@ -874,7 +874,7 @@ def test_find_term_by_name_when_bad_parameter_raises_value_error(
 def test_find_term_by_name():
     attributes = ["name"]
     with patch.multiple(
-        AtlanClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT
+        AssetClient, find_glossary_by_name=DEFAULT, find_term_fast_by_name=DEFAULT
     ) as values:
         mock_find_glossary_by_name = values["find_glossary_by_name"]
         mock_find_glossary_by_name.return_value.qualified_name = GLOSSARY_QUALIFIED_NAME
@@ -882,7 +882,7 @@ def test_find_term_by_name():
 
         sut = AtlanClient()
 
-        term = sut.find_term_by_name(
+        term = sut.asset.find_term_by_name(
             name=GLOSSARY_TERM_NAME,
             glossary_name=GLOSSARY_NAME,
             attributes=attributes,

@@ -56,14 +56,7 @@ from pyatlan.model.lineage import LineageListRequest, LineageRequest, LineageRes
 from pyatlan.model.query import ParsedQuery, QueryParserRequest
 from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.role import RoleResponse
-from pyatlan.model.search import (
-    DSL,
-    IndexSearchRequest,
-    Query,
-    with_active_category,
-    with_active_glossary,
-    with_active_term,
-)
+from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
@@ -1280,20 +1273,14 @@ class AtlanClient(BaseSettings):
         name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossary:
-        """
-        Find a glossary by its human-readable name.
-
-        :param name: of the glossary
-        :param attributes: (optional) collection of attributes to retrieve for the glossary
-        :returns: the glossary, if found
-        :raises NotFoundError: if no glossary with the provided name exists
-        """
-        if attributes is None:
-            attributes = []
-        query = with_active_glossary(name=name)
-        return self._search_for_asset_with_name(
-            query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
-        )[0]
+        """Deprecated - use asset.find_glossary_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_glossary_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.asset.find_glossary_by_name(name=name, attributes=attributes)
 
     @validate_arguments()
     def find_category_fast_by_name(
@@ -1302,29 +1289,17 @@ class AtlanClient(BaseSettings):
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> list[AtlasGlossaryCategory]:
-        """
-        Find a category by its human-readable name.
-        Note: this operation requires first knowing the qualified_name of the glossary in which the
-        category exists. Note that categories are not unique by name, so there may be
-        multiple results.
-
-        :param name: of the category
-        :param glossary_qualified_name: qualified_name of the glossary in which the category exists
-        :param attributes: (optional) collection of attributes to retrieve for the category
-        :returns: the category, if found
-        :raises NotFoundError: if no category with the provided name exists in the glossary
-        """
-        if attributes is None:
-            attributes = []
-        query = with_active_category(
-            name=name, glossary_qualified_name=glossary_qualified_name
+        """Deprecated - use asset.find_category_fast_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_category_fast_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return self._search_for_asset_with_name(
-            query=query,
+        return self.asset.find_category_fast_by_name(
             name=name,
-            asset_type=AtlasGlossaryCategory,
+            glossary_qualified_name=glossary_qualified_name,
             attributes=attributes,
-            allow_multiple=True,
         )
 
     @validate_arguments()
@@ -1334,56 +1309,15 @@ class AtlanClient(BaseSettings):
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> list[AtlasGlossaryCategory]:
-        """
-        Find a category by its human-readable name.
-        Note: this operation must run two separate queries to first resolve the qualified_name of the
-        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use
-        find_category_by_name_fast instead. Note that categories are not unique by name, so there may be
-        multiple results.
-
-        :param name: of the category
-        :param glossary_name: human-readable name of the glossary in which the category exists
-        :param attributes: (optional) collection of attributes to retrieve for the category
-        :returns: the category, if found
-        :raises NotFoundError: if no category with the provided name exists in the glossary
-        """
-        glossary = self.find_glossary_by_name(name=glossary_name)
-        return self.find_category_fast_by_name(
-            name=name,
-            glossary_qualified_name=glossary.qualified_name,
-            attributes=attributes,
+        """Deprecated - use asset.find_category_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_category_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-
-    def _search_for_asset_with_name(
-        self,
-        query: Query,
-        name: str,
-        asset_type: Type[A],
-        attributes: Optional[list[StrictStr]],
-        allow_multiple: bool = False,
-    ) -> list[A]:
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
-            attributes=attributes,
-        )
-        results = self.asset.search(search_request)
-        if results.count > 0 and (
-            assets := [
-                asset
-                for asset in results.current_page()
-                if isinstance(asset, asset_type)
-            ]
-        ):
-            if not allow_multiple and len(assets) > 1:
-                LOGGER.warning(
-                    "More than 1 %s found with the name '%s', returning only the first.",
-                    asset_type.__name__,
-                    name,
-                )
-            return assets
-        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
-            asset_type.__name__, name
+        return self.asset.find_category_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
         )
 
     @validate_arguments()
@@ -1393,25 +1327,18 @@ class AtlanClient(BaseSettings):
         glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
-        """
-        Find a term by its human-readable name.
-        Note: this operation requires first knowing the qualified_name of the glossary in which the
-        term exists.
-
-        :param name: of the term
-        :param glossary_qualified_name: qualified_name of the glossary in which the term exists
-        :param attributes: (optional) collection of attributes to retrieve for the term
-        :returns: the term, if found
-        :raises NotFoundError: if no term with the provided name exists in the glossary
-        """
-        if attributes is None:
-            attributes = []
-        query = with_active_term(
-            name=name, glossary_qualified_name=glossary_qualified_name
+        """Deprecated - use asset.find_category_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_category_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        return self._search_for_asset_with_name(
-            query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
-        )[0]
+        return self.asset.find_term_fast_by_name(
+            name=name,
+            glossary_qualified_name=glossary_qualified_name,
+            attributes=attributes,
+        )
 
     @validate_arguments()
     def find_term_by_name(
@@ -1420,23 +1347,15 @@ class AtlanClient(BaseSettings):
         glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
         attributes: Optional[list[StrictStr]] = None,
     ) -> AtlasGlossaryTerm:
-        """
-        Find a term by its human-readable name.
-        Note: this operation must run two separate queries to first resolve the qualified_name of the
-        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use
-        find_term_by_name_fast instead.
-
-        :param name: of the term
-        :param glossary_name: human-readable name of the glossary in which the term exists
-        :param attributes: (optional) collection of attributes to retrieve for the term
-        :returns: the term, if found
-        :raises NotFoundError: if no term with the provided name exists in the glossary
-        """
-        glossary = self.find_glossary_by_name(name=glossary_name)
-        return self.find_term_fast_by_name(
-            name=name,
-            glossary_qualified_name=glossary.qualified_name,
-            attributes=attributes,
+        """Deprecated - use asset.find_term_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_term_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.asset.find_term_by_name(
+            name=name, glossary_name=glossary_name, attributes=attributes
         )
 
     @contextlib.contextmanager

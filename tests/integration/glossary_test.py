@@ -300,7 +300,7 @@ def test_term_trim_to_required(
 
 
 def test_find_glossary_by_name(client: AtlanClient, glossary: AtlasGlossary):
-    assert glossary.guid == client.find_glossary_by_name(name=glossary.name).guid
+    assert glossary.guid == client.asset.find_glossary_by_name(name=glossary.name).guid
 
 
 def test_find_category_fast_by_name(
@@ -314,7 +314,7 @@ def test_find_category_fast_by_name(
     def check_it():
         assert (
             category.guid
-            == client.find_category_fast_by_name(
+            == client.asset.find_category_fast_by_name(
                 name=category.name, glossary_qualified_name=glossary.qualified_name
             )[0].guid
         )
@@ -327,7 +327,7 @@ def test_find_category_by_name(
 ):
     assert (
         category.guid
-        == client.find_category_by_name(
+        == client.asset.find_category_by_name(
             name=category.name, glossary_name=glossary.name
         )[0].guid
     )
@@ -344,7 +344,7 @@ def test_find_term_fast_by_name(
     def check_it():
         assert (
             term1.guid
-            == client.find_term_fast_by_name(
+            == client.asset.find_term_fast_by_name(
                 name=term1.name, glossary_qualified_name=glossary.qualified_name
             ).guid
         )
@@ -357,5 +357,7 @@ def test_find_term_by_name(
 ):
     assert (
         term1.guid
-        == client.find_term_by_name(name=term1.name, glossary_name=glossary.name).guid
+        == client.asset.find_term_by_name(
+            name=term1.name, glossary_name=glossary.name
+        ).guid
     )

@@ -582,6 +582,66 @@ def test_get_user_by_username(mock_type_def_client, client: AtlanClient):
                 "attributes": ["something"],
             },
         ),
+        (
+            "find_personas_by_name",
+            "find_personas_by_name",
+            {
+                "name": "Bob",
+                "attributes": ["something"],
+            },
+        ),
+        (
+            "find_purposes_by_name",
+            "find_purposes_by_name",
+            {
+                "name": "Bob",
+                "attributes": ["something"],
+            },
+        ),
+        (
+            "find_glossary_by_name",
+            "find_glossary_by_name",
+            {
+                "name": "Bob",
+                "attributes": ["something"],
+            },
+        ),
+        (
+            "find_category_fast_by_name",
+            "find_category_fast_by_name",
+            {
+                "name": "Bob",
+                "glossary_qualified_name": "abc",
+                "attributes": ["something"],
+            },
+        ),
+        (
+            "find_category_by_name",
+            "find_category_by_name",
+            {
+                "name": "Bob",
+                "glossary_name": "abc",
+                "attributes": ["something"],
+            },
+        ),
+        (
+            "find_term_fast_by_name",
+            "find_term_fast_by_name",
+            {
+                "name": "Bob",
+                "glossary_qualified_name": "abc",
+                "attributes": ["something"],
+            },
+        ),
+        (
+            "find_term_by_name",
+            "find_term_by_name",
+            {
+                "name": "Bob",
+                "glossary_name": "abc",
+                "attributes": ["something"],
+            },
+        ),
     ],
 )
 def test_asset_deprecated_methods(
