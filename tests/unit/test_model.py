@@ -11,6 +11,7 @@ import pytest
 # from deepdiff import DeepDiff
 from pydantic.error_wrappers import ValidationError
 
+import pyatlan.cache.atlan_tag_cache
 from pyatlan.model.assets import (
     SQL,
     AccessControl,
@@ -489,6 +490,7 @@ ATTRIBUTE_VALUES_BY_TYPE = {
     "Optional[MatillionJob]": MatillionJob(),
     "Optional[list[LookerFolder]]": [LookerFolder()],
     "Optional[list[AtlanTagName]]": [],
+    "list[str]": [],
 }
 
 
@@ -810,7 +812,9 @@ def attribute_value(request):
         (asset_type, property_name, (asset_type, property_name))
         for asset_type in get_all_subclasses(Asset)
         for property_name in [
-            p for p in dir(asset_type) if isinstance(getattr(asset_type, p), property)
+            p
+            for p in dir(asset_type)
+            if isinstance(getattr(asset_type, p) and p != "atlan_tag_names", property)
         ]
     ],
     indirect=["attribute_value"],
@@ -869,3 +873,24 @@ def test_validate_single_required_field_with_bad_values_raises_value_error(
 
 def test_validate_single_required_field_with_only_one_field_does_not_raise_value_error():
     validate_single_required_field(["One", "Two", "Three"], [None, None, 3])
+
+
+def test_atlan_tag_names(monkeypatch):
+    tag_name = "Issue"
+    tag_id = "123"
+
+    def get_name_for_id(value):
+        if value == tag_id:
+            return tag_name
+        return ""
+
+    monkeypatch.setattr(
+        pyatlan.cache.atlan_tag_cache.AtlanTagCache,
+        "get_name_for_id",
+        get_name_for_id,
+    )
+
+    referenceable = Referenceable()
+    referenceable.classification_names = [tag_id, "456"]
+
+    assert referenceable.atlan_tag_names == [tag_name, "456-archived"]
