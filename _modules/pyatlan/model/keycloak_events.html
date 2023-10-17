@@ -433,6 +433,7 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">parse_obj_as</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.client.common</span> <span class="kn">import</span> <span class="n">ApiCaller</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.constants</span> <span class="kn">import</span> <span class="n">ADMIN_EVENTS</span><span class="p">,</span> <span class="n">KEYCLOAK_EVENTS</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AdminOperationType</span><span class="p">,</span> <span class="n">AdminResourceType</span><span class="p">,</span> <span class="n">KeycloakEventType</span>
@@ -553,7 +554,7 @@
 <span class="k">class</span> <span class="nc">KeycloakEventResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;AtlanClient&quot;</span><span class="p">,</span>
+        <span class="n">client</span><span class="p">:</span> <span class="n">ApiCaller</span><span class="p">,</span>
         <span class="n">criteria</span><span class="p">:</span> <span class="n">KeycloakEventRequest</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -658,7 +659,7 @@
 <span class="k">class</span> <span class="nc">AdminEventResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">client</span><span class="p">:</span> <span class="s2">&quot;AtlanClient&quot;</span><span class="p">,</span>
+        <span class="n">client</span><span class="p">:</span> <span class="n">ApiCaller</span><span class="p">,</span>
         <span class="n">criteria</span><span class="p">:</span> <span class="n">AdminEventRequest</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -697,9 +698,6 @@
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_page</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_page</span><span class="p">():</span>
                 <span class="k">break</span>
-
-
-<span class="kn">from</span> <span class="nn">pyatlan.client.atlan</span> <span class="kn">import</span> <span class="n">AtlanClient</span>  <span class="c1"># noqa: E402</span>
 </pre></div>
         </article>
       </div>

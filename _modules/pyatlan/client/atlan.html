@@ -448,23 +448,17 @@
     <span class="n">HttpUrl</span><span class="p">,</span>
     <span class="n">PrivateAttr</span><span class="p">,</span>
     <span class="n">StrictStr</span><span class="p">,</span>
-    <span class="n">ValidationError</span><span class="p">,</span>
     <span class="n">constr</span><span class="p">,</span>
-    <span class="n">parse_obj_as</span><span class="p">,</span>
     <span class="n">validate_arguments</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">requests.adapters</span> <span class="kn">import</span> <span class="n">HTTPAdapter</span>
 <span class="kn">from</span> <span class="nn">urllib3.util.retry</span> <span class="kn">import</span> <span class="n">Retry</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.client.admin</span> <span class="kn">import</span> <span class="n">AdminClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.asset</span> <span class="kn">import</span> <span class="n">A</span><span class="p">,</span> <span class="n">AssetClient</span><span class="p">,</span> <span class="n">IndexSearchResults</span><span class="p">,</span> <span class="n">LineageListResults</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.audit</span> <span class="kn">import</span> <span class="n">AuditClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.common</span> <span class="kn">import</span> <span class="n">CONNECTION_RETRY</span><span class="p">,</span> <span class="n">HTTPS_PREFIX</span>
-<span class="kn">from</span> <span class="nn">pyatlan.client.constants</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ADMIN_EVENTS</span><span class="p">,</span>
-    <span class="n">KEYCLOAK_EVENTS</span><span class="p">,</span>
-    <span class="n">PARSE_QUERY</span><span class="p">,</span>
-    <span class="n">UPLOAD_IMAGE</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.client.constants</span> <span class="kn">import</span> <span class="n">PARSE_QUERY</span><span class="p">,</span> <span class="n">UPLOAD_IMAGE</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.group</span> <span class="kn">import</span> <span class="n">GroupClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.role</span> <span class="kn">import</span> <span class="n">RoleClient</span>
 <span class="kn">from</span> <span class="nn">pyatlan.client.token</span> <span class="kn">import</span> <span class="n">TokenClient</span>
@@ -491,15 +485,7 @@
 <span class="kn">from</span> <span class="nn">pyatlan.model.query</span> <span class="kn">import</span> <span class="n">ParsedQuery</span><span class="p">,</span> <span class="n">QueryParserRequest</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.response</span> <span class="kn">import</span> <span class="n">AssetMutationResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.role</span> <span class="kn">import</span> <span class="n">RoleResponse</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.search</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">DSL</span><span class="p">,</span>
-    <span class="n">IndexSearchRequest</span><span class="p">,</span>
-    <span class="n">Query</span><span class="p">,</span>
-    <span class="n">Term</span><span class="p">,</span>
-    <span class="n">with_active_category</span><span class="p">,</span>
-    <span class="n">with_active_glossary</span><span class="p">,</span>
-    <span class="n">with_active_term</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.search</span> <span class="kn">import</span> <span class="n">IndexSearchRequest</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">TypeDef</span><span class="p">,</span> <span class="n">TypeDefResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.user</span> <span class="kn">import</span> <span class="n">AtlanUser</span><span class="p">,</span> <span class="n">UserMinimalResponse</span><span class="p">,</span> <span class="n">UserResponse</span>
 <span class="kn">from</span> <span class="nn">pyatlan.multipart_data_generator</span> <span class="kn">import</span> <span class="n">MultipartDataGenerator</span>
@@ -535,6 +521,7 @@
     <span class="n">_session</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">get_session</span><span class="p">)</span>
     <span class="n">_request_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">()</span>
     <span class="n">_workflow_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">WorkflowClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">_admin_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AdminClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_audit_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AuditClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_group_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GroupClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_role_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RoleClient</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -587,6 +574,12 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cache_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="fm">__hash__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">admin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AdminClient</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_admin_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_admin_client</span> <span class="o">=</span> <span class="n">AdminClient</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_admin_client</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">audit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuditClient</span><span class="p">:</span>
@@ -1860,63 +1853,27 @@
     <span class="k">def</span> <span class="nf">get_keycloak_events</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">keycloak_request</span><span class="p">:</span> <span class="n">KeycloakEventRequest</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeycloakEventResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve all events, based on the supplied filters.</span>
-
-<span class="sd">        :param keycloak_request: details of the filters to apply when retrieving events</span>
-<span class="sd">        :returns: the events that match the supplied filters</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">raw_json</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">KEYCLOAK_EVENTS</span><span class="p">,</span>
-            <span class="n">query_params</span><span class="o">=</span><span class="n">keycloak_request</span><span class="o">.</span><span class="n">query_params</span><span class="p">,</span>
-            <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">events</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">KeycloakEvent</span><span class="p">],</span> <span class="n">raw_json</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">KeycloakEventResponse</span><span class="p">(</span>
-            <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="o">=</span><span class="n">keycloak_request</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">keycloak_request</span><span class="o">.</span><span class="n">offset</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">size</span><span class="o">=</span><span class="n">keycloak_request</span><span class="o">.</span><span class="n">size</span> <span class="ow">or</span> <span class="mi">100</span><span class="p">,</span>
-            <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use admin.get_keycloak_events() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;admin.get_keycloak_events&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">admin</span><span class="o">.</span><span class="n">get_keycloak_events</span><span class="p">(</span><span class="n">keycloak_request</span><span class="o">=</span><span class="n">keycloak_request</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.get_admin_events">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.get_admin_events">[docs]</a>
     <span class="k">def</span> <span class="nf">get_admin_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">admin_request</span><span class="p">:</span> <span class="n">AdminEventRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AdminEventResponse</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieve admin events based on the supplied filters.</span>
-
-<span class="sd">        :param admin_request: details of the filters to apply when retrieving admin events</span>
-<span class="sd">        :returns: the admin events that match the supplied filters</span>
-<span class="sd">        :raises AtlanError: on any API communication issue</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">raw_json</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_api</span><span class="p">(</span>
-            <span class="n">ADMIN_EVENTS</span><span class="p">,</span> <span class="n">query_params</span><span class="o">=</span><span class="n">admin_request</span><span class="o">.</span><span class="n">query_params</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">events</span> <span class="o">=</span> <span class="n">parse_obj_as</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">AdminEvent</span><span class="p">],</span> <span class="n">raw_json</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">JSON_ERROR</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-                    <span class="n">raw_json</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">AdminEventResponse</span><span class="p">(</span>
-            <span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">criteria</span><span class="o">=</span><span class="n">admin_request</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">admin_request</span><span class="o">.</span><span class="n">offset</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">size</span><span class="o">=</span><span class="n">admin_request</span><span class="o">.</span><span class="n">size</span> <span class="ow">or</span> <span class="mi">100</span><span class="p">,</span>
-            <span class="n">events</span><span class="o">=</span><span class="n">events</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use admin.get_admin_events() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;admin.get_admin_events&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">admin</span><span class="o">.</span><span class="n">get_admin_events</span><span class="p">(</span><span class="n">admin_request</span><span class="o">=</span><span class="n">admin_request</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.find_personas_by_name">
@@ -1927,28 +1884,14 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Persona</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a persona by its human-readable name.</span>
-
-<span class="sd">        :param name: of the persona</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the persona</span>
-<span class="sd">        :returns: all personas with that name, if found</span>
-<span class="sd">        :raises NotFoundError: if no persona with the provided name exists</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Term</span><span class="o">.</span><span class="n">with_state</span><span class="p">(</span><span class="s2">&quot;ACTIVE&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="o">.</span><span class="n">with_type_name</span><span class="p">(</span><span class="s2">&quot;PERSONA&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_personas_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_personas_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">dsl</span> <span class="o">=</span> <span class="n">DSL</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
-        <span class="n">search_request</span> <span class="o">=</span> <span class="n">IndexSearchRequest</span><span class="p">(</span>
-            <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
-            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">asset</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Persona</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_personas_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.find_purposes_by_name">
@@ -1958,28 +1901,14 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Purpose</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a purpose by its human-readable name.</span>
-
-<span class="sd">        :param name: of the purpose</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the purpose</span>
-<span class="sd">        :returns: all purposes with that name, if found</span>
-<span class="sd">        :raises NotFoundError: if no purpose with the provided name exists</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">Term</span><span class="o">.</span><span class="n">with_state</span><span class="p">(</span><span class="s2">&quot;ACTIVE&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="o">.</span><span class="n">with_type_name</span><span class="p">(</span><span class="s2">&quot;PURPOSE&quot;</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">Term</span><span class="o">.</span><span class="n">with_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_personas_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_purposes_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">dsl</span> <span class="o">=</span> <span class="n">DSL</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
-        <span class="n">search_request</span> <span class="o">=</span> <span class="n">IndexSearchRequest</span><span class="p">(</span>
-            <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
-            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">asset</span> <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Purpose</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_purposes_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.find_glossary_by_name">
@@ -1990,20 +1919,14 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossary</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a glossary by its human-readable name.</span>
-
-<span class="sd">        :param name: of the glossary</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the glossary</span>
-<span class="sd">        :returns: the glossary, if found</span>
-<span class="sd">        :raises NotFoundError: if no glossary with the provided name exists</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">with_active_glossary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_asset_with_name</span><span class="p">(</span>
-            <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">AtlasGlossary</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span>
-        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_glossary_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_glossary_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_glossary_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.find_category_fast_by_name">
@@ -2015,29 +1938,17 @@
         <span class="n">glossary_qualified_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a category by its human-readable name.</span>
-<span class="sd">        Note: this operation requires first knowing the qualified_name of the glossary in which the</span>
-<span class="sd">        category exists. Note that categories are not unique by name, so there may be</span>
-<span class="sd">        multiple results.</span>
-
-<span class="sd">        :param name: of the category</span>
-<span class="sd">        :param glossary_qualified_name: qualified_name of the glossary in which the category exists</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the category</span>
-<span class="sd">        :returns: the category, if found</span>
-<span class="sd">        :raises NotFoundError: if no category with the provided name exists in the glossary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">with_active_category</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary_qualified_name</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_category_fast_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_category_fast_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_asset_with_name</span><span class="p">(</span>
-            <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_category_fast_by_name</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">asset_type</span><span class="o">=</span><span class="n">AtlasGlossaryCategory</span><span class="p">,</span>
+            <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary_qualified_name</span><span class="p">,</span>
             <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
-            <span class="n">allow_multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -2050,58 +1961,17 @@
         <span class="n">glossary_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlasGlossaryCategory</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a category by its human-readable name.</span>
-<span class="sd">        Note: this operation must run two separate queries to first resolve the qualified_name of the</span>
-<span class="sd">        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use</span>
-<span class="sd">        find_category_by_name_fast instead. Note that categories are not unique by name, so there may be</span>
-<span class="sd">        multiple results.</span>
-
-<span class="sd">        :param name: of the category</span>
-<span class="sd">        :param glossary_name: human-readable name of the glossary in which the category exists</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the category</span>
-<span class="sd">        :returns: the category, if found</span>
-<span class="sd">        :raises NotFoundError: if no category with the provided name exists in the glossary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">glossary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_glossary_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">glossary_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_category_fast_by_name</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary</span><span class="o">.</span><span class="n">qualified_name</span><span class="p">,</span>
-            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_category_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_category_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_category_by_name</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">glossary_name</span><span class="o">=</span><span class="n">glossary_name</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span>
         <span class="p">)</span></div>
 
-
-    <span class="k">def</span> <span class="nf">_search_for_asset_with_name</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Query</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">asset_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">A</span><span class="p">],</span>
-        <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]],</span>
-        <span class="n">allow_multiple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">A</span><span class="p">]:</span>
-        <span class="n">dsl</span> <span class="o">=</span> <span class="n">DSL</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
-        <span class="n">search_request</span> <span class="o">=</span> <span class="n">IndexSearchRequest</span><span class="p">(</span>
-            <span class="n">dsl</span><span class="o">=</span><span class="n">dsl</span><span class="p">,</span>
-            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">search_request</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">assets</span> <span class="o">:=</span> <span class="p">[</span>
-                <span class="n">asset</span>
-                <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">current_page</span><span class="p">()</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">asset_type</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_multiple</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">assets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;More than 1 </span><span class="si">%s</span><span class="s2"> found with the name &#39;</span><span class="si">%s</span><span class="s2">&#39;, returning only the first.&quot;</span><span class="p">,</span>
-                    <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                    <span class="n">name</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">return</span> <span class="n">assets</span>
-        <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">ASSET_NOT_FOUND_BY_NAME</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
-            <span class="n">asset_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span>
-        <span class="p">)</span>
 
 <div class="viewcode-block" id="AtlanClient.find_term_fast_by_name">
 <a class="viewcode-back" href="../../../client.html#pyatlan.client.atlan.AtlanClient.find_term_fast_by_name">[docs]</a>
@@ -2112,25 +1982,18 @@
         <span class="n">glossary_qualified_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryTerm</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a term by its human-readable name.</span>
-<span class="sd">        Note: this operation requires first knowing the qualified_name of the glossary in which the</span>
-<span class="sd">        term exists.</span>
-
-<span class="sd">        :param name: of the term</span>
-<span class="sd">        :param glossary_qualified_name: qualified_name of the glossary in which the term exists</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the term</span>
-<span class="sd">        :returns: the term, if found</span>
-<span class="sd">        :raises NotFoundError: if no term with the provided name exists in the glossary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">with_active_term</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary_qualified_name</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_category_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_category_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_asset_with_name</span><span class="p">(</span>
-            <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">asset_type</span><span class="o">=</span><span class="n">AtlasGlossaryTerm</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span>
-        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_term_fast_by_name</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary_qualified_name</span><span class="p">,</span>
+            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AtlanClient.find_term_by_name">
@@ -2142,23 +2005,15 @@
         <span class="n">glossary_name</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">strip_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># type: ignore</span>
         <span class="n">attributes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">StrictStr</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AtlasGlossaryTerm</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find a term by its human-readable name.</span>
-<span class="sd">        Note: this operation must run two separate queries to first resolve the qualified_name of the</span>
-<span class="sd">        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use</span>
-<span class="sd">        find_term_by_name_fast instead.</span>
-
-<span class="sd">        :param name: of the term</span>
-<span class="sd">        :param glossary_name: human-readable name of the glossary in which the term exists</span>
-<span class="sd">        :param attributes: (optional) collection of attributes to retrieve for the term</span>
-<span class="sd">        :returns: the term, if found</span>
-<span class="sd">        :raises NotFoundError: if no term with the provided name exists in the glossary</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">glossary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_glossary_by_name</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">glossary_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_term_fast_by_name</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">glossary_qualified_name</span><span class="o">=</span><span class="n">glossary</span><span class="o">.</span><span class="n">qualified_name</span><span class="p">,</span>
-            <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated - use asset.find_term_by_name() instead.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This method is deprecated, please use &#39;asset.find_term_by_name&#39; instead, which offers identical &quot;</span>
+            <span class="s2">&quot;functionality.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asset</span><span class="o">.</span><span class="n">find_term_by_name</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">glossary_name</span><span class="o">=</span><span class="n">glossary_name</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span>
         <span class="p">)</span></div>
 
 
@@ -2206,10 +2061,8 @@
 
 
 <span class="kn">from</span> <span class="nn">pyatlan.model.keycloak_events</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: E402</span>
-    <span class="n">AdminEvent</span><span class="p">,</span>
     <span class="n">AdminEventRequest</span><span class="p">,</span>
     <span class="n">AdminEventResponse</span><span class="p">,</span>
-    <span class="n">KeycloakEvent</span><span class="p">,</span>
     <span class="n">KeycloakEventRequest</span><span class="p">,</span>
     <span class="n">KeycloakEventResponse</span><span class="p">,</span>
 <span class="p">)</span>
