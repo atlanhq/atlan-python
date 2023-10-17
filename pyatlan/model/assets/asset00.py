@@ -95,6 +95,18 @@ class Referenceable(AtlanObject):
     def flush_custom_metadata(self):
         self.business_attributes = self._metadata_proxy.business_attributes
 
+    @property
+    def atlan_tag_names(self) -> list[str]:
+        from pyatlan.cache.atlan_tag_cache import AtlanTagCache
+        from pyatlan.model.constants import DELETED_
+
+        if self.classification_names:
+            return [
+                AtlanTagCache.get_name_for_id(tag_id) or DELETED_
+                for tag_id in self.classification_names
+            ]
+        return []
+
     def __setattr__(self, name, value):
         if name in Referenceable._convenience_properties:
             return object.__setattr__(self, name, value)
