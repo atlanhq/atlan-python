@@ -19,23 +19,17 @@ from pydantic import (
     HttpUrl,
     PrivateAttr,
     StrictStr,
-    ValidationError,
     constr,
-    parse_obj_as,
     validate_arguments,
 )
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from pyatlan.client.admin import AdminClient
 from pyatlan.client.asset import A, AssetClient, IndexSearchResults, LineageListResults
 from pyatlan.client.audit import AuditClient
 from pyatlan.client.common import CONNECTION_RETRY, HTTPS_PREFIX
-from pyatlan.client.constants import (
-    ADMIN_EVENTS,
-    KEYCLOAK_EVENTS,
-    PARSE_QUERY,
-    UPLOAD_IMAGE,
-)
+from pyatlan.client.constants import PARSE_QUERY, UPLOAD_IMAGE
 from pyatlan.client.group import GroupClient
 from pyatlan.client.role import RoleClient
 from pyatlan.client.token import TokenClient
@@ -66,7 +60,6 @@ from pyatlan.model.search import (
     DSL,
     IndexSearchRequest,
     Query,
-    Term,
     with_active_category,
     with_active_glossary,
     with_active_term,
@@ -104,6 +97,7 @@ class AtlanClient(BaseSettings):
     _session: requests.Session = PrivateAttr(default_factory=get_session)
     _request_params: dict = PrivateAttr()
     _workflow_client: Optional[WorkflowClient] = PrivateAttr(default=None)
+    _admin_client: Optional[AdminClient] = PrivateAttr(default=None)
     _audit_client: Optional[AuditClient] = PrivateAttr(default=None)
     _group_client: Optional[GroupClient] = PrivateAttr(default=None)
     _role_client: Optional[RoleClient] = PrivateAttr(default=None)
@@ -150,6 +144,12 @@ class AtlanClient(BaseSettings):
     @property
     def cache_key(self) -> int:
         return f"{self.base_url}/{self.api_key}".__hash__()
+
+    @property
+    def admin(self) -> AdminClient:
+        if self._admin_client is None:
+            self._admin_client = AdminClient(client=self)
+        return self._admin_client
 
     @property
     def audit(self) -> AuditClient:
@@ -1226,60 +1226,24 @@ class AtlanClient(BaseSettings):
     def get_keycloak_events(
         self, keycloak_request: KeycloakEventRequest
     ) -> KeycloakEventResponse:
-        """
-        Retrieve all events, based on the supplied filters.
-
-        :param keycloak_request: details of the filters to apply when retrieving events
-        :returns: the events that match the supplied filters
-        :raises AtlanError: on any API communication issue
-        """
-        if raw_json := self._call_api(
-            KEYCLOAK_EVENTS,
-            query_params=keycloak_request.query_params,
-            exclude_unset=True,
-        ):
-            try:
-                events = parse_obj_as(list[KeycloakEvent], raw_json)
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            events = []
-        return KeycloakEventResponse(
-            client=self,
-            criteria=keycloak_request,
-            start=keycloak_request.offset or 0,
-            size=keycloak_request.size or 100,
-            events=events,
+        """Deprecated - use admin.get_keycloak_events() instead."""
+        warn(
+            "This method is deprecated, please use 'admin.get_keycloak_events' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        return self.admin.get_keycloak_events(keycloak_request=keycloak_request)
 
     def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
-        """
-        Retrieve admin events based on the supplied filters.
-
-        :param admin_request: details of the filters to apply when retrieving admin events
-        :returns: the admin events that match the supplied filters
-        :raises AtlanError: on any API communication issue
-        """
-        if raw_json := self._call_api(
-            ADMIN_EVENTS, query_params=admin_request.query_params, exclude_unset=True
-        ):
-            try:
-                events = parse_obj_as(list[AdminEvent], raw_json)
-            except ValidationError as err:
-                raise ErrorCode.JSON_ERROR.exception_with_parameters(
-                    raw_json, 200, str(err)
-                ) from err
-        else:
-            events = []
-        return AdminEventResponse(
-            client=self,
-            criteria=admin_request,
-            start=admin_request.offset or 0,
-            size=admin_request.size or 100,
-            events=events,
+        """Deprecated - use admin.get_keycloak_events() instead."""
+        warn(
+            "This method is deprecated, please use 'admin.get_keycloak_events' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
+        return self.admin.get_admin_events(admin_request=admin_request)
 
     @validate_arguments()
     def find_personas_by_name(
@@ -1287,56 +1251,28 @@ class AtlanClient(BaseSettings):
         name: str,
         attributes: Optional[list[str]] = None,
     ) -> list[Persona]:
-        """
-        Find a persona by its human-readable name.
-
-        :param name: of the persona
-        :param attributes: (optional) collection of attributes to retrieve for the persona
-        :returns: all personas with that name, if found
-        :raises NotFoundError: if no persona with the provided name exists
-        """
-        if attributes is None:
-            attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PERSONA")
-            + Term.with_name(name)
+        """Deprecated - use asset.find_personas_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_personas_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
-            attributes=attributes,
-        )
-        results = self.asset.search(search_request)
-        return [asset for asset in results if isinstance(asset, Persona)]
+        return self.asset.find_personas_by_name(name=name, attributes=attributes)
 
     def find_purposes_by_name(
         self,
         name: str,
         attributes: Optional[list[str]] = None,
     ) -> list[Purpose]:
-        """
-        Find a purpose by its human-readable name.
-
-        :param name: of the purpose
-        :param attributes: (optional) collection of attributes to retrieve for the purpose
-        :returns: all purposes with that name, if found
-        :raises NotFoundError: if no purpose with the provided name exists
-        """
-        if attributes is None:
-            attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PURPOSE")
-            + Term.with_name(name)
+        """Deprecated - use asset.find_personas_by_name() instead."""
+        warn(
+            "This method is deprecated, please use 'asset.find_purposes_by_name' instead, which offers identical "
+            "functionality.",
+            DeprecationWarning,
+            stacklevel=2,
         )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
-            attributes=attributes,
-        )
-        results = self.asset.search(search_request)
-        return [asset for asset in results if isinstance(asset, Purpose)]
+        return self.asset.find_purposes_by_name(name=name, attributes=attributes)
 
     @validate_arguments()
     def find_glossary_by_name(
@@ -1543,10 +1479,8 @@ def client_connection(
 
 
 from pyatlan.model.keycloak_events import (  # noqa: E402
-    AdminEvent,
     AdminEventRequest,
     AdminEventResponse,
-    KeycloakEvent,
     KeycloakEventRequest,
     KeycloakEventResponse,
 )
