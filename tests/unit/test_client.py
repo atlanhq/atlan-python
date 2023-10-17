@@ -83,10 +83,10 @@ def test_append_terms_with_invalid_parameter_raises_error(
     assigned_terms,
     message,
     error,
-    client,
+    client: AtlanClient,
 ):
     with pytest.raises(error, match=message):
-        client.append_terms(
+        client.asset.append_terms(
             guid=guid,
             qualified_name=qualified_name,
             asset_type=asset_type,
@@ -218,10 +218,10 @@ def test_replace_terms_with_invalid_parameter_raises_error(
     assigned_terms,
     message,
     error,
-    client,
+    client: AtlanClient,
 ):
     with pytest.raises(error, match=message):
-        client.replace_terms(
+        client.asset.replace_terms(
             guid=guid,
             qualified_name=qualified_name,
             asset_type=asset_type,
@@ -299,10 +299,10 @@ def test_remove_terms_with_invalid_parameter_raises_error(
     assigned_terms,
     message,
     error,
-    client,
+    client: AtlanClient,
 ):
     with pytest.raises(error, match=message):
-        client.remove_terms(
+        client.asset.remove_terms(
             guid=guid,
             qualified_name=qualified_name,
             asset_type=asset_type,

@@ -1236,9 +1236,9 @@ class AtlanClient(BaseSettings):
         return self.admin.get_keycloak_events(keycloak_request=keycloak_request)
 
     def get_admin_events(self, admin_request: AdminEventRequest) -> AdminEventResponse:
-        """Deprecated - use admin.get_keycloak_events() instead."""
+        """Deprecated - use admin.get_admin_events() instead."""
         warn(
-            "This method is deprecated, please use 'admin.get_keycloak_events' instead, which offers identical "
+            "This method is deprecated, please use 'admin.get_admin_events' instead, which offers identical "
             "functionality.",
             DeprecationWarning,
             stacklevel=2,

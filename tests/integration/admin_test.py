@@ -169,7 +169,7 @@ def test_retrieve_logs(
     client: AtlanClient,
 ):
     request = KeycloakEventRequest(date_from=YESTERDAY, date_to=TODAY)
-    events = client.get_keycloak_events(request)
+    events = client.admin.get_keycloak_events(request)
     assert events
     count = 0
     for _ in events:
@@ -184,7 +184,7 @@ def test_retrieve_admin_logs(
     client: AtlanClient,
 ):
     request = AdminEventRequest(date_from=YESTERDAY, date_to=TODAY)
-    events = client.get_admin_events(request)
+    events = client.admin.get_admin_events(request)
     assert events
     count = 0
     for _ in events:
