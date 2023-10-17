@@ -248,14 +248,11 @@ class FluentSearch(CompoundQuery):
         :param include_archived: when True, archived (soft-deleted) assets will be included
         :returns: a fluent search that includes all assets
         """
+        wheres = [Term.with_super_type_names("Asset")]
+        if not include_archived:
+            wheres.append(Term.with_state("ACTIVE"))
         return cls(
-            wheres=[Term.with_state("ACTIVE")] if not include_archived else [],
-            where_nots=[
-                Term.with_type_name("__AtlasAuditEntry"),
-                Term.with_type_name("__AtlasUserProfile"),
-                Term.with_type_name("__AtlasUserSavedSearch"),
-                Term.with_type_name("__ExportImportAuditEntry"),
-            ],
+            wheres=wheres,
         )
 
     def __init__(

@@ -94,14 +94,14 @@ def test_find_purpose_by_name(
     client: AtlanClient,
     purpose: Purpose,
 ):
-    result = client.find_purposes_by_name(
+    result = client.asset.find_purposes_by_name(
         MODULE_NAME, attributes=["purposeClassifications"]
     )
     count = 0
     # TODO: replace with exponential back-off and jitter
     while not result and count < 10:
         time.sleep(2)
-        result = client.find_purposes_by_name(MODULE_NAME)
+        result = client.asset.find_purposes_by_name(MODULE_NAME)
         count += 1
     assert result
     assert len(result) == 1

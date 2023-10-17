@@ -9,7 +9,13 @@ from typing import Generator, Iterable, Optional, Type, TypeVar, Union
 from warnings import warn
 
 import requests
-from pydantic import ValidationError, parse_obj_as, validate_arguments
+from pydantic import (
+    StrictStr,
+    ValidationError,
+    constr,
+    parse_obj_as,
+    validate_arguments,
+)
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from pyatlan.client.common import ApiCaller
@@ -36,6 +42,8 @@ from pyatlan.model.assets import (
     Connection,
     Database,
     MaterialisedView,
+    Persona,
+    Purpose,
     Referenceable,
     Schema,
     Table,
@@ -65,8 +73,16 @@ from pyatlan.model.lineage import (
     LineageResponse,
 )
 from pyatlan.model.response import AssetMutationResponse
-from pyatlan.model.search import DSL, IndexSearchRequest, Term
-from pyatlan.utils import API, unflatten_custom_metadata_for_entity
+from pyatlan.model.search import (
+    DSL,
+    IndexSearchRequest,
+    Query,
+    Term,
+    with_active_category,
+    with_active_glossary,
+    with_active_term,
+)
+from pyatlan.utils import API, get_logger, unflatten_custom_metadata_for_entity
 
 T = TypeVar("T", bound=Referenceable)
 A = TypeVar("A", bound=Asset)
@@ -93,11 +109,13 @@ Asset_Types = Union[
     Type[MaterialisedView],
 ]
 
+LOGGER = get_logger()
+
 
 class AssetClient:
     """
-    This class can be used to retrieve information about roles. This class does not need to be instantiated
-    directly but can be obtained through the role property of AtlanClient.
+    This class can be used to retrieve information about assets. This class does not need to be instantiated
+    directly but can be obtained through the asset property of AtlanClient.
     """
 
     def __init__(self, client: ApiCaller):
@@ -210,6 +228,63 @@ class AssetClient:
             has_more=has_more,
             assets=assets,
         )
+
+    @validate_arguments()
+    def find_personas_by_name(
+        self,
+        name: str,
+        attributes: Optional[list[str]] = None,
+    ) -> list[Persona]:
+        """
+        Find a persona by its human-readable name.
+
+        :param name: of the persona
+        :param attributes: (optional) collection of attributes to retrieve for the persona
+        :returns: all personas with that name, if found
+        :raises NotFoundError: if no persona with the provided name exists
+        """
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("PERSONA")
+            + Term.with_name(name)
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        return [asset for asset in results if isinstance(asset, Persona)]
+
+    def find_purposes_by_name(
+        self,
+        name: str,
+        attributes: Optional[list[str]] = None,
+    ) -> list[Purpose]:
+        """
+        Find a purpose by its human-readable name.
+
+        :param name: of the purpose
+        :param attributes: (optional) collection of attributes to retrieve for the purpose
+        :returns: all purposes with that name, if found
+        :raises NotFoundError: if no purpose with the provided name exists
+        """
+        if attributes is None:
+            attributes = []
+        query = (
+            Term.with_state("ACTIVE")
+            + Term.with_type_name("PURPOSE")
+            + Term.with_name(name)
+        )
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        return [asset for asset in results if isinstance(asset, Purpose)]
 
     @validate_arguments()
     def get_by_qualified_name(
@@ -1014,6 +1089,171 @@ class AssetClient:
         )
         results = self.search(search_request)
         return [asset for asset in results if isinstance(asset, Connection)]
+
+    @validate_arguments()
+    def find_glossary_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> AtlasGlossary:
+        """
+        Find a glossary by its human-readable name.
+
+        :param name: of the glossary
+        :param attributes: (optional) collection of attributes to retrieve for the glossary
+        :returns: the glossary, if found
+        :raises NotFoundError: if no glossary with the provided name exists
+        """
+        if attributes is None:
+            attributes = []
+        query = with_active_glossary(name=name)
+        return self._search_for_asset_with_name(
+            query=query, name=name, asset_type=AtlasGlossary, attributes=attributes
+        )[0]
+
+    @validate_arguments()
+    def find_category_fast_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> list[AtlasGlossaryCategory]:
+        """
+        Find a category by its human-readable name.
+        Note: this operation requires first knowing the qualified_name of the glossary in which the
+        category exists. Note that categories are not unique by name, so there may be
+        multiple results.
+
+        :param name: of the category
+        :param glossary_qualified_name: qualified_name of the glossary in which the category exists
+        :param attributes: (optional) collection of attributes to retrieve for the category
+        :returns: the category, if found
+        :raises NotFoundError: if no category with the provided name exists in the glossary
+        """
+        if attributes is None:
+            attributes = []
+        query = with_active_category(
+            name=name, glossary_qualified_name=glossary_qualified_name
+        )
+        return self._search_for_asset_with_name(
+            query=query,
+            name=name,
+            asset_type=AtlasGlossaryCategory,
+            attributes=attributes,
+            allow_multiple=True,
+        )
+
+    @validate_arguments()
+    def find_category_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> list[AtlasGlossaryCategory]:
+        """
+        Find a category by its human-readable name.
+        Note: this operation must run two separate queries to first resolve the qualified_name of the
+        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use
+        find_category_by_name_fast instead. Note that categories are not unique by name, so there may be
+        multiple results.
+
+        :param name: of the category
+        :param glossary_name: human-readable name of the glossary in which the category exists
+        :param attributes: (optional) collection of attributes to retrieve for the category
+        :returns: the category, if found
+        :raises NotFoundError: if no category with the provided name exists in the glossary
+        """
+        glossary = self.find_glossary_by_name(name=glossary_name)
+        return self.find_category_fast_by_name(
+            name=name,
+            glossary_qualified_name=glossary.qualified_name,
+            attributes=attributes,
+        )
+
+    def _search_for_asset_with_name(
+        self,
+        query: Query,
+        name: str,
+        asset_type: Type[A],
+        attributes: Optional[list[StrictStr]],
+        allow_multiple: bool = False,
+    ) -> list[A]:
+        dsl = DSL(query=query)
+        search_request = IndexSearchRequest(
+            dsl=dsl,
+            attributes=attributes,
+        )
+        results = self.search(search_request)
+        if results.count > 0 and (
+            assets := [
+                asset
+                for asset in results.current_page()
+                if isinstance(asset, asset_type)
+            ]
+        ):
+            if not allow_multiple and len(assets) > 1:
+                LOGGER.warning(
+                    "More than 1 %s found with the name '%s', returning only the first.",
+                    asset_type.__name__,
+                    name,
+                )
+            return assets
+        raise ErrorCode.ASSET_NOT_FOUND_BY_NAME.exception_with_parameters(
+            asset_type.__name__, name
+        )
+
+    @validate_arguments()
+    def find_term_fast_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_qualified_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> AtlasGlossaryTerm:
+        """
+        Find a term by its human-readable name.
+        Note: this operation requires first knowing the qualified_name of the glossary in which the
+        term exists.
+
+        :param name: of the term
+        :param glossary_qualified_name: qualified_name of the glossary in which the term exists
+        :param attributes: (optional) collection of attributes to retrieve for the term
+        :returns: the term, if found
+        :raises NotFoundError: if no term with the provided name exists in the glossary
+        """
+        if attributes is None:
+            attributes = []
+        query = with_active_term(
+            name=name, glossary_qualified_name=glossary_qualified_name
+        )
+        return self._search_for_asset_with_name(
+            query=query, name=name, asset_type=AtlasGlossaryTerm, attributes=attributes
+        )[0]
+
+    @validate_arguments()
+    def find_term_by_name(
+        self,
+        name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        glossary_name: constr(strip_whitespace=True, min_length=1, strict=True),  # type: ignore
+        attributes: Optional[list[StrictStr]] = None,
+    ) -> AtlasGlossaryTerm:
+        """
+        Find a term by its human-readable name.
+        Note: this operation must run two separate queries to first resolve the qualified_name of the
+        glossary, so will be somewhat slower. If you already have the qualified_name of the glossary, use
+        find_term_by_name_fast instead.
+
+        :param name: of the term
+        :param glossary_name: human-readable name of the glossary in which the term exists
+        :param attributes: (optional) collection of attributes to retrieve for the term
+        :returns: the term, if found
+        :raises NotFoundError: if no term with the provided name exists in the glossary
+        """
+        glossary = self.find_glossary_by_name(name=glossary_name)
+        return self.find_term_fast_by_name(
+            name=name,
+            glossary_qualified_name=glossary.qualified_name,
+            attributes=attributes,
+        )
 
 
 class SearchResults(ABC, Iterable):
