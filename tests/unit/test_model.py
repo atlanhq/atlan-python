@@ -151,6 +151,7 @@ from pyatlan.model.assets import (
     View,
     validate_single_required_field,
 )
+from pyatlan.model.constants import DELETED_
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     ADLSAccessTier,
@@ -893,4 +894,4 @@ def test_atlan_tag_names(monkeypatch):
     referenceable = Referenceable()
     referenceable.classification_names = [tag_id, "456"]
 
-    assert referenceable.atlan_tag_names == [tag_name, "456-archived"]
+    assert referenceable.atlan_tag_names == [tag_name, DELETED_]
