@@ -4,7 +4,6 @@ from typing import Any, Generator, Optional
 
 from pydantic import Field, parse_obj_as
 
-from pyatlan.client.common import ApiCaller
 from pyatlan.client.constants import ADMIN_EVENTS, KEYCLOAK_EVENTS
 from pyatlan.model.core import AtlanObject
 from pyatlan.model.enums import AdminOperationType, AdminResourceType, KeycloakEventType
@@ -119,7 +118,7 @@ class KeycloakEventRequest(AtlanObject):
 class KeycloakEventResponse(object):
     def __init__(
         self,
-        client: ApiCaller,
+        client: "AtlanClient",
         criteria: KeycloakEventRequest,
         start: int,
         size: int,
@@ -224,7 +223,7 @@ class AdminEventRequest(AtlanObject):
 class AdminEventResponse(object):
     def __init__(
         self,
-        client: ApiCaller,
+        client: "AtlanClient",
         criteria: AdminEventRequest,
         start: int,
         size: int,
@@ -263,3 +262,6 @@ class AdminEventResponse(object):
             yield from self.current_page()
             if not self.next_page():
                 break
+
+
+from pyatlan.client.atlan import AtlanClient  # noqa: E402

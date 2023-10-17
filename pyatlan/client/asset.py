@@ -36,8 +36,6 @@ from pyatlan.model.assets import (
     Connection,
     Database,
     MaterialisedView,
-    Persona,
-    Purpose,
     Referenceable,
     Schema,
     Table,
@@ -212,63 +210,6 @@ class AssetClient:
             has_more=has_more,
             assets=assets,
         )
-
-    @validate_arguments()
-    def find_personas_by_name(
-        self,
-        name: str,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Persona]:
-        """
-        Find a persona by its human-readable name.
-
-        :param name: of the persona
-        :param attributes: (optional) collection of attributes to retrieve for the persona
-        :returns: all personas with that name, if found
-        :raises NotFoundError: if no persona with the provided name exists
-        """
-        if attributes is None:
-            attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PERSONA")
-            + Term.with_name(name)
-        )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
-            attributes=attributes,
-        )
-        results = self.search(search_request)
-        return [asset for asset in results if isinstance(asset, Persona)]
-
-    def find_purposes_by_name(
-        self,
-        name: str,
-        attributes: Optional[list[str]] = None,
-    ) -> list[Purpose]:
-        """
-        Find a purpose by its human-readable name.
-
-        :param name: of the purpose
-        :param attributes: (optional) collection of attributes to retrieve for the purpose
-        :returns: all purposes with that name, if found
-        :raises NotFoundError: if no purpose with the provided name exists
-        """
-        if attributes is None:
-            attributes = []
-        query = (
-            Term.with_state("ACTIVE")
-            + Term.with_type_name("PURPOSE")
-            + Term.with_name(name)
-        )
-        dsl = DSL(query=query)
-        search_request = IndexSearchRequest(
-            dsl=dsl,
-            attributes=attributes,
-        )
-        results = self.search(search_request)
-        return [asset for asset in results if isinstance(asset, Purpose)]
 
     @validate_arguments()
     def get_by_qualified_name(
