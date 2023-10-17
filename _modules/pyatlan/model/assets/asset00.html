@@ -529,6 +529,18 @@
     <span class="k">def</span> <span class="nf">flush_custom_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">business_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata_proxy</span><span class="o">.</span><span class="n">business_attributes</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">atlan_tag_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.cache.atlan_tag_cache</span> <span class="kn">import</span> <span class="n">AtlanTagCache</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.model.constants</span> <span class="kn">import</span> <span class="n">DELETED_</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">classification_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">AtlanTagCache</span><span class="o">.</span><span class="n">get_name_for_id</span><span class="p">(</span><span class="n">tag_id</span><span class="p">)</span> <span class="ow">or</span> <span class="n">DELETED_</span>
+                <span class="k">for</span> <span class="n">tag_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">classification_names</span>
+            <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">Referenceable</span><span class="o">.</span><span class="n">_convenience_properties</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
