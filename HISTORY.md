@@ -1,4 +1,4 @@
-## 1.3.4 (October 19, 2023)
+## 1.4.0 (October 19, 2023)
 
 * Create new helper client classes:
   * AdminClient
