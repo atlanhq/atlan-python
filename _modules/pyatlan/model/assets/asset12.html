@@ -446,7 +446,7 @@
     <span class="n">PersonaMetadataAction</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">KeywordField</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span> <span class="nn">.asset00</span> <span class="kn">import</span> <span class="n">SelfAsset</span>
 <span class="kn">from</span> <span class="nn">.asset05</span> <span class="kn">import</span> <span class="n">AccessControl</span><span class="p">,</span> <span class="n">AuthPolicy</span>
@@ -459,6 +459,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="c1"># @validate_arguments()</span>
+    <span class="nd">@init_guid</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Persona</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">([</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="n">attributes</span> <span class="o">=</span> <span class="n">Persona</span><span class="o">.</span><span class="n">Attributes</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -646,6 +647,7 @@
 
         <span class="nd">@classmethod</span>
         <span class="c1"># @validate_arguments()</span>
+        <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Persona</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;name cannot be blank&quot;</span><span class="p">)</span>

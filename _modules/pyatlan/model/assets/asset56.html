@@ -445,7 +445,7 @@
     <span class="n">RelationField</span><span class="p">,</span>
     <span class="n">TextField</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_required_fields</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">init_guid</span><span class="p">,</span> <span class="n">validate_required_fields</span>
 
 <span class="kn">from</span> <span class="nn">.asset26</span> <span class="kn">import</span> <span class="n">API</span>
 
@@ -457,6 +457,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="c1"># @validate_arguments()</span>
+    <span class="nd">@init_guid</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APISpec</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;connection_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">name</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">]</span>
@@ -686,6 +687,7 @@
 
         <span class="nd">@classmethod</span>
         <span class="c1"># @validate_arguments()</span>
+        <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
             <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connection_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APISpec</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
@@ -725,6 +727,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="c1"># @validate_arguments()</span>
+    <span class="nd">@init_guid</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path_raw_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIPath</span><span class="p">:</span>
         <span class="n">validate_required_fields</span><span class="p">(</span>
             <span class="p">[</span><span class="s2">&quot;path_raw_uri&quot;</span><span class="p">,</span> <span class="s2">&quot;spec_qualified_name&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">path_raw_uri</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">]</span>
@@ -914,6 +917,7 @@
 
         <span class="nd">@classmethod</span>
         <span class="c1"># @validate_arguments()</span>
+        <span class="nd">@init_guid</span>
         <span class="k">def</span> <span class="nf">create</span><span class="p">(</span>
             <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path_raw_uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spec_qualified_name</span><span class="p">:</span> <span class="nb">str</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">APIPath</span><span class="o">.</span><span class="n">Attributes</span><span class="p">:</span>
