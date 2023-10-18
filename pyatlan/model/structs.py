@@ -12,7 +12,7 @@ from pyatlan.model.enums import (
     BadgeConditionColor,
     SourceCostUnitType,
 )
-from pyatlan.utils import init_guid, validate_required_fields
+from pyatlan.utils import validate_required_fields
 
 
 class MCRuleSchedule(AtlanObject):
@@ -59,7 +59,6 @@ class BadgeCondition(AtlanObject):
 
     @classmethod
     # @validate_arguments()
-    @init_guid
     def create(
         cls,
         *,
