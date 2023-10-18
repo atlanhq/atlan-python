@@ -49,7 +49,7 @@ from pyatlan.model.structs import (
     SourceTagAttribute,
     StarredDetails,
 )
-from pyatlan.utils import next_id, validate_required_fields
+from pyatlan.utils import init_guid, next_id, validate_required_fields
 
 
 def validate_single_required_field(field_names: list[str], values: list[Any]):
@@ -311,6 +311,7 @@ class Asset(Referenceable):
         )
 
     @classmethod
+    @init_guid
     def create(cls: Type[SelfAsset], *args, **kwargs) -> SelfAsset:
         raise NotImplementedError(
             "Create has not been implemented for this class. Please submit an enhancement"
@@ -3424,6 +3425,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,
@@ -3624,6 +3626,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls,
             *,
@@ -3661,6 +3664,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: StrictStr) -> AtlasGlossary:
         validate_required_fields(["name"], [name])
         return AtlasGlossary(attributes=AtlasGlossary.Attributes.create(name=name))
@@ -3817,6 +3821,7 @@ class AtlasGlossary(Asset, type_name="AtlasGlossary"):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, *, name: StrictStr) -> AtlasGlossary.Attributes:
             validate_required_fields(["name"], [name])
             return AtlasGlossary.Attributes(name=name, qualified_name=next_id())
@@ -3843,6 +3848,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,
@@ -4309,6 +4315,7 @@ class AtlasGlossaryTerm(Asset, type_name="AtlasGlossaryTerm"):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls,
             *,
@@ -4347,6 +4354,7 @@ class Process(Asset, type_name="Process"):
     """Description"""
 
     @classmethod
+    @init_guid
     def create(
         cls,
         name: str,
@@ -4550,6 +4558,7 @@ class Process(Asset, type_name="Process"):
             return ret_value
 
         @classmethod
+        @init_guid
         def create(
             cls,
             name: str,
@@ -5988,6 +5997,7 @@ class Readme(Resource):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
     ) -> Readme:
@@ -6067,6 +6077,7 @@ class Readme(Resource):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
         ) -> Readme.Attributes:
@@ -6101,6 +6112,7 @@ class File(Resource):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls, *, name: str, connection_qualified_name: str, file_type: FileType
     ) -> File:
@@ -6184,6 +6196,7 @@ class File(Resource):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str, file_type: FileType
         ) -> File.Attributes:
@@ -6210,6 +6223,7 @@ class Link(Resource):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, asset: Asset, name: str, link: str) -> Link:
         return Link(
             attributes=Link.Attributes.create(asset=asset, name=name, link=link)
@@ -6287,6 +6301,7 @@ class Link(Resource):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, *, asset: Asset, name: str, link: str) -> Link.Attributes:
             validate_required_fields(["asset", "name", "link"], [asset, name, link])
             return Link.Attributes(
@@ -7062,6 +7077,7 @@ class Schema(SQL):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, database_qualified_name: str) -> Schema:
         validate_required_fields(
             ["name", "database_qualified_name"], [name, database_qualified_name]
@@ -7313,6 +7329,7 @@ class Schema(SQL):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, database_qualified_name: str
         ) -> Schema.Attributes:
@@ -7474,6 +7491,7 @@ class View(SQL):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> View:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
@@ -7695,6 +7713,7 @@ class View(SQL):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, *, name: str, schema_qualified_name: str) -> View.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
@@ -7730,6 +7749,7 @@ class MaterialisedView(SQL):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> MaterialisedView:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
@@ -8005,6 +8025,7 @@ class MaterialisedView(SQL):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, schema_qualified_name: str
         ) -> MaterialisedView.Attributes:
@@ -8644,6 +8665,7 @@ class Column(SQL):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
     ) -> Column:
@@ -9966,6 +9988,7 @@ class Column(SQL):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
         ) -> Column.Attributes:
@@ -14710,6 +14733,7 @@ class Table(SQL):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, schema_qualified_name: str) -> Table:
         validate_required_fields(
             ["name", "schema_qualified_name"], [name, schema_qualified_name]
@@ -15117,6 +15141,7 @@ class Table(SQL):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, *, name: str, schema_qualified_name: str) -> Table.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")
@@ -15197,6 +15222,7 @@ class Database(SQL):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> Database:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
@@ -15272,6 +15298,7 @@ class Database(SQL):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, name: str, connection_qualified_name: str
         ) -> Database.Attributes:

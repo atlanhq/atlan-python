@@ -8,6 +8,7 @@
         return self.create_for_modification(qualified_name=self.qualified_name or "", name=self.name or "")
 
     @classmethod
+    @init_guid
     def create(cls:Type[SelfAsset], *args, **kwargs)->SelfAsset:
         raise NotImplementedError("Create has not been implemented for this class. Please submit an enhancement"
                                   "request if you need it implemented.")

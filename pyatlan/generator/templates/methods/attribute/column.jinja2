@@ -1,6 +1,7 @@
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, parent_qualified_name: str, parent_type: type, order: int
         ) -> Column.Attributes:

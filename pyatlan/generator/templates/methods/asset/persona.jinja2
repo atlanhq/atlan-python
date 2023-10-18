@@ -1,6 +1,7 @@
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str) -> {{ entity_def.name }}:
         validate_required_fields(["name"], [name])
         attributes = Persona.Attributes.create(name=name)

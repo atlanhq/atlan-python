@@ -10,7 +10,7 @@ from pydantic import Field, validator
 
 from pyatlan.model.enums import AtlanConnectorType, QueryUsernameStrategy
 from pyatlan.model.fields.atlan_fields import BooleanField, KeywordField, NumericField
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset00 import Asset
 
@@ -20,6 +20,7 @@ class Connection(Asset, type_name="Connection"):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,

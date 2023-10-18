@@ -31,7 +31,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset34 import ADLS
 
@@ -41,6 +41,7 @@ class ADLSAccount(ADLS):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> ADLSAccount:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
@@ -326,6 +327,7 @@ class ADLSAccount(ADLS):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str
         ) -> ADLSAccount.Attributes:
@@ -362,6 +364,7 @@ class ADLSContainer(ADLS):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, adls_account_qualified_name: str) -> ADLSContainer:
         validate_required_fields(
             ["name", "adls_account_qualified_name"], [name, adls_account_qualified_name]
@@ -580,6 +583,7 @@ class ADLSContainer(ADLS):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, adls_account_qualified_name: str
         ) -> ADLSContainer.Attributes:
@@ -621,6 +625,7 @@ class ADLSObject(ADLS):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,
@@ -1092,6 +1097,7 @@ class ADLSObject(ADLS):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, adls_container_qualified_name: str
         ) -> ADLSObject.Attributes:
