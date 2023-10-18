@@ -11,7 +11,7 @@ from pyatlan.model.enums import (
     BadgeConditionColor,
     SourceCostUnitType,
 )
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 {% for struct in struct_defs %}
 class {{struct.name}}(AtlanObject):
@@ -19,6 +19,7 @@ class {{struct.name}}(AtlanObject):
     {%- if struct.name == "BadgeCondition" %}
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,

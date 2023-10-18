@@ -77,12 +77,14 @@ class TestConnection:
             connector_type=AtlanConnectorType.SNOWFLAKE,
             admin_roles=[role],
         )
+        assert c.guid
         response = upsert(c)
         assert response.mutated_entities
         assert response.mutated_entities.CREATE
         assert len(response.mutated_entities.CREATE) == 1
         assert isinstance(response.mutated_entities.CREATE[0], Connection)
         assert response.guid_assignments
+        assert c.guid in response.guid_assignments
         c = response.mutated_entities.CREATE[0]
         c = client.asset.get_by_guid(c.guid, Connection)
         assert isinstance(c, Connection)
@@ -132,12 +134,14 @@ class TestDatabase:
             name=database_name,
             connection_qualified_name=connection.qualified_name,
         )
+        assert database.guid
         response = upsert(database)
         assert response.mutated_entities
         assert response.mutated_entities.CREATE
         assert len(response.mutated_entities.CREATE) == 1
         assert isinstance(response.mutated_entities.CREATE[0], Database)
         assert response.guid_assignments
+        assert database.guid in response.guid_assignments
         database = response.mutated_entities.CREATE[0]
         client.asset.get_by_guid(database.guid, Database)
         TestDatabase.database = database

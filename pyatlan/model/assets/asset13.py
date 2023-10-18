@@ -17,7 +17,7 @@ from pyatlan.model.enums import (
     PurposeMetadataAction,
 )
 from pyatlan.model.fields.atlan_fields import KeywordField
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset00 import SelfAsset
 from .asset05 import AccessControl, AuthPolicy
@@ -28,6 +28,7 @@ class Purpose(AccessControl):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, atlan_tags: list[str]) -> Purpose:
         validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
         attributes = Purpose.Attributes.create(name=name, atlan_tags=atlan_tags)
@@ -212,6 +213,7 @@ class Purpose(AccessControl):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, name: str, atlan_tags: list[str]) -> Purpose.Attributes:
             validate_required_fields(["name", "atlan_tags"], [name, atlan_tags])
             return Purpose.Attributes(

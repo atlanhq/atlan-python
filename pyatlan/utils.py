@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+import datetime
 import enum
 import logging
 import re
 import time
-from functools import reduce
+from functools import reduce, wraps
 from typing import Any, Optional
 
 ADMIN_URI = "api/service/"
@@ -211,3 +212,16 @@ def unflatten_custom_metadata_for_entity(
         attributes=attributes, asset_attributes=entity.get("attributes", None)
     ):
         entity["businessAttributes"] = custom_metadata
+
+
+def init_guid(func):
+    """Decorator function that can be used on the Create method of an asset to initialize the guid."""
+
+    @wraps(func)
+    def call(*args, **kwargs):
+        ret_value = func(*args, **kwargs)
+        if hasattr(ret_value, "guid"):
+            ret_value.guid = str(-int(datetime.datetime.now().timestamp() * 1000000))
+        return ret_value
+
+    return call

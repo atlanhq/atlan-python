@@ -11,7 +11,7 @@ from pydantic import Field, StrictStr, validator
 from pyatlan.model.enums import EntityStatus
 from pyatlan.model.fields.atlan_fields import KeywordField
 from pyatlan.model.structs import BadgeCondition
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset00 import Asset
 
@@ -21,6 +21,7 @@ class Badge(Asset, type_name="Badge"):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,
@@ -104,6 +105,7 @@ class Badge(Asset, type_name="Badge"):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls,
             *,

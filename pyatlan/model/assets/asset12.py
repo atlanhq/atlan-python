@@ -17,7 +17,7 @@ from pyatlan.model.enums import (
     PersonaMetadataAction,
 )
 from pyatlan.model.fields.atlan_fields import KeywordField
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset00 import SelfAsset
 from .asset05 import AccessControl, AuthPolicy
@@ -28,6 +28,7 @@ class Persona(AccessControl):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str) -> Persona:
         validate_required_fields(["name"], [name])
         attributes = Persona.Attributes.create(name=name)
@@ -215,6 +216,7 @@ class Persona(AccessControl):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, name: str) -> Persona.Attributes:
             if not name:
                 raise ValueError("name cannot be blank")

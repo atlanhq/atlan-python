@@ -17,7 +17,7 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
     RelationField,
 )
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset33 import S3
 
@@ -27,6 +27,7 @@ class S3Bucket(S3):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls, *, name: str, connection_qualified_name: str, aws_arn: str
     ) -> S3Bucket:
@@ -127,6 +128,7 @@ class S3Bucket(S3):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str, aws_arn: str
         ) -> S3Bucket.Attributes:
@@ -165,6 +167,7 @@ class S3Object(S3):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls,
         *,
@@ -426,6 +429,7 @@ class S3Object(S3):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls,
             *,

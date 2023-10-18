@@ -1,6 +1,7 @@
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(
         cls, *, asset: Asset, content: str, asset_name: Optional[str] = None
     ) -> Readme:

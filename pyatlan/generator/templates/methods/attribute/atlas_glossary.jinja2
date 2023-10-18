@@ -1,6 +1,7 @@
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(cls, *, name: StrictStr)->{{ entity_def.name }}.Attributes:
             validate_required_fields(["name"], [name])
             return AtlasGlossary.Attributes(name=name, qualified_name=next_id())

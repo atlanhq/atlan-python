@@ -16,7 +16,7 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
-from pyatlan.utils import validate_required_fields
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset26 import API
 
@@ -26,6 +26,7 @@ class APISpec(API):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, name: str, connection_qualified_name: str) -> APISpec:
         validate_required_fields(
             ["name", "connection_qualified_name"], [name, connection_qualified_name]
@@ -255,6 +256,7 @@ class APISpec(API):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, name: str, connection_qualified_name: str
         ) -> APISpec.Attributes:
@@ -291,6 +293,7 @@ class APIPath(API):
 
     @classmethod
     # @validate_arguments()
+    @init_guid
     def create(cls, *, path_raw_uri: str, spec_qualified_name: str) -> APIPath:
         validate_required_fields(
             ["path_raw_uri", "spec_qualified_name"], [path_raw_uri, spec_qualified_name]
@@ -480,6 +483,7 @@ class APIPath(API):
 
         @classmethod
         # @validate_arguments()
+        @init_guid
         def create(
             cls, *, path_raw_uri: str, spec_qualified_name: str
         ) -> APIPath.Attributes:
