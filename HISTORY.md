@@ -4,6 +4,7 @@
   * AdminClient
   * AssetClient
   * Add property atlan_tag_names to assets to provide human readable versions of classificationNames
+  * Added Batch class for managing bulk updates in batches.
 
 ## 1.3.3 (October 12, 2023)
 
