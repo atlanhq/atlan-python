@@ -9,6 +9,7 @@ import json
 import logging
 import os
 import uuid
+from importlib.resources import read_text
 from types import SimpleNamespace
 from typing import ClassVar, Generator, Optional, Type, Union
 from warnings import warn
@@ -73,20 +74,20 @@ DEFAULT_RETRY = Retry(
     allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "PUT", "DELETE"],
 )
 
+VERSION = read_text("pyatlan", "version.txt").strip()
+
 
 def get_session():
-    import importlib.metadata
 
     retry_strategy = DEFAULT_RETRY
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
     session.mount(HTTPS_PREFIX, adapter)
-    version = importlib.metadata.version("pyatlan")
     session.headers.update(
         {
             "x-atlan-agent": "sdk",
             "x-atlan-agent-id": "python",
-            "User-Agent": f"Atlan-PythonSDK/{version}",
+            "User-Agent": f"Atlan-PythonSDK/{VERSION}",
         }
     )
     return session
