@@ -1555,10 +1555,10 @@ class Batch:
                     raise er
             self._batch = []
         if response:
-            self._track_repsonse(response=response)
+            self._track_response(response=response)
         return response
 
-    def _track_repsonse(self, response: AssetMutationResponse):
+    def _track_response(self, response: AssetMutationResponse):
         if response and response.mutated_entities:
             if response.mutated_entities.CREATE:
                 for asset in response.mutated_entities.CREATE:
@@ -1567,7 +1567,8 @@ class Batch:
                 for asset in response.mutated_entities.UPDATE:
                     self._track(self._updated, asset)
 
-    def _track(self, tracker: list[Asset], candidate: Asset):
+    @staticmethod
+    def _track(tracker: list[Asset], candidate: Asset):
         asset = candidate.trim_to_required()
         asset.name = candidate.name
         tracker.append(asset)

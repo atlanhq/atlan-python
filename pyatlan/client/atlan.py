@@ -75,11 +75,20 @@ DEFAULT_RETRY = Retry(
 
 
 def get_session():
+    import importlib.metadata
+
     retry_strategy = DEFAULT_RETRY
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()
     session.mount(HTTPS_PREFIX, adapter)
-    session.headers.update({"x-atlan-agent": "sdk", "x-atlan-agent-id": "python"})
+    version = importlib.metadata.version("pyatlan")
+    session.headers.update(
+        {
+            "x-atlan-agent": "sdk",
+            "x-atlan-agent-id": "python",
+            "User-Agent": f"Atlan-PythonSDK/{version}",
+        }
+    )
     return session
 
 
@@ -127,9 +136,6 @@ class AtlanClient(BaseSettings):
         self._request_params = {
             "headers": {
                 "authorization": f"Bearer {self.api_key}",
-                "User-Agent": "Atlan-PythonSDK/0.5.0",
-                "x-atlan-agent": "sdk",
-                "x-atlan-agent-id": "python",
             }
         }
         AtlanClient._default_client = self
