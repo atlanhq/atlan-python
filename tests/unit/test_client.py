@@ -1,18 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-from unittest.mock import DEFAULT, Mock, patch
+from unittest.mock import DEFAULT, Mock, call, patch
 
 import pytest
 
-from pyatlan.client.asset import AssetClient
+from pyatlan.client.asset import AssetClient, Batch, CustomMetadataHandling
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.errors import InvalidRequestError, NotFoundError
+from pyatlan.errors import AtlanError, ErrorCode, InvalidRequestError, NotFoundError
 from pyatlan.model.assets import (
     AtlasGlossary,
     AtlasGlossaryCategory,
     AtlasGlossaryTerm,
     Table,
 )
+from pyatlan.model.response import AssetMutationResponse
 from pyatlan.model.search import Bool, Term
 from tests.unit.model.constants import (
     GLOSSARY_CATEGORY_NAME,
@@ -895,3 +896,144 @@ def test_find_term_by_name():
             attributes=attributes,
         )
         assert mock_find_term_fast_by_name.return_value == term
+
+
+class TestBatch:
+    @pytest.fixture
+    def mock_asset_client(self):
+        return Mock(AssetClient)
+
+    def test_init(self, mock_asset_client):
+        sut = Batch(client=mock_asset_client, max_size=10)
+
+        self.assert_asset_client_not_called(mock_asset_client, sut)
+
+    def assert_asset_client_not_called(self, mock_asset_client, sut):
+        assert 0 == len(sut.created)
+        assert 0 == len(sut.updated)
+        assert 0 == len(sut.failures)
+        mock_asset_client.assert_not_called()
+
+    @pytest.mark.parametrize(
+        "custom_metadata_handling",
+        [
+            (CustomMetadataHandling.IGNORE),
+            (CustomMetadataHandling.OVERWRITE),
+            (CustomMetadataHandling.MERGE),
+        ],
+    )
+    def test_add_when_capture_failure_true(
+        self, custom_metadata_handling, mock_asset_client
+    ):
+        table_1 = Mock(Table)
+        table_2 = Mock(Table)
+        table_3 = Mock(Table)
+        table_4 = Mock(Table)
+        mock_response = Mock(spec=AssetMutationResponse)
+        mutated_entities = Mock()
+        created = [table_1]
+        updated = [table_2]
+        mutated_entities.CREATE = created
+        mutated_entities.UPDATE = updated
+        mock_response.attach_mock(mutated_entities, "mutated_entities")
+
+        if custom_metadata_handling == CustomMetadataHandling.IGNORE:
+            mock_asset_client.save.return_value = mock_response
+        elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
+            mock_asset_client.save_replacing_cm.return_value = mock_response
+        else:
+            mock_asset_client.save_merging_cm.return_value = mock_response
+
+        sut = Batch(
+            client=mock_asset_client,
+            max_size=2,
+            capture_failures=True,
+            custom_metadata_handling=custom_metadata_handling,
+        )
+        sut.add(table_1)
+        self.assert_asset_client_not_called(mock_asset_client, sut)
+
+        sut.add(table_2)
+
+        assert len(created) == len(sut.created)
+        assert len(updated) == len(sut.updated)
+        for unsaved, saved in zip(created, sut.created):
+            unsaved.trim_to_required.called_once()
+            assert unsaved.name == saved.name
+        for unsaved, saved in zip(updated, sut.updated):
+            unsaved.trim_to_required.called_once()
+            assert unsaved.name == saved.name
+
+        exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
+            "bad", "stuff"
+        )
+        if custom_metadata_handling == CustomMetadataHandling.IGNORE:
+            mock_asset_client.save.side_effect = exception
+        elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
+            mock_asset_client.save_replacing_cm.side_effect = exception
+        else:
+            mock_asset_client.save_merging_cm.side_effect = exception
+
+        sut.add(table_3)
+
+        sut.add(table_4)
+
+        assert 1 == len(sut.failures)
+        failure = sut.failures[0]
+        assert [table_3, table_4] == failure.failed_assets
+        assert exception == failure.failure_reason
+        if custom_metadata_handling == CustomMetadataHandling.IGNORE:
+            mock_asset_client.save.has_calls(
+                [
+                    call([table_1, table_2], replace_atlan_tags=False),
+                    call([table_3, table_4], replace_atlan_tags=False),
+                ]
+            )
+        elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
+            mock_asset_client.save_replacing_cm.has_calls(
+                [
+                    call([table_1, table_2], replace_atlan_tags=False),
+                    call([table_3, table_4], replace_atlan_tags=False),
+                ]
+            )
+        else:
+            mock_asset_client.save_merging_cm.has_calls(
+                [
+                    call([table_1, table_2], replace_atlan_tags=False),
+                    call([table_3, table_4], replace_atlan_tags=False),
+                ]
+            )
+
+    @pytest.mark.parametrize(
+        "custom_metadata_handling",
+        [
+            (CustomMetadataHandling.IGNORE),
+            (CustomMetadataHandling.OVERWRITE),
+            (CustomMetadataHandling.MERGE),
+        ],
+    )
+    def test_add_when_capture_failure_false_then_exception_raised(
+        self, custom_metadata_handling, mock_asset_client
+    ):
+        exception = ErrorCode.INVALID_REQUEST_PASSTHROUGH.exception_with_parameters(
+            "bad", "stuff"
+        )
+        if custom_metadata_handling == CustomMetadataHandling.IGNORE:
+            mock_asset_client.save.side_effect = exception
+        elif custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
+            mock_asset_client.save_replacing_cm.side_effect = exception
+        else:
+            mock_asset_client.save_merging_cm.side_effect = exception
+
+        sut = Batch(
+            client=mock_asset_client,
+            max_size=1,
+            capture_failures=False,
+            custom_metadata_handling=custom_metadata_handling,
+        )
+        with pytest.raises(AtlanError):
+            sut.add(Mock(Table))
+
+        assert 0 == len(sut.failures)
+        assert 0 == len(sut.created)
+        assert 0 == len(sut.updated)
