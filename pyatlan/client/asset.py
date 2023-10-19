@@ -1452,6 +1452,17 @@ class Batch:
         custom_metadata_handling: CustomMetadataHandling = CustomMetadataHandling.IGNORE,
         capture_failures: bool = False,
     ):
+        """
+        Create a new batch of assets to be bulk-saved.
+        :param client: AssetClient to use
+        :param max_size: maximum size of each batch that should be processed (per API call)
+        :param replace_atlan_tags: if True, all Atlan tags on an existing asset will be overwritten; if False,
+        all Atlan tags will be ignored
+        :param custom_metadata_handling:  how to handle custom metadata (ignore it, replace it (wiping out
+        anything pre-existing), or merge it)
+        :param capture_failures: when True, any failed batches will be captured and retained rather than exceptions
+         being raised (for large amounts of processing this could cause memory issues!)
+        """
         self._client: AssetClient = client
         self._max_size: int = max_size
         self._replace_atlan_tags: bool = replace_atlan_tags
