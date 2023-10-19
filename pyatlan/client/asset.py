@@ -5,6 +5,7 @@ from __future__ import annotations
 import abc
 import time
 from abc import ABC
+from enum import Enum
 from typing import Generator, Iterable, Optional, Type, TypeVar, Union
 from warnings import warn
 
@@ -1421,3 +1422,153 @@ class LineageListResults(SearchResults, Iterable):
     @property
     def has_more(self) -> bool:
         return self._has_more
+
+
+class CustomMetadataHandling(str, Enum):
+    IGNORE = "ignore"
+    OVERWRITE = "overwrite"
+    MERGE = "merge"
+
+
+class FailedBatch:
+    """Internal class to capture batch failures."""
+
+    failed_assets: list[Asset]
+    failure_reason: Exception
+
+    def __init__(self, failed_assets: list[Asset], failure_reason: Exception):
+        self.failed_assets = failed_assets
+        self.failure_reason = failure_reason
+
+
+class Batch:
+    """Utility class for managing bulk updates in batches."""
+
+    def __init__(
+        self,
+        client: AssetClient,
+        max_size: int,
+        replace_atlan_tags: bool = False,
+        custom_metadata_handling: CustomMetadataHandling = CustomMetadataHandling.IGNORE,
+        capture_failures: bool = False,
+    ):
+        """
+        Create a new batch of assets to be bulk-saved.
+        :param client: AssetClient to use
+        :param max_size: maximum size of each batch that should be processed (per API call)
+        :param replace_atlan_tags: if True, all Atlan tags on an existing asset will be overwritten; if False,
+        all Atlan tags will be ignored
+        :param custom_metadata_handling:  how to handle custom metadata (ignore it, replace it (wiping out
+        anything pre-existing), or merge it)
+        :param capture_failures: when True, any failed batches will be captured and retained rather than exceptions
+         being raised (for large amounts of processing this could cause memory issues!)
+        """
+        self._client: AssetClient = client
+        self._max_size: int = max_size
+        self._replace_atlan_tags: bool = replace_atlan_tags
+        self._custom_metadata_handling: CustomMetadataHandling = (
+            custom_metadata_handling
+        )
+        self._capture_failures: bool = capture_failures
+        self._batch: list[Asset] = []
+        self._failures: list[FailedBatch] = []
+        self._created: list[Asset] = []
+        self._updated: list[Asset] = []
+
+    @property
+    def failures(self) -> list[FailedBatch]:
+        """Get information on any failed batches
+
+        :returns: a list of FailedBatch objects that contain information about any batches that may have failed
+        an empty list will be returned if there are no failures.
+        """
+        return self._failures
+
+    @property
+    def created(self) -> list[Asset]:
+        """Get a list of all the Assets that were created
+
+        :returns: a list of all the Assets that were created
+        """
+        return self._created
+
+    @property
+    def updated(self) -> list[Asset]:
+        """Get a list of all the Assets that were updated
+
+        :returns: a list of all the Assets that were updated
+        """
+        return self._updated
+
+    def add(self, single: Asset) -> Optional[AssetMutationResponse]:
+        """
+        Add an asset to the batch to be processed.
+
+        :param single: the asset to add to a batch
+        :returns: an AssetMutationResponse containing the results of the save or None if the batch is still queued.
+        """
+        self._batch.append(single)
+        return self._process()
+
+    def _process(self) -> Optional[AssetMutationResponse]:
+        """If the number of entities we have queued up is equal to the batch size, process them and reset our queue;
+        otherwise do nothing.
+
+        :returns: an AssetMutationResponse containing the results of the save or None if the batch is still queued.
+        """
+        if len(self._batch) == self._max_size:
+            return self.flush()
+        return None
+
+    def flush(self) -> Optional[AssetMutationResponse]:
+        """Flush any remaining assets in the batch.
+
+        :returns: n AssetMutationResponse containing the results of the saving any assets that were flushed
+        """
+        response: Optional[AssetMutationResponse] = None
+        if self._batch:
+            try:
+                if self._custom_metadata_handling == CustomMetadataHandling.IGNORE:
+                    response = self._client.save(
+                        self._batch, replace_atlan_tags=self._replace_atlan_tags
+                    )
+                elif self._custom_metadata_handling == CustomMetadataHandling.OVERWRITE:
+                    response = self._client.save_replacing_cm(
+                        self._batch, replace_atlan_tags=self._replace_atlan_tags
+                    )
+                elif self._custom_metadata_handling == CustomMetadataHandling.MERGE:
+                    response = self._client.save_merging_cm(
+                        self._batch, replace_atlan_tags=self._replace_atlan_tags
+                    )
+                else:
+                    raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                        self._custom_metadata_handling,
+                        "CustomMetadataHandling.IGNORE, CustomMetadataHandling.OVERWRITE "
+                        "or CustomMetadataHandling.MERGE",
+                    )
+            except AtlanError as er:
+                if self._capture_failures:
+                    self._failures.append(
+                        FailedBatch(failed_assets=self._batch, failure_reason=er)
+                    )
+                else:
+                    raise er
+            self._batch = []
+        if response:
+            self._track_response(response=response)
+        return response
+
+    def _track_response(self, response: AssetMutationResponse):
+        if response and response.mutated_entities:
+            if response.mutated_entities.CREATE:
+                for asset in response.mutated_entities.CREATE:
+                    self._track(self._created, asset)
+            if response.mutated_entities.UPDATE:
+                for asset in response.mutated_entities.UPDATE:
+                    self._track(self._updated, asset)
+
+    @staticmethod
+    def _track(tracker: list[Asset], candidate: Asset):
+        asset = candidate.trim_to_required()
+        asset.name = candidate.name
+        tracker.append(asset)
