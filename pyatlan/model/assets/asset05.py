@@ -476,6 +476,24 @@ class AccessControl(Asset, type_name="AccessControl"):
     """
     TBC
     """
+    DENY_ASSET_TYPES: ClassVar[KeywordField] = KeywordField(
+        "denyAssetTypes", "denyAssetTypes"
+    )
+    """
+    TBC
+    """
+    DENY_NAVIGATION_PAGES: ClassVar[KeywordField] = KeywordField(
+        "denyNavigationPages", "denyNavigationPages"
+    )
+    """
+    TBC
+    """
+    DEFAULT_NAVIGATION: ClassVar[KeywordField] = KeywordField(
+        "defaultNavigation", "defaultNavigation"
+    )
+    """
+    TBC
+    """
 
     POLICIES: ClassVar[RelationField] = RelationField("policies")
     """
@@ -488,6 +506,9 @@ class AccessControl(Asset, type_name="AccessControl"):
         "deny_asset_tabs",
         "deny_asset_filters",
         "channel_link",
+        "deny_asset_types",
+        "deny_navigation_pages",
+        "default_navigation",
         "policies",
     ]
 
@@ -552,6 +573,38 @@ class AccessControl(Asset, type_name="AccessControl"):
         self.attributes.channel_link = channel_link
 
     @property
+    def deny_asset_types(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.deny_asset_types
+
+    @deny_asset_types.setter
+    def deny_asset_types(self, deny_asset_types: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_asset_types = deny_asset_types
+
+    @property
+    def deny_navigation_pages(self) -> Optional[set[str]]:
+        return (
+            None if self.attributes is None else self.attributes.deny_navigation_pages
+        )
+
+    @deny_navigation_pages.setter
+    def deny_navigation_pages(self, deny_navigation_pages: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.deny_navigation_pages = deny_navigation_pages
+
+    @property
+    def default_navigation(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.default_navigation
+
+    @default_navigation.setter
+    def default_navigation(self, default_navigation: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.default_navigation = default_navigation
+
+    @property
     def policies(self) -> Optional[list[AuthPolicy]]:
         return None if self.attributes is None else self.attributes.policies
 
@@ -575,6 +628,15 @@ class AccessControl(Asset, type_name="AccessControl"):
             None, description="", alias="denyAssetFilters"
         )
         channel_link: Optional[str] = Field(None, description="", alias="channelLink")
+        deny_asset_types: Optional[set[str]] = Field(
+            None, description="", alias="denyAssetTypes"
+        )
+        deny_navigation_pages: Optional[set[str]] = Field(
+            None, description="", alias="denyNavigationPages"
+        )
+        default_navigation: Optional[str] = Field(
+            None, description="", alias="defaultNavigation"
+        )
         policies: Optional[list[AuthPolicy]] = Field(
             None, description="", alias="policies"
         )  # relationship

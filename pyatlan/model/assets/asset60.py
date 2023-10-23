@@ -9,6 +9,7 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
+from pyatlan.model.enums import AtlanConnectorType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -17,12 +18,25 @@ from pyatlan.model.fields.atlan_fields import (
     RelationField,
     TextField,
 )
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset35 import GCS
 
 
 class GCSObject(GCS):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, gcs_bucket_qualified_name: str) -> GCSObject:
+        validate_required_fields(
+            ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+        )
+        attributes = GCSObject.Attributes.create(
+            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("GCSObject", allow_mutation=False)
 
@@ -410,6 +424,35 @@ class GCSObject(GCS):
             None, description="", alias="gcsBucket"
         )  # relationship
 
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, gcs_bucket_qualified_name: str
+        ) -> GCSObject.Attributes:
+            validate_required_fields(
+                ["name", "gcs_bucket_qualified_name"], [name, gcs_bucket_qualified_name]
+            )
+
+            # Split the gcs_bucket_qualified_name to extract necessary information
+            fields = gcs_bucket_qualified_name.split("/")
+            if len(fields) != 4:
+                raise ValueError("Invalid gcs_bucket_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid gcs_bucket_qualified_name") from e
+
+            return GCSObject.Attributes(
+                name=name,
+                gcs_bucket_qualified_name=gcs_bucket_qualified_name,
+                connection_qualified_name=f"{fields[0]}/{fields[1]}/{fields[2]}",
+                qualified_name=f"{gcs_bucket_qualified_name}/{name}",
+                connector_name=connector_type.value,
+                gcs_bucket=GCSBucket.ref_by_qualified_name(gcs_bucket_qualified_name),
+            )
+
     attributes: "GCSObject.Attributes" = Field(
         default_factory=lambda: GCSObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
@@ -419,6 +462,18 @@ class GCSObject(GCS):
 
 class GCSBucket(GCS):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str) -> GCSBucket:
+        validate_required_fields(
+            ["name", "connection_qualified_name"], [name, connection_qualified_name]
+        )
+        attributes = GCSBucket.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("GCSBucket", allow_mutation=False)
 
@@ -627,6 +682,33 @@ class GCSBucket(GCS):
         gcs_objects: Optional[list[GCSObject]] = Field(
             None, description="", alias="gcsObjects"
         )  # relationship
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls, *, name: str, connection_qualified_name: str
+        ) -> GCSBucket.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name"], [name, connection_qualified_name]
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return GCSBucket.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+            )
 
     attributes: "GCSBucket.Attributes" = Field(
         default_factory=lambda: GCSBucket.Attributes(),
