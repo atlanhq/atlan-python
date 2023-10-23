@@ -1,4 +1,4 @@
-import pytest 
+import pytest
 
 from pyatlan.model.assets import GCSObject
 from tests.unit.model.constants import (
@@ -7,6 +7,7 @@ from tests.unit.model.constants import (
     GCS_OBJECT_QUALIFIED_NAME,
 )
 
+
 @pytest.mark.parametrize(
     "name, gcs_bucket_qualified_name, message",
     [
@@ -14,14 +15,12 @@ from tests.unit.model.constants import (
         (GCS_OBJECT_NAME, None, "gcs_bucket_qualified_name is required"),
     ],
 )
-
 def test_create_with_missing_parameters_raise_value_error(
     name: str, gcs_bucket_qualified_name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
-        GCSObject.create(
-            name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name
-        )
+        GCSObject.create(name=name, gcs_bucket_qualified_name=gcs_bucket_qualified_name)
+
 
 def test_create():
     sut = GCSObject.create(
@@ -32,6 +31,7 @@ def test_create():
     assert sut.gcs_bucket_qualified_name == GCS_BUCKET_QUALIFIED_NAME
     assert sut.qualified_name == GCS_OBJECT_QUALIFIED_NAME
 
+
 @pytest.mark.parametrize(
     "qualified_name, name, message",
     [
@@ -39,12 +39,12 @@ def test_create():
         (GCS_OBJECT_NAME, None, "name is required"),
     ],
 )
-
 def test_create_for_modification_with_invalid_parameter_raises_value_error(
     qualified_name: str, name: str, message: str
 ):
     with pytest.raises(ValueError, match=message):
         GCSObject.create_for_modification(qualified_name=qualified_name, name=name)
+
 
 def test_create_for_modification():
     sut = GCSObject.create_for_modification(
@@ -53,6 +53,7 @@ def test_create_for_modification():
 
     assert sut.qualified_name == GCS_OBJECT_QUALIFIED_NAME
     assert sut.name == GCS_OBJECT_NAME
+
 
 def test_trim_to_required():
     sut = GCSObject.create(
