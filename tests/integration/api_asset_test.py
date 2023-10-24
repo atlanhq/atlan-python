@@ -1,11 +1,9 @@
-import time
 from typing import Generator
 
 import pytest
 
 from pyatlan.client.atlan import AtlanClient
-from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
-from pyatlan.model.assets import APIPath, APISpec, Asset, Connection
+from pyatlan.model.assets import APIPath, APISpec, Connection
 from pyatlan.model.core import Announcement
 from pyatlan.model.enums import (
     AnnouncementType,
@@ -16,6 +14,7 @@ from pyatlan.model.enums import (
 from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
+from tests.integration.utils import retrieve_and_check_assets
 
 MODULE_NAME = TestId.make_unique("API")
 
@@ -36,28 +35,8 @@ def block(
     client: AtlanClient, response: AssetMutationResponse
 ) -> AssetMutationResponse:
     if response.mutated_entities and response.mutated_entities.DELETE:
-        _retrieve_and_check(client, response.mutated_entities.DELETE, 0)
+        retrieve_and_check_assets(client, response.mutated_entities.DELETE, 0)
     return response
-
-
-def _retrieve_and_check(client: AtlanClient, to_check: list[Asset], retry_count: int):
-    leftovers = []
-    for one in to_check:
-        try:
-            candidate = client.asset.get_by_guid(one.guid, asset_type=type(one))
-            if candidate and candidate.status == EntityStatus.ACTIVE:
-                leftovers.append(candidate)
-        except NotFoundError:
-            # If it is not found, it was successfully deleted (purged), so we
-            # do not need to look for it any further
-            print("Asset no longer exists.")
-        except AtlanError:
-            leftovers.append(one)
-    if leftovers:
-        if retry_count == 20:
-            raise ErrorCode.RETRY_OVERRUN.exception_with_parameters()
-        time.sleep(2)
-        _retrieve_and_check(client, leftovers, retry_count + 1)
 
 
 @pytest.fixture(scope="module")
