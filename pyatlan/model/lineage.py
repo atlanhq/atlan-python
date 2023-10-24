@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
+import copy
 from collections import deque
-from typing import TYPE_CHECKING, Any, Optional
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Optional, Union, overload
 
 from pydantic import Field
 
@@ -15,6 +16,8 @@ from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
+from pyatlan.model.fields.atlan_fields import CustomMetadataField, SearchableField
+from pyatlan.utils import ComparisonCategory, is_comparable_type
 
 
 class LineageRelation(AtlanObject):
@@ -303,3 +306,191 @@ class LineageListRequest(SearchRequest):
             exclude_meanings=True,
             exclude_classifications=True,
         )
+
+
+class LineageFilter(AtlanObject):
+    """Class used to define how to filter assets and relationships when fetching lineage"""
+
+    field: SearchableField
+    operator: AtlanComparisonOperator
+    value: str
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
+class LineageFilterField:
+    """Class used to provide a proxy to building up a lineage filter with the appropriate
+    subset of conditions available."""
+
+    def __init__(self, field: SearchableField):
+        """Create LineageFilterField
+
+        :param field: Field on which filtering should be applied.
+        """
+        self._field = field
+
+    @property
+    def field(self) -> SearchableField:
+        return self._field
+
+    def has_any_value(self) -> LineageFilter:
+        """
+        Returns a filter that will match all assets whose provided field has any value at all (non-null).
+
+        :returns:  a filter that will match all assets whose provided field has any value at all (non-null).
+        """
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.NOT_NULL, value=""
+        )
+
+    def has_no_value(self) -> LineageFilter:
+        """
+        Returns a filter that will match all assets whose provided field has no value at all (is null).
+
+        :returns:  a filter that will only match assets that have no value at all for the field (null).
+        """
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.IS_NULL, value=""
+        )
+
+
+class LineageFilterFieldBoolean(LineageFilterField):
+    """Class used to provide a proxy to building up a lineage filter with the appropriate
+    subset of conditions available, for boolean fields."""
+
+    def eq(self, value: bool) -> LineageFilter:
+        """
+        Returns a filter that will match all assets whose provided field has a value that is exactly
+         the provided value.
+
+        :param value: the value to check the field's value equals
+        :returns:  a filter that will only match assets whose value for the field is exactly the value provided
+        """
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value)
+        )
+
+    def neq(self, value: bool) -> LineageFilter:
+        """
+        Returns a filter that will match all assets whose provided field has a value that is not exactly
+         the provided value.
+
+        :param value: the value to check the field's value does not equal
+        :returns:  a filter that will only match assets whose value for the field is not exactly the value provided
+        """
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.NEQ, value=str(value)
+        )
+
+
+class LineageFilterFieldCM(LineageFilterField):
+    """Class used to provide a proxy to building up a lineage filter with the appropriate
+    subset of conditions available, for custom metadata fields."""
+
+    def __init__(self, field: CustomMetadataField):
+        """Create LineageFilterFieldCM
+
+        :param field: Field on which filtering should be applied.
+        """
+        super().__init__(field)
+        self._cm_field = field
+
+    @overload
+    def eq(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def eq(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def eq(self, value: Union[str, Enum]):
+        if isinstance(value, Enum):
+            return LineageFilter(
+                field=self._field,
+                operator=AtlanComparisonOperator.NEQ,
+                value=value.value,
+            )
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.EQ, value=value
+        )
+
+    @overload
+    def neq(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is not exactly
+        the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value does not equal (case-sensitive)
+        """
+
+    @overload
+    def neq(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is not exactly
+        the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value does not equal (case-sensitive)
+        """
+
+    def neq(self, value: Union[str, Enum]):
+        if isinstance(value, Enum):
+            return LineageFilter(
+                field=self._field,
+                operator=AtlanComparisonOperator.NEQ,
+                value=value.value,
+            )
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.NEQ, value=value
+        )
+
+    def starts_with(self, value: str) -> LineageFilter:
+        if is_comparable_type(
+            self._cm_field.attribute_def.type_name or "", ComparisonCategory.STRING
+        ):
+            raise ErrorCode.INVALID_QUERY.exception_with_parameters(
+                "startsWith",
+                f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
+            )
+        return LineageFilter(
+            field=self._field, operator=AtlanComparisonOperator.STARTS_WITH, value=value
+        )
+
+
+class FluentLineage:
+    """Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan
+    (removing the need to understand the guts of Elastic)."""
+
+    def __init__(
+        self,
+        starting_guid: str,
+        depth: int = 1000000,
+        direction: LineageDirection = LineageDirection.DOWNSTREAM,
+        size: int = 10,
+        exclude_meanings: bool = True,
+        exclude_classifications: bool = True,
+    ):
+        self._starting_guid = starting_guid
+        self._depth: int = depth
+        self._direction: LineageDirection = direction
+        self._size: int = size
+        self._exclude_meanings: bool = exclude_meanings
+        self._exclude_classifications: bool = exclude_classifications
+        self._include_in_results: list[LineageFilter] = []
+
+    def _clone(self) -> "FluentLineage":
+        """
+        Returns a copy of the current FluentSearch that's ready for further operations.
+
+        :returns: copy of the current FluentSearch
+        """
+        return copy.deepcopy(self)
+
+    def include_in_results(self, lineage_filter: LineageFilter):
+        clone = self._clone()
+        clone._include_in_results.append(lineage_filter)
+        return clone

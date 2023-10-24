@@ -6,7 +6,14 @@ from pathlib import Path
 import pytest
 
 from pyatlan.errors import InvalidRequestError
-from pyatlan.model.lineage import LineageGraph, LineageRelation, LineageResponse
+from pyatlan.model.enums import AtlanComparisonOperator
+from pyatlan.model.fields.atlan_fields import SearchableField
+from pyatlan.model.lineage import (
+    LineageFilterField,
+    LineageGraph,
+    LineageRelation,
+    LineageResponse,
+)
 
 BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
 
@@ -275,3 +282,30 @@ class TestLineageResponse:
         lineage_response,
     ):
         assert len(lineage_response.get_upstream_process_guids("123")) == 0
+
+
+class TestLineageFilterField:
+    @pytest.fixture
+    def searchable_field(self) -> SearchableField:
+        return SearchableField(
+            atlan_field_name="atlan_field", elastic_field_name="elastic_field"
+        )
+
+    @pytest.fixture
+    def sut(self, searchable_field: SearchableField) -> LineageFilterField:
+        return LineageFilterField(field=searchable_field)
+
+    def test_init(self, sut: LineageFilterField, searchable_field: SearchableField):
+        assert sut.field == searchable_field
+
+    def test_has_any_value(self, sut: LineageFilterField):
+        filter = sut.has_any_value()
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.NOT_NULL
+        assert filter.value == ""
+
+    def test_has_no_value(self, sut: LineageFilterField):
+        filter = sut.has_no_value()
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.IS_NULL
+        assert filter.value == ""
