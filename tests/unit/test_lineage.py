@@ -10,6 +10,7 @@ from pyatlan.model.enums import AtlanComparisonOperator
 from pyatlan.model.fields.atlan_fields import SearchableField
 from pyatlan.model.lineage import (
     LineageFilterField,
+    LineageFilterFieldBoolean,
     LineageGraph,
     LineageRelation,
     LineageResponse,
@@ -284,13 +285,14 @@ class TestLineageResponse:
         assert len(lineage_response.get_upstream_process_guids("123")) == 0
 
 
-class TestLineageFilterField:
-    @pytest.fixture
-    def searchable_field(self) -> SearchableField:
-        return SearchableField(
-            atlan_field_name="atlan_field", elastic_field_name="elastic_field"
-        )
+@pytest.fixture
+def searchable_field() -> SearchableField:
+    return SearchableField(
+        atlan_field_name="atlan_field", elastic_field_name="elastic_field"
+    )
 
+
+class TestLineageFilterField:
     @pytest.fixture
     def sut(self, searchable_field: SearchableField) -> LineageFilterField:
         return LineageFilterField(field=searchable_field)
@@ -309,3 +311,32 @@ class TestLineageFilterField:
         assert filter.field == sut.field
         assert filter.operator == AtlanComparisonOperator.IS_NULL
         assert filter.value == ""
+
+
+class TestLineageFilterFieldBoolean:
+    @pytest.fixture
+    def sut(self, searchable_field: SearchableField) -> LineageFilterFieldBoolean:
+        return LineageFilterFieldBoolean(field=searchable_field)
+
+    def test_init(
+        self, sut: LineageFilterFieldBoolean, searchable_field: SearchableField
+    ):
+        assert sut.field == searchable_field
+
+    @pytest.mark.parametrize(
+        "value, expected", [(True, str(True)), (False, str(False))]
+    )
+    def test_eq(self, value, expected, sut: LineageFilterFieldBoolean):
+        filter = sut.eq(value)
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.EQ
+        assert filter.value == expected
+
+    @pytest.mark.parametrize(
+        "value, expected", [(True, str(True)), (False, str(False))]
+    )
+    def test_neq(self, value, expected, sut: LineageFilterFieldBoolean):
+        filter = sut.neq(value)
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.NEQ
+        assert filter.value == expected
