@@ -4,6 +4,15 @@ from pyatlan.client.atlan import AtlanClient
 from pyatlan.errors import AtlanError, ErrorCode, NotFoundError
 from pyatlan.model.assets import Asset
 from pyatlan.model.enums import EntityStatus
+from pyatlan.model.response import AssetMutationResponse
+
+
+def block(
+    client: AtlanClient, response: AssetMutationResponse
+) -> AssetMutationResponse:
+    if response.mutated_entities and response.mutated_entities.DELETE:
+        retrieve_and_check_assets(client, response.mutated_entities.DELETE, 0)
+    return response
 
 
 def retrieve_and_check_assets(

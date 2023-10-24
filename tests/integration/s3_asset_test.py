@@ -16,7 +16,7 @@ from pyatlan.model.enums import (
 from pyatlan.model.response import AssetMutationResponse
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
-from tests.integration.utils import retrieve_and_check_assets
+from tests.integration.utils import block
 
 MODULE_NAME = TestId.make_unique("S3")
 
@@ -33,12 +33,7 @@ ANNOUNCEMENT_TITLE = "Python SDK testing."
 ANNOUNCEMENT_MESSAGE = "Automated testing of the Python SDK."
 
 
-def block(
-    client: AtlanClient, response: AssetMutationResponse
-) -> AssetMutationResponse:
-    if response.mutated_entities and response.mutated_entities.DELETE:
-        retrieve_and_check_assets(client, response.mutated_entities.DELETE, 0)
-    return response
+response = block(AtlanClient(), AssetMutationResponse())
 
 
 @pytest.fixture(scope="module")
