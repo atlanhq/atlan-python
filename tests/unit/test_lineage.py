@@ -2,19 +2,22 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import json
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 
-from pyatlan.errors import InvalidRequestError
-from pyatlan.model.enums import AtlanComparisonOperator
-from pyatlan.model.fields.atlan_fields import SearchableField
+from pyatlan.errors import AtlanError, InvalidRequestError
+from pyatlan.model.enums import AtlanComparisonOperator, FileType
+from pyatlan.model.fields.atlan_fields import CustomMetadataField, SearchableField
 from pyatlan.model.lineage import (
     LineageFilterField,
     LineageFilterFieldBoolean,
+    LineageFilterFieldCM,
     LineageGraph,
     LineageRelation,
     LineageResponse,
 )
+from pyatlan.model.typedef import AttributeDef
 
 BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
 
@@ -340,3 +343,221 @@ class TestLineageFilterFieldBoolean:
         assert filter.field == sut.field
         assert filter.operator == AtlanComparisonOperator.NEQ
         assert filter.value == expected
+
+
+class TestLineageFilterFieldCM:
+    @pytest.fixture()
+    def custom_metadata_field(self) -> CustomMetadataField:
+        return Mock(spec=CustomMetadataField)
+
+    @pytest.fixture
+    def sut(self, custom_metadata_field: CustomMetadataField) -> LineageFilterFieldCM:
+        return LineageFilterFieldCM(field=custom_metadata_field)
+
+    def configure_custom_metadata_field(self, custom_metadata_field, type_name):
+        attribute_def = Mock(spec=AttributeDef)
+        attribute_def.configure_mock(**{"type_name": type_name})
+        custom_metadata_field.attach_mock(attribute_def, "attribute_def")
+        custom_metadata_field.attach_mock(attribute_def, "attribute_def")
+        custom_metadata_field.configure_mock(
+            **{"set_name": "something", "attribute_name": "an_attribute"}
+        )
+
+    def test_init(
+        self, sut: LineageFilterFieldCM, custom_metadata_field: CustomMetadataField
+    ):
+        assert sut.field == custom_metadata_field
+        assert sut.cm_field == custom_metadata_field
+
+    @pytest.mark.parametrize(
+        "value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)]
+    )
+    def test_eq(self, value, expected, sut: LineageFilterFieldCM):
+        filter = sut.eq(value)
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.EQ
+        assert filter.value == expected
+
+    @pytest.mark.parametrize(
+        "value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)]
+    )
+    def test_neq(self, value, expected, sut: LineageFilterFieldCM):
+        filter = sut.neq(value)
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.NEQ
+        assert filter.value == expected
+
+    def test_starts_with_comparable_type(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        value = "abc"
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="string")
+
+        filter = sut.starts_with(value=value)
+
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.STARTS_WITH
+        assert filter.value == value
+
+    def test_starts_with_incomparable_type_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-039 Cannot create a startsWith query on field: something.an_attribute",
+        ):
+            sut.starts_with(value="abc")
+
+    def test_ends_with_comparable_type(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        value = "abc"
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="string")
+
+        filter = sut.ends_with(value=value)
+
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.ENDS_WITH
+        assert filter.value == value
+
+    def test_ends_with_incomparable_type_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-039 Cannot create a endsWith query on field: something.an_attribute",
+        ):
+            sut.ends_with(value="abc")
+
+    def test_contains_comparable_type(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        value = "abc"
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="string")
+
+        filter = sut.contains(value=value)
+
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.CONTAINS
+        assert filter.value == value
+
+    def test_contains_with_incomparable_type_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        value = "abc"
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-039 Cannot create a contains query on field: something.an_attribute",
+        ):
+            sut.contains(value=value)
+
+    def test_does_not_contain_comparable_type(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        value = "abc"
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="string")
+
+        filter = sut.does_not_contain(value=value)
+
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.NOT_CONTAINS
+        assert filter.value == value
+
+    def test_does_not_contain_incomparable_type_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-039 Cannot create a not_contains query on field: something.an_attribute",
+        ):
+            sut.does_not_contain(value="abc")
+
+    def test_less_than_comparable_type(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+        value = 1
+
+        filter = sut.lt(value=value)
+
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.LT
+        assert filter.value == str(value)
+
+    def test_less_than_non_comparable_type_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="boolean")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-039 Cannot create a < query on field: something.an_attribute.",
+        ):
+            sut.lt(value=1)
+
+    def test_less_than_invalid_parameter_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-048 Invalid parameter type for bool should be int, float or date",
+        ):
+            sut.lt(value=True)
+
+    def test_greater_than_comparable_type(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+        value = 1
+
+        filter = sut.gt(value=value)
+
+        assert filter.field == sut.field
+        assert filter.operator == AtlanComparisonOperator.GT
+        assert filter.value == str(value)
+
+    def test_greater_than_non_comparable_type_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="boolean")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-039 Cannot create a > query on field: something.an_attribute.",
+        ):
+            sut.gt(value=1)
+
+    def test_greater_than_invalid_parameter_raises_atlan_error(
+        self, sut: LineageFilterFieldCM, custom_metadata_field
+    ):
+        self.configure_custom_metadata_field(custom_metadata_field, type_name="int")
+
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-048 Invalid parameter type for bool should be int, float or date",
+        ):
+            sut.gt(value=True)
+
+    @pytest.mark.parametrize(
+        "method, valid_types",
+        [("eq", "str or Enum"), ("neq", "str or Enum"), ("starts_with", "str")],
+    )
+    def test_method_with_wrong_type_raise_atlan_error(
+        self, method, valid_types, sut: LineageFilterFieldCM
+    ):
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-048 Invalid parameter type for int should be "
+            + valid_types,
+        ):
+            getattr(sut, method)(1)
