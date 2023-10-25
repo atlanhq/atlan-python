@@ -1,3 +1,8 @@
+## 1.4.1 (October 25, 2023)
+
+* Fix bug causing client.user.add_as_admin to fail
+* Add create methods for GCSBucket and GCSObject
+
 ## 1.4.0 (October 19, 2023)
 
 * Create new helper client classes:
