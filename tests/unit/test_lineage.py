@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
 import json
+from datetime import date
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -13,6 +14,7 @@ from pyatlan.model.lineage import (
     LineageFilterField,
     LineageFilterFieldBoolean,
     LineageFilterFieldCM,
+    LineageFilterFieldNumeric,
     LineageGraph,
     LineageRelation,
     LineageResponse,
@@ -23,6 +25,7 @@ BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"
 
 DATA_DIR = Path(__file__).parent / "data"
 BASE_GUID = "75474eab-3105-4ef9-9f84-709e386a7d3e"
+TODAY = date.today()
 
 
 @pytest.fixture(scope="session")
@@ -476,3 +479,47 @@ class TestLineageFilterFieldCM:
             + valid_types,
         ):
             getattr(sut, method)({})
+
+
+class TestLineageFilterFieldNumeric:
+    @pytest.fixture
+    def sut(self, searchable_field: SearchableField) -> LineageFilterFieldNumeric:
+        return LineageFilterFieldNumeric(field=searchable_field)
+
+    def test_init(
+        self, sut: LineageFilterFieldNumeric, searchable_field: SearchableField
+    ):
+        assert sut.field == searchable_field
+
+    @pytest.mark.parametrize(
+        "method",
+        [
+            ("eq"),
+        ],
+    )
+    def test_method_with_wrong_type_raise_atlan_error(
+        self, method: str, sut: LineageFilterFieldNumeric
+    ):
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-048 Invalid parameter type for dict should be int, float or date",
+        ):
+            getattr(sut, method)({})
+
+    @pytest.mark.parametrize(
+        "method, operator",
+        [
+            ("eq", AtlanComparisonOperator.EQ),
+            ("neq", AtlanComparisonOperator.NEQ),
+            ("lt", AtlanComparisonOperator.LT),
+            ("lte", AtlanComparisonOperator.LTE),
+            ("gt", AtlanComparisonOperator.GT),
+            ("gte", AtlanComparisonOperator.GTE),
+        ],
+    )
+    @pytest.mark.parametrize("value", [(1), (1.23), (TODAY)])
+    def test_eq(self, method, operator, value, sut: LineageFilterFieldBoolean):
+        filter = getattr(sut, method)(value)
+        assert filter.field == sut.field
+        assert filter.operator == operator
+        assert filter.value == str(value)

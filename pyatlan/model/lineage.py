@@ -490,6 +490,36 @@ class LineageFilterFieldCM(LineageFilterField):
         :param value: the value to check the field's value does not equal (case-sensitive)
         """
 
+    @overload
+    def neq(self, value: int) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly not equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
+        provided
+        """
+
+    @overload
+    def neq(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly not equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
+        provided
+        """
+
+    @overload
+    def neq(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly not equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
+        provided
+        """
+
     def neq(self, value: Union[str, Enum, int, float, date]):
         if isinstance(value, Enum):
             return LineageFilter(
@@ -793,6 +823,247 @@ class LineageFilterFieldCM(LineageFilterField):
         return LineageFilter(
             field=self._field, operator=comparison_operator, value=value
         )
+
+
+class LineageFilterFieldNumeric(LineageFilterField):
+    """Class used to provide a proxy to building up a lineage filter with the appropriate
+    subset of conditions available, for numeric fields."""
+
+    @overload
+    def eq(self, value: int) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
+        provided
+        """
+
+    @overload
+    def eq(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
+        provided
+        """
+
+    @overload
+    def eq(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
+        provided
+        """
+
+    def eq(self, value: Union[int, float, date]):
+        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
+        provided
+        """
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.EQ)
+
+    @overload
+    def neq(self, value: int) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly not equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
+        provided
+        """
+
+    @overload
+    def neq(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly not equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
+        provided
+        """
+
+    @overload
+    def neq(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly not equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
+        provided
+        """
+
+    def neq(self, value: Union[int, float, date]):
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to
+        the value provided
+        """
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.NEQ)
+
+    @overload
+    def lt(self, value: int) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
+        the provided value.
+
+        :param value: the value to check the field's value is strictly less than
+        :return value: a filter that will only match assets whose value for the field is strictly less than the value
+        provided
+        """
+
+    @overload
+    def lt(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
+        the provided value.
+
+        :param value: the value to check the field's value is strictly less than
+        :return value: a filter that will only match assets whose value for the field is strictly less than the value
+        provided
+        """
+
+    @overload
+    def lt(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
+        the provided value.
+
+        :param value: the value to check the field's value is strictly less than
+        :return value: a filter that will only match assets whose value for the field is strictly less than the value
+        provided
+        """
+
+    def lt(self, value: Union[int, float, date]):
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to
+        the value provided
+        """
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.LT)
+
+    @overload
+    def lte(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
+        equal to the provided value.
+
+        :param value: the value to check the field's value is strictly less than or equal to
+        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
+        to the value provided
+        """
+
+    @overload
+    def lte(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
+        or equal to the provided value.
+
+        :param value: the value to check the field's value is strictly less than or equal to
+        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
+        to the value provided
+        """
+
+    def lte(self, value: Union[int, float, date]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
+        equal to the provided value.
+
+        :param value: the value to check the field's value is strictly less than or equal to
+        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
+        to the value provided
+        """
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.LTE)
+
+    @overload
+    def gt(self, value: int) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
+        the provided value.
+
+        :param value: the value to check the field's value is strictly greater than
+        :return value: a filter that will only match assets whose value for the field is strictly less than the value
+        provided
+        """
+
+    @overload
+    def gt(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
+        the provided value.
+
+        :param value: the value to check the field's value is strictly greater than
+        :return value: a filter that will only match assets whose value for the field is strictly greater than the value
+        provided
+        """
+
+    @overload
+    def gt(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
+        the provided value.
+
+        :param value: the value to check the field's value is strictly greater than
+        :return value: a filter that will only match assets whose value for the field is strictly greater than the value
+        provided
+        """
+
+    def gt(self, value: Union[int, float, date]):
+        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
+        the provided value.
+
+        :param value: the value to check the field's value is strictly equal to
+        :return value: a filter that will only match assets whose value for the field is strictly not equal to
+        the value provided
+        """
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.GT)
+
+    @overload
+    def gte(self, value: float) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than or
+        equal to the provided value.
+
+        :param value: the value to check the field's value is strictly greater than or equal to
+        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
+        to the value provided
+        """
+
+    @overload
+    def gte(self, value: date) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
+        or equal to the provided value.
+
+        :param value: the value to check the field's value is strictly greater than or equal to
+        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
+        to the value provided
+        """
+
+    def gte(self, value: Union[int, float, date]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than or
+        equal to the provided value.
+
+        :param value: the value to check the field's value is strictly greater than or equal to
+        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
+        to the value provided
+        """
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.GTE)
+
+    def _get_filter(
+        self, value: Union[int, float, date], operator: AtlanComparisonOperator
+    ):
+        if isinstance(
+            value,
+            bool,  # needed because isinstance(value, int) evaluates to true when value is bool
+        ) or (
+            not isinstance(value, int)
+            and not isinstance(value, float)
+            and not isinstance(value, date)
+        ):
+            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+                type(value).__name__, "int, float or date"
+            )
+        return LineageFilter(field=self._field, operator=operator, value=str(value))
 
 
 class FluentLineage:
