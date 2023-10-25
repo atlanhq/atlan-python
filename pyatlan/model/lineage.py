@@ -155,64 +155,62 @@ class LineageResponse(AtlanObject):
         self, guid: Optional[str] = None
     ) -> list[str]:
         return self.get_graph().get_all_downstream_asset_guids_dfs(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_all_downstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_all_downstream_asset_guids_dfs(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_all_upstream_asset_guids_dfs(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_all_upstream_asset_guids_dfs(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_all_upstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_all_upstream_asset_guids_dfs(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_downstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_downstream_asset_guids(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_downstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_downstream_asset_guids(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_downstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_downstream_process_guids(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_upstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
-        return self.get_graph().get_upstream_asset_guids(
-            guid if guid else self.base_entity_guid
-        )
+        return self.get_graph().get_upstream_asset_guids(guid or self.base_entity_guid)
 
     def get_upstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_upstream_asset_guids(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_upstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_upstream_process_guids(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
 
@@ -560,10 +558,6 @@ class LineageFilterFieldCM(LineageFilterField):
         return self._with_string_comparison(
             value=value, comparison_operator=AtlanComparisonOperator.STARTS_WITH
         )
-        if not isinstance(value, str):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "str"
-            )
 
     def ends_with(self, value: str) -> LineageFilter:
         """ "Returns a filter that will match all assets whose provided field has a value that ends with
@@ -575,10 +569,6 @@ class LineageFilterFieldCM(LineageFilterField):
         return self._with_string_comparison(
             value=value, comparison_operator=AtlanComparisonOperator.ENDS_WITH
         )
-        if not isinstance(value, str):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "str"
-            )
 
     def contains(self, value: str) -> LineageFilter:
         """ "Returns a filter that will match all assets whose provided field has a value that contains
@@ -590,10 +580,6 @@ class LineageFilterFieldCM(LineageFilterField):
         return self._with_string_comparison(
             value=value, comparison_operator=AtlanComparisonOperator.CONTAINS
         )
-        if not isinstance(value, str):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "str"
-            )
 
     def does_not_contain(self, value: str) -> LineageFilter:
         """ "Returns a filter that will match all assets whose provided field has a value that does not contain
@@ -605,10 +591,6 @@ class LineageFilterFieldCM(LineageFilterField):
         return self._with_string_comparison(
             value=value, comparison_operator=AtlanComparisonOperator.NOT_CONTAINS
         )
-        if not isinstance(value, str):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "str"
-            )
 
     @overload
     def lt(self, value: int) -> LineageFilter:
@@ -1064,6 +1046,152 @@ class LineageFilterFieldNumeric(LineageFilterField):
                 type(value).__name__, "int, float or date"
             )
         return LineageFilter(field=self._field, operator=operator, value=str(value))
+
+
+class LineageFilterFieldString(LineageFilterField):
+    """Class used to provide a proxy to building up a lineage filter with the appropriate subset of conditions
+    available, for string-searchable fields."""
+
+    @overload
+    def eq(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        equal to the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def eq(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        equal to the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def eq(self, value: Union[str, Enum]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        equal to the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.EQ)
+
+    @overload
+    def neq(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        not equal to the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def neq(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        not equal to the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def neq(self, value: Union[str, Enum]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that is exactly
+        not equal to the provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.NEQ)
+
+    @overload
+    def starts_with(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that starts with the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def starts_with(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that starts with the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def starts_with(self, value: Union[str, Enum]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that starts with the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+        return self._get_filter(
+            value=value, operator=AtlanComparisonOperator.STARTS_WITH
+        )
+
+    @overload
+    def ends_with(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that ends with the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def ends_with(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that ends with the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def ends_with(self, value: Union[str, Enum]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that ends with the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.ENDS_WITH)
+
+    @overload
+    def contains(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that contains the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def contains(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that contains the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def contains(self, value: Union[str, Enum]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that contains the provided
+        value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+        return self._get_filter(value=value, operator=AtlanComparisonOperator.CONTAINS)
+
+    @overload
+    def does_not_contain(self, value: str) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that does not contain the
+        provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    @overload
+    def does_not_contain(self, value: Enum) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that does not contain the
+        provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+
+    def does_not_contain(self, value: Union[str, Enum]) -> LineageFilter:
+        """Returns a filter that will match all assets whose provided field has a value that does not contain the
+        provided value. Note that this is a case-sensitive match.
+
+        :param value: the value to check the field's value equals (case-sensitive)"""
+        return self._get_filter(
+            value=value, operator=AtlanComparisonOperator.NOT_CONTAINS
+        )
+
+    def _get_filter(self, value: Union[str, Enum], operator: AtlanComparisonOperator):
+        if isinstance(value, Enum):
+            return LineageFilter(
+                field=self._field, operator=operator, value=value.value
+            )
+        if isinstance(value, str):
+            return LineageFilter(field=self._field, operator=operator, value=value)
+        raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+            type(value).__name__, "int, float or date"
+        )
 
 
 class FluentLineage:

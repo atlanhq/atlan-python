@@ -15,6 +15,7 @@ from pyatlan.model.lineage import (
     LineageFilterFieldBoolean,
     LineageFilterFieldCM,
     LineageFilterFieldNumeric,
+    LineageFilterFieldString,
     LineageGraph,
     LineageRelation,
     LineageResponse,
@@ -493,9 +494,7 @@ class TestLineageFilterFieldNumeric:
 
     @pytest.mark.parametrize(
         "method",
-        [
-            ("eq"),
-        ],
+        [("eq"), ("neq"), ("lt"), ("lte"), ("gt"), ("gte")],
     )
     def test_method_with_wrong_type_raise_atlan_error(
         self, method: str, sut: LineageFilterFieldNumeric
@@ -523,3 +522,56 @@ class TestLineageFilterFieldNumeric:
         assert filter.field == sut.field
         assert filter.operator == operator
         assert filter.value == str(value)
+
+
+class TestLineageFilterFieldString:
+    @pytest.fixture
+    def sut(self, searchable_field: SearchableField) -> LineageFilterFieldString:
+        return LineageFilterFieldString(field=searchable_field)
+
+    def test_init(
+        self, sut: LineageFilterFieldString, searchable_field: SearchableField
+    ):
+        assert sut.field == searchable_field
+
+    @pytest.mark.parametrize(
+        "method",
+        [
+            ("eq"),
+            ("neq"),
+            ("starts_with"),
+            ("ends_with"),
+            ("contains"),
+            ("does_not_contain"),
+        ],
+    )
+    def test_method_with_wrong_type_raise_atlan_error(
+        self, method: str, sut: LineageFilterFieldNumeric
+    ):
+        with pytest.raises(
+            AtlanError,
+            match="ATLAN-PYTHON-400-048 Invalid parameter type for dict should be int, float or date",
+        ):
+            getattr(sut, method)({})
+
+    @pytest.mark.parametrize(
+        "method, operator",
+        [
+            ("eq", AtlanComparisonOperator.EQ),
+            ("neq", AtlanComparisonOperator.NEQ),
+            ("starts_with", AtlanComparisonOperator.STARTS_WITH),
+            ("ends_with", AtlanComparisonOperator.ENDS_WITH),
+            ("contains", AtlanComparisonOperator.CONTAINS),
+            ("does_not_contain", AtlanComparisonOperator.NOT_CONTAINS),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "value, expected", [("abc", "abc"), (FileType.CSV, FileType.CSV.value)]
+    )
+    def test_eq(
+        self, method, operator, value, expected, sut: LineageFilterFieldBoolean
+    ):
+        filter = getattr(sut, method)(value)
+        assert filter.field == sut.field
+        assert filter.operator == operator
+        assert filter.value == expected
