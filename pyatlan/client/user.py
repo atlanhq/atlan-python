@@ -358,5 +358,8 @@ class UserClient:
                 existing_admins = asset.admin_users or set()
                 existing_admins.add(token_user)
             to_update = asset.trim_to_required()
-            to_update.viewer_users = existing_viewers
+            if keyword_field == Asset.VIEWER_USERS:
+                to_update.viewer_users = existing_viewers
+            else:
+                to_update.admin_users = existing_admins
             return tmp.asset.save(to_update)
