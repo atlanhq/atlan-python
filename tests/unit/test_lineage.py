@@ -9,17 +9,16 @@ import pytest
 
 from pyatlan.errors import AtlanError, InvalidRequestError
 from pyatlan.model.enums import AtlanComparisonOperator, FileType
-from pyatlan.model.fields.atlan_fields import CustomMetadataField, SearchableField
-from pyatlan.model.lineage import (
+from pyatlan.model.fields.atlan_fields import (
+    CustomMetadataField,
     LineageFilterField,
     LineageFilterFieldBoolean,
     LineageFilterFieldCM,
     LineageFilterFieldNumeric,
     LineageFilterFieldString,
-    LineageGraph,
-    LineageRelation,
-    LineageResponse,
+    SearchableField,
 )
+from pyatlan.model.lineage import LineageGraph, LineageRelation, LineageResponse
 from pyatlan.model.typedef import AttributeDef
 
 BASE_GUID_TARGET = "e44ed3a2-1de5-4f23-b3f1-6e005156fee9"

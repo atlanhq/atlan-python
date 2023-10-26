@@ -2,8 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import copy
 from collections import deque
-from enum import Enum
-from typing import TYPE_CHECKING, Any, Optional, Union, overload
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -12,14 +11,11 @@ if TYPE_CHECKING:
 else:
     from pydantic.dataclasses import dataclass
 
-from datetime import date
-
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
-from pyatlan.model.fields.atlan_fields import CustomMetadataField, SearchableField
-from pyatlan.utils import ComparisonCategory, is_comparable_type
+from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 
 
 class LineageRelation(AtlanObject):
@@ -308,890 +304,8 @@ class LineageListRequest(SearchRequest):
         )
 
 
-class LineageFilter(AtlanObject):
-    """Class used to define how to filter assets and relationships when fetching lineage"""
-
-    field: SearchableField
-    operator: AtlanComparisonOperator
-    value: str
-
-    class Config:
-        arbitrary_types_allowed = True
-
-
-class LineageFilterField:
-    """Class used to provide a proxy to building up a lineage filter with the appropriate
-    subset of conditions available."""
-
-    def __init__(self, field: SearchableField):
-        """Create LineageFilterField
-
-        :param field: Field on which filtering should be applied.
-        """
-        self._field = field
-
-    @property
-    def field(self) -> SearchableField:
-        return self._field
-
-    def has_any_value(self) -> LineageFilter:
-        """
-        Returns a filter that will match all assets whose provided field has any value at all (non-null).
-
-        :returns:  a filter that will match all assets whose provided field has any value at all (non-null).
-        """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.NOT_NULL, value=""
-        )
-
-    def has_no_value(self) -> LineageFilter:
-        """
-        Returns a filter that will match all assets whose provided field has no value at all (is null).
-
-        :returns:  a filter that will only match assets that have no value at all for the field (null).
-        """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.IS_NULL, value=""
-        )
-
-
-class LineageFilterFieldBoolean(LineageFilterField):
-    """Class used to provide a proxy to building up a lineage filter with the appropriate
-    subset of conditions available, for boolean fields."""
-
-    def eq(self, value: bool) -> LineageFilter:
-        """
-        Returns a filter that will match all assets whose provided field has a value that is exactly
-         the provided value.
-
-        :param value: the value to check the field's value equals
-        :returns:  a filter that will only match assets whose value for the field is exactly the value provided
-        """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value)
-        )
-
-    def neq(self, value: bool) -> LineageFilter:
-        """
-        Returns a filter that will match all assets whose provided field has a value that is not exactly
-         the provided value.
-
-        :param value: the value to check the field's value does not equal
-        :returns:  a filter that will only match assets whose value for the field is not exactly the value provided
-        """
-        return LineageFilter(
-            field=self._field, operator=AtlanComparisonOperator.NEQ, value=str(value)
-        )
-
-
-class LineageFilterFieldCM(LineageFilterField):
-    """Class used to provide a proxy to building up a lineage filter with the appropriate
-    subset of conditions available, for custom metadata fields."""
-
-    def __init__(self, field: CustomMetadataField):
-        """Create LineageFilterFieldCM
-
-        :param field: Field on which filtering should be applied.
-        """
-        super().__init__(field)
-        self._cm_field = field
-
-    @property
-    def cm_field(self) -> CustomMetadataField:
-        return self._cm_field
-
-    @overload
-    def eq(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def eq(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def eq(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-
-    @overload
-    def eq(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-
-    @overload
-    def eq(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-
-    def eq(self, value: Union[str, Enum, int, float, date]):
-        if isinstance(value, Enum):
-            return LineageFilter(
-                field=self._field,
-                operator=AtlanComparisonOperator.EQ,
-                value=value.value,
-            )
-        if isinstance(value, str):
-            return LineageFilter(
-                field=self._field, operator=AtlanComparisonOperator.EQ, value=value
-            )
-        if isinstance(value, bool):
-            if not is_comparable_type(
-                self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN
-            ):
-                raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                    AtlanComparisonOperator.EQ,
-                    f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
-                )
-            return LineageFilter(
-                field=self._field, operator=AtlanComparisonOperator.EQ, value=str(value)
-            )
-        return self._with_numeric_comparison(
-            value=value,
-            comparison_operator=AtlanComparisonOperator.EQ,
-            expected_types="str, Enum, bool, int, float or date",
-        )
-
-    @overload
-    def neq(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is not exactly
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value does not equal (case-sensitive)
-        """
-
-    @overload
-    def neq(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is not exactly
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value does not equal (case-sensitive)
-        """
-
-    @overload
-    def neq(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly not equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
-        provided
-        """
-
-    @overload
-    def neq(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly not equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
-        provided
-        """
-
-    @overload
-    def neq(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly not equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
-        provided
-        """
-
-    def neq(self, value: Union[str, Enum, int, float, date]):
-        if isinstance(value, Enum):
-            return LineageFilter(
-                field=self._field,
-                operator=AtlanComparisonOperator.NEQ,
-                value=value.value,
-            )
-        if isinstance(value, str):
-            return LineageFilter(
-                field=self._field, operator=AtlanComparisonOperator.NEQ, value=value
-            )
-        if isinstance(value, bool):
-            if not is_comparable_type(
-                self._cm_field.attribute_def.type_name or "", ComparisonCategory.BOOLEAN
-            ):
-                raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                    AtlanComparisonOperator.NEQ,
-                    f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
-                )
-            return LineageFilter(
-                field=self._field,
-                operator=AtlanComparisonOperator.NEQ,
-                value=str(value),
-            )
-        return self._with_numeric_comparison(
-            value=value,
-            comparison_operator=AtlanComparisonOperator.NEQ,
-            expected_types="str, Enum, bool, int, float or date",
-        )
-
-    def starts_with(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that starts with
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value (prefix) to check the field's value starts with (case-sensitive)
-        :return: a filter that will only match assets whose value for the field starts with the value provided
-        """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.STARTS_WITH
-        )
-
-    def ends_with(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that ends with
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value (suffix) to check the field's value starts with (case-sensitive)
-        :return: a filter that will only match assets whose value for the field ends with the value provided
-        """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.ENDS_WITH
-        )
-
-    def contains(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that contains
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value (suffix) to check the field's value contains (case-sensitive)
-        :return: a filter that will only match assets whose value for the field contains the value provided
-        """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.CONTAINS
-        )
-
-    def does_not_contain(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that does not contain
-        the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value (suffix) to check the field's value does not contain (case-sensitive)
-        :return: a filter that will only match assets whose value for the field does not contain the value provided
-        """
-        return self._with_string_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.NOT_CONTAINS
-        )
-
-    @overload
-    def lt(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    @overload
-    def lt(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    @overload
-    def lt(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    def lt(self, value: Union[int, float, date]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.LT
-        )
-
-    @overload
-    def gt(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    @overload
-    def gt(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly greater than the value
-         provided
-        """
-
-    @overload
-    def gt(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly greater than
-        :return value: a filter that will only match assets whose value for the field is strictly greater than the value
-         provided
-        """
-
-    def gt(self, value: Union[int, float, date]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly greater than
-        :return value: a filter that will only match assets whose value for the field is strictly greater than the
-        value provided
-        """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.GT
-        )
-
-    @overload
-    def lte(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-
-    @overload
-    def lte(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-
-    @overload
-    def lte(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        or equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-
-    def lte(self, value: Union[int, float, date]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.LTE
-        )
-
-    @overload
-    def gte(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal to
-        the value provided
-        """
-
-    @overload
-    def gte(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
-         to the value provided
-        """
-
-    @overload
-    def gte(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly greater than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
-         to the value provided
-        """
-
-    def gte(self, value: Union[int, float, date]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly greater than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
-        to the value provided
-        """
-        return self._with_numeric_comparison(
-            value=value, comparison_operator=AtlanComparisonOperator.GTE
-        )
-
-    def _with_numeric_comparison(
-        self,
-        value: Union[int, float, date],
-        comparison_operator: AtlanComparisonOperator,
-        expected_types: str = "int, float or date",
-    ):
-        if isinstance(
-            value,
-            bool,  # needed because isinstance(value, int) evaluates to true when value is bool
-        ) or (
-            not isinstance(value, int)
-            and not isinstance(value, float)
-            and not isinstance(value, date)
-        ):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, expected_types
-            )
-        if not is_comparable_type(
-            self._cm_field.attribute_def.type_name or "", ComparisonCategory.NUMBER
-        ):
-            raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                comparison_operator,
-                f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
-            )
-        return LineageFilter(
-            field=self._field, operator=comparison_operator, value=str(value)
-        )
-
-    def _with_string_comparison(
-        self, value: str, comparison_operator: AtlanComparisonOperator
-    ):
-        if not isinstance(value, str):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "str"
-            )
-        if not is_comparable_type(
-            self._cm_field.attribute_def.type_name or "", ComparisonCategory.STRING
-        ):
-            raise ErrorCode.INVALID_QUERY.exception_with_parameters(
-                comparison_operator,
-                f"{self._cm_field.set_name}.{self._cm_field.attribute_name}",
-            )
-        return LineageFilter(
-            field=self._field, operator=comparison_operator, value=value
-        )
-
-
-class LineageFilterFieldNumeric(LineageFilterField):
-    """Class used to provide a proxy to building up a lineage filter with the appropriate
-    subset of conditions available, for numeric fields."""
-
-    @overload
-    def eq(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-
-    @overload
-    def eq(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-
-    @overload
-    def eq(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-
-    def eq(self, value: Union[int, float, date]):
-        """Returns a filter that will match all assets whose provided field has a value that is strictly equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly equal to the value
-        provided
-        """
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.EQ)
-
-    @overload
-    def neq(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly not equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
-        provided
-        """
-
-    @overload
-    def neq(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly not equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
-        provided
-        """
-
-    @overload
-    def neq(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly not equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value
-        provided
-        """
-
-    def neq(self, value: Union[int, float, date]):
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to
-        the value provided
-        """
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.NEQ)
-
-    @overload
-    def lt(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    @overload
-    def lt(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    @overload
-    def lt(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly less than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    def lt(self, value: Union[int, float, date]):
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to
-        the value provided
-        """
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.LT)
-
-    @overload
-    def lte(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-
-    @overload
-    def lte(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than
-        or equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-
-    def lte(self, value: Union[int, float, date]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly less than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly less than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly less than or equal
-        to the value provided
-        """
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.LTE)
-
-    @overload
-    def gt(self, value: int) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly greater than
-        :return value: a filter that will only match assets whose value for the field is strictly less than the value
-        provided
-        """
-
-    @overload
-    def gt(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly greater than
-        :return value: a filter that will only match assets whose value for the field is strictly greater than the value
-        provided
-        """
-
-    @overload
-    def gt(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
-        the provided value.
-
-        :param value: the value to check the field's value is strictly greater than
-        :return value: a filter that will only match assets whose value for the field is strictly greater than the value
-        provided
-        """
-
-    def gt(self, value: Union[int, float, date]):
-        """Returns a filter that will match all assets whose provided field has a value that is strictly not equal to
-        the provided value.
-
-        :param value: the value to check the field's value is strictly equal to
-        :return value: a filter that will only match assets whose value for the field is strictly not equal to
-        the value provided
-        """
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.GT)
-
-    @overload
-    def gte(self, value: float) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly greater than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
-        to the value provided
-        """
-
-    @overload
-    def gte(self, value: date) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than
-        or equal to the provided value.
-
-        :param value: the value to check the field's value is strictly greater than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
-        to the value provided
-        """
-
-    def gte(self, value: Union[int, float, date]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is strictly greater than or
-        equal to the provided value.
-
-        :param value: the value to check the field's value is strictly greater than or equal to
-        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal
-        to the value provided
-        """
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.GTE)
-
-    def _get_filter(
-        self, value: Union[int, float, date], operator: AtlanComparisonOperator
-    ):
-        if isinstance(
-            value,
-            bool,  # needed because isinstance(value, int) evaluates to true when value is bool
-        ) or (
-            not isinstance(value, int)
-            and not isinstance(value, float)
-            and not isinstance(value, date)
-        ):
-            raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-                type(value).__name__, "int, float or date"
-            )
-        return LineageFilter(field=self._field, operator=operator, value=str(value))
-
-
-class LineageFilterFieldString(LineageFilterField):
-    """Class used to provide a proxy to building up a lineage filter with the appropriate subset of conditions
-    available, for string-searchable fields."""
-
-    @overload
-    def eq(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        equal to the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def eq(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        equal to the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    def eq(self, value: Union[str, Enum]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        equal to the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.EQ)
-
-    @overload
-    def neq(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        not equal to the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def neq(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        not equal to the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    def neq(self, value: Union[str, Enum]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that is exactly
-        not equal to the provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.NEQ)
-
-    @overload
-    def starts_with(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that starts with the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def starts_with(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that starts with the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    def starts_with(self, value: Union[str, Enum]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that starts with the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(
-            value=value, operator=AtlanComparisonOperator.STARTS_WITH
-        )
-
-    @overload
-    def ends_with(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that ends with the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def ends_with(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that ends with the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    def ends_with(self, value: Union[str, Enum]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that ends with the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.ENDS_WITH)
-
-    @overload
-    def contains(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that contains the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def contains(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that contains the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    def contains(self, value: Union[str, Enum]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that contains the provided
-        value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(value=value, operator=AtlanComparisonOperator.CONTAINS)
-
-    @overload
-    def does_not_contain(self, value: str) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that does not contain the
-        provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    @overload
-    def does_not_contain(self, value: Enum) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that does not contain the
-        provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-
-    def does_not_contain(self, value: Union[str, Enum]) -> LineageFilter:
-        """Returns a filter that will match all assets whose provided field has a value that does not contain the
-        provided value. Note that this is a case-sensitive match.
-
-        :param value: the value to check the field's value equals (case-sensitive)"""
-        return self._get_filter(
-            value=value, operator=AtlanComparisonOperator.NOT_CONTAINS
-        )
-
-    def _get_filter(self, value: Union[str, Enum], operator: AtlanComparisonOperator):
-        if isinstance(value, Enum):
-            return LineageFilter(
-                field=self._field, operator=operator, value=value.value
-            )
-        if isinstance(value, str):
-            return LineageFilter(field=self._field, operator=operator, value=value)
-        raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
-            type(value).__name__, "int, float or date"
-        )
+class AltanField:
+    pass
 
 
 class FluentLineage:
@@ -1207,13 +321,16 @@ class FluentLineage:
         exclude_meanings: bool = True,
         exclude_classifications: bool = True,
     ):
-        self._starting_guid = starting_guid
         self._depth: int = depth
         self._direction: LineageDirection = direction
-        self._size: int = size
-        self._exclude_meanings: bool = exclude_meanings
         self._exclude_classifications: bool = exclude_classifications
-        self._include_in_results: list[LineageFilter] = []
+        self._exclude_meanings: bool = exclude_meanings
+        self._includes_in_results: list[LineageFilter] = []
+        self._include_on_results: list[AtlanField] = []
+        self._size: int = size
+        self._starting_guid = starting_guid
+        self._where_assets: list[LineageFilter] = []
+        self._where_relationships: list[LineageFilter] = []
 
     def _clone(self) -> "FluentLineage":
         """
@@ -1223,7 +340,81 @@ class FluentLineage:
         """
         return copy.deepcopy(self)
 
-    def include_in_results(self, lineage_filter: LineageFilter):
+    def includes_in_results(self, lineage_filter: LineageFilter):
+        """Assets to include in the results. Any assets not matching these filters will not be included in the results,
+        but will still be traversed in the lineage so that any assets beyond them are still considered for inclusion
+        in the results."""
         clone = self._clone()
-        clone._include_in_results.append(lineage_filter)
+        clone._includes_in_results.append(lineage_filter)
         return clone
+
+    def include_on_results(self, field: AtlanField):
+        """Attributes to retrieve for each asset in the lineage results."""
+        clone = self._clone()
+        clone._include_on_results.append(field)
+
+    def where_assets(self, lineage_filter: LineageFilter):
+        """Filters to apply on assets. Any assets excluded by the filters will exclude all assets beyond, as well."""
+        clone = self._clone()
+        clone._where_assets.append(lineage_filter)
+        return clone
+
+    def where_relationships(self, lineage_filter: LineageFilter):
+        """Filters to apply on relationships. Any relationships excluded by the filters will exclude all assets and
+        relationships beyond, as well."""
+        clone = self._clone()
+        clone._where_relationships.append(lineage_filter)
+        return clone
+
+    @property
+    def request(self) -> LineageListRequest:
+        request = LineageListRequest.create(guid=self._starting_guid)
+        if self._depth:
+            request.depth = self._depth
+        if self._direction:
+            request.direction = self._direction
+        if self._exclude_classifications is not None:
+            request.exclude_classifications = self._exclude_classifications
+        if self._exclude_meanings is not None:
+            request.exclude_meanings = self._exclude_meanings
+        if self._includes_in_results:
+            criteria = [
+                EntityFilter(
+                    attribute_name=filter.field.internal_field_name,
+                    operator=filter.operator,
+                    attribute_value=filter.value,
+                )
+                for filter in self._includes_in_results
+            ]
+            request.entity_filters = FilterList(condition="AND", criteria=criteria)
+        if self._include_on_results:
+            request.attributes = [
+                field.atlan_field_name for field in self._include_on_results
+            ]
+        if self._size:
+            request.size = self._size
+        if self._where_assets:
+            criteria = [
+                EntityFilter(
+                    attribute_name=filter.field.internal_field_name,
+                    operator=filter.operator,
+                    attribute_value=filter.value,
+                )
+                for filter in self._where_assets
+            ]
+            request.entity_traversal_filters = FilterList(
+                condition="AND", criteria=criteria
+            )
+        if self._where_relationships:
+            criteria = [
+                EntityFilter(
+                    attribute_name=filter.field.internal_field_name,
+                    operator=filter.operator,
+                    attribute_value=filter.value,
+                )
+                for filter in self._where_relationships
+            ]
+            request.relationship_traversal_filters = FilterList(
+                condition="AND", criteria=criteria
+            )
+        return request
