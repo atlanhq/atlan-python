@@ -1,0 +1,12 @@
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(cls, *, name: str, connection_qualified_name: str, data_studio_asset_type: GoogleDatastudioAssetType) -> {{ entity_def.name }}:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "data_studio_asset_type"], [name, connection_qualified_name, data_studio_asset_type]
+        )
+        attributes = {{ entity_def.name }}.Attributes.create(
+            name=name, connection_qualified_name=connection_qualified_name, data_studio_asset_type=data_studio_asset_type
+        )
+        return cls(attributes=attributes)

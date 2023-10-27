@@ -8,7 +8,7 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import GoogleDatastudioAssetType
+from pyatlan.model.enums import AtlanConnectorType, GoogleDatastudioAssetType
 from pyatlan.model.fields.atlan_fields import (
     BooleanField,
     KeywordField,
@@ -17,12 +17,34 @@ from pyatlan.model.fields.atlan_fields import (
     NumericField,
 )
 from pyatlan.model.structs import GoogleLabel, GoogleTag
+from pyatlan.utils import init_guid, validate_required_fields
 
 from .asset44 import DataStudio
 
 
 class DataStudioAsset(DataStudio):
     """Description"""
+
+    @classmethod
+    # @validate_arguments()
+    @init_guid
+    def create(
+        cls,
+        *,
+        name: str,
+        connection_qualified_name: str,
+        data_studio_asset_type: GoogleDatastudioAssetType,
+    ) -> DataStudioAsset:
+        validate_required_fields(
+            ["name", "connection_qualified_name", "data_studio_asset_type"],
+            [name, connection_qualified_name, data_studio_asset_type],
+        )
+        attributes = DataStudioAsset.Attributes.create(
+            name=name,
+            connection_qualified_name=connection_qualified_name,
+            data_studio_asset_type=data_studio_asset_type,
+        )
+        return cls(attributes=attributes)
 
     type_name: str = Field("DataStudioAsset", allow_mutation=False)
 
@@ -299,6 +321,39 @@ class DataStudioAsset(DataStudio):
         google_tags: Optional[list[GoogleTag]] = Field(
             None, description="", alias="googleTags"
         )
+
+        @classmethod
+        # @validate_arguments()
+        @init_guid
+        def create(
+            cls,
+            *,
+            name: str,
+            connection_qualified_name: str,
+            data_studio_asset_type: GoogleDatastudioAssetType,
+        ) -> DataStudioAsset.Attributes:
+            validate_required_fields(
+                ["name", "connection_qualified_name", "data_studio_asset_type"],
+                [name, connection_qualified_name, data_studio_asset_type],
+            )
+
+            # Split the connection_qualified_name to extract necessary information
+            fields = connection_qualified_name.split("/")
+            if len(fields) != 3:
+                raise ValueError("Invalid connection_qualified_name")
+
+            try:
+                connector_type = AtlanConnectorType(fields[1])  # type:ignore
+            except ValueError as e:
+                raise ValueError("Invalid connection_qualified_name") from e
+
+            return DataStudioAsset.Attributes(
+                name=name,
+                qualified_name=f"{connection_qualified_name}/{name}",
+                connection_qualified_name=connection_qualified_name,
+                connector_name=connector_type.value,
+                data_studio_asset_type=data_studio_asset_type,
+            )
 
     attributes: "DataStudioAsset.Attributes" = Field(
         default_factory=lambda: DataStudioAsset.Attributes(),
