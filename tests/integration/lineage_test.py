@@ -7,6 +7,7 @@ import pytest
 
 from pyatlan.client.atlan import AtlanClient
 from pyatlan.model.assets import (
+    Asset,
     Column,
     Connection,
     Database,
@@ -17,7 +18,7 @@ from pyatlan.model.assets import (
     View,
 )
 from pyatlan.model.enums import AtlanConnectorType, EntityStatus, LineageDirection
-from pyatlan.model.lineage import LineageListRequest, LineageRequest
+from pyatlan.model.lineage import FluentLineage, LineageRequest
 from pyatlan.model.search import DSL, Bool, IndexSearchRequest, Prefix, Term
 from tests.integration.client import TestId, delete_asset
 from tests.integration.connection_test import create_connection
@@ -409,9 +410,9 @@ def test_fetch_lineage_start_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-    lineage = LineageListRequest.create(guid=table.guid)
-    lineage.attributes = ["name"]
-    lineage.size = 1
+    lineage = FluentLineage(
+        starting_guid=table.guid, include_on_results=Asset.NAME, size=1
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -424,8 +425,9 @@ def test_fetch_lineage_start_list(
     assert isinstance(results[3], View)
     one = results[3]
     assert one.guid == view.guid
-    lineage = LineageListRequest.create(guid=table.guid)
-    lineage.direction = LineageDirection.UPSTREAM
+    lineage = FluentLineage(
+        starting_guid=table.guid, direction=LineageDirection.UPSTREAM
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     assert not response.has_more
@@ -501,9 +503,10 @@ def test_fetch_lineage_middle_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-    lineage = LineageListRequest.create(guid=mview.guid)
-    lineage.attributes = ["name"]
-    lineage.size = 5
+
+    lineage = FluentLineage(
+        starting_guid=mview.guid, include_on_results=Asset.NAME, size=5
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -513,9 +516,9 @@ def test_fetch_lineage_middle_list(
     assert isinstance(results[0], Process)
     assert isinstance(results[1], View)
     assert results[1].guid == view.guid
-    lineage = LineageListRequest.create(guid=mview.guid)
-    lineage.direction = LineageDirection.UPSTREAM
-    lineage.size = 5
+    lineage = FluentLineage(
+        starting_guid=mview.guid, direction=LineageDirection.UPSTREAM, size=5
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []
@@ -581,14 +584,15 @@ def test_fetch_lineage_end_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-    lineage = LineageListRequest.create(guid=view.guid)
-    lineage.attributes = ["name"]
-    lineage.size = 10
+    lineage = FluentLineage(
+        starting_guid=view.guid, include_on_results=Asset.NAME, size=10
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     assert not response.has_more
-    lineage = LineageListRequest.create(guid=view.guid)
-    lineage.direction = LineageDirection.UPSTREAM
+    lineage = FluentLineage(
+        starting_guid=view.guid, direction=LineageDirection.UPSTREAM
+    ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
     results = []

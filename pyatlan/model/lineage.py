@@ -2,7 +2,7 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import copy
 from collections import deque
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field, StrictBool, StrictInt, StrictStr, validate_arguments
 
@@ -322,10 +322,10 @@ class FluentLineage:
         size: StrictInt = 10,
         exclude_meanings: StrictBool = True,
         exclude_classifications: StrictBool = True,
-        include_on_results: Optional[list[AtlanField]] = None,
-        includes_in_results: Optional[list[LineageFilter]] = None,
-        where_assets: Optional[list[LineageFilter]] = None,
-        where_relationships: Optional[list[LineageFilter]] = None
+        include_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
+        includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None
     ):
         """Create a FluentLineage request.
         :param starting_guid: unique identifier (GUID) of the asset from which to start lineage
@@ -348,14 +348,21 @@ class FluentLineage:
         self._direction: LineageDirection = direction
         self._exclude_classifications: bool = exclude_classifications
         self._exclude_meanings: bool = exclude_meanings
-        self._includes_in_results: list[LineageFilter] = includes_in_results or []
-        self._include_on_results: list[AtlanField] = include_on_results or []
+
+        self._include_on_results: list[AtlanField] = self._to_list(include_on_results)
+        self._includes_in_results: list[LineageFilter] = self._to_list(
+            includes_in_results
+        )
         self._size: int = size
         self._starting_guid = starting_guid
-        self._where_assets: list[LineageFilter] = where_assets or []
-        self._where_relationships: list[LineageFilter] = where_relationships or []
+        self._where_assets: list[LineageFilter] = self._to_list(where_assets)
+        self._where_relationships: list[LineageFilter] = self._to_list(
+            where_relationships
+        )
 
-        """"""
+    @staticmethod
+    def _to_list(value):
+        return [] if value is None else value if isinstance(value, list) else [value]
 
     def _clone(self) -> "FluentLineage":
         """
