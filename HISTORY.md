@@ -1,6 +1,6 @@
 ## 1.4.2 (October 30, 2023)
 
-* Fix bug causing token_client.get_by_id to fail when when deprecated personas section presennt
+* Fix bug causing token_client.get_by_id to fail when when deprecated personas section present
 
 ## 1.4.1 (October 25, 2023)
 
