@@ -279,10 +279,11 @@ class TestFluentLineage:
             request.relationship_traversal_filters, where_relationships
         )
 
-    def validate_filter(self, filter, results):
-        assert filter.condition == "AND"
-        assert len(filter.criteria) == len(results)
-        for entity_filter, include_in in zip(filter.criteria, results):
+    @staticmethod
+    def validate_filter(_filter, results):
+        assert _filter.condition == "AND"
+        assert len(_filter.criteria) == len(results)
+        for entity_filter, include_in in zip(_filter.criteria, results):
             assert entity_filter.attribute_name == include_in.field.internal_field_name
             assert entity_filter.operator == include_in.operator
             assert entity_filter.attribute_value == include_in.value

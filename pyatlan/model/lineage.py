@@ -14,7 +14,7 @@ else:
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
-from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
+from pyatlan.model.enums import AtlanComparisonOperator, EntityStatus, LineageDirection
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
 
 
@@ -45,14 +45,16 @@ class LineageGraph:
         downstream_list: dict[str, dict[DirectedPair, None]] = {}
         upstream_list: dict[str, dict[DirectedPair, None]] = {}
 
-        def add_relation(relation: LineageRelation):
+        def add_relation(_relation: LineageRelation):
             if (
-                relation.from_entity_id
-                and relation.process_id
-                and relation.to_entity_id
+                _relation.from_entity_id
+                and _relation.process_id
+                and _relation.to_entity_id
             ):
                 add_edges(
-                    relation.from_entity_id, relation.process_id, relation.to_entity_id
+                    _relation.from_entity_id,
+                    _relation.process_id,
+                    _relation.to_entity_id,
                 )
 
         def add_edges(source_guid: str, process_guid: str, target_guid: str):
@@ -304,13 +306,11 @@ class LineageListRequest(SearchRequest):
         )
 
 
-class AltanField:
-    pass
-
-
 class FluentLineage:
     """Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan
     (removing the need to understand the guts of Elastic)."""
+
+    ACTIVE: LineageFilter = Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)
 
     @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def __init__(
@@ -340,7 +340,7 @@ class FluentLineage:
         :param include_on_results: attributes to retrieve for each asset in the lineage results
         :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets
         beyond, as well
-        :param where_relationships: F\filters to apply on relationships. Any relationships excluded by the filters will
+        :param where_relationships: filters to apply on relationships. Any relationships excluded by the filters will
         exclude all assets and relationships beyond, as well
         """
 
@@ -405,11 +405,11 @@ class FluentLineage:
         if self._includes_in_results:
             criteria = [
                 EntityFilter(
-                    attribute_name=filter.field.internal_field_name,
-                    operator=filter.operator,
-                    attribute_value=filter.value,
+                    attribute_name=_filter.field.internal_field_name,
+                    operator=_filter.operator,
+                    attribute_value=_filter.value,
                 )
-                for filter in self._includes_in_results
+                for _filter in self._includes_in_results
             ]
             request.entity_filters = FilterList(condition="AND", criteria=criteria)
         if self._include_on_results:
@@ -421,11 +421,11 @@ class FluentLineage:
         if self._where_assets:
             criteria = [
                 EntityFilter(
-                    attribute_name=filter.field.internal_field_name,
-                    operator=filter.operator,
-                    attribute_value=filter.value,
+                    attribute_name=_filter.field.internal_field_name,
+                    operator=_filter.operator,
+                    attribute_value=_filter.value,
                 )
-                for filter in self._where_assets
+                for _filter in self._where_assets
             ]
             request.entity_traversal_filters = FilterList(
                 condition="AND", criteria=criteria
@@ -433,11 +433,11 @@ class FluentLineage:
         if self._where_relationships:
             criteria = [
                 EntityFilter(
-                    attribute_name=filter.field.internal_field_name,
-                    operator=filter.operator,
-                    attribute_value=filter.value,
+                    attribute_name=_filter.field.internal_field_name,
+                    operator=_filter.operator,
+                    attribute_value=_filter.value,
                 )
-                for filter in self._where_relationships
+                for _filter in self._where_relationships
             ]
             request.relationship_traversal_filters = FilterList(
                 condition="AND", criteria=criteria

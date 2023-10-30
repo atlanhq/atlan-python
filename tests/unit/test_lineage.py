@@ -307,16 +307,16 @@ class TestLineageFilterField:
         assert sut.field == searchable_field
 
     def test_has_any_value(self, sut: LineageFilterField):
-        filter = sut.has_any_value()
-        assert filter.field == sut.field
-        assert filter.operator == AtlanComparisonOperator.NOT_NULL
-        assert filter.value == ""
+        _filter = sut.has_any_value()
+        assert _filter.field == sut.field
+        assert _filter.operator == AtlanComparisonOperator.NOT_NULL
+        assert _filter.value == ""
 
     def test_has_no_value(self, sut: LineageFilterField):
-        filter = sut.has_no_value()
-        assert filter.field == sut.field
-        assert filter.operator == AtlanComparisonOperator.IS_NULL
-        assert filter.value == ""
+        _filter = sut.has_no_value()
+        assert _filter.field == sut.field
+        assert _filter.operator == AtlanComparisonOperator.IS_NULL
+        assert _filter.value == ""
 
 
 class TestLineageFilterFieldBoolean:
@@ -333,19 +333,19 @@ class TestLineageFilterFieldBoolean:
         "value, expected", [(True, str(True)), (False, str(False))]
     )
     def test_eq(self, value, expected, sut: LineageFilterFieldBoolean):
-        filter = sut.eq(value)
-        assert filter.field == sut.field
-        assert filter.operator == AtlanComparisonOperator.EQ
-        assert filter.value == expected
+        _filter = sut.eq(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == AtlanComparisonOperator.EQ
+        assert _filter.value == expected
 
     @pytest.mark.parametrize(
         "value, expected", [(True, str(True)), (False, str(False))]
     )
     def test_neq(self, value, expected, sut: LineageFilterFieldBoolean):
-        filter = sut.neq(value)
-        assert filter.field == sut.field
-        assert filter.operator == AtlanComparisonOperator.NEQ
-        assert filter.value == expected
+        _filter = sut.neq(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == AtlanComparisonOperator.NEQ
+        assert _filter.value == expected
 
 
 class TestLineageFilterFieldCM:
@@ -357,7 +357,8 @@ class TestLineageFilterFieldCM:
     def sut(self, custom_metadata_field: CustomMetadataField) -> LineageFilterFieldCM:
         return LineageFilterFieldCM(field=custom_metadata_field)
 
-    def configure_custom_metadata_field(self, custom_metadata_field, type_name):
+    @staticmethod
+    def configure_custom_metadata_field(custom_metadata_field, type_name):
         attribute_def = Mock(spec=AttributeDef)
         attribute_def.configure_mock(**{"type_name": type_name})
         custom_metadata_field.attach_mock(attribute_def, "attribute_def")
@@ -376,19 +377,19 @@ class TestLineageFilterFieldCM:
         "value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)]
     )
     def test_eq(self, value, expected, sut: LineageFilterFieldCM):
-        filter = sut.eq(value)
-        assert filter.field == sut.field
-        assert filter.operator == AtlanComparisonOperator.EQ
-        assert filter.value == expected
+        _filter = sut.eq(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == AtlanComparisonOperator.EQ
+        assert _filter.value == expected
 
     @pytest.mark.parametrize(
         "value, expected", [("value", "value"), (FileType.CSV, FileType.CSV.value)]
     )
     def test_neq(self, value, expected, sut: LineageFilterFieldCM):
-        filter = sut.neq(value)
-        assert filter.field == sut.field
-        assert filter.operator == AtlanComparisonOperator.NEQ
-        assert filter.value == expected
+        _filter = sut.neq(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == AtlanComparisonOperator.NEQ
+        assert _filter.value == expected
 
     @pytest.mark.parametrize(
         "method, type_name, value, operator",
@@ -418,11 +419,11 @@ class TestLineageFilterFieldCM:
     ):
         self.configure_custom_metadata_field(custom_metadata_field, type_name=type_name)
 
-        filter = getattr(sut, method)(value)
+        _filter = getattr(sut, method)(value)
 
-        assert filter.field == sut.field
-        assert filter.operator == operator
-        assert filter.value == str(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == operator
+        assert _filter.value == str(value)
 
     @pytest.mark.parametrize(
         "method, query_type, type_name, value",
@@ -493,7 +494,7 @@ class TestLineageFilterFieldNumeric:
 
     @pytest.mark.parametrize(
         "method",
-        [("eq"), ("neq"), ("lt"), ("lte"), ("gt"), ("gte")],
+        ["eq", "neq", "lt", "lte", "gt", "gte"],
     )
     def test_method_with_wrong_type_raise_atlan_error(
         self, method: str, sut: LineageFilterFieldNumeric
@@ -515,12 +516,12 @@ class TestLineageFilterFieldNumeric:
             ("gte", AtlanComparisonOperator.GTE),
         ],
     )
-    @pytest.mark.parametrize("value", [(1), (1.23), (TODAY)])
+    @pytest.mark.parametrize("value", [1, 1.23, TODAY])
     def test_eq(self, method, operator, value, sut: LineageFilterFieldBoolean):
-        filter = getattr(sut, method)(value)
-        assert filter.field == sut.field
-        assert filter.operator == operator
-        assert filter.value == str(value)
+        _filter = getattr(sut, method)(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == operator
+        assert _filter.value == str(value)
 
 
 class TestLineageFilterFieldString:
@@ -536,12 +537,12 @@ class TestLineageFilterFieldString:
     @pytest.mark.parametrize(
         "method",
         [
-            ("eq"),
-            ("neq"),
-            ("starts_with"),
-            ("ends_with"),
-            ("contains"),
-            ("does_not_contain"),
+            "eq",
+            "neq",
+            "starts_with",
+            "ends_with",
+            "contains",
+            "does_not_contain",
         ],
     )
     def test_method_with_wrong_type_raise_atlan_error(
@@ -570,7 +571,7 @@ class TestLineageFilterFieldString:
     def test_eq(
         self, method, operator, value, expected, sut: LineageFilterFieldBoolean
     ):
-        filter = getattr(sut, method)(value)
-        assert filter.field == sut.field
-        assert filter.operator == operator
-        assert filter.value == expected
+        _filter = getattr(sut, method)(value)
+        assert _filter.field == sut.field
+        assert _filter.operator == operator
+        assert _filter.value == expected

@@ -872,7 +872,8 @@ class LineageFilterFieldCM(LineageFilterField):
         )
 
     def starts_with(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that starts with
+        """
+        Returns a filter that will match all assets whose provided field has a value that starts with
         the provided value. Note that this is a case-sensitive match.
 
         :param value: the value (prefix) to check the field's value starts with (case-sensitive)
@@ -883,7 +884,8 @@ class LineageFilterFieldCM(LineageFilterField):
         )
 
     def ends_with(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that ends with
+        """
+        Returns a filter that will match all assets whose provided field has a value that ends with
         the provided value. Note that this is a case-sensitive match.
 
         :param value: the value (suffix) to check the field's value starts with (case-sensitive)
@@ -894,7 +896,8 @@ class LineageFilterFieldCM(LineageFilterField):
         )
 
     def contains(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that contains
+        """
+        Returns a filter that will match all assets whose provided field has a value that contains
         the provided value. Note that this is a case-sensitive match.
 
         :param value: the value (suffix) to check the field's value contains (case-sensitive)
@@ -905,7 +908,8 @@ class LineageFilterFieldCM(LineageFilterField):
         )
 
     def does_not_contain(self, value: str) -> LineageFilter:
-        """ "Returns a filter that will match all assets whose provided field has a value that does not contain
+        """
+        Returns a filter that will match all assets whose provided field has a value that does not contain
         the provided value. Note that this is a case-sensitive match.
 
         :param value: the value (suffix) to check the field's value does not contain (case-sensitive)

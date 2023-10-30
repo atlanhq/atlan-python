@@ -144,10 +144,10 @@ def test_get_base_type(value, result):
 @pytest.mark.parametrize(
     "attribute_type",
     [
-        ("boolean"),
-        ("array<boolean>"),
-        ("array<map<boolean>>"),
-        ("map<boolean>"),
+        "boolean",
+        "array<boolean>",
+        "array<map<boolean>>",
+        "map<boolean>",
     ],
 )
 @pytest.mark.parametrize(
@@ -165,10 +165,10 @@ def test_is_comparable_type_b(attribute_type, to, expected):
 @pytest.mark.parametrize(
     "attribute_type",
     [
-        ("string"),
-        ("array<string>"),
-        ("array<map<string>>"),
-        ("map<string>"),
+        "string",
+        "array<string>",
+        "array<map<string>>",
+        "map<string>",
     ],
 )
 @pytest.mark.parametrize(
@@ -186,7 +186,7 @@ def test_is_comparable_type_s(attribute_type, to, expected):
 @pytest.mark.parametrize(
     "attribute_type",
     [
-        (attribute_type)
+        attribute_type
         for inner_type in ["int", "long", "date", "float"]
         for attribute_type in [f"{inner_type}", f"array<{inner_type}>"]
     ],
