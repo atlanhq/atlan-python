@@ -4,7 +4,7 @@ import copy
 from collections import deque
 from typing import TYPE_CHECKING, Any, Optional
 
-from pydantic import Field
+from pydantic import Field, StrictBool, StrictInt, StrictStr, validate_arguments
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -312,25 +312,50 @@ class FluentLineage:
     """Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan
     (removing the need to understand the guts of Elastic)."""
 
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
     def __init__(
         self,
-        starting_guid: str,
-        depth: int = 1000000,
+        *,
+        starting_guid: StrictStr,
+        depth: StrictInt = 1000000,
         direction: LineageDirection = LineageDirection.DOWNSTREAM,
-        size: int = 10,
-        exclude_meanings: bool = True,
-        exclude_classifications: bool = True,
+        size: StrictInt = 10,
+        exclude_meanings: StrictBool = True,
+        exclude_classifications: StrictBool = True,
+        include_on_results: Optional[list[AtlanField]] = None,
+        includes_in_results: Optional[list[LineageFilter]] = None,
+        where_assets: Optional[list[LineageFilter]] = None,
+        where_relationships: Optional[list[LineageFilter]] = None
     ):
+        """Create a FluentLineage request.
+        :param starting_guid: unique identifier (GUID) of the asset from which to start lineage
+        :param depth: number of degrees of separation (hops) across which lineage should be fetched
+        :param direction: direction of lineage to fetch (upstream or downstream)
+        :param size: number of results to retrieve
+        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True).
+        :param exclude_classifications: whether to include classifications for assets (False) or not (True).
+        :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not
+        be included in the results, but will still be traversed in the lineage so that any assets beyond them are still
+        considered for inclusion in the results
+        :param include_on_results: attributes to retrieve for each asset in the lineage results
+        :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets
+        beyond, as well
+        :param where_relationships: F\filters to apply on relationships. Any relationships excluded by the filters will
+        exclude all assets and relationships beyond, as well
+        """
+
         self._depth: int = depth
         self._direction: LineageDirection = direction
         self._exclude_classifications: bool = exclude_classifications
         self._exclude_meanings: bool = exclude_meanings
-        self._includes_in_results: list[LineageFilter] = []
-        self._include_on_results: list[AtlanField] = []
+        self._includes_in_results: list[LineageFilter] = includes_in_results or []
+        self._include_on_results: list[AtlanField] = include_on_results or []
         self._size: int = size
         self._starting_guid = starting_guid
-        self._where_assets: list[LineageFilter] = []
-        self._where_relationships: list[LineageFilter] = []
+        self._where_assets: list[LineageFilter] = where_assets or []
+        self._where_relationships: list[LineageFilter] = where_relationships or []
+
+        """"""
 
     def _clone(self) -> "FluentLineage":
         """
