@@ -41,18 +41,19 @@ class ApiToken(AtlanObject):
         display_name: Optional[str] = Field(
             description="Human-readable name provided when creating the token."
         )
-        personas: Optional[set[Any]] = Field(
-            default=set(),
+        personas: Optional[list[Any]] = Field(
+            default_factory=list,
             description="Deprecated (now unused): personas associated with the API token.",
         )
         persona_qualified_name: Optional[set[ApiTokenPersona]] = Field(
-            default=set(), description="Personas associated with the API token."
+            default_factory=set, description="Personas associated with the API token."
         )
         purposes: Optional[Any] = Field(
             description="Possible future placeholder for purposes associated with the token."
         )
         workspace_permissions: Optional[set[str]] = Field(
-            default=set(), description="Detailed permissions given to the API token."
+            default_factory=set,
+            description="Detailed permissions given to the API token.",
         )
 
         @root_validator(pre=True)
