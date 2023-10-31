@@ -1,3 +1,8 @@
+## 1.5.0 (October 31, 2023)
+
+* Add FluentLineage an abstraction mechanism, to simplify the most common lineage requests against Atlan (removing the need to understand the guts of Elastic).
+* Add support for management of Google Data Studio assets
+
 ## 1.4.2 (October 30, 2023)
 
 * Fix bug causing token_client.get_by_id to fail when when deprecated personas section present
