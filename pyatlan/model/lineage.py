@@ -325,7 +325,7 @@ class FluentLineage:
         size: StrictInt = 10,
         exclude_meanings: StrictBool = True,
         exclude_classifications: StrictBool = True,
-        include_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
+        includes_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
         includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
         where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
         where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None,
@@ -337,7 +337,7 @@ class FluentLineage:
         :param size: number of results to retrieve
         :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
         :param exclude_classifications: whether to include classifications for assets (False) or not (True)
-        :param include_on_results: attributes to retrieve for each asset in the lineage results
+        :param includes_on_results: attributes to retrieve for each asset in the lineage results
         :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not
         be included in the results, but will still be traversed in the lineage so that any assets beyond them are still
         considered for inclusion in the results
@@ -352,7 +352,7 @@ class FluentLineage:
         self._exclude_classifications: bool = exclude_classifications
         self._exclude_meanings: bool = exclude_meanings
 
-        self._include_on_results: list[AtlanField] = self._to_list(include_on_results)
+        self._includes_on_results: list[AtlanField] = self._to_list(includes_on_results)
         self._includes_in_results: list[LineageFilter] = self._to_list(
             includes_in_results
         )
@@ -431,16 +431,16 @@ class FluentLineage:
         :returns: the FluentLineage with this include_on_results criterion added"""
         validate_type(name="field", _type=AtlanField, value=field)
         clone = self._clone()
-        clone._include_on_results.append(field)
+        clone._includes_on_results.append(field)
         return clone
 
-    def includes_in_results(self, lineage_filter: LineageFilter) -> "FluentLineage":
+    def include_in_results(self, lineage_filter: LineageFilter) -> "FluentLineage":
         """
         Adds the include_on_results to traverse the lineage.
         :param lineage_filter: Assets to include in the results. Any assets not matching this filters will not be
         included in the results, but will still be traversed in the lineage so that any assets beyond them are still
         considered for inclusion in the results
-        :returns: the FluentLineage with this includes_in_results criterion added
+        :returns: the FluentLineage with this include_in_results criterion added
         """
         validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
         clone = self._clone()
@@ -493,9 +493,9 @@ class FluentLineage:
                 for _filter in self._includes_in_results
             ]
             request.entity_filters = FilterList(condition="AND", criteria=criteria)
-        if self._include_on_results:
+        if self._includes_on_results:
             request.attributes = [
-                field.atlan_field_name for field in self._include_on_results
+                field.atlan_field_name for field in self._includes_on_results
             ]
         if self._size:
             request.size = self._size

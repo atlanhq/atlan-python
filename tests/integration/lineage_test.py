@@ -411,7 +411,7 @@ def test_fetch_lineage_start_list(
     lineage_end: Process,
 ):
     lineage = FluentLineage(
-        starting_guid=table.guid, include_on_results=Asset.NAME, size=1
+        starting_guid=table.guid, includes_on_results=Asset.NAME, size=1
     ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
@@ -504,7 +504,7 @@ def test_fetch_lineage_middle_list(
     lineage_end: Process,
 ):
     lineage = FluentLineage(
-        starting_guid=mview.guid, include_on_results=Asset.NAME, size=5
+        starting_guid=mview.guid, includes_on_results=Asset.NAME, size=5
     ).request
     response = client.asset.get_lineage_list(lineage)
     assert response
@@ -584,7 +584,7 @@ def test_fetch_lineage_end_list(
     lineage_end: Process,
 ):
     lineage = FluentLineage(
-        starting_guid=view.guid, include_on_results=Asset.NAME, size=10
+        starting_guid=view.guid, includes_on_results=Asset.NAME, size=10
     ).request
     response = client.asset.get_lineage_list(lineage)
     assert response

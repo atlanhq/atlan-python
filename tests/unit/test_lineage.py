@@ -615,7 +615,7 @@ class TestFluentLineage:
 
     @pytest.mark.parametrize(
         "starting_guid, depth, direction, size, exclude_meanings, exclude_classifications, includes_in_results, "
-        "include_on_results, where_assets, where_relationships, message",
+        "includes_on_results, where_assets, where_relationships, message",
         [
             (
                 None,
@@ -735,7 +735,7 @@ class TestFluentLineage:
                 BAD_LINEAGE_FILTER_LIST,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"2 validation errors for Init\ninclude_on_results",
+                r"2 validation errors for Init\nincludes_on_results",
             ),
             (
                 GOOD_GUID,
@@ -774,7 +774,7 @@ class TestFluentLineage:
         exclude_meanings,
         exclude_classifications,
         includes_in_results,
-        include_on_results,
+        includes_on_results,
         where_assets,
         where_relationships,
         message,
@@ -787,7 +787,7 @@ class TestFluentLineage:
                 size=size,
                 exclude_meanings=exclude_meanings,
                 exclude_classifications=exclude_classifications,
-                include_on_results=include_on_results,
+                includes_on_results=includes_on_results,
                 includes_in_results=includes_in_results,
                 where_assets=where_assets,
                 where_relationships=where_relationships,
@@ -807,7 +807,7 @@ class TestFluentLineage:
         assert request.relationship_traversal_filters is None
 
     @pytest.mark.parametrize(
-        "starting_guid, depth, direction, size, exclude_meanings, exclude_classifications, include_on_results, "
+        "starting_guid, depth, direction, size, exclude_meanings, exclude_classifications, includes_on_results, "
         "includes_in_results, where_assets, where_relationships",
         [
             (
@@ -832,7 +832,7 @@ class TestFluentLineage:
         size,
         exclude_meanings,
         exclude_classifications,
-        include_on_results,
+        includes_on_results,
         includes_in_results,
         where_assets,
         where_relationships,
@@ -844,7 +844,7 @@ class TestFluentLineage:
             size=size,
             exclude_meanings=exclude_meanings,
             exclude_classifications=exclude_classifications,
-            include_on_results=include_on_results,
+            includes_on_results=includes_on_results,
             includes_in_results=includes_in_results,
             where_assets=where_assets,
             where_relationships=where_relationships,
@@ -857,7 +857,7 @@ class TestFluentLineage:
         assert request.exclude_meanings == exclude_meanings
         assert request.exclude_classifications == exclude_classifications
         assert request.attributes == [
-            field.atlan_field_name for field in include_on_results
+            field.atlan_field_name for field in includes_on_results
         ]
         self.validate_filter(request.entity_filters, includes_in_results)
         self.validate_filter(request.entity_traversal_filters, where_assets)
@@ -908,7 +908,7 @@ class TestFluentLineage:
                 r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be AtlanField",
             ),
             (
-                "includes_in_results",
+                "include_in_results",
                 1,
                 r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
             ),
@@ -947,18 +947,30 @@ class TestFluentLineage:
         assert getattr(lineage, f"_{method}") == value
 
     @pytest.mark.parametrize(
-        "method, value",
+        "method, value, internal_name",
         [
-            ("include_on_results", Asset.NAME),
-            ("includes_in_results", Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)),
-            ("where_assets", Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)),
-            ("where_relationships", Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)),
+            ("include_on_results", Asset.NAME, "_includes_on_results"),
+            (
+                "include_in_results",
+                Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE),
+                "_includes_in_results",
+            ),
+            (
+                "where_assets",
+                Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE),
+                "_where_assets",
+            ),
+            (
+                "where_relationships",
+                Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE),
+                "_where_relationships",
+            ),
         ],
     )
     def test_method_adds_to_list_valid_parameter(
-        self, method, value, sut: FluentLineage
+        self, method, value, internal_name, sut: FluentLineage
     ):
         lineage = getattr(sut, method)(value)
 
         assert lineage is not sut
-        assert value in getattr(lineage, f"_{method}")
+        assert value in getattr(lineage, internal_name)
