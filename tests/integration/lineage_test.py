@@ -503,7 +503,6 @@ def test_fetch_lineage_middle_list(
     lineage_start: Process,
     lineage_end: Process,
 ):
-
     lineage = FluentLineage(
         starting_guid=mview.guid, include_on_results=Asset.NAME, size=5
     ).request
