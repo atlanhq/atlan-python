@@ -272,9 +272,10 @@ def validate_type(name: str, _type: type, value):
     :value: the value to be validated that it is of the specified type
 
     """
-    if isinstance(value, _type) and _type is not int:
-        return
-    if _type is int and not isinstance(value, bool):
+    if _type is int:
+        if isinstance(value, _type) and not isinstance(value, bool):
+            return
+    elif isinstance(value, _type):
         return
     raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
         name, _type.__name__

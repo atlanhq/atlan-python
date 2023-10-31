@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
+from pyatlan.errors import InvalidRequestError
 from pyatlan.utils import (
     ComparisonCategory,
     get_base_type,
@@ -11,6 +12,7 @@ from pyatlan.utils import (
     list_attributes_to_params,
     unflatten_custom_metadata,
     unflatten_custom_metadata_for_entity,
+    validate_type,
 )
 
 
@@ -201,3 +203,62 @@ def test_is_comparable_type_s(attribute_type, to, expected):
 )
 def test_is_comparable_type_n(attribute_type, to, expected):
     assert is_comparable_type(attribute_type=attribute_type, to=to) == expected
+
+
+@pytest.mark.parametrize(
+    "name, the_type, value, message",
+    [
+        (
+            "bob",
+            int,
+            "a",
+            "ATLAN-PYTHON-400-048 Invalid parameter type for bob should be int",
+        ),
+        (
+            "bob",
+            int,
+            False,
+            "ATLAN-PYTHON-400-048 Invalid parameter type for bob should be int",
+        ),
+        (
+            "bob",
+            int,
+            None,
+            "ATLAN-PYTHON-400-048 Invalid parameter type for bob should be int",
+        ),
+        (
+            "bob",
+            bool,
+            None,
+            "ATLAN-PYTHON-400-048 Invalid parameter type for bob should be bool",
+        ),
+        (
+            "bob",
+            bool,
+            1,
+            "ATLAN-PYTHON-400-048 Invalid parameter type for bob should be bool",
+        ),
+        (
+            "bob",
+            bool,
+            "True",
+            "ATLAN-PYTHON-400-048 Invalid parameter type for bob should be bool",
+        ),
+    ],
+)
+def test_validate_type_with_invalid_values(name, the_type, value, message):
+    with pytest.raises(InvalidRequestError, match=message):
+        validate_type(name=name, _type=the_type, value=value)
+
+
+@pytest.mark.parametrize(
+    "name, the_type, value",
+    [
+        ("bob", int, 1),
+        ("bob", str, "abc"),
+        ("bob", bool, False),
+        ("bob", object, {}),
+    ],
+)
+def test_validate_type_with_valid_values(name, the_type, value):
+    validate_type(name=name, _type=the_type, value=value)
