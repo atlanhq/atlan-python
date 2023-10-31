@@ -348,6 +348,7 @@ class Asset(Referenceable):
 
     @classmethod
     def _convert_to_real_type_(cls, data):
+
         if isinstance(data, Asset):
             return data
 
@@ -375,15 +376,15 @@ class Asset(Referenceable):
     @classmethod
     def lineage(cls, guid: str, include_archived: bool) -> "FluentLineage":
         """
-        Start a FluentLineage that can be used to get a LineageListRequest that can be used to  all downstream assets.
-        Additional conditions can be chained onto the returned FluentLineage before any asset retrieval is attempted,
-        ensuring all conditions are pushed-down for optimal retrieval. (To change the default direction of downstream,
-        chain a .direction() call
+        Start a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all downstream
+        assets. Additional conditions can be chained onto the returned FluentLineage before any asset retrieval is
+        attempted, ensuring all conditions are pushed-down for optimal retrieval. (To change the default direction of
+        downstream chain a .direction() call
 
         :param guid: unique identifier (GUID) for the starting point of lineage
         :param include_archived: when True, archived (soft-deleted) assets in lineage will be included
-        :returns: a FluentLineage that can be used to get a LineageListRequest that can be used to  all downstream
-        assets
+        :returns: a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all
+        downstream assets
         """
         from pyatlan.model.lineage import FluentLineage
 
