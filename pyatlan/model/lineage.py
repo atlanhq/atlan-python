@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
+from __future__ import annotations
+
 import copy
 from collections import deque
 from typing import TYPE_CHECKING, Any, Optional, Union
@@ -16,6 +18,7 @@ from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
 from pyatlan.model.enums import AtlanComparisonOperator, EntityStatus, LineageDirection
 from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
+from pyatlan.utils import validate_type
 
 
 class LineageRelation(AtlanObject):
@@ -325,19 +328,19 @@ class FluentLineage:
         include_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
         includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
         where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
-        where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None
+        where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None,
     ):
         """Create a FluentLineage request.
         :param starting_guid: unique identifier (GUID) of the asset from which to start lineage
         :param depth: number of degrees of separation (hops) across which lineage should be fetched
         :param direction: direction of lineage to fetch (upstream or downstream)
         :param size: number of results to retrieve
-        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True).
-        :param exclude_classifications: whether to include classifications for assets (False) or not (True).
+        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
+        :param exclude_classifications: whether to include classifications for assets (False) or not (True)
+        :param include_on_results: attributes to retrieve for each asset in the lineage results
         :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not
         be included in the results, but will still be traversed in the lineage so that any assets beyond them are still
         considered for inclusion in the results
-        :param include_on_results: attributes to retrieve for each asset in the lineage results
         :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets
         beyond, as well
         :param where_relationships: filters to apply on relationships. Any relationships excluded by the filters will
@@ -372,34 +375,105 @@ class FluentLineage:
         """
         return copy.deepcopy(self)
 
-    def includes_in_results(self, lineage_filter: LineageFilter):
-        """Assets to include in the results. Any assets not matching these filters will not be included in the results,
-        but will still be traversed in the lineage so that any assets beyond them are still considered for inclusion
-        in the results."""
+    def depth(self, depth: StrictInt) -> "FluentLineage":
+        """Adds the depth to traverse the lineage.
+        :param depth: number of degrees of separation (hops) across which lineage should be fetched
+        :returns: the FluentLineage with this depth criterion added"""
+        validate_type(name="depth", _type=int, value=depth)
+        clone = self._clone()
+        clone._depth = depth
+        return clone
+
+    def direction(self, direction: LineageDirection) -> "FluentLineage":
+        """Adds the direction to traverse the lineage.
+        :param direction: direction of lineage to fetch (upstream or downstream)
+        :returns: the FluentLineage with this direction criterion added"""
+        validate_type(name="direction", _type=LineageDirection, value=direction)
+        clone = self._clone()
+        clone._direction = direction
+        return clone
+
+    def size(self, size: StrictInt) -> "FluentLineage":
+        """Adds the size to traverse the lineage.
+        :param size: number of results to retrieve
+        :returns: the FluentLineage with this size criterion added"""
+        validate_type(name="size", _type=int, value=size)
+        clone = self._clone()
+        clone._size = size
+        return clone
+
+    def exclude_classifications(
+        self, exclude_classifications: StrictBool
+    ) -> "FluentLineage":
+        """Adds the exclude_classifications to traverse the lineage.
+        :param exclude_classifications: whether to include classifications for assets (False) or not (True)
+        :returns: the FluentLineage with this exclude_classifications criterion added
+        """
+        validate_type(
+            name="exclude_classifications", _type=bool, value=exclude_classifications
+        )
+        clone = self._clone()
+        clone._exclude_classifications = exclude_classifications
+        return clone
+
+    def exclude_meanings(self, exclude_meanings: StrictBool) -> "FluentLineage":
+        """Adds the exclude_meanings to traverse the lineage.
+        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
+        :returns: the FluentLineage with this exclude_meanings criterion added"""
+        validate_type(name="exclude_meanings", _type=bool, value=exclude_meanings)
+        clone = self._clone()
+        clone._exclude_meanings = exclude_meanings
+        return clone
+
+    def include_on_results(self, field: AtlanField) -> "FluentLineage":
+        """Adds the include_on_results to traverse the lineage.
+        :param field: attributes to retrieve for each asset in the lineage results
+        :returns: the FluentLineage with this include_on_results criterion added"""
+        validate_type(name="field", _type=AtlanField, value=field)
+        clone = self._clone()
+        clone._include_on_results.append(field)
+        return clone
+
+    def includes_in_results(self, lineage_filter: LineageFilter) -> "FluentLineage":
+        """
+        Adds the include_on_results to traverse the lineage.
+        :param lineage_filter: Assets to include in the results. Any assets not matching this filters will not be
+        included in the results, but will still be traversed in the lineage so that any assets beyond them are still
+        considered for inclusion in the results
+        :returns: the FluentLineage with this includes_in_results criterion added
+        """
+        validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
         clone = self._clone()
         clone._includes_in_results.append(lineage_filter)
         return clone
 
-    def include_on_results(self, field: AtlanField):
-        """Attributes to retrieve for each asset in the lineage results."""
-        clone = self._clone()
-        clone._include_on_results.append(field)
-
-    def where_assets(self, lineage_filter: LineageFilter):
-        """Filters to apply on assets. Any assets excluded by the filters will exclude all assets beyond, as well."""
+    def where_assets(self, lineage_filter: LineageFilter) -> "FluentLineage":
+        """
+        Adds a filters to apply on assets.
+        :param lineage_filter: a filter to apply on assets. Any assets excluded by the filters will exclude all
+        assets beyond, as well
+        :returns: the FluentLineage with this where_assets criterion added
+        """
+        validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
         clone = self._clone()
         clone._where_assets.append(lineage_filter)
         return clone
 
-    def where_relationships(self, lineage_filter: LineageFilter):
-        """Filters to apply on relationships. Any relationships excluded by the filters will exclude all assets and
-        relationships beyond, as well."""
+    def where_relationships(self, lineage_filter: LineageFilter) -> "FluentLineage":
+        """Filters to apply on relationships.
+        :param lineage_filter: any relationships excluded by the filter will exclude all assets and
+        relationships beyond, as well.
+        :returns: the FluentLineage with this where_relationships criterion added"""
+        validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
         clone = self._clone()
         clone._where_relationships.append(lineage_filter)
         return clone
 
     @property
     def request(self) -> LineageListRequest:
+        """
+        :returns: the LineageListRequest that encapsulates information specified in this FluentLineage
+        """
         request = LineageListRequest.create(guid=self._starting_guid)
         if self._depth:
             request.depth = self._depth

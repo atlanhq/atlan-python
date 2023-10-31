@@ -873,3 +873,92 @@ class TestFluentLineage:
             assert entity_filter.attribute_name == include_in.field.internal_field_name
             assert entity_filter.operator == include_in.operator
             assert entity_filter.attribute_value == include_in.value
+
+    @pytest.mark.parametrize(
+        "method, value, message",
+        [
+            (
+                "depth",
+                False,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for depth should be int",
+            ),
+            (
+                "direction",
+                False,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for direction should be LineageDirection",
+            ),
+            (
+                "size",
+                False,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for size should be int",
+            ),
+            (
+                "exclude_classifications",
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for exclude_classifications should be bool",
+            ),
+            (
+                "exclude_meanings",
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for exclude_meanings should be bool",
+            ),
+            (
+                "include_on_results",
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for field should be AtlanField",
+            ),
+            (
+                "includes_in_results",
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
+            ),
+            (
+                "where_assets",
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
+            ),
+            (
+                "where_relationships",
+                1,
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for lineage_filter should be LineageFilter",
+            ),
+        ],
+    )
+    def test_methods_with_invalid_parameter_raises_invalid_request_error(
+        self, method, value, message, sut: FluentLineage
+    ):
+        with pytest.raises(InvalidRequestError, match=message):
+            getattr(sut, method)(value)
+
+    @pytest.mark.parametrize(
+        "method, value",
+        [
+            ("depth", 12),
+            ("direction", LineageDirection.BOTH),
+            ("size", 12),
+            ("exclude_classifications", True),
+            ("exclude_meanings", True),
+        ],
+    )
+    def test_method_with_valid_parameter(self, method, value, sut: FluentLineage):
+        lineage = getattr(sut, method)(value)
+
+        assert lineage is not sut
+        assert getattr(lineage, f"_{method}") == value
+
+    @pytest.mark.parametrize(
+        "method, value",
+        [
+            ("include_on_results", Asset.NAME),
+            ("includes_in_results", Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)),
+            ("where_assets", Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)),
+            ("where_relationships", Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)),
+        ],
+    )
+    def test_method_adds_to_list_valid_parameter(
+        self, method, value, sut: FluentLineage
+    ):
+        lineage = getattr(sut, method)(value)
+
+        assert lineage is not sut
+        assert value in getattr(lineage, f"_{method}")

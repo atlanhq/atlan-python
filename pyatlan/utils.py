@@ -10,6 +10,8 @@ from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Optional
 
+from pyatlan.errors import ErrorCode
+
 ADMIN_URI = "api/service/"
 BASE_URI = "api/meta/"
 SQL_URI = "api/sql/"
@@ -259,3 +261,21 @@ def is_comparable_type(attribute_type: str, to: ComparisonCategory) -> bool:
     if base_type in ["int", "long", "date", "float"]:
         return to == ComparisonCategory.NUMBER
     return to == ComparisonCategory.STRING
+
+
+def validate_type(name: str, _type: type, value):
+    """
+    Validate that the given value is of the specified type.
+
+    :param name: the name of the variable to be used in error message
+    :_type: the type of the variable to be validated
+    :value: the value to be validated that it is of the specified type
+
+    """
+    if isinstance(value, _type) and _type is not int:
+        return
+    if _type is int and not isinstance(value, bool):
+        return
+    raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+        name, _type.__name__
+    )
