@@ -374,7 +374,7 @@ class Asset(Referenceable):
         from pyatlan.model.lineage import FluentLineage
 
     @classmethod
-    def lineage(cls, guid: str, include_archived: bool) -> "FluentLineage":
+    def lineage(cls, guid: str, include_archived: bool = False) -> "FluentLineage":
         """
         Start a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all downstream
         assets. Additional conditions can be chained onto the returned FluentLineage before any asset retrieval is
