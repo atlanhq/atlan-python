@@ -427,13 +427,19 @@
         </div>
         <article role="main">
           <h1>Source code for pyatlan.model.fields.atlan_fields</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">StrictBool</span><span class="p">,</span> <span class="n">StrictFloat</span><span class="p">,</span> <span class="n">StrictInt</span><span class="p">,</span> <span class="n">StrictStr</span>
 
+<span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.aggregation</span> <span class="kn">import</span> <span class="n">Aggregation</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">SortOrder</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanComparisonOperator</span><span class="p">,</span> <span class="n">SortOrder</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.search</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Exists</span><span class="p">,</span>
     <span class="n">Match</span><span class="p">,</span>
@@ -446,6 +452,7 @@
     <span class="n">Terms</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.typedef</span> <span class="kn">import</span> <span class="n">AttributeDef</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">ComparisonCategory</span><span class="p">,</span> <span class="n">is_comparable_type</span>
 
 
 <div class="viewcode-block" id="AtlanField">
@@ -496,6 +503,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atlan_field_name</span> <span class="o">=</span> <span class="n">atlan_field_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span> <span class="o">=</span> <span class="n">elastic_field_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">internal_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atlan_field_name</span>
 
 <div class="viewcode-block" id="SearchableField.has_any_value">
 <a class="viewcode-back" href="../../../../field/searchable_field.html#pyatlan.model.fields.atlan_fields.SearchableField.has_any_value">[docs]</a>
@@ -564,6 +575,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_lineage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LineageFilterFieldBoolean&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a proxy which can be used a lineage filter with the appropriate subset of conditions&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilterFieldBoolean</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
 <div class="viewcode-block" id="BooleanField.eq">
 <a class="viewcode-back" href="../../../../field/boolean_field.html#pyatlan.model.fields.atlan_fields.BooleanField.eq">[docs]</a>
     <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">StrictBool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
@@ -604,6 +620,11 @@
 <span class="sd">        :returns: the field name for the keyword index on this attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_lineage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LineageFilterFieldString&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a proxy which can be used a lineage filter with the appropriate subset of conditions&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilterFieldString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="KeywordField.startswith">
 <a class="viewcode-back" href="../../../../field/keyword_field.html#pyatlan.model.fields.atlan_fields.KeywordField.startswith">[docs]</a>
@@ -684,6 +705,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_lineage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LineageFilterFieldString&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a proxy which can be used a lineage filter with the appropriate subset of conditions&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilterFieldString</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
 <div class="viewcode-block" id="TextField.match">
 <a class="viewcode-back" href="../../../../field/text_field.html#pyatlan.model.fields.atlan_fields.TextField.match">[docs]</a>
     <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Query</span><span class="p">:</span>
@@ -728,6 +754,11 @@
 <span class="sd">        :returns: the field name for the numeric index on this attribute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">in_lineage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LineageFilterFieldNumeric&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a proxy which can be used a lineage filter with the appropriate subset of conditions&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilterFieldNumeric</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="NumericField.eq">
 <a class="viewcode-back" href="../../../../field/numeric_field.html#pyatlan.model.fields.atlan_fields.NumericField.eq">[docs]</a>
@@ -899,6 +930,34 @@
     <span class="k">def</span> <span class="nf">text_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text_field_name</span></div>
 
+
+
+<span class="k">class</span> <span class="nc">InternalKeywordTextField</span><span class="p">(</span><span class="n">KeywordTextField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents any field in Atlan that can be searched by keyword or text-based search operations, and can also</span>
+<span class="sd">    be searched against a special internal field directly within Atlan.&quot;&quot;&quot;</span>
+
+    <span class="n">_internal_field_name</span><span class="p">:</span> <span class="n">StrictStr</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atlan_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">keyword_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">text_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">internal_field_name</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default constructor.</span>
+
+<span class="sd">        :param atlan_field_name: name of the attribute in the metastore</span>
+<span class="sd">        :param keyword_field_name: name of the keyword field in the search index</span>
+<span class="sd">        :param text_field_name: name of the text field in the search index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atlan_field_name</span><span class="p">,</span> <span class="n">keyword_field_name</span><span class="p">,</span> <span class="n">text_field_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_internal_field_name</span> <span class="o">=</span> <span class="n">internal_field_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">internal_field_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StrictStr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_field_name</span>
 
 
 <div class="viewcode-block" id="KeywordTextStemmedField">
@@ -1116,6 +1175,896 @@
         <span class="k">return</span> <span class="n">Range</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">elastic_field_name</span><span class="p">,</span> <span class="n">gte</span><span class="o">=</span><span class="n">minimum</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="n">maximum</span><span class="p">)</span></div>
 </div>
 
+
+
+<span class="k">class</span> <span class="nc">LineageFilter</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to define how to filter assets and relationships when fetching lineage&quot;&quot;&quot;</span>
+
+    <span class="n">field</span><span class="p">:</span> <span class="n">SearchableField</span>
+    <span class="n">operator</span><span class="p">:</span> <span class="n">AtlanComparisonOperator</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+        <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">class</span> <span class="nc">LineageFilterField</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to provide a proxy to building up a lineage filter with the appropriate</span>
+<span class="sd">    subset of conditions available.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">SearchableField</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create LineageFilterField</span>
+
+<span class="sd">        :param field: Field on which filtering should be applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_field</span> <span class="o">=</span> <span class="n">field</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SearchableField</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field</span>
+
+    <span class="k">def</span> <span class="nf">has_any_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has any value at all (non-null).</span>
+
+<span class="sd">        :returns:  a filter that will match all assets whose provided field has any value at all (non-null).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NOT_NULL</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">has_no_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has no value at all (is null).</span>
+
+<span class="sd">        :returns:  a filter that will only match assets that have no value at all for the field (null).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">IS_NULL</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LineageFilterFieldBoolean</span><span class="p">(</span><span class="n">LineageFilterField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to provide a proxy to building up a lineage filter with the appropriate</span>
+<span class="sd">    subset of conditions available, for boolean fields.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">         the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals</span>
+<span class="sd">        :returns:  a filter that will only match assets whose value for the field is exactly the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has a value that is not exactly</span>
+<span class="sd">         the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value does not equal</span>
+<span class="sd">        :returns:  a filter that will only match assets whose value for the field is not exactly the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LineageFilterFieldCM</span><span class="p">(</span><span class="n">LineageFilterField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to provide a proxy to building up a lineage filter with the appropriate</span>
+<span class="sd">    subset of conditions available, for custom metadata fields.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">CustomMetadataField</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create LineageFilterFieldCM</span>
+
+<span class="sd">        :param field: Field on which filtering should be applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span> <span class="o">=</span> <span class="n">field</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cm_field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CustomMetadataField</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span>
+                <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_comparable_type</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_def</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ComparisonCategory</span><span class="o">.</span><span class="n">BOOLEAN</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_QUERY</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                    <span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">set_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_numeric_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+            <span class="n">expected_types</span><span class="o">=</span><span class="s2">&quot;str, Enum, bool, int, float or date&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is not exactly</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value does not equal (case-sensitive)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is not exactly</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value does not equal (case-sensitive)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly not equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly not equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly not equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span>
+                <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_comparable_type</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_def</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ComparisonCategory</span><span class="o">.</span><span class="n">BOOLEAN</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_QUERY</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                    <span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">set_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span>
+                <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_numeric_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">,</span>
+            <span class="n">expected_types</span><span class="o">=</span><span class="s2">&quot;str, Enum, bool, int, float or date&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">starts_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has a value that starts with</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value (prefix) to check the field&#39;s value starts with (case-sensitive)</span>
+<span class="sd">        :return: a filter that will only match assets whose value for the field starts with the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_string_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">STARTS_WITH</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">ends_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has a value that ends with</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value (suffix) to check the field&#39;s value starts with (case-sensitive)</span>
+<span class="sd">        :return: a filter that will only match assets whose value for the field ends with the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_string_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">ENDS_WITH</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has a value that contains</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value (suffix) to check the field&#39;s value contains (case-sensitive)</span>
+<span class="sd">        :return: a filter that will only match assets whose value for the field contains the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_string_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">CONTAINS</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">does_not_contain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a filter that will match all assets whose provided field has a value that does not contain</span>
+<span class="sd">        the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value (suffix) to check the field&#39;s value does not contain (case-sensitive)</span>
+<span class="sd">        :return: a filter that will only match assets whose value for the field does not contain the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_string_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NOT_CONTAINS</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_numeric_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">LT</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than the value</span>
+<span class="sd">         provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than the value</span>
+<span class="sd">         provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than the</span>
+<span class="sd">        value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_numeric_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">GT</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        or equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_numeric_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">LTE</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal to</span>
+<span class="sd">        the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal</span>
+<span class="sd">         to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal</span>
+<span class="sd">         to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_numeric_comparison</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">GTE</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_with_numeric_comparison</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">],</span>
+        <span class="n">comparison_operator</span><span class="p">:</span> <span class="n">AtlanComparisonOperator</span><span class="p">,</span>
+        <span class="n">expected_types</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;int, float or date&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span>
+            <span class="nb">bool</span><span class="p">,</span>  <span class="c1"># needed because isinstance(value, int) evaluates to true when value is bool</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">expected_types</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_comparable_type</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_def</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ComparisonCategory</span><span class="o">.</span><span class="n">NUMBER</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_QUERY</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="n">comparison_operator</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">set_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">comparison_operator</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_with_string_comparison</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comparison_operator</span><span class="p">:</span> <span class="n">AtlanComparisonOperator</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;str&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_comparable_type</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_def</span><span class="o">.</span><span class="n">type_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ComparisonCategory</span><span class="o">.</span><span class="n">STRING</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_QUERY</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="n">comparison_operator</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">set_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cm_field</span><span class="o">.</span><span class="n">attribute_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+            <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">comparison_operator</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LineageFilterFieldNumeric</span><span class="p">(</span><span class="n">LineageFilterField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to provide a proxy to building up a lineage filter with the appropriate</span>
+<span class="sd">    subset of conditions available, for numeric fields.&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly not equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly not equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly not equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to</span>
+<span class="sd">        the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to</span>
+<span class="sd">        the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">LT</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than</span>
+<span class="sd">        or equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly less than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly less than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">LTE</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly less than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than the value</span>
+<span class="sd">        provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly not equal to</span>
+<span class="sd">        the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly not equal to</span>
+<span class="sd">        the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">GT</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than</span>
+<span class="sd">        or equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is strictly greater than or</span>
+<span class="sd">        equal to the provided value.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value is strictly greater than or equal to</span>
+<span class="sd">        :return value: a filter that will only match assets whose value for the field is strictly greater than or equal</span>
+<span class="sd">        to the value provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">GTE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_filter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">date</span><span class="p">],</span> <span class="n">operator</span><span class="p">:</span> <span class="n">AtlanComparisonOperator</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span>
+            <span class="nb">bool</span><span class="p">,</span>  <span class="c1"># needed because isinstance(value, int) evaluates to true when value is bool</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">date</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;int, float or date&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">LineageFilterFieldString</span><span class="p">(</span><span class="n">LineageFilterField</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to provide a proxy to building up a lineage filter with the appropriate subset of conditions</span>
+<span class="sd">    available, for string-searchable fields.&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        equal to the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        equal to the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        equal to the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">EQ</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        not equal to the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        not equal to the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">neq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that is exactly</span>
+<span class="sd">        not equal to the provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NEQ</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">starts_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that starts with the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">starts_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that starts with the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">starts_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that starts with the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">STARTS_WITH</span>
+        <span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">ends_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that ends with the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">ends_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that ends with the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">ends_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that ends with the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">ENDS_WITH</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that contains the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that contains the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that contains the provided</span>
+<span class="sd">        value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">CONTAINS</span><span class="p">)</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">does_not_contain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that does not contain the</span>
+<span class="sd">        provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="nf">does_not_contain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Enum</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that does not contain the</span>
+<span class="sd">        provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">does_not_contain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LineageFilter</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a filter that will match all assets whose provided field has a value that does not contain the</span>
+<span class="sd">        provided value. Note that this is a case-sensitive match.</span>
+
+<span class="sd">        :param value: the value to check the field&#39;s value equals (case-sensitive)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">AtlanComparisonOperator</span><span class="o">.</span><span class="n">NOT_CONTAINS</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">],</span> <span class="n">operator</span><span class="p">:</span> <span class="n">AtlanComparisonOperator</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="o">.</span><span class="n">value</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LineageFilter</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="n">operator</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ErrorCode</span><span class="o">.</span><span class="n">INVALID_PARAMETER_TYPE</span><span class="o">.</span><span class="n">exception_with_parameters</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;int, float or date&quot;</span>
+        <span class="p">)</span>
 </pre></div>
         </article>
       </div>

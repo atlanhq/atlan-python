@@ -438,7 +438,7 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote</span><span class="p">,</span> <span class="n">unquote</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">PrivateAttr</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">root_validator</span><span class="p">,</span> <span class="n">validator</span>
@@ -806,6 +806,36 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupport sub-type: </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">sub</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.model.lineage</span> <span class="kn">import</span> <span class="n">FluentLineage</span>
+
+<div class="viewcode-block" id="Asset.lineage">
+<a class="viewcode-back" href="../../../../asset/asset.html#pyatlan.model.assets.Asset.lineage">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">lineage</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">include_archived</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all downstream</span>
+<span class="sd">        assets. Additional conditions can be chained onto the returned FluentLineage before any asset retrieval is</span>
+<span class="sd">        attempted, ensuring all conditions are pushed-down for optimal retrieval. (To change the default direction of</span>
+<span class="sd">        downstream chain a .direction() call</span>
+
+<span class="sd">        :param guid: unique identifier (GUID) for the starting point of lineage</span>
+<span class="sd">        :param include_archived: when True, archived (soft-deleted) assets in lineage will be included</span>
+<span class="sd">        :returns: a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all</span>
+<span class="sd">        downstream assets</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">pyatlan.model.lineage</span> <span class="kn">import</span> <span class="n">FluentLineage</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">include_archived</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FluentLineage</span><span class="p">(</span>
+                <span class="n">starting_guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span>
+                <span class="n">where_assets</span><span class="o">=</span><span class="n">FluentLineage</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">,</span>
+                <span class="n">where_relationships</span><span class="o">=</span><span class="n">FluentLineage</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">,</span>
+                <span class="n">includes_in_results</span><span class="o">=</span><span class="n">FluentLineage</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">FluentLineage</span><span class="p">(</span><span class="n">starting_guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">has_announcement</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span>

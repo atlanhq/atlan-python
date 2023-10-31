@@ -429,11 +429,13 @@
           <h1>Source code for pyatlan.model.lineage</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2022 Atlan Pte. Ltd.</span>
-<span class="c1"># Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">StrictBool</span><span class="p">,</span> <span class="n">StrictInt</span><span class="p">,</span> <span class="n">StrictStr</span><span class="p">,</span> <span class="n">validate_arguments</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
@@ -443,7 +445,9 @@
 <span class="kn">from</span> <span class="nn">pyatlan.errors</span> <span class="kn">import</span> <span class="n">ErrorCode</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.assets</span> <span class="kn">import</span> <span class="n">Asset</span>
 <span class="kn">from</span> <span class="nn">pyatlan.model.core</span> <span class="kn">import</span> <span class="n">AtlanObject</span><span class="p">,</span> <span class="n">SearchRequest</span>
-<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanComparisonOperator</span><span class="p">,</span> <span class="n">LineageDirection</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.enums</span> <span class="kn">import</span> <span class="n">AtlanComparisonOperator</span><span class="p">,</span> <span class="n">EntityStatus</span><span class="p">,</span> <span class="n">LineageDirection</span>
+<span class="kn">from</span> <span class="nn">pyatlan.model.fields.atlan_fields</span> <span class="kn">import</span> <span class="n">AtlanField</span><span class="p">,</span> <span class="n">LineageFilter</span>
+<span class="kn">from</span> <span class="nn">pyatlan.utils</span> <span class="kn">import</span> <span class="n">validate_type</span>
 
 
 <span class="k">class</span> <span class="nc">LineageRelation</span><span class="p">(</span><span class="n">AtlanObject</span><span class="p">):</span>
@@ -475,14 +479,16 @@
         <span class="n">downstream_list</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="n">DirectedPair</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">upstream_list</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="n">DirectedPair</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">def</span> <span class="nf">add_relation</span><span class="p">(</span><span class="n">relation</span><span class="p">:</span> <span class="n">LineageRelation</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">add_relation</span><span class="p">(</span><span class="n">_relation</span><span class="p">:</span> <span class="n">LineageRelation</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span>
-                <span class="n">relation</span><span class="o">.</span><span class="n">from_entity_id</span>
-                <span class="ow">and</span> <span class="n">relation</span><span class="o">.</span><span class="n">process_id</span>
-                <span class="ow">and</span> <span class="n">relation</span><span class="o">.</span><span class="n">to_entity_id</span>
+                <span class="n">_relation</span><span class="o">.</span><span class="n">from_entity_id</span>
+                <span class="ow">and</span> <span class="n">_relation</span><span class="o">.</span><span class="n">process_id</span>
+                <span class="ow">and</span> <span class="n">_relation</span><span class="o">.</span><span class="n">to_entity_id</span>
             <span class="p">):</span>
                 <span class="n">add_edges</span><span class="p">(</span>
-                    <span class="n">relation</span><span class="o">.</span><span class="n">from_entity_id</span><span class="p">,</span> <span class="n">relation</span><span class="o">.</span><span class="n">process_id</span><span class="p">,</span> <span class="n">relation</span><span class="o">.</span><span class="n">to_entity_id</span>
+                    <span class="n">_relation</span><span class="o">.</span><span class="n">from_entity_id</span><span class="p">,</span>
+                    <span class="n">_relation</span><span class="o">.</span><span class="n">process_id</span><span class="p">,</span>
+                    <span class="n">_relation</span><span class="o">.</span><span class="n">to_entity_id</span><span class="p">,</span>
                 <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">add_edges</span><span class="p">(</span><span class="n">source_guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">process_guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_guid</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -584,64 +590,62 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_all_downstream_asset_guids_dfs</span><span class="p">(</span>
-            <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+            <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_all_downstream_assets_dfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">guid_entity_map</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_all_downstream_asset_guids_dfs</span><span class="p">(</span>
-                <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+                <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
             <span class="p">)</span>
         <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_all_upstream_asset_guids_dfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_all_upstream_asset_guids_dfs</span><span class="p">(</span>
-            <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+            <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_all_upstream_assets_dfs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">guid_entity_map</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_all_upstream_asset_guids_dfs</span><span class="p">(</span>
-                <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+                <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
             <span class="p">)</span>
         <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_downstream_asset_guids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_downstream_asset_guids</span><span class="p">(</span>
-            <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+            <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_downstream_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">guid_entity_map</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_downstream_asset_guids</span><span class="p">(</span>
-                <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+                <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
             <span class="p">)</span>
         <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_downstream_process_guids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_downstream_process_guids</span><span class="p">(</span>
-            <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+            <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_upstream_asset_guids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_upstream_asset_guids</span><span class="p">(</span>
-            <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_upstream_asset_guids</span><span class="p">(</span><span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_upstream_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Asset</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">guid_entity_map</span><span class="p">[</span><span class="n">guid</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">guid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_upstream_asset_guids</span><span class="p">(</span>
-                <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+                <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
             <span class="p">)</span>
         <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">get_upstream_process_guids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">()</span><span class="o">.</span><span class="n">get_upstream_process_guids</span><span class="p">(</span>
-            <span class="n">guid</span> <span class="k">if</span> <span class="n">guid</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
+            <span class="n">guid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_entity_guid</span>
         <span class="p">)</span></div>
 
 
@@ -750,6 +754,223 @@
             <span class="n">exclude_classifications</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+
+
+<span class="k">class</span> <span class="nc">FluentLineage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan</span>
+<span class="sd">    (removing the need to understand the guts of Elastic).&quot;&quot;&quot;</span>
+
+    <span class="n">ACTIVE</span><span class="p">:</span> <span class="n">LineageFilter</span> <span class="o">=</span> <span class="n">Asset</span><span class="o">.</span><span class="n">STATUS</span><span class="o">.</span><span class="n">in_lineage</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">EntityStatus</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">)</span>
+
+    <span class="nd">@validate_arguments</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">arbitrary_types_allowed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">starting_guid</span><span class="p">:</span> <span class="n">StrictStr</span><span class="p">,</span>
+        <span class="n">depth</span><span class="p">:</span> <span class="n">StrictInt</span> <span class="o">=</span> <span class="mi">1000000</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="n">LineageDirection</span> <span class="o">=</span> <span class="n">LineageDirection</span><span class="o">.</span><span class="n">DOWNSTREAM</span><span class="p">,</span>
+        <span class="n">size</span><span class="p">:</span> <span class="n">StrictInt</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">exclude_meanings</span><span class="p">:</span> <span class="n">StrictBool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">exclude_classifications</span><span class="p">:</span> <span class="n">StrictBool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">includes_on_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanField</span><span class="p">],</span> <span class="n">AtlanField</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">includes_in_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">where_assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">where_relationships</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a FluentLineage request.</span>
+<span class="sd">        :param starting_guid: unique identifier (GUID) of the asset from which to start lineage</span>
+<span class="sd">        :param depth: number of degrees of separation (hops) across which lineage should be fetched</span>
+<span class="sd">        :param direction: direction of lineage to fetch (upstream or downstream)</span>
+<span class="sd">        :param size: number of results to retrieve</span>
+<span class="sd">        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)</span>
+<span class="sd">        :param exclude_classifications: whether to include classifications for assets (False) or not (True)</span>
+<span class="sd">        :param includes_on_results: attributes to retrieve for each asset in the lineage results</span>
+<span class="sd">        :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not</span>
+<span class="sd">        be included in the results, but will still be traversed in the lineage so that any assets beyond them are still</span>
+<span class="sd">        considered for inclusion in the results</span>
+<span class="sd">        :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets</span>
+<span class="sd">        beyond, as well</span>
+<span class="sd">        :param where_relationships: filters to apply on relationships. Any relationships excluded by the filters will</span>
+<span class="sd">        exclude all assets and relationships beyond, as well</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">:</span> <span class="n">LineageDirection</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_classifications</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">exclude_classifications</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_meanings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">exclude_meanings</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanField</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span><span class="n">includes_on_results</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span>
+            <span class="n">includes_in_results</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_starting_guid</span> <span class="o">=</span> <span class="n">starting_guid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_where_assets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span><span class="n">where_assets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span>
+            <span class="n">where_relationships</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_to_list</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a copy of the current FluentSearch that&#39;s ready for further operations.</span>
+
+<span class="sd">        :returns: copy of the current FluentSearch</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="p">:</span> <span class="n">StrictInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the depth to traverse the lineage.</span>
+<span class="sd">        :param depth: number of degrees of separation (hops) across which lineage should be fetched</span>
+<span class="sd">        :returns: the FluentLineage with this depth criterion added&quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">LineageDirection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the direction to traverse the lineage.</span>
+<span class="sd">        :param direction: direction of lineage to fetch (upstream or downstream)</span>
+<span class="sd">        :returns: the FluentLineage with this direction criterion added&quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;direction&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="n">LineageDirection</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="n">StrictInt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the size to traverse the lineage.</span>
+<span class="sd">        :param size: number of results to retrieve</span>
+<span class="sd">        :returns: the FluentLineage with this size criterion added&quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">exclude_classifications</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">exclude_classifications</span><span class="p">:</span> <span class="n">StrictBool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the exclude_classifications to traverse the lineage.</span>
+<span class="sd">        :param exclude_classifications: whether to include classifications for assets (False) or not (True)</span>
+<span class="sd">        :returns: the FluentLineage with this exclude_classifications criterion added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;exclude_classifications&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">exclude_classifications</span>
+        <span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_exclude_classifications</span> <span class="o">=</span> <span class="n">exclude_classifications</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">exclude_meanings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_meanings</span><span class="p">:</span> <span class="n">StrictBool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the exclude_meanings to traverse the lineage.</span>
+<span class="sd">        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)</span>
+<span class="sd">        :returns: the FluentLineage with this exclude_meanings criterion added&quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;exclude_meanings&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">exclude_meanings</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_exclude_meanings</span> <span class="o">=</span> <span class="n">exclude_meanings</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">include_on_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">AtlanField</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the include_on_results to traverse the lineage.</span>
+<span class="sd">        :param field: attributes to retrieve for each asset in the lineage results</span>
+<span class="sd">        :returns: the FluentLineage with this include_on_results criterion added&quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="n">AtlanField</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_includes_on_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">include_in_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage_filter</span><span class="p">:</span> <span class="n">LineageFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds the include_on_results to traverse the lineage.</span>
+<span class="sd">        :param lineage_filter: Assets to include in the results. Any assets not matching this filters will not be</span>
+<span class="sd">        included in the results, but will still be traversed in the lineage so that any assets beyond them are still</span>
+<span class="sd">        considered for inclusion in the results</span>
+<span class="sd">        :returns: the FluentLineage with this include_in_results criterion added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;lineage_filter&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="n">LineageFilter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_includes_in_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">where_assets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage_filter</span><span class="p">:</span> <span class="n">LineageFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a filters to apply on assets.</span>
+<span class="sd">        :param lineage_filter: a filter to apply on assets. Any assets excluded by the filters will exclude all</span>
+<span class="sd">        assets beyond, as well</span>
+<span class="sd">        :returns: the FluentLineage with this where_assets criterion added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;lineage_filter&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="n">LineageFilter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_where_assets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="k">def</span> <span class="nf">where_relationships</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage_filter</span><span class="p">:</span> <span class="n">LineageFilter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Filters to apply on relationships.</span>
+<span class="sd">        :param lineage_filter: any relationships excluded by the filter will exclude all assets and</span>
+<span class="sd">        relationships beyond, as well.</span>
+<span class="sd">        :returns: the FluentLineage with this where_relationships criterion added&quot;&quot;&quot;</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;lineage_filter&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="n">LineageFilter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_where_relationships</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lineage_filter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">clone</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LineageListRequest</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :returns: the LineageListRequest that encapsulates information specified in this FluentLineage</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">LineageListRequest</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_starting_guid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_classifications</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">exclude_classifications</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_classifications</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_meanings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">exclude_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_meanings</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span><span class="p">:</span>
+            <span class="n">criteria</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">EntityFilter</span><span class="p">(</span>
+                    <span class="n">attribute_name</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">internal_field_name</span><span class="p">,</span>
+                    <span class="n">operator</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">operator</span><span class="p">,</span>
+                    <span class="n">attribute_value</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span>
+            <span class="p">]</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">entity_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">atlan_field_name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span>
+            <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_assets</span><span class="p">:</span>
+            <span class="n">criteria</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">EntityFilter</span><span class="p">(</span>
+                    <span class="n">attribute_name</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">internal_field_name</span><span class="p">,</span>
+                    <span class="n">operator</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">operator</span><span class="p">,</span>
+                    <span class="n">attribute_value</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_assets</span>
+            <span class="p">]</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">entity_traversal_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span>
+                <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span><span class="p">:</span>
+            <span class="n">criteria</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">EntityFilter</span><span class="p">(</span>
+                    <span class="n">attribute_name</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">internal_field_name</span><span class="p">,</span>
+                    <span class="n">operator</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">operator</span><span class="p">,</span>
+                    <span class="n">attribute_value</span><span class="o">=</span><span class="n">_filter</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">_filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where_relationships</span>
+            <span class="p">]</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">relationship_traversal_filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span>
+                <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="n">criteria</span><span class="o">=</span><span class="n">criteria</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
 </pre></div>
         </article>
       </div>
