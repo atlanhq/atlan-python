@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2022 Atlan Pte. Ltd.
-# Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
-from collections import deque
-from typing import TYPE_CHECKING, Any, Optional
+from __future__ import annotations
 
-from pydantic import Field
+import copy
+from collections import deque
+from typing import TYPE_CHECKING, Any, Optional, Union
+
+from pydantic import Field, StrictBool, StrictInt, StrictStr, validate_arguments
 
 if TYPE_CHECKING:
     from dataclasses import dataclass
@@ -14,7 +16,9 @@ else:
 from pyatlan.errors import ErrorCode
 from pyatlan.model.assets import Asset
 from pyatlan.model.core import AtlanObject, SearchRequest
-from pyatlan.model.enums import AtlanComparisonOperator, LineageDirection
+from pyatlan.model.enums import AtlanComparisonOperator, EntityStatus, LineageDirection
+from pyatlan.model.fields.atlan_fields import AtlanField, LineageFilter
+from pyatlan.utils import validate_type
 
 
 class LineageRelation(AtlanObject):
@@ -44,14 +48,16 @@ class LineageGraph:
         downstream_list: dict[str, dict[DirectedPair, None]] = {}
         upstream_list: dict[str, dict[DirectedPair, None]] = {}
 
-        def add_relation(relation: LineageRelation):
+        def add_relation(_relation: LineageRelation):
             if (
-                relation.from_entity_id
-                and relation.process_id
-                and relation.to_entity_id
+                _relation.from_entity_id
+                and _relation.process_id
+                and _relation.to_entity_id
             ):
                 add_edges(
-                    relation.from_entity_id, relation.process_id, relation.to_entity_id
+                    _relation.from_entity_id,
+                    _relation.process_id,
+                    _relation.to_entity_id,
                 )
 
         def add_edges(source_guid: str, process_guid: str, target_guid: str):
@@ -150,64 +156,62 @@ class LineageResponse(AtlanObject):
         self, guid: Optional[str] = None
     ) -> list[str]:
         return self.get_graph().get_all_downstream_asset_guids_dfs(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_all_downstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_all_downstream_asset_guids_dfs(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_all_upstream_asset_guids_dfs(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_all_upstream_asset_guids_dfs(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_all_upstream_assets_dfs(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_all_upstream_asset_guids_dfs(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_downstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_downstream_asset_guids(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_downstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_downstream_asset_guids(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_downstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_downstream_process_guids(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
     def get_upstream_asset_guids(self, guid: Optional[str] = None) -> list[str]:
-        return self.get_graph().get_upstream_asset_guids(
-            guid if guid else self.base_entity_guid
-        )
+        return self.get_graph().get_upstream_asset_guids(guid or self.base_entity_guid)
 
     def get_upstream_assets(self, guid: Optional[str] = None) -> list[Asset]:
         return [
             self.guid_entity_map[guid]
             for guid in self.get_graph().get_upstream_asset_guids(
-                guid if guid else self.base_entity_guid
+                guid or self.base_entity_guid
             )
         ]
 
     def get_upstream_process_guids(self, guid: Optional[str] = None) -> list[str]:
         return self.get_graph().get_upstream_process_guids(
-            guid if guid else self.base_entity_guid
+            guid or self.base_entity_guid
         )
 
 
@@ -303,3 +307,220 @@ class LineageListRequest(SearchRequest):
             exclude_meanings=True,
             exclude_classifications=True,
         )
+
+
+class FluentLineage:
+    """Lineage abstraction mechanism, to simplify the most common lineage requests against Atlan
+    (removing the need to understand the guts of Elastic)."""
+
+    ACTIVE: LineageFilter = Asset.STATUS.in_lineage.eq(EntityStatus.ACTIVE)
+
+    @validate_arguments(config=dict(arbitrary_types_allowed=True))
+    def __init__(
+        self,
+        *,
+        starting_guid: StrictStr,
+        depth: StrictInt = 1000000,
+        direction: LineageDirection = LineageDirection.DOWNSTREAM,
+        size: StrictInt = 10,
+        exclude_meanings: StrictBool = True,
+        exclude_classifications: StrictBool = True,
+        includes_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
+        includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+        where_relationships: Optional[Union[list[LineageFilter], LineageFilter]] = None,
+    ):
+        """Create a FluentLineage request.
+        :param starting_guid: unique identifier (GUID) of the asset from which to start lineage
+        :param depth: number of degrees of separation (hops) across which lineage should be fetched
+        :param direction: direction of lineage to fetch (upstream or downstream)
+        :param size: number of results to retrieve
+        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
+        :param exclude_classifications: whether to include classifications for assets (False) or not (True)
+        :param includes_on_results: attributes to retrieve for each asset in the lineage results
+        :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not
+        be included in the results, but will still be traversed in the lineage so that any assets beyond them are still
+        considered for inclusion in the results
+        :param where_assets: filters to apply on assets. Any assets excluded by the filters will exclude all assets
+        beyond, as well
+        :param where_relationships: filters to apply on relationships. Any relationships excluded by the filters will
+        exclude all assets and relationships beyond, as well
+        """
+
+        self._depth: int = depth
+        self._direction: LineageDirection = direction
+        self._exclude_classifications: bool = exclude_classifications
+        self._exclude_meanings: bool = exclude_meanings
+
+        self._includes_on_results: list[AtlanField] = self._to_list(includes_on_results)
+        self._includes_in_results: list[LineageFilter] = self._to_list(
+            includes_in_results
+        )
+        self._size: int = size
+        self._starting_guid = starting_guid
+        self._where_assets: list[LineageFilter] = self._to_list(where_assets)
+        self._where_relationships: list[LineageFilter] = self._to_list(
+            where_relationships
+        )
+
+    @staticmethod
+    def _to_list(value):
+        return [] if value is None else value if isinstance(value, list) else [value]
+
+    def _clone(self) -> "FluentLineage":
+        """
+        Returns a copy of the current FluentSearch that's ready for further operations.
+
+        :returns: copy of the current FluentSearch
+        """
+        return copy.deepcopy(self)
+
+    def depth(self, depth: StrictInt) -> "FluentLineage":
+        """Adds the depth to traverse the lineage.
+        :param depth: number of degrees of separation (hops) across which lineage should be fetched
+        :returns: the FluentLineage with this depth criterion added"""
+        validate_type(name="depth", _type=int, value=depth)
+        clone = self._clone()
+        clone._depth = depth
+        return clone
+
+    def direction(self, direction: LineageDirection) -> "FluentLineage":
+        """Adds the direction to traverse the lineage.
+        :param direction: direction of lineage to fetch (upstream or downstream)
+        :returns: the FluentLineage with this direction criterion added"""
+        validate_type(name="direction", _type=LineageDirection, value=direction)
+        clone = self._clone()
+        clone._direction = direction
+        return clone
+
+    def size(self, size: StrictInt) -> "FluentLineage":
+        """Adds the size to traverse the lineage.
+        :param size: number of results to retrieve
+        :returns: the FluentLineage with this size criterion added"""
+        validate_type(name="size", _type=int, value=size)
+        clone = self._clone()
+        clone._size = size
+        return clone
+
+    def exclude_classifications(
+        self, exclude_classifications: StrictBool
+    ) -> "FluentLineage":
+        """Adds the exclude_classifications to traverse the lineage.
+        :param exclude_classifications: whether to include classifications for assets (False) or not (True)
+        :returns: the FluentLineage with this exclude_classifications criterion added
+        """
+        validate_type(
+            name="exclude_classifications", _type=bool, value=exclude_classifications
+        )
+        clone = self._clone()
+        clone._exclude_classifications = exclude_classifications
+        return clone
+
+    def exclude_meanings(self, exclude_meanings: StrictBool) -> "FluentLineage":
+        """Adds the exclude_meanings to traverse the lineage.
+        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
+        :returns: the FluentLineage with this exclude_meanings criterion added"""
+        validate_type(name="exclude_meanings", _type=bool, value=exclude_meanings)
+        clone = self._clone()
+        clone._exclude_meanings = exclude_meanings
+        return clone
+
+    def include_on_results(self, field: AtlanField) -> "FluentLineage":
+        """Adds the include_on_results to traverse the lineage.
+        :param field: attributes to retrieve for each asset in the lineage results
+        :returns: the FluentLineage with this include_on_results criterion added"""
+        validate_type(name="field", _type=AtlanField, value=field)
+        clone = self._clone()
+        clone._includes_on_results.append(field)
+        return clone
+
+    def include_in_results(self, lineage_filter: LineageFilter) -> "FluentLineage":
+        """
+        Adds the include_on_results to traverse the lineage.
+        :param lineage_filter: Assets to include in the results. Any assets not matching this filters will not be
+        included in the results, but will still be traversed in the lineage so that any assets beyond them are still
+        considered for inclusion in the results
+        :returns: the FluentLineage with this include_in_results criterion added
+        """
+        validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
+        clone = self._clone()
+        clone._includes_in_results.append(lineage_filter)
+        return clone
+
+    def where_assets(self, lineage_filter: LineageFilter) -> "FluentLineage":
+        """
+        Adds a filters to apply on assets.
+        :param lineage_filter: a filter to apply on assets. Any assets excluded by the filters will exclude all
+        assets beyond, as well
+        :returns: the FluentLineage with this where_assets criterion added
+        """
+        validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
+        clone = self._clone()
+        clone._where_assets.append(lineage_filter)
+        return clone
+
+    def where_relationships(self, lineage_filter: LineageFilter) -> "FluentLineage":
+        """Filters to apply on relationships.
+        :param lineage_filter: any relationships excluded by the filter will exclude all assets and
+        relationships beyond, as well.
+        :returns: the FluentLineage with this where_relationships criterion added"""
+        validate_type(name="lineage_filter", _type=LineageFilter, value=lineage_filter)
+        clone = self._clone()
+        clone._where_relationships.append(lineage_filter)
+        return clone
+
+    @property
+    def request(self) -> LineageListRequest:
+        """
+        :returns: the LineageListRequest that encapsulates information specified in this FluentLineage
+        """
+        request = LineageListRequest.create(guid=self._starting_guid)
+        if self._depth:
+            request.depth = self._depth
+        if self._direction:
+            request.direction = self._direction
+        if self._exclude_classifications is not None:
+            request.exclude_classifications = self._exclude_classifications
+        if self._exclude_meanings is not None:
+            request.exclude_meanings = self._exclude_meanings
+        if self._includes_in_results:
+            criteria = [
+                EntityFilter(
+                    attribute_name=_filter.field.internal_field_name,
+                    operator=_filter.operator,
+                    attribute_value=_filter.value,
+                )
+                for _filter in self._includes_in_results
+            ]
+            request.entity_filters = FilterList(condition="AND", criteria=criteria)
+        if self._includes_on_results:
+            request.attributes = [
+                field.atlan_field_name for field in self._includes_on_results
+            ]
+        if self._size:
+            request.size = self._size
+        if self._where_assets:
+            criteria = [
+                EntityFilter(
+                    attribute_name=_filter.field.internal_field_name,
+                    operator=_filter.operator,
+                    attribute_value=_filter.value,
+                )
+                for _filter in self._where_assets
+            ]
+            request.entity_traversal_filters = FilterList(
+                condition="AND", criteria=criteria
+            )
+        if self._where_relationships:
+            criteria = [
+                EntityFilter(
+                    attribute_name=_filter.field.internal_field_name,
+                    operator=_filter.operator,
+                    attribute_value=_filter.value,
+                )
+                for _filter in self._where_relationships
+            ]
+            request.relationship_traversal_filters = FilterList(
+                condition="AND", criteria=criteria
+            )
+        return request

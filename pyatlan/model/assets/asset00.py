@@ -9,7 +9,7 @@ import sys
 import uuid
 from datetime import datetime
 from io import StringIO
-from typing import Any, ClassVar, Optional, Type, TypeVar
+from typing import TYPE_CHECKING, Any, ClassVar, Optional, Type, TypeVar
 from urllib.parse import quote, unquote
 
 from pydantic import Field, PrivateAttr, StrictStr, root_validator, validator
@@ -369,6 +369,33 @@ class Asset(Referenceable):
             raise TypeError(f"Unsupport sub-type: {data_type}")
 
         return sub(**data)
+
+    if TYPE_CHECKING:
+        from pyatlan.model.lineage import FluentLineage
+
+    @classmethod
+    def lineage(cls, guid: str, include_archived: bool = False) -> "FluentLineage":
+        """
+        Start a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all downstream
+        assets. Additional conditions can be chained onto the returned FluentLineage before any asset retrieval is
+        attempted, ensuring all conditions are pushed-down for optimal retrieval. (To change the default direction of
+        downstream chain a .direction() call
+
+        :param guid: unique identifier (GUID) for the starting point of lineage
+        :param include_archived: when True, archived (soft-deleted) assets in lineage will be included
+        :returns: a FluentLineage that can be used to get a LineageListRequest that can be used to retrieve all
+        downstream assets
+        """
+        from pyatlan.model.lineage import FluentLineage
+
+        if not include_archived:
+            return FluentLineage(
+                starting_guid=guid,
+                where_assets=FluentLineage.ACTIVE,
+                where_relationships=FluentLineage.ACTIVE,
+                includes_in_results=FluentLineage.ACTIVE,
+            )
+        return FluentLineage(starting_guid=guid)
 
     def has_announcement(self) -> bool:
         return bool(

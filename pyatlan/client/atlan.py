@@ -78,7 +78,6 @@ VERSION = read_text("pyatlan", "version.txt").strip()
 
 
 def get_session():
-
     retry_strategy = DEFAULT_RETRY
     adapter = HTTPAdapter(max_retries=retry_strategy)
     session = requests.session()

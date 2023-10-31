@@ -6,8 +6,11 @@ import enum
 import logging
 import re
 import time
+from enum import Enum
 from functools import reduce, wraps
 from typing import Any, Optional
+
+from pyatlan.errors import ErrorCode
 
 ADMIN_URI = "api/service/"
 BASE_URI = "api/meta/"
@@ -209,7 +212,7 @@ def unflatten_custom_metadata_for_entity(
     entity: dict[str, Any], attributes: Optional[list[str]]
 ):
     if custom_metadata := unflatten_custom_metadata(
-        attributes=attributes, asset_attributes=entity.get("attributes", None)
+        attributes=attributes, asset_attributes=entity.get("attributes")
     ):
         entity["businessAttributes"] = custom_metadata
 
@@ -225,3 +228,55 @@ def init_guid(func):
         return ret_value
 
     return call
+
+
+class ComparisonCategory(str, Enum):
+    STRING = "str"
+    NUMBER = "number"
+    BOOLEAN = "bool"
+
+
+def _get_embedded_type(attribute_type: str):
+    return attribute_type[
+        attribute_type.index("<") + 1 : attribute_type.index(">")  # noqa: E203
+    ]
+
+
+def get_base_type(attribute_type: str):
+    base_type = attribute_type
+    if "<" in attribute_type:
+        if attribute_type.startswith("array<") and attribute_type.startswith(
+            "array<map<"
+        ):
+            return _get_embedded_type(attribute_type[len("array<") : -1])  # noqa: E203
+        elif attribute_type.startswith("array<") or attribute_type.startswith("map<"):
+            return _get_embedded_type(attribute_type)
+    return base_type
+
+
+def is_comparable_type(attribute_type: str, to: ComparisonCategory) -> bool:
+    base_type = get_base_type(attribute_type)
+    if base_type == "boolean":
+        return to == ComparisonCategory.BOOLEAN
+    if base_type in ["int", "long", "date", "float"]:
+        return to == ComparisonCategory.NUMBER
+    return to == ComparisonCategory.STRING
+
+
+def validate_type(name: str, _type: type, value):
+    """
+    Validate that the given value is of the specified type.
+
+    :param name: the name of the variable to be used in error message
+    :_type: the type of the variable to be validated
+    :value: the value to be validated that it is of the specified type
+
+    """
+    if _type is int:
+        if isinstance(value, _type) and not isinstance(value, bool):
+            return
+    elif isinstance(value, _type):
+        return
+    raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
+        name, _type.__name__
+    )
