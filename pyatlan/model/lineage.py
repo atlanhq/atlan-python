@@ -324,7 +324,7 @@ class FluentLineage:
         direction: LineageDirection = LineageDirection.DOWNSTREAM,
         size: StrictInt = 10,
         exclude_meanings: StrictBool = True,
-        exclude_classifications: StrictBool = True,
+        exclude_atlan_tags: StrictBool = True,
         includes_on_results: Optional[Union[list[AtlanField], AtlanField]] = None,
         includes_in_results: Optional[Union[list[LineageFilter], LineageFilter]] = None,
         where_assets: Optional[Union[list[LineageFilter], LineageFilter]] = None,
@@ -336,7 +336,7 @@ class FluentLineage:
         :param direction: direction of lineage to fetch (upstream or downstream)
         :param size: number of results to retrieve
         :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)
-        :param exclude_classifications: whether to include classifications for assets (False) or not (True)
+        :param exclude_atlan_tags: whether to include Atlan tags for assets (False) or not (True)
         :param includes_on_results: attributes to retrieve for each asset in the lineage results
         :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not
         be included in the results, but will still be traversed in the lineage so that any assets beyond them are still
@@ -349,7 +349,7 @@ class FluentLineage:
 
         self._depth: int = depth
         self._direction: LineageDirection = direction
-        self._exclude_classifications: bool = exclude_classifications
+        self._exclude_atlan_tags: bool = exclude_atlan_tags
         self._exclude_meanings: bool = exclude_meanings
 
         self._includes_on_results: list[AtlanField] = self._to_list(includes_on_results)
@@ -402,18 +402,14 @@ class FluentLineage:
         clone._size = size
         return clone
 
-    def exclude_classifications(
-        self, exclude_classifications: StrictBool
-    ) -> "FluentLineage":
-        """Adds the exclude_classifications to traverse the lineage.
-        :param exclude_classifications: whether to include classifications for assets (False) or not (True)
-        :returns: the FluentLineage with this exclude_classifications criterion added
+    def exclude_atlan_tags(self, exclude_atlan_tags: StrictBool) -> "FluentLineage":
+        """Adds the exclude_atlan_tags to traverse the lineage.
+        :param exclude_atlan_tags: whether to include Atlan tags for assets (False) or not (True)
+        :returns: the FluentLineage with this exclude_atlan_tags criterion added
         """
-        validate_type(
-            name="exclude_classifications", _type=bool, value=exclude_classifications
-        )
+        validate_type(name="exclude_atlan_tags", _type=bool, value=exclude_atlan_tags)
         clone = self._clone()
-        clone._exclude_classifications = exclude_classifications
+        clone._exclude_atlan_tags = exclude_atlan_tags
         return clone
 
     def exclude_meanings(self, exclude_meanings: StrictBool) -> "FluentLineage":
@@ -479,8 +475,8 @@ class FluentLineage:
             request.depth = self._depth
         if self._direction:
             request.direction = self._direction
-        if self._exclude_classifications is not None:
-            request.exclude_classifications = self._exclude_classifications
+        if self._exclude_atlan_tags is not None:
+            request.exclude_classifications = self._exclude_atlan_tags
         if self._exclude_meanings is not None:
             request.exclude_meanings = self._exclude_meanings
         if self._includes_in_results:
