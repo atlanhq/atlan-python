@@ -64,6 +64,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ needs.deploy.outputs.version }}
-          context: .
-          file: ./Dockerfile
+          tags: ghcr.io/atlanhq/atlan-python:$(cd .. && cat pyatlan/version.txt)
+          context: ./containers
+          file: ./containers/Dockerfile
+          build-args: VERSION=$(cd .. && cat ../pyatlan/version.txt)
