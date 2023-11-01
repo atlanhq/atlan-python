@@ -1,6 +1,6 @@
 FROM python:3.9.16-slim-buster
 
-ARG VERSION 
+ARG VERSION
 
 WORKDIR /app
 
