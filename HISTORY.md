@@ -1,4 +1,4 @@
-## 1.5.0 (November 1, 2023)
+## 1.6.0 (November 1, 2023)
 
 * Rename exclude_classifications to exclude_atlan_tags in FluentLineage
 
