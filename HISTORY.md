@@ -1,3 +1,7 @@
+## 1.6.0 (November 1, 2023)
+
+* Rename exclude_classifications to exclude_atlan_tags in FluentLineage
+
 ## 1.5.0 (October 31, 2023)
 
 * Add FluentLineage an abstraction mechanism, to simplify the most common lineage requests against Atlan (removing the need to understand the guts of Elastic).

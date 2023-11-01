@@ -614,7 +614,7 @@ class TestFluentLineage:
         return FluentLineage(starting_guid=GOOD_GUID)
 
     @pytest.mark.parametrize(
-        "starting_guid, depth, direction, size, exclude_meanings, exclude_classifications, includes_in_results, "
+        "starting_guid, depth, direction, size, exclude_meanings, exclude_atlan_tags, includes_in_results, "
         "includes_on_results, where_assets, where_relationships, message",
         [
             (
@@ -708,7 +708,7 @@ class TestFluentLineage:
                 GOOD_INCLUDE_ON_RESULTS,
                 GOOD_WHERE_ASSETS,
                 GOOD_WHERE_RELATIONSHIPS,
-                r"1 validation error for Init\nexclude_classifications\n  value is not a valid boolean "
+                r"1 validation error for Init\nexclude_atlan_tags\n  value is not a valid boolean "
                 r"\(type=value_error.strictbool\)",
             ),
             (
@@ -772,7 +772,7 @@ class TestFluentLineage:
         direction,
         size,
         exclude_meanings,
-        exclude_classifications,
+        exclude_atlan_tags,
         includes_in_results,
         includes_on_results,
         where_assets,
@@ -786,7 +786,7 @@ class TestFluentLineage:
                 direction=direction,
                 size=size,
                 exclude_meanings=exclude_meanings,
-                exclude_classifications=exclude_classifications,
+                exclude_atlan_tags=exclude_atlan_tags,
                 includes_on_results=includes_on_results,
                 includes_in_results=includes_in_results,
                 where_assets=where_assets,
@@ -807,7 +807,7 @@ class TestFluentLineage:
         assert request.relationship_traversal_filters is None
 
     @pytest.mark.parametrize(
-        "starting_guid, depth, direction, size, exclude_meanings, exclude_classifications, includes_on_results, "
+        "starting_guid, depth, direction, size, exclude_meanings, exclude_atlan_tags, includes_on_results, "
         "includes_in_results, where_assets, where_relationships",
         [
             (
@@ -831,7 +831,7 @@ class TestFluentLineage:
         direction,
         size,
         exclude_meanings,
-        exclude_classifications,
+        exclude_atlan_tags,
         includes_on_results,
         includes_in_results,
         where_assets,
@@ -843,7 +843,7 @@ class TestFluentLineage:
             direction=direction,
             size=size,
             exclude_meanings=exclude_meanings,
-            exclude_classifications=exclude_classifications,
+            exclude_atlan_tags=exclude_atlan_tags,
             includes_on_results=includes_on_results,
             includes_in_results=includes_in_results,
             where_assets=where_assets,
@@ -855,7 +855,7 @@ class TestFluentLineage:
         assert request.depth == depth
         assert request.direction == direction
         assert request.exclude_meanings == exclude_meanings
-        assert request.exclude_classifications == exclude_classifications
+        assert request.exclude_classifications == exclude_atlan_tags
         assert request.attributes == [
             field.atlan_field_name for field in includes_on_results
         ]
@@ -893,9 +893,9 @@ class TestFluentLineage:
                 r"ATLAN-PYTHON-400-048 Invalid parameter type for size should be int",
             ),
             (
-                "exclude_classifications",
+                "exclude_atlan_tags",
                 1,
-                r"ATLAN-PYTHON-400-048 Invalid parameter type for exclude_classifications should be bool",
+                r"ATLAN-PYTHON-400-048 Invalid parameter type for exclude_atlan_tags should be bool",
             ),
             (
                 "exclude_meanings",
@@ -936,7 +936,7 @@ class TestFluentLineage:
             ("depth", 12),
             ("direction", LineageDirection.BOTH),
             ("size", 12),
-            ("exclude_classifications", True),
+            ("exclude_atlan_tags", True),
             ("exclude_meanings", True),
         ],
     )
