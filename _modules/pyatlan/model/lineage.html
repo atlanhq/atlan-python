@@ -771,7 +771,7 @@
         <span class="n">direction</span><span class="p">:</span> <span class="n">LineageDirection</span> <span class="o">=</span> <span class="n">LineageDirection</span><span class="o">.</span><span class="n">DOWNSTREAM</span><span class="p">,</span>
         <span class="n">size</span><span class="p">:</span> <span class="n">StrictInt</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">exclude_meanings</span><span class="p">:</span> <span class="n">StrictBool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">exclude_classifications</span><span class="p">:</span> <span class="n">StrictBool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">exclude_atlan_tags</span><span class="p">:</span> <span class="n">StrictBool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">includes_on_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AtlanField</span><span class="p">],</span> <span class="n">AtlanField</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">includes_in_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">where_assets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">LineageFilter</span><span class="p">],</span> <span class="n">LineageFilter</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -783,7 +783,7 @@
 <span class="sd">        :param direction: direction of lineage to fetch (upstream or downstream)</span>
 <span class="sd">        :param size: number of results to retrieve</span>
 <span class="sd">        :param exclude_meanings: whether to include assigned terms for assets (False) or not (True)</span>
-<span class="sd">        :param exclude_classifications: whether to include classifications for assets (False) or not (True)</span>
+<span class="sd">        :param exclude_atlan_tags: whether to include Atlan tags for assets (False) or not (True)</span>
 <span class="sd">        :param includes_on_results: attributes to retrieve for each asset in the lineage results</span>
 <span class="sd">        :param includes_in_results: Assets to include in the results. Any assets not matching these filters will not</span>
 <span class="sd">        be included in the results, but will still be traversed in the lineage so that any assets beyond them are still</span>
@@ -796,7 +796,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">depth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">:</span> <span class="n">LineageDirection</span> <span class="o">=</span> <span class="n">direction</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_classifications</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">exclude_classifications</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_atlan_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">exclude_atlan_tags</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_meanings</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">exclude_meanings</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_includes_on_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AtlanField</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_list</span><span class="p">(</span><span class="n">includes_on_results</span><span class="p">)</span>
@@ -849,18 +849,14 @@
         <span class="n">clone</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">return</span> <span class="n">clone</span>
 
-    <span class="k">def</span> <span class="nf">exclude_classifications</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">exclude_classifications</span><span class="p">:</span> <span class="n">StrictBool</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the exclude_classifications to traverse the lineage.</span>
-<span class="sd">        :param exclude_classifications: whether to include classifications for assets (False) or not (True)</span>
-<span class="sd">        :returns: the FluentLineage with this exclude_classifications criterion added</span>
+    <span class="k">def</span> <span class="nf">exclude_atlan_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_atlan_tags</span><span class="p">:</span> <span class="n">StrictBool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the exclude_atlan_tags to traverse the lineage.</span>
+<span class="sd">        :param exclude_atlan_tags: whether to include Atlan tags for assets (False) or not (True)</span>
+<span class="sd">        :returns: the FluentLineage with this exclude_atlan_tags criterion added</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">validate_type</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;exclude_classifications&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">exclude_classifications</span>
-        <span class="p">)</span>
+        <span class="n">validate_type</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;exclude_atlan_tags&quot;</span><span class="p">,</span> <span class="n">_type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">exclude_atlan_tags</span><span class="p">)</span>
         <span class="n">clone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clone</span><span class="p">()</span>
-        <span class="n">clone</span><span class="o">.</span><span class="n">_exclude_classifications</span> <span class="o">=</span> <span class="n">exclude_classifications</span>
+        <span class="n">clone</span><span class="o">.</span><span class="n">_exclude_atlan_tags</span> <span class="o">=</span> <span class="n">exclude_atlan_tags</span>
         <span class="k">return</span> <span class="n">clone</span>
 
     <span class="k">def</span> <span class="nf">exclude_meanings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_meanings</span><span class="p">:</span> <span class="n">StrictBool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FluentLineage&quot;</span><span class="p">:</span>
@@ -926,8 +922,8 @@
             <span class="n">request</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_classifications</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">request</span><span class="o">.</span><span class="n">exclude_classifications</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_classifications</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_atlan_tags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">exclude_classifications</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_atlan_tags</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_meanings</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">exclude_meanings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclude_meanings</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_includes_in_results</span><span class="p">:</span>
