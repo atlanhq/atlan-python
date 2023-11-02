@@ -1,4 +1,4 @@
-## 1.6.0 (November 2, 2023)
+## 1.6.1 (November 2, 2023)
 
 * PARENT_CATEGORY of Glossary had the wrong atlan_field_name
 
