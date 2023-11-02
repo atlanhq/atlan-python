@@ -1,3 +1,7 @@
+## 1.6.1 (November 2, 2023)
+
+* PARENT_CATEGORY of Glossary had the wrong atlan_field_name
+
 ## 1.6.0 (November 1, 2023)
 
 * Rename exclude_classifications to exclude_atlan_tags in FluentLineage
