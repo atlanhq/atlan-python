@@ -3499,7 +3499,7 @@ class AtlasGlossaryCategory(Asset, type_name="AtlasGlossaryCategory"):
     """Glossary in which the category is contained, searchable by the qualifiedName of the glossary."""
 
     PARENT_CATEGORY: ClassVar[KeywordField] = KeywordField(
-        "categories", "__parentCategory"
+        "parentCategory", "__parentCategory"
     )
     """Parent category in which a subcategory is contained, searchable by the qualifiedName of the category."""
 
