@@ -2,7 +2,8 @@
 # Copyright 2022 Atlan Pte. Ltd.
 import itertools
 import logging
-from typing import Generator
+from time import sleep
+from typing import Generator, Optional
 
 import pytest
 from pydantic import StrictStr
@@ -30,9 +31,14 @@ def create_glossary(client: AtlanClient, name: str) -> AtlasGlossary:
 
 
 def create_category(
-    client: AtlanClient, name: str, glossary: AtlasGlossary
+    client: AtlanClient,
+    name: str,
+    glossary: AtlasGlossary,
+    parent: Optional[AtlasGlossaryCategory] = None,
 ) -> AtlasGlossaryCategory:
-    c = AtlasGlossaryCategory.create(name=name, anchor=glossary)
+    c = AtlasGlossaryCategory.create(
+        name=name, anchor=glossary, parent_category=parent or None
+    )
     return client.asset.save(c).assets_created(AtlasGlossaryCategory)[0]
 
 
@@ -69,6 +75,134 @@ def category(
     client: AtlanClient, glossary: AtlasGlossary
 ) -> Generator[AtlasGlossaryCategory, None, None]:
     c = create_category(client, MODULE_NAME, glossary)
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def top1_category(
+    client: AtlanClient, glossary: AtlasGlossary
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(client, TestId.make_unique("top1"), glossary)
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def mid1a_category(
+    client: AtlanClient, glossary: AtlasGlossary, top1_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("mid1a"), glossary, parent=top1_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def leaf1aa_category(
+    client: AtlanClient, glossary: AtlasGlossary, mid1a_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("leaf1aa"), glossary, parent=mid1a_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def leaf1ab_category(
+    client: AtlanClient, glossary: AtlasGlossary, mid1a_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("leaf1ab"), glossary, parent=mid1a_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def mid1b_category(
+    client: AtlanClient, glossary: AtlasGlossary, top1_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("mid1b"), glossary, parent=top1_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def leaf1ba_category(
+    client: AtlanClient, glossary: AtlasGlossary, mid1b_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("leaf1ba"), glossary, parent=mid1b_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def top2_category(
+    client: AtlanClient, glossary: AtlasGlossary
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(client, TestId.make_unique("top2"), glossary)
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def mid2a_category(
+    client: AtlanClient, glossary: AtlasGlossary, top2_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("mid2a"), glossary, parent=top2_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def leaf2aa_category(
+    client: AtlanClient, glossary: AtlasGlossary, mid2a_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("leaf2aa"), glossary, parent=mid2a_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def leaf2ab_category(
+    client: AtlanClient, glossary: AtlasGlossary, mid2a_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("leaf2ab"), glossary, parent=mid2a_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def mid2b_category(
+    client: AtlanClient, glossary: AtlasGlossary, top2_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("mid2b"), glossary, parent=top2_category
+    )
+    yield c
+    delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
+
+
+@pytest.fixture(scope="module")
+def leaf2ba_category(
+    client: AtlanClient, glossary: AtlasGlossary, mid2b_category: AtlasGlossaryCategory
+) -> Generator[AtlasGlossaryCategory, None, None]:
+    c = create_category(
+        client, TestId.make_unique("leaf2ba"), glossary, parent=mid2b_category
+    )
     yield c
     delete_asset(client, guid=c.guid, asset_type=AtlasGlossaryCategory)
 
@@ -361,3 +495,57 @@ def test_find_term_by_name(
             name=term1.name, glossary_name=glossary.name
         ).guid
     )
+
+
+def test_hierarchy(
+    client: AtlanClient,
+    glossary: AtlasGlossary,
+    leaf1aa_category: AtlasGlossaryCategory,
+    leaf1ab_category: AtlasGlossaryCategory,
+    leaf1ba_category: AtlasGlossaryCategory,
+    leaf2aa_category: AtlasGlossaryCategory,
+    leaf2ab_category: AtlasGlossaryCategory,
+    leaf2ba_category: AtlasGlossaryCategory,
+):
+    sleep(10)
+    hierarchy = client.asset.get_hierarchy(glossary=glossary)
+
+    root_categories = hierarchy.root_categories
+
+    assert len(root_categories) == 2
+    assert "top" in root_categories[0].name
+    assert "top" in root_categories[1].name
+
+    assert hierarchy.get_category(leaf1aa_category.guid)
+
+    category_names = [category.name for category in hierarchy.breadth_first]
+
+    assert len(category_names) == 12
+    assert "top" in category_names[0]
+    assert "top" in category_names[1]
+    assert "mid" in category_names[2]
+    assert "mid" in category_names[3]
+    assert "mid" in category_names[4]
+    assert "mid" in category_names[5]
+    assert "leaf" in category_names[6]
+    assert "leaf" in category_names[7]
+    assert "leaf" in category_names[8]
+    assert "leaf" in category_names[9]
+    assert "leaf" in category_names[10]
+    assert "leaf" in category_names[11]
+
+    category_names = [category.name for category in hierarchy.depth_first]
+
+    assert len(category_names) == 12
+    assert "top" in category_names[0]
+    assert "mid" in category_names[1]
+    assert "leaf" in category_names[2]
+    assert "leaf" in category_names[3]
+    assert "mid" in category_names[4]
+    assert "leaf" in category_names[5]
+    assert "top" in category_names[6]
+    assert "mid" in category_names[7]
+    assert "leaf" in category_names[8]
+    assert "leaf" in category_names[9]
+    assert "mid" in category_names[10]
+    assert "leaf" in category_names[11]

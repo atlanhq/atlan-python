@@ -1260,7 +1260,7 @@ class AssetClient:
 
     def get_hierarchy(
         self, glossary: AtlasGlossary, attributes: Optional[list[AtlanField]] = None
-    ):
+    ) -> CategoryHierarchy:
         from pyatlan.model.fluent_search import FluentSearch
 
         if attributes is None:
@@ -1629,6 +1629,8 @@ class CategoryHierarchy:
         self._root_categories: list = []
         self._categories: dict[str, AtlasGlossaryCategory] = {}
         self._build_category_dict(stub_dict)
+        self._bfs_list = None
+        self._dfs_list = None
 
     def _build_category_dict(self, stub_dict: dict[str, AtlasGlossaryCategory]):
         for category in stub_dict.values():
@@ -1674,10 +1676,12 @@ class CategoryHierarchy:
 
         :returns: all categories in breadth-first order
         """
-        top = self.root_categories
-        bfs_list = top.copy()
-        _bfs(bfs_list=bfs_list, to_add=top)
-        return bfs_list
+        if self._bfs_list is None:
+            top = self.root_categories
+            bfs_list = top.copy()
+            _bfs(bfs_list=bfs_list, to_add=top)
+            self._bfs_list = bfs_list
+        return self._bfs_list
 
     @property
     def depth_first(self) -> list[AtlasGlossaryCategory]:
@@ -1686,6 +1690,8 @@ class CategoryHierarchy:
 
         :returns: all categories in depth-first order
         """
-        dfs_list: list[AtlasGlossaryCategory] = []
-        _dfs(dfs_list=dfs_list, to_add=self.root_categories)
-        return dfs_list
+        if self._dfs_list is None:
+            dfs_list: list[AtlasGlossaryCategory] = []
+            _dfs(dfs_list=dfs_list, to_add=self.root_categories)
+            self._dfs_list = dfs_list
+        return self._dfs_list
