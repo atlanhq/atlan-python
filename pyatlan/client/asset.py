@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+import logging
 import time
 from abc import ABC
 from enum import Enum
@@ -83,7 +84,7 @@ from pyatlan.model.search import (
     with_active_glossary,
     with_active_term,
 )
-from pyatlan.utils import API, get_logger, unflatten_custom_metadata_for_entity
+from pyatlan.utils import API, unflatten_custom_metadata_for_entity
 
 T = TypeVar("T", bound=Referenceable)
 A = TypeVar("A", bound=Asset)
@@ -110,7 +111,7 @@ Asset_Types = Union[
     Type[MaterialisedView],
 ]
 
-LOGGER = get_logger()
+LOGGER = logging.getLogger(__name__)
 
 
 class AssetClient:

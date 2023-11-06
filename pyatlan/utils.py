@@ -3,7 +3,6 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 import datetime
 import enum
-import logging
 import re
 import time
 from enum import Enum
@@ -22,19 +21,6 @@ PREFIX_ATTR = "attr:"
 PREFIX_ATTR_ = "attr_"
 
 s_nextId = milliseconds = int(round(time.time() * 1000)) + 1
-
-
-def get_logger(name: str = __name__, level: str = "WARN"):
-    """
-    name - defaults to __name__
-    """
-    logging.basicConfig(
-        level=logging.WARN,
-        format="%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s",
-    )
-    logger = logging.getLogger(name)
-    logger.setLevel(level=level)
-    return logger
 
 
 def next_id() -> str:
