@@ -1263,13 +1263,16 @@ class AssetClient:
     ) -> CategoryHierarchy:
         from pyatlan.model.fluent_search import FluentSearch
 
+        if not glossary.qualified_name:
+            raise ErrorCode.GLOSSARY_MISSING_QUALIFIED_NAME.exception_with_parameters()
         if attributes is None:
             attributes = []
         top_categories: set[str] = set()
         category_dict: dict[str, AtlasGlossaryCategory] = {}
         search = (
             FluentSearch.select()
-            .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name or ""))
+            .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name))
+            .where(Term.with_type_name("AtlasGlossaryCategory"))
             .include_on_results(AtlasGlossaryCategory.PARENT_CATEGORY)
             .page_size(20)
             .sort(AtlasGlossaryCategory.NAME.order(SortOrder.ASCENDING))
@@ -1629,8 +1632,8 @@ class CategoryHierarchy:
         self._root_categories: list = []
         self._categories: dict[str, AtlasGlossaryCategory] = {}
         self._build_category_dict(stub_dict)
-        self._bfs_list = None
-        self._dfs_list = None
+        self._bfs_list: list[AtlasGlossaryCategory] = []
+        self._dfs_list: list[AtlasGlossaryCategory] = []
 
     def _build_category_dict(self, stub_dict: dict[str, AtlasGlossaryCategory]):
         for category in stub_dict.values():
@@ -1675,7 +1678,7 @@ class CategoryHierarchy:
 
         :returns: all categories in breadth-first order
         """
-        if self._bfs_list is None:
+        if not self._bfs_list:
             top = self.root_categories
             bfs_list = top.copy()
             _bfs(bfs_list=bfs_list, to_add=top)
@@ -1689,7 +1692,7 @@ class CategoryHierarchy:
 
         :returns: all categories in depth-first order
         """
-        if self._dfs_list is None:
+        if not self._dfs_list:
             dfs_list: list[AtlasGlossaryCategory] = []
             _dfs(dfs_list=dfs_list, to_add=self.root_categories)
             self._dfs_list = dfs_list

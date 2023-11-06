@@ -65,6 +65,7 @@ from pyatlan.utils import HTTPStatus, get_logger
 
 SERVICE_ACCOUNT_ = "service-account-"
 
+
 LOGGER = get_logger()
 
 DEFAULT_RETRY = Retry(
