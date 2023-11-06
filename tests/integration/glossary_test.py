@@ -500,11 +500,17 @@ def test_find_term_by_name(
 def test_hierarchy(
     client: AtlanClient,
     glossary: AtlasGlossary,
+    top1_category: AtlasGlossaryCategory,
+    mid1a_category: AtlasGlossaryCategory,
     leaf1aa_category: AtlasGlossaryCategory,
     leaf1ab_category: AtlasGlossaryCategory,
+    mid1b_category: AtlasGlossaryCategory,
     leaf1ba_category: AtlasGlossaryCategory,
+    top2_category: AtlasGlossaryCategory,
+    mid2a_category: AtlasGlossaryCategory,
     leaf2aa_category: AtlasGlossaryCategory,
     leaf2ab_category: AtlasGlossaryCategory,
+    mid2b_category: AtlasGlossaryCategory,
     leaf2ba_category: AtlasGlossaryCategory,
 ):
     sleep(10)
@@ -516,7 +522,18 @@ def test_hierarchy(
     assert "top" in root_categories[0].name
     assert "top" in root_categories[1].name
 
+    assert hierarchy.get_category(top1_category.guid)
+    assert hierarchy.get_category(mid1a_category.guid)
     assert hierarchy.get_category(leaf1aa_category.guid)
+    assert hierarchy.get_category(leaf1ab_category.guid)
+    assert hierarchy.get_category(mid1b_category.guid)
+    assert hierarchy.get_category(leaf1ba_category.guid)
+    assert hierarchy.get_category(top2_category.guid)
+    assert hierarchy.get_category(mid2a_category.guid)
+    assert hierarchy.get_category(leaf2aa_category.guid)
+    assert hierarchy.get_category(leaf2ab_category.guid)
+    assert hierarchy.get_category(mid2b_category.guid)
+    assert hierarchy.get_category(leaf2ba_category.guid)
 
     category_names = [category.name for category in hierarchy.breadth_first]
 

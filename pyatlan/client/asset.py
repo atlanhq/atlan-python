@@ -1646,8 +1646,7 @@ class CategoryHierarchy:
                     children.append(category)
                 full_parent.children_categories = children
                 self._categories[parent_guid] = full_parent
-            else:
-                self._categories[category.guid] = category
+            self._categories[category.guid] = category
 
     def get_category(self, guid: str) -> AtlasGlossaryCategory:
         """
