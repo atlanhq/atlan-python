@@ -3,6 +3,7 @@
 # Based on original code from https://github.com/apache/atlas (under Apache-2.0 license)
 import datetime
 import enum
+import logging
 import re
 import time
 from enum import Enum
@@ -266,3 +267,21 @@ def validate_type(name: str, _type: type, value):
     raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
         name, _type.__name__
     )
+
+
+class AuthorizationFilter(logging.Filter):
+    """
+    A Filter that will replace the authorization header with the text '***REDACTED***'
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if record.args and hasattr(record.args, "__iter__"):
+            for arg in record.args:
+                if (
+                    isinstance(arg, dict)
+                    and "headers" in arg
+                    and "authorization" in arg["headers"]
+                ):
+                    arg["headers"]["authorization"] = "***REDACTED***"
+
+        return True
