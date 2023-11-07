@@ -64,7 +64,6 @@ from pyatlan.multipart_data_generator import MultipartDataGenerator
 from pyatlan.utils import HTTPStatus
 
 SERVICE_ACCOUNT_ = "service-account-"
-
 LOGGER = logging.getLogger(__name__)
 
 DEFAULT_RETRY = Retry(

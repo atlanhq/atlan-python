@@ -435,6 +435,13 @@ class ErrorCode(Enum):
         "Check that you have used the correct type of parameter.",
         InvalidRequestError,
     )
+    GLOSSARY_MISSING_QUALIFIED_NAME = (
+        400,
+        "ATLAN-PYTHON-400-049",
+        "The qualified_name is not present in the Glossary",
+        "Check that the qualified_name is available from the Glossary",
+        InvalidRequestError,
+    )
     AUTHENTICATION_PASSTHROUGH = (
         401,
         "ATLAN-PYTHON-401-000",
