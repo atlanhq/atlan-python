@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+import logging
 import time
 from abc import ABC
 from enum import Enum
@@ -85,7 +86,7 @@ from pyatlan.model.search import (
     with_active_glossary,
     with_active_term,
 )
-from pyatlan.utils import API, get_logger, unflatten_custom_metadata_for_entity
+from pyatlan.utils import API, unflatten_custom_metadata_for_entity
 
 T = TypeVar("T", bound=Referenceable)
 A = TypeVar("A", bound=Asset)
@@ -112,7 +113,7 @@ Asset_Types = Union[
     Type[MaterialisedView],
 ]
 
-LOGGER = get_logger()
+LOGGER = logging.getLogger(__name__)
 
 
 class AssetClient:
@@ -1261,6 +1262,17 @@ class AssetClient:
     def get_hierarchy(
         self, glossary: AtlasGlossary, attributes: Optional[list[AtlanField]] = None
     ) -> CategoryHierarchy:
+        """
+        Retrieve category hierarchy in this Glossary, in a traversable form. You can traverse in either depth_first
+        or breadth_first order. Both return an ordered list of Glossary objects.
+        Note: by default, each category will have a minimal set of information (name, GUID, qualifiedName). If you
+        want additional details about each category, specify the attributes you want in the attributes parameter
+        of this method.
+
+        :param glossary: the glossary to retrieve the category hierarchy for
+        :param attributes: attributes to retrieve for each category in the hierarchy
+        :returns: a traversable category hierarchy
+        """
         from pyatlan.model.fluent_search import FluentSearch
 
         if not glossary.qualified_name:
