@@ -448,6 +448,11 @@ class AttributeDef(AtlanObject):
 
     @property
     def applicable_entity_types(self) -> set[str]:
+        """
+        Set of entities on which this attribute can be applied.
+        Note: generally this should be left as-is. Any overrides should instead be applied through
+        one or more of applicable_asset_types, applicable_glossary_types, or applicable_other_asset_types.
+        """
         if self.options and self.options.applicable_entity_types:
             return set(json.loads(self.options.applicable_entity_types))
         return set()
@@ -464,6 +469,11 @@ class AttributeDef(AtlanObject):
 
     @property
     def applicable_asset_types(self) -> set[str]:
+        """
+        Asset type names to which to restrict the attribute.
+        Only assets of one of these types will have this attribute available.
+        To further restrict the assets for this custom metadata by connection, see applicable_connections.
+        """
         if self.options and self.options.applicable_asset_types:
             return set(json.loads(self.options.applicable_asset_types))
         return set()
@@ -484,6 +494,11 @@ class AttributeDef(AtlanObject):
 
     @property
     def applicable_glossary_types(self) -> set[str]:
+        """
+        Glossary type names to which to restrict the attribute.
+        Only glossary assets of one of these types will have this attribute available.
+        To further restrict the glossary content for this custom metadata by glossary, see applicable_glossaries.
+        """
         if self.options and self.options.applicable_glossary_types:
             return set(json.loads(self.options.applicable_glossary_types))
         return set()
@@ -504,6 +519,11 @@ class AttributeDef(AtlanObject):
 
     @property
     def applicable_other_asset_types(self) -> set[str]:
+        """
+        Any other asset type names to which to restrict the attribute.
+        These cover any asset type that is not managed within a connection or a glossary.
+        Only assets of one of these types will have this attribute available.
+        """
         if self.options and self.options.applicable_other_asset_types:
             return set(json.loads(self.options.applicable_other_asset_types))
         return set()
@@ -524,6 +544,11 @@ class AttributeDef(AtlanObject):
 
     @property
     def applicable_connections(self) -> set[str]:
+        """
+        Qualified names of connections to which to restrict the attribute.
+        Only assets within one of these connections will have this attribute available.
+        To further restrict the types of assets within the glossaries, see applicable_asset_types}.
+        """
         if self.options and self.options.applicable_connections:
             return set(json.loads(self.options.applicable_connections))
         return set()
@@ -540,6 +565,11 @@ class AttributeDef(AtlanObject):
 
     @property
     def applicable_glossaries(self) -> set[str]:
+        """
+        Qualified names of glossaries to which to restrict the attribute.
+        Only glossary assets within one of these glossaries will have this attribute available.
+        To further restrict the types of assets within the glossaries, see applicable_glossary_types}.
+        """
         if self.options and self.options.applicable_glossaries:
             return set(json.loads(self.options.applicable_glossaries))
         return set()
@@ -608,6 +638,9 @@ class AttributeDef(AtlanObject):
                 attr_def.enum_values = enum_def.get_valid_values()
             else:
                 attr_def.enum_values = []
+        attr_def.applicable_asset_types = _complete_type_list
+        attr_def.applicable_glossary_types = _all_glossary_types
+        attr_def.applicable_other_asset_types = _all_other_types
         return attr_def
 
     def is_archived(self) -> bool:
