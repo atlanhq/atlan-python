@@ -61,7 +61,7 @@ from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import AuthorizationFilter, HTTPStatus
+from pyatlan.utils import API, AuthorizationFilter, HTTPStatus
 
 SERVICE_ACCOUNT_ = "service-account-"
 LOGGER = logging.getLogger(__name__)
@@ -262,26 +262,42 @@ class AtlanClient(BaseSettings):
     def _call_api(
         self, api, query_params=None, request_obj=None, exclude_unset: bool = True
     ):
-        params, path = self._create_params(
+        path = self._create_path(api)
+        params, request_id = self._create_params(
             api, query_params, request_obj, exclude_unset
         )
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug("------------------------------------------------------")
+            LOGGER.debug("Call         : %s %s", api.method, path)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
+            LOGGER.debug("Accept       : %s", api.produces)
+            LOGGER.debug("Request ID   : %s", request_id)
         return self._call_api_internal(api, path, params)
+
+    def _create_path(self, api: API):
+        return os.path.join(self.base_url, api.path)
 
     def _upload_file(self, api, file=None, filename=None):
         generator = MultipartDataGenerator()
         generator.add_file(file=file, filename=filename)
         post_data = generator.get_post_data()
         api.produces = f"multipart/form-data; boundary={generator.boundary}"
-        params, path = self._create_params(
+        path = self._create_path(api)
+        params, request_id = self._create_params(
             api, query_params=None, request_obj=None, exclude_unset=True
         )
+        if LOGGER.isEnabledFor(logging.DEBUG):
+            LOGGER.debug("------------------------------------------------------")
+            LOGGER.debug("Call         : %s %s", api.method, path)
+            LOGGER.debug("Content-type_ : %s", api.consumes)
+            LOGGER.debug("Accept       : %s", api.produces)
+            LOGGER.debug("Request ID   : %s", request_id)
         return self._call_api_internal(api, path, params, binary_data=post_data)
 
     def _create_params(
-        self, api, query_params, request_obj, exclude_unset: bool = True
+        self, api: API, query_params, request_obj, exclude_unset: bool = True
     ):
         params = copy.deepcopy(self._request_params)
-        path = os.path.join(self.base_url, api.path)
         request_id = str(uuid.uuid4())
         params["headers"]["Accept"] = api.consumes
         params["headers"]["content-type"] = api.produces
@@ -295,13 +311,7 @@ class AtlanClient(BaseSettings):
                 )
             else:
                 params["data"] = json.dumps(request_obj)
-        if LOGGER.isEnabledFor(logging.DEBUG):
-            LOGGER.debug("------------------------------------------------------")
-            LOGGER.debug("Call         : %s %s", api.method, path)
-            LOGGER.debug("Content-type_ : %s", api.consumes)
-            LOGGER.debug("Accept       : %s", api.produces)
-            LOGGER.debug("Request ID   : %s", request_id)
-        return params, path
+        return params, request_id
 
     def upload_image(self, file, filename: str) -> AtlanImage:
         """
