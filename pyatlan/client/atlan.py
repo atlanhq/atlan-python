@@ -275,7 +275,7 @@ class AtlanClient(BaseSettings):
         return self._call_api_internal(api, path, params)
 
     def _create_path(self, api: API):
-        return os.path.join(self.base_url, api.path)
+        return os.path.join(self.base_url, api.endpoint.prefix, api.path)
 
     def _upload_file(self, api, file=None, filename=None):
         generator = MultipartDataGenerator()
