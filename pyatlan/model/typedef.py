@@ -254,7 +254,9 @@ class AttributeDef(AtlanObject):
             "applicable_other_asset_types}.",
         )
         custom_applicable_entity_types: Optional[str] = Field(
-            description="Set of entities on which this attribute should appear.",
+            description="Set of entities on which this attribute should appear."
+            "Deprecated: see applicable_asset_types, applicable_glossary_types and "
+            "applicable_other_asset_types",
         )
         allow_search: Optional[bool] = Field(
             description="Whether the attribute should be searchable (true) or not (false).",
