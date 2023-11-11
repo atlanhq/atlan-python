@@ -88,28 +88,29 @@ from .asset40 import Sigma
 from .asset41 import Tableau
 from .asset42 import Looker
 from .asset43 import Redash
-from .asset44 import DataStudio
-from .asset45 import Metabase
-from .asset46 import QuickSight
-from .asset47 import Thoughtspot
-from .asset48 import PowerBI
-from .asset49 import MicroStrategy
-from .asset50 import Qlik
-from .asset51 import Salesforce
-from .asset52 import ReadmeTemplate
-from .asset53 import Kafka
-from .asset54 import MongoDB
-from .asset55 import DbtTag
-from .asset56 import APIPath, APISpec
-from .asset57 import DataStudioAsset
-from .asset58 import S3Bucket, S3Object
-from .asset59 import ADLSAccount, ADLSContainer, ADLSObject
-from .asset60 import GCSBucket, GCSObject
-from .asset61 import PresetChart, PresetDashboard, PresetDataset, PresetWorkspace
-from .asset62 import ModeChart, ModeCollection, ModeQuery, ModeReport, ModeWorkspace
-from .asset63 import SigmaDataset, SigmaDatasetColumn
-from .asset64 import SigmaDataElement, SigmaDataElementField, SigmaPage, SigmaWorkbook
-from .asset65 import (
+from .asset44 import Sisense
+from .asset45 import DataStudio
+from .asset46 import Metabase
+from .asset47 import QuickSight
+from .asset48 import Thoughtspot
+from .asset49 import PowerBI
+from .asset50 import MicroStrategy
+from .asset51 import Qlik
+from .asset52 import Salesforce
+from .asset53 import ReadmeTemplate
+from .asset54 import Kafka
+from .asset55 import MongoDB
+from .asset56 import DbtTag
+from .asset57 import APIPath, APISpec
+from .asset58 import DataStudioAsset
+from .asset59 import S3Bucket, S3Object
+from .asset60 import ADLSAccount, ADLSContainer, ADLSObject
+from .asset61 import GCSBucket, GCSObject
+from .asset62 import PresetChart, PresetDashboard, PresetDataset, PresetWorkspace
+from .asset63 import ModeChart, ModeCollection, ModeQuery, ModeReport, ModeWorkspace
+from .asset64 import SigmaDataset, SigmaDatasetColumn
+from .asset65 import SigmaDataElement, SigmaDataElementField, SigmaPage, SigmaWorkbook
+from .asset66 import (
     TableauCalculatedField,
     TableauDashboard,
     TableauDatasource,
@@ -120,8 +121,8 @@ from .asset65 import (
     TableauWorkbook,
     TableauWorksheet,
 )
-from .asset66 import TableauMetric
-from .asset67 import (
+from .asset67 import TableauMetric
+from .asset68 import (
     LookerDashboard,
     LookerExplore,
     LookerField,
@@ -133,10 +134,17 @@ from .asset67 import (
     LookerTile,
     LookerView,
 )
-from .asset68 import RedashDashboard
-from .asset69 import RedashQuery, RedashVisualization
-from .asset70 import MetabaseCollection, MetabaseDashboard, MetabaseQuestion
+from .asset69 import RedashDashboard
+from .asset70 import RedashQuery, RedashVisualization
 from .asset71 import (
+    SisenseDashboard,
+    SisenseDatamodel,
+    SisenseDatamodelTable,
+    SisenseFolder,
+    SisenseWidget,
+)
+from .asset72 import MetabaseCollection, MetabaseDashboard, MetabaseQuestion
+from .asset73 import (
     QuickSightAnalysis,
     QuickSightAnalysisVisual,
     QuickSightDashboard,
@@ -145,9 +153,9 @@ from .asset71 import (
     QuickSightDatasetField,
     QuickSightFolder,
 )
-from .asset72 import ThoughtspotDashlet, ThoughtspotLiveboard
-from .asset73 import ThoughtspotAnswer
-from .asset74 import (
+from .asset74 import ThoughtspotDashlet, ThoughtspotLiveboard
+from .asset75 import ThoughtspotAnswer
+from .asset76 import (
     PowerBIColumn,
     PowerBIDashboard,
     PowerBIDataflow,
@@ -160,7 +168,7 @@ from .asset74 import (
     PowerBITile,
     PowerBIWorkspace,
 )
-from .asset75 import (
+from .asset77 import (
     MicroStrategyAttribute,
     MicroStrategyCube,
     MicroStrategyDocument,
@@ -171,16 +179,16 @@ from .asset75 import (
     MicroStrategyReport,
     MicroStrategyVisualization,
 )
-from .asset76 import QlikApp, QlikChart, QlikDataset, QlikSheet, QlikSpace
-from .asset77 import (
+from .asset78 import QlikApp, QlikChart, QlikDataset, QlikSheet, QlikSpace
+from .asset79 import (
     SalesforceDashboard,
     SalesforceField,
     SalesforceObject,
     SalesforceOrganization,
     SalesforceReport,
 )
-from .asset79 import MongoDBCollection, MongoDBDatabase
-from .asset80 import KafkaConsumerGroup, KafkaTopic
-from .asset81 import QlikStream
-from .asset82 import AzureEventHub
-from .asset83 import AzureEventHubConsumerGroup
+from .asset81 import MongoDBCollection, MongoDBDatabase
+from .asset82 import KafkaConsumerGroup, KafkaTopic
+from .asset83 import QlikStream
+from .asset84 import AzureEventHub
+from .asset85 import AzureEventHubConsumerGroup

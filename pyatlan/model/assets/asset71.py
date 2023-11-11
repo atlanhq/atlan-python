@@ -9,924 +9,1105 @@ from typing import ClassVar, Optional
 
 from pydantic import Field, validator
 
-from pyatlan.model.enums import (
-    QuickSightAnalysisStatus,
-    QuickSightDatasetFieldType,
-    QuickSightDatasetImportMode,
-    QuickSightFolderType,
-)
 from pyatlan.model.fields.atlan_fields import (
+    BooleanField,
     KeywordField,
     KeywordTextField,
     NumericField,
     RelationField,
 )
 
-from .asset46 import QuickSight
+from .asset44 import Sisense
 
 
-class QuickSightFolder(QuickSight):
+class SisenseFolder(Sisense):
     """Description"""
 
-    type_name: str = Field("QuickSightFolder", allow_mutation=False)
+    type_name: str = Field("SisenseFolder", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightFolder":
-            raise ValueError("must be QuickSightFolder")
+        if v != "SisenseFolder":
+            raise ValueError("must be SisenseFolder")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightFolder._convenience_properties:
+        if name in SisenseFolder._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_FOLDER_TYPE: ClassVar[KeywordField] = KeywordField(
-        "quickSightFolderType", "quickSightFolderType"
+    SISENSE_FOLDER_PARENT_FOLDER_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "sisenseFolderParentFolderQualifiedName",
+        "sisenseFolderParentFolderQualifiedName",
+        "sisenseFolderParentFolderQualifiedName.text",
     )
     """
-    Shared or private type of folder
-    """
-    QUICK_SIGHT_FOLDER_HIERARCHY: ClassVar[KeywordField] = KeywordField(
-        "quickSightFolderHierarchy", "quickSightFolderHierarchy"
-    )
-    """
-    Detailed path of the folder
+    Unique name of the parent folder in which this folder exists.
     """
 
-    QUICK_SIGHT_DASHBOARDS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboards"
-    )
-    """
-    TBC
-    """
-    QUICK_SIGHT_DATASETS: ClassVar[RelationField] = RelationField("quickSightDatasets")
-    """
-    TBC
-    """
-    QUICK_SIGHT_ANALYSES: ClassVar[RelationField] = RelationField("quickSightAnalyses")
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_folder_type",
-        "quick_sight_folder_hierarchy",
-        "quick_sight_dashboards",
-        "quick_sight_datasets",
-        "quick_sight_analyses",
-    ]
-
-    @property
-    def quick_sight_folder_type(self) -> Optional[QuickSightFolderType]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_folder_type
-        )
-
-    @quick_sight_folder_type.setter
-    def quick_sight_folder_type(
-        self, quick_sight_folder_type: Optional[QuickSightFolderType]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_type = quick_sight_folder_type
-
-    @property
-    def quick_sight_folder_hierarchy(self) -> Optional[list[dict[str, str]]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_folder_hierarchy
-        )
-
-    @quick_sight_folder_hierarchy.setter
-    def quick_sight_folder_hierarchy(
-        self, quick_sight_folder_hierarchy: Optional[list[dict[str, str]]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_folder_hierarchy = quick_sight_folder_hierarchy
-
-    @property
-    def quick_sight_dashboards(self) -> Optional[list[QuickSightDashboard]]:
-        return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboards
-        )
-
-    @quick_sight_dashboards.setter
-    def quick_sight_dashboards(
-        self, quick_sight_dashboards: Optional[list[QuickSightDashboard]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboards = quick_sight_dashboards
-
-    @property
-    def quick_sight_datasets(self) -> Optional[list[QuickSightDataset]]:
-        return None if self.attributes is None else self.attributes.quick_sight_datasets
-
-    @quick_sight_datasets.setter
-    def quick_sight_datasets(
-        self, quick_sight_datasets: Optional[list[QuickSightDataset]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_datasets = quick_sight_datasets
-
-    @property
-    def quick_sight_analyses(self) -> Optional[list[QuickSightAnalysis]]:
-        return None if self.attributes is None else self.attributes.quick_sight_analyses
-
-    @quick_sight_analyses.setter
-    def quick_sight_analyses(
-        self, quick_sight_analyses: Optional[list[QuickSightAnalysis]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analyses = quick_sight_analyses
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_folder_type: Optional[QuickSightFolderType] = Field(
-            None, description="", alias="quickSightFolderType"
-        )
-        quick_sight_folder_hierarchy: Optional[list[dict[str, str]]] = Field(
-            None, description="", alias="quickSightFolderHierarchy"
-        )
-        quick_sight_dashboards: Optional[list[QuickSightDashboard]] = Field(
-            None, description="", alias="quickSightDashboards"
-        )  # relationship
-        quick_sight_datasets: Optional[list[QuickSightDataset]] = Field(
-            None, description="", alias="quickSightDatasets"
-        )  # relationship
-        quick_sight_analyses: Optional[list[QuickSightAnalysis]] = Field(
-            None, description="", alias="quickSightAnalyses"
-        )  # relationship
-
-    attributes: "QuickSightFolder.Attributes" = Field(
-        default_factory=lambda: QuickSightFolder.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
-
-
-class QuickSightDashboardVisual(QuickSight):
-    """Description"""
-
-    type_name: str = Field("QuickSightDashboardVisual", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDashboardVisual":
-            raise ValueError("must be QuickSightDashboardVisual")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDashboardVisual._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    QUICK_SIGHT_DASHBOARD_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "quickSightDashboardQualifiedName",
-        "quickSightDashboardQualifiedName",
-        "quickSightDashboardQualifiedName.text",
+    SISENSE_CHILD_FOLDERS: ClassVar[RelationField] = RelationField(
+        "sisenseChildFolders"
     )
     """
     TBC
     """
-
-    QUICK_SIGHT_DASHBOARD: ClassVar[RelationField] = RelationField(
-        "quickSightDashboard"
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
+    """
+    TBC
+    """
+    SISENSE_DASHBOARDS: ClassVar[RelationField] = RelationField("sisenseDashboards")
+    """
+    TBC
+    """
+    SISENSE_PARENT_FOLDER: ClassVar[RelationField] = RelationField(
+        "sisenseParentFolder"
     )
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_qualified_name",
-        "quick_sight_dashboard",
+        "sisense_folder_parent_folder_qualified_name",
+        "sisense_child_folders",
+        "sisense_widgets",
+        "sisense_dashboards",
+        "sisense_parent_folder",
     ]
 
     @property
-    def quick_sight_dashboard_qualified_name(self) -> Optional[str]:
+    def sisense_folder_parent_folder_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dashboard_qualified_name
+            else self.attributes.sisense_folder_parent_folder_qualified_name
         )
 
-    @quick_sight_dashboard_qualified_name.setter
-    def quick_sight_dashboard_qualified_name(
-        self, quick_sight_dashboard_qualified_name: Optional[str]
+    @sisense_folder_parent_folder_qualified_name.setter
+    def sisense_folder_parent_folder_qualified_name(
+        self, sisense_folder_parent_folder_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_qualified_name = (
-            quick_sight_dashboard_qualified_name
+        self.attributes.sisense_folder_parent_folder_qualified_name = (
+            sisense_folder_parent_folder_qualified_name
         )
 
     @property
-    def quick_sight_dashboard(self) -> Optional[QuickSightDashboard]:
+    def sisense_child_folders(self) -> Optional[list[SisenseFolder]]:
         return (
-            None if self.attributes is None else self.attributes.quick_sight_dashboard
+            None if self.attributes is None else self.attributes.sisense_child_folders
         )
 
-    @quick_sight_dashboard.setter
-    def quick_sight_dashboard(
-        self, quick_sight_dashboard: Optional[QuickSightDashboard]
+    @sisense_child_folders.setter
+    def sisense_child_folders(
+        self, sisense_child_folders: Optional[list[SisenseFolder]]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard = quick_sight_dashboard
+        self.attributes.sisense_child_folders = sisense_child_folders
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDashboardQualifiedName"
+    @property
+    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
+
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widgets = sisense_widgets
+
+    @property
+    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
+        return None if self.attributes is None else self.attributes.sisense_dashboards
+
+    @sisense_dashboards.setter
+    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboards = sisense_dashboards
+
+    @property
+    def sisense_parent_folder(self) -> Optional[SisenseFolder]:
+        return (
+            None if self.attributes is None else self.attributes.sisense_parent_folder
         )
-        quick_sight_dashboard: Optional[QuickSightDashboard] = Field(
-            None, description="", alias="quickSightDashboard"
+
+    @sisense_parent_folder.setter
+    def sisense_parent_folder(self, sisense_parent_folder: Optional[SisenseFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_parent_folder = sisense_parent_folder
+
+    class Attributes(Sisense.Attributes):
+        sisense_folder_parent_folder_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseFolderParentFolderQualifiedName"
+        )
+        sisense_child_folders: Optional[list[SisenseFolder]] = Field(
+            None, description="", alias="sisenseChildFolders"
+        )  # relationship
+        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+            None, description="", alias="sisenseWidgets"
+        )  # relationship
+        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
+            None, description="", alias="sisenseDashboards"
+        )  # relationship
+        sisense_parent_folder: Optional[SisenseFolder] = Field(
+            None, description="", alias="sisenseParentFolder"
         )  # relationship
 
-    attributes: "QuickSightDashboardVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboardVisual.Attributes(),
+    attributes: "SisenseFolder.Attributes" = Field(
+        default_factory=lambda: SisenseFolder.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightAnalysisVisual(QuickSight):
+class SisenseWidget(Sisense):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysisVisual", allow_mutation=False)
+    type_name: str = Field("SisenseWidget", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightAnalysisVisual":
-            raise ValueError("must be QuickSightAnalysisVisual")
+        if v != "SisenseWidget":
+            raise ValueError("must be SisenseWidget")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysisVisual._convenience_properties:
+        if name in SisenseWidget._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_ANALYSIS_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "quickSightAnalysisQualifiedName",
-        "quickSightAnalysisQualifiedName",
-        "quickSightAnalysisQualifiedName.text",
+    SISENSE_WIDGET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseWidgetColumnCount", "sisenseWidgetColumnCount"
     )
     """
-    Qualified name of the QuickSight Analysis
+    Number of columns used in this widget.
+    """
+    SISENSE_WIDGET_SUB_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseWidgetSubType", "sisenseWidgetSubType"
+    )
+    """
+    Subtype of this widget.
+    """
+    SISENSE_WIDGET_SIZE: ClassVar[KeywordField] = KeywordField(
+        "sisenseWidgetSize", "sisenseWidgetSize"
+    )
+    """
+    Size of this widget.
+    """
+    SISENSE_WIDGET_DASHBOARD_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "sisenseWidgetDashboardQualifiedName",
+        "sisenseWidgetDashboardQualifiedName",
+        "sisenseWidgetDashboardQualifiedName.text",
+    )
+    """
+    Unique name of the dashboard in which this widget exists.
+    """
+    SISENSE_WIDGET_FOLDER_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sisenseWidgetFolderQualifiedName",
+        "sisenseWidgetFolderQualifiedName",
+        "sisenseWidgetFolderQualifiedName.text",
+    )
+    """
+    Unique name of the folder in which this widget exists.
     """
 
-    QUICK_SIGHT_ANALYSIS: ClassVar[RelationField] = RelationField("quickSightAnalysis")
+    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
+        "sisenseDatamodelTables"
+    )
+    """
+    TBC
+    """
+    SISENSE_FOLDER: ClassVar[RelationField] = RelationField("sisenseFolder")
+    """
+    TBC
+    """
+    SISENSE_DASHBOARD: ClassVar[RelationField] = RelationField("sisenseDashboard")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_qualified_name",
-        "quick_sight_analysis",
+        "sisense_widget_column_count",
+        "sisense_widget_sub_type",
+        "sisense_widget_size",
+        "sisense_widget_dashboard_qualified_name",
+        "sisense_widget_folder_qualified_name",
+        "sisense_datamodel_tables",
+        "sisense_folder",
+        "sisense_dashboard",
     ]
 
     @property
-    def quick_sight_analysis_qualified_name(self) -> Optional[str]:
+    def sisense_widget_column_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_qualified_name
+            else self.attributes.sisense_widget_column_count
         )
 
-    @quick_sight_analysis_qualified_name.setter
-    def quick_sight_analysis_qualified_name(
-        self, quick_sight_analysis_qualified_name: Optional[str]
+    @sisense_widget_column_count.setter
+    def sisense_widget_column_count(self, sisense_widget_column_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widget_column_count = sisense_widget_column_count
+
+    @property
+    def sisense_widget_sub_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sisense_widget_sub_type
+        )
+
+    @sisense_widget_sub_type.setter
+    def sisense_widget_sub_type(self, sisense_widget_sub_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widget_sub_type = sisense_widget_sub_type
+
+    @property
+    def sisense_widget_size(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.sisense_widget_size
+
+    @sisense_widget_size.setter
+    def sisense_widget_size(self, sisense_widget_size: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widget_size = sisense_widget_size
+
+    @property
+    def sisense_widget_dashboard_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_widget_dashboard_qualified_name
+        )
+
+    @sisense_widget_dashboard_qualified_name.setter
+    def sisense_widget_dashboard_qualified_name(
+        self, sisense_widget_dashboard_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_qualified_name = (
-            quick_sight_analysis_qualified_name
+        self.attributes.sisense_widget_dashboard_qualified_name = (
+            sisense_widget_dashboard_qualified_name
         )
 
     @property
-    def quick_sight_analysis(self) -> Optional[QuickSightAnalysis]:
-        return None if self.attributes is None else self.attributes.quick_sight_analysis
+    def sisense_widget_folder_qualified_name(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_widget_folder_qualified_name
+        )
 
-    @quick_sight_analysis.setter
-    def quick_sight_analysis(self, quick_sight_analysis: Optional[QuickSightAnalysis]):
+    @sisense_widget_folder_qualified_name.setter
+    def sisense_widget_folder_qualified_name(
+        self, sisense_widget_folder_qualified_name: Optional[str]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis = quick_sight_analysis
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightAnalysisQualifiedName"
+        self.attributes.sisense_widget_folder_qualified_name = (
+            sisense_widget_folder_qualified_name
         )
-        quick_sight_analysis: Optional[QuickSightAnalysis] = Field(
-            None, description="", alias="quickSightAnalysis"
+
+    @property
+    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_tables
+        )
+
+    @sisense_datamodel_tables.setter
+    def sisense_datamodel_tables(
+        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
+
+    @property
+    def sisense_folder(self) -> Optional[SisenseFolder]:
+        return None if self.attributes is None else self.attributes.sisense_folder
+
+    @sisense_folder.setter
+    def sisense_folder(self, sisense_folder: Optional[SisenseFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_folder = sisense_folder
+
+    @property
+    def sisense_dashboard(self) -> Optional[SisenseDashboard]:
+        return None if self.attributes is None else self.attributes.sisense_dashboard
+
+    @sisense_dashboard.setter
+    def sisense_dashboard(self, sisense_dashboard: Optional[SisenseDashboard]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboard = sisense_dashboard
+
+    class Attributes(Sisense.Attributes):
+        sisense_widget_column_count: Optional[int] = Field(
+            None, description="", alias="sisenseWidgetColumnCount"
+        )
+        sisense_widget_sub_type: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetSubType"
+        )
+        sisense_widget_size: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetSize"
+        )
+        sisense_widget_dashboard_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetDashboardQualifiedName"
+        )
+        sisense_widget_folder_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseWidgetFolderQualifiedName"
+        )
+        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
+            None, description="", alias="sisenseDatamodelTables"
+        )  # relationship
+        sisense_folder: Optional[SisenseFolder] = Field(
+            None, description="", alias="sisenseFolder"
+        )  # relationship
+        sisense_dashboard: Optional[SisenseDashboard] = Field(
+            None, description="", alias="sisenseDashboard"
         )  # relationship
 
-    attributes: "QuickSightAnalysisVisual.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysisVisual.Attributes(),
+    attributes: "SisenseWidget.Attributes" = Field(
+        default_factory=lambda: SisenseWidget.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDatasetField(QuickSight):
+class SisenseDatamodel(Sisense):
     """Description"""
 
-    type_name: str = Field("QuickSightDatasetField", allow_mutation=False)
+    type_name: str = Field("SisenseDatamodel", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDatasetField":
-            raise ValueError("must be QuickSightDatasetField")
+        if v != "SisenseDatamodel":
+            raise ValueError("must be SisenseDatamodel")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDatasetField._convenience_properties:
+        if name in SisenseDatamodel._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DATASET_FIELD_TYPE: ClassVar[KeywordField] = KeywordField(
-        "quickSightDatasetFieldType", "quickSightDatasetFieldType"
+    SISENSE_DATAMODEL_TABLE_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelTableCount", "sisenseDatamodelTableCount"
     )
     """
-    Datatype of column in the dataset
+    Number of tables in this datamodel.
     """
-    QUICK_SIGHT_DATASET_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "quickSightDatasetQualifiedName",
-        "quickSightDatasetQualifiedName",
-        "quickSightDatasetQualifiedName.text",
+    SISENSE_DATAMODEL_SERVER: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelServer", "sisenseDatamodelServer"
     )
     """
-    Qualified name of the parent dataset
+    Hostname of the server on which this datamodel was created.
     """
+    SISENSE_DATAMODEL_REVISION: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelRevision", "sisenseDatamodelRevision"
+    )
+    """
+    Revision of this datamodel.
+    """
+    SISENSE_DATAMODEL_LAST_BUILD_TIME: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelLastBuildTime", "sisenseDatamodelLastBuildTime"
+    )
+    """
+    Time (epoch) when this datamodel was last built, in milliseconds.
+    """
+    SISENSE_DATAMODEL_LAST_SUCCESSFUL_BUILD_TIME: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelLastSuccessfulBuildTime",
+        "sisenseDatamodelLastSuccessfulBuildTime",
+    )
+    """
+    Time (epoch) when this datamodel was last built successfully, in milliseconds.
+    """
+    SISENSE_DATAMODEL_LAST_PUBLISH_TIME: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelLastPublishTime", "sisenseDatamodelLastPublishTime"
+    )
+    """
+    Time (epoch) when this datamodel was last published, in milliseconds.
+    """
+    SISENSE_DATAMODEL_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelType", "sisenseDatamodelType"
+    )
+    """
+    Type of this datamodel, for example: 'extract' or 'custom'.
+    """
+    SISENSE_DATAMODEL_RELATION_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelRelationType", "sisenseDatamodelRelationType"
+    )
+    """
+    Default relation type for this datamodel. 'extract' type Datamodels have regular relations by default. 'live' type Datamodels have direct relations by default.
+    """  # noqa: E501
 
-    QUICK_SIGHT_DATASET: ClassVar[RelationField] = RelationField("quickSightDataset")
+    SISENSE_DATAMODEL_TABLES: ClassVar[RelationField] = RelationField(
+        "sisenseDatamodelTables"
+    )
+    """
+    TBC
+    """
+    SISENSE_DASHBOARDS: ClassVar[RelationField] = RelationField("sisenseDashboards")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_field_type",
-        "quick_sight_dataset_qualified_name",
-        "quick_sight_dataset",
+        "sisense_datamodel_table_count",
+        "sisense_datamodel_server",
+        "sisense_datamodel_revision",
+        "sisense_datamodel_last_build_time",
+        "sisense_datamodel_last_successful_build_time",
+        "sisense_datamodel_last_publish_time",
+        "sisense_datamodel_type",
+        "sisense_datamodel_relation_type",
+        "sisense_datamodel_tables",
+        "sisense_dashboards",
     ]
 
     @property
-    def quick_sight_dataset_field_type(self) -> Optional[QuickSightDatasetFieldType]:
+    def sisense_datamodel_table_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dataset_field_type
+            else self.attributes.sisense_datamodel_table_count
         )
 
-    @quick_sight_dataset_field_type.setter
-    def quick_sight_dataset_field_type(
-        self, quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType]
+    @sisense_datamodel_table_count.setter
+    def sisense_datamodel_table_count(
+        self, sisense_datamodel_table_count: Optional[int]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_field_type = quick_sight_dataset_field_type
+        self.attributes.sisense_datamodel_table_count = sisense_datamodel_table_count
 
     @property
-    def quick_sight_dataset_qualified_name(self) -> Optional[str]:
+    def sisense_datamodel_server(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dataset_qualified_name
+            else self.attributes.sisense_datamodel_server
         )
 
-    @quick_sight_dataset_qualified_name.setter
-    def quick_sight_dataset_qualified_name(
-        self, quick_sight_dataset_qualified_name: Optional[str]
+    @sisense_datamodel_server.setter
+    def sisense_datamodel_server(self, sisense_datamodel_server: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_server = sisense_datamodel_server
+
+    @property
+    def sisense_datamodel_revision(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_revision
+        )
+
+    @sisense_datamodel_revision.setter
+    def sisense_datamodel_revision(self, sisense_datamodel_revision: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_revision = sisense_datamodel_revision
+
+    @property
+    def sisense_datamodel_last_build_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_build_time
+        )
+
+    @sisense_datamodel_last_build_time.setter
+    def sisense_datamodel_last_build_time(
+        self, sisense_datamodel_last_build_time: Optional[datetime]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_qualified_name = (
-            quick_sight_dataset_qualified_name
+        self.attributes.sisense_datamodel_last_build_time = (
+            sisense_datamodel_last_build_time
         )
 
     @property
-    def quick_sight_dataset(self) -> Optional[QuickSightDataset]:
-        return None if self.attributes is None else self.attributes.quick_sight_dataset
+    def sisense_datamodel_last_successful_build_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_successful_build_time
+        )
 
-    @quick_sight_dataset.setter
-    def quick_sight_dataset(self, quick_sight_dataset: Optional[QuickSightDataset]):
+    @sisense_datamodel_last_successful_build_time.setter
+    def sisense_datamodel_last_successful_build_time(
+        self, sisense_datamodel_last_successful_build_time: Optional[datetime]
+    ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset = quick_sight_dataset
+        self.attributes.sisense_datamodel_last_successful_build_time = (
+            sisense_datamodel_last_successful_build_time
+        )
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_field_type: Optional[QuickSightDatasetFieldType] = Field(
-            None, description="", alias="quickSightDatasetFieldType"
+    @property
+    def sisense_datamodel_last_publish_time(self) -> Optional[datetime]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_last_publish_time
         )
-        quick_sight_dataset_qualified_name: Optional[str] = Field(
-            None, description="", alias="quickSightDatasetQualifiedName"
+
+    @sisense_datamodel_last_publish_time.setter
+    def sisense_datamodel_last_publish_time(
+        self, sisense_datamodel_last_publish_time: Optional[datetime]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_last_publish_time = (
+            sisense_datamodel_last_publish_time
         )
-        quick_sight_dataset: Optional[QuickSightDataset] = Field(
-            None, description="", alias="quickSightDataset"
+
+    @property
+    def sisense_datamodel_type(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.sisense_datamodel_type
+        )
+
+    @sisense_datamodel_type.setter
+    def sisense_datamodel_type(self, sisense_datamodel_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_type = sisense_datamodel_type
+
+    @property
+    def sisense_datamodel_relation_type(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_relation_type
+        )
+
+    @sisense_datamodel_relation_type.setter
+    def sisense_datamodel_relation_type(
+        self, sisense_datamodel_relation_type: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_relation_type = (
+            sisense_datamodel_relation_type
+        )
+
+    @property
+    def sisense_datamodel_tables(self) -> Optional[list[SisenseDatamodelTable]]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_tables
+        )
+
+    @sisense_datamodel_tables.setter
+    def sisense_datamodel_tables(
+        self, sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_tables = sisense_datamodel_tables
+
+    @property
+    def sisense_dashboards(self) -> Optional[list[SisenseDashboard]]:
+        return None if self.attributes is None else self.attributes.sisense_dashboards
+
+    @sisense_dashboards.setter
+    def sisense_dashboards(self, sisense_dashboards: Optional[list[SisenseDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_dashboards = sisense_dashboards
+
+    class Attributes(Sisense.Attributes):
+        sisense_datamodel_table_count: Optional[int] = Field(
+            None, description="", alias="sisenseDatamodelTableCount"
+        )
+        sisense_datamodel_server: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelServer"
+        )
+        sisense_datamodel_revision: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelRevision"
+        )
+        sisense_datamodel_last_build_time: Optional[datetime] = Field(
+            None, description="", alias="sisenseDatamodelLastBuildTime"
+        )
+        sisense_datamodel_last_successful_build_time: Optional[datetime] = Field(
+            None, description="", alias="sisenseDatamodelLastSuccessfulBuildTime"
+        )
+        sisense_datamodel_last_publish_time: Optional[datetime] = Field(
+            None, description="", alias="sisenseDatamodelLastPublishTime"
+        )
+        sisense_datamodel_type: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelType"
+        )
+        sisense_datamodel_relation_type: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelRelationType"
+        )
+        sisense_datamodel_tables: Optional[list[SisenseDatamodelTable]] = Field(
+            None, description="", alias="sisenseDatamodelTables"
+        )  # relationship
+        sisense_dashboards: Optional[list[SisenseDashboard]] = Field(
+            None, description="", alias="sisenseDashboards"
         )  # relationship
 
-    attributes: "QuickSightDatasetField.Attributes" = Field(
-        default_factory=lambda: QuickSightDatasetField.Attributes(),
+    attributes: "SisenseDatamodel.Attributes" = Field(
+        default_factory=lambda: SisenseDatamodel.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightAnalysis(QuickSight):
+class SisenseDatamodelTable(Sisense):
     """Description"""
 
-    type_name: str = Field("QuickSightAnalysis", allow_mutation=False)
+    type_name: str = Field("SisenseDatamodelTable", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightAnalysis":
-            raise ValueError("must be QuickSightAnalysis")
+        if v != "SisenseDatamodelTable":
+            raise ValueError("must be SisenseDatamodelTable")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightAnalysis._convenience_properties:
+        if name in SisenseDatamodelTable._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_ANALYSIS_STATUS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisStatus", "quickSightAnalysisStatus"
+    SISENSE_DATAMODEL_QUALIFIED_NAME: ClassVar[KeywordTextField] = KeywordTextField(
+        "sisenseDatamodelQualifiedName",
+        "sisenseDatamodelQualifiedName",
+        "sisenseDatamodelQualifiedName.text",
     )
     """
-    Status of quicksight analysis
+    Unique name of the datamodel in which this datamodel table exists.
     """
-    QUICK_SIGHT_ANALYSIS_CALCULATED_FIELDS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisCalculatedFields", "quickSightAnalysisCalculatedFields"
+    SISENSE_DATAMODEL_TABLE_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseDatamodelTableColumnCount", "sisenseDatamodelTableColumnCount"
     )
     """
-    Calculated fields of quicksight analysis
+    Number of columns present in this datamodel table.
     """
-    QUICK_SIGHT_ANALYSIS_PARAMETER_DECLARATIONS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisParameterDeclarations",
-        "quickSightAnalysisParameterDeclarations",
+    SISENSE_DATAMODEL_TABLE_TYPE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableType", "sisenseDatamodelTableType"
     )
     """
-    parameters used for quicksight analysis
+    Type of this datamodel table, for example: 'base' for regular tables, 'custom' for SQL expression-based tables.
     """
-    QUICK_SIGHT_ANALYSIS_FILTER_GROUPS: ClassVar[KeywordField] = KeywordField(
-        "quickSightAnalysisFilterGroups", "quickSightAnalysisFilterGroups"
+    SISENSE_DATAMODEL_TABLE_EXPRESSION: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableExpression", "sisenseDatamodelTableExpression"
     )
     """
-    Filter groups used for quicksight analysis
+    SQL expression of this datamodel table.
+    """
+    SISENSE_DATAMODEL_TABLE_IS_MATERIALIZED: ClassVar[BooleanField] = BooleanField(
+        "sisenseDatamodelTableIsMaterialized", "sisenseDatamodelTableIsMaterialized"
+    )
+    """
+    Whether this datamodel table is materialised (true) or not (false).
+    """
+    SISENSE_DATAMODEL_TABLE_IS_HIDDEN: ClassVar[BooleanField] = BooleanField(
+        "sisenseDatamodelTableIsHidden", "sisenseDatamodelTableIsHidden"
+    )
+    """
+    Whether this datamodel table is hidden in Sisense (true) or not (false).
+    """
+    SISENSE_DATAMODEL_TABLE_SCHEDULE: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableSchedule", "sisenseDatamodelTableSchedule"
+    )
+    """
+    JSON specifying the refresh schedule of this datamodel table.
+    """
+    SISENSE_DATAMODEL_TABLE_LIVE_QUERY_SETTINGS: ClassVar[KeywordField] = KeywordField(
+        "sisenseDatamodelTableLiveQuerySettings",
+        "sisenseDatamodelTableLiveQuerySettings",
+    )
+    """
+    JSON specifying the LiveQuery settings of this datamodel table.
     """
 
-    QUICK_SIGHT_ANALYSIS_VISUALS: ClassVar[RelationField] = RelationField(
-        "quickSightAnalysisVisuals"
-    )
+    SISENSE_DATAMODEL: ClassVar[RelationField] = RelationField("sisenseDatamodel")
     """
     TBC
     """
-    QUICK_SIGHT_ANALYSIS_FOLDERS: ClassVar[RelationField] = RelationField(
-        "quickSightAnalysisFolders"
-    )
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_analysis_status",
-        "quick_sight_analysis_calculated_fields",
-        "quick_sight_analysis_parameter_declarations",
-        "quick_sight_analysis_filter_groups",
-        "quick_sight_analysis_visuals",
-        "quick_sight_analysis_folders",
+        "sisense_datamodel_qualified_name",
+        "sisense_datamodel_table_column_count",
+        "sisense_datamodel_table_type",
+        "sisense_datamodel_table_expression",
+        "sisense_datamodel_table_is_materialized",
+        "sisense_datamodel_table_is_hidden",
+        "sisense_datamodel_table_schedule",
+        "sisense_datamodel_table_live_query_settings",
+        "sisense_datamodel",
+        "sisense_widgets",
     ]
 
     @property
-    def quick_sight_analysis_status(self) -> Optional[QuickSightAnalysisStatus]:
+    def sisense_datamodel_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_status
+            else self.attributes.sisense_datamodel_qualified_name
         )
 
-    @quick_sight_analysis_status.setter
-    def quick_sight_analysis_status(
-        self, quick_sight_analysis_status: Optional[QuickSightAnalysisStatus]
+    @sisense_datamodel_qualified_name.setter
+    def sisense_datamodel_qualified_name(
+        self, sisense_datamodel_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_status = quick_sight_analysis_status
-
-    @property
-    def quick_sight_analysis_calculated_fields(self) -> Optional[set[str]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_analysis_calculated_fields
-        )
-
-    @quick_sight_analysis_calculated_fields.setter
-    def quick_sight_analysis_calculated_fields(
-        self, quick_sight_analysis_calculated_fields: Optional[set[str]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_calculated_fields = (
-            quick_sight_analysis_calculated_fields
+        self.attributes.sisense_datamodel_qualified_name = (
+            sisense_datamodel_qualified_name
         )
 
     @property
-    def quick_sight_analysis_parameter_declarations(self) -> Optional[set[str]]:
+    def sisense_datamodel_table_column_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_parameter_declarations
+            else self.attributes.sisense_datamodel_table_column_count
         )
 
-    @quick_sight_analysis_parameter_declarations.setter
-    def quick_sight_analysis_parameter_declarations(
-        self, quick_sight_analysis_parameter_declarations: Optional[set[str]]
+    @sisense_datamodel_table_column_count.setter
+    def sisense_datamodel_table_column_count(
+        self, sisense_datamodel_table_column_count: Optional[int]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_parameter_declarations = (
-            quick_sight_analysis_parameter_declarations
+        self.attributes.sisense_datamodel_table_column_count = (
+            sisense_datamodel_table_column_count
         )
 
     @property
-    def quick_sight_analysis_filter_groups(self) -> Optional[set[str]]:
+    def sisense_datamodel_table_type(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_filter_groups
+            else self.attributes.sisense_datamodel_table_type
         )
 
-    @quick_sight_analysis_filter_groups.setter
-    def quick_sight_analysis_filter_groups(
-        self, quick_sight_analysis_filter_groups: Optional[set[str]]
+    @sisense_datamodel_table_type.setter
+    def sisense_datamodel_table_type(self, sisense_datamodel_table_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_type = sisense_datamodel_table_type
+
+    @property
+    def sisense_datamodel_table_expression(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_expression
+        )
+
+    @sisense_datamodel_table_expression.setter
+    def sisense_datamodel_table_expression(
+        self, sisense_datamodel_table_expression: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_filter_groups = (
-            quick_sight_analysis_filter_groups
+        self.attributes.sisense_datamodel_table_expression = (
+            sisense_datamodel_table_expression
         )
 
     @property
-    def quick_sight_analysis_visuals(self) -> Optional[list[QuickSightAnalysisVisual]]:
+    def sisense_datamodel_table_is_materialized(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_visuals
+            else self.attributes.sisense_datamodel_table_is_materialized
         )
 
-    @quick_sight_analysis_visuals.setter
-    def quick_sight_analysis_visuals(
-        self, quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]]
+    @sisense_datamodel_table_is_materialized.setter
+    def sisense_datamodel_table_is_materialized(
+        self, sisense_datamodel_table_is_materialized: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_visuals = quick_sight_analysis_visuals
+        self.attributes.sisense_datamodel_table_is_materialized = (
+            sisense_datamodel_table_is_materialized
+        )
 
     @property
-    def quick_sight_analysis_folders(self) -> Optional[list[QuickSightFolder]]:
+    def sisense_datamodel_table_is_hidden(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_analysis_folders
+            else self.attributes.sisense_datamodel_table_is_hidden
         )
 
-    @quick_sight_analysis_folders.setter
-    def quick_sight_analysis_folders(
-        self, quick_sight_analysis_folders: Optional[list[QuickSightFolder]]
+    @sisense_datamodel_table_is_hidden.setter
+    def sisense_datamodel_table_is_hidden(
+        self, sisense_datamodel_table_is_hidden: Optional[bool]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_analysis_folders = quick_sight_analysis_folders
+        self.attributes.sisense_datamodel_table_is_hidden = (
+            sisense_datamodel_table_is_hidden
+        )
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_analysis_status: Optional[QuickSightAnalysisStatus] = Field(
-            None, description="", alias="quickSightAnalysisStatus"
+    @property
+    def sisense_datamodel_table_schedule(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_schedule
         )
-        quick_sight_analysis_calculated_fields: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisCalculatedFields"
+
+    @sisense_datamodel_table_schedule.setter
+    def sisense_datamodel_table_schedule(
+        self, sisense_datamodel_table_schedule: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_schedule = (
+            sisense_datamodel_table_schedule
         )
-        quick_sight_analysis_parameter_declarations: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisParameterDeclarations"
+
+    @property
+    def sisense_datamodel_table_live_query_settings(self) -> Optional[str]:
+        return (
+            None
+            if self.attributes is None
+            else self.attributes.sisense_datamodel_table_live_query_settings
         )
-        quick_sight_analysis_filter_groups: Optional[set[str]] = Field(
-            None, description="", alias="quickSightAnalysisFilterGroups"
+
+    @sisense_datamodel_table_live_query_settings.setter
+    def sisense_datamodel_table_live_query_settings(
+        self, sisense_datamodel_table_live_query_settings: Optional[str]
+    ):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel_table_live_query_settings = (
+            sisense_datamodel_table_live_query_settings
         )
-        quick_sight_analysis_visuals: Optional[list[QuickSightAnalysisVisual]] = Field(
-            None, description="", alias="quickSightAnalysisVisuals"
+
+    @property
+    def sisense_datamodel(self) -> Optional[SisenseDatamodel]:
+        return None if self.attributes is None else self.attributes.sisense_datamodel
+
+    @sisense_datamodel.setter
+    def sisense_datamodel(self, sisense_datamodel: Optional[SisenseDatamodel]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_datamodel = sisense_datamodel
+
+    @property
+    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
+
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_widgets = sisense_widgets
+
+    class Attributes(Sisense.Attributes):
+        sisense_datamodel_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelQualifiedName"
+        )
+        sisense_datamodel_table_column_count: Optional[int] = Field(
+            None, description="", alias="sisenseDatamodelTableColumnCount"
+        )
+        sisense_datamodel_table_type: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableType"
+        )
+        sisense_datamodel_table_expression: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableExpression"
+        )
+        sisense_datamodel_table_is_materialized: Optional[bool] = Field(
+            None, description="", alias="sisenseDatamodelTableIsMaterialized"
+        )
+        sisense_datamodel_table_is_hidden: Optional[bool] = Field(
+            None, description="", alias="sisenseDatamodelTableIsHidden"
+        )
+        sisense_datamodel_table_schedule: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableSchedule"
+        )
+        sisense_datamodel_table_live_query_settings: Optional[str] = Field(
+            None, description="", alias="sisenseDatamodelTableLiveQuerySettings"
+        )
+        sisense_datamodel: Optional[SisenseDatamodel] = Field(
+            None, description="", alias="sisenseDatamodel"
         )  # relationship
-        quick_sight_analysis_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightAnalysisFolders"
+        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+            None, description="", alias="sisenseWidgets"
         )  # relationship
 
-    attributes: "QuickSightAnalysis.Attributes" = Field(
-        default_factory=lambda: QuickSightAnalysis.Attributes(),
+    attributes: "SisenseDatamodelTable.Attributes" = Field(
+        default_factory=lambda: SisenseDatamodelTable.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDashboard(QuickSight):
+class SisenseDashboard(Sisense):
     """Description"""
 
-    type_name: str = Field("QuickSightDashboard", allow_mutation=False)
+    type_name: str = Field("SisenseDashboard", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "QuickSightDashboard":
-            raise ValueError("must be QuickSightDashboard")
+        if v != "SisenseDashboard":
+            raise ValueError("must be SisenseDashboard")
         return v
 
     def __setattr__(self, name, value):
-        if name in QuickSightDashboard._convenience_properties:
+        if name in SisenseDashboard._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    QUICK_SIGHT_DASHBOARD_PUBLISHED_VERSION_NUMBER: ClassVar[
-        NumericField
-    ] = NumericField(
-        "quickSightDashboardPublishedVersionNumber",
-        "quickSightDashboardPublishedVersionNumber",
+    SISENSE_DASHBOARD_FOLDER_QUALIFIED_NAME: ClassVar[
+        KeywordTextField
+    ] = KeywordTextField(
+        "sisenseDashboardFolderQualifiedName",
+        "sisenseDashboardFolderQualifiedName",
+        "sisenseDashboardFolderQualifiedName.text",
     )
     """
-    Version number of the dashboard published
+    Unique name of the folder in which this dashboard exists.
     """
-    QUICK_SIGHT_DASHBOARD_LAST_PUBLISHED_TIME: ClassVar[NumericField] = NumericField(
-        "quickSightDashboardLastPublishedTime", "quickSightDashboardLastPublishedTime"
+    SISENSE_DASHBOARD_WIDGET_COUNT: ClassVar[NumericField] = NumericField(
+        "sisenseDashboardWidgetCount", "sisenseDashboardWidgetCount"
     )
     """
-    Last published time of dashboard
+    Number of widgets in this dashboard.
     """
 
-    QUICK_SIGHT_DASHBOARD_FOLDERS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboardFolders"
-    )
+    SISENSE_DATAMODELS: ClassVar[RelationField] = RelationField("sisenseDatamodels")
     """
     TBC
     """
-    QUICK_SIGHT_DASHBOARD_VISUALS: ClassVar[RelationField] = RelationField(
-        "quickSightDashboardVisuals"
-    )
+    SISENSE_WIDGETS: ClassVar[RelationField] = RelationField("sisenseWidgets")
+    """
+    TBC
+    """
+    SISENSE_FOLDER: ClassVar[RelationField] = RelationField("sisenseFolder")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dashboard_published_version_number",
-        "quick_sight_dashboard_last_published_time",
-        "quick_sight_dashboard_folders",
-        "quick_sight_dashboard_visuals",
+        "sisense_dashboard_folder_qualified_name",
+        "sisense_dashboard_widget_count",
+        "sisense_datamodels",
+        "sisense_widgets",
+        "sisense_folder",
     ]
 
     @property
-    def quick_sight_dashboard_published_version_number(self) -> Optional[int]:
+    def sisense_dashboard_folder_qualified_name(self) -> Optional[str]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dashboard_published_version_number
+            else self.attributes.sisense_dashboard_folder_qualified_name
         )
 
-    @quick_sight_dashboard_published_version_number.setter
-    def quick_sight_dashboard_published_version_number(
-        self, quick_sight_dashboard_published_version_number: Optional[int]
+    @sisense_dashboard_folder_qualified_name.setter
+    def sisense_dashboard_folder_qualified_name(
+        self, sisense_dashboard_folder_qualified_name: Optional[str]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_published_version_number = (
-            quick_sight_dashboard_published_version_number
+        self.attributes.sisense_dashboard_folder_qualified_name = (
+            sisense_dashboard_folder_qualified_name
         )
 
     @property
-    def quick_sight_dashboard_last_published_time(self) -> Optional[datetime]:
+    def sisense_dashboard_widget_count(self) -> Optional[int]:
         return (
             None
             if self.attributes is None
-            else self.attributes.quick_sight_dashboard_last_published_time
+            else self.attributes.sisense_dashboard_widget_count
         )
 
-    @quick_sight_dashboard_last_published_time.setter
-    def quick_sight_dashboard_last_published_time(
-        self, quick_sight_dashboard_last_published_time: Optional[datetime]
+    @sisense_dashboard_widget_count.setter
+    def sisense_dashboard_widget_count(
+        self, sisense_dashboard_widget_count: Optional[int]
     ):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_last_published_time = (
-            quick_sight_dashboard_last_published_time
-        )
+        self.attributes.sisense_dashboard_widget_count = sisense_dashboard_widget_count
 
     @property
-    def quick_sight_dashboard_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_folders
-        )
+    def sisense_datamodels(self) -> Optional[list[SisenseDatamodel]]:
+        return None if self.attributes is None else self.attributes.sisense_datamodels
 
-    @quick_sight_dashboard_folders.setter
-    def quick_sight_dashboard_folders(
-        self, quick_sight_dashboard_folders: Optional[list[QuickSightFolder]]
-    ):
+    @sisense_datamodels.setter
+    def sisense_datamodels(self, sisense_datamodels: Optional[list[SisenseDatamodel]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_folders = quick_sight_dashboard_folders
+        self.attributes.sisense_datamodels = sisense_datamodels
 
     @property
-    def quick_sight_dashboard_visuals(
-        self,
-    ) -> Optional[list[QuickSightDashboardVisual]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dashboard_visuals
-        )
+    def sisense_widgets(self) -> Optional[list[SisenseWidget]]:
+        return None if self.attributes is None else self.attributes.sisense_widgets
 
-    @quick_sight_dashboard_visuals.setter
-    def quick_sight_dashboard_visuals(
-        self, quick_sight_dashboard_visuals: Optional[list[QuickSightDashboardVisual]]
-    ):
+    @sisense_widgets.setter
+    def sisense_widgets(self, sisense_widgets: Optional[list[SisenseWidget]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.quick_sight_dashboard_visuals = quick_sight_dashboard_visuals
+        self.attributes.sisense_widgets = sisense_widgets
 
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dashboard_published_version_number: Optional[int] = Field(
-            None, description="", alias="quickSightDashboardPublishedVersionNumber"
+    @property
+    def sisense_folder(self) -> Optional[SisenseFolder]:
+        return None if self.attributes is None else self.attributes.sisense_folder
+
+    @sisense_folder.setter
+    def sisense_folder(self, sisense_folder: Optional[SisenseFolder]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.sisense_folder = sisense_folder
+
+    class Attributes(Sisense.Attributes):
+        sisense_dashboard_folder_qualified_name: Optional[str] = Field(
+            None, description="", alias="sisenseDashboardFolderQualifiedName"
         )
-        quick_sight_dashboard_last_published_time: Optional[datetime] = Field(
-            None, description="", alias="quickSightDashboardLastPublishedTime"
+        sisense_dashboard_widget_count: Optional[int] = Field(
+            None, description="", alias="sisenseDashboardWidgetCount"
         )
-        quick_sight_dashboard_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDashboardFolders"
+        sisense_datamodels: Optional[list[SisenseDatamodel]] = Field(
+            None, description="", alias="sisenseDatamodels"
         )  # relationship
-        quick_sight_dashboard_visuals: Optional[
-            list[QuickSightDashboardVisual]
-        ] = Field(
-            None, description="", alias="quickSightDashboardVisuals"
+        sisense_widgets: Optional[list[SisenseWidget]] = Field(
+            None, description="", alias="sisenseWidgets"
+        )  # relationship
+        sisense_folder: Optional[SisenseFolder] = Field(
+            None, description="", alias="sisenseFolder"
         )  # relationship
 
-    attributes: "QuickSightDashboard.Attributes" = Field(
-        default_factory=lambda: QuickSightDashboard.Attributes(),
+    attributes: "SisenseDashboard.Attributes" = Field(
+        default_factory=lambda: SisenseDashboard.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class QuickSightDataset(QuickSight):
-    """Description"""
-
-    type_name: str = Field("QuickSightDataset", allow_mutation=False)
-
-    @validator("type_name")
-    def validate_type_name(cls, v):
-        if v != "QuickSightDataset":
-            raise ValueError("must be QuickSightDataset")
-        return v
-
-    def __setattr__(self, name, value):
-        if name in QuickSightDataset._convenience_properties:
-            return object.__setattr__(self, name, value)
-        super().__setattr__(name, value)
-
-    QUICK_SIGHT_DATASET_IMPORT_MODE: ClassVar[KeywordField] = KeywordField(
-        "quickSightDatasetImportMode", "quickSightDatasetImportMode"
-    )
-    """
-    Quicksight dataset importMode indicates a value that indicates whether you want to import the data into SPICE
-    """
-    QUICK_SIGHT_DATASET_COLUMN_COUNT: ClassVar[NumericField] = NumericField(
-        "quickSightDatasetColumnCount", "quickSightDatasetColumnCount"
-    )
-    """
-    Quicksight dataset column count indicates number of columns present in the dataset
-    """
-
-    QUICK_SIGHT_DATASET_FOLDERS: ClassVar[RelationField] = RelationField(
-        "quickSightDatasetFolders"
-    )
-    """
-    TBC
-    """
-    QUICK_SIGHT_DATASET_FIELDS: ClassVar[RelationField] = RelationField(
-        "quickSightDatasetFields"
-    )
-    """
-    TBC
-    """
-
-    _convenience_properties: ClassVar[list[str]] = [
-        "quick_sight_dataset_import_mode",
-        "quick_sight_dataset_column_count",
-        "quick_sight_dataset_folders",
-        "quick_sight_dataset_fields",
-    ]
-
-    @property
-    def quick_sight_dataset_import_mode(self) -> Optional[QuickSightDatasetImportMode]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_import_mode
-        )
-
-    @quick_sight_dataset_import_mode.setter
-    def quick_sight_dataset_import_mode(
-        self, quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_import_mode = (
-            quick_sight_dataset_import_mode
-        )
-
-    @property
-    def quick_sight_dataset_column_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_column_count
-        )
-
-    @quick_sight_dataset_column_count.setter
-    def quick_sight_dataset_column_count(
-        self, quick_sight_dataset_column_count: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_column_count = (
-            quick_sight_dataset_column_count
-        )
-
-    @property
-    def quick_sight_dataset_folders(self) -> Optional[list[QuickSightFolder]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_folders
-        )
-
-    @quick_sight_dataset_folders.setter
-    def quick_sight_dataset_folders(
-        self, quick_sight_dataset_folders: Optional[list[QuickSightFolder]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_folders = quick_sight_dataset_folders
-
-    @property
-    def quick_sight_dataset_fields(self) -> Optional[list[QuickSightDatasetField]]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.quick_sight_dataset_fields
-        )
-
-    @quick_sight_dataset_fields.setter
-    def quick_sight_dataset_fields(
-        self, quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.quick_sight_dataset_fields = quick_sight_dataset_fields
-
-    class Attributes(QuickSight.Attributes):
-        quick_sight_dataset_import_mode: Optional[QuickSightDatasetImportMode] = Field(
-            None, description="", alias="quickSightDatasetImportMode"
-        )
-        quick_sight_dataset_column_count: Optional[int] = Field(
-            None, description="", alias="quickSightDatasetColumnCount"
-        )
-        quick_sight_dataset_folders: Optional[list[QuickSightFolder]] = Field(
-            None, description="", alias="quickSightDatasetFolders"
-        )  # relationship
-        quick_sight_dataset_fields: Optional[list[QuickSightDatasetField]] = Field(
-            None, description="", alias="quickSightDatasetFields"
-        )  # relationship
-
-    attributes: "QuickSightDataset.Attributes" = Field(
-        default_factory=lambda: QuickSightDataset.Attributes(),
-        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
-        "type, so are described in the sub-types of this schema.\n",
-    )
+SisenseFolder.Attributes.update_forward_refs()
 
 
-QuickSightFolder.Attributes.update_forward_refs()
+SisenseWidget.Attributes.update_forward_refs()
 
 
-QuickSightDashboardVisual.Attributes.update_forward_refs()
+SisenseDatamodel.Attributes.update_forward_refs()
 
 
-QuickSightAnalysisVisual.Attributes.update_forward_refs()
+SisenseDatamodelTable.Attributes.update_forward_refs()
 
 
-QuickSightDatasetField.Attributes.update_forward_refs()
-
-
-QuickSightAnalysis.Attributes.update_forward_refs()
-
-
-QuickSightDashboard.Attributes.update_forward_refs()
-
-
-QuickSightDataset.Attributes.update_forward_refs()
+SisenseDashboard.Attributes.update_forward_refs()

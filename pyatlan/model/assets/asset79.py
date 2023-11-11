@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import ClassVar, Optional
 
 from pydantic import Field, validator
@@ -18,1292 +17,865 @@ from pyatlan.model.fields.atlan_fields import (
     TextField,
 )
 
-from .asset00 import Database, Table
+from .asset52 import Salesforce
 
 
-class MongoDBCollection(Table):
+class SalesforceObject(Salesforce):
     """Description"""
 
-    type_name: str = Field("MongoDBCollection", allow_mutation=False)
+    type_name: str = Field("SalesforceObject", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MongoDBCollection":
-            raise ValueError("must be MongoDBCollection")
+        if v != "SalesforceObject":
+            raise ValueError("must be SalesforceObject")
         return v
 
     def __setattr__(self, name, value):
-        if name in MongoDBCollection._convenience_properties:
+        if name in SalesforceObject._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MONGO_DB_COLLECTION_SUBTYPE: ClassVar[KeywordTextField] = KeywordTextField(
-        "mongoDBCollectionSubtype",
-        "mongoDBCollectionSubtype",
-        "mongoDBCollectionSubtype.text",
-    )
+    IS_CUSTOM: ClassVar[BooleanField] = BooleanField("isCustom", "isCustom")
     """
-    Subtype of a MongoDB collection (e.g. Capped, Time Series etc.)
+    Whether this object is a custom object (true) or not (false).
     """
-    MONGO_DB_COLLECTION_IS_CAPPED: ClassVar[BooleanField] = BooleanField(
-        "mongoDBCollectionIsCapped", "mongoDBCollectionIsCapped"
-    )
+    IS_MERGABLE: ClassVar[BooleanField] = BooleanField("isMergable", "isMergable")
     """
-    If the collection is a capped collection
+    Whether this object is mergable (true) or not (false).
     """
-    MONGO_DB_COLLECTION_TIME_FIELD: ClassVar[KeywordField] = KeywordField(
-        "mongoDBCollectionTimeField", "mongoDBCollectionTimeField"
-    )
+    IS_QUERYABLE: ClassVar[BooleanField] = BooleanField("isQueryable", "isQueryable")
     """
-    The name of the field which contains the date in each time series document
+    Whether this object is queryable (true) or not (false).
     """
-    MONGO_DB_COLLECTION_TIME_GRANULARITY: ClassVar[KeywordField] = KeywordField(
-        "mongoDBCollectionTimeGranularity", "mongoDBCollectionTimeGranularity"
-    )
+    FIELD_COUNT: ClassVar[NumericField] = NumericField("fieldCount", "fieldCount")
     """
-    Set the granularity to the value that is the closest match to the time span between consecutive incoming measurements
-    """  # noqa: E501
-    MONGO_DB_COLLECTION_EXPIRE_AFTER_SECONDS: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionExpireAfterSeconds", "mongoDBCollectionExpireAfterSeconds"
-    )
-    """
-    Specifies the seconds after which documents in a time series collection or clustered collection expire
-    """
-    MONGO_DB_COLLECTION_MAXIMUM_DOCUMENT_COUNT: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionMaximumDocumentCount", "mongoDBCollectionMaximumDocumentCount"
-    )
-    """
-    The maximum number of documents allowed in the capped collection
-    """
-    MONGO_DB_COLLECTION_MAX_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionMaxSize", "mongoDBCollectionMaxSize"
-    )
-    """
-    The maximum size allowed in the capped collection
-    """
-    MONGO_DB_COLLECTION_NUM_ORPHAN_DOCS: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionNumOrphanDocs", "mongoDBCollectionNumOrphanDocs"
-    )
-    """
-    The number of orphaned documents in the collection
-    """
-    MONGO_DB_COLLECTION_NUM_INDEXES: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionNumIndexes", "mongoDBCollectionNumIndexes"
-    )
-    """
-    The number of indexes on the collection
-    """
-    MONGO_DB_COLLECTION_TOTAL_INDEX_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionTotalIndexSize", "mongoDBCollectionTotalIndexSize"
-    )
-    """
-    The total size of all indexes
-    """
-    MONGO_DB_COLLECTION_AVERAGE_OBJECT_SIZE: ClassVar[NumericField] = NumericField(
-        "mongoDBCollectionAverageObjectSize", "mongoDBCollectionAverageObjectSize"
-    )
-    """
-    The average size of an object in the collection
-    """
-    MONGO_DB_COLLECTION_SCHEMA_DEFINITION: ClassVar[TextField] = TextField(
-        "mongoDBCollectionSchemaDefinition", "mongoDBCollectionSchemaDefinition"
-    )
-    """
-    Definition of the schema applicable for the collection.
-    """
-    COLUMN_COUNT: ClassVar[NumericField] = NumericField("columnCount", "columnCount")
-    """
-    TBC
-    """
-    ROW_COUNT: ClassVar[NumericField] = NumericField("rowCount", "rowCount")
-    """
-    TBC
-    """
-    SIZE_BYTES: ClassVar[NumericField] = NumericField("sizeBytes", "sizeBytes")
-    """
-    TBC
-    """
-    ALIAS: ClassVar[KeywordField] = KeywordField("alias", "alias")
-    """
-    TBC
-    """
-    IS_TEMPORARY: ClassVar[BooleanField] = BooleanField("isTemporary", "isTemporary")
-    """
-    TBC
-    """
-    IS_QUERY_PREVIEW: ClassVar[BooleanField] = BooleanField(
-        "isQueryPreview", "isQueryPreview"
-    )
-    """
-    TBC
-    """
-    QUERY_PREVIEW_CONFIG: ClassVar[KeywordField] = KeywordField(
-        "queryPreviewConfig", "queryPreviewConfig"
-    )
-    """
-    TBC
-    """
-    EXTERNAL_LOCATION: ClassVar[KeywordField] = KeywordField(
-        "externalLocation", "externalLocation"
-    )
-    """
-    TBC
-    """
-    EXTERNAL_LOCATION_REGION: ClassVar[KeywordField] = KeywordField(
-        "externalLocationRegion", "externalLocationRegion"
-    )
-    """
-    TBC
-    """
-    EXTERNAL_LOCATION_FORMAT: ClassVar[KeywordField] = KeywordField(
-        "externalLocationFormat", "externalLocationFormat"
-    )
-    """
-    TBC
-    """
-    IS_PARTITIONED: ClassVar[BooleanField] = BooleanField(
-        "isPartitioned", "isPartitioned"
-    )
-    """
-    TBC
-    """
-    PARTITION_STRATEGY: ClassVar[KeywordField] = KeywordField(
-        "partitionStrategy", "partitionStrategy"
-    )
-    """
-    TBC
-    """
-    PARTITION_COUNT: ClassVar[NumericField] = NumericField(
-        "partitionCount", "partitionCount"
-    )
-    """
-    TBC
-    """
-    PARTITION_LIST: ClassVar[KeywordField] = KeywordField(
-        "partitionList", "partitionList"
-    )
-    """
-    TBC
-    """
-    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
-    """
-    TBC
-    """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
-        "queryUserCount", "queryUserCount"
-    )
-    """
-    TBC
-    """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
-        "queryUserMap", "queryUserMap"
-    )
-    """
-    TBC
-    """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
-        "queryCountUpdatedAt", "queryCountUpdatedAt"
-    )
-    """
-    TBC
-    """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "databaseName", "databaseName.keyword", "databaseName"
-    )
-    """
-    TBC
-    """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "databaseQualifiedName", "databaseQualifiedName"
-    )
-    """
-    TBC
-    """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "schemaName", "schemaName.keyword", "schemaName"
-    )
-    """
-    TBC
-    """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "schemaQualifiedName", "schemaQualifiedName"
-    )
-    """
-    TBC
-    """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "tableName", "tableName.keyword", "tableName"
-    )
-    """
-    TBC
-    """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "tableQualifiedName", "tableQualifiedName"
-    )
-    """
-    TBC
-    """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
-    """
-    TBC
-    """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "viewQualifiedName", "viewQualifiedName"
-    )
-    """
-    TBC
-    """
-    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
-    """
-    TBC
-    """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
-        "lastProfiledAt", "lastProfiledAt"
-    )
-    """
-    TBC
+    Number of fields in this object.
     """
 
-    MONGO_DB_DATABASE: ClassVar[RelationField] = RelationField("mongoDBDatabase")
+    LOOKUP_FIELDS: ClassVar[RelationField] = RelationField("lookupFields")
+    """
+    TBC
+    """
+    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    """
+    TBC
+    """
+    FIELDS: ClassVar[RelationField] = RelationField("fields")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mongo_d_b_collection_subtype",
-        "mongo_d_b_collection_is_capped",
-        "mongo_d_b_collection_time_field",
-        "mongo_d_b_collection_time_granularity",
-        "mongo_d_b_collection_expire_after_seconds",
-        "mongo_d_b_collection_maximum_document_count",
-        "mongo_d_b_collection_max_size",
-        "mongo_d_b_collection_num_orphan_docs",
-        "mongo_d_b_collection_num_indexes",
-        "mongo_d_b_collection_total_index_size",
-        "mongo_d_b_collection_average_object_size",
-        "mongo_d_b_collection_schema_definition",
-        "column_count",
-        "row_count",
-        "size_bytes",
-        "alias",
-        "is_temporary",
-        "is_query_preview",
-        "query_preview_config",
-        "external_location",
-        "external_location_region",
-        "external_location_format",
-        "is_partitioned",
-        "partition_strategy",
-        "partition_count",
-        "partition_list",
-        "query_count",
-        "query_user_count",
-        "query_user_map",
-        "query_count_updated_at",
-        "database_name",
-        "database_qualified_name",
-        "schema_name",
-        "schema_qualified_name",
-        "table_name",
-        "table_qualified_name",
-        "view_name",
-        "view_qualified_name",
-        "is_profiled",
-        "last_profiled_at",
-        "mongo_d_b_database",
+        "is_custom",
+        "is_mergable",
+        "is_queryable",
+        "field_count",
+        "lookup_fields",
+        "organization",
+        "fields",
     ]
 
     @property
-    def mongo_d_b_collection_subtype(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_subtype
-        )
+    def is_custom(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_custom
 
-    @mongo_d_b_collection_subtype.setter
-    def mongo_d_b_collection_subtype(self, mongo_d_b_collection_subtype: Optional[str]):
+    @is_custom.setter
+    def is_custom(self, is_custom: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_subtype = mongo_d_b_collection_subtype
+        self.attributes.is_custom = is_custom
 
     @property
-    def mongo_d_b_collection_is_capped(self) -> Optional[bool]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_is_capped
-        )
+    def is_mergable(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_mergable
 
-    @mongo_d_b_collection_is_capped.setter
-    def mongo_d_b_collection_is_capped(
-        self, mongo_d_b_collection_is_capped: Optional[bool]
-    ):
+    @is_mergable.setter
+    def is_mergable(self, is_mergable: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_is_capped = mongo_d_b_collection_is_capped
+        self.attributes.is_mergable = is_mergable
 
     @property
-    def mongo_d_b_collection_time_field(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_field
-        )
+    def is_queryable(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_queryable
 
-    @mongo_d_b_collection_time_field.setter
-    def mongo_d_b_collection_time_field(
-        self, mongo_d_b_collection_time_field: Optional[str]
-    ):
+    @is_queryable.setter
+    def is_queryable(self, is_queryable: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_field = (
-            mongo_d_b_collection_time_field
-        )
+        self.attributes.is_queryable = is_queryable
 
     @property
-    def mongo_d_b_collection_time_granularity(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_time_granularity
-        )
+    def field_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.field_count
 
-    @mongo_d_b_collection_time_granularity.setter
-    def mongo_d_b_collection_time_granularity(
-        self, mongo_d_b_collection_time_granularity: Optional[str]
-    ):
+    @field_count.setter
+    def field_count(self, field_count: Optional[int]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_time_granularity = (
-            mongo_d_b_collection_time_granularity
-        )
+        self.attributes.field_count = field_count
 
     @property
-    def mongo_d_b_collection_expire_after_seconds(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_expire_after_seconds
-        )
+    def lookup_fields(self) -> Optional[list[SalesforceField]]:
+        return None if self.attributes is None else self.attributes.lookup_fields
 
-    @mongo_d_b_collection_expire_after_seconds.setter
-    def mongo_d_b_collection_expire_after_seconds(
-        self, mongo_d_b_collection_expire_after_seconds: Optional[int]
-    ):
+    @lookup_fields.setter
+    def lookup_fields(self, lookup_fields: Optional[list[SalesforceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_expire_after_seconds = (
-            mongo_d_b_collection_expire_after_seconds
-        )
+        self.attributes.lookup_fields = lookup_fields
 
     @property
-    def mongo_d_b_collection_maximum_document_count(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_maximum_document_count
-        )
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return None if self.attributes is None else self.attributes.organization
 
-    @mongo_d_b_collection_maximum_document_count.setter
-    def mongo_d_b_collection_maximum_document_count(
-        self, mongo_d_b_collection_maximum_document_count: Optional[int]
-    ):
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_maximum_document_count = (
-            mongo_d_b_collection_maximum_document_count
-        )
+        self.attributes.organization = organization
 
     @property
-    def mongo_d_b_collection_max_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_max_size
-        )
+    def fields(self) -> Optional[list[SalesforceField]]:
+        return None if self.attributes is None else self.attributes.fields
 
-    @mongo_d_b_collection_max_size.setter
-    def mongo_d_b_collection_max_size(
-        self, mongo_d_b_collection_max_size: Optional[int]
-    ):
+    @fields.setter
+    def fields(self, fields: Optional[list[SalesforceField]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_max_size = mongo_d_b_collection_max_size
-
-    @property
-    def mongo_d_b_collection_num_orphan_docs(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_orphan_docs
-        )
-
-    @mongo_d_b_collection_num_orphan_docs.setter
-    def mongo_d_b_collection_num_orphan_docs(
-        self, mongo_d_b_collection_num_orphan_docs: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_orphan_docs = (
-            mongo_d_b_collection_num_orphan_docs
-        )
-
-    @property
-    def mongo_d_b_collection_num_indexes(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_num_indexes
-        )
-
-    @mongo_d_b_collection_num_indexes.setter
-    def mongo_d_b_collection_num_indexes(
-        self, mongo_d_b_collection_num_indexes: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_num_indexes = (
-            mongo_d_b_collection_num_indexes
-        )
-
-    @property
-    def mongo_d_b_collection_total_index_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_total_index_size
-        )
-
-    @mongo_d_b_collection_total_index_size.setter
-    def mongo_d_b_collection_total_index_size(
-        self, mongo_d_b_collection_total_index_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_total_index_size = (
-            mongo_d_b_collection_total_index_size
-        )
-
-    @property
-    def mongo_d_b_collection_average_object_size(self) -> Optional[int]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_average_object_size
-        )
-
-    @mongo_d_b_collection_average_object_size.setter
-    def mongo_d_b_collection_average_object_size(
-        self, mongo_d_b_collection_average_object_size: Optional[int]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_average_object_size = (
-            mongo_d_b_collection_average_object_size
-        )
-
-    @property
-    def mongo_d_b_collection_schema_definition(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.mongo_d_b_collection_schema_definition
-        )
-
-    @mongo_d_b_collection_schema_definition.setter
-    def mongo_d_b_collection_schema_definition(
-        self, mongo_d_b_collection_schema_definition: Optional[str]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collection_schema_definition = (
-            mongo_d_b_collection_schema_definition
-        )
-
-    @property
-    def column_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.column_count
-
-    @column_count.setter
-    def column_count(self, column_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.column_count = column_count
-
-    @property
-    def row_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.row_count
-
-    @row_count.setter
-    def row_count(self, row_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.row_count = row_count
-
-    @property
-    def size_bytes(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.size_bytes
-
-    @size_bytes.setter
-    def size_bytes(self, size_bytes: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.size_bytes = size_bytes
-
-    @property
-    def alias(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.alias
-
-    @alias.setter
-    def alias(self, alias: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.alias = alias
-
-    @property
-    def is_temporary(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_temporary
-
-    @is_temporary.setter
-    def is_temporary(self, is_temporary: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_temporary = is_temporary
-
-    @property
-    def is_query_preview(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_query_preview
-
-    @is_query_preview.setter
-    def is_query_preview(self, is_query_preview: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_query_preview = is_query_preview
-
-    @property
-    def query_preview_config(self) -> Optional[dict[str, str]]:
-        return None if self.attributes is None else self.attributes.query_preview_config
-
-    @query_preview_config.setter
-    def query_preview_config(self, query_preview_config: Optional[dict[str, str]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_preview_config = query_preview_config
-
-    @property
-    def external_location(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.external_location
-
-    @external_location.setter
-    def external_location(self, external_location: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location = external_location
-
-    @property
-    def external_location_region(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_region
-        )
-
-    @external_location_region.setter
-    def external_location_region(self, external_location_region: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_region = external_location_region
-
-    @property
-    def external_location_format(self) -> Optional[str]:
-        return (
-            None
-            if self.attributes is None
-            else self.attributes.external_location_format
-        )
-
-    @external_location_format.setter
-    def external_location_format(self, external_location_format: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.external_location_format = external_location_format
-
-    @property
-    def is_partitioned(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_partitioned
-
-    @is_partitioned.setter
-    def is_partitioned(self, is_partitioned: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_partitioned = is_partitioned
-
-    @property
-    def partition_strategy(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_strategy
-
-    @partition_strategy.setter
-    def partition_strategy(self, partition_strategy: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_strategy = partition_strategy
-
-    @property
-    def partition_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.partition_count
-
-    @partition_count.setter
-    def partition_count(self, partition_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_count = partition_count
-
-    @property
-    def partition_list(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.partition_list
-
-    @partition_list.setter
-    def partition_list(self, partition_list: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.partition_list = partition_list
-
-    @property
-    def query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_count
-
-    @query_count.setter
-    def query_count(self, query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count = query_count
-
-    @property
-    def query_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_user_count
-
-    @query_user_count.setter
-    def query_user_count(self, query_user_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_count = query_user_count
-
-    @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
-        return None if self.attributes is None else self.attributes.query_user_map
-
-    @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_map = query_user_map
-
-    @property
-    def query_count_updated_at(self) -> Optional[datetime]:
-        return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
-        )
-
-    @query_count_updated_at.setter
-    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count_updated_at = query_count_updated_at
-
-    @property
-    def database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_name
-
-    @database_name.setter
-    def database_name(self, database_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_name = database_name
-
-    @property
-    def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
-
-    @database_qualified_name.setter
-    def database_qualified_name(self, database_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.database_qualified_name = database_qualified_name
-
-    @property
-    def schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_name
-
-    @schema_name.setter
-    def schema_name(self, schema_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_name = schema_name
-
-    @property
-    def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
-        )
-
-    @schema_qualified_name.setter
-    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_qualified_name = schema_qualified_name
-
-    @property
-    def table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_name
-
-    @table_name.setter
-    def table_name(self, table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_name = table_name
-
-    @property
-    def table_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_qualified_name
-
-    @table_qualified_name.setter
-    def table_qualified_name(self, table_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_qualified_name = table_qualified_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_qualified_name
-
-    @view_qualified_name.setter
-    def view_qualified_name(self, view_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_qualified_name = view_qualified_name
-
-    @property
-    def is_profiled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_profiled
-
-    @is_profiled.setter
-    def is_profiled(self, is_profiled: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_profiled = is_profiled
-
-    @property
-    def last_profiled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.last_profiled_at
-
-    @last_profiled_at.setter
-    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.last_profiled_at = last_profiled_at
-
-    @property
-    def mongo_d_b_database(self) -> Optional[MongoDBDatabase]:
-        return None if self.attributes is None else self.attributes.mongo_d_b_database
-
-    @mongo_d_b_database.setter
-    def mongo_d_b_database(self, mongo_d_b_database: Optional[MongoDBDatabase]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database = mongo_d_b_database
-
-    class Attributes(Table.Attributes):
-        mongo_d_b_collection_subtype: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionSubtype"
-        )
-        mongo_d_b_collection_is_capped: Optional[bool] = Field(
-            None, description="", alias="mongoDBCollectionIsCapped"
-        )
-        mongo_d_b_collection_time_field: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionTimeField"
-        )
-        mongo_d_b_collection_time_granularity: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionTimeGranularity"
-        )
-        mongo_d_b_collection_expire_after_seconds: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionExpireAfterSeconds"
-        )
-        mongo_d_b_collection_maximum_document_count: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionMaximumDocumentCount"
-        )
-        mongo_d_b_collection_max_size: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionMaxSize"
-        )
-        mongo_d_b_collection_num_orphan_docs: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionNumOrphanDocs"
-        )
-        mongo_d_b_collection_num_indexes: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionNumIndexes"
-        )
-        mongo_d_b_collection_total_index_size: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionTotalIndexSize"
-        )
-        mongo_d_b_collection_average_object_size: Optional[int] = Field(
-            None, description="", alias="mongoDBCollectionAverageObjectSize"
-        )
-        mongo_d_b_collection_schema_definition: Optional[str] = Field(
-            None, description="", alias="mongoDBCollectionSchemaDefinition"
-        )
-        column_count: Optional[int] = Field(None, description="", alias="columnCount")
-        row_count: Optional[int] = Field(None, description="", alias="rowCount")
-        size_bytes: Optional[int] = Field(None, description="", alias="sizeBytes")
-        alias: Optional[str] = Field(None, description="", alias="alias")
-        is_temporary: Optional[bool] = Field(None, description="", alias="isTemporary")
-        is_query_preview: Optional[bool] = Field(
-            None, description="", alias="isQueryPreview"
-        )
-        query_preview_config: Optional[dict[str, str]] = Field(
-            None, description="", alias="queryPreviewConfig"
-        )
-        external_location: Optional[str] = Field(
-            None, description="", alias="externalLocation"
-        )
-        external_location_region: Optional[str] = Field(
-            None, description="", alias="externalLocationRegion"
-        )
-        external_location_format: Optional[str] = Field(
-            None, description="", alias="externalLocationFormat"
-        )
-        is_partitioned: Optional[bool] = Field(
-            None, description="", alias="isPartitioned"
-        )
-        partition_strategy: Optional[str] = Field(
-            None, description="", alias="partitionStrategy"
-        )
-        partition_count: Optional[int] = Field(
-            None, description="", alias="partitionCount"
-        )
-        partition_list: Optional[str] = Field(
-            None, description="", alias="partitionList"
-        )
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
-        )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
-        )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
-        )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
-        database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
-        )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
-        schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
-        )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
-        table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
-        mongo_d_b_database: Optional[MongoDBDatabase] = Field(
-            None, description="", alias="mongoDBDatabase"
+        self.attributes.fields = fields
+
+    class Attributes(Salesforce.Attributes):
+        is_custom: Optional[bool] = Field(None, description="", alias="isCustom")
+        is_mergable: Optional[bool] = Field(None, description="", alias="isMergable")
+        is_queryable: Optional[bool] = Field(None, description="", alias="isQueryable")
+        field_count: Optional[int] = Field(None, description="", alias="fieldCount")
+        lookup_fields: Optional[list[SalesforceField]] = Field(
+            None, description="", alias="lookupFields"
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            None, description="", alias="organization"
+        )  # relationship
+        fields: Optional[list[SalesforceField]] = Field(
+            None, description="", alias="fields"
         )  # relationship
 
-    attributes: "MongoDBCollection.Attributes" = Field(
-        default_factory=lambda: MongoDBCollection.Attributes(),
+    attributes: "SalesforceObject.Attributes" = Field(
+        default_factory=lambda: SalesforceObject.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-class MongoDBDatabase(Database):
+class SalesforceField(Salesforce):
     """Description"""
 
-    type_name: str = Field("MongoDBDatabase", allow_mutation=False)
+    type_name: str = Field("SalesforceField", allow_mutation=False)
 
     @validator("type_name")
     def validate_type_name(cls, v):
-        if v != "MongoDBDatabase":
-            raise ValueError("must be MongoDBDatabase")
+        if v != "SalesforceField":
+            raise ValueError("must be SalesforceField")
         return v
 
     def __setattr__(self, name, value):
-        if name in MongoDBDatabase._convenience_properties:
+        if name in SalesforceField._convenience_properties:
             return object.__setattr__(self, name, value)
         super().__setattr__(name, value)
 
-    MONGO_DB_DATABASE_COLLECTION_COUNT: ClassVar[NumericField] = NumericField(
-        "mongoDBDatabaseCollectionCount", "mongoDBDatabaseCollectionCount"
+    DATA_TYPE: ClassVar[KeywordTextField] = KeywordTextField(
+        "dataType", "dataType", "dataType.text"
     )
     """
-    The number of collection in a MongoDB Database
+    Data type of values in this field.
     """
-    SCHEMA_COUNT: ClassVar[NumericField] = NumericField("schemaCount", "schemaCount")
-    """
-    TBC
-    """
-    QUERY_COUNT: ClassVar[NumericField] = NumericField("queryCount", "queryCount")
-    """
-    TBC
-    """
-    QUERY_USER_COUNT: ClassVar[NumericField] = NumericField(
-        "queryUserCount", "queryUserCount"
+    OBJECT_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
+        "objectQualifiedName", "objectQualifiedName"
     )
     """
-    TBC
+    Unique name of the object in which this field exists.
     """
-    QUERY_USER_MAP: ClassVar[KeywordField] = KeywordField(
-        "queryUserMap", "queryUserMap"
+    ORDER: ClassVar[NumericField] = NumericField("order", "order")
+    """
+    Order (position) of this field within the object.
+    """
+    INLINE_HELP_TEXT: ClassVar[TextField] = TextField(
+        "inlineHelpText", "inlineHelpText.text"
     )
     """
-    TBC
+    Help text for this field.
     """
-    QUERY_COUNT_UPDATED_AT: ClassVar[NumericField] = NumericField(
-        "queryCountUpdatedAt", "queryCountUpdatedAt"
+    IS_CALCULATED: ClassVar[BooleanField] = BooleanField("isCalculated", "isCalculated")
+    """
+    Whether this field is calculated (true) or not (false).
+    """
+    FORMULA: ClassVar[KeywordField] = KeywordField("formula", "formula")
+    """
+    Formula for this field, if it is a calculated field.
+    """
+    IS_CASE_SENSITIVE: ClassVar[BooleanField] = BooleanField(
+        "isCaseSensitive", "isCaseSensitive"
     )
     """
-    TBC
+    Whether this field is case sensitive (true) or in-sensitive (false).
     """
-    DATABASE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "databaseName", "databaseName.keyword", "databaseName"
+    IS_ENCRYPTED: ClassVar[BooleanField] = BooleanField("isEncrypted", "isEncrypted")
+    """
+    Whether this field is encrypted (true) or not (false).
+    """
+    MAX_LENGTH: ClassVar[NumericField] = NumericField("maxLength", "maxLength")
+    """
+    Maximum length of this field.
+    """
+    IS_NULLABLE: ClassVar[BooleanField] = BooleanField("isNullable", "isNullable")
+    """
+    Whether this field allows null values (true) or not (false).
+    """
+    PRECISION: ClassVar[NumericField] = NumericField("precision", "precision")
+    """
+    Total number of digits allowed
+    """
+    NUMERIC_SCALE: ClassVar[NumericField] = NumericField("numericScale", "numericScale")
+    """
+    Number of digits allowed to the right of the decimal point.
+    """
+    IS_UNIQUE: ClassVar[BooleanField] = BooleanField("isUnique", "isUnique")
+    """
+    Whether this field must have unique values (true) or not (false).
+    """
+    PICKLIST_VALUES: ClassVar[KeywordField] = KeywordField(
+        "picklistValues", "picklistValues"
     )
     """
-    TBC
+    List of values from which a user can pick while adding a record.
     """
-    DATABASE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "databaseQualifiedName", "databaseQualifiedName"
+    IS_POLYMORPHIC_FOREIGN_KEY: ClassVar[BooleanField] = BooleanField(
+        "isPolymorphicForeignKey", "isPolymorphicForeignKey"
     )
     """
-    TBC
+    Whether this field references a record of multiple objects (true) or not (false).
     """
-    SCHEMA_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "schemaName", "schemaName.keyword", "schemaName"
+    DEFAULT_VALUE_FORMULA: ClassVar[KeywordField] = KeywordField(
+        "defaultValueFormula", "defaultValueFormula"
     )
     """
-    TBC
-    """
-    SCHEMA_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "schemaQualifiedName", "schemaQualifiedName"
-    )
-    """
-    TBC
-    """
-    TABLE_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "tableName", "tableName.keyword", "tableName"
-    )
-    """
-    TBC
-    """
-    TABLE_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "tableQualifiedName", "tableQualifiedName"
-    )
-    """
-    TBC
-    """
-    VIEW_NAME: ClassVar[KeywordTextField] = KeywordTextField(
-        "viewName", "viewName.keyword", "viewName"
-    )
-    """
-    TBC
-    """
-    VIEW_QUALIFIED_NAME: ClassVar[KeywordField] = KeywordField(
-        "viewQualifiedName", "viewQualifiedName"
-    )
-    """
-    TBC
-    """
-    IS_PROFILED: ClassVar[BooleanField] = BooleanField("isProfiled", "isProfiled")
-    """
-    TBC
-    """
-    LAST_PROFILED_AT: ClassVar[NumericField] = NumericField(
-        "lastProfiledAt", "lastProfiledAt"
-    )
-    """
-    TBC
+    Formula for the default value for this field.
     """
 
-    MONGO_DB_COLLECTIONS: ClassVar[RelationField] = RelationField("mongoDBCollections")
+    LOOKUP_OBJECTS: ClassVar[RelationField] = RelationField("lookupObjects")
+    """
+    TBC
+    """
+    OBJECT: ClassVar[RelationField] = RelationField("object")
     """
     TBC
     """
 
     _convenience_properties: ClassVar[list[str]] = [
-        "mongo_d_b_database_collection_count",
-        "schema_count",
-        "query_count",
-        "query_user_count",
-        "query_user_map",
-        "query_count_updated_at",
-        "database_name",
-        "database_qualified_name",
-        "schema_name",
-        "schema_qualified_name",
-        "table_name",
-        "table_qualified_name",
-        "view_name",
-        "view_qualified_name",
-        "is_profiled",
-        "last_profiled_at",
-        "mongo_d_b_collections",
+        "data_type",
+        "object_qualified_name",
+        "order",
+        "inline_help_text",
+        "is_calculated",
+        "formula",
+        "is_case_sensitive",
+        "is_encrypted",
+        "max_length",
+        "is_nullable",
+        "precision",
+        "numeric_scale",
+        "is_unique",
+        "picklist_values",
+        "is_polymorphic_foreign_key",
+        "default_value_formula",
+        "lookup_objects",
+        "object",
     ]
 
     @property
-    def mongo_d_b_database_collection_count(self) -> Optional[int]:
+    def data_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.data_type
+
+    @data_type.setter
+    def data_type(self, data_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.data_type = data_type
+
+    @property
+    def object_qualified_name(self) -> Optional[str]:
+        return (
+            None if self.attributes is None else self.attributes.object_qualified_name
+        )
+
+    @object_qualified_name.setter
+    def object_qualified_name(self, object_qualified_name: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.object_qualified_name = object_qualified_name
+
+    @property
+    def order(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.order
+
+    @order.setter
+    def order(self, order: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.order = order
+
+    @property
+    def inline_help_text(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.inline_help_text
+
+    @inline_help_text.setter
+    def inline_help_text(self, inline_help_text: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.inline_help_text = inline_help_text
+
+    @property
+    def is_calculated(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_calculated
+
+    @is_calculated.setter
+    def is_calculated(self, is_calculated: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_calculated = is_calculated
+
+    @property
+    def formula(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.formula
+
+    @formula.setter
+    def formula(self, formula: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.formula = formula
+
+    @property
+    def is_case_sensitive(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_case_sensitive
+
+    @is_case_sensitive.setter
+    def is_case_sensitive(self, is_case_sensitive: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_case_sensitive = is_case_sensitive
+
+    @property
+    def is_encrypted(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_encrypted
+
+    @is_encrypted.setter
+    def is_encrypted(self, is_encrypted: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_encrypted = is_encrypted
+
+    @property
+    def max_length(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.max_length
+
+    @max_length.setter
+    def max_length(self, max_length: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.max_length = max_length
+
+    @property
+    def is_nullable(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_nullable
+
+    @is_nullable.setter
+    def is_nullable(self, is_nullable: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_nullable = is_nullable
+
+    @property
+    def precision(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.precision
+
+    @precision.setter
+    def precision(self, precision: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.precision = precision
+
+    @property
+    def numeric_scale(self) -> Optional[float]:
+        return None if self.attributes is None else self.attributes.numeric_scale
+
+    @numeric_scale.setter
+    def numeric_scale(self, numeric_scale: Optional[float]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.numeric_scale = numeric_scale
+
+    @property
+    def is_unique(self) -> Optional[bool]:
+        return None if self.attributes is None else self.attributes.is_unique
+
+    @is_unique.setter
+    def is_unique(self, is_unique: Optional[bool]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.is_unique = is_unique
+
+    @property
+    def picklist_values(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.picklist_values
+
+    @picklist_values.setter
+    def picklist_values(self, picklist_values: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.picklist_values = picklist_values
+
+    @property
+    def is_polymorphic_foreign_key(self) -> Optional[bool]:
         return (
             None
             if self.attributes is None
-            else self.attributes.mongo_d_b_database_collection_count
+            else self.attributes.is_polymorphic_foreign_key
         )
 
-    @mongo_d_b_database_collection_count.setter
-    def mongo_d_b_database_collection_count(
-        self, mongo_d_b_database_collection_count: Optional[int]
-    ):
+    @is_polymorphic_foreign_key.setter
+    def is_polymorphic_foreign_key(self, is_polymorphic_foreign_key: Optional[bool]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_database_collection_count = (
-            mongo_d_b_database_collection_count
-        )
+        self.attributes.is_polymorphic_foreign_key = is_polymorphic_foreign_key
 
     @property
-    def schema_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.schema_count
-
-    @schema_count.setter
-    def schema_count(self, schema_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_count = schema_count
-
-    @property
-    def query_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_count
-
-    @query_count.setter
-    def query_count(self, query_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_count = query_count
-
-    @property
-    def query_user_count(self) -> Optional[int]:
-        return None if self.attributes is None else self.attributes.query_user_count
-
-    @query_user_count.setter
-    def query_user_count(self, query_user_count: Optional[int]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_count = query_user_count
-
-    @property
-    def query_user_map(self) -> Optional[dict[str, int]]:
-        return None if self.attributes is None else self.attributes.query_user_map
-
-    @query_user_map.setter
-    def query_user_map(self, query_user_map: Optional[dict[str, int]]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.query_user_map = query_user_map
-
-    @property
-    def query_count_updated_at(self) -> Optional[datetime]:
+    def default_value_formula(self) -> Optional[str]:
         return (
-            None if self.attributes is None else self.attributes.query_count_updated_at
+            None if self.attributes is None else self.attributes.default_value_formula
         )
 
-    @query_count_updated_at.setter
-    def query_count_updated_at(self, query_count_updated_at: Optional[datetime]):
+    @default_value_formula.setter
+    def default_value_formula(self, default_value_formula: Optional[str]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.query_count_updated_at = query_count_updated_at
+        self.attributes.default_value_formula = default_value_formula
 
     @property
-    def database_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.database_name
+    def lookup_objects(self) -> Optional[list[SalesforceObject]]:
+        return None if self.attributes is None else self.attributes.lookup_objects
 
-    @database_name.setter
-    def database_name(self, database_name: Optional[str]):
+    @lookup_objects.setter
+    def lookup_objects(self, lookup_objects: Optional[list[SalesforceObject]]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.database_name = database_name
+        self.attributes.lookup_objects = lookup_objects
 
     @property
-    def database_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.database_qualified_name
-        )
+    def object(self) -> Optional[SalesforceObject]:
+        return None if self.attributes is None else self.attributes.object
 
-    @database_qualified_name.setter
-    def database_qualified_name(self, database_qualified_name: Optional[str]):
+    @object.setter
+    def object(self, object: Optional[SalesforceObject]):
         if self.attributes is None:
             self.attributes = self.Attributes()
-        self.attributes.database_qualified_name = database_qualified_name
+        self.attributes.object = object
 
-    @property
-    def schema_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.schema_name
-
-    @schema_name.setter
-    def schema_name(self, schema_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_name = schema_name
-
-    @property
-    def schema_qualified_name(self) -> Optional[str]:
-        return (
-            None if self.attributes is None else self.attributes.schema_qualified_name
+    class Attributes(Salesforce.Attributes):
+        data_type: Optional[str] = Field(None, description="", alias="dataType")
+        object_qualified_name: Optional[str] = Field(
+            None, description="", alias="objectQualifiedName"
         )
-
-    @schema_qualified_name.setter
-    def schema_qualified_name(self, schema_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.schema_qualified_name = schema_qualified_name
-
-    @property
-    def table_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_name
-
-    @table_name.setter
-    def table_name(self, table_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_name = table_name
-
-    @property
-    def table_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.table_qualified_name
-
-    @table_qualified_name.setter
-    def table_qualified_name(self, table_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.table_qualified_name = table_qualified_name
-
-    @property
-    def view_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_name
-
-    @view_name.setter
-    def view_name(self, view_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_name = view_name
-
-    @property
-    def view_qualified_name(self) -> Optional[str]:
-        return None if self.attributes is None else self.attributes.view_qualified_name
-
-    @view_qualified_name.setter
-    def view_qualified_name(self, view_qualified_name: Optional[str]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.view_qualified_name = view_qualified_name
-
-    @property
-    def is_profiled(self) -> Optional[bool]:
-        return None if self.attributes is None else self.attributes.is_profiled
-
-    @is_profiled.setter
-    def is_profiled(self, is_profiled: Optional[bool]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.is_profiled = is_profiled
-
-    @property
-    def last_profiled_at(self) -> Optional[datetime]:
-        return None if self.attributes is None else self.attributes.last_profiled_at
-
-    @last_profiled_at.setter
-    def last_profiled_at(self, last_profiled_at: Optional[datetime]):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.last_profiled_at = last_profiled_at
-
-    @property
-    def mongo_d_b_collections(self) -> Optional[list[MongoDBCollection]]:
-        return (
-            None if self.attributes is None else self.attributes.mongo_d_b_collections
+        order: Optional[int] = Field(None, description="", alias="order")
+        inline_help_text: Optional[str] = Field(
+            None, description="", alias="inlineHelpText"
         )
-
-    @mongo_d_b_collections.setter
-    def mongo_d_b_collections(
-        self, mongo_d_b_collections: Optional[list[MongoDBCollection]]
-    ):
-        if self.attributes is None:
-            self.attributes = self.Attributes()
-        self.attributes.mongo_d_b_collections = mongo_d_b_collections
-
-    class Attributes(Database.Attributes):
-        mongo_d_b_database_collection_count: Optional[int] = Field(
-            None, description="", alias="mongoDBDatabaseCollectionCount"
+        is_calculated: Optional[bool] = Field(
+            None, description="", alias="isCalculated"
         )
-        schema_count: Optional[int] = Field(None, description="", alias="schemaCount")
-        query_count: Optional[int] = Field(None, description="", alias="queryCount")
-        query_user_count: Optional[int] = Field(
-            None, description="", alias="queryUserCount"
+        formula: Optional[str] = Field(None, description="", alias="formula")
+        is_case_sensitive: Optional[bool] = Field(
+            None, description="", alias="isCaseSensitive"
         )
-        query_user_map: Optional[dict[str, int]] = Field(
-            None, description="", alias="queryUserMap"
+        is_encrypted: Optional[bool] = Field(None, description="", alias="isEncrypted")
+        max_length: Optional[int] = Field(None, description="", alias="maxLength")
+        is_nullable: Optional[bool] = Field(None, description="", alias="isNullable")
+        precision: Optional[int] = Field(None, description="", alias="precision")
+        numeric_scale: Optional[float] = Field(
+            None, description="", alias="numericScale"
         )
-        query_count_updated_at: Optional[datetime] = Field(
-            None, description="", alias="queryCountUpdatedAt"
+        is_unique: Optional[bool] = Field(None, description="", alias="isUnique")
+        picklist_values: Optional[set[str]] = Field(
+            None, description="", alias="picklistValues"
         )
-        database_name: Optional[str] = Field(None, description="", alias="databaseName")
-        database_qualified_name: Optional[str] = Field(
-            None, description="", alias="databaseQualifiedName"
+        is_polymorphic_foreign_key: Optional[bool] = Field(
+            None, description="", alias="isPolymorphicForeignKey"
         )
-        schema_name: Optional[str] = Field(None, description="", alias="schemaName")
-        schema_qualified_name: Optional[str] = Field(
-            None, description="", alias="schemaQualifiedName"
+        default_value_formula: Optional[str] = Field(
+            None, description="", alias="defaultValueFormula"
         )
-        table_name: Optional[str] = Field(None, description="", alias="tableName")
-        table_qualified_name: Optional[str] = Field(
-            None, description="", alias="tableQualifiedName"
-        )
-        view_name: Optional[str] = Field(None, description="", alias="viewName")
-        view_qualified_name: Optional[str] = Field(
-            None, description="", alias="viewQualifiedName"
-        )
-        is_profiled: Optional[bool] = Field(None, description="", alias="isProfiled")
-        last_profiled_at: Optional[datetime] = Field(
-            None, description="", alias="lastProfiledAt"
-        )
-        mongo_d_b_collections: Optional[list[MongoDBCollection]] = Field(
-            None, description="", alias="mongoDBCollections"
+        lookup_objects: Optional[list[SalesforceObject]] = Field(
+            None, description="", alias="lookupObjects"
+        )  # relationship
+        object: Optional[SalesforceObject] = Field(
+            None, description="", alias="object"
         )  # relationship
 
-    attributes: "MongoDBDatabase.Attributes" = Field(
-        default_factory=lambda: MongoDBDatabase.Attributes(),
+    attributes: "SalesforceField.Attributes" = Field(
+        default_factory=lambda: SalesforceField.Attributes(),
         description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
         "type, so are described in the sub-types of this schema.\n",
     )
 
 
-MongoDBCollection.Attributes.update_forward_refs()
+class SalesforceOrganization(Salesforce):
+    """Description"""
+
+    type_name: str = Field("SalesforceOrganization", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceOrganization":
+            raise ValueError("must be SalesforceOrganization")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SalesforceOrganization._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    """
+    Identifier of the organization in Salesforce.
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    OBJECTS: ClassVar[RelationField] = RelationField("objects")
+    """
+    TBC
+    """
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "source_id",
+        "reports",
+        "objects",
+        "dashboards",
+    ]
+
+    @property
+    def source_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.source_id
+
+    @source_id.setter
+    def source_id(self, source_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_id = source_id
+
+    @property
+    def reports(self) -> Optional[list[SalesforceReport]]:
+        return None if self.attributes is None else self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[SalesforceReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def objects(self) -> Optional[list[SalesforceObject]]:
+        return None if self.attributes is None else self.attributes.objects
+
+    @objects.setter
+    def objects(self, objects: Optional[list[SalesforceObject]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.objects = objects
+
+    @property
+    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    class Attributes(Salesforce.Attributes):
+        source_id: Optional[str] = Field(None, description="", alias="sourceId")
+        reports: Optional[list[SalesforceReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        objects: Optional[list[SalesforceObject]] = Field(
+            None, description="", alias="objects"
+        )  # relationship
+        dashboards: Optional[list[SalesforceDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+
+    attributes: "SalesforceOrganization.Attributes" = Field(
+        default_factory=lambda: SalesforceOrganization.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
 
 
-MongoDBDatabase.Attributes.update_forward_refs()
+class SalesforceDashboard(Salesforce):
+    """Description"""
+
+    type_name: str = Field("SalesforceDashboard", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceDashboard":
+            raise ValueError("must be SalesforceDashboard")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SalesforceDashboard._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    """
+    Identifier of the dashboard in Salesforce.
+    """
+    DASHBOARD_TYPE: ClassVar[KeywordField] = KeywordField(
+        "dashboardType", "dashboardType"
+    )
+    """
+    Type of dashboard in Salesforce.
+    """
+    REPORT_COUNT: ClassVar[NumericField] = NumericField("reportCount", "reportCount")
+    """
+    Number of reports linked to the dashboard in Salesforce.
+    """
+
+    REPORTS: ClassVar[RelationField] = RelationField("reports")
+    """
+    TBC
+    """
+    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "source_id",
+        "dashboard_type",
+        "report_count",
+        "reports",
+        "organization",
+    ]
+
+    @property
+    def source_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.source_id
+
+    @source_id.setter
+    def source_id(self, source_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_id = source_id
+
+    @property
+    def dashboard_type(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.dashboard_type
+
+    @dashboard_type.setter
+    def dashboard_type(self, dashboard_type: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboard_type = dashboard_type
+
+    @property
+    def report_count(self) -> Optional[int]:
+        return None if self.attributes is None else self.attributes.report_count
+
+    @report_count.setter
+    def report_count(self, report_count: Optional[int]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_count = report_count
+
+    @property
+    def reports(self) -> Optional[list[SalesforceReport]]:
+        return None if self.attributes is None else self.attributes.reports
+
+    @reports.setter
+    def reports(self, reports: Optional[list[SalesforceReport]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.reports = reports
+
+    @property
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return None if self.attributes is None else self.attributes.organization
+
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.organization = organization
+
+    class Attributes(Salesforce.Attributes):
+        source_id: Optional[str] = Field(None, description="", alias="sourceId")
+        dashboard_type: Optional[str] = Field(
+            None, description="", alias="dashboardType"
+        )
+        report_count: Optional[int] = Field(None, description="", alias="reportCount")
+        reports: Optional[list[SalesforceReport]] = Field(
+            None, description="", alias="reports"
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            None, description="", alias="organization"
+        )  # relationship
+
+    attributes: "SalesforceDashboard.Attributes" = Field(
+        default_factory=lambda: SalesforceDashboard.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+class SalesforceReport(Salesforce):
+    """Description"""
+
+    type_name: str = Field("SalesforceReport", allow_mutation=False)
+
+    @validator("type_name")
+    def validate_type_name(cls, v):
+        if v != "SalesforceReport":
+            raise ValueError("must be SalesforceReport")
+        return v
+
+    def __setattr__(self, name, value):
+        if name in SalesforceReport._convenience_properties:
+            return object.__setattr__(self, name, value)
+        super().__setattr__(name, value)
+
+    SOURCE_ID: ClassVar[KeywordField] = KeywordField("sourceId", "sourceId")
+    """
+    Identifier of the report in Salesforce.
+    """
+    REPORT_TYPE: ClassVar[KeywordField] = KeywordField("reportType", "reportType")
+    """
+    Type of report in Salesforce.
+    """
+    DETAIL_COLUMNS: ClassVar[KeywordField] = KeywordField(
+        "detailColumns", "detailColumns"
+    )
+    """
+    List of column names on the report.
+    """
+
+    DASHBOARDS: ClassVar[RelationField] = RelationField("dashboards")
+    """
+    TBC
+    """
+    ORGANIZATION: ClassVar[RelationField] = RelationField("organization")
+    """
+    TBC
+    """
+
+    _convenience_properties: ClassVar[list[str]] = [
+        "source_id",
+        "report_type",
+        "detail_columns",
+        "dashboards",
+        "organization",
+    ]
+
+    @property
+    def source_id(self) -> Optional[str]:
+        return None if self.attributes is None else self.attributes.source_id
+
+    @source_id.setter
+    def source_id(self, source_id: Optional[str]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.source_id = source_id
+
+    @property
+    def report_type(self) -> Optional[dict[str, str]]:
+        return None if self.attributes is None else self.attributes.report_type
+
+    @report_type.setter
+    def report_type(self, report_type: Optional[dict[str, str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.report_type = report_type
+
+    @property
+    def detail_columns(self) -> Optional[set[str]]:
+        return None if self.attributes is None else self.attributes.detail_columns
+
+    @detail_columns.setter
+    def detail_columns(self, detail_columns: Optional[set[str]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.detail_columns = detail_columns
+
+    @property
+    def dashboards(self) -> Optional[list[SalesforceDashboard]]:
+        return None if self.attributes is None else self.attributes.dashboards
+
+    @dashboards.setter
+    def dashboards(self, dashboards: Optional[list[SalesforceDashboard]]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.dashboards = dashboards
+
+    @property
+    def organization(self) -> Optional[SalesforceOrganization]:
+        return None if self.attributes is None else self.attributes.organization
+
+    @organization.setter
+    def organization(self, organization: Optional[SalesforceOrganization]):
+        if self.attributes is None:
+            self.attributes = self.Attributes()
+        self.attributes.organization = organization
+
+    class Attributes(Salesforce.Attributes):
+        source_id: Optional[str] = Field(None, description="", alias="sourceId")
+        report_type: Optional[dict[str, str]] = Field(
+            None, description="", alias="reportType"
+        )
+        detail_columns: Optional[set[str]] = Field(
+            None, description="", alias="detailColumns"
+        )
+        dashboards: Optional[list[SalesforceDashboard]] = Field(
+            None, description="", alias="dashboards"
+        )  # relationship
+        organization: Optional[SalesforceOrganization] = Field(
+            None, description="", alias="organization"
+        )  # relationship
+
+    attributes: "SalesforceReport.Attributes" = Field(
+        default_factory=lambda: SalesforceReport.Attributes(),
+        description="Map of attributes in the instance and their values. The specific keys of this map will vary by "
+        "type, so are described in the sub-types of this schema.\n",
+    )
+
+
+SalesforceObject.Attributes.update_forward_refs()
+
+
+SalesforceField.Attributes.update_forward_refs()
+
+
+SalesforceOrganization.Attributes.update_forward_refs()
+
+
+SalesforceDashboard.Attributes.update_forward_refs()
+
+
+SalesforceReport.Attributes.update_forward_refs()
