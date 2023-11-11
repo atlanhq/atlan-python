@@ -61,11 +61,11 @@ from pyatlan.model.search import IndexSearchRequest
 from pyatlan.model.typedef import TypeDef, TypeDefResponse
 from pyatlan.model.user import AtlanUser, UserMinimalResponse, UserResponse
 from pyatlan.multipart_data_generator import MultipartDataGenerator
-from pyatlan.utils import HTTPStatus, get_logger
+from pyatlan.utils import AuthorizationFilter, HTTPStatus
 
 SERVICE_ACCOUNT_ = "service-account-"
-
-LOGGER = get_logger()
+LOGGER = logging.getLogger(__name__)
+LOGGER.addFilter(AuthorizationFilter())
 
 DEFAULT_RETRY = Retry(
     total=3,

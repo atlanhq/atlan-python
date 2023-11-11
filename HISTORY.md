@@ -1,3 +1,9 @@
+## 1.6.2 (November 7, 2023)
+
+* Add filter to redact HTTP authorization header
+* Add ability to traverse glossary hierarchy
+* Publish docker image on release
+
 ## 1.6.1 (November 3, 2023)
 
 * PARENT_CATEGORY of Glossary had the wrong atlan_field_name

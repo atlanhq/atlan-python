@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+import logging
 import time
 from abc import ABC
 from enum import Enum
@@ -66,7 +67,9 @@ from pyatlan.model.enums import (
     AtlanDeleteType,
     CertificateStatus,
     EntityStatus,
+    SortOrder,
 )
+from pyatlan.model.fields.atlan_fields import AtlanField
 from pyatlan.model.lineage import (
     LineageDirection,
     LineageListRequest,
@@ -83,7 +86,7 @@ from pyatlan.model.search import (
     with_active_glossary,
     with_active_term,
 )
-from pyatlan.utils import API, get_logger, unflatten_custom_metadata_for_entity
+from pyatlan.utils import API, unflatten_custom_metadata_for_entity
 
 T = TypeVar("T", bound=Referenceable)
 A = TypeVar("A", bound=Asset)
@@ -110,7 +113,7 @@ Asset_Types = Union[
     Type[MaterialisedView],
 ]
 
-LOGGER = get_logger()
+LOGGER = logging.getLogger(__name__)
 
 
 class AssetClient:
@@ -1256,6 +1259,54 @@ class AssetClient:
             attributes=attributes,
         )
 
+    def get_hierarchy(
+        self, glossary: AtlasGlossary, attributes: Optional[list[AtlanField]] = None
+    ) -> CategoryHierarchy:
+        """
+        Retrieve category hierarchy in this Glossary, in a traversable form. You can traverse in either depth_first
+        or breadth_first order. Both return an ordered list of Glossary objects.
+        Note: by default, each category will have a minimal set of information (name, GUID, qualifiedName). If you
+        want additional details about each category, specify the attributes you want in the attributes parameter
+        of this method.
+
+        :param glossary: the glossary to retrieve the category hierarchy for
+        :param attributes: attributes to retrieve for each category in the hierarchy
+        :returns: a traversable category hierarchy
+        """
+        from pyatlan.model.fluent_search import FluentSearch
+
+        if not glossary.qualified_name:
+            raise ErrorCode.GLOSSARY_MISSING_QUALIFIED_NAME.exception_with_parameters()
+        if attributes is None:
+            attributes = []
+        top_categories: set[str] = set()
+        category_dict: dict[str, AtlasGlossaryCategory] = {}
+        search = (
+            FluentSearch.select()
+            .where(AtlasGlossaryCategory.ANCHOR.eq(glossary.qualified_name))
+            .where(Term.with_type_name("AtlasGlossaryCategory"))
+            .include_on_results(AtlasGlossaryCategory.PARENT_CATEGORY)
+            .page_size(20)
+            .sort(AtlasGlossaryCategory.NAME.order(SortOrder.ASCENDING))
+        )
+        for field in attributes:
+            search.include_on_results(field)
+        request = search.to_request()
+        response = self.search(request)
+        for category in filter(
+            lambda a: isinstance(a, AtlasGlossaryCategory), response
+        ):
+            guid = category.guid
+            category_dict[guid] = category
+            if category.parent_category is None:
+                top_categories.add(guid)
+
+        if not top_categories:
+            raise ErrorCode.NO_CATEGORIES.exception_with_parameters(
+                glossary.guid, glossary.qualified_name
+            )
+        return CategoryHierarchy(top_level=top_categories, stub_dict=category_dict)
+
 
 class SearchResults(ABC, Iterable):
     """
@@ -1516,9 +1567,7 @@ class Batch:
 
         :returns: an AssetMutationResponse containing the results of the save or None if the batch is still queued.
         """
-        if len(self._batch) == self._max_size:
-            return self.flush()
-        return None
+        return self.flush() if len(self._batch) == self._max_size else None
 
     def flush(self) -> Optional[AssetMutationResponse]:
         """Flush any remaining assets in the batch.
@@ -1572,3 +1621,91 @@ class Batch:
         asset = candidate.trim_to_required()
         asset.name = candidate.name
         tracker.append(asset)
+
+
+def _bfs(bfs_list: list[AtlasGlossaryCategory], to_add: list[AtlasGlossaryCategory]):
+    for nade in to_add:
+        bfs_list.extend(nade.children_categories or [])
+    for node in to_add:
+        _bfs(bfs_list, node.children_categories or [])
+
+
+def _dfs(dfs_list: list[AtlasGlossaryCategory], to_add: list[AtlasGlossaryCategory]):
+    for node in to_add:
+        dfs_list.append(node)
+        _dfs(dfs_list=dfs_list, to_add=node.children_categories or [])
+
+
+class CategoryHierarchy:
+    def __init__(
+        self, top_level: set[str], stub_dict: dict[str, AtlasGlossaryCategory]
+    ):
+        self._top_level = top_level
+        self._root_categories: list = []
+        self._categories: dict[str, AtlasGlossaryCategory] = {}
+        self._build_category_dict(stub_dict)
+        self._bfs_list: list[AtlasGlossaryCategory] = []
+        self._dfs_list: list[AtlasGlossaryCategory] = []
+
+    def _build_category_dict(self, stub_dict: dict[str, AtlasGlossaryCategory]):
+        for category in stub_dict.values():
+            if parent := category.parent_category:
+                parent_guid = parent.guid
+                full_parent = self._categories.get(parent_guid, stub_dict[parent_guid])
+                children: list[AtlasGlossaryCategory] = (
+                    []
+                    if full_parent.children_categories is None
+                    else full_parent.children_categories.copy()
+                )
+                if category not in children:
+                    children.append(category)
+                full_parent.children_categories = children
+                self._categories[parent_guid] = full_parent
+            self._categories[category.guid] = category
+
+    def get_category(self, guid: str) -> AtlasGlossaryCategory:
+        """
+        Retrieve a specific category from anywhere in the hierarchy by its unique identifier (GUID).
+
+        :param guid: guid of the category to retrieve
+        :returns: the requested category
+        """
+        return self._categories[guid]
+
+    @property
+    def root_categories(self) -> list[AtlasGlossaryCategory]:
+        """
+        Retrieve only the root-level categories (those with no parents).
+
+        :returns: the root-level categories of the Glossary
+        """
+        if not self._root_categories:
+            self._root_categories = [self._categories[guid] for guid in self._top_level]
+        return self._root_categories
+
+    @property
+    def breadth_first(self) -> list[AtlasGlossaryCategory]:
+        """
+        Retrieve all the categories in the hierarchy in breadth-first traversal order.
+
+        :returns: all categories in breadth-first order
+        """
+        if not self._bfs_list:
+            top = self.root_categories
+            bfs_list = top.copy()
+            _bfs(bfs_list=bfs_list, to_add=top)
+            self._bfs_list = bfs_list
+        return self._bfs_list
+
+    @property
+    def depth_first(self) -> list[AtlasGlossaryCategory]:
+        """
+        Retrieve all the categories in the hierarchy in depth-first traversal order.
+
+        :returns: all categories in depth-first order
+        """
+        if not self._dfs_list:
+            dfs_list: list[AtlasGlossaryCategory] = []
+            _dfs(dfs_list=dfs_list, to_add=self.root_categories)
+            self._dfs_list = dfs_list
+        return self._dfs_list
