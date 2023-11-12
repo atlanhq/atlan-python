@@ -24,19 +24,6 @@ PREFIX_ATTR_ = "attr_"
 s_nextId = milliseconds = int(round(time.time() * 1000)) + 1
 
 
-def get_logger(name: str = __name__, level: str = "WARN"):
-    """
-    name - defaults to __name__
-    """
-    logging.basicConfig(
-        level=logging.WARN,
-        format="%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s",
-    )
-    logger = logging.getLogger(name)
-    logger.setLevel(level=level)
-    return logger
-
-
 def next_id() -> str:
     global s_nextId
 
@@ -280,3 +267,21 @@ def validate_type(name: str, _type: type, value):
     raise ErrorCode.INVALID_PARAMETER_TYPE.exception_with_parameters(
         name, _type.__name__
     )
+
+
+class AuthorizationFilter(logging.Filter):
+    """
+    A Filter that will replace the authorization header with the text '***REDACTED***'
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if record.args and hasattr(record.args, "__iter__"):
+            for arg in record.args:
+                if (
+                    isinstance(arg, dict)
+                    and "headers" in arg
+                    and "authorization" in arg["headers"]
+                ):
+                    arg["headers"]["authorization"] = "***REDACTED***"
+
+        return True
